@@ -50,7 +50,7 @@ def read_json(path: Path):
         return json.load(fh)
 
 
-def fmt(x, nd=2, dash="—"):
+def fmt(x, nd=2, dash="—", signed=False):
     """Format a number for the site; None/NaN renders as an em dash, never 0."""
     if x is None:
         return dash
@@ -60,7 +60,7 @@ def fmt(x, nd=2, dash="—"):
         return str(x)
     if f != f:  # NaN
         return dash
-    return f"{f:,.{nd}f}"
+    return f"{f:+,.{nd}f}" if signed else f"{f:,.{nd}f}"
 
 
 def pct(x, nd=1, dash="—"):

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology · NFL Line Lab</title>
+<meta name="description" content="How the lines are built, how the bets are settled, and how the numbers are checked.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏈</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="mark">🏈</span> NFL Line Lab</a>
+    <nav><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink active" href="methodology.html">Methodology</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a></nav>
+  </div>
+</header>
+<main class="wrap wide">
+  <h1>Methodology</h1>
+  <p class="lede">How the lines are built, how the bets are settled, and how the numbers are checked.</p>
+  
+<section>
+<h2>Pipeline</h2>
+<pre class="pipeline">pipeline/fetch_data.py     pin upstream commit, download archive, hash every file -> data/sources.json
+pipeline/build_datasets.py  chronological walk-forward features (no leakage), audits -> games_model.csv
+pipeline/models.py          three model families, walk-forward -> originated_lines.csv
+pipeline/backtest.py        settlement engine, cross-checked against nflverse outcomes
+pipeline/strategies.py      the pre-declared strategy library
+pipeline/stats_tools.py     bootstrap, FDR, deflated Sharpe, reality check
+pipeline/validation.py      run the library, apply the eight gates -> strategy_*.csv
+pipeline/correlations.py    measured dependence -> corr_*.csv
+pipeline/render_site.py     this site
+pipeline/verify_site.py     row-level source check + internal link check</pre>
+<p>Reproduce with <code>make build</code> (or run the eight scripts in order). Everything is
+deterministic: the upstream commit is pinned and every download is SHA-256 hashed.</p>
+</section>
+
+<section>
+<h2>Line origination models</h2>
+<div class="tablewrap"><table><thead><tr><th>Family</th><th>Inputs</th><th>Fit</th><th>Source</th></tr></thead><tbody>
+<tr><td><strong>ridge</strong></td><td>Elo difference, matchup expected points, opponent-adjusted
+expected points, rest differential, divisional flag, neutral site, week, playoff, roof, wind,
+temperature (+ missing flags)</td><td>Weighted ridge, sample decay halflife 4.0
+seasons, alpha by inner expanding CV</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
+<tr><td><strong>matchup</strong></td><td>exp_margin / exp_total from shrunk, recency-weighted
+team offence and defence ratings</td><td>One intercept + scale pair fitted on the training window</td>
+<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
+<tr><td><strong>elo</strong></td><td>Elo difference only (K = 20, MOV multiplier, 0.75 season
+retention)</td><td>Linear calibration on the training window</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
+<tr><td><strong>ensemble</strong></td><td>Equal weights 1/3 · 1/3 · 1/3 (never fitted)</td>
+<td>—</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+<h2>Probability, price and push</h2>
+<p>A margin (or total) is modelled as normal around the model line with a continuity correction, so
+a spread that lands exactly on the number is priced as a push rather than a half-win:</p>
+<pre class="math">P(push) = Φ((L+0.5−m)/σ) − Φ((L−0.5−m)/σ)
+P(win)  = 1 − Φ((L+0.5−m)/σ)
+
+fair American price = 100·(1−p)/p        for p &lt; 0.5
+                    = −100·p/(1−p)       for p &gt; 0.5</pre>
+<p>The published "posted" moneyline applies a 4.5% two-way hold, so the numbers on the
+<a href="lines.html">Originated lines</a> page are a bettable pair rather than a vig-free pair.</p>
+</section>
+
+<section>
+<h2>Data integrity</h2>
+<div class="tablewrap"><table class=""><caption>Data integrity checks run at build time</caption><thead><tr><th></th><th>Check</th><th>Result</th><th>Source</th></tr></thead><tbody><tr><td>✓</td><td>result == home_score - away_score</td><td>7384/7384</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>total == home_score + away_score</td><td>7384/7384</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>game_id unique</td><td>7548 unique of 7548 rows</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>spread_line sign convention = home team (positive =&gt; home favoured)</td><td>spread_line&gt;0: home win rate 67.4% n=4795; spread_line&lt;0: 35.3% n=2558</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>corr(spread_line, moneyline sign) — favourite must carry the negative price</td><td>agreement 98.2%</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>closing_lines.csv parses (independent per-side price + outcome file)</td><td>20,490 rows; outcome in {0, 0.5, 1} for all: True; pushes recorded as 0.5: 328 (spread 200, total 114, moneyline 14)</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr></tbody></table></div>
+</section>
+
+<section>
+<h2>Settlement engine cross-check</h2>
+<p>The backtest does not trust itself: every spread and total selection for 2006–2018 is re-settled
+and compared with nflverse's own per-side <code>outcome</code> column in
+<code>closing_lines.csv</code>.</p>
+<div class="cards">
+<div class="card "><div class="card-value">13,472</div><div class="card-label">selections re-settled</div><div class=card-note>2006–2018</div></div>
+<div class="card "><div class="card-value">98.605%</div><div class="card-label">exact agreement, all rows</div><div class=card-note>two independent implementations</div></div>
+<div class="card "><div class="card-value">99.931%</div><div class="card-label">agreement where the line matches</div><div class=card-note>n = 8,690</div></div>
+</div>
+<p class="small">The residual disagreements are concentrated in rows where the two nflverse files
+carry a different closing number for the same game — documented on the
+<a href="flagged.html">Flagged for review</a> page rather than papered over.</p>
+</section>
+
+<section>
+<h2>Feature dictionary</h2>
+<div class="tablewrap"><table class=""><caption>Feature dictionary</caption><thead><tr><th>Feature</th><th>Definition</th><th>Used in</th><th>Source</th></tr></thead><tbody><tr><td>elo_diff</td><td>Elo(home) − Elo(away), FiveThirtyEight-style, updated after each game</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>elo_h</td><td>Home team Elo before kickoff (start 1500, 0.75 season retention, K=20, MOV multiplier)</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>elo_a</td><td>Away team Elo before kickoff</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_margin</td><td>exp_h_pts − exp_a_pts (raw rating matchup expected home margin)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_total</td><td>exp_h_pts + exp_a_pts (raw rating matchup expected game total)</td><td>total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>adj_exp_margin</td><td>Opponent-adjusted expected home margin (weekly ridge team ratings, prior alpha=12)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>adj_exp_total</td><td>Opponent-adjusted expected game total</td><td>total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_h_pts</td><td>off_h + def_a − league_avg</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_a_pts</td><td>off_a + def_h − league_avg</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>off_h</td><td>Home offence rating: exp-weighted points scored, halflife 8 games, shrunk to league mean (k=4)</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>def_h</td><td>Home defence rating: exp-weighted points allowed, same shrinkage</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>rest_diff</td><td>Days since last game, home − away (clipped 0–21)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>div_game</td><td>Divisional matchup flag</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>neutral</td><td>Neutral-site flag (Super Bowl / international)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>is_playoff</td><td>Post-season flag</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>week</td><td>Regular-season week 1–18, playoffs 19–22</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>season_idx</td><td>season − 1999; lets the total model track league scoring drift</td><td>total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>roof_dome</td><td>Roof closed/dome</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>roof_open</td><td>Retractable roof, open</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>temp</td><td>Kickoff temperature (°F); median-imputed with missing flag</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>wind</td><td>Kickoff wind (mph); median-imputed with missing flag</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>temp_missing</td><td>1 if temperature not recorded</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>wind_missing</td><td>1 if wind not recorded</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr></tbody></table></div>
+</section>
+
+  <footer>
+    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
+    produced by <code>pipeline/</code> from the files listed on the
+    <a href="sources.html">Sources</a> page.</p>
+  </footer>
+</main>
+</body>
+</html>

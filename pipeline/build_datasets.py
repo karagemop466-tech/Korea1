@@ -300,7 +300,11 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
     df = pd.DataFrame(rows)
     up = pd.DataFrame(upcoming)
 
-    # derived flags
+    # derived flags. Weather is median-imputed from the *played* games only:
+    # a scheduled game has no recorded weather yet, so filling from its own
+    # median would leave an all-NaN column and poison every downstream model.
+    wind_med = float(df.wind.median())
+    temp_med = float(df.temp.median())
     for frame in (df, up):
         if frame.empty:
             continue

@@ -209,7 +209,8 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
                     "market_spread", "market_total", "market_home_ml", "market_away_ml",
                     "home_spread_odds", "away_spread_odds", "over_odds", "under_odds",
                     "elo_diff", "exp_margin", "exp_total", "rest_diff", "div_game",
-                    "temp", "wind", "roof"]].copy()
+                    "temp", "wind", "temp_missing", "wind_missing", "roof", "season_idx",
+                    "adj_exp_margin", "adj_exp_total"]].copy()
         frame["fit_season"] = S
         for name, pm, rm in [("ridge", pred_m, resid_m), ("matchup", m2_m, r2m),
                              ("elo", m3_m, r3m), ("ensemble", ens_m, rens_m)]:
