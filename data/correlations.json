@@ -1,4 +1,79 @@
 {
+  "market_margin": {
+    "n_games": 2941,
+    "mean_overround": 0.03789,
+    "median_overround": 0.03779,
+    "p10_overround": 0.03057,
+    "p90_overround": 0.04545,
+    "break_even_win_rate_two_way_standard_price": 0.52381,
+    "source": "SBR-10Y closing moneylines (home and away, both priced)",
+    "price_bucket_calibration": [
+      {
+        "bucket": "shorter than -400",
+        "n": 484,
+        "mean_no_vig_implied_prob": 0.8278,
+        "realised_win_rate": 0.8326,
+        "gap_realised_minus_implied": 0.0049
+      },
+      {
+        "bucket": "-400 to -250",
+        "n": 716,
+        "mean_no_vig_implied_prob": 0.7302,
+        "realised_win_rate": 0.7584,
+        "gap_realised_minus_implied": 0.0282
+      },
+      {
+        "bucket": "-250 to -150",
+        "n": 1023,
+        "mean_no_vig_implied_prob": 0.6346,
+        "realised_win_rate": 0.6012,
+        "gap_realised_minus_implied": -0.0334
+      },
+      {
+        "bucket": "-150 to -110",
+        "n": 686,
+        "mean_no_vig_implied_prob": 0.5485,
+        "realised_win_rate": 0.535,
+        "gap_realised_minus_implied": -0.0135
+      },
+      {
+        "bucket": "-110 to 110",
+        "n": 312,
+        "mean_no_vig_implied_prob": 0.4814,
+        "realised_win_rate": 0.484,
+        "gap_realised_minus_implied": 0.0026
+      },
+      {
+        "bucket": "110 to 150",
+        "n": 687,
+        "mean_no_vig_implied_prob": 0.425,
+        "realised_win_rate": 0.4571,
+        "gap_realised_minus_implied": 0.0321
+      },
+      {
+        "bucket": "150 to 250",
+        "n": 1053,
+        "mean_no_vig_implied_prob": 0.3376,
+        "realised_win_rate": 0.3476,
+        "gap_realised_minus_implied": 0.01
+      },
+      {
+        "bucket": "250 to 400",
+        "n": 605,
+        "mean_no_vig_implied_prob": 0.2424,
+        "realised_win_rate": 0.2116,
+        "gap_realised_minus_implied": -0.0308
+      },
+      {
+        "bucket": "longer than +400",
+        "n": 316,
+        "mean_no_vig_implied_prob": 0.1513,
+        "realised_win_rate": 0.1392,
+        "gap_realised_minus_implied": -0.0121
+      }
+    ],
+    "note": "overround = implied_home + implied_away - 1, computed straight from the archived closing prices, so it is the margin actually charged, not a textbook figure"
+  },
   "sources": [
     "SBR-10Y (2,945 games, 2011-2021)"
   ],

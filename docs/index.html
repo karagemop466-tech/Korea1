@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NFL Line Lab</title>
+<meta name="description" content="Originating our own NFL lines, testing signals honestly, measuring correlation, and scoring skill instead of luck.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span> NFL Line Lab</a>
+    <nav class="nav"><a href="index.html" class="active">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategies</a><a href="correlation.html" class="">Correlation &amp; parlays</a><a href="props.html" class="">Player props</a><a href="validation.html" class="">Validation gates</a><a href="leaderboard.html" class="">Leaderboard design</a><a href="sources.html" class="">Sources</a><a href="flagged.html" class="">Flagged for review</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <div class="pagehead">
+    <h1>NFL Line Lab</h1>
+    <p class="sub">Originating our own NFL lines, testing signals honestly, measuring correlation, and scoring skill instead of luck.</p>
+    <p class="meta">Built 2026-11-01 13:44 UTC · data window 2011–2021 · every value computed by a script in
+    <code>scripts/</code> · verification 9/9 checks</p>
+  </div>
+  
+<section class="kpis"><div class="kpi"><div class="kpival">2,945</div><div class="kpilabel">games analysed</div><div class="kpisub">2011–2021, integrity-gated</div></div><div class="kpi"><div class="kpival">18</div><div class="kpilabel">strategies tested</div><div class="kpisub">0 passed all 8 gates</div></div><div class="kpi"><div class="kpival">3.79%</div><div class="kpilabel">measured market overround</div><div class="kpisub">from 2,941 closing moneylines</div></div><div class="kpi"><div class="kpival">18.7%</div><div class="kpilabel">winner's ROI, zero-skill field</div><div class="kpisub">1,000 bettors, one 267-bet season</div></div><div class="kpi"><div class="kpival">78.9%</div><div class="kpilabel">skill found by CLV board</div><div class="kpisub">vs 0.32% by ROI board</div></div><div class="kpi"><div class="kpival">17,796</div><div class="kpilabel">bets to prove a 2% edge</div><div class="kpisub">= 66.6 NFL seasons</div></div></section>
+
+<section>
+  <h2>Headline findings</h2>
+  <ol class="findings"><li><strong>Our own line is good, and still worse than the market.</strong> <span class="finding">Walk-forward Elo + pace model: spread MAE 10.47 pts vs 10.15 for the closing line; straight-up 66.4% vs 67.3%.</span> <a class="more" href="lines.html">detail →</a></li><li><strong>No pre-specified strategy survived all eight validation gates.</strong> <span class="finding">Gate counts: G1 16/18, G2 0/18, G3 2/18, G8 0/18. Two results are worth watching, none is fundable.</span> <a class="more" href="validation.html">detail →</a></li><li><strong>Model-edge betting is reliably unprofitable, not randomly unprofitable.</strong> <span class="finding">S01 ROI -10.92% at p &lt; 0.001 after false-discovery correction. The market beats the model in the exact spots where they disagree.</span> <a class="more" href="strategies.html">detail →</a></li><li><strong>The QB/WR1 stack is the one genuinely mispriced combination available.</strong> <span class="finding">Measured ρ = 0.441 (within-player). The empirical joint is 35.6% versus 25.5% if the legs were independent — a 39.7% gap, i.e. a fair price near 2.81 rather than 3.92.</span> <a class="more" href="props.html">detail →</a></li><li><strong>WR1 and WR2 are mildly positively correlated — the intuitive &#x27;hedge&#x27; is backwards.</strong> <span class="finding">Within-player ρ = 0.182 for receptions; game environment dominates target competition.</span> <a class="more" href="props.html">detail →</a></li><li><strong>A season-P&amp;L leaderboard cannot find skill; a CLV leaderboard can.</strong> <span class="finding">A bettor with a true 2% edge finishes first 0.32% of the time on ROI and 78.9% on closing-line value.</span> <a class="more" href="leaderboard.html">detail →</a></li><li><strong>The house edge on combinations is roughly three times the straight-bet edge.</strong> <span class="finding">Nevada Gaming Control Board, November 2025: Sports Parlay Cards 19.94% win over twelve months vs Sports Pool 6.74% (official regulator data).</span> <a class="more" href="sources.html">detail →</a></li></ol>
+</section>
+
+<section>
+  <h2>What is verified, and what is not</h2>
+  <div class="tablewrap"><table class="tight">
+<thead><tr><th>Claim</th><th>Status</th><th>How it was checked</th><th>Source</th></tr></thead><tbody>
+<tr><td>2,945 usable games, 2011–2021</td><td><span class="badge ok">verified</span></td><td>two independent sources agree on 263/263 final scores (2021); fields validated one by one</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a> <a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>Market overround 3.79%</td><td><span class="badge ok">computed</span></td><td>recomputed from the archived closing prices, not quoted</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>Nevada sports-pool and parlay-card hold</td><td><span class="badge ok">official</span></td><td>read directly from the regulator's November 2025 report</td><td><a class="src t-official" data-source="NVGCB-NOV2025" href="https://www.gaming.nv.gov/siteassets/content/about/gaming-revenue/november-2025-monthly-revenue-report.pdf" target="_blank" rel="noopener" title="Nevada Gaming Control Board">NVGCB-NOV2025</a></td></tr>
+<tr><td>Prop correlations (ρ = 0.441 for QB×WR1)</td><td><span class="badge ok">computed</span></td><td>play-by-play 2021–2022, 1,086 team-games, replicated in both seasons</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>Player-prop prices and prop ROI</td><td><span class="badge warn">unverified</span></td><td>no licence-clean history of prop lines was reachable, so no prop P&L is claimed anywhere</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>Live 2026 lines for this week's games</td><td><span class="badge warn">blocked</span></td><td>requires a live feed; publishing them without one would be fabrication</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">Every row links to the register entry. Unverified rows are repeated on the Flagged for review page with the reason they could not be confirmed.</p>
+</section>
+
+<section class="grid2">
+  <div class="card"><h3>Originated lines</h3><div class="cardbody">An Elo + pace engine that produces a spread, total and moneyline for every game walk-forward. Calibration, season-by-season parameters and a worked board of 262 games.</div><div class="cardfoot"><a class="more" href="lines.html">Open →</a></div></div>
+  <div class="card"><h3>Strategy battery</h3><div class="cardbody">18 pre-specified single-bet rules, settled with real prices, with closing-line value measured on every opening-line bet.</div><div class="cardfoot"><a class="more" href="strategies.html">Open →</a></div></div>
+  <div class="card"><h3>Correlation & parlays</h3><div class="cardbody">Measured same-game leg correlations and the exact parlay pricing kernel, including the cases where an independent price is catastrophically wrong.</div><div class="cardfoot"><a class="more" href="correlation.html">Open →</a></div></div>
+  <div class="card"><h3>Validation gates</h3><div class="cardbody">Eight pre-specified gates, three independent luck-removal measurements, and the verification harness output for this build.</div><div class="cardfoot"><a class="more" href="validation.html">Open →</a></div></div>
+</section>
+
+<section>
+  <h2>Method in one paragraph</h2>
+  <p class="prose">The market price is the benchmark, so the project starts by measuring exactly what
+  it costs to bet (3.79% overround on closing
+  moneylines, 6–7% realised hold in Nevada). It then builds an independent line engine from results
+  only, tests 18 rules that a bettor would plausibly use, and refuses to accept any of them without
+  clearing sample-size, false-discovery, out-of-sample, robustness, closing-line-value, risk,
+  availability and selection-bias gates. Correlations are measured from play-by-play rather than
+  assumed, and the leaderboard is scored on luck-adjusted, CLV-weighted skill because the simulation
+  shows a raw-profit board is a coin flip.</p>
+</section>
+
+</main>
+<footer class="foot"><div class="wrap">
+  <p>Research artifact. No betting advice, no live wagering, no guarantee of profit. Values that could
+  not be confirmed against a source are marked <span class="badge warn">unverified</span> and listed on the
+  <a href="flagged.html">Flagged for review</a> page.</p>
+</div></footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

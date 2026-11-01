@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaderboard design · NFL Line Lab</title>
+<meta name="description" content="A competition that pays for measured skill, not for one lucky season.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span> NFL Line Lab</a>
+    <nav class="nav"><a href="index.html" class="">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategies</a><a href="correlation.html" class="">Correlation &amp; parlays</a><a href="props.html" class="">Player props</a><a href="validation.html" class="">Validation gates</a><a href="leaderboard.html" class="active">Leaderboard design</a><a href="sources.html" class="">Sources</a><a href="flagged.html" class="">Flagged for review</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <div class="pagehead">
+    <h1>Leaderboard design</h1>
+    <p class="sub">A competition that pays for measured skill, not for one lucky season.</p>
+    <p class="meta">Built 2026-11-01 13:44 UTC · data window 2011–2021 · every value computed by a script in
+    <code>scripts/</code> · verification 9/9 checks</p>
+  </div>
+  
+<section>
+  <h2>Why the score is not profit</h2>
+  <p class="prose">A leaderboard that ranks on season profit is a lottery. The evidence, all measured
+  in this project:</p>
+  <ul class="prose">
+    <li>A field of 1,000 bettors with <strong>zero</strong> skill produces a median winner at
+    <strong>18.7%</strong> ROI after one 267-bet season.</li>
+    <li>A bettor who genuinely has a 2% edge finishes first
+    <strong>0.32%</strong> of the time when ranked by ROI — and
+    <strong>78.9%</strong> of the time when ranked by closing-line
+    value.</li>
+    <li>Proving a 2% edge by win/loss alone needs
+    <strong>17,796 bets</strong> — about 67 NFL seasons.</li>
+  </ul>
+  <p class="prose">So the score is <strong>Luck-adjusted skill score (LASS)</strong>:</p>
+  <pre class="formula">LASS = lam * (0.5*tanh(C/2) + 0.3*tanh(R/2) + 0.2*(2*DSR - 1)), lam = n/(n+400)</pre>
+  <p class="prose">Weights: CLV 0.5, return 0.3, selection-bias
+  correction 0.2. Shrinkage n₀ = 400 bets, so a
+  small sample is pulled toward zero and an early-season fluke cannot lead the table.
+  <strong>Hard ceiling:</strong> a strategy that fails G8 (Deflated Sharpe Ratio &lt; 0.95) cannot rank above Paper, whatever its LASS.</p>
+</section>
+
+<section>
+  <h2>Tiers</h2>
+  <div class="tablewrap"><table class="">
+<thead><tr><th>Tier</th><th>Requirement</th><th>Strategies here</th><th>Source</th></tr></thead><tbody>
+<tr><td>Gold</td><td>all eight gates passed, &gt;= 2 seasons, positive CLV in both halves</td><td>0</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>Silver</td><td>G1-G6 passed and at least one full season</td><td>0</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>Bronze</td><td>G1 and G2 passed with &gt;= 300 bets</td><td>0</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>Watch</td><td>notable result that failed the gates - published for review, not funded</td><td>4</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>Paper</td><td>tracked only; does not clear the entry requirements</td><td>14</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">Nobody reaches Gold or Silver. That is the intended behaviour of the gate set, not a bug: a competition that produced a Gold winner from 18 rules on this data would be awarding luck.</p>
+</section>
+
+<section>
+  <h2>Leaderboard for this repo's own battery</h2>
+  <div class="tablewrap"><table class="wide">
+<thead><tr><th>Rank</th><th>ID</th><th>Strategy</th><th>Tier</th><th>LASS</th><th>Bets</th><th>ROI</th><th>OOS ROI</th><th>Mean CLV</th><th>CLV t</th><th>DSR</th><th>Shrinkage</th><th>Gates</th><th>Source</th></tr></thead><tbody>
+<tr><td>1</td><td>S12</td><td>Over the lowest-decile totals</td><td><span class="badge warn">Watch</span></td><td>0.1951</td><td>226</td><td><span class="pos">+5.79%</span></td><td><span class="pos">+6.10%</span></td><td>0.447</td><td>3.85</td><td>0.326</td><td>0.361</td><td>5/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>2</td><td>S11</td><td>Under the highest-decile totals</td><td><span class="badge warn">Watch</span></td><td>0.1513</td><td>301</td><td><span class="pos">+0.91%</span></td><td><span class="pos">+3.28%</span></td><td>0.789</td><td>5.95</td><td>0.075</td><td>0.429</td><td>5/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>3</td><td>S08</td><td>Back the team with 4+ extra rest days (opening line)</td><td><span class="badge neutral">Paper</span></td><td>0.0611</td><td>464</td><td><span class="neg">-4.57%</span></td><td><span class="neg">-4.92%</span></td><td>0.242</td><td>3.12</td><td>0.001</td><td>0.537</td><td>3/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>4</td><td>S06</td><td>Back the team coming off a bye (opening line)</td><td><span class="badge neutral">Paper</span></td><td>-0.0809</td><td>1,652</td><td><span class="neg">-4.30%</span></td><td><span class="neg">-4.39%</span></td><td>0.071</td><td>1.51</td><td>0.000</td><td>0.805</td><td>3/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>5</td><td>S16</td><td>Under when both offences are running hot (opening line)</td><td><span class="badge neutral">Paper</span></td><td>-0.1707</td><td>212</td><td><span class="neg">-9.48%</span></td><td><span class="neg">-6.77%</span></td><td>-0.064</td><td>-0.44</td><td>0.003</td><td>0.346</td><td>1/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>6</td><td>S04</td><td>Follow the move &gt;= 1.5 pts of opening-to-closing movement</td><td><span class="badge neutral">Paper</span></td><td>-0.2349</td><td>1,020</td><td><span class="neg">-2.67%</span></td><td><span class="neg">-2.78%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.718</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>7</td><td>S18</td><td>Divisional underdog (opening line)</td><td><span class="badge neutral">Paper</span></td><td>-0.2612</td><td>947</td><td><span class="neg">-3.33%</span></td><td><span class="neg">-1.69%</span></td><td>-0.006</td><td>-0.09</td><td>0.000</td><td>0.703</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>8</td><td>S10</td><td>Model total edge &gt;= 3 pts</td><td><span class="badge neutral">Paper</span></td><td>-0.2626</td><td>645</td><td><span class="neg">-7.29%</span></td><td><span class="neg">-7.65%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.617</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>9</td><td>S15</td><td>Moneyline edge &gt;= 5 pts over the de-margined price</td><td><span class="badge neutral">Paper</span></td><td>-0.2733</td><td>1,570</td><td><span class="neg">-3.60%</span></td><td><span class="neg">-6.87%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.797</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>10</td><td>S13</td><td>Underdogs priced +200 to +400 (win only)</td><td><span class="badge neutral">Paper</span></td><td>-0.2992</td><td>1,036</td><td><span class="neg">-8.95%</span></td><td><span class="neg">-14.41%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.721</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>11</td><td>S02</td><td>Model spread edge &gt;= 3.5 pts</td><td><span class="badge neutral">Paper</span></td><td>-0.3011</td><td>693</td><td><span class="neg">-11.14%</span></td><td><span class="neg">-12.14%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.634</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>12</td><td>S03</td><td>Fade the move &gt;= 1.5 pts of opening-to-closing movement</td><td><span class="badge neutral">Paper</span></td><td>-0.3124</td><td>1,020</td><td><span class="neg">-6.23%</span></td><td><span class="neg">-6.15%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.718</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>13</td><td>S07</td><td>Fade the short-rest road team (opening line)</td><td><span class="badge neutral">Paper</span></td><td>-0.3254</td><td>309</td><td><span class="neg">-13.06%</span></td><td><span class="neg">-29.40%</span></td><td>-0.131</td><td>-1.35</td><td>0.000</td><td>0.436</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>14</td><td>S14</td><td>Favourites priced -150 to -250 (win only)</td><td><span class="badge neutral">Paper</span></td><td>-0.3562</td><td>1,121</td><td><span class="neg">-7.97%</span></td><td><span class="neg">-14.64%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.737</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>15</td><td>S01</td><td>Model spread edge &gt;= 2 pts</td><td><span class="badge warn">Watch</span></td><td>-0.3758</td><td>1,303</td><td><span class="neg">-10.92%</span></td><td><span class="neg">-9.85%</span></td><td><span class="na">—</span></td><td>0.00</td><td>0.000</td><td>0.765</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>16</td><td>S05</td><td>Home underdog +3 to +7 (opening line)</td><td><span class="badge neutral">Paper</span></td><td>-0.4588</td><td>564</td><td><span class="neg">-3.51%</span></td><td><span class="neg">-4.34%</span></td><td>-0.248</td><td>-3.15</td><td>0.001</td><td>0.585</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>17</td><td>S09</td><td>Fade a 3+ game win streak (opening line)</td><td><span class="badge neutral">Paper</span></td><td>-0.5667</td><td>843</td><td><span class="neg">-4.28%</span></td><td><span class="neg">-8.86%</span></td><td>-0.190</td><td>-3.22</td><td>0.000</td><td>0.678</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>18</td><td>S17</td><td>Model spread edge &gt;= 2 pts vs the OPENING line</td><td><span class="badge warn">Watch</span></td><td>-0.7129</td><td>1,154</td><td><span class="neg">-9.71%</span></td><td><span class="neg">-9.65%</span></td><td>-0.257</td><td>-3.77</td><td>0.000</td><td>0.743</td><td>2/8</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">Sorted by LASS. Note how S11/S12 top the table on CLV while failing the selection-bias gate — exactly the tension the Watch tier exists to hold, and why they are published for review rather than funded.</p>
+</section>
+
+<section class="grid2">
+  <div class="card"><h3>Reward weights</h3><div class="cardbody"><div class="tablewrap"><table class="">
+<thead><tr><th>Component</th><th>Weight</th><th>Source</th></tr></thead><tbody>
+<tr><td>realised clv</td><td>45%</td><td><a class="src t-paper" data-source="PAPER-KELLY" href="https://doi.org/10.1002/j.1538-7305.1956.tb03809.x" target="_blank" rel="noopener" title="Bell System Technical Journal">PAPER-KELLY</a></td></tr>
+<tr><td>risk adjusted return</td><td>30%</td><td><a class="src t-paper" data-source="PAPER-KELLY" href="https://doi.org/10.1002/j.1538-7305.1956.tb03809.x" target="_blank" rel="noopener" title="Bell System Technical Journal">PAPER-KELLY</a></td></tr>
+<tr><td>replication</td><td>15%</td><td><a class="src t-paper" data-source="PAPER-KELLY" href="https://doi.org/10.1002/j.1538-7305.1956.tb03809.x" target="_blank" rel="noopener" title="Bell System Technical Journal">PAPER-KELLY</a></td></tr>
+<tr><td>correlation contribution</td><td>10%</td><td><a class="src t-paper" data-source="PAPER-KELLY" href="https://doi.org/10.1002/j.1538-7305.1956.tb03809.x" target="_blank" rel="noopener" title="Bell System Technical Journal">PAPER-KELLY</a></td></tr>
+</tbody></table></div><p class="sourcenote">Paid only on gate-qualified strategies.</p></div></div>
+  <div class="card"><h3>Anti-gaming rules</h3><div class="cardbody"><ul class="prose small"><li>Bet timestamps and line snapshots are mandatory — without them CLV is unfalsifiable.</li><li>Editing a published rule resets it to Paper and consumes one trial from the field&#x27;s multiple-testing budget.</li><li>No cherry-picked subsamples: subsets must be reported with the whole history, and the filter counts as a trial.</li><li>Parlays are scored on correlation-adjusted expected value, checked against the measured correlation table.</li><li>Flat staking by default; the score uses the shrunk unit series so leverage cannot manufacture a ranking.</li><li>Arbitrage and bonus abuse are excluded — they are not signals about the game.</li><li>Minimum bet counts per tier are enforced, which is the direct application of the power arithmetic.</li></ul></div></div>
+</section>
+
+</main>
+<footer class="foot"><div class="wrap">
+  <p>Research artifact. No betting advice, no live wagering, no guarantee of profit. Values that could
+  not be confirmed against a source are marked <span class="badge warn">unverified</span> and listed on the
+  <a href="flagged.html">Flagged for review</a> page.</p>
+</div></footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+{
+  "run_utc": "2026-11-01",
+  "total": 9,
+  "passed": 9,
+  "failed": 0,
+  "checks": [
+    {
+      "id": "V01",
+      "check": "Formula verification (odds, de-vig, copula, Kelly, BH, DSR, settlement)",
+      "passed": true,
+      "detail": "33 assertions passed; exit code 0",
+      "source": "scripts/tests/test_math.py"
+    },
+    {
+      "id": "V02",
+      "check": "Club division map vs nflverse reference",
+      "passed": true,
+      "detail": "32 clubs checked, 0 mismatches",
+      "source": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv"
+    },
+    {
+      "id": "V03",
+      "check": "Integrity gate G0 thresholds",
+      "passed": true,
+      "detail": "2945 usable games from 2956 source rows; excluded rows: 10 team name unresolvable (neutral-site game (Super Bowl) stored as team '0'); 1 team name unresolvable (NFL has two 'New York' clubs (NYG, NYJ) - unresolved)",
+      "source": "SBR-10Y"
+    },
+    {
+      "id": "V04",
+      "check": "Independent-source cross-validation, 2021",
+      "passed": true,
+      "detail": "final scores 263/263 agree; closing totals within 1 pt on 97.1%; closing spreads 86.5%",
+      "source": "NFLVERSE-PBP vs SBR-10Y"
+    },
+    {
+      "id": "V05",
+      "check": "Strategy bookkeeping (counts, pushes, profit totals)",
+      "passed": true,
+      "detail": "18 strategies checked, 0 inconsistencies",
+      "source": "scripts/03_strategies.py"
+    },
+    {
+      "id": "V06",
+      "check": "Source register completeness",
+      "passed": true,
+      "detail": "12 sources; every entry has a URL, a tier and a verification note",
+      "source": "data/sources.json"
+    },
+    {
+      "id": "V07",
+      "check": "Every source referenced by the site exists in the register",
+      "passed": true,
+      "detail": "12 distinct source ids referenced by the site",
+      "source": "docs/*.html"
+    },
+    {
+      "id": "V08",
+      "check": "All eight gates recorded for every strategy; verdicts consistent",
+      "passed": true,
+      "detail": "18 strategies x 8 gates",
+      "source": "data/validation.json"
+    },
+    {
+      "id": "V09",
+      "check": "No unfinished-value markers in published pages",
+      "passed": true,
+      "detail": "clean",
+      "source": "docs/*.html"
+    }
+  ]
+}

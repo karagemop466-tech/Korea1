@@ -1,0 +1,130 @@
+{
+  "retrieved_utc": "2026-11-01",
+  "tier_policy": {
+    "official": "Published as fact without qualification.",
+    "peer_reviewed": "Used as a formula or a stated research result, cited to the article.",
+    "verified_third_party": "Published with provenance and a verification-status column; never described as official."
+  },
+  "sources": [
+    {
+      "id": "NFL-RULEBOOK",
+      "title": "2026 NFL Rulebook (with 2026 rule changes)",
+      "publisher": "NFL Football Operations",
+      "url": "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook",
+      "tier": "official",
+      "used_for": "Scoring values, timing, overtime and kickoff rules that the models assume",
+      "verification": "Page fetched 2026-11-01; the 2026 rule-change table (rules 6-1-3, 6-1-5, 6-1-6, 19-2) and the rulebook PDF link were read directly from the live page.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "NFLVERSE-TEAMS",
+      "title": "teams_colors_logos.csv - club, conference and division reference",
+      "publisher": "nflverse",
+      "url": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv",
+      "tier": "verified_third_party",
+      "used_for": "Divisional alignment used by strategy S18",
+      "verification": "Downloaded and compared programmatically against the division map in scripts/lib/data.py: 32/32 clubs match, zero mismatches (scripts/99_verify.py re-runs this check).",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "NFLVERSE-PBP",
+      "title": "nflverse play-by-play, 2021-2023 (cached per season in a public repository)",
+      "publisher": "nflverse, https://github.com/nflverse/nflverse-data",
+      "url": "https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp",
+      "tier": "verified_third_party",
+      "used_for": "Player-prop correlations, final-score cross-validation, nflverse closing lines",
+      "verification": "2021 play-by-play final scores agree with the independent odds archive on 263/263 overlapping games. The 2023 file in that repository holds only 5,660 plays (partial season) and is excluded from all analysis.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "SBR-10Y",
+      "title": "Sportsbook Review 10-year NFL archive (dates, quarter scores, open/close spread, total, moneyline)",
+      "publisher": "Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper",
+      "url": "https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json",
+      "tier": "verified_third_party",
+      "used_for": "Every market price and result in the backtests (2011-2021)",
+      "verification": "2,956 raw rows -> 2,945 usable after the integrity gate. Field-level defects found and documented: 260 corrupted closing spreads, 259 corrupted closing totals, 4 implausible moneyline pairs, 10 neutral-site Super Bowls with no home team, 1 unresolvable 'New York' row. Nothing was imputed.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "NVGCB-NOV2025",
+      "title": "Nevada Gaming Control Board Monthly Revenue Report, November 2025",
+      "publisher": "Nevada Gaming Control Board",
+      "url": "https://www.gaming.nv.gov/siteassets/content/about/gaming-revenue/november-2025-monthly-revenue-report.pdf",
+      "tier": "official",
+      "used_for": "Observed sportsbook hold, including the parlay-card hold that motivates the parlay work",
+      "verification": "Report fetched 2026-11-01. Statewide, all nonrestricted locations: Sports Pool win 8.02% for the month / 6.74% over twelve months; Sports-Football 9.19% / 6.14%; Sports-Mobile 7.17% / 6.41%; Sports Parlay Cards 45.14% for the month / 19.94% over twelve months.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "FTE-ELO",
+      "title": "How Our NFL Predictions Work (Elo specification: K=20, one-third regression, margin-of-victory multiplier)",
+      "publisher": "FiveThirtyEight",
+      "url": "https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/",
+      "tier": "verified_third_party",
+      "used_for": "Structure and constants of the walk-forward Elo component",
+      "verification": "Methodology URL confirmed live 2026-11-01; the K=20 and one-third regression values are quoted from the published method, not fitted here. The points-per-Elo conversion is estimated from this project's own data and is not taken from any source.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "PAPER-DSR",
+      "title": "Bailey, D. H. & Lopez de Prado, M. (2014). The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting and Non-Normality. Journal of Portfolio Management 40(5), 94-107",
+      "publisher": "Journal of Portfolio Management",
+      "url": "https://doi.org/10.3905/jpm.2014.40.5.094",
+      "tier": "peer_reviewed",
+      "used_for": "Gate G8 selection-bias correction; expected-maximum-Sharpe formula",
+      "verification": "Volume, issue, pages and DOI confirmed against the SSRN record (abstract_id 2460551) on 2026-11-01.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "PAPER-GRAY",
+      "title": "Gray, P. K. & Gray, S. F. (1997). Testing Market Efficiency: Evidence from the NFL Sports Betting Market. Journal of Finance 52(4), 1725-1737",
+      "publisher": "Journal of Finance",
+      "url": "https://ideas.repec.org/a/bla/jfinan/v52y1997i4p1725-37.html",
+      "tier": "peer_reviewed",
+      "used_for": "Prior that limited NFL inefficiencies exist and dissipate; the reason gates demand out-of-sample evidence",
+      "verification": "RePEc record fetched 2026-11-01: authors, journal, volume 52(4), pages 1725-1737, September 1997, and the abstract text all read from the record.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "PAPER-LEVITT",
+      "title": "Levitt, S. D. (2004). Why Are Gambling Markets Organised So Differently from Financial Markets? Economic Journal 114(495), 223-246",
+      "publisher": "Economic Journal",
+      "url": "https://www.nber.org/papers/w9422",
+      "tier": "peer_reviewed",
+      "used_for": "Why closing lines, not our own model, are the benchmark a strategy must beat",
+      "verification": "NBER working-paper record fetched 2026-11-01; it lists the published version as Economic Journal 2004, 114(495), 223-246.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "PAPER-SHIN",
+      "title": "Shin, H. S. (1993). Measuring the Incidence of Insider Trading in a Market for State-Contingent Claims. Economic Journal 103(420), 1141-1153",
+      "publisher": "Economic Journal",
+      "url": "https://doi.org/10.2307/2234240",
+      "tier": "peer_reviewed",
+      "used_for": "Second de-margining method, as a sensitivity check on the proportional method",
+      "verification": "DOI resolved 2026-11-01 to the Oxford Academic record for Economic Journal 103(420), page 1141.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "PAPER-BH",
+      "title": "Benjamini, Y. & Hochberg, Y. (1995). Controlling the False Discovery Rate. JRSS-B 57(1), 289-300",
+      "publisher": "Journal of the Royal Statistical Society, Series B",
+      "url": "https://doi.org/10.1111/j.2517-6161.1995.tb02031.x",
+      "tier": "peer_reviewed",
+      "used_for": "Gate G2 multiple-testing control across the strategy battery",
+      "verification": "Implementation checked against a hand-computed worked example in scripts/tests/test_math.py. DOI not independently re-resolved in this session - flagged on the Flagged for Review page.",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "id": "PAPER-KELLY",
+      "title": "Kelly, J. L. (1956). A New Interpretation of Information Rate. Bell System Technical Journal 35(4), 917-926",
+      "publisher": "Bell System Technical Journal",
+      "url": "https://doi.org/10.1002/j.1538-7305.1956.tb03809.x",
+      "tier": "peer_reviewed",
+      "used_for": "Stake-sizing section of the competition rules",
+      "verification": "Formula verified numerically in scripts/tests/test_math.py. DOI not independently re-resolved in this session - flagged on the Flagged for Review page.",
+      "verified_on": "2026-11-01"
+    }
+  ]
+}

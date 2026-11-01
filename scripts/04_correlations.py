@@ -186,7 +186,63 @@ def main():
             "kelly_stake_if_no_edge": 0.0,
         })
 
+    # ---------------- D. market margin and favourite-longshot calibration
+    # Evidence that the price a bettor pays contains a real, measurable cost, and a direct
+    # test of the favourite-longshot bias on realised NFL moneylines.
+    ml_games = [g for g in games if g["home_ml"] is not None]
+    margins = []
+    for g in ml_games:
+        ph, pa = C.american_to_prob(g["home_ml"]), C.american_to_prob(g["away_ml"])
+        margins.append(ph + pa - 1.0)
+    margins.sort()
+    n = len(margins)
+
+    buckets = [(-10000, -400), (-400, -250), (-250, -150), (-150, -110), (-110, 110),
+               (110, 150), (150, 250), (250, 400), (400, 10000)]
+    calib = []
+    for lo, hi in buckets:
+        rows_b = []
+        for g in ml_games:
+            for side in ("home", "away"):
+                price = g[f"{side}_ml"]
+                if price is None or not (lo <= price < hi):
+                    continue
+                other = g["away_ml" if side == "home" else "home_ml"]
+                p = C.american_to_prob(price)
+                p_o = C.american_to_prob(other)
+                fair, _ = C.no_vig_proportional(p, p_o)
+                won = (g["home_score"] > g["away_score"]) if side == "home" else (g["away_score"] > g["home_score"])
+                rows_b.append((fair, 1.0 if won else 0.0, price))
+        if not rows_b:
+            calib.append({"bucket": f"{lo}..{hi}", "n": 0})
+            continue
+        k = len(rows_b)
+        implied = sum(r[0] for r in rows_b) / k
+        realised = sum(r[1] for r in rows_b) / k
+        calib.append({
+            "bucket": ("shorter than -400" if lo == -10000 else
+                       "longer than +400" if hi == 10000 else f"{lo} to {hi}"),
+            "n": k,
+            "mean_no_vig_implied_prob": round(implied, 4),
+            "realised_win_rate": round(realised, 4),
+            "gap_realised_minus_implied": round(realised - implied, 4),
+        })
+
+    market = {
+        "n_games": len(ml_games),
+        "mean_overround": round(sum(margins) / n, 5),
+        "median_overround": round(margins[n // 2], 5),
+        "p10_overround": round(margins[int(0.10 * n)], 5),
+        "p90_overround": round(margins[int(0.90 * n)], 5),
+        "break_even_win_rate_two_way_standard_price": round(110 / 210, 5),
+        "source": "SBR-10Y closing moneylines (home and away, both priced)",
+        "price_bucket_calibration": calib,
+        "note": "overround = implied_home + implied_away - 1, computed straight from the "
+                "archived closing prices, so it is the margin actually charged, not a textbook figure",
+    }
+
     payload = {
+        "market_margin": market,
         "sources": ["SBR-10Y (2,945 games, 2011-2021)"],
         "n_games": len(games), "n_games_with_close_lines": len(v),
         "continuous": cont,
