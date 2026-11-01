@@ -1,0 +1,100 @@
+{
+  "rows_in_source": 2956,
+  "excluded": {
+    "team name unresolvable (neutral-site game (Super Bowl) stored as team '0')": 10,
+    "team name unresolvable (NFL has two 'New York' clubs (NYG, NYJ) - unresolved)": 1
+  },
+  "invalid_fields": {
+    "close_spread: missing or implausible": 260,
+    "close_total: missing or implausible": 259,
+    "moneyline: implied margin outside sane band (sum=1.365)": 1,
+    "moneyline: implied margin outside sane band (sum=1.412)": 1,
+    "moneyline: implied margin outside sane band (sum=1.333)": 1,
+    "moneyline: implied margin outside sane band (sum=1.344)": 1,
+    "open_total: missing or implausible": 4
+  },
+  "notes": {
+    "overtime game (quarter scores fall short of final score by 3 points; OT scoring is not stored in the quarter columns)": 103,
+    "overtime game (quarter scores fall short of final score by 6 points; OT scoring is not stored in the quarter columns)": 55,
+    "quarter-score defect: gap of 12 points is not a legal overtime score": 1,
+    "overtime game (quarter scores fall short of final score by 2 points; OT scoring is not stored in the quarter columns)": 1,
+    "overtime game (quarter scores fall short of final score by 9 points; OT scoring is not stored in the quarter columns)": 10,
+    "overtime game (quarter scores fall short of final score by 7 points; OT scoring is not stored in the quarter columns)": 1
+  },
+  "sane_thresholds": {
+    "max_abs_spread": 25.0,
+    "min_total": 20.0,
+    "max_total": 90.0,
+    "max_score": 80
+  },
+  "checks": [
+    "team names normalised via an explicit table; unresolvable names are excluded, never guessed",
+    "final scores present and inside 0..80",
+    "market fields validated one by one: |spread| <= 25, 20 <= total <= 90",
+    "moneyline implied probabilities must form a margin inside [0.95, 1.15] on both sides",
+    "no duplicate (season,date,matchup) keys",
+    "overtime detected from the gap between quarter scores and the final score",
+    "2021 closing lines and final scores cross-validated against independent nflverse play-by-play"
+  ],
+  "rows_included": 2945,
+  "seasons": [
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021
+  ],
+  "games_per_season": {
+    "2011": 266,
+    "2012": 266,
+    "2013": 265,
+    "2014": 266,
+    "2015": 266,
+    "2016": 266,
+    "2017": 266,
+    "2018": 266,
+    "2019": 266,
+    "2020": 268,
+    "2021": 284
+  },
+  "ties": 10,
+  "overtime_games": 170,
+  "coverage": {
+    "open_spread": 2945,
+    "close_spread": 2685,
+    "open_total": 2941,
+    "close_total": 2686,
+    "moneyline": 2941,
+    "both_open_and_close_spread": 2685
+  },
+  "source_limitation": "The archive stores neutral-site Super Bowls with home_team='0' and no home score, so all 10 Super Bowls in the window are absent from the analysis. They are not imputed.",
+  "cross_validation": {
+    "2021": {
+      "source": "NFLVERSE-PBP-2021 vs SBR-10Y",
+      "final_scores": {
+        "checked": 263,
+        "agree": 263,
+        "disagree": 0
+      },
+      "closing_spread": {
+        "checked": 244,
+        "identical": 88,
+        "within_1_point": 211,
+        "agreement_rate_within_1pt": 0.8648,
+        "note": "sign-flipped comparison; a gap means different books/snapshots"
+      },
+      "closing_total": {
+        "checked": 244,
+        "identical": 140,
+        "within_1_point": 237,
+        "agreement_rate_within_1pt": 0.9713
+      }
+    }
+  }
+}
