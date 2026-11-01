@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validation · K1 NFL Line Lab</title>
+<link rel="stylesheet" href="assets/style.css">
+</head><body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="logo">K1</span><span>NFL Line Lab</span></div>
+  <nav><a href="index.html" class="">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategy board</a><a href="parlays.html" class="">Correlation &amp; parlays</a><a href="props.html" class="">Player props</a><a href="validation.html" class="active">Validation</a><a href="data.html" class="">Data &amp; sources</a><a href="verification.html" class="">Verification</a><a href="flagged.html" class="">Flagged for review</a></nav>
+</div></header>
+<main class="wrap">
+  <section class="hero">
+    <h1>Validation</h1>
+    <p class="lede">Gates, luck-removal statistics and the reward ladder that decides what gets published.</p>
+    
+  </section>
+  
+<h2>The eight gates</h2>
+<p>A strategy is only published as validated if it clears all eight. The gates are deliberately
+hard to pass: on this data set none do, which is the correct output for a market-efficient sport.</p>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Gate</th><th>Requirement</th></tr></thead><tbody><tr><td><code>G1_priced</code></td><td>Every bet carries a real two-sided quote from the upstream file (no assumed −110).</td></tr><tr><td><code>G2_no_lookahead</code></td><td>Features and model output reproduce exactly when the future is deleted — enforced by tests/test_no_lookahead.py.</td></tr><tr><td><code>G3_sample</code></td><td>At least 200 settled bets across 6+ seasons.</td></tr><tr><td><code>G4_significance</code></td><td>Benjamini-Hochberg FDR ≤ 0.1 across all strategies AND a positive luck-adjusted z.</td></tr><tr><td><code>G5_out_of_sample</code></td><td>Positive ROI in both the train and test blocks with ≥50% retention.</td></tr><tr><td><code>G6_economics</code></td><td>Point ROI &gt; 0, bootstrap lower bound &gt; −2%, and ≥90% probability the edge is positive.</td></tr><tr><td><code>G7_stability</code></td><td>≥55% of seasons positive, no single season &gt;40% of profits, worst leave-one-season-out ROI &gt; −2%.</td></tr><tr><td><code>G8_diversification</code></td><td>Absolute correlation with every other strategy &lt; 0.8.</td></tr></tbody></table></div>
+<h2>Tiers and rewards</h2>
+<p>The leaderboard is a competition with a disclosed points ladder rather than cash: tier determines
+status, then a 0–100 score (60 × P(edge&gt;0) + 20 × out-of-sample retention + 15 × season hit rate +
+5 × sample size). The score is a design choice, stated as such; the tier is what governs publication.</p>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Tier</th><th>Requirement</th><th>Label on the board</th></tr></thead><tbody><tr><td>A</td><td>All eight gates pass</td><td><span class="badge ok">Validated</span></td></tr><tr><td>B</td><td>G1–G3 pass and ≥5 gates overall with G4 or G5</td><td><span class="badge warn">Promising</span></td></tr><tr><td>C</td><td>G1–G3 pass only</td><td><span class="badge muted">Watchlist</span></td></tr><tr><td>F</td><td>Fails sample or integrity gates</td><td><span class="badge bad">Rejected</span></td></tr><tr><td>X</td><td>Significantly negative</td><td><span class="badge bad">Fade candidate</span></td></tr></tbody></table></div>
+
+<h2>Removing luck: the three tests that matter</h2>
+<div class="grid3">
+  <div class="card"><h3>1 · De-vigged expectation</h3>
+    <p>Each bet's own two-way price implies a fair win probability. Comparing observed wins with the sum of
+    those probabilities gives a z-score that is immune to "it just picked favourites". This is the primary
+    skill test, and it is what the leaderboard sorts on.</p></div>
+  <div class="card"><h3>2 · Block bootstrap</h3>
+    <p>ROI confidence intervals resample whole weeks, so dependence between bets in the same week
+    (weather, correlated outcomes) is respected. Naive per-bet bootstraps are too narrow.</p></div>
+  <div class="card"><h3>3 · Multiplicity</h3>
+    <p>Testing 24 strategies at once guarantees flattering outliers. Benjamini-Hochberg controls the false
+    discovery rate at q = 0.1, and White's Reality Check tests the maximum statistic
+    over the whole search.</p></div>
+</div>
+<div class="callout"><h3>Reality Check result</h3>
+<p>Best observed mean return 0.0927 per bet across 24 strategies;
+Reality Check p = <strong>0.970</strong> over 346 weekly observations.
+That is the probability of seeing a best-of-24 result this good by chance: the search is not finding an edge.</p></div>
+
+<h2>Selective-skill portfolio</h2>
+<p>Test: each season, fund only the strategies credentialled on earlier seasons. If "skill" were real and
+persistent, selection would beat naive betting. It does not, and the numbers say so:</p>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Season</th><th>Strategies funded</th><th>Bets</th><th>Selected ROI</th><th>All-strategies ROI</th><th>Status</th></tr></thead><tbody><tr><td>2,006</td><td>0</td><td>0</td><td></td><td>+7.1%</td><td>insufficient history</td></tr><tr><td>2,007</td><td>0</td><td>0</td><td></td><td>+0.6%</td><td>insufficient history</td></tr><tr><td>2,008</td><td>0</td><td>0</td><td></td><td>+1.2%</td><td>insufficient history</td></tr><tr><td>2,009</td><td>3</td><td>218</td><td>-1.5%</td><td>+1.6%</td><td>allocated</td></tr><tr><td>2,010</td><td>4</td><td>352</td><td>+3.4%</td><td>+3.0%</td><td>allocated</td></tr><tr><td>2,011</td><td>7</td><td>474</td><td>-5.2%</td><td>-4.8%</td><td>allocated</td></tr><tr><td>2,012</td><td>7</td><td>334</td><td>-2.4%</td><td>-1.4%</td><td>allocated</td></tr><tr><td>2,013</td><td>6</td><td>277</td><td>-13.4%</td><td>-5.3%</td><td>allocated</td></tr><tr><td>2,014</td><td>4</td><td>151</td><td>-5.5%</td><td>-5.5%</td><td>allocated</td></tr><tr><td>2,015</td><td>3</td><td>106</td><td>+3.4%</td><td>+5.0%</td><td>allocated</td></tr><tr><td>2,016</td><td>4</td><td>167</td><td>-7.7%</td><td>-5.7%</td><td>allocated</td></tr><tr><td>2,017</td><td>3</td><td>143</td><td>-5.3%</td><td>-2.9%</td><td>allocated</td></tr><tr><td>2,018</td><td>2</td><td>43</td><td>+17.8%</td><td>-1.6%</td><td>allocated</td></tr><tr><td>2,019</td><td>2</td><td>53</td><td>-1.5%</td><td>-2.4%</td><td>allocated</td></tr><tr><td>2,020</td><td>2</td><td>29</td><td>-32.2%</td><td>-4.2%</td><td>allocated</td></tr><tr><td>2,021</td><td>2</td><td>43</td><td>+25.9%</td><td>+3.4%</td><td>allocated</td></tr><tr><td>2,022</td><td>2</td><td>62</td><td>-1.6%</td><td>+1.4%</td><td>allocated</td></tr><tr><td>2,023</td><td>4</td><td>191</td><td>+1.0%</td><td>-2.0%</td><td>allocated</td></tr><tr><td>2,024</td><td>3</td><td>95</td><td>-4.7%</td><td>-9.5%</td><td>allocated</td></tr><tr><td>2,025</td><td>3</td><td>91</td><td>-5.8%</td><td>-4.2%</td><td>allocated</td></tr><tr><td>2,026</td><td>4</td><td>33</td><td>-24.8%</td><td>+0.1%</td><td>allocated</td></tr></tbody></table></div><p class="note">each season, fund every strategy whose luck-adjusted z on all earlier seasons >= 1.0 (min 150 prior bets, min 3 prior seasons)</p>
+<div class="callout warn"><h3>Portfolio verdict</h3>
+<p>Selected portfolio mean ROI -3.3% versus -1.9%
+for betting everything — selection added noise. Positive seasons 5 of
+18. The rule and its failure are both published so the next session can test a
+better allocator against the same baseline.</p></div>
+
+<h2>What would change the conclusion</h2>
+<ul class="tight">
+<li>Verified historical prop prices (currently IR-03): props are the least efficient market available, and the
+correlation work here already quantifies the structure a prop strategy would need.</li>
+<li>Injury and lineup data at scale: the single biggest missing input for any pre-game model.</li>
+<li>Opening lines across all seasons: line movement is only testable for 2021 (IR-06).</li>
+</ul>
+
+</main>
+<footer class="wrap foot">
+  <p>Built by session <code>arena-a1970463</code>. All figures regenerate from pinned public data
+  with <code>python -m analysis.run_all</code>. Nothing on this site is entered by hand.
+  Read the <a href="flagged.html">Flagged for review</a> page for what could not be verified.</p>
+</footer>
+<script src="assets/app.js"></script>
+</body></html>

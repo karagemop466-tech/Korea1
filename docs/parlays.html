@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Correlation &amp; parlay lab · K1 NFL Line Lab</title>
+<link rel="stylesheet" href="assets/style.css">
+</head><body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="logo">K1</span><span>NFL Line Lab</span></div>
+  <nav><a href="index.html" class="">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategy board</a><a href="parlays.html" class="active">Correlation &amp; parlays</a><a href="props.html" class="">Player props</a><a href="validation.html" class="">Validation</a><a href="data.html" class="">Data &amp; sources</a><a href="verification.html" class="">Verification</a><a href="flagged.html" class="">Flagged for review</a></nav>
+</div></header>
+<main class="wrap">
+  <section class="hero">
+    <h1>Correlation &amp; parlay lab</h1>
+    <p class="lede">Measured correlation values for single bets, same-game parlays and cross-game parlays — with the vig structure made explicit.</p>
+    
+  </section>
+  
+<div class="callout"><h3>The maths used everywhere on this page</h3>
+<pre class="formula">phi        = (P(A∩B) − P(A)P(B)) / sqrt(P(A)(1−P(A))P(B)(1−P(B)))
+lift       = P(A∩B) / (P(A)·P(B))              # 1.00 = independent
+fair dec.  = 1 / P(A∩B)
+EV per 1u  = P(A∩B)·(book_decimal − 1) − (1 − P(A∩B))</pre>
+<p>P(A), P(B) and P(A∩B) are measured on 6,880 settled games with two-sided
+prices; they are never assumed.</p></div>
+
+<h2>Within-game correlations (single bets)</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Leg A</th><th>Leg B</th><th>Games</th><th>Joint (measured)</th><th>Joint if independent</th><th>Lift</th><th>phi</th><th>Fair decimal</th><th>Product-of-quotes</th><th>EV if priced as independent</th></tr></thead><tbody><tr><td>HOME_ATS</td><td>OVER</td><td>4,968</td><td>0.246</td><td>0.250</td><td>0.981</td><td>0.013</td><td>4.07</td><td>3.79</td><td>-0.070</td></tr><tr><td>HOME_ATS</td><td>UNDER</td><td>4,968</td><td>0.242</td><td>0.250</td><td>0.970</td><td>-0.013</td><td>4.13</td><td>3.80</td><td>-0.081</td></tr><tr><td>HOME_ATS</td><td>HOME_ML</td><td>5,023</td><td>0.436</td><td>0.281</td><td>1.550</td><td>0.672</td><td>2.29</td><td>3.93</td><td>0.712</td></tr><tr><td>HOME_ATS</td><td>AWAY_ML</td><td>5,023</td><td>0.051</td><td>0.219</td><td>0.232</td><td>-0.672</td><td>19.70</td><td>5.52</td><td>-0.720</td></tr><tr><td>AWAY_ATS</td><td>OVER</td><td>4,968</td><td>0.251</td><td>0.250</td><td>1.003</td><td>-0.013</td><td>3.98</td><td>3.79</td><td>-0.050</td></tr><tr><td>AWAY_ATS</td><td>UNDER</td><td>4,968</td><td>0.261</td><td>0.250</td><td>1.047</td><td>0.013</td><td>3.83</td><td>3.80</td><td>-0.008</td></tr><tr><td>AWAY_ATS</td><td>HOME_ML</td><td>5,023</td><td>0.117</td><td>0.282</td><td>0.413</td><td>-0.672</td><td>8.59</td><td>3.94</td><td>-0.541</td></tr><tr><td>AWAY_ATS</td><td>AWAY_ML</td><td>5,023</td><td>0.397</td><td>0.218</td><td>1.822</td><td>0.672</td><td>2.52</td><td>5.49</td><td>1.179</td></tr><tr><td>OVER</td><td>HOME_ML</td><td>5,086</td><td>0.276</td><td>0.282</td><td>0.978</td><td>0.001</td><td>3.62</td><td>3.91</td><td>0.081</td></tr><tr><td>OVER</td><td>AWAY_ML</td><td>5,086</td><td>0.221</td><td>0.218</td><td>1.012</td><td>-0.001</td><td>4.53</td><td>5.47</td><td>0.210</td></tr><tr><td>UNDER</td><td>HOME_ML</td><td>5,086</td><td>0.279</td><td>0.281</td><td>0.991</td><td>-0.001</td><td>3.58</td><td>3.92</td><td>0.094</td></tr><tr><td>UNDER</td><td>AWAY_ML</td><td>5,086</td><td>0.224</td><td>0.218</td><td>1.028</td><td>0.001</td><td>4.47</td><td>5.49</td><td>0.229</td></tr></tbody></table></div><p class="note">All pairs are priced from the two quoted sides of each market. Mutually exclusive combinations (home/away ATS, over/under, home/away ML) are excluded because they cannot both win.</p>
+<div class="callout"><h3>What the correlations mean</h3>
+<ul class="tight">
+<li><strong>Spread × moneyline</strong> is the only strongly correlated pair
+(phi ≈ 0.67): backing a team's spread and
+its moneyline is effectively one bet. Both count as one unit of risk.</li>
+<li><strong>Spread × total</strong> is close to independent
+(phi ≈ 0.013), which is why
+"side and total" parlays behave like two separate bets.</li>
+<li><strong>Moneyline × total</strong> is also near zero
+(phi ≈ 0.001).</li>
+</ul></div>
+
+<h2>Same-game parlays (2 and 3 legs)</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Combination (same game)</th><th>Games</th><th>Joint (measured)</th><th>Joint if independent</th><th>Lift</th><th>Product-of-quotes</th><th>Fair decimal</th><th>EV if priced as independent</th></tr></thead><tbody><tr><td>HOME_ATS + OVER + HOME_ML</td><td>4,954</td><td>0.217</td><td>0.141</td><td>1.54</td><td>7.62</td><td>4.61</td><td>0.653</td></tr><tr><td>HOME_ATS + UNDER + HOME_ML</td><td>4,954</td><td>0.220</td><td>0.141</td><td>1.56</td><td>7.64</td><td>4.55</td><td>0.680</td></tr><tr><td>AWAY_ATS + OVER + AWAY_ML</td><td>4,954</td><td>0.194</td><td>0.109</td><td>1.78</td><td>10.65</td><td>5.16</td><td>1.067</td></tr><tr><td>AWAY_ATS + UNDER + AWAY_ML</td><td>4,954</td><td>0.202</td><td>0.109</td><td>1.86</td><td>10.69</td><td>4.95</td><td>1.157</td></tr><tr><td>HOME_ATS + OVER</td><td>4,968</td><td>0.246</td><td>0.250</td><td>0.98</td><td>3.79</td><td>4.07</td><td>-0.070</td></tr><tr><td>HOME_ATS + UNDER</td><td>4,968</td><td>0.242</td><td>0.250</td><td>0.97</td><td>3.80</td><td>4.13</td><td>-0.081</td></tr></tbody></table></div><p class="note">Same-game legs are strongly dependent. Books run correlation-adjusted same-game parlay pricing precisely because of the numbers in this table, so the EV column is an illustration of the correlation effect, not a tradable edge.</p>
+
+<h2>Cross-game parlays — the parlay tax</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Legs</th><th>Draws</th><th>Mean EV per unit</th><th>Measured joint</th><th>Independent joint</th><th>Lift</th><th>Book decimal</th><th>Fair decimal</th><th>Share of tickets +EV</th></tr></thead><tbody><tr><td>2</td><td>40,000</td><td>-0.0788</td><td>0.2434</td><td>0.2503</td><td>0.972</td><td>3.79</td><td>4.11</td><td>+24.34%</td></tr><tr><td>3</td><td>40,000</td><td>-0.1436</td><td>0.1161</td><td>0.1252</td><td>0.927</td><td>7.38</td><td>8.61</td><td>+11.61%</td></tr><tr><td>4</td><td>40,000</td><td>-0.1538</td><td>0.0591</td><td>0.0627</td><td>0.943</td><td>14.34</td><td>16.93</td><td>+5.91%</td></tr></tbody></table></div><p class="note">Cross-game legs are where books genuinely pay the product of the decimals, so this table is the real 'parlay tax'. Legs are drawn independently across games.</p>
+<div class="callout warn"><h3>Reading the tax</h3>
+<p>Two legs cost about +7.9% of stake, three cost
++14.4% and four cost +15.4%.
+Because each leg carries its own hold, stacking legs multiplies the take: the measured lift stays at
+~1.0 (games are independent), so there is no correlation "discount" to recover the cost. Any parlay
+strategy therefore has to beat a bigger baseline than a single bet.</p></div>
+
+<h2>Sizing under correlation</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Combination</th><th>Full Kelly</th><th>Quarter Kelly</th></tr></thead><tbody><tr><td>HOME_ATS+OVER</td><td>0.0000</td><td>0.0000</td></tr><tr><td>HOME_ATS+UNDER</td><td>0.0000</td><td>0.0000</td></tr><tr><td>HOME_ATS+HOME_ML</td><td>0.2434</td><td>0.0608</td></tr><tr><td>HOME_ATS+AWAY_ML</td><td>0.0000</td><td>0.0000</td></tr><tr><td>AWAY_ATS+OVER</td><td>0.0000</td><td>0.0000</td></tr><tr><td>AWAY_ATS+UNDER</td><td>0.0000</td><td>0.0000</td></tr><tr><td>AWAY_ATS+HOME_ML</td><td>0.0000</td><td>0.0000</td></tr><tr><td>AWAY_ATS+AWAY_ML</td><td>0.2625</td><td>0.0656</td></tr><tr><td>OVER+HOME_ML</td><td>0.0276</td><td>0.0069</td></tr><tr><td>OVER+AWAY_ML</td><td>0.0469</td><td>0.0117</td></tr><tr><td>UNDER+HOME_ML</td><td>0.0323</td><td>0.0081</td></tr><tr><td>UNDER+AWAY_ML</td><td>0.0510</td><td>0.0128</td></tr></tbody></table></div><p class="note">Positive Kelly requires positive edge. A zero or tiny fraction means the bet is not worth placing.</p>
+
+</main>
+<footer class="wrap foot">
+  <p>Built by session <code>arena-a1970463</code>. All figures regenerate from pinned public data
+  with <code>python -m analysis.run_all</code>. Nothing on this site is entered by hand.
+  Read the <a href="flagged.html">Flagged for review</a> page for what could not be verified.</p>
+</footer>
+<script src="assets/app.js"></script>
+</body></html>

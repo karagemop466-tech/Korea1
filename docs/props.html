@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player props · K1 NFL Line Lab</title>
+<link rel="stylesheet" href="assets/style.css">
+</head><body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="logo">K1</span><span>NFL Line Lab</span></div>
+  <nav><a href="index.html" class="">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategy board</a><a href="parlays.html" class="">Correlation &amp; parlays</a><a href="props.html" class="active">Player props</a><a href="validation.html" class="">Validation</a><a href="data.html" class="">Data &amp; sources</a><a href="verification.html" class="">Verification</a><a href="flagged.html" class="">Flagged for review</a></nav>
+</div></header>
+<main class="wrap">
+  <section class="hero">
+    <h1>Player props</h1>
+    <p class="lede">Correlations and calibration for player-prop combos, built from official play-by-play.</p>
+    
+  </section>
+  
+<div class="callout warn"><h3>Read this first</h3>
+<p>No verified historical player-prop prices are reachable from this environment, so prop ROI is UNVERIFIED and the ROI gate is blocked. Correlation and calibration numbers are verified against official play-by-play.</p>
+<p class="small">Coverage: seasons 2024–2025, 1,088 team-games,
+252 players. Line definition: trailing 4-game mean of the same player on the same team, strictly prior weeks (out-of-sample).</p></div>
+
+<h2>Prop correlations (measured)</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Leg A</th><th>Leg B</th><th>Games</th><th>phi</th><th>P(A)</th><th>P(B)</th></tr></thead><tbody><tr><td>QB_PASS</td><td>RB_RUSH</td><td>1,021</td><td>-0.028</td><td>0.452</td><td>0.433</td></tr><tr><td>QB_PASS</td><td>WR_REC</td><td>1,021</td><td>0.249</td><td>0.452</td><td>0.439</td></tr><tr><td>QB_PASS</td><td>TEAM_TOTAL</td><td>1,011</td><td>0.226</td><td>0.452</td><td>0.508</td></tr><tr><td>RB_RUSH</td><td>WR_REC</td><td>1,020</td><td>-0.032</td><td>0.433</td><td>0.439</td></tr><tr><td>RB_RUSH</td><td>TEAM_TOTAL</td><td>1,010</td><td>0.118</td><td>0.433</td><td>0.508</td></tr><tr><td>WR_REC</td><td>TEAM_TOTAL</td><td>1,010</td><td>0.144</td><td>0.439</td><td>0.508</td></tr></tbody></table></div><p class="note">phi is measured at each player's trailing-mean line. Correlation is threshold dependent, so the sensitivity table below is part of the result, not an appendix.</p>
+<h3>Threshold sensitivity</h3>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Line shift</th><th>QB_PASS x WR_REC</th><th>QB_PASS x TEAM_TOTAL</th><th>RB_RUSH x TEAM_TOTAL</th><th>QB_PASS x RB_RUSH</th><th>n</th></tr></thead><tbody><tr><td>-20%</td><td>0.225</td><td>0.234</td><td>0.153</td><td>0.029</td><td>1,022.000</td></tr><tr><td>+0%</td><td>0.249</td><td>0.226</td><td>0.118</td><td>-0.028</td><td>1,021.000</td></tr><tr><td>+20%</td><td>0.254</td><td>0.181</td><td>0.147</td><td>-0.086</td><td>1,023.000</td></tr></tbody></table></div><p class="note">phi is threshold dependent — this is the sensitivity.</p>
+
+<h2>Prop combos — what correlation does to the price</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Combination</th><th>Games</th><th>Joint (measured)</th><th>Joint if independent</th><th>Lift</th><th>Fair decimal</th><th>Independent decimal</th><th>Fair vs independent</th><th>EV at −110 (scenario)</th></tr></thead><tbody><tr><td>QB_PASS + RB_RUSH</td><td>1,021</td><td>0.188</td><td>0.195</td><td>0.964</td><td>5.318</td><td>5.127</td><td>3.7%</td><td></td></tr><tr><td>QB_PASS + WR_REC</td><td>1,021</td><td>0.261</td><td>0.199</td><td>1.309</td><td>3.838</td><td>5.025</td><td>-23.6%</td><td></td></tr><tr><td>QB_PASS + TEAM_TOTAL</td><td>1,011</td><td>0.286</td><td>0.230</td><td>1.244</td><td>3.498</td><td>4.352</td><td>-19.6%</td><td></td></tr><tr><td>RB_RUSH + WR_REC</td><td>1,020</td><td>0.182</td><td>0.190</td><td>0.958</td><td>5.484</td><td>5.254</td><td>4.4%</td><td></td></tr><tr><td>RB_RUSH + TEAM_TOTAL</td><td>1,010</td><td>0.249</td><td>0.220</td><td>1.133</td><td>4.008</td><td>4.541</td><td>-11.8%</td><td></td></tr><tr><td>WR_REC + TEAM_TOTAL</td><td>1,010</td><td>0.259</td><td>0.224</td><td>1.160</td><td>3.855</td><td>4.473</td><td>-13.8%</td><td></td></tr></tbody></table></div><p class="note">Read columns in this order: `lift` and `fair_vs_independent_pct` are pure correlation facts (positive lift = the combo hits more often than independent pricing implies, so independence pricing under-pays). The EV column is a SCENARIO ONLY: it assumes both legs are quoted at -110, which is not a real quote because no verified prop prices are available to this project.</p>
+
+<h2>Model calibration</h2>
+<p>The prop model is a distribution, not a point pick: mean = trailing form, spread = walk-forward
+dispersion. A distribution is only useful if its intervals are honest, so the test is coverage.</p>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Market</th><th>n</th><th>80% coverage (naive SD)</th><th>50% coverage (naive SD)</th><th>sd of z</th><th>80% coverage (pooled dispersion)</th><th>50% coverage (pooled dispersion)</th></tr></thead><tbody><tr><td>QB_PASS</td><td>1,022</td><td>0.665</td><td>0.409</td><td>1.877</td><td>0.791</td><td>0.578</td></tr><tr><td>RB_RUSH</td><td>1,024</td><td>0.628</td><td>0.353</td><td>2.248</td><td>0.752</td><td>0.463</td></tr><tr><td>WR_REC</td><td>1,024</td><td>0.685</td><td>0.404</td><td>1.645</td><td>0.799</td><td>0.514</td></tr></tbody></table></div><p class="note">Targets are 0.800 and 0.500 with sd(z) = 1.000. The naive per-player SD is overconfident; refitting the variance walk-forward fixes it.</p>
+<p class="small">The naive per-player SD from four prior games is overconfident (80% intervals cover only ~66%). Refitting the variance as a*mean + b*mean^2 on the previous season alone fixes it - see _pooled_dispersion, where 80% coverage lands at 75-80%.</p>
+
+<h2>Worked board</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Player</th><th>Team</th><th>Market</th><th>Model line</th><th>Model SD</th><th>Actual</th></tr></thead><tbody><tr><td>J.Brissett</td><td>ARI</td><td>Passing yards</td><td>233.8</td><td>31.8</td><td>243</td></tr><tr><td>T.Shough</td><td>NO</td><td>Passing yards</td><td>264.2</td><td>84.0</td><td>259</td></tr><tr><td>J.Allen</td><td>BUF</td><td>Passing yards</td><td>214.5</td><td>66.5</td><td>0</td></tr><tr><td>L.Jackson</td><td>BAL</td><td>Passing yards</td><td>179.0</td><td>65.9</td><td>238</td></tr><tr><td>T.Lawrence</td><td>JAX</td><td>Passing yards</td><td>281.8</td><td>33.7</td><td>255</td></tr><tr><td>B.Young</td><td>CAR</td><td>Passing yards</td><td>168.5</td><td>87.9</td><td>266</td></tr><tr><td>J.Burrow</td><td>CIN</td><td>Passing yards</td><td>280.8</td><td>38.8</td><td>236</td></tr><tr><td>S.Sanders</td><td>CLE</td><td>Passing yards</td><td>221.0</td><td>96.1</td><td>111</td></tr><tr><td>D.Prescott</td><td>DAL</td><td>Passing yards</td><td>305.2</td><td>54.4</td><td>70</td></tr><tr><td>J.Hurts</td><td>PHI</td><td>Passing yards</td><td>177.5</td><td>53.3</td><td>0</td></tr><tr><td>J.Love</td><td>GB</td><td>Passing yards</td><td>205.2</td><td>87.8</td><td>0</td></tr><tr><td>J.Goff</td><td>DET</td><td>Passing yards</td><td>302.0</td><td>73.5</td><td>331</td></tr></tbody></table></div><p class="note">Worked example from the last available week (2025 Week 18) — the model line is the trailing mean, not a market line.</p>
+
+<h2>What is missing, and why</h2>
+<p>Prop ROI cannot be computed here because no free, verifiable historical prop prices are reachable.
+The <a href="flagged.html">Flagged for review</a> page records this as IR-03 with a blocked gate, rather
+than inventing a market. The correlation and calibration results above need no prices and are fully
+verified against official play-by-play.</p>
+
+</main>
+<footer class="wrap foot">
+  <p>Built by session <code>arena-a1970463</code>. All figures regenerate from pinned public data
+  with <code>python -m analysis.run_all</code>. Nothing on this site is entered by hand.
+  Read the <a href="flagged.html">Flagged for review</a> page for what could not be verified.</p>
+</footer>
+<script src="assets/app.js"></script>
+</body></html>

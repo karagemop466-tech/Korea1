@@ -132,7 +132,10 @@ def within_game(d: pd.DataFrame) -> dict:
                              "ev_per_unit is the value ONLY if the book paid product-of-decimals. "
                              "Read it as 'how much correlation moves the price', not as an arb."),
         })
-    return {"pairs": rows}
+    return {"pairs": rows,
+            "note": ("All pairs are priced from the two quoted sides of each market. Mutually exclusive "
+                     "combinations (home/away ATS, over/under, home/away ML) are excluded because they "
+                     "cannot both win.")}
 
 
 def across_game(d: pd.DataFrame, n_draws: int = 40000, seed: int = 5) -> dict:

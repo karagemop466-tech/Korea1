@@ -33,9 +33,23 @@ def test_model_lines_prefix_stable(games):
                        trunc["model_spread"].values, equal_nan=True)
 
 
-def test_no_future_season_in_training(games):
-    """A game in season S may never be explained by seasons > S."""
+def test_cold_start_has_no_prediction(games):
+    """Week 1 of the earliest season has no prior data, so it must stay blank
+    rather than being fitted on itself."""
     d = model_mod.walk_forward_lines(games)
-    assert d["model_spread"].notna().any()
-    first = d[d["season"] == d["season"].min()]
-    assert first["model_spread"].isna().all(), "earliest season must have no history to fit on"
+    assert d["model_spread"].notna().any(), "model should produce predictions once history exists"
+    first_week = d[(d["season"] == d["season"].min()) & (d["week"] == 1)]
+    assert first_week["model_spread"].isna().all(), "cold-start games must not be predicted"
+
+
+def test_history_size_matches_available_past(games):
+    """`model_n_hist` must never exceed the number of games actually played
+    before kickoff (current season up to the previous week + two prior seasons)."""
+    d = model_mod.walk_forward_lines(games)
+    reg = games[games["game_type"] == "REG"]
+    played = reg[reg["home_score"].notna()]
+    for _, r in d[d["season"] == 2020].iterrows():
+        past = played[((played["season"] == r["season"]) & (played["week"] < r["week"]))
+                      | ((played["season"] == r["season"] - 1))
+                      | ((played["season"] == r["season"] - 2))]
+        assert r["model_n_hist"] <= len(past), f'{r["game_id"]}: history exceeded the past' 
