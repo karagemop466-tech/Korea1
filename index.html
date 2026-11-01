@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="NFL line-making research, evidence, validation gates, correlations and review flags.">
+  <title>NFL Line Lab — research dashboard</title><link rel="stylesheet" href="./assets/style.css">
+</head>
+<body data-page="home">
+  <div id="site-header"></div>
+  <main class="container">
+    <section class="hero">
+      <div class="eyebrow">RESEARCH DASHBOARD · EVIDENCE FIRST</div>
+      <h1>Build a number.<br><span>Prove it beats luck.</span></h1>
+      <p class="lead">A source-linked blueprint for originating NFL probabilities across straight bets, player props, parlays and prop combos. Nothing is marked validated until it survives leakage-safe, out-of-sample tests.</p>
+      <div class="hero-actions"><a class="button primary" href="./validation.html">Review validation gates <span>→</span></a><a class="button secondary" href="./flagged.html">See flagged items</a></div>
+    </section>
+
+    <section class="notice warning"><span class="notice-icon">!</span><div><strong>Important — research only, no live lines or picks.</strong><p>This checkout contains no odds feed, archived prop prices, joint-leg results, bet ledger or model predictions. Therefore expected value, return, ranking, win probability, and correlation cells are intentionally blank. No strategy has passed validation.</p></div></section>
+
+    <section class="section-heading"><div><div class="eyebrow">EXECUTIVE SUMMARY</div><h2>What the evidence supports today</h2></div><span class="as-of">Audit date: <time data-asof></time></span></section>
+    <div class="summary-grid">
+      <article class="summary-card"><div class="card-kicker">RECOMMENDED BUILD</div><h3>Forecast outcomes, not hunches</h3><p>Estimate probability distributions from pregame information, compare to an exact timestamped market price, then log every forecast before kickoff. Use opponent-aware shrinkage and opportunity-first prop models as candidates—not claimed winners.</p><a href="./singles.html">See straight-bet candidates →</a></article>
+      <article class="summary-card"><div class="card-kicker">COMBOS & PARLAYS</div><h3>Price the joint event</h3><p>Same-game legs share game context. Do not multiply marginal probabilities or assume zero correlation without evidence. Estimate joint hit rates out of sample and report uncertainty; leave the coefficient blank when data are absent.</p><a href="./correlations.html">Open correlation register →</a></article>
+      <article class="summary-card"><div class="card-kicker">SKILL VS. LUCK</div><h3>Use locked holdouts</h3><p>Chronological splits, calibration, proper scoring, multiple-testing control, price/settlement audits and prospective shadow tracking reduce false confidence. They cannot eliminate randomness or guarantee profit.</p><a href="./validation.html">Inspect all gates →</a></article>
+    </div>
+
+    <section class="section-heading"><div><div class="eyebrow">STRATEGY REGISTER</div><h2>Every candidate, current status, and source</h2></div><a class="text-link" href="./sources.html">All verified sources →</a></section>
+    <div class="table-wrap"><table><thead><tr><th>ID</th><th>Candidate</th><th>Market</th><th>Evidence status</th><th>Official / methodological source</th></tr></thead><tbody id="strategy-overview"></tbody></table></div>
+    <p class="table-note">Each row links directly to sources reviewed for this research blueprint. Source support confirms the described data or method—not betting edge, public data rights, or a successful strategy.</p>
+
+    <section class="section-heading"><div><div class="eyebrow">NEXT STEPS</div><h2>What must exist before ranking</h2></div></section>
+    <div class="steps-grid"><article><span>01</span><h3>Acquire auditable inputs</h3><p>Permitted, timestamped NFL outcome data plus exact market prices, prop lines, settlement terms and a persistent bet ledger.</p></article><article><span>02</span><h3>Run locked tests</h3><p>Build chronological, game-aware holdouts, calibrate probabilities, and compare against simple baselines before tuning a leaderboard.</p></article><article><span>03</span><h3>Measure combos jointly</h3><p>Estimate pairwise dependence and full joint probabilities from aligned outcomes. Publish sample size and intervals, then abstain when uncertain.</p></article></div>
+    <div class="bottom-callout"><div><strong>Review matters we could not verify.</strong><p>Six material data, correlation and competition gaps are openly listed.</p></div><a class="button secondary" href="./flagged.html">Flagged for Review <span>→</span></a></div>
+  </main>
+  <div id="site-footer"></div><script src="./assets/app.js" defer></script>
+</body></html>
