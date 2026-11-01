@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="../index.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A gated NFL strategy leaderboard concept for single bets, player props and correlated combinations. Metrics and reward amounts remain blank until measured and funded.">
+  <title>Leaderboard | NFL Line Lab</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <script defer src="../assets/site.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="leaderboard.html#main">Skip to main content</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="../index.html" aria-label="NFL Line Lab home"><span class="brand-mark" aria-hidden="true">NFL</span><span><span class="brand-name">Line Lab</span><span class="brand-tag">Evidence first</span></span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
+    <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation"><a href="../index.html">Overview</a><a href="strategies.html">Strategies</a><a href="validation.html">Validation</a><a href="correlation.html">Correlation</a><a href="leaderboard.html" aria-current="page">Leaderboard</a><a href="sources.html">Data sources</a><a href="review.html">Flagged for review</a></nav>
+  </div></header>
+  <main id="main">
+    <section class="page-hero"><div class="page-hero-inner">
+      <p class="eyebrow">Research category · 04</p><h1>A leaderboard that rewards evidence.</h1>
+      <p>Separate singles, player props and combinations. Qualification precedes ranking; an impressive short-term record is not enough.</p>
+    </div></section>
+    <section class="page-shell container">
+      <div class="callout"><span class="callout-icon" aria-hidden="true">!</span><div><strong>No entries are eligible or ranked</strong><p>There are no recorded forecasts, settlement-grade prices, backtests or validation results in this repository. All result cells below remain blank. Reward amounts and funding terms are unspecified.</p></div></div>
+      <div class="section-heading"><div><p class="kicker">Leaderboard status</p><h2>Tracks are defined; results are not.</h2></div><p>Maintain an immutable forecast-and-price ledger before kick-off and settle against a versioned official outcome. Display unqualified strategies separately so a lucky run cannot win by bypassing the gates.</p></div>
+      <div class="table-scroll">
+        <table>
+          <caption>Performance fields are intentionally blank because no measured results exist. “Not ranked” means untested, not a loss or a pass.</caption>
+          <thead><tr><th scope="col">Track</th><th scope="col">Candidate entries</th><th scope="col">Out-of-sample score</th><th scope="col">Price / return record</th><th scope="col">N</th><th scope="col">Rank / eligibility</th><th scope="col">Reference</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Single-game lines</strong></td><td>Spread, moneyline, game total and team total distribution models.</td><td class="empty-cell" aria-label="Not measured"></td><td class="empty-cell" aria-label="Not measured"></td><td class="empty-cell" aria-label="Not measured"></td><td><span class="status-text pending">Not ranked</span><span class="small">All gates outstanding.</span></td><td><a class="source-link" href="https://www.nfl.com/stats/team-stats/offense/scoring/2025/reg/all" target="_blank" rel="noopener noreferrer">NFL official team stats ↗</a></td></tr>
+            <tr><td><strong>Player props</strong></td><td>Passing, rushing and receiving volume/outcome forecasts.</td><td class="empty-cell" aria-label="Not measured"></td><td class="empty-cell" aria-label="Not measured"></td><td class="empty-cell" aria-label="Not measured"></td><td><span class="status-text pending">Not ranked</span><span class="small">No calibration or price test.</span></td><td><a class="source-link" href="https://nextgenstats.nfl.com/glossary" target="_blank" rel="noopener noreferrer">NFL NGS definitions ↗</a></td></tr>
+            <tr><td><strong>Parlays / player-prop combos</strong></td><td>Pre-defined same-game or multi-game joint outcome strategies.</td><td class="empty-cell" aria-label="Not measured"></td><td class="empty-cell" aria-label="Not measured"></td><td class="empty-cell" aria-label="Not measured"></td><td><span class="status-text pending">Not ranked</span><span class="small">Joint estimates and correlation values blank.</span></td><td><a class="source-link" href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST correlation reference ↗</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <section class="section compact">
+        <div class="section-heading"><div><p class="kicker">Scoring policy proposal</p><h2>Keep skill metrics separate from payout metrics.</h2></div><p>No weighting formula is imposed before any data or competition rules exist. This prevents arbitrary weights from laundering a short-term lucky return into a “skill” score.</p></div>
+        <div class="table-scroll">
+          <table>
+            <caption>Proposed reporting dimensions and preconditions. The listed sources support methods or serve as an external competition example; they do not define this project's awards.</caption>
+            <thead><tr><th scope="col">Dimension</th><th scope="col">Report</th><th scope="col">Why keep it separate</th><th scope="col">Reward status</th><th scope="col">Source</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Forecast skill</strong></td><td>Out-of-sample Brier/log loss for event probabilities; appropriate scoring rule for distributional prop forecasts; calibration diagnostics.</td><td>Proper scores assess probability forecasts; accuracy or hit rate discards probability quality.</td><td>Primary qualification measure proposed; no values recorded.</td><td><a class="source-link" href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener noreferrer">Scikit-learn scoring guide ↗</a></td></tr>
+              <tr><td><strong>Market skill</strong></td><td>Same-time no-vig probability difference and closing-line value under one pre-registered quote source and conversion method.</td><td>Prices can include margin and conversion choices affect the benchmark; the exact approach must be frozen before scoring.</td><td>Tracked separately; no odds archive exists.</td><td><a class="source-link" href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">Publisher: odds methods ↗</a></td></tr>
+              <tr><td><strong>Economic result</strong></td><td>Net return after quoted price, fees, void rules and any applicable transaction cost; confidence interval and drawdown.</td><td>Realized return is noisy and can be positive by chance; a ledger and uncertainty report are necessary.</td><td>Not scored; paper units recommended until governance is set.</td><td><a class="source-link" href="https://journals.sagepub.com/doi/abs/10.1177/1527002512437744" target="_blank" rel="noopener noreferrer">Publisher: NFL lines & totals study ↗</a></td></tr>
+              <tr><td><strong>Sample adequacy</strong></td><td>Pre-registered minimum sample based on power/precision analysis, not a post-hoc number chosen after seeing the leaderboard.</td><td>Estimate precision depends on sample size and variability; smaller/noisier samples produce wider intervals.</td><td>Threshold blank; must be set before competition starts.</td><td><a class="source-link" href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST sample-size guidance ↗</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section compact" style="padding-top:0">
+        <div class="section-heading"><div><p class="kicker">Reward framework</p><h2>Recognize top validated strategies—without inventing a prize pool.</h2></div><p>The NFL’s Big Data Bowl is an official example of a judged football analytics competition. Its published rules and prizes are not automatically adopted here.</p></div>
+        <div class="table-scroll">
+          <table>
+            <caption>Proposed award slots. Amounts, eligibility period and funding source are deliberately unspecified and flagged for review.</caption>
+            <thead><tr><th scope="col">Award slot</th><th scope="col">Eligibility</th><th scope="col">Prize / amount</th><th scope="col">Status</th><th scope="col">Reference</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Top qualified single-bet strategy</strong></td><td>All validation gates pass; ranking based on pre-registered out-of-sample criteria.</td><td class="empty-cell" aria-label="Unspecified"></td><td><span class="status-text pending">Proposed · unfunded</span></td><td><a class="source-link" href="https://operations.nfl.com/programs-initiatives/innovation/big-data-bowl" target="_blank" rel="noopener noreferrer">NFL Big Data Bowl format ↗</a></td></tr>
+              <tr><td><strong>Top qualified player-prop strategy</strong></td><td>All validation gates pass; player market settlement and correlation checks included where relevant.</td><td class="empty-cell" aria-label="Unspecified"></td><td><span class="status-text pending">Proposed · unfunded</span></td><td><a class="source-link" href="https://operations.nfl.com/programs-initiatives/innovation/big-data-bowl" target="_blank" rel="noopener noreferrer">NFL Big Data Bowl format ↗</a></td></tr>
+              <tr><td><strong>Top qualified combination strategy</strong></td><td>All validation gates pass; joint event model, sample size and price-aware evaluation published.</td><td class="empty-cell" aria-label="Unspecified"></td><td><span class="status-text pending">Proposed · unfunded</span></td><td><a class="source-link" href="https://operations.nfl.com/programs-initiatives/innovation/big-data-bowl" target="_blank" rel="noopener noreferrer">NFL Big Data Bowl format ↗</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">The linked NFL competition is only a format reference. No NFL prize amount, sponsor, or rule has been represented as this project's award.</p>
+      </section>
+    </section>
+  </main>
+  <footer class="footer"><div class="footer-inner"><p><strong>NFL Line Lab</strong> · Independent project; not affiliated with or endorsed by the NFL or any sportsbook. Leaderboard is not populated.</p><div class="footer-right"><a href="validation.html">Validation gates</a><a href="correlation.html">Correlation register</a><a href="review.html">Flagged items</a></div></div></footer>
+</body>
+</html>

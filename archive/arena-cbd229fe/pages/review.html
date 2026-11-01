@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="../index.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Open and unverified items for NFL Line Lab, including missing correlation values, odds history, results, data rights and award terms. Values are left blank with source links.">
+  <title>Flagged for Review | NFL Line Lab</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <script defer src="../assets/site.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="review.html#main">Skip to main content</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="../index.html" aria-label="NFL Line Lab home"><span class="brand-mark" aria-hidden="true">NFL</span><span><span class="brand-name">Line Lab</span><span class="brand-tag">Evidence first</span></span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
+    <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation"><a href="../index.html">Overview</a><a href="strategies.html">Strategies</a><a href="validation.html">Validation</a><a href="correlation.html">Correlation</a><a href="leaderboard.html">Leaderboard</a><a href="sources.html">Data sources</a><a href="review.html" aria-current="page">Flagged for review</a></nav>
+  </div></header>
+  <main id="main">
+    <section class="page-hero"><div class="page-hero-inner">
+      <p class="eyebrow">Research category · 06</p><h1>Flagged for Review.</h1>
+      <p>Open items are visible, sourced and unfilled. Missing evidence does not block the static site, but it does block any claim that a strategy is validated or ready to price bets.</p>
+    </div></section>
+    <section class="page-shell container">
+      <div class="callout"><span class="callout-icon" aria-hidden="true">!</span><div><strong>Verification rule</strong><p>Where an item cannot be confirmed from a source, its value cell is left empty. The status and source link tell you what is missing and why no estimate has been substituted.</p></div></div>
+      <div class="table-scroll">
+        <table>
+          <caption>Unverified values are deliberately blank. Source links point to an official NFL page or a primary statistical publisher reference relevant to the unresolved item.</caption>
+          <thead><tr><th scope="col">ID / item</th><th scope="col">Value / evidence</th><th scope="col">Why flagged</th><th scope="col">Action before any performance claim</th><th scope="col">Source link(s)</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>R-01 · Prop-pair correlations</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>No paired game-level outcome matrix, sample size, confidence interval or market-threshold panel is stored or analyzed. Any coefficient or directional claim would be unverified.</td>
+              <td>Obtain a rights-cleared, revision-aware official paired dataset; define each pair, context, sample window and confidence procedure; publish estimates with N and interval.</td>
+              <td><div class="source-links"><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL GSIS data description ↗</a><a href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST correlation ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>R-02 · Historical sportsbook prices</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>No dated NFL moneyline, spread, total or player-prop odds archive is present. Official NFL stats do not supply a price series for an operator.</td>
+              <td>Select a licensed price provider/market and preserve timestamp, operator, line, vig, update/cancellation and settlement terms before testing CLV or EV.</td>
+              <td><div class="source-links"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">Publisher: odds conversion research ↗</a><a href="https://journals.sagepub.com/doi/abs/10.1177/1527002512437744" target="_blank" rel="noopener noreferrer">Publisher: historical NFL lines study ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>R-03 · Backtest and leaderboard metrics</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>No out-of-sample forecasts, Brier/log-loss results, calibration chart, closing-line value, net yield, drawdown or wager ledger was produced.</td>
+              <td>Run pre-registered temporal holdouts with a simple and a market benchmark; report all eligible/failed runs and uncertainty.</td>
+              <td><div class="source-links"><a href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener noreferrer">Scoring guide ↗</a><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html" target="_blank" rel="noopener noreferrer">Temporal split guide ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>R-04 · Gamebook data access and reuse</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>The official GSIS page says machine-readable XML is available to organizations interested in receiving it. The sample NFL gamebook says other use of the document is prohibited without written NFL permission.</td>
+              <td>Request/confirm approved access and use rights before bulk collection, model training, commercial activity or republication. Link-only citations are used here; no gamebook data are re-hosted.</td>
+              <td><div class="source-links"><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL GSIS access description ↗</a><a href="https://www.nflgsis.com/2024/REG/08/59622/Gamebook.pdf" target="_blank" rel="noopener noreferrer">NFL gamebook rights notice ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>R-05 · Prize pool and reward rules</strong></td>
+              <td class="empty-cell" aria-label="Unspecified and intentionally blank"></td>
+              <td>The repository and request specify no funding amount, sponsor, judging period, payout, tie-break or eligibility terms. The NFL Big Data Bowl is a separate competition and does not confirm this project's awards.</td>
+              <td>Keep amounts blank until a budget and written rules exist; make rewards contingent on passed validation gates, not raw hit rate alone.</td>
+              <td><a class="source-link" href="https://operations.nfl.com/programs-initiatives/innovation/big-data-bowl" target="_blank" rel="noopener noreferrer">NFL contest reference only ↗</a></td>
+            </tr>
+            <tr>
+              <td><strong>R-06 · Sample size, power and ranking weights</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>No sample-size analysis or pre-registered leaderboard scoring weights exist. Selecting thresholds after viewing results would weaken the competition.</td>
+              <td>Set precision/power requirements and all score weights before the first scored forecast; preserve a final unseen period.</td>
+              <td><div class="source-links"><a href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST sample-size guidance ↗</a><a href="https://www.itl.nist.gov/div898/handbook/eda/section3/bootplot.htm" target="_blank" rel="noopener noreferrer">NIST uncertainty guidance ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>R-07 · Live line publication</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>No timestamped current operator price feed, calibrated model or up-to-date settlement specification was verified in this repository.</td>
+              <td>Do not display a current NFL line or recommendation until data and quote capture pass the source, freshness and validation gates.</td>
+              <td><div class="source-links"><a href="https://www.nfl.com/schedules/" target="_blank" rel="noopener noreferrer">NFL schedule reference ↗</a><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener noreferrer">NFL injury reports ↗</a><a href="https://www.nfl.com/stats/" target="_blank" rel="noopener noreferrer">NFL stats ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>R-08 · Current market behavior</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>The publisher study checked here is based on a historical NFL/NBA/NCAA dataset from 2004–2010. Its results cannot be treated as 2026 market evidence.</td>
+              <td>Collect a modern, licensed NFL dataset and independently test each market; retain the study only as time-bounded literature.</td>
+              <td><a class="source-link" href="https://journals.sagepub.com/doi/abs/10.1177/1527002512437744" target="_blank" rel="noopener noreferrer">SAGE publisher abstract ↗</a></td>
+            </tr>
+            <tr>
+              <td><strong>R-09 · Legacy Markdown estimates</strong></td>
+              <td class="empty-cell" aria-label="Unverified and intentionally blank"></td>
+              <td>Earlier merged drafts contain numerical year-over-year correlation ranges and skill/luck labels attributed to third-party betting/analytics pages. The NFL official-stat/NGS pages reviewed here do not verify those coefficients; no values were adopted in this dashboard.</td>
+              <td>Reconcile the retained legacy drafts (<code>index.md</code> and <code>EXECUTIVE_SUMMARY.md</code>) with rights-cleared paired data; until then, treat those estimates as unverified and do not publish them as findings.</td>
+              <td><div class="source-links"><a href="https://www.nfl.com/stats/" target="_blank" rel="noopener noreferrer">NFL official stats ↗</a><a href="https://nextgenstats.nfl.com/glossary" target="_blank" rel="noopener noreferrer">NFL NGS glossary ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>R-10 · Singapore remote-gambling caution</strong></td>
+              <td class="empty-cell" aria-label="Regulatory status not assessed; intentionally blank"></td>
+              <td>GRA states that participating in unlicensed remote gambling activities in Singapore is an offence and identifies Singapore Pools as the only GRA-licensed remote-gambling operator. This site does not assess anyone's legal status or provide legal advice.</td>
+              <td>Keep the project research-only. Do not treat it as a recommendation to wager; independently confirm current law, licensing and applicability before any real-money activity.</td>
+              <td><a class="source-link" href="https://www.gra.gov.sg/harm-minimisation/unlawful-remote-gambling-activities" target="_blank" rel="noopener noreferrer">Singapore GRA official guidance ↗</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <section class="section compact">
+        <div class="section-heading"><div><p class="kicker">No concealed assumptions</p><h2>What is deliberately not claimed</h2></div></div>
+        <div class="card-grid">
+          <article class="card"><span class="pill flag">Not verified</span><h3>No “best bet”</h3><p>No strategy has a measured edge, probability or fair price in this repository.</p></article>
+          <article class="card"><span class="pill flag">Not measured</span><h3>No magic correlation</h3><p>No prop-pair correlation, sign or independence assumption is supplied without paired data.</p></article>
+          <article class="card"><span class="pill flag">Not specified</span><h3>No invented prize</h3><p>Reward categories are proposed, while amounts and funding remain unfilled.</p></article>
+        </div>
+      </section>
+    </section>
+  </main>
+  <footer class="footer"><div class="footer-inner"><p><strong>NFL Line Lab</strong> · Independent project; not affiliated with or endorsed by the NFL or any sportsbook. Open items remain explicit.</p><div class="footer-right"><a href="sources.html">Verified source register</a><a href="leaderboard.html">Leaderboard</a><a href="../index.html">Overview</a></div></div></footer>
+</body>
+</html>

@@ -19,12 +19,14 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
-DOCS = os.path.join(ROOT, "docs")
+LAB = os.path.join(DATA, "lab")
+DOCS = os.path.join(ROOT, "lab")
 os.makedirs(os.path.join(DOCS, "assets"), exist_ok=True)
 
 BUILD_UTC = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
 NAV = [
+    ("../index.html", "↑ Main dashboard"),
     ("index.html", "Dashboard"),
     ("lines.html", "Originated lines"),
     ("strategies.html", "Strategies"),
@@ -38,21 +40,26 @@ NAV = [
 
 
 def load(name):
-    with open(os.path.join(DATA, name)) as f:
-        return json.load(f)
+    """Read from data/lab/ (annex outputs) and fall back to data/ (the shared source register)."""
+    for base in (LAB, DATA):
+        path = os.path.join(base, name)
+        if os.path.exists(path):
+            with open(path) as f:
+                return json.load(f)
+    raise FileNotFoundError(name)
 
 
 SRC = load("sources.json")
 SRC_BY_ID = {s["id"]: s for s in SRC["sources"]}
-INTEG = load(os.path.join("derived", "integrity.json"))
+INTEG = load("integrity.json")
 LINES = load("lines.json")
 STRAT = load("strategies.json")
 CORR = load("correlations.json")
 PROPS = load("props.json")
 VAL = load("validation.json")
 LEAD = load("leaderboard.json")
-VERIFY = load(os.path.join("verification.json")) if os.path.exists(
-    os.path.join(DATA, "verification.json")) else {"checks": [], "passed": 0, "total": 0}
+VERIFY = load("verification.json") if os.path.exists(
+    os.path.join(LAB, "verification.json")) else {"checks": [], "passed": 0, "total": 0}
 
 TIER_CLASS = {"official": "t-official", "peer_reviewed": "t-paper",
               "verified_third_party": "t-third"}
@@ -1130,7 +1137,7 @@ def main():
     build_leaderboard()
     build_sources()
     build_flagged()
-    print(f"built {len(NAV)} pages into docs/")
+    print(f"built {len(PAGES)} annex pages into lab/")
 
 
 if __name__ == "__main__":

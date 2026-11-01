@@ -32,7 +32,7 @@ from lib import common as C
 from lib.data import load_games, home_margin
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "data", "correlations.json")
+OUT = os.path.join(ROOT, "data", "lab", "correlations.json")
 
 
 def pearson(xs, ys):

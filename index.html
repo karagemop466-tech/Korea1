@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NFL Line Lab — dashboard · K1 NFL Line Lab</title>
+<link rel="stylesheet" href="assets/style.css">
+</head><body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="logo">K1</span><span>NFL Line Lab</span></div>
+  <nav><a href="index.html" class="active">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategy board</a><a href="parlays.html" class="">Correlation &amp; parlays</a><a href="props.html" class="">Player props</a><a href="validation.html" class="">Validation</a><a href="data.html" class="">Data &amp; sources</a><a href="verification.html" class="">Verification</a><a href="flagged.html" class="">Flagged for review</a><a href="lab/index.html" class="">Replication annex</a></nav>
+</div></header>
+<main class="wrap">
+  <section class="hero">
+    <h1>NFL Line Lab — dashboard</h1>
+    <p class="lede">Originating NFL lines, testing strategies against a leaderboard, and removing luck from the measurement. Every figure regenerates from pinned public data.</p>
+    <p class="meta">Data pinned to nflverse/nfldata @ a270278f3a · built 2026-11-01 13:47 UTC</p>
+  </section>
+  
+
+<div class="kpis">
+  <div class="kpi"><div class="k">24</div><div class="l">strategies tested</div>
+     <div class="s">0 validated · 2 promising · 21 watchlist</div></div>
+  <div class="kpi"><div class="k">27,330</div><div class="l">priced bets backtested</div>
+     <div class="s">2006–2026 at quoted two-sided closing prices</div></div>
+  <div class="kpi"><div class="k">+7.1%</div><div class="l">best raw ROI found</div>
+     <div class="s">Wind &gt;= 15 mph unders · n=430 · FDR failed</div></div>
+  <div class="kpi"><div class="k">0.970</div><div class="l">White Reality Check p</div>
+     <div class="s">probability the best of 24 strategies is luck</div></div>
+</div>
+
+<div class="callout warn">
+  <h3>Headline finding</h3>
+  <p>Across <strong>27,330 bets</strong> in <strong>24 strategies</strong>,
+  <strong>no strategy survives all eight validation gates</strong> on this data. The best raw performer
+  (Wind &gt;= 15 mph unders, +7.1% ROI over 430 bets) fails the false-discovery-rate
+  gate, and White's Reality Check gives p = 0.970. The honest conclusion is that
+  the closing market is efficient against public-data signals — and the lab is built to say so rather than
+  to invent an edge.</p>
+  <p class="small">What is still useful: a reproducible line-origination model (see
+  <a href="lines.html">Originated lines</a>), measured correlation values for parlay pricing
+  (<a href="parlays.html">Correlation</a>), and a gate framework that will flag a real edge if one appears.</p>
+</div>
+<h2>What the lab produced</h2>
+<div class="grid2">
+  <div class="card">
+    <h3>1 · Originated lines</h3>
+    <p>A walk-forward ridge power-rating model prices every game itself (spread and total) using only
+    games played before kickoff. Against the market it is close but not better, which is the expected
+    and honest result:</p>
+    <ul class="tight">
+      <li>Spread MAE vs the result: <strong>10.65</strong>
+          (market <strong>10.24</strong>)</li>
+      <li>Total MAE vs the result: <strong>11.27</strong>
+          (market <strong>10.62</strong>)</li>
+      <li>Model beats the close on 45.4% of games</li>
+    </ul>
+    <p><a class="btn" href="lines.html">Week 8 board →</a></p>
+  </div>
+  <div class="card">
+    <h3>2 · Correlation values</h3>
+    <p>Measured on 6,880 settled games with real two-sided prices:</p>
+    <div class="tablewrap"><table class="" id=""><thead><tr><th>Leg A</th><th>Leg B</th><th>phi</th><th>lift</th><th>n</th><th>Source</th></tr></thead><tbody><tr><td>HOME_ATS</td><td>AWAY_ML</td><td>-0.672</td><td>0.232</td><td>5,023</td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td>HOME_ATS</td><td>HOME_ML</td><td>0.672</td><td>1.550</td><td>5,023</td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td>AWAY_ATS</td><td>HOME_ML</td><td>-0.672</td><td>0.413</td><td>5,023</td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td>AWAY_ATS</td><td>AWAY_ML</td><td>0.672</td><td>1.822</td><td>5,023</td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr></tbody></table></div>
+    <p class="small">phi is the correlation of the two outcomes. Same-game legs are strongly dependent
+    (spread &amp; moneyline), cross-market legs are nearly independent — which is exactly what a parlay
+    pricer needs to know.</p>
+    <p><a class="btn" href="parlays.html">Parlay lab →</a></p>
+  </div>
+</div>
+<div class="grid2">
+  <div class="card">
+    <h3>3 · Player props</h3>
+    <p>1,088 team-games and 252 players, rebuilt from the official
+    NFL game feed. Prop correlations are measured, not assumed:</p>
+    <ul class="tight">
+      <li>QB pass yards × WR1 receiving yards: phi = <strong>0.249</strong></li>
+      <li>QB pass yards × team total: phi = <strong>0.226</strong></li>
+      <li>RB rush yards × QB pass yards: phi = <strong>-0.028</strong></li>
+    </ul>
+    <p class="small">No verified historical player-prop prices are reachable from this environment, so prop ROI is UNVERIFIED and the ROI gate is blocked. Correlation and …</p>
+    <p><a class="btn" href="props.html">Props →</a></p>
+  </div>
+  <div class="card">
+    <h3>4 · Selective skill test</h3>
+    <p>Each season the allocator funds only strategies that were credentialled on prior seasons.
+    That is the honest test of "selective skill":</p>
+    <ul class="tight">
+      <li>Selected portfolio ROI: <strong>-3.3%</strong></li>
+      <li>Betting everything: <strong>-1.9%</strong></li>
+      <li>Positive seasons: 5/18</li>
+    </ul>
+    <p class="small">Selection did not beat the naive portfolio, so the lab reports that instead of
+    claiming a working meta-strategy.</p>
+    <p><a class="btn" href="validation.html">Validation →</a></p>
+  </div>
+</div>
+<h2>Leaderboard — top 8</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>#</th><th>Strategy</th><th>Bets</th><th>ROI</th><th>95% CI</th><th>Luck-adj z</th><th>Out-of-sample ROI</th><th>Tier</th><th>Source</th></tr></thead><tbody><tr><td><span class="rank">1</span></td><td><a href="strategies.html#S07_wind_under">Wind &gt;= 15 mph unders</a><div class="tiny">S07_wind_under</div></td><td>430</td><td>+7.1%</td><td>-1.7% … +16.7%</td><td>1.88</td><td>+5.8%</td><td><span class="badge warn">Tier B</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td><span class="rank">2</span></td><td><a href="strategies.html#S16_week1_under">Week 1 unders</a><div class="tiny">S16_week1_under</div></td><td>298</td><td>+3.6%</td><td>-8.8% … +16.1%</td><td>1.06</td><td>+6.1%</td><td><span class="badge warn">Tier B</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td><span class="rank">3</span></td><td><a href="strategies.html#S12_low_total_over">Overs on totals &lt;= 40</a><div class="tiny">S12_low_total_over</div></td><td>884</td><td>+3.0%</td><td>-2.9% … +8.6%</td><td>1.27</td><td>-1.8%</td><td><span class="badge muted">Tier C</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td><span class="rank">4</span></td><td><a href="strategies.html#S24_residual_total">Residual total model &gt;= 55%</a><div class="tiny">S24_residual_total</div></td><td>767</td><td>+1.8%</td><td>-5.0% … +8.3%</td><td>1.02</td><td>-0.7%</td><td><span class="badge muted">Tier C</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td><span class="rank">5</span></td><td><a href="strategies.html#S18_letdown_fade_ats">Let-down fade after a 14+ point win</a><div class="tiny">S18_letdown_fade_ats</div></td><td>1,558</td><td>+2.1%</td><td>-2.6% … +7.0%</td><td>0.85</td><td>-0.3%</td><td><span class="badge muted">Tier C</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td><span class="rank">6</span></td><td><a href="strategies.html#S14_ml_heavy_fav">Heavy moneyline favourites</a><div class="tiny">S14_ml_heavy_fav</div></td><td>1,889</td><td>-1.4%</td><td>-3.8% … +0.9%</td><td>0.80</td><td>-0.4%</td><td><span class="badge muted">Tier C</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td><span class="rank">7</span></td><td><a href="strategies.html#S09_dome_over">Dome overs</a><div class="tiny">S09_dome_over</div></td><td>1,384</td><td>+0.1%</td><td>-4.9% … +4.9%</td><td>0.66</td><td>-2.0%</td><td><span class="badge muted">Tier C</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr><tr><td><span class="rank">8</span></td><td><a href="strategies.html#S11_primetime_under">Primetime unders</a><div class="tiny">S11_primetime_under</div></td><td>1,115</td><td>+0.2%</td><td>-5.8% … +6.3%</td><td>0.55</td><td>+2.7%</td><td><span class="badge muted">Tier C</span></td><td><a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a> · <a class="src" href="https://github.com/karagemop466-tech/Korea1/blob/main/analysis/signals.py" target="_blank" rel="noopener">strategy rules</a></td></tr></tbody></table></div><p class="note">Ranked by tier, then by the luck-adjusted z (observed wins vs de-vigged expectation).</p>
+<h2>Week 8 originated board (preview)</h2>
+<div class="tablewrap"><table class="" id=""><thead><tr><th>Matchup</th><th>Kickoff (ET)</th><th>K1 spread</th><th>Market</th><th>Edge</th><th>K1 total</th><th>Market</th><th>Edge</th><th>Sources</th></tr></thead><tbody><tr><td>ARI @ DAL</td><td>Sun Nov 01 13:00</td><td>4.0</td><td>7.0</td><td>3.0</td><td>49.8</td><td>54.5</td><td>-4.7</td><td><a class="src" href="https://www.nfl.com/games/cardinals-at-cowboys-2026-reg-8" target="_blank" rel="noopener">nfl.com</a> · <a class="src" href="https://www.espn.com/nfl/game/_/gameId/401873024" target="_blank" rel="noopener">espn</a> · <a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">data</a></td></tr><tr><td>ATL @ TB</td><td>Sun Nov 01 13:00</td><td>0.6</td><td>1.5</td><td>0.9</td><td>46.1</td><td>43.5</td><td>2.6</td><td><a class="src" href="https://www.nfl.com/games/falcons-at-buccaneers-2026-reg-8" target="_blank" rel="noopener">nfl.com</a> · <a class="src" href="https://www.espn.com/nfl/game/_/gameId/401873025" target="_blank" rel="noopener">espn</a> · <a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">data</a></td></tr><tr><td>BAL @ BUF</td><td>Sun Nov 01 13:00</td><td>1.6</td><td>3.5</td><td>1.9</td><td>50.5</td><td>54.5</td><td>-4.0</td><td><a class="src" href="https://www.nfl.com/games/ravens-at-bills-2026-reg-8" target="_blank" rel="noopener">nfl.com</a> · <a class="src" href="https://www.espn.com/nfl/game/_/gameId/401873026" target="_blank" rel="noopener">espn</a> · <a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">data</a></td></tr><tr><td>CLE @ PIT</td><td>Sun Nov 01 13:00</td><td>1.5</td><td>3.5</td><td>2.0</td><td>39.7</td><td>39.5</td><td>0.2</td><td><a class="src" href="https://www.nfl.com/games/browns-at-steelers-2026-reg-8" target="_blank" rel="noopener">nfl.com</a> · <a class="src" href="https://www.espn.com/nfl/game/_/gameId/401873027" target="_blank" rel="noopener">espn</a> · <a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">data</a></td></tr><tr><td>IND @ JAX</td><td>Sun Nov 01 13:00</td><td>4.5</td><td>10.0</td><td>5.5</td><td>45.0</td><td>46.5</td><td>-1.5</td><td><a class="src" href="https://www.nfl.com/games/colts-at-jaguars-2026-reg-8" target="_blank" rel="noopener">nfl.com</a> · <a class="src" href="https://www.espn.com/nfl/game/_/gameId/401873028" target="_blank" rel="noopener">espn</a> · <a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">data</a></td></tr><tr><td>LV @ NYJ</td><td>Sun Nov 01 13:00</td><td>-0.2</td><td>1.5</td><td>1.7</td><td>46.9</td><td>46.5</td><td>0.4</td><td><a class="src" href="https://www.nfl.com/games/raiders-at-jets-2026-reg-8" target="_blank" rel="noopener">nfl.com</a> · <a class="src" href="https://www.espn.com/nfl/game/_/gameId/401873029" target="_blank" rel="noopener">espn</a> · <a class="src" href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">data</a></td></tr></tbody></table></div><p class="note">Full board for Week 8 on the <a href='lines.html'>Originated lines</a> page.</p>
+<h2>Status</h2>
+<div class="grid3">
+  <div class="card stat"><div class="k">7/7</div>
+    <div class="l">official source checks passed</div>
+    <div class="s">0 mismatches · <a href="verification.html">details</a></div></div>
+  <div class="card stat"><div class="k">8</div>
+    <div class="l">items flagged for review</div>
+    <div class="s"><a href="flagged.html">review queue</a></div></div>
+  <div class="card stat"><div class="k">7,548</div>
+    <div class="l">games, every row source-linked</div>
+    <div class="s">ESPN ids present on 100% of rows</div></div>
+</div>
+
+</main>
+<footer class="wrap foot">
+  <p>Built by session <code>arena-a1970463</code>. All figures regenerate from pinned public data
+  with <code>python -m analysis.run_all</code>. Nothing on this site is entered by hand.
+  Read the <a href="flagged.html">Flagged for review</a> page for what could not be verified.</p>
+</footer>
+<script src="assets/app.js"></script>
+</body></html>

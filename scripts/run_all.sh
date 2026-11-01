@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Full reproducible pipeline. Run from the repository root.
+# Replication annex pipeline (2011-2021 odds archive). Run from the repository root.
+# The canonical project is analysis/run_all.py; this annex is independent of it
+# and writes only to data/lab/ and lab/.
 #   bash scripts/run_all.sh
 # Order matters: the site is built from data/*.json, then verified, then rebuilt so that the
 # verification table printed on the site matches the final state of the repository.

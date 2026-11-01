@@ -2,3 +2,6 @@ data/raw/
 __pycache__/
 *.pyc
 .venv/
+.pytest_cache/
+# Generated static-site artifact (Pages workflow)
+site-build/

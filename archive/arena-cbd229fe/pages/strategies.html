@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="../index.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Proposed NFL line-origination strategies for game lines, player props, and correlated combinations, with source links and evidence status.">
+  <title>Strategy designs | NFL Line Lab</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <script defer src="../assets/site.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="strategies.html#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../index.html" aria-label="NFL Line Lab home"><span class="brand-mark" aria-hidden="true">NFL</span><span><span class="brand-name">Line Lab</span><span class="brand-tag">Evidence first</span></span></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
+      <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
+        <a href="../index.html">Overview</a><a href="strategies.html" aria-current="page">Strategies</a><a href="validation.html">Validation</a><a href="correlation.html">Correlation</a><a href="leaderboard.html">Leaderboard</a><a href="sources.html">Data sources</a><a href="review.html">Flagged for review</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="page-hero"><div class="page-hero-inner">
+      <p class="eyebrow">Research category · 01</p><h1>Strategies built to price outcomes, not chase stories.</h1>
+      <p>Every entry below is a proposed research design—not a tested betting system or a published pick. Its source links identify available NFL input families; actual edge and performance remain unmeasured.</p>
+    </div></section>
+    <section class="page-shell container">
+      <div class="callout"><span class="callout-icon" aria-hidden="true">!</span><div><strong>No invented lines or winning claims</strong><p>The 2025 NFL stat pages, 2026 injury/schedule pages and official Next Gen Stats references were checked as source endpoints. No observations were copied into a training set, no bookmaker prices were collected, and no candidate strategy has passed a validation gate. See <a href="review.html">Flagged for Review</a>.</p></div></div>
+      <div class="section-heading" id="game-lines">
+        <div><p class="kicker">Candidate strategy register</p><h2>Signal designs</h2></div>
+        <p>Use features available at the intended quote time only. Convert the forecast distribution into a line only after probability calibration, settlement rules and a contemporaneous price benchmark are established.</p>
+      </div>
+      <div class="table-tools"><label for="strategy-search">Filter strategy rows</label><input id="strategy-search" type="search" placeholder="Search markets, inputs, evidence…" data-table-filter aria-controls="strategy-table"></div>
+      <div class="table-scroll">
+        <table id="strategy-table" data-filterable>
+          <caption>All statuses are design-stage. Each row links to an official source or primary method reference used to define the proposed input or evaluation.</caption>
+          <thead><tr><th scope="col">ID / market</th><th scope="col">Signal hypothesis (to test)</th><th scope="col">Proposed model output</th><th scope="col">Status / guardrail</th><th scope="col">Source</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>G-01 · Game spread / moneyline</strong></td>
+              <td>Opponent-adjusted team performance and recent game state may inform a distribution of final score margin. Use the distribution rather than a single “power rating” point estimate.</td>
+              <td>Predicted margin distribution; cover and win probabilities; fair price only after calibration.</td>
+              <td><span class="status-text pending">Design only</span><span class="small">No fit, holdout or price recorded.</span></td>
+              <td><div class="source-links"><a href="https://www.nfl.com/stats/team-stats/offense/scoring/2025/reg/all" target="_blank" rel="noopener noreferrer">NFL team stats ↗</a><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL GSIS ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>G-02 · Game total / team total</strong></td>
+              <td>Opponent-adjusted scoring and offensive opportunity measures may inform joint home/away score distributions. Test totals separately from margin rather than assuming one market validates the other.</td>
+              <td>Total-points and team-points distributions; over/under probability at a specified line.</td>
+              <td><span class="status-text pending">Design only</span><span class="small">No current or historical line result claimed.</span></td>
+              <td><div class="source-links"><a href="https://www.nfl.com/stats/team-stats/offense/scoring/2025/reg/all" target="_blank" rel="noopener noreferrer">NFL team stats ↗</a><a href="https://journals.sagepub.com/doi/abs/10.1177/1527002512437744" target="_blank" rel="noopener noreferrer">SAGE NFL market study ↗</a></div></td>
+            </tr>
+            <tr id="player-props">
+              <td><strong>P-01 · Quarterback passing props</strong></td>
+              <td>Separate passing volume (attempts) from per-attempt performance; test whether target depth, completion probability and pressure-related tracking measures add signal beyond a simple historical baseline.</td>
+              <td>Pass attempts, completions, yards and touchdown distributions; probability over/under a quoted line.</td>
+              <td><span class="status-text pending">Design only</span><span class="small">Tracking and price records not joined.</span></td>
+              <td><div class="source-links"><a href="https://www.nfl.com/stats/player-stats/category/passing/2025/reg/all/passingyards/desc" target="_blank" rel="noopener noreferrer">NFL passing stats ↗</a><a href="https://nextgenstats.nfl.com/stats/passing" target="_blank" rel="noopener noreferrer">NFL NGS passing ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>P-02 · Running back rushing props</strong></td>
+              <td>Model carry opportunity and workload share separately from yards per carry; test whether tracking-based expected rushing yards improves calibrated yardage distributions out of sample.</td>
+              <td>Carries, rushing yards and touchdown distributions; probabilities at published market thresholds.</td>
+              <td><span class="status-text pending">Design only</span><span class="small">No measured feature gain or prop edge.</span></td>
+              <td><div class="source-links"><a href="https://www.nfl.com/stats/player-stats/category/rushing/2025/reg/all/rushingyards/desc" target="_blank" rel="noopener noreferrer">NFL rushing stats ↗</a><a href="https://nextgenstats.nfl.com/stats/rushing" target="_blank" rel="noopener noreferrer">NFL NGS rushing ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>P-03 · Receiver / tight end props</strong></td>
+              <td>Model opportunity (targets, air-yard share) before conversion (receptions, yards, touchdowns); shrink unstable small-sample estimates and score the entire predictive distribution.</td>
+              <td>Targets, receptions, receiving yards and touchdown distributions; over/under probabilities.</td>
+              <td><span class="status-text pending">Design only</span><span class="small">No paired weekly panel or market snapshot.</span></td>
+              <td><div class="source-links"><a href="https://www.nfl.com/stats/player-stats/category/receiving/2025/reg/all/receivingreceptions/desc" target="_blank" rel="noopener noreferrer">NFL receiving stats ↗</a><a href="https://nextgenstats.nfl.com/stats/receiving" target="_blank" rel="noopener noreferrer">NFL NGS receiving ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>P-04 · Official availability adjustment</strong></td>
+              <td>Condition workload projections on the latest official practice/game status and verified inactive list. Do not convert an injury label into an unsupported probability or medical conclusion.</td>
+              <td>Availability-conditioned player opportunity distribution; abstain when status or role is unresolved.</td>
+              <td><span class="status-text pending">Design only</span><span class="small">No injury rows or lineup assumptions imported.</span></td>
+              <td><div class="source-links"><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener noreferrer">NFL injury reports ↗</a><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL GSIS ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>C-01 · Same-game / player-prop combos</strong></td>
+              <td>Measure each joint outcome directly or use a validated joint distribution conditioned on game state. Do not multiply marginal probabilities as if every leg were independent.</td>
+              <td>Joint probability, fair combined price and uncertainty interval for each pre-defined leg set.</td>
+              <td><span class="status-text pending">Blocked</span><span class="small">Pairwise values are blank; see correlation register.</span></td>
+              <td><div class="source-links"><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL gamebook source ↗</a><a href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST correlation definition ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>M-01 · Price residual / selective abstention</strong></td>
+              <td>Compare an internally calibrated probability to a same-time, same-market, no-vig reference; act only when the uncertainty interval for value clears the pre-registered threshold.</td>
+              <td>Probability difference, fair price, expected value after fees and quote-age check.</td>
+              <td><span class="status-text pending">Blocked</span><span class="small">No timestamped sportsbook odds archive or settlement rules.</span></td>
+              <td><div class="source-links"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">Publisher: odds methods ↗</a><a href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener noreferrer">Probability scoring ↗</a></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">The NFL-specific market paper linked on G-02 reports results from a historical 2004–2010 sample. It is included as a research caution only; it does not establish present-day market behavior or a profitable strategy.</p>
+
+      <section class="section compact" id="line-construction" style="padding-bottom:0">
+        <div class="section-heading"><div><p class="kicker">Line construction</p><h2>Forecast first. Convert to a price second.</h2></div><p>These identities explain the proposed pricing layer; no value can be evaluated until a calibrated probability and an actual, timestamped offered price are available.</p></div>
+        <div class="formula-grid">
+          <article class="formula-card"><h3>Single binary outcome · fair decimal price</h3><div class="formula">d<sub>fair</sub> = 1 / P(A)</div><p>Use the modeled event probability at the exact market threshold. This is the no-margin fair decimal price under the stated binary/settlement definition. <a href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">Odds-derived probability methods ↗</a></p></article>
+          <article class="formula-card"><h3>Single outcome · expected net per 1 unit</h3><div class="formula">EV = p(d − 1) − (1 − p) = pd − 1</div><p>Assumes a settled win/loss with no fee, push, void or settlement adjustment. Use the actual quoted price and amend the calculation for the market's rules. <a href="https://journals.sagepub.com/doi/abs/10.1177/1527002512437744" target="_blank" rel="noopener noreferrer">NFL lines study (historical context) ↗</a></p></article>
+          <article class="formula-card"><h3>Combo · joint event price</h3><div class="formula">d<sub>fair</sub> = 1 / P(A ∩ B)</div><p>Estimate the joint probability directly or from a validated dependence model. Do not use a product of marginals without a supported independence assumption. <a href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST correlation definition ↗</a></p></article>
+        </div>
+        <p class="table-note">For a market reference, preserve every side's quote and the pre-registered de-vig method; published odds-conversion methods are not interchangeable by assumption. <a href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">See the publisher paper ↗</a>. No implied probabilities or fair odds are published here because no licensed price snapshot or calibrated forecast is present.</p>
+      </section>
+
+      <section class="section compact" style="padding-bottom:0">
+        <div class="section-heading"><div><p class="kicker">Recommended sequence</p><h2>Build the distribution before building the ticket.</h2></div><p>The league’s own Next Gen Stats material documents tracking-derived metrics and probability distributions for specific play outcomes. That establishes feature/target possibilities—not betting profitability.</p></div>
+        <div class="card-grid">
+          <article class="card"><span class="pill">01 · Ingest</span><h3>Freeze the as-of view</h3><p>Record source, event, player/team ID, season/week, quote timestamp, extraction time and final-stat revision. Keep historical snapshots immutable.</p><a class="card-link" href="sources.html">Source register →</a></article>
+          <article class="card"><span class="pill">02 · Forecast</span><h3>Estimate a distribution</h3><p>Start with a simple baseline, add features one family at a time and calibrate only on data not used to fit the base model.</p><a class="card-link" href="validation.html">Validation gates →</a></article>
+          <article class="card"><span class="pill">03 · Decide</span><h3>Price, or pass</h3><p>Require a recorded price, settlement rule and uncertainty-aware edge. A model can return “no bet” whenever inputs, calibration or price quality fail.</p><a class="card-link" href="leaderboard.html">Leaderboard rules →</a></article>
+        </div>
+      </section>
+    </section>
+  </main>
+  <footer class="footer"><div class="footer-inner"><p><strong>NFL Line Lab</strong> · Independent project; not affiliated with or endorsed by the NFL or any sportsbook. Proposed strategies only.</p><div class="footer-right"><a href="sources.html">Verified source register</a><a href="review.html">Flagged items</a><a href="../index.html">Overview</a></div></div></footer>
+</body>
+</html>

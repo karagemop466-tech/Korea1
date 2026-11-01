@@ -1,0 +1,371 @@
+{
+ "available": true,
+ "seasons": [
+  2024,
+  2025
+ ],
+ "team_games": 1088,
+ "players_tracked": 252,
+ "line_definition": "trailing 4-game mean of the same player on the same team, strictly prior weeks (out-of-sample)",
+ "correlations": {
+  "pairs": [
+   {
+    "leg_a": "QB_PASS",
+    "leg_b": "RB_RUSH",
+    "n_games": 1021,
+    "phi": -0.0284,
+    "p_a": 0.452,
+    "p_b": 0.433
+   },
+   {
+    "leg_a": "QB_PASS",
+    "leg_b": "WR_REC",
+    "n_games": 1021,
+    "phi": 0.2491,
+    "p_a": 0.452,
+    "p_b": 0.439
+   },
+   {
+    "leg_a": "QB_PASS",
+    "leg_b": "TEAM_TOTAL",
+    "n_games": 1011,
+    "phi": 0.2255,
+    "p_a": 0.452,
+    "p_b": 0.508
+   },
+   {
+    "leg_a": "RB_RUSH",
+    "leg_b": "WR_REC",
+    "n_games": 1020,
+    "phi": -0.0324,
+    "p_a": 0.433,
+    "p_b": 0.439
+   },
+   {
+    "leg_a": "RB_RUSH",
+    "leg_b": "TEAM_TOTAL",
+    "n_games": 1010,
+    "phi": 0.1183,
+    "p_a": 0.433,
+    "p_b": 0.508
+   },
+   {
+    "leg_a": "WR_REC",
+    "leg_b": "TEAM_TOTAL",
+    "n_games": 1010,
+    "phi": 0.1445,
+    "p_a": 0.439,
+    "p_b": 0.508
+   }
+  ],
+  "note": "phi is measured at each player's trailing-mean line. Correlation is threshold dependent, so the sensitivity table below is part of the result, not an appendix."
+ },
+ "threshold_sensitivity": {
+  "rows": [
+   {
+    "line_shift_pct": -20,
+    "QB_PASS x WR_REC": 0.225,
+    "n": 1022,
+    "QB_PASS x TEAM_TOTAL": 0.234,
+    "RB_RUSH x TEAM_TOTAL": 0.153,
+    "QB_PASS x RB_RUSH": 0.029
+   },
+   {
+    "line_shift_pct": 0,
+    "QB_PASS x WR_REC": 0.249,
+    "n": 1021,
+    "QB_PASS x TEAM_TOTAL": 0.226,
+    "RB_RUSH x TEAM_TOTAL": 0.118,
+    "QB_PASS x RB_RUSH": -0.028
+   },
+   {
+    "line_shift_pct": 20,
+    "QB_PASS x WR_REC": 0.254,
+    "n": 1023,
+    "QB_PASS x TEAM_TOTAL": 0.181,
+    "RB_RUSH x TEAM_TOTAL": 0.147,
+    "QB_PASS x RB_RUSH": -0.086
+   }
+  ]
+ },
+ "combo_pricing": {
+  "combos": [
+   {
+    "legs": "QB_PASS + RB_RUSH",
+    "n_games": 1021,
+    "joint_empirical": 0.1881,
+    "joint_independent": 0.195,
+    "lift": 0.964,
+    "fair_decimal_2leg": 5.318,
+    "independent_decimal_2leg": 5.127,
+    "fair_vs_independent_pct": 3.72,
+    "ev_per_unit_scenario_-110_naive": -0.3146
+   },
+   {
+    "legs": "QB_PASS + WR_REC",
+    "n_games": 1021,
+    "joint_empirical": 0.2605,
+    "joint_independent": 0.199,
+    "lift": 1.309,
+    "fair_decimal_2leg": 3.838,
+    "independent_decimal_2leg": 5.025,
+    "fair_vs_independent_pct": -23.62,
+    "ev_per_unit_scenario_-110_naive": -0.0505
+   },
+   {
+    "legs": "QB_PASS + TEAM_TOTAL",
+    "n_games": 1011,
+    "joint_empirical": 0.2859,
+    "joint_independent": 0.2298,
+    "lift": 1.244,
+    "fair_decimal_2leg": 3.498,
+    "independent_decimal_2leg": 4.352,
+    "fair_vs_independent_pct": -19.62,
+    "ev_per_unit_scenario_-110_naive": 0.0418
+   },
+   {
+    "legs": "RB_RUSH + WR_REC",
+    "n_games": 1020,
+    "joint_empirical": 0.1824,
+    "joint_independent": 0.1903,
+    "lift": 0.958,
+    "fair_decimal_2leg": 5.484,
+    "independent_decimal_2leg": 5.254,
+    "fair_vs_independent_pct": 4.37,
+    "ev_per_unit_scenario_-110_naive": -0.3354
+   },
+   {
+    "legs": "RB_RUSH + TEAM_TOTAL",
+    "n_games": 1010,
+    "joint_empirical": 0.2495,
+    "joint_independent": 0.2202,
+    "lift": 1.133,
+    "fair_decimal_2leg": 4.008,
+    "independent_decimal_2leg": 4.541,
+    "fair_vs_independent_pct": -11.75,
+    "ev_per_unit_scenario_-110_naive": -0.0906
+   },
+   {
+    "legs": "WR_REC + TEAM_TOTAL",
+    "n_games": 1010,
+    "joint_empirical": 0.2594,
+    "joint_independent": 0.2236,
+    "lift": 1.16,
+    "fair_decimal_2leg": 3.855,
+    "independent_decimal_2leg": 4.473,
+    "fair_vs_independent_pct": -13.81,
+    "ev_per_unit_scenario_-110_naive": -0.0546
+   }
+  ],
+  "price_assumed": -110.0,
+  "note": "Read columns in this order: `lift` and `fair_vs_independent_pct` are pure correlation facts (positive lift = the combo hits more often than independent pricing implies, so independence pricing under-pays). The EV column is a SCENARIO ONLY: it assumes both legs are quoted at -110, which is not a real quote because no verified prop prices are available to this project."
+ },
+ "calibration": {
+  "_pooled_dispersion": {
+   "QB_PASS": {
+    "n": 512,
+    "coverage_80pct": 0.791,
+    "coverage_50pct": 0.578,
+    "sd_z": 1.043
+   },
+   "RB_RUSH": {
+    "n": 512,
+    "coverage_80pct": 0.752,
+    "coverage_50pct": 0.463,
+    "sd_z": 1.224
+   },
+   "WR_REC": {
+    "n": 512,
+    "coverage_80pct": 0.799,
+    "coverage_50pct": 0.514,
+    "sd_z": 1.001
+   }
+  },
+  "QB_PASS": {
+   "n": 1022,
+   "coverage_80pct": 0.665,
+   "coverage_50pct": 0.409,
+   "mean_z": -0.373,
+   "sd_z": 1.877,
+   "pit_histogram": [
+    226,
+    90,
+    85,
+    71,
+    87,
+    78,
+    94,
+    79,
+    96,
+    116
+   ],
+   "note": "Calibrated would mean ~80% / ~50% coverage and a flat PIT histogram. Deviations identify where the distribution is wrong (fat tails, bias)."
+  },
+  "RB_RUSH": {
+   "n": 1024,
+   "coverage_80pct": 0.628,
+   "coverage_50pct": 0.353,
+   "mean_z": -0.027,
+   "sd_z": 2.248,
+   "pit_histogram": [
+    216,
+    113,
+    92,
+    92,
+    66,
+    60,
+    59,
+    58,
+    103,
+    165
+   ],
+   "note": "Calibrated would mean ~80% / ~50% coverage and a flat PIT histogram. Deviations identify where the distribution is wrong (fat tails, bias)."
+  },
+  "WR_REC": {
+   "n": 1024,
+   "coverage_80pct": 0.685,
+   "coverage_50pct": 0.404,
+   "mean_z": -0.021,
+   "sd_z": 1.645,
+   "pit_histogram": [
+    165,
+    114,
+    104,
+    109,
+    81,
+    79,
+    69,
+    60,
+    85,
+    158
+   ],
+   "note": "Calibrated would mean ~80% / ~50% coverage and a flat PIT histogram. Deviations identify where the distribution is wrong (fat tails, bias)."
+  }
+ },
+ "sample_board": [
+  {
+   "player": "J.Brissett",
+   "team": "ARI",
+   "market": "Passing yards",
+   "model_line": 233.8,
+   "model_sd": 31.8,
+   "actual": 243.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "T.Shough",
+   "team": "NO",
+   "market": "Passing yards",
+   "model_line": 264.2,
+   "model_sd": 84.0,
+   "actual": 259.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "J.Allen",
+   "team": "BUF",
+   "market": "Passing yards",
+   "model_line": 214.5,
+   "model_sd": 66.5,
+   "actual": 0.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "L.Jackson",
+   "team": "BAL",
+   "market": "Passing yards",
+   "model_line": 179.0,
+   "model_sd": 65.9,
+   "actual": 238.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "T.Lawrence",
+   "team": "JAX",
+   "market": "Passing yards",
+   "model_line": 281.8,
+   "model_sd": 33.7,
+   "actual": 255.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "B.Young",
+   "team": "CAR",
+   "market": "Passing yards",
+   "model_line": 168.5,
+   "model_sd": 87.9,
+   "actual": 266.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "J.Burrow",
+   "team": "CIN",
+   "market": "Passing yards",
+   "model_line": 280.8,
+   "model_sd": 38.8,
+   "actual": 236.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "S.Sanders",
+   "team": "CLE",
+   "market": "Passing yards",
+   "model_line": 221.0,
+   "model_sd": 96.1,
+   "actual": 111.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "D.Prescott",
+   "team": "DAL",
+   "market": "Passing yards",
+   "model_line": 305.2,
+   "model_sd": 54.4,
+   "actual": 70.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "J.Hurts",
+   "team": "PHI",
+   "market": "Passing yards",
+   "model_line": 177.5,
+   "model_sd": 53.3,
+   "actual": 0.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "J.Love",
+   "team": "GB",
+   "market": "Passing yards",
+   "model_line": 205.2,
+   "model_sd": 87.8,
+   "actual": 0.0,
+   "week": 18,
+   "season": 2025
+  },
+  {
+   "player": "J.Goff",
+   "team": "DET",
+   "market": "Passing yards",
+   "model_line": 302.0,
+   "model_sd": 73.5,
+   "actual": 331.0,
+   "week": 18,
+   "season": 2025
+  }
+ ],
+ "dispersion_note": "The naive per-player SD from four prior games is overconfident (80% intervals cover only ~66%). Refitting the variance as a*mean + b*mean^2 on the previous season alone fixes it - see _pooled_dispersion, where 80% coverage lands at 75-80%.",
+ "mean_line_note": "Lines defined at the trailing *mean* produce 43-45% over rates because yardage distributions are right-skewed (mean > median). Correlations are reported at that threshold and the sensitivity table shows the shift.",
+ "market_prices_available": false,
+ "flag": "No verified historical player-prop prices are reachable from this environment, so prop ROI is UNVERIFIED and the ROI gate is blocked. Correlation and calibration numbers are verified against official play-by-play."
+}

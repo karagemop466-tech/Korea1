@@ -1,0 +1,180 @@
+{
+ "model": {
+  "games_scored": 7031,
+  "seasons": [
+   1999,
+   2026
+  ],
+  "spread_corr_model_market": 0.7955,
+  "spread_mae_model_vs_market": 2.901,
+  "spread_mae_vs_result_market": 10.243,
+  "spread_mae_vs_result_model": 10.646,
+  "spread_rmse_vs_result_market": 13.16,
+  "spread_rmse_vs_result_model": 13.677,
+  "spread_model_beats_market_pct": 0.4544,
+  "total_corr_model_market": 0.6294,
+  "total_mae_model_vs_market": 3.324,
+  "total_mae_vs_result_market": 10.62,
+  "total_mae_vs_result_model": 11.266,
+  "total_rmse_vs_result_market": 13.412,
+  "total_rmse_vs_result_model": 14.341,
+  "total_model_beats_market_pct": 0.4483,
+  "by_season_spread_mae_model": {
+   "1999": 9.81,
+   "2000": 10.58,
+   "2001": 10.46,
+   "2002": 10.34,
+   "2003": 11.05,
+   "2004": 10.54,
+   "2005": 10.6,
+   "2006": 11.1,
+   "2007": 11.22,
+   "2008": 11.49,
+   "2009": 11.85,
+   "2010": 11.22,
+   "2011": 10.77,
+   "2012": 11.22,
+   "2013": 10.07,
+   "2014": 11.74,
+   "2015": 10.37,
+   "2016": 9.52,
+   "2017": 10.83,
+   "2018": 10.24,
+   "2019": 10.55,
+   "2020": 10.28,
+   "2021": 11.47,
+   "2022": 9.15,
+   "2023": 10.58,
+   "2024": 10.31,
+   "2025": 10.37,
+   "2026": 9.71
+  },
+  "by_season_spread_mae_market": {
+   "1999": 10.1,
+   "2000": 10.42,
+   "2001": 10.15,
+   "2002": 10.15,
+   "2003": 10.61,
+   "2004": 10.32,
+   "2005": 9.87,
+   "2006": 10.92,
+   "2007": 10.8,
+   "2008": 11.17,
+   "2009": 11.14,
+   "2010": 10.83,
+   "2011": 10.47,
+   "2012": 10.87,
+   "2013": 9.82,
+   "2014": 11.39,
+   "2015": 10.13,
+   "2016": 9.02,
+   "2017": 10.09,
+   "2018": 9.98,
+   "2019": 10.21,
+   "2020": 9.83,
+   "2021": 10.78,
+   "2022": 8.74,
+   "2023": 9.9,
+   "2024": 9.61,
+   "2025": 9.72,
+   "2026": 9.36
+  },
+  "note": "A model that beats the closing line on MAE would be extraordinary; the honest benchmark is that the market is sharper. We report both and never claim superiority that the data does not support."
+ },
+ "calibration": {
+  "train_seasons": [
+   1999,
+   2016
+  ],
+  "test_seasons": [
+   2017,
+   2026
+  ],
+  "coef_train": {
+   "intercept": -0.0394,
+   "slope": -0.0092
+  },
+  "coef_test": {
+   "intercept": -0.0482,
+   "slope": -0.0011
+  },
+  "coef_all": {
+   "intercept": -0.0426,
+   "slope": -0.0059
+  },
+  "interpretation": "slope>0 means a bigger model-vs-market disagreement really does predict covering; slope~0 means the disagreement is noise.",
+  "bins": [
+   {
+    "bin": "(-inf, -6.0]",
+    "n": 260,
+    "home_cover_rate": 0.488,
+    "mean_edge": -7.76
+   },
+   {
+    "bin": "(-6.0, -4.0]",
+    "n": 519,
+    "home_cover_rate": 0.507,
+    "mean_edge": -4.83
+   },
+   {
+    "bin": "(-4.0, -3.0]",
+    "n": 448,
+    "home_cover_rate": 0.462,
+    "mean_edge": -3.49
+   },
+   {
+    "bin": "(-3.0, -2.0]",
+    "n": 558,
+    "home_cover_rate": 0.478,
+    "mean_edge": -2.47
+   },
+   {
+    "bin": "(-2.0, -1.0]",
+    "n": 591,
+    "home_cover_rate": 0.516,
+    "mean_edge": -1.51
+   },
+   {
+    "bin": "(-1.0, 1.0]",
+    "n": 1481,
+    "home_cover_rate": 0.517,
+    "mean_edge": 0.05
+   },
+   {
+    "bin": "(1.0, 2.0]",
+    "n": 737,
+    "home_cover_rate": 0.45,
+    "mean_edge": 1.48
+   },
+   {
+    "bin": "(2.0, 3.0]",
+    "n": 706,
+    "home_cover_rate": 0.483,
+    "mean_edge": 2.48
+   },
+   {
+    "bin": "(3.0, 4.0]",
+    "n": 505,
+    "home_cover_rate": 0.499,
+    "mean_edge": 3.48
+   },
+   {
+    "bin": "(4.0, 6.0]",
+    "n": 656,
+    "home_cover_rate": 0.463,
+    "mean_edge": 4.87
+   },
+   {
+    "bin": "(6.0, inf]",
+    "n": 376,
+    "home_cover_rate": 0.476,
+    "mean_edge": 7.91
+   }
+  ],
+  "n_train": 4412,
+  "n_test": 2425,
+  "oos_logloss_model": 0.69298,
+  "oos_logloss_coinflip": 0.69315,
+  "oos_better_than_coinflip": true
+ }
+}

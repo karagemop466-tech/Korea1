@@ -1,0 +1,4304 @@
+{
+ "generated_utc": "2026-11-01T13:28:44.323889+00:00",
+ "universe": {
+  "bet_level": "one unit per bet, priced at the two-sided closing quote in the upstream file",
+  "priced_seasons": [
+   2006,
+   2026
+  ],
+  "total_bets": 27330,
+  "train": [
+   2006,
+   2015
+  ],
+  "test": [
+   2016,
+   2026
+  ],
+  "fdr_q": 0.1,
+  "min_bets": 200,
+  "min_seasons": 6
+ },
+ "reality_check": {
+  "best_strategy_idx": 17,
+  "best_mean": 0.0926758261102855,
+  "p_value": 0.97,
+  "n_strategies": 24,
+  "n_obs": 346,
+  "note": "White's Reality Check, stationary bootstrap (mean block 3), 2000 replications."
+ },
+ "fdr": {
+  "S15_ml_dog_lottery": {
+   "p": 0.035319894390022366,
+   "reject": false,
+   "rank": 1
+  },
+  "S08_cold_under": {
+   "p": 0.09469373382610824,
+   "reject": false,
+   "rank": 2
+  },
+  "S07_wind_under": {
+   "p": 0.12476024426126031,
+   "reject": false,
+   "rank": 3
+  },
+  "S19_model_edge_spread": {
+   "p": 0.13326065353700822,
+   "reject": false,
+   "rank": 4
+  },
+  "S01_home_dog_ats": {
+   "p": 0.19489848461536696,
+   "reject": false,
+   "rank": 5
+  },
+  "S14_ml_heavy_fav": {
+   "p": 0.23547837813742634,
+   "reject": false,
+   "rank": 6
+  },
+  "S20_model_edge_total": {
+   "p": 0.2515056087676095,
+   "reject": false,
+   "rank": 7
+  },
+  "S10_late_season_under": {
+   "p": 0.26866681179346363,
+   "reject": false,
+   "rank": 8
+  },
+  "S03_div_dog_ml": {
+   "p": 0.32365382108066965,
+   "reject": false,
+   "rank": 9
+  },
+  "S12_low_total_over": {
+   "p": 0.35713930523215587,
+   "reject": false,
+   "rank": 10
+  },
+  "S18_letdown_fade_ats": {
+   "p": 0.3967827386290028,
+   "reject": false,
+   "rank": 11
+  },
+  "S05_short_rest_fade_ats": {
+   "p": 0.48652277319962467,
+   "reject": false,
+   "rank": 12
+  },
+  "S16_week1_under": {
+   "p": 0.5191822854485317,
+   "reject": false,
+   "rank": 13
+  },
+  "S25_line_movement_steam": {
+   "p": 0.5773856108642801,
+   "reject": false,
+   "rank": 14
+  },
+  "S24_residual_total": {
+   "p": 0.6177953160934646,
+   "reject": false,
+   "rank": 15
+  },
+  "S17_bounce_back_ats": {
+   "p": 0.7435488842229194,
+   "reject": false,
+   "rank": 16
+  },
+  "S23_residual_cover": {
+   "p": 0.7851268497042727,
+   "reject": false,
+   "rank": 17
+  },
+  "S22_road_nonconf_dog_ats": {
+   "p": 0.7971872326098928,
+   "reject": false,
+   "rank": 18
+  },
+  "S13_high_total_under": {
+   "p": 0.9028506895583432,
+   "reject": false,
+   "rank": 19
+  },
+  "S11_primetime_under": {
+   "p": 0.9324872992354114,
+   "reject": false,
+   "rank": 20
+  },
+  "S04_rest_advantage_ats": {
+   "p": 0.9501544896615362,
+   "reject": false,
+   "rank": 21
+  },
+  "S06_off_bye_ats": {
+   "p": 0.9531543995225225,
+   "reject": false,
+   "rank": 22
+  },
+  "S09_dome_over": {
+   "p": 0.9820724171242978,
+   "reject": false,
+   "rank": 23
+  },
+  "S02_fade_big_fav_ats": {
+   "p": 0.982088028289464,
+   "reject": false,
+   "rank": 24
+  }
+ },
+ "correlation": {
+  "labels": [
+   "S01_home_dog_ats",
+   "S02_fade_big_fav_ats",
+   "S03_div_dog_ml",
+   "S04_rest_advantage_ats",
+   "S05_short_rest_fade_ats",
+   "S06_off_bye_ats",
+   "S07_wind_under",
+   "S08_cold_under",
+   "S09_dome_over",
+   "S10_late_season_under",
+   "S11_primetime_under",
+   "S12_low_total_over",
+   "S13_high_total_under",
+   "S14_ml_heavy_fav",
+   "S15_ml_dog_lottery",
+   "S16_week1_under",
+   "S17_bounce_back_ats",
+   "S18_letdown_fade_ats",
+   "S19_model_edge_spread",
+   "S20_model_edge_total",
+   "S22_road_nonconf_dog_ats",
+   "S23_residual_cover",
+   "S24_residual_total",
+   "S25_line_movement_steam"
+  ],
+  "matrix": [
+   [
+    1.0,
+    0.161,
+    0.245,
+    -0.087,
+    -0.096,
+    -0.083,
+    -0.07,
+    0.011,
+    0.022,
+    -0.003,
+    -0.023,
+    -0.042,
+    -0.117,
+    -0.184,
+    0.166,
+    0.016,
+    0.194,
+    0.139,
+    -0.454,
+    -0.08,
+    -0.003,
+    -0.058,
+    -0.012,
+    0.075
+   ],
+   [
+    0.161,
+    1.0,
+    0.211,
+    -0.004,
+    0.079,
+    -0.05,
+    0.016,
+    0.01,
+    0.072,
+    0.021,
+    0.03,
+    0.015,
+    -0.046,
+    -0.184,
+    0.286,
+    0.001,
+    0.216,
+    0.207,
+    -0.356,
+    -0.017,
+    0.246,
+    0.129,
+    -0.022,
+    0.191
+   ],
+   [
+    0.245,
+    0.211,
+    1.0,
+    0.009,
+    -0.0,
+    0.014,
+    0.126,
+    -0.05,
+    0.094,
+    -0.056,
+    -0.084,
+    -0.103,
+    -0.023,
+    -0.469,
+    0.516,
+    -0.047,
+    0.064,
+    0.105,
+    -0.215,
+    -0.068,
+    0.002,
+    0.086,
+    0.093,
+    0.069
+   ],
+   [
+    -0.087,
+    -0.004,
+    0.009,
+    1.0,
+    -0.011,
+    0.695,
+    0.015,
+    0.11,
+    -0.054,
+    0.042,
+    0.083,
+    0.009,
+    0.014,
+    -0.007,
+    0.011,
+    -0.0,
+    -0.034,
+    0.058,
+    0.103,
+    0.01,
+    0.032,
+    0.17,
+    0.002,
+    0.006
+   ],
+   [
+    -0.096,
+    0.079,
+    -0.0,
+    -0.011,
+    1.0,
+    -0.002,
+    0.073,
+    0.073,
+    0.075,
+    0.055,
+    0.08,
+    -0.029,
+    -0.022,
+    0.028,
+    -0.011,
+    0.001,
+    0.05,
+    0.002,
+    0.025,
+    0.062,
+    0.174,
+    -0.07,
+    -0.011,
+    0.059
+   ],
+   [
+    -0.083,
+    -0.05,
+    0.014,
+    0.695,
+    -0.002,
+    1.0,
+    -0.031,
+    0.009,
+    -0.055,
+    0.008,
+    0.058,
+    -0.03,
+    0.006,
+    0.058,
+    -0.042,
+    0.0,
+    -0.005,
+    0.012,
+    0.097,
+    0.009,
+    0.017,
+    0.11,
+    -0.014,
+    -0.071
+   ],
+   [
+    -0.07,
+    0.016,
+    0.126,
+    0.015,
+    0.073,
+    -0.031,
+    1.0,
+    0.138,
+    -0.015,
+    0.09,
+    0.065,
+    -0.224,
+    0.023,
+    -0.119,
+    0.108,
+    0.045,
+    -0.026,
+    0.068,
+    -0.019,
+    -0.052,
+    0.01,
+    0.068,
+    0.415,
+    0.054
+   ],
+   [
+    0.011,
+    0.01,
+    -0.05,
+    0.11,
+    0.073,
+    0.009,
+    0.138,
+    1.0,
+    -0.029,
+    0.237,
+    0.191,
+    -0.073,
+    0.06,
+    0.043,
+    -0.039,
+    0.003,
+    -0.006,
+    0.023,
+    0.023,
+    -0.042,
+    0.004,
+    0.007,
+    0.09,
+    0.027
+   ],
+   [
+    0.022,
+    0.072,
+    0.094,
+    -0.054,
+    0.075,
+    -0.055,
+    -0.015,
+    -0.029,
+    1.0,
+    -0.295,
+    -0.177,
+    0.082,
+    -0.187,
+    0.086,
+    -0.057,
+    -0.14,
+    -0.022,
+    0.004,
+    -0.024,
+    -0.343,
+    0.026,
+    0.033,
+    0.076,
+    0.051
+   ],
+   [
+    -0.003,
+    0.021,
+    -0.056,
+    0.042,
+    0.055,
+    0.008,
+    0.09,
+    0.237,
+    -0.295,
+    1.0,
+    0.246,
+    -0.106,
+    0.14,
+    0.037,
+    -0.08,
+    0.002,
+    0.03,
+    -0.002,
+    0.035,
+    0.031,
+    0.004,
+    0.014,
+    0.113,
+    0.053
+   ],
+   [
+    -0.023,
+    0.03,
+    -0.084,
+    0.083,
+    0.08,
+    0.058,
+    0.065,
+    0.191,
+    -0.177,
+    0.246,
+    1.0,
+    -0.124,
+    0.197,
+    0.05,
+    -0.053,
+    0.086,
+    0.121,
+    -0.036,
+    -0.038,
+    0.192,
+    0.093,
+    0.032,
+    0.112,
+    0.039
+   ],
+   [
+    -0.042,
+    0.015,
+    -0.103,
+    0.009,
+    -0.029,
+    -0.03,
+    -0.224,
+    -0.073,
+    0.082,
+    -0.106,
+    -0.124,
+    1.0,
+    0.07,
+    0.033,
+    -0.051,
+    -0.202,
+    -0.045,
+    -0.069,
+    -0.007,
+    0.059,
+    0.061,
+    0.045,
+    -0.079,
+    0.049
+   ],
+   [
+    -0.117,
+    -0.046,
+    -0.023,
+    0.014,
+    -0.022,
+    0.006,
+    0.023,
+    0.06,
+    -0.187,
+    0.14,
+    0.197,
+    0.07,
+    1.0,
+    -0.011,
+    -0.013,
+    0.029,
+    0.036,
+    0.024,
+    0.112,
+    0.263,
+    -0.042,
+    -0.002,
+    0.131,
+    0.058
+   ],
+   [
+    -0.184,
+    -0.184,
+    -0.469,
+    -0.007,
+    0.028,
+    0.058,
+    -0.119,
+    0.043,
+    0.086,
+    0.037,
+    0.05,
+    0.033,
+    -0.011,
+    1.0,
+    -0.942,
+    0.034,
+    -0.058,
+    -0.199,
+    0.267,
+    0.02,
+    -0.198,
+    0.016,
+    -0.069,
+    -0.17
+   ],
+   [
+    0.166,
+    0.286,
+    0.516,
+    0.011,
+    -0.011,
+    -0.042,
+    0.108,
+    -0.039,
+    -0.057,
+    -0.08,
+    -0.053,
+    -0.051,
+    -0.013,
+    -0.942,
+    1.0,
+    -0.017,
+    0.051,
+    0.19,
+    -0.274,
+    -0.025,
+    0.203,
+    -0.004,
+    0.046,
+    0.186
+   ],
+   [
+    0.016,
+    0.001,
+    -0.047,
+    -0.0,
+    0.001,
+    0.0,
+    0.045,
+    0.003,
+    -0.14,
+    0.002,
+    0.086,
+    -0.202,
+    0.029,
+    0.034,
+    -0.017,
+    1.0,
+    -0.001,
+    -0.001,
+    -0.03,
+    0.432,
+    -0.044,
+    -0.019,
+    0.04,
+    0.007
+   ],
+   [
+    0.194,
+    0.216,
+    0.064,
+    -0.034,
+    0.05,
+    -0.005,
+    -0.026,
+    -0.006,
+    -0.022,
+    0.03,
+    0.121,
+    -0.045,
+    0.036,
+    -0.058,
+    0.051,
+    -0.001,
+    1.0,
+    0.272,
+    -0.011,
+    -0.001,
+    0.061,
+    0.025,
+    0.022,
+    0.036
+   ],
+   [
+    0.139,
+    0.207,
+    0.105,
+    0.058,
+    0.002,
+    0.012,
+    0.068,
+    0.023,
+    0.004,
+    -0.002,
+    -0.036,
+    -0.069,
+    0.024,
+    -0.199,
+    0.19,
+    -0.001,
+    0.272,
+    1.0,
+    -0.087,
+    -0.074,
+    0.055,
+    0.118,
+    -0.029,
+    0.101
+   ],
+   [
+    -0.454,
+    -0.356,
+    -0.215,
+    0.103,
+    0.025,
+    0.097,
+    -0.019,
+    0.023,
+    -0.024,
+    0.035,
+    -0.038,
+    -0.007,
+    0.112,
+    0.267,
+    -0.274,
+    -0.03,
+    -0.011,
+    -0.087,
+    1.0,
+    0.003,
+    -0.31,
+    0.052,
+    -0.018,
+    -0.163
+   ],
+   [
+    -0.08,
+    -0.017,
+    -0.068,
+    0.01,
+    0.062,
+    0.009,
+    -0.052,
+    -0.042,
+    -0.343,
+    0.031,
+    0.192,
+    0.059,
+    0.263,
+    0.02,
+    -0.025,
+    0.432,
+    -0.001,
+    -0.074,
+    0.003,
+    1.0,
+    0.062,
+    -0.055,
+    -0.008,
+    0.045
+   ],
+   [
+    -0.003,
+    0.246,
+    0.002,
+    0.032,
+    0.174,
+    0.017,
+    0.01,
+    0.004,
+    0.026,
+    0.004,
+    0.093,
+    0.061,
+    -0.042,
+    -0.198,
+    0.203,
+    -0.044,
+    0.061,
+    0.055,
+    -0.31,
+    0.062,
+    1.0,
+    0.003,
+    -0.076,
+    0.112
+   ],
+   [
+    -0.058,
+    0.129,
+    0.086,
+    0.17,
+    -0.07,
+    0.11,
+    0.068,
+    0.007,
+    0.033,
+    0.014,
+    0.032,
+    0.045,
+    -0.002,
+    0.016,
+    -0.004,
+    -0.019,
+    0.025,
+    0.118,
+    0.052,
+    -0.055,
+    0.003,
+    1.0,
+    -0.103,
+    0.09
+   ],
+   [
+    -0.012,
+    -0.022,
+    0.093,
+    0.002,
+    -0.011,
+    -0.014,
+    0.415,
+    0.09,
+    0.076,
+    0.113,
+    0.112,
+    -0.079,
+    0.131,
+    -0.069,
+    0.046,
+    0.04,
+    0.022,
+    -0.029,
+    -0.018,
+    -0.008,
+    -0.076,
+    -0.103,
+    1.0,
+    0.025
+   ],
+   [
+    0.075,
+    0.191,
+    0.069,
+    0.006,
+    0.059,
+    -0.071,
+    0.054,
+    0.027,
+    0.051,
+    0.053,
+    0.039,
+    0.049,
+    0.058,
+    -0.17,
+    0.186,
+    0.007,
+    0.036,
+    0.101,
+    -0.163,
+    0.045,
+    0.112,
+    0.09,
+    0.025,
+    1.0
+   ]
+  ]
+ },
+ "strategies": [
+  {
+   "n_bets": 430,
+   "n_settled": 425,
+   "wins": 234.0,
+   "pushes": 5.0,
+   "hit_rate": 0.5506,
+   "avg_price": -67.6,
+   "breakeven_rate": 0.4988,
+   "roi": 0.0714,
+   "units": 30.71,
+   "roi_lo": -0.0173,
+   "roi_hi": 0.1667,
+   "roi_se": 0.047,
+   "se_null": 0.0471,
+   "luck_index": 1.001,
+   "skill_prob": 0.9356,
+   "exp_wins": 214.5,
+   "z_wins": 1.884,
+   "p_wins": 0.059526004666277554,
+   "t_roi": 1.535,
+   "p_roi": 0.12476024426126031,
+   "seasons": 20,
+   "first_season": 2006,
+   "last_season": 2025,
+   "pos_seasons": 11,
+   "n_seasons": 20,
+   "max_season_profit_share": 0.211,
+   "loso_min_roi": 0.046,
+   "split_half_odd": 0.1193,
+   "split_half_even": 0.0257,
+   "roi_train": 0.0826,
+   "roi_test": 0.0577,
+   "test_lo": -0.0803,
+   "test_hi": 0.1977,
+   "oos_retention": 0.698,
+   "n_train": 237,
+   "n_test": 193,
+   "by_season": {
+    "2006": {
+     "n": 21,
+     "roi": 0.069
+    },
+    "2007": {
+     "n": 23,
+     "roi": -0.0775
+    },
+    "2008": {
+     "n": 32,
+     "roi": 0.3875
+    },
+    "2009": {
+     "n": 18,
+     "roi": 0.194
+    },
+    "2010": {
+     "n": 30,
+     "roi": -0.2799
+    },
+    "2011": {
+     "n": 28,
+     "roi": 0.1203
+    },
+    "2012": {
+     "n": 24,
+     "roi": 0.2655
+    },
+    "2013": {
+     "n": 18,
+     "roi": -0.0182
+    },
+    "2014": {
+     "n": 20,
+     "roi": -0.0198
+    },
+    "2015": {
+     "n": 23,
+     "roi": 0.1481
+    },
+    "2016": {
+     "n": 22,
+     "roi": -0.205
+    },
+    "2017": {
+     "n": 18,
+     "roi": 0.0916
+    },
+    "2018": {
+     "n": 17,
+     "roi": 0.4873
+    },
+    "2019": {
+     "n": 22,
+     "roi": -0.0316
+    },
+    "2020": {
+     "n": 26,
+     "roi": -0.3212
+    },
+    "2021": {
+     "n": 29,
+     "roi": 0.4008
+    },
+    "2022": {
+     "n": 13,
+     "roi": 0.1883
+    },
+    "2023": {
+     "n": 12,
+     "roi": 0.3637
+    },
+    "2024": {
+     "n": 15,
+     "roi": -0.2426
+    },
+    "2025": {
+     "n": 19,
+     "roi": -0.0024
+    }
+   },
+   "strategy": "S07_wind_under",
+   "name": "Wind >= 15 mph unders",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.12476024426126031,
+   "fdr_rank": 3,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.415,
+   "score": 82.57,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": true,
+    "G6_economics": true,
+    "G7_stability": true,
+    "G8_diversification": true
+   },
+   "gates_passed": 7,
+   "tier": "B",
+   "verdict": "Promising \u2014 partial validation",
+   "tier_rank": 1,
+   "role": "candidate",
+   "rank": 1
+  },
+  {
+   "n_bets": 298,
+   "n_settled": 296,
+   "wins": 158.0,
+   "pushes": 2.0,
+   "hit_rate": 0.5338,
+   "avg_price": -76.5,
+   "breakeven_rate": 0.4995,
+   "roi": 0.0361,
+   "units": 10.77,
+   "roi_lo": -0.0883,
+   "roi_hi": 0.1606,
+   "roi_se": 0.064,
+   "se_null": 0.0563,
+   "luck_index": 0.88,
+   "skill_prob": 0.7138,
+   "exp_wins": 148.9,
+   "z_wins": 1.059,
+   "p_wins": 0.28970079609866684,
+   "t_roi": 0.645,
+   "p_roi": 0.5191822854485317,
+   "seasons": 19,
+   "first_season": 2007,
+   "last_season": 2026,
+   "pos_seasons": 9,
+   "n_seasons": 19,
+   "max_season_profit_share": 0.177,
+   "loso_min_roi": 0.0137,
+   "split_half_odd": 0.0772,
+   "split_half_even": -0.0078,
+   "roi_train": 0.0004,
+   "roi_test": 0.0612,
+   "test_lo": -0.0752,
+   "test_hi": 0.2073,
+   "oos_retention": 148.192,
+   "n_train": 123,
+   "n_test": 175,
+   "by_season": {
+    "2007": {
+     "n": 16,
+     "roi": 0.3416
+    },
+    "2009": {
+     "n": 11,
+     "roi": 0.0665
+    },
+    "2010": {
+     "n": 16,
+     "roi": 0.4029
+    },
+    "2011": {
+     "n": 16,
+     "roi": -0.5696
+    },
+    "2012": {
+     "n": 16,
+     "roi": -0.1373
+    },
+    "2013": {
+     "n": 16,
+     "roi": -0.0186
+    },
+    "2014": {
+     "n": 16,
+     "roi": 0.0859
+    },
+    "2015": {
+     "n": 16,
+     "roi": -0.1475
+    },
+    "2016": {
+     "n": 16,
+     "roi": -0.1549
+    },
+    "2017": {
+     "n": 15,
+     "roi": 0.3107
+    },
+    "2018": {
+     "n": 16,
+     "roi": -0.1271
+    },
+    "2019": {
+     "n": 16,
+     "roi": -0.1387
+    },
+    "2020": {
+     "n": 16,
+     "roi": -0.1438
+    },
+    "2021": {
+     "n": 16,
+     "roi": 0.0793
+    },
+    "2022": {
+     "n": 16,
+     "roi": 0.3377
+    },
+    "2023": {
+     "n": 16,
+     "roi": 0.4318
+    },
+    "2024": {
+     "n": 16,
+     "roi": -0.1682
+    },
+    "2025": {
+     "n": 16,
+     "roi": 0.4281
+    },
+    "2026": {
+     "n": 16,
+     "roi": -0.1659
+    }
+   },
+   "strategy": "S16_week1_under",
+   "name": "Week 1 unders",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.5191822854485317,
+   "fdr_rank": 13,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.432,
+   "score": 79.91,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": true,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 5,
+   "tier": "B",
+   "verdict": "Promising \u2014 partial validation",
+   "tier_rank": 1,
+   "role": "candidate",
+   "rank": 2
+  },
+  {
+   "n_bets": 884,
+   "n_settled": 871,
+   "wins": 462.0,
+   "pushes": 13.0,
+   "hit_rate": 0.5304,
+   "avg_price": -79.4,
+   "breakeven_rate": 0.5012,
+   "roi": 0.0298,
+   "units": 26.38,
+   "roi_lo": -0.0287,
+   "roi_hi": 0.0865,
+   "roi_se": 0.0295,
+   "se_null": 0.0326,
+   "luck_index": 1.108,
+   "skill_prob": 0.8444,
+   "exp_wins": 443.0,
+   "z_wins": 1.275,
+   "p_wins": 0.2022253104497871,
+   "t_roi": 0.921,
+   "p_roi": 0.35713930523215587,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 11,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.306,
+   "loso_min_roi": 0.0156,
+   "split_half_odd": 0.0384,
+   "split_half_even": 0.0202,
+   "roi_train": 0.0607,
+   "roi_test": -0.0181,
+   "test_lo": -0.1161,
+   "test_hi": 0.0834,
+   "oos_retention": -0.298,
+   "n_train": 538,
+   "n_test": 346,
+   "by_season": {
+    "2006": {
+     "n": 102,
+     "roi": 0.0585
+    },
+    "2007": {
+     "n": 112,
+     "roi": 0.1278
+    },
+    "2008": {
+     "n": 44,
+     "roi": 0.0133
+    },
+    "2009": {
+     "n": 64,
+     "roi": 0.0553
+    },
+    "2010": {
+     "n": 64,
+     "roi": 0.0837
+    },
+    "2011": {
+     "n": 66,
+     "roi": -0.0093
+    },
+    "2012": {
+     "n": 43,
+     "roi": 0.0847
+    },
+    "2013": {
+     "n": 21,
+     "roi": 0.0976
+    },
+    "2014": {
+     "n": 12,
+     "roi": -0.5025
+    },
+    "2015": {
+     "n": 10,
+     "roi": 0.3838
+    },
+    "2016": {
+     "n": 23,
+     "roi": 0.116
+    },
+    "2017": {
+     "n": 43,
+     "roi": 0.0007
+    },
+    "2018": {
+     "n": 26,
+     "roi": -0.0243
+    },
+    "2019": {
+     "n": 31,
+     "roi": -0.0024
+    },
+    "2020": {
+     "n": 3,
+     "roi": -0.3267
+    },
+    "2021": {
+     "n": 14,
+     "roi": -0.0345
+    },
+    "2022": {
+     "n": 49,
+     "roi": -0.0705
+    },
+    "2023": {
+     "n": 74,
+     "roi": -0.0319
+    },
+    "2024": {
+     "n": 39,
+     "roi": 0.1216
+    },
+    "2025": {
+     "n": 31,
+     "roi": -0.0748
+    },
+    "2026": {
+     "n": 13,
+     "roi": -0.2616
+    }
+   },
+   "strategy": "S12_low_total_over",
+   "name": "Overs on totals <= 40",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.35713930523215587,
+   "fdr_rank": 10,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.224,
+   "score": 66.21,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 3
+  },
+  {
+   "n_bets": 767,
+   "n_settled": 760,
+   "wins": 397.0,
+   "pushes": 7.0,
+   "hit_rate": 0.5224,
+   "avg_price": -74.8,
+   "breakeven_rate": 0.4991,
+   "roi": 0.0175,
+   "units": 13.4,
+   "roi_lo": -0.0498,
+   "roi_hi": 0.0832,
+   "roi_se": 0.0342,
+   "se_null": 0.0352,
+   "luck_index": 1.029,
+   "skill_prob": 0.6953,
+   "exp_wins": 382.8,
+   "z_wins": 1.025,
+   "p_wins": 0.30513897527904166,
+   "t_roi": 0.499,
+   "p_roi": 0.6177953160934646,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 11,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.228,
+   "loso_min_roi": 0.0012,
+   "split_half_odd": 0.0576,
+   "split_half_even": -0.0233,
+   "roi_train": 0.0484,
+   "roi_test": -0.0073,
+   "test_lo": -0.1028,
+   "test_hi": 0.0775,
+   "oos_retention": -0.151,
+   "n_train": 341,
+   "n_test": 426,
+   "by_season": {
+    "2006": {
+     "n": 16,
+     "roi": 0.2955
+    },
+    "2007": {
+     "n": 24,
+     "roi": -0.2565
+    },
+    "2008": {
+     "n": 16,
+     "roi": 0.2294
+    },
+    "2009": {
+     "n": 40,
+     "roi": 0.2149
+    },
+    "2010": {
+     "n": 38,
+     "roi": -0.0217
+    },
+    "2011": {
+     "n": 55,
+     "roi": 0.1024
+    },
+    "2012": {
+     "n": 32,
+     "roi": -0.0155
+    },
+    "2013": {
+     "n": 38,
+     "roi": -0.1227
+    },
+    "2014": {
+     "n": 37,
+     "roi": -0.0184
+    },
+    "2015": {
+     "n": 45,
+     "roi": 0.1489
+    },
+    "2016": {
+     "n": 58,
+     "roi": -0.2418
+    },
+    "2017": {
+     "n": 35,
+     "roi": 0.0048
+    },
+    "2018": {
+     "n": 39,
+     "roi": 0.077
+    },
+    "2019": {
+     "n": 51,
+     "roi": -0.0806
+    },
+    "2020": {
+     "n": 67,
+     "roi": 0.0055
+    },
+    "2021": {
+     "n": 30,
+     "roi": 0.4181
+    },
+    "2022": {
+     "n": 32,
+     "roi": 0.0962
+    },
+    "2023": {
+     "n": 28,
+     "roi": 0.23
+    },
+    "2024": {
+     "n": 41,
+     "roi": -0.1357
+    },
+    "2025": {
+     "n": 41,
+     "roi": -0.0701
+    },
+    "2026": {
+     "n": 4,
+     "roi": -0.5326
+    }
+   },
+   "strategy": "S24_residual_total",
+   "name": "Residual total model >= 55%",
+   "family": "model",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.6177953160934646,
+   "fdr_rank": 15,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.415,
+   "score": 62.53,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 4
+  },
+  {
+   "n_bets": 1558,
+   "n_settled": 1519,
+   "wins": 799.0,
+   "pushes": 39.0,
+   "hit_rate": 0.526,
+   "avg_price": -66.4,
+   "breakeven_rate": 0.5021,
+   "roi": 0.0206,
+   "units": 32.07,
+   "roi_lo": -0.0259,
+   "roi_hi": 0.0703,
+   "roi_se": 0.0241,
+   "se_null": 0.0246,
+   "luck_index": 1.021,
+   "skill_prob": 0.8035,
+   "exp_wins": 782.2,
+   "z_wins": 0.85,
+   "p_wins": 0.39528361435081294,
+   "t_roi": 0.847,
+   "p_roi": 0.3967827386290028,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 14,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.203,
+   "loso_min_roi": 0.011,
+   "split_half_odd": -0.0317,
+   "split_half_even": 0.0764,
+   "roi_train": 0.0448,
+   "roi_test": -0.0029,
+   "test_lo": -0.0666,
+   "test_hi": 0.0567,
+   "oos_retention": -0.065,
+   "n_train": 767,
+   "n_test": 791,
+   "by_season": {
+    "2006": {
+     "n": 73,
+     "roi": 0.1109
+    },
+    "2007": {
+     "n": 85,
+     "roi": 0.0042
+    },
+    "2008": {
+     "n": 61,
+     "roi": 0.2551
+    },
+    "2009": {
+     "n": 79,
+     "roi": -0.094
+    },
+    "2010": {
+     "n": 75,
+     "roi": 0.1602
+    },
+    "2011": {
+     "n": 78,
+     "roi": 0.0672
+    },
+    "2012": {
+     "n": 80,
+     "roi": 0.0562
+    },
+    "2013": {
+     "n": 73,
+     "roi": -0.0909
+    },
+    "2014": {
+     "n": 90,
+     "roi": 0.0699
+    },
+    "2015": {
+     "n": 73,
+     "roi": -0.0494
+    },
+    "2016": {
+     "n": 64,
+     "roi": 0.0468
+    },
+    "2017": {
+     "n": 82,
+     "roi": -0.1127
+    },
+    "2018": {
+     "n": 72,
+     "roi": 0.0674
+    },
+    "2019": {
+     "n": 82,
+     "roi": -0.0435
+    },
+    "2020": {
+     "n": 74,
+     "roi": -0.0918
+    },
+    "2021": {
+     "n": 86,
+     "roi": 0.0437
+    },
+    "2022": {
+     "n": 65,
+     "roi": 0.0103
+    },
+    "2023": {
+     "n": 86,
+     "roi": 0.036
+    },
+    "2024": {
+     "n": 75,
+     "roi": 0.0255
+    },
+    "2025": {
+     "n": 81,
+     "roi": -0.0922
+    },
+    "2026": {
+     "n": 24,
+     "roi": 0.3112
+    }
+   },
+   "strategy": "S18_letdown_fade_ats",
+   "name": "Let-down fade after a 14+ point win",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.3967827386290028,
+   "fdr_rank": 11,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.272,
+   "score": 63.14,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": true,
+    "G8_diversification": true
+   },
+   "gates_passed": 5,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 5
+  },
+  {
+   "n_bets": 1889,
+   "n_settled": 1882,
+   "wins": 1485.0,
+   "pushes": 7.0,
+   "hit_rate": 0.7891,
+   "avg_price": -473.1,
+   "breakeven_rate": 0.7785,
+   "roi": -0.0141,
+   "units": -26.55,
+   "roi_lo": -0.038,
+   "roi_hi": 0.0089,
+   "roi_se": 0.0119,
+   "se_null": 0.0121,
+   "luck_index": 1.014,
+   "skill_prob": 0.1189,
+   "exp_wins": 1470.6,
+   "z_wins": 0.804,
+   "p_wins": 0.4213945000875088,
+   "t_roi": -1.186,
+   "p_roi": 0.23547837813742634,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 6,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.284,
+   "loso_min_roi": -0.0184,
+   "split_half_odd": -0.0213,
+   "split_half_even": -0.0061,
+   "roi_train": -0.0238,
+   "roi_test": -0.0043,
+   "test_lo": -0.0348,
+   "test_hi": 0.0268,
+   "oos_retention": 0.181,
+   "n_train": 946,
+   "n_test": 943,
+   "by_season": {
+    "2006": {
+     "n": 81,
+     "roi": -0.0955
+    },
+    "2007": {
+     "n": 108,
+     "roi": -0.0045
+    },
+    "2008": {
+     "n": 83,
+     "roi": -0.0002
+    },
+    "2009": {
+     "n": 121,
+     "roi": -0.021
+    },
+    "2010": {
+     "n": 82,
+     "roi": -0.0974
+    },
+    "2011": {
+     "n": 110,
+     "roi": -0.0034
+    },
+    "2012": {
+     "n": 91,
+     "roi": 0.0538
+    },
+    "2013": {
+     "n": 95,
+     "roi": -0.023
+    },
+    "2014": {
+     "n": 96,
+     "roi": 0.0093
+    },
+    "2015": {
+     "n": 79,
+     "roi": -0.0881
+    },
+    "2016": {
+     "n": 67,
+     "roi": 0.0319
+    },
+    "2017": {
+     "n": 89,
+     "roi": 0.051
+    },
+    "2018": {
+     "n": 94,
+     "roi": -0.0081
+    },
+    "2019": {
+     "n": 90,
+     "roi": -0.0032
+    },
+    "2020": {
+     "n": 108,
+     "roi": 0.0577
+    },
+    "2021": {
+     "n": 115,
+     "roi": -0.0359
+    },
+    "2022": {
+     "n": 82,
+     "roi": 0.0392
+    },
+    "2023": {
+     "n": 77,
+     "roi": -0.0844
+    },
+    "2024": {
+     "n": 87,
+     "roi": -0.018
+    },
+    "2025": {
+     "n": 104,
+     "roi": -0.0204
+    },
+    "2026": {
+     "n": 30,
+     "roi": -0.1605
+    }
+   },
+   "strategy": "S14_ml_heavy_fav",
+   "name": "Heavy moneyline favourites",
+   "family": "moneyline",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.23547837813742634,
+   "fdr_rank": 6,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.942,
+   "score": 60.26,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": false
+   },
+   "gates_passed": 3,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 6
+  },
+  {
+   "n_bets": 1384,
+   "n_settled": 1368,
+   "wins": 705.0,
+   "pushes": 16.0,
+   "hit_rate": 0.5154,
+   "avg_price": -84.4,
+   "breakeven_rate": 0.5005,
+   "roi": 0.0006,
+   "units": 0.81,
+   "roi_lo": -0.0488,
+   "roi_hi": 0.0489,
+   "roi_se": 0.025,
+   "se_null": 0.0261,
+   "luck_index": 1.045,
+   "skill_prob": 0.5093,
+   "exp_wins": 692.7,
+   "z_wins": 0.661,
+   "p_wins": 0.5085646443586973,
+   "t_roi": 0.022,
+   "p_roi": 0.9820724171242978,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 10,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.2,
+   "loso_min_roi": -0.0082,
+   "split_half_odd": -0.012,
+   "split_half_even": 0.013,
+   "roi_train": 0.0288,
+   "roi_test": -0.0204,
+   "test_lo": -0.0825,
+   "test_hi": 0.0412,
+   "oos_retention": -0.708,
+   "n_train": 590,
+   "n_test": 794,
+   "by_season": {
+    "2006": {
+     "n": 43,
+     "roi": 0.1154
+    },
+    "2007": {
+     "n": 58,
+     "roi": 0.2007
+    },
+    "2008": {
+     "n": 36,
+     "roi": 0.0795
+    },
+    "2009": {
+     "n": 61,
+     "roi": -0.1687
+    },
+    "2010": {
+     "n": 65,
+     "roi": 0.075
+    },
+    "2011": {
+     "n": 68,
+     "roi": -0.0524
+    },
+    "2012": {
+     "n": 68,
+     "roi": 0.0045
+    },
+    "2013": {
+     "n": 70,
+     "roi": 0.1426
+    },
+    "2014": {
+     "n": 61,
+     "roi": -0.0244
+    },
+    "2015": {
+     "n": 60,
+     "roi": -0.0381
+    },
+    "2016": {
+     "n": 62,
+     "roi": -0.1119
+    },
+    "2017": {
+     "n": 59,
+     "roi": -0.1468
+    },
+    "2018": {
+     "n": 60,
+     "roi": -0.1261
+    },
+    "2019": {
+     "n": 59,
+     "roi": 0.1144
+    },
+    "2020": {
+     "n": 91,
+     "roi": 0.1177
+    },
+    "2021": {
+     "n": 79,
+     "roi": 0.0122
+    },
+    "2022": {
+     "n": 84,
+     "roi": 0.0602
+    },
+    "2023": {
+     "n": 81,
+     "roi": -0.1047
+    },
+    "2024": {
+     "n": 94,
+     "roi": -0.0355
+    },
+    "2025": {
+     "n": 92,
+     "roi": -0.047
+    },
+    "2026": {
+     "n": 33,
+     "roi": -0.0109
+    }
+   },
+   "strategy": "S09_dome_over",
+   "name": "Dome overs",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.9820724171242978,
+   "fdr_rank": 23,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.343,
+   "score": 56.88,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 7
+  },
+  {
+   "n_bets": 1115,
+   "n_settled": 1099,
+   "wins": 564.0,
+   "pushes": 16.0,
+   "hit_rate": 0.5132,
+   "avg_price": -65.2,
+   "breakeven_rate": 0.4976,
+   "roi": 0.0025,
+   "units": 2.74,
+   "roi_lo": -0.0583,
+   "roi_hi": 0.0629,
+   "roi_se": 0.0318,
+   "se_null": 0.0292,
+   "luck_index": 0.921,
+   "skill_prob": 0.5309,
+   "exp_wins": 554.9,
+   "z_wins": 0.548,
+   "p_wins": 0.5839673900080755,
+   "t_roi": 0.085,
+   "p_roi": 0.9324872992354114,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 9,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.222,
+   "loso_min_roi": -0.0113,
+   "split_half_odd": 0.0383,
+   "split_half_even": -0.0328,
+   "roi_train": -0.0317,
+   "roi_test": 0.0269,
+   "test_lo": -0.0549,
+   "test_hi": 0.1103,
+   "oos_retention": -0.849,
+   "n_train": 465,
+   "n_test": 650,
+   "by_season": {
+    "2006": {
+     "n": 35,
+     "roi": 0.0731
+    },
+    "2007": {
+     "n": 44,
+     "roi": -0.0514
+    },
+    "2008": {
+     "n": 31,
+     "roi": -0.2658
+    },
+    "2009": {
+     "n": 39,
+     "roi": 0.2702
+    },
+    "2010": {
+     "n": 46,
+     "roi": -0.0671
+    },
+    "2011": {
+     "n": 58,
+     "roi": -0.0115
+    },
+    "2012": {
+     "n": 51,
+     "roi": 0.182
+    },
+    "2013": {
+     "n": 52,
+     "roi": -0.1869
+    },
+    "2014": {
+     "n": 55,
+     "roi": -0.3415
+    },
+    "2015": {
+     "n": 54,
+     "roi": 0.1044
+    },
+    "2016": {
+     "n": 65,
+     "roi": -0.1346
+    },
+    "2017": {
+     "n": 56,
+     "roi": -0.0187
+    },
+    "2018": {
+     "n": 57,
+     "roi": -0.0322
+    },
+    "2019": {
+     "n": 54,
+     "roi": 0.2139
+    },
+    "2020": {
+     "n": 60,
+     "roi": 0.0572
+    },
+    "2021": {
+     "n": 61,
+     "roi": 0.0701
+    },
+    "2022": {
+     "n": 70,
+     "roi": 0.2077
+    },
+    "2023": {
+     "n": 67,
+     "roi": 0.0545
+    },
+    "2024": {
+     "n": 69,
+     "roi": -0.0806
+    },
+    "2025": {
+     "n": 68,
+     "roi": -0.0116
+    },
+    "2026": {
+     "n": 23,
+     "roi": -0.0864
+    }
+   },
+   "strategy": "S11_primetime_under",
+   "name": "Primetime unders",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.9324872992354114,
+   "fdr_rank": 20,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.246,
+   "score": 53.92,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 8
+  },
+  {
+   "n_bets": 1569,
+   "n_settled": 1535,
+   "wins": 797.0,
+   "pushes": 34.0,
+   "hit_rate": 0.5192,
+   "avg_price": -67.4,
+   "breakeven_rate": 0.5019,
+   "roi": 0.0079,
+   "units": 12.45,
+   "roi_lo": -0.04,
+   "roi_hi": 0.0565,
+   "roi_se": 0.0246,
+   "se_null": 0.0245,
+   "luck_index": 0.999,
+   "skill_prob": 0.6268,
+   "exp_wins": 787.5,
+   "z_wins": 0.48,
+   "p_wins": 0.6313491211637152,
+   "t_roi": 0.327,
+   "p_roi": 0.7435488842229194,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 15,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.162,
+   "loso_min_roi": 0.001,
+   "split_half_odd": -0.0346,
+   "split_half_even": 0.0533,
+   "roi_train": 0.0222,
+   "roi_test": -0.0058,
+   "test_lo": -0.0755,
+   "test_hi": 0.0605,
+   "oos_retention": -0.26,
+   "n_train": 769,
+   "n_test": 800,
+   "by_season": {
+    "2006": {
+     "n": 71,
+     "roi": 0.1536
+    },
+    "2007": {
+     "n": 87,
+     "roi": 0.0438
+    },
+    "2008": {
+     "n": 61,
+     "roi": 0.0869
+    },
+    "2009": {
+     "n": 75,
+     "roi": 0.0072
+    },
+    "2010": {
+     "n": 80,
+     "roi": 0.0504
+    },
+    "2011": {
+     "n": 72,
+     "roi": -0.2393
+    },
+    "2012": {
+     "n": 81,
+     "roi": 0.123
+    },
+    "2013": {
+     "n": 77,
+     "roi": -0.1418
+    },
+    "2014": {
+     "n": 89,
+     "roi": 0.1114
+    },
+    "2015": {
+     "n": 76,
+     "roi": 0.0098
+    },
+    "2016": {
+     "n": 68,
+     "roi": -0.1116
+    },
+    "2017": {
+     "n": 82,
+     "roi": 0.0262
+    },
+    "2018": {
+     "n": 71,
+     "roi": 0.0546
+    },
+    "2019": {
+     "n": 82,
+     "roi": -0.0622
+    },
+    "2020": {
+     "n": 75,
+     "roi": 0.033
+    },
+    "2021": {
+     "n": 88,
+     "roi": 0.034
+    },
+    "2022": {
+     "n": 63,
+     "roi": 0.0298
+    },
+    "2023": {
+     "n": 88,
+     "roi": -0.0857
+    },
+    "2024": {
+     "n": 75,
+     "roi": -0.0865
+    },
+    "2025": {
+     "n": 83,
+     "roi": 0.0303
+    },
+    "2026": {
+     "n": 25,
+     "roi": 0.2486
+    }
+   },
+   "strategy": "S17_bounce_back_ats",
+   "name": "Bounce-back after a 14+ point loss",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.7435488842229194,
+   "fdr_rank": 16,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.272,
+   "score": 56.78,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": true,
+    "G8_diversification": true
+   },
+   "gates_passed": 5,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 9
+  },
+  {
+   "n_bets": 694,
+   "n_settled": 680,
+   "wins": 352.0,
+   "pushes": 14.0,
+   "hit_rate": 0.5176,
+   "avg_price": -56.0,
+   "breakeven_rate": 0.5001,
+   "roi": 0.01,
+   "units": 6.95,
+   "roi_lo": -0.0647,
+   "roi_hi": 0.0835,
+   "roi_se": 0.0384,
+   "se_null": 0.0371,
+   "luck_index": 0.967,
+   "skill_prob": 0.6029,
+   "exp_wins": 347.1,
+   "z_wins": 0.375,
+   "p_wins": 0.7076646226223204,
+   "t_roi": 0.273,
+   "p_roi": 0.7851268497042727,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 11,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.228,
+   "loso_min_roi": -0.0085,
+   "split_half_odd": 0.0207,
+   "split_half_even": -0.0023,
+   "roi_train": 0.0128,
+   "roi_test": 0.0052,
+   "test_lo": -0.1059,
+   "test_hi": 0.1124,
+   "oos_retention": 0.408,
+   "n_train": 438,
+   "n_test": 256,
+   "by_season": {
+    "2006": {
+     "n": 48,
+     "roi": -0.1979
+    },
+    "2007": {
+     "n": 51,
+     "roi": 0.2252
+    },
+    "2008": {
+     "n": 47,
+     "roi": 0.0381
+    },
+    "2009": {
+     "n": 53,
+     "roi": 0.1009
+    },
+    "2010": {
+     "n": 51,
+     "roi": 0.2429
+    },
+    "2011": {
+     "n": 72,
+     "roi": -0.1143
+    },
+    "2012": {
+     "n": 39,
+     "roi": -0.0028
+    },
+    "2013": {
+     "n": 44,
+     "roi": -0.2718
+    },
+    "2014": {
+     "n": 11,
+     "roi": 0.063
+    },
+    "2015": {
+     "n": 22,
+     "roi": 0.1683
+    },
+    "2016": {
+     "n": 24,
+     "roi": -0.064
+    },
+    "2017": {
+     "n": 47,
+     "roi": -0.0611
+    },
+    "2018": {
+     "n": 22,
+     "roi": -0.2083
+    },
+    "2019": {
+     "n": 20,
+     "roi": 0.4202
+    },
+    "2020": {
+     "n": 30,
+     "roi": -0.1578
+    },
+    "2021": {
+     "n": 18,
+     "roi": 0.0856
+    },
+    "2022": {
+     "n": 16,
+     "roi": 0.2768
+    },
+    "2023": {
+     "n": 28,
+     "roi": -0.0734
+    },
+    "2024": {
+     "n": 25,
+     "roi": -0.0733
+    },
+    "2025": {
+     "n": 17,
+     "roi": 0.1371
+    },
+    "2026": {
+     "n": 9,
+     "roi": 0.2497
+    }
+   },
+   "strategy": "S23_residual_cover",
+   "name": "Residual cover model >= 55%",
+   "family": "model",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.7851268497042727,
+   "fdr_rank": 17,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.17,
+   "score": 58.26,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 10
+  },
+  {
+   "n_bets": 1880,
+   "n_settled": 1872,
+   "wins": 624.0,
+   "pushes": 8.0,
+   "hit_rate": 0.3333,
+   "avg_price": 235.3,
+   "breakeven_rate": 0.328,
+   "roi": -0.0336,
+   "units": -63.1,
+   "roi_lo": -0.1041,
+   "roi_hi": 0.0324,
+   "roi_se": 0.0345,
+   "se_null": 0.0355,
+   "luck_index": 1.028,
+   "skill_prob": 0.1655,
+   "exp_wins": 616.6,
+   "z_wins": 0.374,
+   "p_wins": 0.7084316214521977,
+   "t_roi": -0.987,
+   "p_roi": 0.32365382108066965,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 8,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.249,
+   "loso_min_roi": -0.0522,
+   "split_half_odd": 0.0085,
+   "split_half_even": -0.0763,
+   "roi_train": -0.0093,
+   "roi_test": -0.0553,
+   "test_lo": -0.1446,
+   "test_hi": 0.0352,
+   "oos_retention": 5.952,
+   "n_train": 888,
+   "n_test": 992,
+   "by_season": {
+    "2006": {
+     "n": 70,
+     "roi": 0.3339
+    },
+    "2007": {
+     "n": 95,
+     "roi": 0.1581
+    },
+    "2008": {
+     "n": 62,
+     "roi": -0.3663
+    },
+    "2009": {
+     "n": 85,
+     "roi": 0.1077
+    },
+    "2010": {
+     "n": 96,
+     "roi": 0.0054
+    },
+    "2011": {
+     "n": 96,
+     "roi": -0.0653
+    },
+    "2012": {
+     "n": 96,
+     "roi": -0.2233
+    },
+    "2013": {
+     "n": 96,
+     "roi": -0.2499
+    },
+    "2014": {
+     "n": 96,
+     "roi": -0.1248
+    },
+    "2015": {
+     "n": 96,
+     "roi": 0.3132
+    },
+    "2016": {
+     "n": 96,
+     "roi": -0.0464
+    },
+    "2017": {
+     "n": 95,
+     "roi": -0.3143
+    },
+    "2018": {
+     "n": 96,
+     "roi": -0.0695
+    },
+    "2019": {
+     "n": 96,
+     "roi": -0.0977
+    },
+    "2020": {
+     "n": 96,
+     "roi": -0.1501
+    },
+    "2021": {
+     "n": 96,
+     "roi": 0.1803
+    },
+    "2022": {
+     "n": 96,
+     "roi": -0.1319
+    },
+    "2023": {
+     "n": 96,
+     "roi": -0.0345
+    },
+    "2024": {
+     "n": 96,
+     "roi": -0.1722
+    },
+    "2025": {
+     "n": 96,
+     "roi": 0.097
+    },
+    "2026": {
+     "n": 33,
+     "roi": 0.4785
+    }
+   },
+   "strategy": "S03_div_dog_ml",
+   "name": "Divisional underdog moneyline",
+   "family": "moneyline",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.32365382108066965,
+   "fdr_rank": 9,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.516,
+   "score": 69.46,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 11
+  },
+  {
+   "n_bets": 1091,
+   "n_settled": 1064,
+   "wins": 547.0,
+   "pushes": 27.0,
+   "hit_rate": 0.5141,
+   "avg_price": -62.1,
+   "breakeven_rate": 0.4998,
+   "roi": 0.0018,
+   "units": 1.99,
+   "roi_lo": -0.0596,
+   "roi_hi": 0.0669,
+   "roi_se": 0.0325,
+   "se_null": 0.0295,
+   "luck_index": 0.909,
+   "skill_prob": 0.5224,
+   "exp_wins": 545.3,
+   "z_wins": 0.103,
+   "p_wins": 0.9179273158182575,
+   "t_roi": 0.063,
+   "p_roi": 0.9501544896615362,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 9,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.21,
+   "loso_min_roi": -0.0096,
+   "split_half_odd": -0.009,
+   "split_half_even": 0.0126,
+   "roi_train": 0.0053,
+   "roi_test": -0.001,
+   "test_lo": -0.0803,
+   "test_hi": 0.0838,
+   "oos_retention": -0.19,
+   "n_train": 491,
+   "n_test": 600,
+   "by_season": {
+    "2006": {
+     "n": 41,
+     "roi": 0.1306
+    },
+    "2007": {
+     "n": 44,
+     "roi": -0.0311
+    },
+    "2008": {
+     "n": 36,
+     "roi": 0.3356
+    },
+    "2009": {
+     "n": 43,
+     "roi": -0.0564
+    },
+    "2010": {
+     "n": 45,
+     "roi": 0.0925
+    },
+    "2011": {
+     "n": 50,
+     "roi": -0.0004
+    },
+    "2012": {
+     "n": 59,
+     "roi": -0.0168
+    },
+    "2013": {
+     "n": 62,
+     "roi": -0.0862
+    },
+    "2014": {
+     "n": 54,
+     "roi": -0.2877
+    },
+    "2015": {
+     "n": 57,
+     "roi": 0.117
+    },
+    "2016": {
+     "n": 62,
+     "roi": 0.1674
+    },
+    "2017": {
+     "n": 58,
+     "roi": -0.0324
+    },
+    "2018": {
+     "n": 56,
+     "roi": -0.0687
+    },
+    "2019": {
+     "n": 59,
+     "roi": -0.1105
+    },
+    "2020": {
+     "n": 54,
+     "roi": -0.0583
+    },
+    "2021": {
+     "n": 57,
+     "roi": 0.0594
+    },
+    "2022": {
+     "n": 55,
+     "roi": 0.0273
+    },
+    "2023": {
+     "n": 56,
+     "roi": 0.1327
+    },
+    "2024": {
+     "n": 65,
+     "roi": -0.1486
+    },
+    "2025": {
+     "n": 58,
+     "roi": -0.0838
+    },
+    "2026": {
+     "n": 20,
+     "roi": 0.3311
+    }
+   },
+   "strategy": "S04_rest_advantage_ats",
+   "name": "Rest advantage (>= 3 days)",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.9501544896615362,
+   "fdr_rank": 21,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.695,
+   "score": 43.89,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 12
+  },
+  {
+   "n_bets": 309,
+   "n_settled": 304,
+   "wins": 155.0,
+   "pushes": 5.0,
+   "hit_rate": 0.5099,
+   "avg_price": -78.5,
+   "breakeven_rate": 0.4996,
+   "roi": -0.0067,
+   "units": -2.08,
+   "roi_lo": -0.1067,
+   "roi_hi": 0.0901,
+   "roi_se": 0.0502,
+   "se_null": 0.0554,
+   "luck_index": 1.104,
+   "skill_prob": 0.4467,
+   "exp_wins": 154.4,
+   "z_wins": 0.071,
+   "p_wins": 0.94309630711593,
+   "t_roi": -0.122,
+   "p_roi": 0.9028506895583432,
+   "seasons": 20,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 9,
+   "n_seasons": 20,
+   "max_season_profit_share": 0.204,
+   "loso_min_roi": -0.0228,
+   "split_half_odd": 0.0975,
+   "split_half_even": -0.0876,
+   "roi_train": -0.0301,
+   "roi_test": 0.0037,
+   "test_lo": -0.1179,
+   "test_hi": 0.1318,
+   "oos_retention": -0.122,
+   "n_train": 95,
+   "n_test": 214,
+   "by_season": {
+    "2006": {
+     "n": 1,
+     "roi": 1.06
+    },
+    "2007": {
+     "n": 6,
+     "roi": 0.6371
+    },
+    "2008": {
+     "n": 1,
+     "roi": -1.0
+    },
+    "2009": {
+     "n": 3,
+     "roi": 0.3372
+    },
+    "2011": {
+     "n": 14,
+     "roi": -0.0174
+    },
+    "2012": {
+     "n": 15,
+     "roi": -0.2176
+    },
+    "2013": {
+     "n": 24,
+     "roi": 0.0181
+    },
+    "2014": {
+     "n": 19,
+     "roi": -0.1781
+    },
+    "2015": {
+     "n": 12,
+     "roi": -0.1083
+    },
+    "2016": {
+     "n": 15,
+     "roi": -0.3612
+    },
+    "2017": {
+     "n": 13,
+     "roi": 0.3501
+    },
+    "2018": {
+     "n": 41,
+     "roi": -0.0604
+    },
+    "2019": {
+     "n": 12,
+     "roi": 0.1558
+    },
+    "2020": {
+     "n": 55,
+     "roi": -0.001
+    },
+    "2021": {
+     "n": 32,
+     "roi": 0.0329
+    },
+    "2022": {
+     "n": 12,
+     "roi": 0.39
+    },
+    "2023": {
+     "n": 7,
+     "roi": 0.6364
+    },
+    "2024": {
+     "n": 7,
+     "roi": -0.1763
+    },
+    "2025": {
+     "n": 12,
+     "roi": -0.2072
+    },
+    "2026": {
+     "n": 8,
+     "roi": -0.5193
+    }
+   },
+   "strategy": "S13_high_total_under",
+   "name": "Unders on totals >= 52",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.9028506895583432,
+   "fdr_rank": 19,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.263,
+   "score": 39.99,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 13
+  },
+  {
+   "n_bets": 675,
+   "n_settled": 656,
+   "wins": 341.0,
+   "pushes": 19.0,
+   "hit_rate": 0.5198,
+   "avg_price": -87.8,
+   "breakeven_rate": 0.5063,
+   "roi": 0.0008,
+   "units": 0.55,
+   "roi_lo": -0.0682,
+   "roi_hi": 0.0727,
+   "roi_se": 0.0354,
+   "se_null": 0.0371,
+   "luck_index": 1.048,
+   "skill_prob": 0.5093,
+   "exp_wins": 341.8,
+   "z_wins": -0.059,
+   "p_wins": 0.9525953461607735,
+   "t_roi": 0.022,
+   "p_roi": 0.982088028289464,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 13,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.236,
+   "loso_min_roi": -0.0128,
+   "split_half_odd": -0.0355,
+   "split_half_even": 0.0511,
+   "roi_train": 0.0403,
+   "roi_test": -0.0395,
+   "test_lo": -0.1455,
+   "test_hi": 0.0639,
+   "oos_retention": -0.98,
+   "n_train": 341,
+   "n_test": 334,
+   "by_season": {
+    "2006": {
+     "n": 31,
+     "roi": 0.2845
+    },
+    "2007": {
+     "n": 42,
+     "roi": 0.0336
+    },
+    "2008": {
+     "n": 26,
+     "roi": 0.1318
+    },
+    "2009": {
+     "n": 58,
+     "roi": -0.0305
+    },
+    "2010": {
+     "n": 24,
+     "roi": 0.0688
+    },
+    "2011": {
+     "n": 40,
+     "roi": 0.0649
+    },
+    "2012": {
+     "n": 30,
+     "roi": -0.0955
+    },
+    "2013": {
+     "n": 36,
+     "roi": 0.0188
+    },
+    "2014": {
+     "n": 27,
+     "roi": -0.0768
+    },
+    "2015": {
+     "n": 27,
+     "roi": 0.0687
+    },
+    "2016": {
+     "n": 17,
+     "roi": -0.3191
+    },
+    "2017": {
+     "n": 33,
+     "roi": 0.0396
+    },
+    "2018": {
+     "n": 38,
+     "roi": 0.0229
+    },
+    "2019": {
+     "n": 42,
+     "roi": 0.0037
+    },
+    "2020": {
+     "n": 30,
+     "roi": 0.1418
+    },
+    "2021": {
+     "n": 53,
+     "roi": -0.1856
+    },
+    "2022": {
+     "n": 36,
+     "roi": 0.243
+    },
+    "2023": {
+     "n": 27,
+     "roi": -0.0422
+    },
+    "2024": {
+     "n": 18,
+     "roi": -0.2557
+    },
+    "2025": {
+     "n": 34,
+     "roi": -0.2696
+    },
+    "2026": {
+     "n": 6,
+     "roi": 0.2762
+    }
+   },
+   "strategy": "S02_fade_big_fav_ats",
+   "name": "Fade 10+ point favourites",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.982088028289464,
+   "fdr_rank": 24,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.356,
+   "score": 41.25,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": true,
+    "G8_diversification": true
+   },
+   "gates_passed": 5,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 14
+  },
+  {
+   "n_bets": 597,
+   "n_settled": 581,
+   "wins": 298.0,
+   "pushes": 16.0,
+   "hit_rate": 0.5129,
+   "avg_price": -62.4,
+   "breakeven_rate": 0.5008,
+   "roi": -0.0023,
+   "units": -1.38,
+   "roi_lo": -0.0789,
+   "roi_hi": 0.0741,
+   "roi_se": 0.0387,
+   "se_null": 0.0399,
+   "luck_index": 1.03,
+   "skill_prob": 0.4762,
+   "exp_wins": 299.0,
+   "z_wins": -0.08,
+   "p_wins": 0.9363759076927258,
+   "t_roi": -0.059,
+   "p_roi": 0.9531543995225225,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 10,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.209,
+   "loso_min_roi": -0.0167,
+   "split_half_odd": -0.0294,
+   "split_half_even": 0.0247,
+   "roi_train": 0.0369,
+   "roi_test": -0.0411,
+   "test_lo": -0.1421,
+   "test_hi": 0.0529,
+   "oos_retention": -1.115,
+   "n_train": 297,
+   "n_test": 300,
+   "by_season": {
+    "2006": {
+     "n": 30,
+     "roi": 0.1905
+    },
+    "2007": {
+     "n": 31,
+     "roi": 0.1766
+    },
+    "2008": {
+     "n": 26,
+     "roi": 0.2415
+    },
+    "2009": {
+     "n": 30,
+     "roi": -0.026
+    },
+    "2010": {
+     "n": 30,
+     "roi": 0.1181
+    },
+    "2011": {
+     "n": 32,
+     "roi": -0.059
+    },
+    "2012": {
+     "n": 29,
+     "roi": 0.0819
+    },
+    "2013": {
+     "n": 31,
+     "roi": -0.1179
+    },
+    "2014": {
+     "n": 29,
+     "roi": -0.282
+    },
+    "2015": {
+     "n": 29,
+     "roi": 0.0715
+    },
+    "2016": {
+     "n": 31,
+     "roi": 0.2603
+    },
+    "2017": {
+     "n": 30,
+     "roi": -0.0755
+    },
+    "2018": {
+     "n": 29,
+     "roi": -0.0197
+    },
+    "2019": {
+     "n": 30,
+     "roi": -0.2884
+    },
+    "2020": {
+     "n": 30,
+     "roi": -0.0917
+    },
+    "2021": {
+     "n": 29,
+     "roi": -0.0742
+    },
+    "2022": {
+     "n": 29,
+     "roi": 0.0061
+    },
+    "2023": {
+     "n": 27,
+     "roi": -0.0027
+    },
+    "2024": {
+     "n": 30,
+     "roi": -0.3003
+    },
+    "2025": {
+     "n": 29,
+     "roi": 0.1092
+    },
+    "2026": {
+     "n": 6,
+     "roi": 0.2869
+    }
+   },
+   "strategy": "S06_off_bye_ats",
+   "name": "Back teams off a bye",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.9531543995225225,
+   "fdr_rank": 22,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.695,
+   "score": 38.21,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 15
+  },
+  {
+   "n_bets": 2116,
+   "n_settled": 2056,
+   "wins": 1050.0,
+   "pushes": 60.0,
+   "hit_rate": 0.5107,
+   "avg_price": -62.6,
+   "breakeven_rate": 0.5006,
+   "roi": -0.0054,
+   "units": -11.36,
+   "roi_lo": -0.043,
+   "roi_hi": 0.0334,
+   "roi_se": 0.0196,
+   "se_null": 0.0212,
+   "luck_index": 1.082,
+   "skill_prob": 0.3919,
+   "exp_wins": 1059.4,
+   "z_wins": -0.407,
+   "p_wins": 0.683761589623181,
+   "t_roi": -0.257,
+   "p_roi": 0.7971872326098928,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 9,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.209,
+   "loso_min_roi": -0.0124,
+   "split_half_odd": -0.027,
+   "split_half_even": 0.0156,
+   "roi_train": -0.002,
+   "roi_test": -0.0086,
+   "test_lo": -0.0615,
+   "test_hi": 0.0436,
+   "oos_retention": 4.37,
+   "n_train": 1033,
+   "n_test": 1083,
+   "by_season": {
+    "2006": {
+     "n": 98,
+     "roi": 0.0309
+    },
+    "2007": {
+     "n": 108,
+     "roi": -0.1986
+    },
+    "2008": {
+     "n": 83,
+     "roi": 0.1675
+    },
+    "2009": {
+     "n": 110,
+     "roi": -0.0185
+    },
+    "2010": {
+     "n": 113,
+     "roi": -0.0137
+    },
+    "2011": {
+     "n": 102,
+     "roi": 0.0064
+    },
+    "2012": {
+     "n": 107,
+     "roi": 0.1226
+    },
+    "2013": {
+     "n": 100,
+     "roi": -0.0352
+    },
+    "2014": {
+     "n": 107,
+     "roi": -0.0134
+    },
+    "2015": {
+     "n": 105,
+     "roi": -0.0262
+    },
+    "2016": {
+     "n": 112,
+     "roi": -0.0307
+    },
+    "2017": {
+     "n": 99,
+     "roi": -0.0363
+    },
+    "2018": {
+     "n": 105,
+     "roi": 0.0942
+    },
+    "2019": {
+     "n": 101,
+     "roi": 0.1148
+    },
+    "2020": {
+     "n": 95,
+     "roi": 0.0768
+    },
+    "2021": {
+     "n": 103,
+     "roi": 0.0668
+    },
+    "2022": {
+     "n": 104,
+     "roi": 0.0023
+    },
+    "2023": {
+     "n": 111,
+     "roi": -0.0999
+    },
+    "2024": {
+     "n": 106,
+     "roi": -0.2013
+    },
+    "2025": {
+     "n": 103,
+     "roi": -0.0271
+    },
+    "2026": {
+     "n": 44,
+     "roi": -0.0677
+    }
+   },
+   "strategy": "S22_road_nonconf_dog_ats",
+   "name": "Non-conference road dogs",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.7971872326098928,
+   "fdr_rank": 18,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.31,
+   "score": 51.95,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 16
+  },
+  {
+   "n_bets": 1982,
+   "n_settled": 1957,
+   "wins": 980.0,
+   "pushes": 25.0,
+   "hit_rate": 0.5008,
+   "avg_price": -75.8,
+   "breakeven_rate": 0.4996,
+   "roi": -0.0249,
+   "units": -49.41,
+   "roi_lo": -0.0685,
+   "roi_hi": 0.0179,
+   "roi_se": 0.022,
+   "se_null": 0.0219,
+   "luck_index": 0.992,
+   "skill_prob": 0.1288,
+   "exp_wins": 990.2,
+   "z_wins": -0.458,
+   "p_wins": 0.6467612447630224,
+   "t_roi": -1.147,
+   "p_roi": 0.2515056087676095,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 10,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.445,
+   "loso_min_roi": -0.0347,
+   "split_half_odd": 0.0179,
+   "split_half_even": -0.0691,
+   "roi_train": 0.0111,
+   "roi_test": -0.0514,
+   "test_lo": -0.1099,
+   "test_hi": 0.0055,
+   "oos_retention": -4.612,
+   "n_train": 839,
+   "n_test": 1143,
+   "by_season": {
+    "2006": {
+     "n": 53,
+     "roi": 0.0194
+    },
+    "2007": {
+     "n": 90,
+     "roi": 0.0469
+    },
+    "2008": {
+     "n": 42,
+     "roi": 0.0314
+    },
+    "2009": {
+     "n": 87,
+     "roi": 0.1878
+    },
+    "2010": {
+     "n": 112,
+     "roi": 0.0193
+    },
+    "2011": {
+     "n": 100,
+     "roi": -0.0546
+    },
+    "2012": {
+     "n": 88,
+     "roi": -0.1217
+    },
+    "2013": {
+     "n": 105,
+     "roi": 0.0854
+    },
+    "2014": {
+     "n": 83,
+     "roi": -0.1048
+    },
+    "2015": {
+     "n": 79,
+     "roi": 0.0022
+    },
+    "2016": {
+     "n": 110,
+     "roi": -0.059
+    },
+    "2017": {
+     "n": 128,
+     "roi": 0.0086
+    },
+    "2018": {
+     "n": 101,
+     "roi": -0.1077
+    },
+    "2019": {
+     "n": 105,
+     "roi": 0.0114
+    },
+    "2020": {
+     "n": 81,
+     "roi": -0.166
+    },
+    "2021": {
+     "n": 104,
+     "roi": -0.0406
+    },
+    "2022": {
+     "n": 135,
+     "roi": 0.0014
+    },
+    "2023": {
+     "n": 111,
+     "roi": -0.0101
+    },
+    "2024": {
+     "n": 112,
+     "roi": -0.0266
+    },
+    "2025": {
+     "n": 97,
+     "roi": -0.0327
+    },
+    "2026": {
+     "n": 59,
+     "roi": -0.3208
+    }
+   },
+   "strategy": "S20_model_edge_total",
+   "name": "K1 model total edge >= 3.0",
+   "family": "model",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.2515056087676095,
+   "fdr_rank": 7,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.432,
+   "score": 31.55,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 17
+  },
+  {
+   "n_bets": 279,
+   "n_settled": 272,
+   "wins": 134.0,
+   "pushes": 7.0,
+   "hit_rate": 0.4926,
+   "avg_price": -59.9,
+   "breakeven_rate": 0.4995,
+   "roi": -0.0401,
+   "units": -11.2,
+   "roi_lo": -0.1471,
+   "roi_hi": 0.0653,
+   "roi_se": 0.0537,
+   "se_null": 0.0583,
+   "luck_index": 1.087,
+   "skill_prob": 0.2273,
+   "exp_wins": 139.4,
+   "z_wins": -0.643,
+   "p_wins": 0.5205254436684141,
+   "t_roi": -0.696,
+   "p_roi": 0.48652277319962467,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 9,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.391,
+   "loso_min_roi": -0.0653,
+   "split_half_odd": 0.0241,
+   "split_half_even": -0.1013,
+   "roi_train": -0.0147,
+   "roi_test": -0.0572,
+   "test_lo": -0.1998,
+   "test_hi": 0.0752,
+   "oos_retention": 3.883,
+   "n_train": 112,
+   "n_test": 167,
+   "by_season": {
+    "2006": {
+     "n": 7,
+     "roi": -0.1528
+    },
+    "2007": {
+     "n": 6,
+     "roi": 0.0451
+    },
+    "2008": {
+     "n": 9,
+     "roi": 0.0038
+    },
+    "2009": {
+     "n": 8,
+     "roi": -0.029
+    },
+    "2010": {
+     "n": 9,
+     "roi": -0.5544
+    },
+    "2011": {
+     "n": 9,
+     "roi": -0.1321
+    },
+    "2012": {
+     "n": 16,
+     "roi": 0.1148
+    },
+    "2013": {
+     "n": 16,
+     "roi": 0.2129
+    },
+    "2014": {
+     "n": 16,
+     "roi": -0.0217
+    },
+    "2015": {
+     "n": 16,
+     "roi": 0.0394
+    },
+    "2016": {
+     "n": 16,
+     "roi": -0.2625
+    },
+    "2017": {
+     "n": 14,
+     "roi": -0.0932
+    },
+    "2018": {
+     "n": 15,
+     "roi": -0.2913
+    },
+    "2019": {
+     "n": 15,
+     "roi": 0.0478
+    },
+    "2020": {
+     "n": 13,
+     "roi": 0.4754
+    },
+    "2021": {
+     "n": 16,
+     "roi": 0.1508
+    },
+    "2022": {
+     "n": 16,
+     "roi": -0.0384
+    },
+    "2023": {
+     "n": 17,
+     "roi": -0.1019
+    },
+    "2024": {
+     "n": 19,
+     "roi": -0.1981
+    },
+    "2025": {
+     "n": 19,
+     "roi": 0.0161
+    },
+    "2026": {
+     "n": 7,
+     "roi": -0.4545
+    }
+   },
+   "strategy": "S05_short_rest_fade_ats",
+   "name": "Fade teams on <= 4 days rest",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.48652277319962467,
+   "fdr_rank": 12,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.174,
+   "score": 43.43,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 18
+  },
+  {
+   "n_bets": 1032,
+   "n_settled": 1014,
+   "wins": 504.0,
+   "pushes": 18.0,
+   "hit_rate": 0.497,
+   "avg_price": -77.2,
+   "breakeven_rate": 0.5,
+   "roi": -0.0332,
+   "units": -34.27,
+   "roi_lo": -0.093,
+   "roi_hi": 0.0281,
+   "roi_se": 0.0308,
+   "se_null": 0.0303,
+   "luck_index": 0.981,
+   "skill_prob": 0.1407,
+   "exp_wins": 516.0,
+   "z_wins": -0.749,
+   "p_wins": 0.45410645962510165,
+   "t_roi": -1.106,
+   "p_roi": 0.26866681179346363,
+   "seasons": 20,
+   "first_season": 2006,
+   "last_season": 2025,
+   "pos_seasons": 7,
+   "n_seasons": 20,
+   "max_season_profit_share": 0.324,
+   "loso_min_roi": -0.0508,
+   "split_half_odd": -0.0352,
+   "split_half_even": -0.0311,
+   "roi_train": 0.0005,
+   "roi_test": -0.0617,
+   "test_lo": -0.1467,
+   "test_hi": 0.0199,
+   "oos_retention": -121.528,
+   "n_train": 473,
+   "n_test": 559,
+   "by_season": {
+    "2006": {
+     "n": 47,
+     "roi": -0.0975
+    },
+    "2007": {
+     "n": 48,
+     "roi": -0.1517
+    },
+    "2008": {
+     "n": 42,
+     "roi": -0.0847
+    },
+    "2009": {
+     "n": 48,
+     "roi": -0.0197
+    },
+    "2010": {
+     "n": 48,
+     "roi": -0.1063
+    },
+    "2011": {
+     "n": 48,
+     "roi": -0.0567
+    },
+    "2012": {
+     "n": 48,
+     "roi": 0.0325
+    },
+    "2013": {
+     "n": 48,
+     "roi": 0.096
+    },
+    "2014": {
+     "n": 48,
+     "roi": 0.3283
+    },
+    "2015": {
+     "n": 48,
+     "roi": 0.0523
+    },
+    "2016": {
+     "n": 48,
+     "roi": -0.1879
+    },
+    "2017": {
+     "n": 48,
+     "roi": 0.2581
+    },
+    "2018": {
+     "n": 48,
+     "roi": 0.1041
+    },
+    "2019": {
+     "n": 48,
+     "roi": -0.214
+    },
+    "2020": {
+     "n": 48,
+     "roi": -0.1659
+    },
+    "2021": {
+     "n": 64,
+     "roi": -0.0246
+    },
+    "2022": {
+     "n": 63,
+     "roi": 0.1087
+    },
+    "2023": {
+     "n": 64,
+     "roi": -0.1013
+    },
+    "2024": {
+     "n": 64,
+     "roi": -0.2281
+    },
+    "2025": {
+     "n": 64,
+     "roi": -0.1381
+    }
+   },
+   "strategy": "S10_late_season_under",
+   "name": "Weeks 15-18 unders",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.26866681179346363,
+   "fdr_rank": 8,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.295,
+   "score": 23.87,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 19
+  },
+  {
+   "n_bets": 1889,
+   "n_settled": 1882,
+   "wins": 397.0,
+   "pushes": 7.0,
+   "hit_rate": 0.2109,
+   "avg_price": 381.4,
+   "breakeven_rate": 0.2215,
+   "roi": -0.0891,
+   "units": -168.23,
+   "roi_lo": -0.1692,
+   "roi_hi": -0.0066,
+   "roi_se": 0.0424,
+   "se_null": 0.0445,
+   "luck_index": 1.048,
+   "skill_prob": 0.0179,
+   "exp_wins": 418.4,
+   "z_wins": -1.195,
+   "p_wins": 0.23193092828217665,
+   "t_roi": -2.105,
+   "p_roi": 0.035319894390022366,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 5,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.373,
+   "loso_min_roi": -0.1085,
+   "split_half_odd": -0.07,
+   "split_half_even": -0.11,
+   "roi_train": -0.0557,
+   "roi_test": -0.1225,
+   "test_lo": -0.2333,
+   "test_hi": -0.0081,
+   "oos_retention": 2.2,
+   "n_train": 946,
+   "n_test": 943,
+   "by_season": {
+    "2006": {
+     "n": 81,
+     "roi": 0.3458
+    },
+    "2007": {
+     "n": 108,
+     "roi": -0.1884
+    },
+    "2008": {
+     "n": 83,
+     "roi": -0.2053
+    },
+    "2009": {
+     "n": 121,
+     "roi": -0.0187
+    },
+    "2010": {
+     "n": 82,
+     "roi": 0.1584
+    },
+    "2011": {
+     "n": 110,
+     "roi": -0.1186
+    },
+    "2012": {
+     "n": 91,
+     "roi": -0.342
+    },
+    "2013": {
+     "n": 95,
+     "roi": -0.0479
+    },
+    "2014": {
+     "n": 96,
+     "roi": -0.2
+    },
+    "2015": {
+     "n": 79,
+     "roi": 0.1758
+    },
+    "2016": {
+     "n": 67,
+     "roi": -0.2546
+    },
+    "2017": {
+     "n": 89,
+     "roi": -0.2298
+    },
+    "2018": {
+     "n": 94,
+     "roi": -0.0497
+    },
+    "2019": {
+     "n": 90,
+     "roi": -0.0999
+    },
+    "2020": {
+     "n": 108,
+     "roi": -0.2657
+    },
+    "2021": {
+     "n": 115,
+     "roi": -0.026
+    },
+    "2022": {
+     "n": 82,
+     "roi": -0.2822
+    },
+    "2023": {
+     "n": 77,
+     "roi": 0.0857
+    },
+    "2024": {
+     "n": 87,
+     "roi": -0.1466
+    },
+    "2025": {
+     "n": 104,
+     "roi": -0.1635
+    },
+    "2026": {
+     "n": 30,
+     "roi": 0.4533
+    }
+   },
+   "strategy": "S15_ml_dog_lottery",
+   "name": "Long-shot underdog ML (control)",
+   "family": "moneyline",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.035319894390022366,
+   "fdr_rank": 1,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.942,
+   "score": 35.53,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": false
+   },
+   "gates_passed": 3,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "negative_control",
+   "rank": 20
+  },
+  {
+   "n_bets": 1893,
+   "n_settled": 1844,
+   "wins": 921.0,
+   "pushes": 49.0,
+   "hit_rate": 0.4995,
+   "avg_price": -65.4,
+   "breakeven_rate": 0.501,
+   "roi": -0.0286,
+   "units": -54.17,
+   "roi_lo": -0.0688,
+   "roi_hi": 0.0116,
+   "roi_se": 0.0208,
+   "se_null": 0.0224,
+   "luck_index": 1.074,
+   "skill_prob": 0.0847,
+   "exp_wins": 948.4,
+   "z_wins": -1.262,
+   "p_wins": 0.20693521763654843,
+   "t_roi": -1.296,
+   "p_roi": 0.19489848461536696,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 5,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.372,
+   "loso_min_roi": -0.0359,
+   "split_half_odd": -0.0514,
+   "split_half_even": -0.0045,
+   "roi_train": -0.0215,
+   "roi_test": -0.0342,
+   "test_lo": -0.0886,
+   "test_hi": 0.0203,
+   "oos_retention": 1.591,
+   "n_train": 826,
+   "n_test": 1067,
+   "by_season": {
+    "2006": {
+     "n": 64,
+     "roi": 0.1801
+    },
+    "2007": {
+     "n": 90,
+     "roi": -0.0418
+    },
+    "2008": {
+     "n": 59,
+     "roi": -0.1513
+    },
+    "2009": {
+     "n": 86,
+     "roi": -0.0927
+    },
+    "2010": {
+     "n": 85,
+     "roi": -0.0078
+    },
+    "2011": {
+     "n": 90,
+     "roi": -0.0155
+    },
+    "2012": {
+     "n": 92,
+     "roi": -0.0124
+    },
+    "2013": {
+     "n": 91,
+     "roi": -0.0483
+    },
+    "2014": {
+     "n": 83,
+     "roi": 0.0058
+    },
+    "2015": {
+     "n": 86,
+     "roi": -0.0173
+    },
+    "2016": {
+     "n": 81,
+     "roi": -0.0985
+    },
+    "2017": {
+     "n": 100,
+     "roi": -0.0668
+    },
+    "2018": {
+     "n": 89,
+     "roi": 0.0252
+    },
+    "2019": {
+     "n": 101,
+     "roi": -0.0981
+    },
+    "2020": {
+     "n": 107,
+     "roi": 0.084
+    },
+    "2021": {
+     "n": 111,
+     "roi": -0.0031
+    },
+    "2022": {
+     "n": 103,
+     "roi": 0.0748
+    },
+    "2023": {
+     "n": 106,
+     "roi": -0.1206
+    },
+    "2024": {
+     "n": 111,
+     "roi": -0.0901
+    },
+    "2025": {
+     "n": 114,
+     "roi": -0.0119
+    },
+    "2026": {
+     "n": 44,
+     "roi": -0.144
+    }
+   },
+   "strategy": "S01_home_dog_ats",
+   "name": "Home underdogs vs the spread",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.19489848461536696,
+   "fdr_rank": 5,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.454,
+   "score": 34.78,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 21
+  },
+  {
+   "n_bets": 2550,
+   "n_settled": 2491,
+   "wins": 1235.0,
+   "pushes": 59.0,
+   "hit_rate": 0.4958,
+   "avg_price": -48.4,
+   "breakeven_rate": 0.4974,
+   "roi": -0.0288,
+   "units": -73.45,
+   "roi_lo": -0.0634,
+   "roi_hi": 0.0056,
+   "roi_se": 0.0178,
+   "se_null": 0.0194,
+   "luck_index": 1.09,
+   "skill_prob": 0.0528,
+   "exp_wins": 1268.3,
+   "z_wins": -1.321,
+   "p_wins": 0.1866428619551188,
+   "t_roi": -1.501,
+   "p_roi": 0.13326065353700822,
+   "seasons": 21,
+   "first_season": 2006,
+   "last_season": 2026,
+   "pos_seasons": 7,
+   "n_seasons": 21,
+   "max_season_profit_share": 0.275,
+   "loso_min_roi": -0.0345,
+   "split_half_odd": -0.0122,
+   "split_half_even": -0.0464,
+   "roi_train": -0.0334,
+   "roi_test": -0.0251,
+   "test_lo": -0.0736,
+   "test_hi": 0.0254,
+   "oos_retention": 0.752,
+   "n_train": 1132,
+   "n_test": 1418,
+   "by_season": {
+    "2006": {
+     "n": 98,
+     "roi": -0.1853
+    },
+    "2007": {
+     "n": 133,
+     "roi": 0.0211
+    },
+    "2008": {
+     "n": 82,
+     "roi": -0.0316
+    },
+    "2009": {
+     "n": 134,
+     "roi": 0.0062
+    },
+    "2010": {
+     "n": 127,
+     "roi": 0.0508
+    },
+    "2011": {
+     "n": 123,
+     "roi": -0.1029
+    },
+    "2012": {
+     "n": 110,
+     "roi": -0.0462
+    },
+    "2013": {
+     "n": 111,
+     "roi": 0.0186
+    },
+    "2014": {
+     "n": 113,
+     "roi": -0.0541
+    },
+    "2015": {
+     "n": 101,
+     "roi": -0.0532
+    },
+    "2016": {
+     "n": 103,
+     "roi": 0.0948
+    },
+    "2017": {
+     "n": 120,
+     "roi": 0.0867
+    },
+    "2018": {
+     "n": 129,
+     "roi": -0.0682
+    },
+    "2019": {
+     "n": 153,
+     "roi": -0.0554
+    },
+    "2020": {
+     "n": 139,
+     "roi": -0.0905
+    },
+    "2021": {
+     "n": 157,
+     "roi": 0.035
+    },
+    "2022": {
+     "n": 132,
+     "roi": -0.1097
+    },
+    "2023": {
+     "n": 141,
+     "roi": -0.0252
+    },
+    "2024": {
+     "n": 138,
+     "roi": -0.0148
+    },
+    "2025": {
+     "n": 139,
+     "roi": -0.054
+    },
+    "2026": {
+     "n": 67,
+     "roi": -0.0572
+    }
+   },
+   "strategy": "S19_model_edge_spread",
+   "name": "K1 model spread edge >= 2.5",
+   "family": "model",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.13326065353700822,
+   "fdr_rank": 4,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.454,
+   "score": 30.64,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 22
+  },
+  {
+   "n_bets": 221,
+   "n_settled": 218,
+   "wins": 100.0,
+   "pushes": 3.0,
+   "hit_rate": 0.4587,
+   "avg_price": -82.1,
+   "breakeven_rate": 0.5013,
+   "roi": -0.1083,
+   "units": -23.93,
+   "roi_lo": -0.2469,
+   "roi_hi": 0.0266,
+   "roi_se": 0.0697,
+   "se_null": 0.0653,
+   "luck_index": 0.936,
+   "skill_prob": 0.0602,
+   "exp_wins": 110.8,
+   "z_wins": -1.453,
+   "p_wins": 0.14632744303746748,
+   "t_roi": -1.671,
+   "p_roi": 0.09469373382610824,
+   "seasons": 20,
+   "first_season": 2006,
+   "last_season": 2025,
+   "pos_seasons": 8,
+   "n_seasons": 20,
+   "max_season_profit_share": 0.241,
+   "loso_min_roi": -0.1436,
+   "split_half_odd": -0.1437,
+   "split_half_even": -0.0744,
+   "roi_train": -0.2211,
+   "roi_test": 0.0258,
+   "test_lo": -0.1645,
+   "test_hi": 0.1946,
+   "oos_retention": -0.117,
+   "n_train": 120,
+   "n_test": 101,
+   "by_season": {
+    "2006": {
+     "n": 9,
+     "roi": -0.6633
+    },
+    "2007": {
+     "n": 10,
+     "roi": -0.6014
+    },
+    "2008": {
+     "n": 15,
+     "roi": -0.2225
+    },
+    "2009": {
+     "n": 15,
+     "roi": 0.0391
+    },
+    "2010": {
+     "n": 19,
+     "roi": -0.18
+    },
+    "2011": {
+     "n": 8,
+     "roi": -0.2668
+    },
+    "2012": {
+     "n": 7,
+     "roi": 0.3727
+    },
+    "2013": {
+     "n": 18,
+     "roi": -0.621
+    },
+    "2014": {
+     "n": 11,
+     "roi": -0.1232
+    },
+    "2015": {
+     "n": 8,
+     "roi": 0.4603
+    },
+    "2016": {
+     "n": 13,
+     "roi": 0.2056
+    },
+    "2017": {
+     "n": 16,
+     "roi": 0.3446
+    },
+    "2018": {
+     "n": 7,
+     "roi": 0.1056
+    },
+    "2019": {
+     "n": 6,
+     "roi": 0.6296
+    },
+    "2020": {
+     "n": 3,
+     "roi": -1.0
+    },
+    "2021": {
+     "n": 8,
+     "roi": -0.0244
+    },
+    "2022": {
+     "n": 16,
+     "roi": 0.2071
+    },
+    "2023": {
+     "n": 4,
+     "roi": -0.5227
+    },
+    "2024": {
+     "n": 13,
+     "roi": -0.051
+    },
+    "2025": {
+     "n": 15,
+     "roi": -0.4977
+    }
+   },
+   "strategy": "S08_cold_under",
+   "name": "Freezing-weather unders",
+   "family": "total",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.09469373382610824,
+   "fdr_rank": 2,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.237,
+   "score": 11.49,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": true,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 4,
+   "tier": "C",
+   "verdict": "Watchlist \u2014 not distinguishable from luck",
+   "tier_rank": 2,
+   "role": "candidate",
+   "rank": 23
+  },
+  {
+   "n_bets": 228,
+   "n_settled": 224,
+   "wins": 120.0,
+   "pushes": 4.0,
+   "hit_rate": 0.5357,
+   "avg_price": -77.4,
+   "breakeven_rate": 0.5038,
+   "roi": 0.0354,
+   "units": 8.07,
+   "roi_lo": -0.0743,
+   "roi_hi": 0.1416,
+   "roi_se": 0.0556,
+   "se_null": 0.0641,
+   "luck_index": 1.152,
+   "skill_prob": 0.7376,
+   "exp_wins": 114.9,
+   "z_wins": 0.679,
+   "p_wins": 0.4968645322176126,
+   "t_roi": 0.557,
+   "p_roi": 0.5773856108642801,
+   "seasons": 1,
+   "first_season": 2021,
+   "last_season": 2021,
+   "pos_seasons": 1,
+   "n_seasons": 1,
+   "max_season_profit_share": 1.0,
+   "loso_min_roi": null,
+   "split_half_odd": 0.0354,
+   "split_half_even": null,
+   "roi_train": null,
+   "roi_test": 0.0354,
+   "test_lo": -0.0749,
+   "test_hi": 0.1416,
+   "oos_retention": null,
+   "n_train": 0,
+   "n_test": 228,
+   "by_season": {
+    "2021": {
+     "n": 228,
+     "roi": 0.0354
+    }
+   },
+   "strategy": "S25_line_movement_steam",
+   "name": "Follow open-to-close line moves",
+   "family": "spread",
+   "fdr_reject": false,
+   "fdr_threshold": 0.1,
+   "fdr_p": 0.5773856108642801,
+   "fdr_rank": 14,
+   "fdr_wins_reject": false,
+   "max_abs_corr": 0.191,
+   "score": 61.23,
+   "gates": {
+    "G1_priced": true,
+    "G2_no_lookahead": true,
+    "G3_sample": false,
+    "G4_significance": false,
+    "G5_out_of_sample": false,
+    "G6_economics": false,
+    "G7_stability": false,
+    "G8_diversification": true
+   },
+   "gates_passed": 3,
+   "tier": "F",
+   "verdict": "Rejected \u2014 fails sample or integrity gates",
+   "tier_rank": 3,
+   "role": "candidate",
+   "rank": 24
+  }
+ ]
+}

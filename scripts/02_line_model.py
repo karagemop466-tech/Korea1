@@ -33,7 +33,7 @@ from lib import common as C
 from lib.data import load_games, add_rest_days, add_streaks, add_trailing_form, home_margin
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "data", "lines.json")
+OUT = os.path.join(ROOT, "data", "lab", "lines.json")
 
 K_ELO = 20.0
 HFA_ELO = 48.0          # prior value; re-estimated from data below before it is used in play

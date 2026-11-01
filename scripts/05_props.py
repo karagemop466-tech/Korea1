@@ -41,7 +41,7 @@ from lib import common as C
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "data", "raw")
-OUT = os.path.join(ROOT, "data", "props.json")
+OUT = os.path.join(ROOT, "data", "lab", "props.json")
 SEASONS = (2021, 2022)
 
 

@@ -32,7 +32,7 @@ from lib.data import (load_games, add_rest_days, add_streaks, add_trailing_form,
                       home_margin, DIVISIONS)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "data", "strategies.json")
+OUT = os.path.join(ROOT, "data", "lab", "strategies.json")
 STD_PRICE = -110.0
 IN_SAMPLE = (2012, 2017)
 OUT_SAMPLE = (2018, 2021)
@@ -365,7 +365,7 @@ def main():
     games = add_streaks(games)
     games = add_trailing_form(games)
     # attach model lines produced by 02_line_model.py
-    with open(os.path.join(ROOT, "data", "lines.json")) as f:
+    with open(os.path.join(ROOT, "data", "lab", "lines.json")) as f:
         lines = json.load(f)
     model = {r["game_key"]: r for r in lines["board"]}
     # the board only covers one season; recompute the model on the full history instead

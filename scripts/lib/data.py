@@ -5,7 +5,7 @@ import csv
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-GAMES = os.path.join(ROOT, "data", "derived", "games.csv")
+GAMES = os.path.join(ROOT, "data", "lab", "games.csv")   # replication annex output
 
 
 def _num(v):

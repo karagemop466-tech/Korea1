@@ -20,7 +20,7 @@ import math
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA = os.path.join(ROOT, "data")
+DATA = os.path.join(ROOT, "data", "lab")
 W_CLV, W_RET, W_DSR = 0.5, 0.3, 0.2
 N0 = 400.0
 

@@ -27,7 +27,8 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
-OUT = os.path.join(DATA, "verification.json")
+LAB = os.path.join(DATA, "lab")
+OUT = os.path.join(LAB, "verification.json")
 checks = []
 
 
@@ -62,7 +63,7 @@ def main():
                "reference file missing - re-run scripts/00_ingest.py", "NFLVERSE-TEAMS")
 
     # ---------- V03 integrity
-    with open(os.path.join(DATA, "derived", "integrity.json")) as f:
+    with open(os.path.join(LAB, "integrity.json")) as f:
         integ = json.load(f)
     ok = integ["rows_included"] >= 2800
     ex_txt = "; ".join(f"{v} {k}" for k, v in integ["excluded"].items()) or "none"
@@ -82,7 +83,7 @@ def main():
            "NFLVERSE-PBP vs SBR-10Y")
 
     # ---------- V05 strategy internal consistency
-    with open(os.path.join(DATA, "strategies.json")) as f:
+    with open(os.path.join(LAB, "strategies.json")) as f:
         strat = json.load(f)
     bad = []
     for s in strat["strategies"]:
@@ -107,7 +108,7 @@ def main():
            if not bad_src else f"incomplete: {bad_src}", "data/sources.json")
 
     # ---------- V07 site references (only if the site has been built)
-    docs = os.path.join(ROOT, "docs")
+    docs = os.path.join(ROOT, "lab")
     if os.path.isdir(docs):
         known = {s["id"] for s in src["sources"]}
         referenced = set()
@@ -119,13 +120,13 @@ def main():
         missing = referenced - known
         record("V07", "Every source referenced by the site exists in the register", not missing,
                f"{len(referenced)} distinct source ids referenced by the site"
-               + (f"; unknown: {sorted(missing)}" if missing else ""), "docs/*.html")
+               + (f"; unknown: {sorted(missing)}" if missing else ""), "lab/*.html")
     else:
         record("V07", "Every source referenced by the site exists in the register", None or True,
-               "site not built yet - check re-runs during the build", "docs/*.html")
+               "site not built yet - check re-runs during the build", "lab/*.html")
 
     # ---------- V08 gates complete
-    with open(os.path.join(DATA, "validation.json")) as f:
+    with open(os.path.join(LAB, "validation.json")) as f:
         val = json.load(f)
     gate_ids = set(val["gates"].keys())
     problems = []
@@ -147,7 +148,7 @@ def main():
                 if tokens.search(f.read()):
                     hits.append(fn)
     record("V09", "No unfinished-value markers in published pages", not hits,
-           "clean" if not hits else f"found in: {hits}", "docs/*.html")
+           "clean" if not hits else f"found in: {hits}", "lab/*.html")
 
     payload = {
         "run_utc": "2026-11-01",
@@ -156,7 +157,7 @@ def main():
         "failed": sum(1 for c in checks if not c["passed"]),
         "checks": checks,
     }
-    os.makedirs(DATA, exist_ok=True)
+    os.makedirs(LAB, exist_ok=True)
     with open(OUT, "w") as f:
         json.dump(payload, f, indent=2)
 

@@ -11,8 +11,9 @@ Inputs (pinned, hashed, re-downloadable):
 
 Outputs:
   data/raw_manifest.json      provenance + SHA-256 of every raw byte used
-  data/derived/games.csv      one row per game, analysis-ready
-  data/derived/integrity.json gate-G0 report: what was excluded and why
+  data/lab/games.csv          one row per game, analysis-ready
+  data/lab/integrity.json     gate-G0 report: what was excluded and why
+  (data/lab/ is the replication annex; the canonical project lives in analysis/ + data/site/)
 
 Design rules (line-by-line verification):
   * Nothing is imputed. A game that fails a check is EXCLUDED and counted.
@@ -32,7 +33,7 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "data", "raw")
-DERIVED = os.path.join(ROOT, "data", "derived")
+DERIVED = os.path.join(ROOT, "data", "lab")
 os.makedirs(RAW, exist_ok=True)
 os.makedirs(DERIVED, exist_ok=True)
 

@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import common as C
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA = os.path.join(ROOT, "data")
+DATA = os.path.join(ROOT, "data", "lab")
 
 GATES = {
     "G1": {"name": "Sample size", "criterion": "n >= 300 graded bets and out-of-sample n >= 100"},
@@ -237,7 +237,7 @@ def seasons_to_detect(edge_per_bet, z=1.959963985, power_z=0.841621234):
 def main():
     with open(os.path.join(DATA, "strategies.json")) as f:
         strat = json.load(f)
-    with open(os.path.join(DATA, "derived", "integrity.json")) as f:
+    with open(os.path.join(DATA, "integrity.json")) as f:
         integ = json.load(f)
 
     items = strat["strategies"]

@@ -20,7 +20,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOCS = os.path.join(ROOT, "docs")
+DOCS = os.path.join(ROOT, "lab")
 NAV = ["index.html", "lines.html", "strategies.html", "correlation.html", "props.html",
        "validation.html", "leaderboard.html", "sources.html", "flagged.html"]
 
@@ -83,7 +83,7 @@ payload = {
     "problems": problems,
     "passed": not problems,
 }
-with open(os.path.join(ROOT, "data", "linkcheck.json"), "w") as f:
+with open(os.path.join(ROOT, "data", "lab", "linkcheck.json"), "w") as f:
     json.dump(payload, f, indent=2)
 
 print(f"{len(pages)} pages, {counts['internal_links']} internal links, "
