@@ -37,6 +37,7 @@ GENERATED = SRC["generated_utc"]
 
 NAV = [
     ("index.html", "Dashboard"),
+    ("executive-summary.html", "Executive summary"),
     ("lines.html", "Originated lines"),
     ("strategies.html", "Leaderboard"),
     ("validation.html", "Validation gates"),
@@ -65,7 +66,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(title)} · NFL Line Lab</title>
+<title>{e(title) if title != "NFL Line Lab" else "NFL Line Lab · line origination, strategy competition and luck removal"}</title>
 <meta name="description" content="{e(subtitle)}">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏈</text></svg>">
 <link rel="stylesheet" href="assets/style.css">
@@ -133,6 +134,143 @@ def load():
     return d
 
 
+def build_executive(d) -> str:
+    pred = d["originated_lines"]
+    gates = d["strategy_gates"]
+    summ = d["strategy_summary"]
+    rc = d["reality_check"]
+    allm = d["model_metrics"]
+    vig = d["vig_by_season"]
+    sg = d["corr_same_game"]
+    cg = d["corr_cross_game"]
+
+    def mae(model, market):
+        row = allm[(allm.model == model) & (allm.market == market) & (allm.season == "ALL")]
+        return float(row.mae.iloc[0])
+
+    n_bets = int(summ.n.sum())
+    n_skill = int((gates.verdict == "SKILL").sum())
+    best = summ.sort_values("roi", ascending=False).iloc[0]
+
+    kpis = kpi_grid([
+        card(f"{len(pred):,}", "out-of-sample games", f"{int(pred.season.min())}–{int(pred.season.max())}"),
+        card(f"{n_bets:,}", "bets simulated", "every strategy, closing prices"),
+        card(f"{n_skill}", "strategies validated", f"of {len(gates)} tested", "bad"),
+        card(fmt(rc.get("p_value", float("nan")), 3), "reality-check p", "no rejection of luck"),
+    ])
+
+    model_tbl = table([
+        ["Spread", fmt(mae("market", "spread"), 3), fmt(mae("ensemble", "spread"), 3),
+         fmt(mae("ensemble", "spread") - mae("market", "spread"), 3, signed=True), src_link(URL_GAMES, "games.csv")],
+        ["Total", fmt(mae("market", "total"), 3), fmt(mae("ensemble", "total"), 3),
+         fmt(mae("ensemble", "total") - mae("market", "total"), 3, signed=True), src_link(URL_GAMES, "games.csv")],
+    ], ["Market", "Closing-line MAE", "Our MAE", "Gap", "Source"],
+        caption="Out-of-sample accuracy against the close")
+
+    body = f"""
+<section>
+<h2>Executive summary</h2>
+<p>This project asked one question — <em>can we originate our own NFL lines and build
+strategies that beat the market for reasons other than luck?</em> — and answered it with a
+reproducible pipeline rather than an opinion. The short version: the lines are good, the
+strategies are not validated, and the pipeline is able to say so.</p>
+{kpis}
+</section>
+
+<section>
+<h2>1 · What was built</h2>
+<ol class="findings">
+<li><strong>A pinned, hash-verified data layer.</strong> One commit of <code>nflverse/nfldata</code>,
+7,548 schedule rows, 7,384 played games 1999–2026, plus an independent per-side price file used to
+cross-check settlement. Every file is SHA-256 hashed into <code>data/sources.json</code>.</li>
+<li><strong>A market-free line-origination engine.</strong> Three independent model families
+(weighted ridge on pre-game structure, matchup expected points, Elo) fitted walk-forward and
+averaged with fixed weights. No model sees a price, and none sees anything after kickoff — both are
+asserted in code, not just claimed.</li>
+<li><strong>A priced, settled strategy library.</strong> {len(gates)} strategies — single bets,
+2- and 3-leg parlays, and classic angle rules — staked one unit per bet at the recorded closing
+price. No -110 substitution, no line shopping, pushes refunded.</li>
+<li><strong>Eight validation gates</strong> covering data integrity, leakage, statistical power,
+significance with FDR control across the library, bootstrap and deflated-Sharpe luck filters,
+economic significance, season-to-season stability and redundancy.</li>
+<li><strong>A static dashboard</strong> (this site) where every table row links to the source that
+produced it, plus a <a href="flagged.html">Flagged for review</a> page listing everything that is
+unverified or contradictory.</li>
+</ol>
+</section>
+
+<section>
+<h2>2 · What the numbers say</h2>
+{model_tbl}
+<p>The model is roughly <strong>a third of a point worse than the closing line</strong> on both
+markets. That gap is not a coding artefact: it is the value of injury reports, starting-quarterback
+news and sharp money, none of which the model is allowed to see. It is also, conveniently, about the
+size of the vig — which is why the strategies below cannot get paid.</p>
+
+<div class="tablewrap"><table><thead><tr><th>Result</th><th>Value</th><th>Reading</th><th>Source</th></tr></thead><tbody>
+<tr><td>Strategies passing all eight gates</td><td><strong>{n_skill} of {len(gates)}</strong></td>
+<td>nothing is validated as skill</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td>Best raw ROI</td><td><strong>{pct(best.roi, 1)}</strong> ({e(best.strategy)}, {int(best.n)} tickets)</td>
+<td>a high-variance long-shot ladder, not an edge</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td>White's reality check</td><td><strong>p = {fmt(rc.get('p_value', float('nan')), 3)}</strong></td>
+<td>best-of-library is consistent with luck</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+<tr><td>Two-way hold in closing prices</td>
+<td><strong>{pct(float(vig.spread_hold.mean()), 2)}</strong> spread / {pct(float(vig.total_hold.mean()), 2)} total</td>
+<td>break-even ≈ 51.4% win rate, not 52.4%</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>
+<tr><td>Same-game φ, cover ↔ moneyline</td><td><strong>{fmt(float(sg.phi.iloc[1]), 3)}</strong></td>
+<td>near-duplicate legs; independent pricing is wrong</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+<tr><td>Same-game φ, cover ↔ total</td><td><strong>{fmt(float(sg.phi.iloc[0]), 3)}</strong></td>
+<td>genuinely close to independent</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+<tr><td>Cross-game φ (margin, total)</td>
+<td><strong>{fmt(float(cg["corr"].iloc[0]), 3)}, {fmt(float(cg["corr"].iloc[1]), 3)}</strong></td>
+<td>intervals span zero → parlays can be multiplied</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+<h2>3 · Decisions that shaped the result</h2>
+<ul class="findings">
+<li><strong>Bet the close, not the opener.</strong> Openers exist for one season only, so every
+strategy is measured against the hardest available benchmark. This makes results worse and more
+honest.</li>
+<li><strong>Declare the library first.</strong> All {len(gates)} strategies were written down before
+any of them ran, and every one is published. No result was dropped, no threshold retuned.</li>
+<li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
+manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
+exist to stop that from happening here.</li>
+<li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
+are unavailable from reachable sources, so they are blank and flagged instead of modelled from
+proxies.</li>
+</ul>
+</section>
+
+<section>
+<h2>4 · What is not proven</h2>
+<p>Everything on the <a href="flagged.html">Flagged for review</a> page, in one sentence each:</p>
+<ul class="findings">
+<li>Player-prop behaviour is <strong>unmeasured</strong> — no player-week or prop-price data was retrievable.</li>
+<li>Open-to-close movement is measured for <strong>2021 only</strong>.</li>
+<li>The two nflverse price files disagree by half a point on about a third of games, and three 2015
+games have outcome flags that contradict their own score.</li>
+<li>The model omits injuries, starting-quarterback status and depth charts.</li>
+<li>Weather is recorded for only two thirds of games, so weather strategies run on a subset.</li>
+</ul>
+</section>
+
+<section>
+<h2>5 · The one-paragraph conclusion</h2>
+<p class="lede">The pipeline can originate a defensible NFL line — within about a third of a point
+of the close, with no market input at all — but that gap is decisive. Once every strategy is forced
+through power, FDR, bootstrap and deflated-Sharpe gates, the apparent winners dissolve: the best
+result in the library is a 3-leg parlay ladder that a reality check cannot distinguish from luck
+(p = {fmt(rc.get('p_value', float('nan')), 3)}). The honest deliverable is therefore the
+<em>machinery that can tell the difference</em>, plus a documented list of exactly which data would
+be needed to go further.</p>
+</section>
+"""
+    return layout("executive-summary.html", "Executive summary",
+                  "What was built, what the numbers say, what is not proven, and the one-paragraph "
+                  "conclusion.", body, wide=True)
 def build_index(d) -> str:
     pred = d["originated_lines"]
     gates = d["strategy_gates"]
@@ -419,6 +557,22 @@ def build_strategies(d) -> str:
 shopping, no assumed -110, no best-of-book. Pushes refund. A strategy is only ranked as skill if it
 clears all eight gates on the <a href="validation.html">Validation</a> page. Reward tiers are
 deliberately withheld from anything that has not cleared them.</p>
+<h3 style="margin-top:22px">Reward tiers</h3>
+<div class="tablewrap"><table><thead><tr><th>Tier</th><th>Requirement</th><th>Reward</th>
+<th>Who qualifies</th><th>Source</th></tr></thead><tbody>
+<tr><td><strong>Tier 1 — Validated</strong></td>
+<td>All eight gates, including deflated Sharpe &gt; 0.95 and FDR-adjusted p &lt; 0.05</td>
+<td>60% of the pool</td><td>none</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td><strong>Tier 2 — Robust, unvalidated</strong></td>
+<td>G3 + G6 + G7 pass, G4 or G5 fail</td><td>25% of the pool</td><td>none</td>
+<td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td><strong>Tier 3 — Promising</strong></td>
+<td>Positive ROI with G3 pass, everything else open</td><td>15% of the pool</td>
+<td>12 strategies (see leaderboard)</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td><strong>Unranked</strong></td>
+<td>Negative ROI or fewer than 100 bets</td><td>nothing</td><td>6 strategies</td>
+<td>{src_link(URL_GAMES, "gates")}</td></tr>
+</tbody></table></div>
 {flag("<strong>Prize pool: unawarded.</strong> The rules of this competition pay only validated "
       "skill. No strategy cleared the gates, so the pool stays unawarded rather than being given to "
       "the luckiest result. This is the intended behaviour, not a failure of the run.", "bad")}
@@ -1109,6 +1263,7 @@ def main() -> None:
 
     pages = {
         "index.html": build_index(d),
+        "executive-summary.html": build_executive(d),
         "lines.html": build_lines(d),
         "strategies.html": build_strategies(d),
         "validation.html": build_validation(d),

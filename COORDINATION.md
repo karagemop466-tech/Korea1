@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-01T13:30Z
+Last updated: 2026-11-01T14:05Z
 
 ## How to use this board
 
@@ -22,14 +22,15 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
 | T0 | Board bootstrap | **done** | `arena/592a2d62-korea1` | `COORDINATION.md` |
-| T1 | Data acquisition + provenance (raw → processed) | **in progress** | `arena/592a2d62-korea1` | `pipeline/fetch_data.py`, `data/raw/**`, `data/sources.json` |
-| T2 | Line-origination models (spread / total / moneyline) | in progress | `arena/592a2d62-korea1` | `pipeline/models.py`, `data/processed/model_*.csv` |
-| T3 | Strategy library + backtests (single / parlay / props) | in progress | `arena/592a2d62-korea1` | `pipeline/strategies.py`, `pipeline/backtest.py`, `data/processed/strategy_*.csv` |
-| T4 | Validation gates + luck-removal statistics | in progress | `arena/592a2d62-korea1` | `pipeline/validation.py`, `pipeline/stats_tools.py` |
-| T5 | Correlation estimation (legs, same-game, props) | in progress | `arena/592a2d62-korea1` | `pipeline/correlations.py`, `data/processed/corr_*.csv` |
-| T6 | Site render (dashboards, tables, flagged page) | in progress | `arena/592a2d62-korea1` | `docs/**`, `pipeline/render_site.py`, `.github/workflows/**` |
-| T7 | Verification pass + link check | in progress | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
-| T8 | **Final integration + publish** (merge, Pages deploy, PR record) | in progress | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
+| T1 | Data acquisition + provenance (raw → processed) | **done** | `arena/592a2d62-korea1` | `pipeline/fetch_data.py`, `pipeline/build_datasets.py`, `data/raw/**`, `data/sources.json` |
+| T2 | Line-origination models (spread / total / moneyline) | **done** | `arena/592a2d62-korea1` | `pipeline/models.py`, `data/processed/model_*.csv` |
+| T3 | Strategy library + backtests (single / parlay / props) | **done** | `arena/592a2d62-korea1` | `pipeline/strategies.py`, `pipeline/backtest.py`, `data/processed/strategy_*.csv` |
+| T4 | Validation gates + luck-removal statistics | **done** | `arena/592a2d62-korea1` | `pipeline/validation.py`, `pipeline/stats_tools.py` |
+| T5 | Correlation estimation (legs, same-game, props) | **done** | `arena/592a2d62-korea1` | `pipeline/correlations.py`, `data/processed/corr_*.csv` |
+| T6 | Site render (dashboards, tables, flagged page) | **done** | `arena/592a2d62-korea1` | `docs/**`, `pipeline/render_site.py`, `pipeline/render_summary.py`, `.github/workflows/**` |
+| T7 | Verification pass + link check | **done** | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
+| T8 | **Final integration + publish** (merge, Pages deploy, PR record) | **in progress** | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
+| T9 | Player-prop modelling | **needs review** | unowned | blocked: no reachable player-week or prop-price source (see log) |
 
 ---
 
@@ -95,3 +96,51 @@ literally — every claimed scope is claimed by four sessions at once.
   open→close movement study is therefore only possible for 2021 (`initial_lines.csv`, 272 games,
   single book `WSGT`). Every other season can only be measured against the close. This is
   published on the Flagged-for-Review page; no opening line is ever inferred.
+
+### 2026-11-01T13:52Z — T2 line origination — `arena/592a2d62-korea1`
+- Three families (weighted ridge / matchup points / Elo) fitted walk-forward; test season S uses
+  only seasons < S. Ensemble = fixed equal weights, never fitted, so it cannot be tuned to the
+  backtest.
+- No-leakage assertions run inside `build_datasets.py`: no outcome column among the inputs, first
+  appearance of a franchise carries Elo 1500, rows strictly chronological, `fit_season == season`
+  for every published line.
+- **Irregularity found and fixed during development (kept in the log on purpose):** the first
+  opponent-adjusted rating implementation was silently degenerate — with an intercept column the
+  design matrix is exactly collinear with the offence and defence blocks, so the unpenalised
+  intercept absorbed the level term and every team effect was shrunk to zero. Detected by checking
+  the feature's correlation with the outcome (0.222 vs 0.376 for the raw ratings). Fixed by
+  dropping the intercept and adding time decay; correlation now 0.375.
+- A second bug (NumPy slice + array assignment writing a cross-product block instead of one
+  element per row) was caught by the same check.
+- Result, out of sample 2004–2026, 6,073 games: spread MAE **10.5272** vs market **10.2155**;
+  total MAE **10.7267** vs market **10.5273**. Model is behind the close on both markets.
+
+### 2026-11-01T13:58Z — T3/T4 strategy library and gates — `arena/592a2d62-korea1`
+- 18 strategies pre-declared (single bets, 2- and 3-leg parlays, angle rules), 26,168 bets, one
+  unit each at the recorded closing price. `-110` is never substituted for a missing price; rows
+  without a price are dropped and counted.
+- Settlement engine cross-checked against nflverse's own per-side `outcome` column:
+  **13,284 / 13,472 exact (98.605%)** overall, **99.931% where the two files carry the same line**.
+- **Irregularity logged:** `closing_lines.csv` marks the winner on three 2015 games in a way that
+  contradicts the score carried by `games.csv` (which reconciles result and total for all 7,384
+  games): `2015_06_ARI_PIT`, `2015_09_PHI_DAL`, `2015_15_KC_BAL`. The outcome column was therefore
+  not used for settlement; `games.csv` is the settlement source.
+- Result: **0 of 18 strategies pass all eight gates**. Best raw ROI +21.6%
+  (`PARLAY3_EDGE`, 377 tickets). White's reality check **p = 0.144** (18 strategies, 425 weekly
+  blocks). Prize pool published as **unawarded**.
+
+### 2026-11-01T14:02Z — T5 correlations — `arena/592a2d62-korea1`
+- Measured on the settlement data, no imported values: cover↔moneyline φ = 0.676 (near-duplicate
+  legs), cover↔over φ = 0.024, over↔moneyline φ = 0.008, cross-game r = 0.011 (margin) / 0.008
+  (total) with intervals spanning zero, corr(home points, away points) = −0.039.
+- Two-way hold: 2.72% spread / 2.93% total / 2.76% moneyline (low-margin book → break-even ≈51.4%).
+
+### 2026-11-01T14:05Z — T6/T7 site and verification — `arena/592a2d62-korea1`
+- 10 static pages in `docs/`, no CDN or framework. `pipeline/verify_site.py` passes 6 checks per
+  page (every data row has a source link, internal links resolve, no unformatted missing value in
+  a cell, every table captioned, pinned SHA in footer, no external asset) plus 4 data-level checks.
+  **0 failing checks.**
+- **T9 (player props) is marked `needs review` and remains unclaimed:** nflverse release assets are
+  served from `release-assets.githubusercontent.com`, which this environment refuses; every mirror
+  checked stores the files as 132-byte Git-LFS pointers. No player-level number is published — the
+  cells are blank and the gap is on the Flagged-for-Review page. This does not block the merge.
