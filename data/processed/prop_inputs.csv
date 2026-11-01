@@ -1,0 +1,7 @@
+component,available,status,note
+"Player game logs (passing/rushing/receiving yards, receptions, TDs)",NO,UNVERIFIED — source not reachable in this build,"nflverse release assets (`player_stats`, `stats_player`) are served from release-assets.githubusercontent.com, which this environment's egress blocklist refuses; every GitHub mirror checked stores these files as 132-byte Git-LFS pointers. No value was estimated to fill the gap."
+Team scoring totals,YES,VERIFIED,"games.csv home_score/away_score, reconciled 7,384/7,384"
+Game total lines,YES,VERIFIED,"games.csv total_line, 100% present 1999–2025"
+Team total lines,NO,UNVERIFIED — not present in any retrieved source,"nflverse game-level files carry only the full-game total, not the 8-way team total market."
+Player prop prices,NO,UNVERIFIED — not present in any retrieved source,"No retrieved source carries prop prices, so no prop ROI can be computed."
+Correlation of team scoring,YES,VERIFIED,computed in corr_team_totals.csv

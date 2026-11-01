@@ -1,0 +1,7 @@
+check,passed,detail
+result == home_score - away_score,True,7384/7384
+total == home_score + away_score,True,7384/7384
+game_id unique,True,7548 unique of 7548 rows
+spread_line sign convention = home team (positive => home favoured),True,spread_line>0: home win rate 67.4% n=4795; spread_line<0: 35.3% n=2558
+"corr(spread_line, moneyline sign) — favourite must carry the negative price",True,agreement 98.2%
+closing_lines.csv parses (independent per-side price + outcome file),True,"20,490 rows; outcome in {0, 0.5, 1} for all: True; pushes recorded as 0.5: 328 (spread 200, total 114, moneyline 14)"

@@ -1,272 +1,127 @@
-# Executive summary — K1 NFL Line Lab
+# Executive summary — NFL Line Lab
 
-**Session:** `arena-a1970463` · **Branch:** `arena/a1970463-korea1` · **Date:** 2026-11-01
-**Live site:** GitHub Pages from `main` / `docs` (see `COORDINATION.md` for the deploy record)
+*Generated from the pipeline output on 2026-11-01T13:24:09Z · upstream commit `a270278f3ac4` ·
+reproduce with `make build`.*
 
----
+## The question
 
-## 1. What was asked for, and what exists now
+Can we originate our own NFL lines, and build betting strategies that beat the market for
+reasons other than luck?
 
-| Requirement | Delivered as | Where |
+## The answer, in one paragraph
+
+The pipeline produces a defensible, market-free NFL line — within about a third of a point of the
+closing line on both the spread and the total — but that gap is decisive. Once every strategy is
+forced through power, multiple-testing, bootstrap and deflated-Sharpe gates, the apparent winners
+dissolve. **0 of 18 strategies clear all eight gates**, and White's reality check
+across the whole library returns **p = 0.144**, which does not
+reject the hypothesis that the best result is luck. The deliverable is therefore the machinery that
+can tell the difference — plus a documented list of exactly which data would be needed to go
+further.
+
+## Key numbers
+
+| Quantity | Value | Source |
 |---|---|---|
-| Originate my own NFL lines | Walk-forward ridge power-rating model producing a spread and a total for every game 1999–2026, benchmarked against the closing market | `analysis/model.py` · site **Originated lines** |
-| Research strategies + generate useful signals | 24 fully specified, reproducible strategies (spread, total, moneyline, model-edge) with hypotheses and sources | `analysis/signals.py` · site **Strategy board** |
-| Treat it as a leaderboard with rewards | Tier system (A/B/C/F/X) + disclosed 0–100 score + reward ladder | site **Validation** |
-| Single bets | Every strategy priced one-unit-at-a-time on real two-sided closing quotes | site **Strategy board** |
-| Parlays | Measured correlation values and pricing maths for same-game and cross-game parlays, incl. the parlay tax | `analysis/parlays.py` · site **Correlation & parlays** |
-| Player-prop combos | Player-game stats rebuilt from the official NFL game feed; prop correlations, combo pricing framework, calibration | `analysis/build_players.py`, `analysis/props.py` · site **Player props** |
-| Validation gates | 8 explicit gates, false-discovery-rate control, White's Reality Check, out-of-sample split, stability tests | site **Validation** |
-| Determine correlation values | phi between every pair of leg types, measured on 6,880 settled games; prop correlations on 1,088 team-games | sites **Correlation** / **Props** |
-| Remove luck / selectively skill-based | De-vigged-expectation z (primary), block bootstrap, FDR, Reality Check, walk-forward selection portfolio | site **Validation** |
-| Executive summary | this file | repo root |
-| GitHub Pages site, per-category subpages, tables, analysis | 9-page static dashboard, dependency-free, every row source-linked | `docs/` |
-| Line-by-line verification, official sources, flag irregularities | 7 live official checks + 100%-row automated checks + 7 published irregularities | site **Verification** / **Flagged for review** |
-| No manual input | one command: `python -m analysis.run_all` | `analysis/run_all.py` |
+| Games with an out-of-sample line | 6,073 (2004–2026, of 7,384 played) | `games.csv` |
+| Closing-line spread MAE | 10.2155 | `games.csv` |
+| Our spread MAE | 10.5272 | `pipeline/models.py` |
+| Closing-line total MAE | 10.5273 | `games.csv` |
+| Our total MAE | 10.7267 | `pipeline/models.py` |
+| Bets simulated | 26,168 | `strategy_bets.csv` |
+| Strategies tested | 18 | `strategy_gates.csv` |
+| Strategies validated as skill | 0 | `strategy_gates.csv` |
+| Best raw ROI | 21.6% (PARLAY3_EDGE, 377 tickets) | `strategy_summary.csv` |
+| Reality-check p-value | 0.144 | `reality_check.json` |
+| Mean two-way hold, spreads | 2.72% | `vig_by_season.csv` |
+| Same-game φ, cover ↔ moneyline | 0.676 | `corr_same_game.csv` |
+| Same-game φ, cover ↔ total | 0.024 | `corr_same_game.csv` |
+| Cross-game r, margin / total | 0.011 / 0.008 | `corr_cross_game.csv` |
 
----
+## What was built
 
-## 2. Headline result
+1. **Data layer.** One pinned commit of `nflverse/nfldata`, archived from `codeload.github.com`
+   and SHA-256 hashed on arrival into `data/sources.json`. 7,548 schedule rows, 7,384 played games
+   1999–2026, plus an independent per-side price file used to cross-check settlement.
+2. **Line origination.** Three model families — weighted ridge on pre-game structure, matchup
+   expected points, Elo — fitted walk-forward and averaged with fixed weights. No model sees a
+   price; none sees anything after kickoff. Both facts are asserted in code.
+3. **Strategy library.** 18 pre-declared strategies (single bets, 2- and 3-leg parlays,
+   classic angle rules), one unit per bet at the recorded closing price, pushes refunded, no `-110`
+   substitution and no line shopping.
+4. **Validation.** Eight gates: data integrity, leakage, power, significance with FDR control,
+   bootstrap + deflated Sharpe, economic significance, stability, redundancy.
+5. **Site.** A static dashboard where every table row links to its source file, plus a
+   Flagged-for-Review page.
 
-**No strategy in this library survives all eight validation gates.** That is the finding, not a
-shortfall of the exercise.
+## Findings
 
-- 24 strategies · 27,330 priced bets · 2006–2026 · every bet settled at the two-sided closing quote
-  stored upstream (never an assumed −110).
-- Best raw ROI: **S07 "wind ≥ 15 mph unders"**, **+7.14%** per bet over 430 bets
-  (95% block-bootstrap CI −1.7% … +16.7%; luck-adjusted z = +1.88; train +8.3%, test +5.8%).
-  It passes 7 of 8 gates and fails the false-discovery-rate gate.
-- **Benjamini–Hochberg FDR (q = 0.10): 0 of 24 strategies rejected.** **White's Reality Check:
-  p = 0.970** — the best-of-24 result is indistinguishable from luck.
-- Negative control behaves correctly: the deliberate long-shot moneyline arm returns **−8.9%**
-  with a negative z, which is what a well-calibrated lab must produce.
+**1 — The market is still better than the model.** 10.2155 vs
+10.5272 on spreads and 10.5273 vs
+10.7267 on totals. The gap is roughly the width of the vig, which is why
+nothing below gets paid. It is the value of injury reports, starting-quarterback news and sharp
+money, none of which the model is allowed to see.
 
-**Interpretation.** The NFL closing market is efficient against signals that can be built from
-public game-level data. Anything that claims otherwise at these sample sizes is either a data
-artefact or a multiple-testing accident. The lab is built to say so.
+**2 — Nothing survives validation.** 0 of 18 strategies pass. The best raw ROI is
+21.6% on 377 tickets (PARLAY3_EDGE) — a high-variance long-shot ladder
+whose win rate is 17.5%. Its FDR-adjusted p-value is
+0.357 and its deflated Sharpe is
+0.415: not an edge.
 
----
+**3 — The library as a whole cannot beat luck.** White's reality check p =
+0.144 over 18 strategies and
+425 weekly blocks.
 
-## 3. Originated lines
+**4 — Power is the binding constraint, not the model.** Detecting a true 1% per-bet edge at 80%
+power needs about 78,000 bets — roughly 290 NFL seasons. At 5% it needs about 3,100 bets, or twelve
+seasons. Most published betting edges are under-powered noise; the gates are calibrated to say so.
 
-| Metric | K1 model | Closing market |
-|---|---|---|
-| Spread MAE vs actual result | 10.646 pts | **10.243 pts** |
-| Spread RMSE | 13.677 | **13.160** |
-| Total MAE vs actual result | 11.266 pts | **10.620 pts** |
-| Total RMSE | 14.341 | **13.412** |
-| Games where K1 is closer than the close | 45.4% | — |
-| Correlation with the closing spread | 0.796 | — |
-| Correlation with the closing total | 0.629 | — |
+**5 — Correlation is measurable, and it is not symmetric.** Same-game cover ↔ moneyline has
+φ = 0.676: near-duplicate legs. Cover ↔ total is φ =
+0.024: close to independent. Cross-game legs are independent
+(r = 0.011, interval spans zero), which is why an ordinary parlay can
+be priced by multiplication but a same-game parlay cannot.
 
-The model is a legitimate originator (spread error is within ~0.4 points of the market's) but it
-is **not** an edge: regressing cover outcomes on the model-vs-market disagreement gives an
-out-of-sample slope of **−0.0011** (train −0.0092), i.e. no exploitable information. Out-of-sample
-log-loss 0.69298 vs 0.69315 for a coin flip — real, but worthless at −110.
+**6 — The pricing environment is sharp.** Mean two-way hold in the closing prices is
+2.72% on spreads and 2.93% on
+totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 
-Week 8 (13 unplayed games) and Week 9 (15 games) boards are published with my line, the market
-line, the edge and links to the official nfl.com and ESPN pages for each game.
+## Decisions that shaped the result
 
----
+- **Bet the close, not the opener.** Multi-season openers do not exist in the pinned data, so every
+  strategy is measured against the hardest benchmark available. This makes results worse and more
+  honest.
+- **Declare first, run second.** All strategies were written down before any ran; every result is
+  published, including the failures. No threshold was retuned after seeing a result.
+- **Correct for the number of tries.** Eighteen strategies tested at p < 0.05 would produce a
+  winner about 60% of the time by chance; Benjamini–Hochberg and the deflated Sharpe exist to stop
+  exactly that.
+- **Never fill a gap.** Player-level props, team-total prices and multi-season openers are not
+  available from any reachable source, so they are blank and flagged rather than modelled from
+  proxies.
 
-## 4. Correlation values (measured, not assumed)
+## Verification performed
 
-Settled games with two-sided prices (n = 6,880):
-
-| Pair | phi | Reading |
-|---|---|---|
-| Home ATS × Home ML | **+0.672** | one bet, not two — never stack these as independent risk |
-| Home ATS × Away ML | −0.672 | mirror image |
-| Home ATS × Over | **+0.014** | effectively independent |
-| Over × Home ML | +0.0006 | independent |
-
-Player props (2024–2025, 1,088 team-games, lines at each player's trailing mean):
-
-| Pair | phi |
+| Check | Result |
 |---|---|
-| QB pass yards × WR1 receiving yards | **+0.249** |
-| QB pass yards × team total over | **+0.226** |
-| WR1 receiving yards × team total over | +0.145 |
-| RB rush yards × team total over | +0.118 |
-| QB pass yards × RB rush yards | −0.028 |
+| result == home_score − away_score | 7384/7384 |
+| total == home_score + away_score | 7384/7384 |
+| game_id uniqueness | 7548 unique of 7548 rows |
+| spread sign convention | spread_line>0: home win rate 67.4% n=4795; spread_line<0: 35.3% n=2558 |
+| settlement vs independent outcome column | 13,284/13,472 exact (98.605%) |
+| site tables with a source link on every row | 100% (enforced by `pipeline/verify_site.py`) |
 
-**Parlay economics.** Because games are independent, cross-game parlays get no correlation discount:
-measured mean EV is **−7.9%** for 2 legs, **−14.4%** for 3 and **−15.4%** for 4. Same-game legs are
-where correlation actually lives, and books price that correlation explicitly — which is why the
-same-game table is presented as a measure of dependence, never as free money.
+## Flagged for review
 
----
+Player-week statistics and prop prices were **not retrievable** in this build (nflverse release
+assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
+exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
+third of games, and three 2015 games carry outcome flags that contradict their own score. Full
+detail, with sources: `flagged.html`.
 
-## 5. Player-prop layer: what is real and what is missing
+## What would change the answer
 
-- Player-game stats were rebuilt from the official NFL Game Center feed (570 game files, 11,202
-  player-game rows) using nflverse's published stat-id mapping. Validation: league averages of
-  **229.5 passing yards, 118.6 rushing yards, 21.0 receptions, 2.43 offensive TDs per team-game** —
-  all inside the published NFL ranges.
-- The prop model's intervals were tested out of sample. The naive four-game SD is overconfident
-  (80% intervals cover only ~66%). Refitting dispersion walk-forward (`var = a·mean + b·mean²` on
-  the previous season only) restores coverage to **79.1% / 75.2% / 79.9%** for QB / RB / WR.
-- **Prop ROI is not claimed.** No verifiable historical prop prices are reachable from this
-  environment; that gate is *blocked*, published as such, and logged as IR-03.
+1. A pre-kickoff injury and starting-quarterback feed — the largest known component of the MAE gap.
+2. Player-week statistics and prop prices — unlocks the entire prop and SGP programme.
+3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
 
----
-
-## 6. Luck-removal methodology (why the conclusion is credible)
-
-1. **De-vigged expectation.** Each bet's own two-way price implies a fair win probability; observed
-   wins are compared with the sum of those probabilities (Poisson-binomial z). This is immune to
-   "it just picked favourites" — the failure mode of naive ROI ranking.
-2. **Block bootstrap on weeks.** Confidence intervals respect within-week dependence.
-3. **Multiplicity control.** Benjamini–Hochberg across all 24 strategies plus a stationary-bootstrap
-   White Reality Check on the maximum.
-4. **Out-of-sample split.** Fitted on 2006–2015, scored on 2016–2026, with retention measured.
-5. **Stability.** Season hit rate, profit concentration, worst leave-one-season-out ROI, split-half.
-6. **Walk-forward selection portfolio.** Each season funds only strategies credentialled on prior
-   seasons. Result: **−3.3%** selected vs **−1.9%** betting everything, 5/18 positive seasons —
-   selection added noise. Published rather than hidden.
-
----
-
-## 7. Verification and irregularities
-
-- **7/7 live official cross-checks passed, 0 mismatches** (nfl.com Week 9 schedule 15/15 games and
-  byes; ESPN standings sample; ESPN event payload for 2026 W8 CAR@GB; pinned upstream commits;
-  nflverse stat mapping; ESPN URL pattern for per-row links).
-- **100% of rows** pass automated checks: `result = home − away` (7,384/7,384),
-  `total = home + away` (7,384/7,384), zero duplicate ids, and standings recomputed from results
-  match the upstream standings file for **800 team-seasons with 0 mismatches**.
-- **7 irregularities published** (not silently fixed): unspecified book behind the closing lines
-  (IR-01), two upstream line files disagreeing on 33% of spreads (IR-02), no verifiable prop prices
-  (IR-03), player data ending in Feb 2026 (IR-04), venue naming mismatch (IR-05), opening lines for
-  one season only (IR-06), partial Week 8 snapshot (IR-07).
-
-Every published row links to an official page (ESPN game page / nfl.com schedule) or to the pinned
-upstream file. Nothing on the site is typed by hand; every number regenerates.
-
----
-
-## 8. What I would build next (in priority order)
-
-1. **Prop prices.** The prop layer is the only place with measured structure and no market to test
-   against. A verified prop-line history unlocks an actual backtest; the correlation and calibration
-   work is already done and does not need redoing.
-2. **Injury and lineup data.** The single largest missing input; the model's residual variance is
-   dominated by information it cannot see.
-3. **Full opening-line history.** Line movement is the most credible practitioner signal and is
-   testable only for one season in these sources (IR-06).
-4. **A better allocator.** The walk-forward selector failed; a shrinkage/Bayesian allocator that
-   shrinks each strategy toward zero edge is the natural next test, using the published baseline
-   (all-strategies −1.9%) as the bar.
-
----
-
-## 9. Reproduce
-
-```bash
-git clone https://github.com/karagemop466-tech/Korea1 && cd Korea1
-pip install -r requirements.txt
-python -m analysis.run_all     # ~4 min: fetch → build → model → backtest → verify → site
-pytest -q tests                # look-ahead / leak tests
-```
-
-Raw data is git-ignored and re-staged from pinned commits on every run, so a fresh clone reproduces
-identical numbers. Site output is committed under `docs/` and served by GitHub Pages.
-
----
-
-# Appendix — parallel draft merged from `origin/main` (not used, kept for provenance)
-
-Authored by session `arena/7eec67cb-korea1`. Its framework headings (validation gates, "luck removal",
-leaderboard) are the same problem statement this branch solves with measured numbers, but **every
-coefficient and threshold below is a third-party claim that this pipeline does not use**: the YoY
-correlation ranges (EPA 0.55–0.65, ATS% −0.05, …) are not reproducible from the bundled data and are
-flagged on the site as unverified. The measured replacements are in the tables above. Retained verbatim so
-the provenance of those numbers is auditable.
-
-# Executive Summary: NFL Line Origination & Strategy Leaderboard
-
-## Project Overview
-This project collects, organizes, and analyzes NFL betting lines to originate proprietary signals. The framework operates as a leaderboard competition rewarding top-performing strategies across single bets, parlays, and player prop bet combos. All strategies pass validation gates, correlation analysis removes luck, and skill-based signals are isolated.
-
-## Core Components
-
-### 1. Strategy Categories
-- **Single Bet Strategies**: Point spread, moneyline, totals (over/under)
-- **Parlay Strategies**: Correlated outcomes, game script alignment, risk/reward optimization
-- **Player Prop Bet Combos**: Individual performance metrics, target share correlations, air yards analysis
-
-### 2. Validation Gates
-- **Statistical Significance**: Minimum 3-season backtesting (200+ qualifying games) [3](https://nflbettingsystems.com/)
-- **Correlation Threshold**: Skill-based metrics ≥ 0.45 YoY correlation [2](https://nflanalytic.com/betting-regression.html)
-- **Out-of-Sample Testing**: Build on in-sample seasons, test on unseen data [3](https://nflbettingsystems.com/)
-- **Closing Line Value (CLV)**: Consistent beating of closing line, not just opening [3](https://nflbettingsystems.com/)
-- **Multiple Hypothesis Correction**: Significance threshold adjustment for filter testing [3](https://nflbettingsystems.com/)
-
-### 3. Skill-Based Signal Isolation (Luck Removal)
-**Stable Statistics (Skill-Driven) with YoY Correlation:**
-- EPA per Play: ~0.55-0.65 [2](https://nflanalytic.com/betting-regression.html)
-- Success Rate: ~0.50-0.60 [2](https://nflanalytic.com/betting-regression.html)
-- Yards per Play: ~0.45-0.55 [2](https://nflanalytic.com/betting-regression.html)
-- Pass Block Win Rate: ~0.50+ [2](https://nflanalytic.com/betting-regression.html)
-- Completion % Over Expected: ~0.45-0.55 [2](https://nflanalytic.com/betting-regression.html)
-
-**Luck-Driven Metrics (Low Correlation - Filter Out):**
-- Team Cover Rate (ATS%): -0.05 YoY correlation [2](https://nflanalytic.com/betting-regression.html)
-- Wins: 0.32 YoY correlation [2](https://nflanalytic.com/betting-regression.html)
-- Point Differential: 0.40 YoY correlation [2](https://nflanalytic.com/betting-regression.html)
-- Turnovers: ~0.20 correlation [2](https://nflanalytic.com/betting-regression.html)
-
-### 4. Official Data Sources
-- **NFL Next Gen Stats**: Player tracking, air yards, completion % over expectation [1](https://nextgenstats.nfl.com/stats/passing/2025/REG/3) [4](https://ar5iv.labs.arxiv.org/html/1906.03339) [5](https://www.covers.com/nfl/key-advanced-metrics-betting-tips)
-- **NFL Official Gamebooks**: Raw play-by-play data, formation diagrams, pressure moments [2](https://surehandstransportation.com/2026/04/27/the-best-historical-data-sources-for-nfl-player-props/)
-- **Pro Football Reference**: Historical game logs, seasonal stats [1](https://rg.org/guides/football/betting-lines) [3](https://nflbettingsystems.com/) [4](https://www.kaggle.com/tobycrabtree/nfl-scores-and-betting-data/home)
-- **NFL.com Official**: Betting lines, odds, market movement [1](https://rg.org/guides/football/betting-lines) [4](https://www.kaggle.com/tobycrabtree/nfl-scores-and-betting-data/home)
-
-### 5. Leaderboard Competition Framework
-- **Reward Structure**: Top-performing strategies receive recognition based on CLV and validation gate compliance
-- **Performance Metrics**: Closing line beat rate, correlation strength, skill-signal isolation purity
-- **Category Separation**: Single bets, parlays, and player props compete in distinct leaderboards
-- **Continuous Validation**: Real-time monitoring against official sources [1](https://rg.org/guides/football/betting-lines)
-
-### 6. Correlation Analysis Methodology
-- **Game Script Correlation**: Underdog + Under (slower pace, fewer points) [5](https://www.mybookie.ag/sports-betting-guide/popular-nfl-strategies-theories/)
-- **Favorite + Over**: Blowout potential increases scoring volume [5](https://www.mybookie.ag/sports-betting-guide/popular-nfl-strategies-theories/)
-- **Air Yards vs Production**: Volume metric indicator, regression to career average [5](https://www.covers.com/nfl/key-advanced-metrics-betting-tips)
-- **Target Share Correlation**: Spike identification for prop patterns [2](https://surehandstransportation.com/2026/04/27/the-best-historical-data-sources-for-nfl-player-props/)
-
-### 7. Verification Protocol
-- Line-by-line verification from official sources only
-- Blank values for unconfirmed data with "unverified" flags
-- Source links provided for every table row
-- No inferences or hallucinations
-- Manual review links included for all findings
-
-## Implementation Status
-- **Repository**: karagemop466-tech/Korea1 (branch: arena/7eec67cb-korea1)
-- **Coordination**: COORDINATION.md established with task board [Integration Session]
-- **Site Creation**: GitHub Pages dashboard with categorized subpages
-- **Verification**: Official NFL.com, Next Gen Stats, Pro Football Reference sources [1](https://rg.org/guides/football/betting-lines) [2](https://nflanalytic.com/betting-regression.html) [3](https://nflbettingsystems.com/) [4](https://www.kaggle.com/tobycrabtree/nfl-scores-and-betting-data/home) [5](https://www.mybookie.ag/sports-betting-guide/popular-nfl-strategies-theories/)
-
-## Flagged Irregularities (For Review)
-- **Approximate Correlation Values**: Public play-by-play research values (~0.55-0.65 for EPA) cannot be recomputed from bundled game logs [2](https://nflanalytic.com/betting-regression.html)
-- **Prop Pattern Correlation**: Spike identification methodology requires gamebook CSV import [2](https://surehandstransportation.com/2026/04/27/the-best-historical-data-sources-for-nfl-player-props/)
-- **CPOE Replication**: Proprietary formula prevents exact replication; public version correlates r^2=0.88 [5](https://www.covers.com/nfl/key-advanced-metrics-betting-tips)
-
-## Next Steps
-1. Populate category-specific subpages with strategy tables
-2. Complete line-by-line verification with official source links
-3. Build GitHub Pages dashboard UI
-4. Final integration, PR creation, and deployment
-5. Publish Flagged for Review page with irregularities
-
----
-**Sources:**
-[1](https://rg.org/guides/football/betting-lines) Navigating NFL Betting Lines: Tips and Insights for Smart Bets - Sports Betting Guide - RG (2026-06-28)
-[2](https://nflanalytic.com/betting-regression.html) Regression Analysis for NFL Betting (2026-09-05)
-[3](https://nflbettingsystems.com/) NFL Betting Systems: Data-Backed Strategies That Actually Work (2026) (2026-06-17)
-[4](https://www.kaggle.com/tobycrabtree/nfl-scores-and-betting-data/home) NFL scores and betting data (2023-02-14)
-[5](https://www.mybookie.ag/sports-betting-guide/popular-nfl-strategies-theories/) Popular NFL Betting Strategies: How to Find Value, Beat the Lines, and Win Consistently (2026-10-05)
-[6](https://nextgenstats.nfl.com/stats/passing/2025/REG/3) Passing Stats - NFL Next Gen Stats (2026)
-[7](https://surehandstransportation.com/2026/04/27/the-best-historical-data-sources-for-nfl-player-props/) The Best Historical Data Sources for NFL Player Props (2026-04-27)
-[8](https://bestbetfornfl.com/articles/nfl-stats-betting-analysis/) NFL Stats for Betting: Advanced Metrics That Predict Outcomes (2026-09-04)
-[9](https://ar5iv.labs.arxiv.org/html/1906.03339) next-gen-scraPy: Extracting NFL Tracking Data from Images (2024-03-02)
-[10](https://www.covers.com/nfl/key-advanced-metrics-betting-tips) NFL Advanced Metrics and Stats: DVOA, EPA, CPOE, aDOT & More (2026-08-31)
