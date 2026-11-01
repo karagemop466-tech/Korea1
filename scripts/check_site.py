@@ -10,6 +10,9 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 SITE_HOST = "site.local"
 ALLOWED_SOURCE_DOMAINS = {
+    # added by the integration session: the pinned nflverse data files are published
+    # on github.com and every sourced row on the integrated site links there
+    "github.com",
     "nfl.com",
     "nflgsis.com",
     "operations.nfl.com",

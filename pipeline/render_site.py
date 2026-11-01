@@ -21,7 +21,13 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import DOCS, DOCS_DATA, PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
+from common import DOCS, PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
+
+# GitHub Pages for this repository is a branch build of `main` / `/` (the repo root),
+# and the API token in this environment is not permitted to change that. The site is
+# therefore emitted at the repository root; `docs/` holds the sibling sessions' files.
+SITE = ROOT
+DOCS_DATA = SITE / "assets" / "data"
 
 SRC = read_json(ROOT / "data" / "sources.json")
 SHA = SRC["upstream"]["commit_sha"]
@@ -68,7 +74,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title) if title != "NFL Line Lab" else "NFL Line Lab · line origination, strategy competition and luck removal"}</title>
 <meta name="description" content="{e(subtitle)}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏈</text></svg>">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -505,7 +511,7 @@ does not, this is pure origination.</p>
 <p>Ridge alpha is chosen inside each training window by expanding time-series cross-validation
 over {len(cfg['alphas'])} seasons; the sample-decay halflife is {cfg['decay_halflife_seasons']}
 seasons; predictions begin in {cfg['first_test_season']}. The full grid actually used is published
-in <code>docs/data/model_config.json</code>.</p>
+in <code>assets/data/model_config.json</code>.</p>
 </section>
 """
     return layout("lines.html", "Originated lines",
@@ -1257,9 +1263,12 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:v
 
 def main() -> None:
     d = load()
-    (DOCS / "assets").mkdir(parents=True, exist_ok=True)
-    (DOCS / "assets" / "style.css").write_text(CSS, encoding="utf-8")
-    (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+    (SITE / "assets").mkdir(parents=True, exist_ok=True)
+    (SITE / "assets" / "style.css").write_text(CSS, encoding="utf-8")
+    (SITE / "assets" / "favicon.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+        '<text y="0.9em" font-size="90">\U0001F3C8</text></svg>', encoding="utf-8")
+    (SITE / ".nojekyll").write_text("", encoding="utf-8")
 
     pages = {
         "index.html": build_index(d),
@@ -1274,30 +1283,21 @@ def main() -> None:
         "sources.html": build_sources(d),
     }
     for name, html_text in pages.items():
-        (DOCS / name).write_text(html_text, encoding="utf-8")
-        print(f"  wrote docs/{name} ({len(html_text):,} bytes)")
+        (SITE / name).write_text(html_text, encoding="utf-8")
+        print(f"  wrote {name} ({len(html_text):,} bytes)")
 
     # machine-readable downloads: everything except the three large working
     # tables, which are published in slimmed form so the repo stays small.
     DOCS_DATA.mkdir(parents=True, exist_ok=True)
+    # only the small result tables are mirrored for download; the large working
+    # tables stay in data/processed/ so the repository does not carry two copies.
     skip = {"games_model.csv", "strategy_bets.csv", "settlement_crosscheck.csv",
-            "originated_lines.csv", "upcoming.csv", "oriented.csv"}
+            "originated_lines.csv", "upcoming.csv", "originated_upcoming.csv"}
     for f in PROC.glob("*.csv"):
-        if f.name in skip:
+        if f.name in skip or f.stat().st_size > 200_000:
             continue
         shutil.copy2(f, DOCS_DATA / f.name)
 
-    slim = ["game_id", "season", "week", "gameday", "home_team", "away_team",
-            "home_score", "away_score", "result", "total", "market_spread", "market_total",
-            "market_home_ml", "market_away_ml", "home_spread_odds", "away_spread_odds",
-            "over_odds", "under_odds", "fair_spread", "fair_total", "edge_spread", "edge_total",
-            "originated_home_ml", "originated_away_ml", "p_home_ml", "p_over", "fit_season"]
-    d["originated_lines"][[c for c in slim if c in d["originated_lines"].columns]] \
-        .to_csv(DOCS_DATA / "originated_lines.csv", index=False)
-    bets = d["strategy_bets"]
-    keep = ["strategy", "game_id", "season", "week", "market", "side", "line", "price",
-            "outcome", "pnl"]
-    bets[[c for c in keep if c in bets.columns]].to_csv(DOCS_DATA / "strategy_bets.csv", index=False)
     write_json(DOCS_DATA / "key_figures.json", {
         "generated_utc": GENERATED,
         "upstream_commit": SHA,

@@ -20,7 +20,9 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import DOCS, PROC, read_json  # noqa: E402
+from common import PROC, ROOT, read_json  # noqa: E402
+
+SITE = ROOT  # GitHub Pages serves this branch at the repository root
 
 BAD_TOKENS = re.compile(r"(?<![\w-])(nan|NaN|None|inf|-inf)(?![\w-])")
 
@@ -88,7 +90,7 @@ class Collector(HTMLParser):
 def main() -> int:
     sources = read_json(Path(__file__).resolve().parents[1] / "data" / "sources.json")
     sha = sources["upstream"]["commit_sha"]
-    pages = sorted(p for p in DOCS.glob("*.html"))
+    pages = sorted(p for p in SITE.glob("*.html"))
     results = []
     failures = 0
 
@@ -104,7 +106,7 @@ def main() -> int:
             target = href.split("#")[0]
             if not target:
                 continue
-            if not (DOCS / target).exists():
+            if not (SITE / target).exists():
                 broken.append(href)
         # V3 only scans table cells: prose is allowed to contain words like "None"
         cell_text = " ".join(txt for r in c.rows for txt, _ in r)

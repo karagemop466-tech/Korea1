@@ -157,7 +157,7 @@ Player-week statistics and prop prices were **not retrievable** in this build (n
 assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
 exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
 third of games, and three 2015 games carry outcome flags that contradict their own score. Full
-detail, with sources: `docs/flagged.html`.
+detail, with sources: `flagged.html`.
 
 ## What would change the answer
 

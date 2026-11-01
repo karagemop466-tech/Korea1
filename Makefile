@@ -31,7 +31,7 @@ build: data model backtest site verify
 	@echo "build complete — site in docs/, verification passed"
 
 serve: build
-	$(PY) -m http.server 8000 --bind 0.0.0.0 --directory docs
+	$(PY) -m http.server 8000 --bind 0.0.0.0 --directory .
 
 clean:
 	rm -rf data/raw docs/data

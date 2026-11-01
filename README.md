@@ -15,12 +15,12 @@ fill a gap — where a value could not be verified it is left blank and listed o
 
 | Question the project answers | Where |
 |---|---|
-| Can a market-free model originate a usable NFL spread, total and moneyline? | `pipeline/models.py` → `docs/lines.html` |
-| Do any betting strategies beat the closing market after the vig? | `pipeline/strategies.py` → `docs/strategies.html` |
-| Which of those results are skill, and which are luck? | `pipeline/validation.py` → `docs/validation.html` |
-| How correlated are the legs of a parlay or same-game parlay? | `pipeline/correlations.py` → `docs/correlations.html` |
-| What would a player-prop model need, and what is missing? | `docs/props.html` |
-| What is unverified, contradictory or incomplete? | `docs/flagged.html` |
+| Can a market-free model originate a usable NFL spread, total and moneyline? | `pipeline/models.py` → `lines.html` |
+| Do any betting strategies beat the closing market after the vig? | `pipeline/strategies.py` → `strategies.html` |
+| Which of those results are skill, and which are luck? | `pipeline/validation.py` → `validation.html` |
+| How correlated are the legs of a parlay or same-game parlay? | `pipeline/correlations.py` → `correlations.html` |
+| What would a player-prop model need, and what is missing? | `props.html` |
+| What is unverified, contradictory or incomplete? | `flagged.html` |
 
 ## Headline result
 
@@ -62,7 +62,7 @@ source link, any internal link is broken, or any unformatted missing value reach
 ## Repository layout
 
 ```
-pipeline/            all analysis code (see docs/methodology.html for the dataflow)
+pipeline/            all analysis code (see methodology.html for the dataflow)
 data/processed/      generated tables (committed; the site reads them)
 data/sources.json    pinned commit SHA + per-file SHA-256
 docs/                the GitHub Pages site (static HTML/CSS, no CDN, no framework)
