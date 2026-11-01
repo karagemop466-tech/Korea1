@@ -15,9 +15,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["index.html", "lines.html", "strategies.html",
-         "parlays.html", "props.html", "validation.html", "data.html",
-         "verification.html", "flagged.html"]
+# Discover the published pages instead of hard-coding them: parallel sessions have renamed the
+# page set before (docs/ -> root, parlays.html -> correlations.html), and a stale list silently
+# stops checking anything real. `python -m tests.check_links` always checks whatever is published.
+PAGES = sorted(p.name for p in ROOT.glob("*.html"))
 HREF = re.compile(r'href="([^"]+)"')
 ID = re.compile(r'id="([^"]+)"')
 SRC = re.compile(r'src="([^"]+)"')

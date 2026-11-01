@@ -1,0 +1,11 @@
+quantity,value
+var(home points),104.57151028320997
+var(away points),99.96408382900445
+"cov(home, away)",-3.9838473256972096
+"corr(home, away)",-0.03896493905014514
+var(total),196.56789946082
+home share of total variance,0.5319867108009323
+mean total,44.82512761402931
+sd total,14.020267453255663
+mean |margin|,11.514408035567264
+sd margin,14.577492540337959

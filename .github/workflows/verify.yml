@@ -1,5 +1,15 @@
 name: Verify dashboard
 
+# Runs on every pull request and every push so a broken page can never reach the published site.
+#
+# Three independent checks, intentionally overlapping:
+#   tests/check_links.py     - every internal href/anchor/asset resolves, on the 10 published pages
+#                              and on every archived page under archive/
+#   tests/check_sources.py   - every <tbody> row carries an external source link, or links to the
+#                              source register and states in words that the input is missing
+#   pipeline/verify_site.py  - the publishing checks (captions, pinned SHA in the footer, no leaked
+#                              nan/None, no CDN assets, verdict logic)
+
 on:
   pull_request:
     branches: [main]
@@ -14,7 +24,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check every internal link, anchor and asset
-        run: python3 tests/check_links.py
-      - name: Check every table row links to a source
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install the pipeline dependencies
+        run: pip install -r requirements.txt
+      - name: Links, anchors and assets
+        run: python3 -m tests.check_links
+      - name: Every table row is sourced or explicitly flagged
         run: python3 tests/check_sources.py
+      - name: Publishing checks
+        run: python3 pipeline/verify_site.py

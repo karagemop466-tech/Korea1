@@ -1,0 +1,5 @@
+check,passed,detail
+data_audit all passed,True,6/6 checks
+every strategy has a verdict,True,18 strategies
+no strategy claimed SKILL without passing all gates,True,verdict logic consistent
+prop numbers on the page trace to data/site/props.json,True,all 6 measured phi values rendered from props.json

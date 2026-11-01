@@ -1,0 +1,24 @@
+feature,definition,used_in
+elo_diff,"Elo(home) − Elo(away), FiveThirtyEight-style, updated after each game","margin,total"
+elo_h,"Home team Elo before kickoff (start 1500, 0.75 season retention, K=20, MOV multiplier)",context
+elo_a,Away team Elo before kickoff,context
+exp_margin,exp_h_pts − exp_a_pts (raw rating matchup expected home margin),margin
+exp_total,exp_h_pts + exp_a_pts (raw rating matchup expected game total),total
+adj_exp_margin,"Opponent-adjusted expected home margin (weekly ridge team ratings, prior alpha=12)",margin
+adj_exp_total,Opponent-adjusted expected game total,total
+exp_h_pts,off_h + def_a − league_avg,context
+exp_a_pts,off_a + def_h − league_avg,context
+off_h,"Home offence rating: exp-weighted points scored, halflife 8 games, shrunk to league mean (k=4)",context
+def_h,"Home defence rating: exp-weighted points allowed, same shrinkage",context
+rest_diff,"Days since last game, home − away (clipped 0–21)",margin
+div_game,Divisional matchup flag,"margin,total"
+neutral,Neutral-site flag (Super Bowl / international),margin
+is_playoff,Post-season flag,"margin,total"
+week,"Regular-season week 1–18, playoffs 19–22","margin,total"
+season_idx,season − 1999; lets the total model track league scoring drift,total
+roof_dome,Roof closed/dome,"margin,total"
+roof_open,"Retractable roof, open","margin,total"
+temp,Kickoff temperature (°F); median-imputed with missing flag,"margin,total"
+wind,Kickoff wind (mph); median-imputed with missing flag,"margin,total"
+temp_missing,1 if temperature not recorded,"margin,total"
+wind_missing,1 if wind not recorded,"margin,total"
