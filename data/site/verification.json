@@ -15,18 +15,13 @@
    "status": "pass"
   },
   "A04_two_sided_price_coverage": {
-   "spread": {
-    "rows_with_both_sides": 5431,
-    "share_of_all_rows": 0.72
-   },
-   "total": {
-    "rows_with_both_sides": 5428,
-    "share_of_all_rows": 0.719
-   },
-   "moneyline": {
-    "rows_with_both_sides": 5431,
-    "share_of_all_rows": 0.72
-   }
+   "spread_rows_with_both_sides": 5431,
+   "spread_share_of_all_rows": 0.72,
+   "total_rows_with_both_sides": 5428,
+   "total_share_of_all_rows": 0.719,
+   "moneyline_rows_with_both_sides": 5431,
+   "moneyline_share_of_all_rows": 0.72,
+   "status": "info"
   },
   "A05_standings_recompute": {
    "team_seasons_checked": 800,

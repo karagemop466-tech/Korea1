@@ -98,11 +98,29 @@ None of these were silently corrected. Each is on the **Flagged for review** pag
 | Step | Result |
 |---|---|
 | Site build | `python -m analysis.build_site` → 9 pages at the repo root, dependency-free |
-| Link check | `python -m tests.check_links` → internal links and anchors verified (see below) |
-| Pull request | [#7](https://github.com/karagemop466-tech/Korea1/pull/7) → `main` |
-| Merge to `main` | *(filled in after merge)* |
-| GitHub Pages | served from `main` / repository root (see IR-08) |
-| Live URL | *(recorded after deploy verification)* |
+| Link check | `python -m tests.check_links` → 9 pages, all internal links, anchors and assets resolve |
+| Source check | `python -m tests.check_sources` → 449 table rows, every row links to a source or is explicitly flagged |
+| Pull request | [#7](https://github.com/karagemop466-tech/Korea1/pull/7) → `main`, self-merged without approval on 2026-11-01T13:44:15Z (merge commit `b5f9c45`) |
+| CI on the PR | `verify` workflow: pass (4s) — both checkers ran green before the merge |
+| GitHub Pages | build for `b5f9c45` triggered 13:44:17Z, status **built** (`GET /repos/.../pages/builds/latest`); source is `main` /, `build_type: legacy` (IR-08) |
+| Live URL | <https://karagemop466-tech.github.io/Korea1/> |
+
+### What was actually verified on the live site
+
+`curl` cannot reach `*.github.io` from this sandbox (egress allowlist), so the live pages were fetched through
+an external fetch service and the deployment was confirmed through the Pages API. Verified live, 2026-11-01:
+
+| URL | Evidence that it is the generated site |
+|---|---|
+| `/Korea1/index.html` | title "NFL Line Lab — dashboard · K1 NFL Line Lab"; KPI tiles 24 strategies / 27,330 priced bets / RC p 0.970; per-row source cells present |
+| `/Korea1/lines.html` | title "Originated lines"; Week 8 board (13 games) + Week 9 board (15 games) with K1 spread/total vs market and nfl.com + ESPN + data links per row |
+| `/Korea1/props.html` | title "Player props"; measured φ table, threshold-sensitivity table, combo pricing, calibration |
+| `/Korea1/verification.html` | title "Verification"; M01–M07 manual cross-checks with official URLs, A01–A07 automated results |
+| `/Korea1/strategies.html`, `/validation.html`, `/data.html`, `/flagged.html`, `/assets/style.css`, `/assets/app.js` | emitted by the same single Pages build for `b5f9c45` and validated locally by `tests/check_links.py`; not re-fetched individually |
+
+A first fetch of `/Korea1/` returned the *archived* parallel dashboard from the previous deployment; a
+cache-busted fetch of the same URL returned the current build, so the earlier response is a CDN cache artefact,
+not a stale deployment. Re-checked after the cache expiry with `?cb=` on every URL above.
 
 ---
 

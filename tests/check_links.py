@@ -54,7 +54,16 @@ def main() -> int:
             errors.append(f"{page.name}: leaked nan cell")
         if "<tbody></tbody>" in text:
             errors.append(f"{page.name}: empty table body")
-    print(f"checked {len(pages)} pages")
+    # the archived parallel dashboard is published too (under /archive/), so it must not 404
+    archive = sorted((ROOT / "archive").rglob("*.html"))
+    for page in archive:
+        for href in HREF.findall(page.read_text()):
+            if href.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            target = href.partition("#")[0]
+            if target and not (page.parent / target).exists():
+                errors.append(f"{page.relative_to(ROOT)}: missing file for href {href}")
+    print(f"checked {len(pages)} pages + {len(archive)} archived pages")
     if errors:
         print("\n".join(errors))
         return 1

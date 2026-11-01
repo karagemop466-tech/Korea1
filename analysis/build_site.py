@@ -230,7 +230,7 @@ def page_index(data: dict) -> str:
     kpi = f"""
 <div class="kpis">
   <div class="kpi"><div class="k">{n_strat}</div><div class="l">strategies tested</div>
-     <div class="s">{tiers.get('A',0)} validated · {tiers.get('B',0)} promising · {tiers.get('C',0)} watchlist</div></div>
+     <div class="s">{tiers.get('A',0)} validated · {tiers.get('B',0)} promising · {tiers.get('C',0)} watchlist · {tiers.get('F',0)+tiers.get('X',0)} failed</div></div>
   <div class="kpi"><div class="k">{bt['universe']['total_bets']:,}</div><div class="l">priced bets backtested</div>
      <div class="s">{bt['universe']['priced_seasons'][0]}–{bt['universe']['priced_seasons'][1]} at quoted two-sided closing prices</div></div>
   <div class="kpi"><div class="k">{pct(top_ev['roi'])}</div><div class="l">best raw ROI found</div>
@@ -540,7 +540,7 @@ def page_strategies(data: dict) -> str:
       <p class="small">Last 10 seasons, ROI per bet. Train
       {bt['universe']['train'][0]}–{bt['universe']['train'][1]} ROI {pct(s['roi_train'])} ·
       test {bt['universe']['test'][0]}–{bt['universe']['test'][1]} ROI {pct(s['roi_test'])}
-      (retention {fmt(s['oos_retention'],2)}) · max single-season profit share
+      (retention {fmt(s['oos_retention'],2) if (s['roi_train'] is not None and abs(s['roi_train']) >= 0.005) else 'n/a (train ROI ~0)'}) · max single-season profit share
       {fmt(s['max_season_profit_share'],2)} · worst leave-one-season-out ROI {pct(s['loso_min_roi'])}.</p>
     </div>
   </div>
@@ -659,7 +659,7 @@ def page_props(data: dict) -> str:
 
     sens_cols = [c for c in sens.columns if " x " in c]
     sens_t = table(["Line shift"] + sens_cols + ["n"],
-                   [[f'{int(r["line_shift_pct"]):+d}%'] + [fmt(r[c], 3) for c in sens_cols] + [fmt(r["n"])]
+                   [[f'{int(r["line_shift_pct"]):+d}%'] + [fmt(r[c], 3) for c in sens_cols] + [fmt(int(r["n"]))]
                     for _, r in sens.iterrows()], note="phi is threshold dependent — this is the sensitivity.")
 
     combos_t = table(["Combination", "Games", "Joint (measured)", "Joint if independent", "Lift",
@@ -667,7 +667,7 @@ def page_props(data: dict) -> str:
                      [[esc(r.legs), fmt(r.n_games), fmt(r.joint_empirical, 3), fmt(r.joint_independent, 3),
                        fmt(r.lift, 3), fmt(r.fair_decimal_2leg, 3), fmt(r.independent_decimal_2leg, 3),
                        f'{fmt(r.fair_vs_independent_pct,1)}%',
-                       fmt(r._asdict().get("ev_per_unit_scenario_-110_naive"), 3)]
+                       pct(next((v for k, v in r._asdict().items() if k.startswith("ev_per_unit")), None))]
                       for r in combos.itertuples()], note=pr["combo_pricing"]["note"])
 
     cal = pr["calibration"]
@@ -845,9 +845,9 @@ def page_data(data: dict) -> str:
         ["standings recompute vs upstream", fmt(checks["A05_standings_recompute"]["team_seasons_checked"]),
          fmt(checks["A05_standings_recompute"]["mismatches"]) + " mismatches",
          badge("pass", "ok") if checks["A05_standings_recompute"]["mismatches"] == 0 else badge("fail", "bad")],
-        ["two-sided price pairs", fmt(checks["A04_two_sided_price_coverage"]["spread"]["rows_with_both_sides"]),
-         f'spread · total {fmt(checks["A04_two_sided_price_coverage"]["total"]["rows_with_both_sides"])} · '
-         f'ML {fmt(checks["A04_two_sided_price_coverage"]["moneyline"]["rows_with_both_sides"])}',
+        ["two-sided price pairs", fmt(checks["A04_two_sided_price_coverage"]["spread_rows_with_both_sides"]),
+         f'spread · total {fmt(checks["A04_two_sided_price_coverage"]["total_rows_with_both_sides"])} · '
+         f'ML {fmt(checks["A04_two_sided_price_coverage"]["moneyline_rows_with_both_sides"])}',
          badge("info", "muted")],
         ["sign convention", "home cover " + pct(checks["A07_sign_convention"]["home_cover_rate_excl_push"], 2),
          "over " + pct(checks["A07_sign_convention"]["over_rate_excl_push"], 2), badge("pass", "ok")],

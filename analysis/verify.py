@@ -226,8 +226,10 @@ def automated() -> dict:
     price_rows = {}
     for k, (a, b) in pairs.items():
         both = g[a].notna() & g[b].notna()
-        price_rows[k] = {"rows_with_both_sides": int(both.sum()),
-                         "share_of_all_rows": round(float(both.mean()), 3)}
+        price_rows[f"{k}_rows_with_both_sides"] = int(both.sum())
+        price_rows[f"{k}_share_of_all_rows"] = round(float(both.mean()), 3)
+    price_rows["status"] = "info" if all(
+        v > 0 for k, v in price_rows.items() if k.endswith("rows_with_both_sides")) else "fail"
     out["A04_two_sided_price_coverage"] = price_rows
 
     # standings recomputation vs upstream
