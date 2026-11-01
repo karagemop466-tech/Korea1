@@ -1,0 +1,39 @@
+{
+ "rows_total": 7548,
+ "rows_played": 7384,
+ "result_eq_margin": 7384,
+ "total_eq_sum": 7384,
+ "season_range": [
+  1999,
+  2026
+ ],
+ "mean_result_minus_spread": 0.0624,
+ "sd_result_minus_spread": 13.187,
+ "home_cover_rate": 0.4762,
+ "home_cover_rate_excl_push": 0.4895,
+ "over_rate_excl_push": 0.4948,
+ "spread_pair_count": 5403,
+ "spread_pair_overround_mean": 1.027,
+ "spread_pair_overround_min": 1.0127,
+ "spread_pair_overround_max": 1.0588,
+ "closing_line_crosscheck": {
+  "available": true,
+  "games_matched": 3368,
+  "home_line_matches": 2267,
+  "home_line_compared": 3368,
+  "home_line_agree_pct": 0.6731,
+  "home_line_absdiff_sd": 0.463,
+  "total_matches": 2078,
+  "total_compared": 3368,
+  "total_agree_pct": 0.617,
+  "total_within_half_point_pct": 0.9584,
+  "home_moneyline_matches": 585,
+  "home_moneyline_compared": 3232,
+  "home_moneyline_agree_pct": 0.181,
+  "seasons_covered": [
+   2006,
+   2018
+  ],
+  "interpretation": "closing_lines.csv and games.csv are NOT the same book or the same snapshot: spread agreement is partial and totals often differ by 0.5. Documented as an irregularity, not silently reconciled."
+ }
+}
