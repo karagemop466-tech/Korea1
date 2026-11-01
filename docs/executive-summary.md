@@ -42,4 +42,4 @@ Proposed primary rank: proper probability score on pre-registered, eligible out-
 - **NGS raw-data accessibility/commercial rights:** not established by the overview page.
 - **Current 2026 NFL rule details:** only the official 2025 rulebook was checked for this brief.
 
-The dashboard's [Flagged for Review](../flagged.html) page publishes each irregularity with a source link and remediation action. The [source register](../sources.html) records source scope and what it does—and does not—support.
+The dashboard's [Flagged for Review](../flagged.html) page publishes each irregularity with a source link and remediation action. The [source register](../sources.html) records source scope and what it does—and does not—support. An audit of the already-merged main-branch pages found numerical year-over-year correlation ranges and skill/luck labels sourced to non-official betting/analytics websites; the official NFL stats/NGS pages reviewed do not substantiate those ranges. They should remain flagged and must not be carried into a verified dataset without a primary, reproducible calculation.
