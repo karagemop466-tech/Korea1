@@ -46,6 +46,9 @@ NAV = [
     ("data.html", "Data & sources"),
     ("verification.html", "Verification"),
     ("flagged.html", "Flagged for review"),
+    # Added by the integration session (S-ARENA-EA02C4FB): a second, independent build of the
+    # same questions from a different dataset. It lives in lab/ and does not touch this site.
+    ("lab/index.html", "Replication annex"),
 ]
 
 

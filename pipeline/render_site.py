@@ -52,6 +52,9 @@ NAV = [
     ("methodology.html", "Methodology"),
     ("flagged.html", "Flagged for review"),
     ("sources.html", "Sources"),
+    # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
+    # same questions from a different odds archive. Served from lab/ and not part of this render.
+    ("lab/index.html", "Replication annex"),
 ]
 
 
@@ -903,11 +906,11 @@ prop, which is why the player layer stays empty rather than invented.</p>
 <td>Release assets redirect to <code>release-assets.githubusercontent.com</code>, refused by this
 environment's egress policy; every GitHub mirror checked stores 132-byte LFS pointers</td>
 <td><a href="https://github.com/nflverse/nflverse-data/releases/tag/player_stats" target="_blank" rel="noopener">release</a></td></tr>
-<tr><td>2</td><td>Prop prices (any sportsbook)</td><td>Not present in any retrieved dataset</td>
+<tr><td>2</td><td>Prop prices (any sportsbook)</td><td>UNVERIFIED — not present in any retrieved dataset</td>
 <td><a href="sources.html">sources</a></td></tr>
-<tr><td>3</td><td>Team total prices</td><td>Not present in any retrieved dataset</td>
+<tr><td>3</td><td>Team total prices</td><td>UNVERIFIED — not present in any retrieved dataset</td>
 <td><a href="sources.html">sources</a></td></tr>
-<tr><td>4</td><td>Injury / snap-share feeds</td><td>Not present in any retrieved dataset</td>
+<tr><td>4</td><td>Injury / snap-share feeds</td><td>UNVERIFIED — not present in any retrieved dataset</td>
 <td><a href="sources.html">sources</a></td></tr>
 </tbody></table></div>
 </section>

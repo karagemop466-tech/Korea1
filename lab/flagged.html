@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flagged for review · NFL Line Lab</title>
+<meta name="description" content="Every defect, gap and unverified value in this project, in one place, with sources.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span> NFL Line Lab</a>
+    <nav class="nav"><a href="../index.html" class="">↑ Main dashboard</a><a href="index.html" class="">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategies</a><a href="correlation.html" class="">Correlation &amp; parlays</a><a href="props.html" class="">Player props</a><a href="validation.html" class="">Validation gates</a><a href="leaderboard.html" class="">Leaderboard design</a><a href="sources.html" class="">Sources</a><a href="flagged.html" class="active">Flagged for review</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <div class="pagehead">
+    <h1>Flagged for review</h1>
+    <p class="sub">Every defect, gap and unverified value in this project, in one place, with sources.</p>
+    <p class="meta">Built 2026-11-01 13:50 UTC · data window 2011–2021 · every value computed by a script in
+    <code>scripts/</code> · verification 9/9 checks</p>
+  </div>
+  
+<section>
+  <div class="notice warn">
+    <strong>This page is the review queue.</strong> Everything here is published deliberately rather
+    than hidden: field defects, structural gaps, and results that are interesting but not fundable.
+    Nothing on this page blocks the site from being live — it exists so you can decide what to fix
+    next.
+  </div>
+</section>
+
+<section>
+  <h2>Irregularities and open items</h2>
+  <div class="tablewrap"><table class="wide">
+<thead><tr><th>ID</th><th>Item</th><th>What was found</th><th>What was done / what is needed</th><th>Status</th><th>Source</th></tr></thead><tbody>
+<tr><td>I-01</td><td>The repository was empty at the start of this session</td><td>One 8-byte README and one commit. There was no analysis, data, licence, CI or site to review.</td><td>Everything published here is new and reproducible from scripts/. Raw inputs are hash-pinned in data/raw_manifest.json.</td><td><span class="badge ok">Resolved (built)</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>I-01a</td><td>No licence file in the repository</td><td>Rights over derived data are undefined. Only the owner can choose a licence; inventing one would be worse than leaving it out.</td><td>Recommend the owner add a licence before reuse.</td><td><span class="badge warn">Open — owner decision</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>I-02</td><td>No official source exists for historical NFL betting lines</td><td>The NFL does not publish prices; no sportsbook publishes a licence-clean price history. Describing any odds row as &#x27;official&#x27; would be fabricated.</td><td>All odds rows are labelled third-party with a verification note.</td><td><span class="badge ok">Structural — documented</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>I-03</td><td>Odds archive field defects</td><td>Of 2,956 raw rows: 260 corrupted closing spreads, 259 corrupted closing totals, 4 impossible moneyline pairs, 10 neutral-site Super Bowls stored with no home team, 1 unresolvable &#x27;New York&#x27; row.</td><td>Bad fields are nulled, never repaired; excluded fields are counted and printed. 2,945 games survive.</td><td><span class="badge ok">Resolved without imputation</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>I-04</td><td>No historical player-prop prices</td><td>Prop lines cannot be verified, so prop profitability cannot be claimed.</td><td>Only correlations and fair prices are published; no prop P&amp;L anywhere.</td><td><span class="badge ok">Structural — documented</span></td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>I-05</td><td>No live 2026 data feed</td><td>Reachable play-by-play stops at a partial 2023 season; the odds archive stops at 2021.</td><td>The live board is marked blocked. The engine is demonstrated walk-forward on real seasons.</td><td><span class="badge ok">Blocked on data</span></td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>I-06</td><td>44 different team-name spellings in the odds archive</td><td>Includes &#x27;BuffaloBills&#x27;, &#x27;Fortyniners&#x27;, &#x27;LosAngeles&#x27;, &#x27;SanDiego&#x27;, &#x27;St.Louis&#x27;, &#x27;Tampa&#x27;, &#x27;Washingtom&#x27; and &#x27;0&#x27;.</td><td>An explicit normalisation table maps each to one club; the two genuinely ambiguous names are excluded rather than guessed.</td><td><span class="badge ok">Resolved</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>I-07</td><td>Play-by-play flags stored as &#x27;1.0&#x27;/&#x27;0.0&#x27;, not &#x27;1&#x27;/&#x27;0&#x27;</td><td>A parser testing == &#x27;1&#x27; silently reports zero touchdowns and zero receptions for every player — plausible-looking garbage. This bug was hit and fixed during the build.</td><td>Single _flag() parser, unit-checked; failure mode documented.</td><td><span class="badge ok">Resolved</span></td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>I-08</td><td>Second-half columns in the archive are unusable</td><td>2H_total values like 3.0 make second-half analysis impossible.</td><td>The columns are not used anywhere in this project.</td><td><span class="badge ok">Excluded</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>F-01</td><td>S12 — Over the lowest-decile totals: +5.8% ROI</td><td>Best ROI in the battery, but n = 226 (below the 300 floor), p = 0.349, DSR = 0.33, and the edge is only +3.7% at −115.</td><td>Published as Watch tier: shown, not funded. Needs ≥300 bets and a replication season.</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>F-02</td><td>S11 — Under the highest-decile totals: largest CLV in the battery (+0.79 pts)</td><td>CLV is the best skill signal available yet ROI is +0.9% overall and −1.2% at −115, with p = 0.868.</td><td>Published as Watch tier. A CLV/ROI conflict is exactly what replication is for.</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>F-03</td><td>The model&#x27;s edge signal is significantly NEGATIVE — fading it looks profitable</td><td>S01 −10.9% (p &lt; 0.001) and S17 −9.7% (p = 0.0004) after false-discovery correction. The inverse would have been profitable out of sample.</td><td>NOT published as a strategy: inverting a rule after seeing its results is an ex-post idea and starts a new trial counter. Logged here so it can be pre-registered and tested forward.</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>F-04</td><td>Two peer-reviewed DOIs were not re-resolved in this session</td><td>Benjamini-Hochberg (1995) and Kelly (1956) are cited from their bibliographic details and their formulas are unit-tested, but the DOI links were not opened.</td><td>Formula correctness is checked in scripts/tests/test_math.py; the citations should be confirmed by hand before external reuse.</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-paper" data-source="PAPER-BH" href="https://doi.org/10.1111/j.2517-6161.1995.tb02031.x" target="_blank" rel="noopener" title="Journal of the Royal Statistical Society, Series B">PAPER-BH</a></td></tr>
+<tr><td>IR-09</td><td>This build disagrees with the canonical build on market cost: 3.79% vs 2.70%</td><td>Mean overround here is 3.79% (n = 2,941) against 2.70% measured by the canonical build from a different archive. Neither figure is wrong; the archives are different. Reported, not reconciled, because reconciling them would mean inventing which archive is right.</td><td>Both figures published side by side (COORDINATION.md IR-09). Anyone comparing the two sites should compare within a site, never across.</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>IR-10</td><td>The annex sample stops at 2021 and has four seasons of nulled closing lines</td><td>260 closing spreads and 259 closing totals could not be read from the archive; the canonical build covers 1999-2026 from a different source.</td><td>Every annex conclusion is stated for 2011-2021 only, and rows that depend on a nulled field are excluded rather than guessed.</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>IR-11</td><td>The annex prop layer uses 2021-2022 play-by-play only</td><td>The 2023 archive fetched truncated (5,660 rows instead of ~50,000), so prop correlations are estimated on two seasons (1,086 team-games) and nothing later.</td><td>Sample size is stated on every prop row; no prop ROI is claimed, since no prop prices exist in either build (matches IR-03 on the canonical site).</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>F-05</td><td>Playoff games are included in the backtest sample</td><td>The archive has no season-type field and 267 games per season implies ~11 playoff games; they are not separable without a schedule feed.</td><td>The effect is bounded (≈4% of games) and the 2021 cross-check shows no result distortion, but it is a known impurity.</td><td><span class="badge warn">Needs review</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">'Resolved' means the issue is closed in the code and re-checked by scripts/99_verify.py. 'Needs review' means a decision is yours.</p>
+</section>
+
+<section>
+  <h2>Values that could not be verified (and are therefore blank everywhere else)</h2>
+  <div class="tablewrap"><table class="wide">
+<thead><tr><th>Item</th><th>Why it could not be confirmed</th><th>What the site does instead</th><th>Closest source</th></tr></thead><tbody>
+<tr><td>Player-prop prices / line history</td><td>No licence-clean source reachable</td><td>No prop P&L is claimed</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>Live 2026 lines for current games</td><td>No live feed</td><td>Live board marked blocked</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>Injury, weather, travel, officiating data</td><td>No feed reachable</td><td>Not used in any model — stated, not approximated</td><td><a class="src t-official" data-source="NFL-RULEBOOK" href="https://operations.nfl.com/rules-officiating/2026-nfl-rulebook" target="_blank" rel="noopener" title="NFL Football Operations">NFL-RULEBOOK</a></td></tr>
+<tr><td>Whether the archive's 'closing' line is the true close</td><td>Single aggregator, no independent snapshot</td><td>Cross-checked against nflverse on 2021: 97.1% within 1 point</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>BH (1995) and Kelly (1956) DOIs</td><td>Not re-resolved this session</td><td>Formulas unit-tested</td><td><a class="src t-paper" data-source="PAPER-BH" href="https://doi.org/10.1111/j.2517-6161.1995.tb02031.x" target="_blank" rel="noopener" title="Journal of the Royal Statistical Society, Series B">PAPER-BH</a></td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+  <h2>How to request a change</h2>
+  <p class="prose">Open an issue on the repository naming the item ID above (for example <code>F-01</code>)
+  and the source you want it checked against. Every number on the site is regenerated from
+  <code>data/*.json</code> by <code>scripts/07_build_site.py</code>, so a correction is a one-line
+  change in the relevant script plus a rebuild — no page is hand-edited.</p>
+</section>
+
+</main>
+<footer class="foot"><div class="wrap">
+  <p>Research artifact. No betting advice, no live wagering, no guarantee of profit. Values that could
+  not be confirmed against a source are marked <span class="badge warn">unverified</span> and listed on the
+  <a href="flagged.html">Flagged for review</a> page.</p>
+</div></footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

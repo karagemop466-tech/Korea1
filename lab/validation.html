@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validation gates · NFL Line Lab</title>
+<meta name="description" content="Eight pre-specified gates, three independent luck-removal measurements, and the verification harness output for this build.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span> NFL Line Lab</a>
+    <nav class="nav"><a href="../index.html" class="">↑ Main dashboard</a><a href="index.html" class="">Dashboard</a><a href="lines.html" class="">Originated lines</a><a href="strategies.html" class="">Strategies</a><a href="correlation.html" class="">Correlation &amp; parlays</a><a href="props.html" class="">Player props</a><a href="validation.html" class="active">Validation gates</a><a href="leaderboard.html" class="">Leaderboard design</a><a href="sources.html" class="">Sources</a><a href="flagged.html" class="">Flagged for review</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <div class="pagehead">
+    <h1>Validation gates</h1>
+    <p class="sub">Eight pre-specified gates, three independent luck-removal measurements, and the verification harness output for this build.</p>
+    <p class="meta">Built 2026-11-01 13:50 UTC · data window 2011–2021 · every value computed by a script in
+    <code>scripts/</code> · verification 9/9 checks</p>
+  </div>
+  
+<section>
+  <h2>Gate G0 — data integrity: <span class="badge ok">PASS</span></h2>
+  <div class="tablewrap"><table class="">
+<thead><tr><th>Evidence</th><th>Result</th><th>Source</th></tr></thead><tbody>
+<tr><td>Final-score agreement on the 2021 overlap</td><td>263/263 games agree</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a> <a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>Closing totals within 1 point across sources</td><td>97.1%</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>Closing spreads within 1 point across sources</td><td>86.5% (different books/snapshots — reported, not hidden)</td><td><a class="src t-third" data-source="NFLVERSE-PBP" href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener" title="nflverse, https://github.com/nflverse/nflverse-data">NFLVERSE-PBP</a></td></tr>
+<tr><td>Usable games after the integrity gate</td><td>2,945</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">Criterion: zero final-score disagreements, totals within 1 point on ≥90% of games, ≥2,800 usable games.</p>
+</section>
+
+<section>
+  <h2>The eight gates</h2>
+  <div class="tablewrap"><table class="">
+<thead><tr><th>Gate</th><th>Name</th><th>Requirement</th><th>Passed by</th><th>Status</th><th>Source</th></tr></thead><tbody>
+<tr><td>G1</td><td>Sample size</td><td>n &gt;= 300 graded bets and out-of-sample n &gt;= 100</td><td>16/18</td><td><span class="badge ok">passed</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>G2</td><td>Significance</td><td>p &lt; 0.05 and BH q &lt; 0.10, in the profitable direction (ROI &gt; 0)</td><td>0/18</td><td><span class="badge warn">failed</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>G3</td><td>Out of sample</td><td>ROI &gt; 0 on the held-out seasons</td><td>2/18</td><td><span class="badge warn">failed</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>G4</td><td>Robustness</td><td>ROI &gt; 0 at -115 and &gt;= 60% of seasons non-negative</td><td>1/18</td><td><span class="badge warn">failed</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>G5</td><td>Economic edge</td><td>mean CLV &gt; 0 if measurable, else OOS ROI &gt; 2%</td><td>4/18</td><td><span class="badge warn">failed</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>G6</td><td>Risk</td><td>max drawdown &lt;= 25 units and per-bet Sharpe &gt; 0</td><td>2/18</td><td><span class="badge warn">failed</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>G7</td><td>Inputs available</td><td>all rule inputs are public pre-game data</td><td>18/18</td><td><span class="badge ok">passed</span></td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>G8</td><td>Selection-bias corrected</td><td>Deflated Sharpe Ratio &gt;= 0.95</td><td>0/18</td><td><span class="badge warn">failed</span></td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">Thresholds are fixed in scripts/06_validation.py before any result is read.</p>
+</section>
+
+<section>
+  <h2>Per-strategy gate matrix</h2>
+  <div class="tablewrap"><table class="wide">
+<thead><tr><th>ID</th><th>Bets</th><th>ROI</th><th>p</th><th>BH q</th><th>DSR</th><th>G1 … G8</th><th>Passed</th><th>Source</th></tr></thead><tbody>
+<tr><td>S01</td><td>1,303</td><td><span class="neg">-10.92%</span></td><td>0.000</td><td>0.000</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S02</td><td>693</td><td><span class="neg">-11.14%</span></td><td>0.002</td><td>0.008</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S03</td><td>1,020</td><td><span class="neg">-6.23%</span></td><td>0.035</td><td>0.106</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S04</td><td>1,020</td><td><span class="neg">-2.67%</span></td><td>0.366</td><td>0.394</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S05</td><td>564</td><td><span class="neg">-3.51%</span></td><td>0.372</td><td>0.394</td><td>0.001</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S06</td><td>1,652</td><td><span class="neg">-4.30%</span></td><td>0.063</td><td>0.142</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate on">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>3/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S07</td><td>309</td><td><span class="neg">-13.06%</span></td><td>0.014</td><td>0.052</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S08</td><td>464</td><td><span class="neg">-4.57%</span></td><td>0.293</td><td>0.386</td><td>0.001</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate on">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>3/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S09</td><td>843</td><td><span class="neg">-4.28%</span></td><td>0.186</td><td>0.304</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S10</td><td>645</td><td><span class="neg">-7.29%</span></td><td>0.051</td><td>0.131</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S11</td><td>301</td><td><span class="pos">+0.91%</span></td><td>0.868</td><td>0.868</td><td>0.075</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate on">G3</span><span class="gate off">G4</span><span class="gate on">G5</span><span class="gate on">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>5/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S12</td><td>226</td><td><span class="pos">+5.79%</span></td><td>0.349</td><td>0.394</td><td>0.326</td><td><span class="mono"><span class="gate off">G1</span><span class="gate off">G2</span><span class="gate on">G3</span><span class="gate on">G4</span><span class="gate on">G5</span><span class="gate on">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>5/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S13</td><td>1,036</td><td><span class="neg">-8.95%</span></td><td>0.072</td><td>0.144</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S14</td><td>1,121</td><td><span class="neg">-7.97%</span></td><td>0.000</td><td>0.003</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S15</td><td>1,570</td><td><span class="neg">-3.60%</span></td><td>0.300</td><td>0.386</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S16</td><td>212</td><td><span class="neg">-9.48%</span></td><td>0.148</td><td>0.266</td><td>0.003</td><td><span class="mono"><span class="gate off">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>1/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S17</td><td>1,154</td><td><span class="neg">-9.71%</span></td><td>0.000</td><td>0.003</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+<tr><td>S18</td><td>947</td><td><span class="neg">-3.33%</span></td><td>0.277</td><td>0.386</td><td>0.000</td><td><span class="mono"><span class="gate on">G1</span><span class="gate off">G2</span><span class="gate off">G3</span><span class="gate off">G4</span><span class="gate off">G5</span><span class="gate off">G6</span><span class="gate on">G7</span><span class="gate off">G8</span></span></td><td>2/8</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">G8 (selection-bias correction) is the gate nothing passes: with 18 trials the expected best Sharpe of pure luck is already 0.0926 per bet.</p>
+</section>
+
+<section>
+  <h2>Luck removal, measurement 1 — signal persistence</h2>
+  <p class="prose">Correlating every strategy's in-sample ROI (2012–2017) with its held-out ROI
+  (2018–2021) across the battery gives <strong>r =
+  0.485</strong>. There is some persistent structure in these
+  families — the rules are not pure noise — but not enough for a single one to clear the gate set.
+  Median season-overdispersion luck ratio across the battery:
+  <strong>1.723</strong> (≈1 means season-to-season swings are
+  fully explained by sampling noise).</p>
+</section>
+
+<section>
+  <h2>Luck removal, measurement 2 — how much of a leaderboard is luck?</h2>
+  <div class="tablewrap"><table class="wide">
+<thead><tr><th>Field</th><th>Bettors</th><th>Median bettor ROI</th><th>Winner ROI (median)</th><th>Winner ROI (95th pct)</th><th>Share profitable</th><th>Source</th></tr></thead><tbody>
+<tr><td>Zero skill everywhere</td><td>1,000</td><td>-0.00%</td><td>18.7%</td><td>22.7%</td><td>49.97%</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>Every bettor has a +2% edge</td><td>1,000</td><td>2.00%</td><td>20.6%</td><td>24.6%</td><td>63.42%</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">20,000 trials × 1,000 bettors × 267 bets at −110. A zero-skill field produces a +18.7% winner as the MEDIAN outcome.</p>
+</section>
+
+<section>
+  <h2>Luck removal, measurement 3 — can a real edge even be seen?</h2>
+  <div class="tablewrap"><table class="wide">
+<thead><tr><th>Board ranking</th><th>P(genuinely skilled bettor finishes 1st)</th><th>P(skilled bettor in top 1%)</th><th>Source</th></tr></thead><tbody>
+<tr><td>Ranked by season ROI</td><td>0.32%</td><td>2.21%</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>Ranked by mean closing-line value</td><td>78.86%</td><td>95.37%</td><td><a class="src t-paper" data-source="PAPER-LEVITT" href="https://www.nber.org/papers/w9422" target="_blank" rel="noopener" title="Economic Journal">PAPER-LEVITT</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">One bettor with a true +2% edge and +0.5 points of CLV per bet against 999 zero-skill bettors, 267 bets each, 20,000 trials, CLV sd 2.0 pts (measured).</p>
+  <p class="prose"><strong>This is the most important table in the project.</strong> A genuinely
+  skilled bettor is invisible on a profit leaderboard and obvious on a closing-line-value board. Any
+  scoring system that ranks on P&amp;L is measuring luck.</p>
+</section>
+
+<section>
+  <h2>Power arithmetic — how long to prove an edge</h2>
+  <div class="tablewrap"><table class="">
+<thead><tr><th>True edge per bet</th><th>SD per bet</th><th>Bets needed</th><th>Seasons at 267 bets</th><th>Source</th></tr></thead><tbody>
+<tr><td>1%</td><td>0.953</td><td>71,275</td><td>266.9</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>2%</td><td>0.952</td><td>17,796</td><td>66.6</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>5%</td><td>0.950</td><td>2,833</td><td>10.6</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+<tr><td>10%</td><td>0.943</td><td>699</td><td>2.6</td><td><a class="src t-paper" data-source="PAPER-DSR" href="https://doi.org/10.3905/jpm.2014.40.5.094" target="_blank" rel="noopener" title="Journal of Portfolio Management">PAPER-DSR</a></td></tr>
+</tbody></table></div>
+<p class="sourcenote">95% confidence, 80% power, −110 payoffs: n = ((1.96 + 0.8416)·SD / edge)².</p>
+</section>
+
+<section>
+  <h2>Verification harness — 9/9 checks passed</h2>
+  <div class="tablewrap"><table class="wide">
+<thead><tr><th>ID</th><th>Check</th><th>Result</th><th>Detail</th><th>Artifact</th></tr></thead><tbody>
+<tr><td>V01</td><td>Formula verification (odds, de-vig, copula, Kelly, BH, DSR, settlement)</td><td><span class="badge ok">pass</span></td><td>33 assertions passed; exit code 0</td><td>scripts/tests/test_math.py</td></tr>
+<tr><td>V02</td><td>Club division map vs nflverse reference</td><td><span class="badge ok">pass</span></td><td>32 clubs checked, 0 mismatches</td><td>https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv</td></tr>
+<tr><td>V03</td><td>Integrity gate G0 thresholds</td><td><span class="badge ok">pass</span></td><td>2945 usable games from 2956 source rows; excluded rows: 10 team name unresolvable (neutral-site game (Super Bowl) stored as team &#x27;0&#x27;); 1 team name unresolvable (NFL has two &#x27;New York&#x27; clubs (NYG, NYJ) - unresolved)</td><td>SBR-10Y</td></tr>
+<tr><td>V04</td><td>Independent-source cross-validation, 2021</td><td><span class="badge ok">pass</span></td><td>final scores 263/263 agree; closing totals within 1 pt on 97.1%; closing spreads 86.5%</td><td>NFLVERSE-PBP vs SBR-10Y</td></tr>
+<tr><td>V05</td><td>Strategy bookkeeping (counts, pushes, profit totals)</td><td><span class="badge ok">pass</span></td><td>18 strategies checked, 0 inconsistencies</td><td>scripts/03_strategies.py</td></tr>
+<tr><td>V06</td><td>Source register completeness</td><td><span class="badge ok">pass</span></td><td>12 sources; every entry has a URL, a tier and a verification note</td><td>data/sources.json</td></tr>
+<tr><td>V07</td><td>Every source referenced by the site exists in the register</td><td><span class="badge ok">pass</span></td><td>12 distinct source ids referenced by the site</td><td>lab/*.html</td></tr>
+<tr><td>V08</td><td>All eight gates recorded for every strategy; verdicts consistent</td><td><span class="badge ok">pass</span></td><td>18 strategies x 8 gates</td><td>data/validation.json</td></tr>
+<tr><td>V09</td><td>No unfinished-value markers in published pages</td><td><span class="badge ok">pass</span></td><td>clean</td><td>lab/*.html</td></tr>
+</tbody></table></div>
+<p class="sourcenote">Re-runnable with <code>python3 scripts/99_verify.py</code>. The site build refuses to publish if any check fails.</p>
+</section>
+
+</main>
+<footer class="foot"><div class="wrap">
+  <p>Research artifact. No betting advice, no live wagering, no guarantee of profit. Values that could
+  not be confirmed against a source are marked <span class="badge warn">unverified</span> and listed on the
+  <a href="flagged.html">Flagged for review</a> page.</p>
+</div></footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

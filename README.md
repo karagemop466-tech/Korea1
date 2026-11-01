@@ -65,7 +65,11 @@ source link, any internal link is broken, or any unformatted missing value reach
 pipeline/            all analysis code (see methodology.html for the dataflow)
 data/processed/      generated tables (committed; the site reads them)
 data/sources.json    pinned commit SHA + per-file SHA-256
-docs/                the GitHub Pages site (static HTML/CSS, no CDN, no framework)
+*.html + assets/     the GitHub Pages site (static HTML/CSS, no CDN, no framework) — served from
+                     the repository root, because Pages is configured as `main` / (verified against
+                     the Pages API; an earlier note here said docs/, which does not exist)
+lab/                 the replication annex (see below) — a second site, same questions, other data
+scripts/             the annex pipeline and its own verifiers
 COORDINATION.md      multi-session task board and work log
 ```
 
@@ -83,3 +87,40 @@ COORDINATION.md      multi-session task board and work log
 Data: [nflverse](https://github.com/nflverse/nfldata) (open data). Official NFL rules:
 [operations.nfl.com](https://operations.nfl.com/the-rules/nfl-rulebook/). This repository contains
 analysis code and derived tables only; it redistributes no play-by-play data.
+
+---
+
+## Replication annex: a fourth build, on different data (`lab/`)
+
+Four sessions claimed this repository at the same moment and three of them built the whole thing. Rather
+than delete a finished pipeline, session `arena/ea02c4fb-korea1` publishes its build as a **replication
+annex**: the same four questions answered from a *different* odds archive by *different* code, so the main
+results can be checked against an independent draw. Its site is at [`lab/index.html`](lab/index.html) and
+it is reachable from the dashboard navigation ("Replication annex").
+
+| | `pipeline/` (canonical) | `analysis/` (first build, retained) | `lab/` (annex) |
+|---|---|---|---|
+| Odds source | nflverse `nfldata` | nflverse `nfldata` | Sportsbook Review 10-year archive |
+| Games | 7,384 (1999–2026) | 7,384 | 2,945 (2011–2021) |
+| Priced bets | 26,168 | 27,330 | 959 qualifying of 2,280 |
+| Strategies | 18 | 24 | 18 |
+| Site | root | root pages superseded | `lab/` |
+
+Reproduce the annex with `bash scripts/run_all.sh` (adds `data/lab/` + `lab/`, runs its two verifiers,
+exits non-zero on any failure). Read its narrative in
+[`research/05-annex-executive-summary.md`](research/05-annex-executive-summary.md).
+
+**What replicated, independently:**
+
+1. **No strategy clears every gate** — 0 of 18 in the annex, 0 of 24 in the first build, and the canonical
+   build's best candidate fails its false-discovery gate.
+2. **The originated line does not beat the close** — annex spread MAE 10.473 vs market 10.151; canonical
+   10.527 vs 10.216.
+3. **Apparent edge is mostly luck** — annex in-sample → out-of-sample ROI rank correlation 0.485 against an
+   expected best Sharpe of 0.093 for 18 zero-skill trials.
+4. **CLV, not ROI, is the skill-bearing statistic** — in a 20,000-trial field of 999 zero-skill bettors plus
+   one skilled bettor, the skilled bettor finishes first 78.9% of the time by CLV and 0.32% by ROI.
+
+The annex writes only to `data/lab/` and `lab/`; it never touches `pipeline/`, `analysis/`, `data/processed/`
+or the root pages' content (the one shared edit is a single nav entry in `pipeline/render_site.py`, logged
+in `COORDINATION.md`).

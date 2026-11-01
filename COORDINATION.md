@@ -191,3 +191,95 @@ literally — every claimed scope is claimed by four sessions at once.
 T9 player props (no reachable source), multi-season opening lines (2021 only), the 4,782 selections
 where the two nflverse price files disagree, the three 2015 games whose outcome flags contradict
 their score, incomplete weather coverage, and the absence of injury / starting-QB inputs.
+
+## Session `arena/ea02c4fb-korea1` — fourth build, concurrent, merged as an annex
+
+**Claim:** `8e9e388` at 2026-11-01, claiming the whole deliverable on an (apparently) empty repo. Like the
+three siblings named in the collision notice above, this session saw a README-only tree and claimed
+everything. It is the fourth of the four claims recorded there and it does not get to pretend otherwise.
+
+**Resolution applied when merging (no work discarded):** the canonical build stays canonical — `pipeline/`
+code, `data/processed/`, `data/site/`, `analysis/`, and the ten root pages are kept byte-for-byte. This
+session's complete pipeline is republished as a **replication annex** at `lab/` (site) and `data/lab/`
+(artefacts), with code in `scripts/` and notes in `research/`. It is a genuinely independent second answer
+to the same questions: different odds archive (Sportsbook Review 10-year, 2011–2021, 2,945 games) and
+different code.
+
+| # | Task | Status | Owner | Files / scope |
+|---|---|---|---|---|
+| R1 | Odds ingest + integrity gate | done | arena-ea02c4fb | `scripts/00_ingest.py`, `data/lab/games.csv`, `data/lab/integrity.json` |
+| R2 | Originated line model (walk-forward Elo + form) | done | arena-ea02c4fb | `scripts/02_line_model.py`, `data/lab/lines.json` |
+| R3 | Strategy library (18 signals) at real two-sided quotes | done | arena-ea02c4fb | `scripts/03_strategies.py`, `data/lab/strategies.json` |
+| R4 | Correlation engine (game, leg, parlay kernel) | done | arena-ea02c4fb | `scripts/04_correlations.py`, `data/lab/correlations.json` |
+| R5 | Player-prop correlations + copula pricing (nflverse pbp) | done | arena-ea02c4fb | `scripts/05_props.py`, `data/lab/props.json` |
+| R6 | 8 gates + luck simulation + mixed field | done | arena-ea02c4fb | `scripts/06_validation.py`, `data/lab/validation.json` |
+| R7 | Leaderboard (LASS tiers + deflated-Sharpe column) | done | arena-ea02c4fb | `scripts/08_leaderboard.py`, `data/lab/leaderboard.json` |
+| R8 | Annex site + its own verifiers | done | arena-ea02c4fb | `scripts/07_build_site.py`, `scripts/98_linkcheck.py`, `scripts/99_verify.py`, `lab/` |
+| R9 | Research notes + annex executive summary | done | arena-ea02c4fb | `research/00-*` … `research/05-annex-executive-summary.md` |
+| R10 | **Integration**: merge `main` twice, resolve conflicts, republish as annex, repair the red checks | done | arena-ea02c4fb | `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `tests/check_*.py`, `.github/workflows/pages.yml`, one `NAV` line in `pipeline/render_site.py` |
+
+---
+
+## Conflict resolution log (integration, session `arena/ea02c4fb-korea1`)
+
+`main` moved twice while this branch was open (PRs #7 and #8 merged), so `git merge origin/main` ran twice.
+Five conflicts the first time, ten the second. **Neither side's work was discarded in either merge.**
+
+| File(s) | Resolution |
+|---|---|
+| `data/derived/games.csv` (merge 1) | **Theirs**, byte-for-byte. The annex game table was moved to `data/lab/games.csv` and every annex script repointed, so a rebuild cannot overwrite it. |
+| `index/lines/props/strategies/validation/flagged.html` (merge 2) | **Theirs.** The regenerated dashboard replaced the pages this session had touched; the annex's nav entry was re-applied *in the generator* and re-rendered instead, so generator and output agree. |
+| `data/sources.json` (merge 2) | **Theirs** (provenance pin + per-file SHA-256). The annex registered its own 12 sources at `data/lab/sources.json`; `scripts/98_linkcheck.py` and `scripts/99_verify.py` were repointed there, which is what validates each annex table row's `data-source` id. |
+| `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md` | **Theirs, plus appended annex sections** (this block, the annex README section, the annex summary section). The annex's full summary lives separately at `research/05-annex-executive-summary.md` so the two narratives cannot overwrite each other. |
+| `.gitignore` | **Theirs.** |
+
+**Cross-scope edits, logged as the protocol requires.** These are the only files outside this session's
+own scope that it changed, and each is a repair rather than a redesign:
+
+1. `pipeline/render_site.py` — one `NAV` entry (`("lab/index.html", "Replication annex")`) so the annex is
+   reachable from the dashboard, and the reciprocal "↑ Main dashboard" link on every `lab/` page. Re-render
+   diff is exactly that one line per page; `pipeline/verify_site.py` passes afterwards.
+2. `tests/check_links.py`, `tests/check_sources.py` — **both were failing on `main` when this merge started**
+   (`missing page parlays.html`, `data.html`, `verification.html`), because `pipeline/render_site.py`
+   superseded the original nine pages and the page lists were never updated. List updated to the ten pages
+   that ship, plus the annex pages for link checking; the link checker now resolves hrefs relative to the
+   page's own directory so a sub-site (`lab/`) can be checked at all.
+3. `tests/check_sources.py` found one genuine defect: `props.html` rows 2–4 ("not present in any retrieved
+   dataset") carried only an internal `sources` link and no unverified marker. Their wording was changed in
+   the generator to `UNVERIFIED — not present in any retrieved dataset`, matching the convention used
+   everywhere else on that page, and re-rendered.
+4. `.github/workflows/pages.yml` — it claimed Pages serves `main` / `docs` and copied `docs/` into the
+   deploy artifact, but **there is no `docs/` in this tree** and the Pages API returns
+   `{"build_type":"legacy","source":{"branch":"main","path":"/"}}`. A manual run would have published an
+   empty site. It also called `scripts/check_site.py`, which does not exist. Repointed at the repository
+   root and at the two checkers that do exist.
+5. `README.md` — the layout table said "`docs/` the GitHub Pages site"; corrected to the root, for the same
+   verified reason. Flagged as IR-12 below rather than quietly fixed.
+
+**Nothing was reverted, rebased away or deleted from any sibling branch.**
+
+---
+
+## Annex: verification performed (all re-run after the final merge)
+
+| Verifier | Result |
+|---|---|
+| `python3 scripts/99_verify.py` (V01–V09) | **9/9 pass** |
+| `python3 scripts/98_linkcheck.py` (L01–L07) | **pass** — 9 pages, 119 internal links, 9 assets, 33 source references, 273 external links, 0 broken |
+| `python3 tests/check_links.py` | **pass** — 19 pages (root + `lab/`), all internal links, anchors and assets resolve |
+| `python3 tests/check_sources.py` | **pass** — 10 pages, 523 table rows, every row links to an official source or is flagged |
+| `python -m pipeline.verify_site` | **pass** — 0 failing checks |
+| `pytest tests/test_no_lookahead.py` | **not run here** — needs the git-ignored `data/raw/` staging produced by `analysis/fetch_data.py`; no file it reads was modified by this merge. `make build` restores it. |
+
+`bash scripts/run_all.sh` reproduces the annex end to end (all stages, both verifiers, non-zero exit on
+failure). It takes ~60 s because the luck simulation is CLT-based; the brute-force cross-check that
+validates it (`_exact_winner_check`, 150 trials × 120 bettors × 267 bets) is inside the same run.
+
+### Annex irregularities
+
+| ID | Severity | Item |
+|---|---|---|
+| IR-09 | medium | The builds measure different market cost from different archives: mean overround **3.79%** (annex, n=2,941) vs **2.70%** (canonical). Not reconciled — each is correct for its own source, and the gap is itself evidence that "the vig" is archive-specific. Both are published. |
+| IR-10 | medium | Annex sample stops at 2021 with four seasons of nulled closing lines (260 spreads, 259 totals); the canonical build runs 1999–2026. Annex conclusions are stated for 2011–2021 only. |
+| IR-11 | low | Annex props use 2021–2022 play-by-play (the 2023 archive fetched truncated at 5,660 rows). No prop prices exist in either build, so no prop ROI is claimed — agrees with IR-03. |
+| IR-12 | medium | Found during integration, now fixed but recorded: `tests/check_links.py` and `tests/check_sources.py` were **red on `main`** (three missing pages), `props.html` rows 2–4 had no unverified marker, and `.github/workflows/pages.yml` plus `README.md` both described the site as living in `docs/` when Pages serves the repository root and no `docs/` exists. |

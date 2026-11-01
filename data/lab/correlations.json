@@ -1,0 +1,335 @@
+{
+  "market_margin": {
+    "n_games": 2941,
+    "mean_overround": 0.03789,
+    "median_overround": 0.03779,
+    "p10_overround": 0.03057,
+    "p90_overround": 0.04545,
+    "break_even_win_rate_two_way_standard_price": 0.52381,
+    "source": "SBR-10Y closing moneylines (home and away, both priced)",
+    "price_bucket_calibration": [
+      {
+        "bucket": "shorter than -400",
+        "n": 484,
+        "mean_no_vig_implied_prob": 0.8278,
+        "realised_win_rate": 0.8326,
+        "gap_realised_minus_implied": 0.0049
+      },
+      {
+        "bucket": "-400 to -250",
+        "n": 716,
+        "mean_no_vig_implied_prob": 0.7302,
+        "realised_win_rate": 0.7584,
+        "gap_realised_minus_implied": 0.0282
+      },
+      {
+        "bucket": "-250 to -150",
+        "n": 1023,
+        "mean_no_vig_implied_prob": 0.6346,
+        "realised_win_rate": 0.6012,
+        "gap_realised_minus_implied": -0.0334
+      },
+      {
+        "bucket": "-150 to -110",
+        "n": 686,
+        "mean_no_vig_implied_prob": 0.5485,
+        "realised_win_rate": 0.535,
+        "gap_realised_minus_implied": -0.0135
+      },
+      {
+        "bucket": "-110 to 110",
+        "n": 312,
+        "mean_no_vig_implied_prob": 0.4814,
+        "realised_win_rate": 0.484,
+        "gap_realised_minus_implied": 0.0026
+      },
+      {
+        "bucket": "110 to 150",
+        "n": 687,
+        "mean_no_vig_implied_prob": 0.425,
+        "realised_win_rate": 0.4571,
+        "gap_realised_minus_implied": 0.0321
+      },
+      {
+        "bucket": "150 to 250",
+        "n": 1053,
+        "mean_no_vig_implied_prob": 0.3376,
+        "realised_win_rate": 0.3476,
+        "gap_realised_minus_implied": 0.01
+      },
+      {
+        "bucket": "250 to 400",
+        "n": 605,
+        "mean_no_vig_implied_prob": 0.2424,
+        "realised_win_rate": 0.2116,
+        "gap_realised_minus_implied": -0.0308
+      },
+      {
+        "bucket": "longer than +400",
+        "n": 316,
+        "mean_no_vig_implied_prob": 0.1513,
+        "realised_win_rate": 0.1392,
+        "gap_realised_minus_implied": -0.0121
+      }
+    ],
+    "note": "overround = implied_home + implied_away - 1, computed straight from the archived closing prices, so it is the margin actually charged, not a textbook figure"
+  },
+  "sources": [
+    "SBR-10Y (2,945 games, 2011-2021)"
+  ],
+  "n_games": 2945,
+  "n_games_with_close_lines": 2681,
+  "continuous": [
+    {
+      "pair": "home margin vs game total",
+      "n": 2945,
+      "pearson_r": 0.0436,
+      "ci95": [
+        0.0075,
+        0.0796
+      ],
+      "note": "does the favourite's edge grow with scoring?"
+    },
+    {
+      "pair": "home points vs away points",
+      "n": 2945,
+      "pearson_r": -0.0476,
+      "ci95": [
+        -0.0836,
+        -0.0115
+      ],
+      "note": "shootout effect"
+    },
+    {
+      "pair": "home margin vs |home margin|",
+      "n": 2945,
+      "pearson_r": 0.2061,
+      "ci95": [
+        0.1713,
+        0.2405
+      ],
+      "note": "does the winner tend to win big?"
+    },
+    {
+      "pair": "home points vs game total",
+      "n": 2945,
+      "pearson_r": 0.7064,
+      "ci95": [
+        0.6878,
+        0.7241
+      ],
+      "note": "share of total captured by the home side"
+    }
+  ],
+  "binary_leg_pairs": [
+    {
+      "leg_a": "Home moneyline",
+      "leg_b": "Home spread",
+      "n": 2681,
+      "p_a": 0.5681,
+      "p_b": 0.4733,
+      "p_joint_empirical": 0.426,
+      "p_joint_if_independent": 0.2689,
+      "pricing_error_pct": 58.42,
+      "phi": 0.6351,
+      "fair_decimal_payout": 2.3476,
+      "independent_decimal_payout": 3.7191
+    },
+    {
+      "leg_a": "Home moneyline",
+      "leg_b": "Away moneyline",
+      "n": 2681,
+      "p_a": 0.5681,
+      "p_b": 0.4289,
+      "p_joint_empirical": 0.0,
+      "p_joint_if_independent": 0.2437,
+      "pricing_error_pct": -100.0,
+      "phi": -0.9939,
+      "fair_decimal_payout": null,
+      "independent_decimal_payout": 4.1039
+    },
+    {
+      "leg_a": "Over total",
+      "leg_b": "Home spread",
+      "n": 2681,
+      "p_a": 0.4823,
+      "p_b": 0.4733,
+      "p_joint_empirical": 0.2342,
+      "p_joint_if_independent": 0.2283,
+      "pricing_error_pct": 2.61,
+      "phi": 0.0239,
+      "fair_decimal_payout": 4.2691,
+      "independent_decimal_payout": 4.3806
+    },
+    {
+      "leg_a": "Over total",
+      "leg_b": "Home moneyline",
+      "n": 2681,
+      "p_a": 0.4823,
+      "p_b": 0.5681,
+      "p_joint_empirical": 0.2831,
+      "p_joint_if_independent": 0.274,
+      "pricing_error_pct": 3.33,
+      "phi": 0.0369,
+      "fair_decimal_payout": 3.5323,
+      "independent_decimal_payout": 3.65
+    },
+    {
+      "leg_a": "Over total",
+      "leg_b": "Under total",
+      "n": 2681,
+      "p_a": 0.4823,
+      "p_b": 0.5062,
+      "p_joint_empirical": 0.0,
+      "p_joint_if_independent": 0.2441,
+      "pricing_error_pct": -100.0,
+      "phi": -0.9771,
+      "fair_decimal_payout": null,
+      "independent_decimal_payout": 4.0965
+    },
+    {
+      "leg_a": "Over total",
+      "leg_b": "Home team over its implied team total",
+      "n": 2681,
+      "p_a": 0.4823,
+      "p_b": 0.9869,
+      "p_joint_empirical": 0.4823,
+      "p_joint_if_independent": 0.476,
+      "pricing_error_pct": 1.32,
+      "phi": 0.111,
+      "fair_decimal_payout": 2.0735,
+      "independent_decimal_payout": 2.1009
+    }
+  ],
+  "parlay_pricing_kernel": {
+    "formula": "P(both 50/50 legs) = 1/4 + arcsin(rho)/(2*pi)",
+    "verification": "scripts/tests/test_math.py (Monte-Carlo check of the closed form)",
+    "table": [
+      {
+        "rho": 0.0,
+        "p_both_legs": 0.25,
+        "fair_decimal_2leg": 4.0,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": 0.0
+      },
+      {
+        "rho": 0.1,
+        "p_both_legs": 0.26594,
+        "fair_decimal_2leg": 3.7602,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -5.99
+      },
+      {
+        "rho": 0.2,
+        "p_both_legs": 0.28205,
+        "fair_decimal_2leg": 3.5455,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -11.36
+      },
+      {
+        "rho": 0.3,
+        "p_both_legs": 0.29849,
+        "fair_decimal_2leg": 3.3502,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -16.25
+      },
+      {
+        "rho": 0.4,
+        "p_both_legs": 0.31549,
+        "fair_decimal_2leg": 3.1696,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -20.76
+      },
+      {
+        "rho": 0.5,
+        "p_both_legs": 0.33333,
+        "fair_decimal_2leg": 3.0,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -25.0
+      },
+      {
+        "rho": 0.6,
+        "p_both_legs": 0.35242,
+        "fair_decimal_2leg": 2.8376,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -29.06
+      },
+      {
+        "rho": 0.7,
+        "p_both_legs": 0.37341,
+        "fair_decimal_2leg": 2.678,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -33.05
+      },
+      {
+        "rho": 0.8,
+        "p_both_legs": 0.39758,
+        "fair_decimal_2leg": 2.5152,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -37.12
+      },
+      {
+        "rho": 0.9,
+        "p_both_legs": 0.42822,
+        "fair_decimal_2leg": 2.3353,
+        "independent_decimal_2leg": 4.0,
+        "independent_price_implied_prob": 0.25,
+        "book_error_if_priced_independent_pct": -41.62
+      }
+    ]
+  },
+  "cross_game_parlays": {
+    "assumption": "legs in different games are independent; this is the ONE case where multiplying prices is correct",
+    "table": [
+      {
+        "legs": 2,
+        "decimal_payout": 3.645,
+        "american_payout": 264,
+        "implied_break_even_prob": 0.27438,
+        "true_prob_fair_50_50_legs": 0.25,
+        "expected_return_per_unit": -0.0888,
+        "sd_per_unit": 1.5782,
+        "kelly_stake_if_no_edge": 0.0
+      },
+      {
+        "legs": 3,
+        "decimal_payout": 6.958,
+        "american_payout": 596,
+        "implied_break_even_prob": 0.14372,
+        "true_prob_fair_50_50_legs": 0.125,
+        "expected_return_per_unit": -0.1303,
+        "sd_per_unit": 2.3011,
+        "kelly_stake_if_no_edge": 0.0
+      },
+      {
+        "legs": 4,
+        "decimal_payout": 13.283,
+        "american_payout": 1228,
+        "implied_break_even_prob": 0.07528,
+        "true_prob_fair_50_50_legs": 0.0625,
+        "expected_return_per_unit": -0.1698,
+        "sd_per_unit": 3.2154,
+        "kelly_stake_if_no_edge": 0.0
+      },
+      {
+        "legs": 5,
+        "decimal_payout": 25.359,
+        "american_payout": 2436,
+        "implied_break_even_prob": 0.03943,
+        "true_prob_fair_50_50_legs": 0.03125,
+        "expected_return_per_unit": -0.2075,
+        "sd_per_unit": 4.4123,
+        "kelly_stake_if_no_edge": 0.0
+      }
+    ]
+  }
+}

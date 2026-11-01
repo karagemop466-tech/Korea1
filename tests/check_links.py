@@ -15,9 +15,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["index.html", "lines.html", "strategies.html",
-         "parlays.html", "props.html", "validation.html", "data.html",
-         "verification.html", "flagged.html"]
+# Updated by the integration session arena/ea02c4fb-korea1: pipeline/render_site.py replaced the
+# original nine pages with its own ten; the list below is the page set that actually ships, plus the
+# annex pages in lab/. Every href on these pages (including the nav entry to lab/) is resolved.
+PAGES = ["index.html", "executive-summary.html", "lines.html", "strategies.html", "validation.html",
+         "correlations.html", "props.html", "methodology.html", "flagged.html", "sources.html",
+         "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
+         "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
+         "lab/flagged.html"]
 HREF = re.compile(r'href="([^"]+)"')
 ID = re.compile(r'id="([^"]+)"')
 SRC = re.compile(r'src="([^"]+)"')
@@ -35,7 +40,8 @@ def main() -> int:
                 continue
             target, _, anchor = href.partition("#")
             if target:
-                path = (ROOT / target).resolve()
+                # resolve relative to the page, so sub-sites (lab/) are checked correctly
+                path = (page.parent / target).resolve()
                 if not path.exists():
                     errors.append(f"{page.name}: missing file for href {href}")
                     continue
@@ -46,7 +52,7 @@ def main() -> int:
         for s in SRC.findall(text):
             if s.startswith(("http://", "https://")):
                 errors.append(f"{page.name}: external script/style dependency {s}")
-            elif not (ROOT / s).exists():
+            elif not (page.parent / s).exists():
                 errors.append(f"{page.name}: missing asset {s}")
         if ">None<" in text:
             errors.append(f"{page.name}: leaked None cell")
