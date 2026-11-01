@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="../">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Pre-registered validation gates for NFL betting signal research, including source provenance, temporal holdouts, calibration, correlation, and price-aware evaluation.">
+  <title>Validation gates | NFL Line Lab</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="pages/validation.html#main">Skip to main content</a>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="index.html" aria-label="NFL Line Lab home"><span class="brand-mark" aria-hidden="true">NFL</span><span><span class="brand-name">Line Lab</span><span class="brand-tag">Evidence first</span></span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
+    <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation"><a href="index.html">Overview</a><a href="pages/strategies.html">Strategies</a><a href="pages/validation.html" aria-current="page">Validation</a><a href="pages/correlation.html">Correlation</a><a href="pages/leaderboard.html">Leaderboard</a><a href="pages/sources.html">Data sources</a><a href="pages/review.html">Flagged for review</a></nav>
+  </div></header>
+  <main id="main">
+    <section class="page-hero"><div class="page-hero-inner">
+      <p class="eyebrow">Research category · 02</p><h1>Earn eligibility through gates, not anecdotes.</h1>
+      <p>A strategy advances only when its data, forecast, pricing and uncertainty are reproducible. These are proposed project rules; none has passed yet.</p>
+    </div></section>
+    <section class="page-shell container">
+      <p class="lead">“Luck-free” is not a statistically supportable promise. The target is repeated, out-of-sample skill after accounting for uncertainty, market prices and selection bias. Proper forecast scoring and interval estimation help quantify evidence; they do not guarantee profit.</p>
+      <div class="notice"><strong>Current gate status:</strong> not run. No joined historical panel, timestamped odds archive, model forecasts or wagers are stored in the repository.</div>
+      <div class="table-scroll" style="margin-top:1.2rem">
+        <table>
+          <caption>Each gate is a hard qualification requirement. Rows are proposed controls, not reported test results.</caption>
+          <thead><tr><th scope="col">Gate</th><th scope="col">Pass condition</th><th scope="col">Failure / abstention rule</th><th scope="col">Current status</th><th scope="col">Source</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>V0 · Provenance & rights</strong></td>
+              <td>Every feature, label and price has an official/source identifier, collection timestamp, revision, event mapping and documented permitted use. Final stat revisions are respected.</td>
+              <td>Do not ingest, re-host or commercially reuse material when terms/permission are unclear; quarantine mismatched or unreconciled records.</td>
+              <td><span class="status-text pending">Blocked · review required</span></td>
+              <td><div class="source-links"><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL GSIS data & corrections ↗</a><a href="https://www.nflgsis.com/2024/REG/08/59622/Gamebook.pdf" target="_blank" rel="noopener noreferrer">NFL gamebook terms ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V1 · Market & settlement definition</strong></td>
+              <td>Freeze market type, line, price, operator, quote time, settlement/void rules and the outcome definition before scoring a forecast.</td>
+              <td>No price or ambiguous settlement rule means no EV calculation and no leaderboard ticket.</td>
+              <td><span class="status-text pending">Not run · no odds data</span></td>
+              <td><div class="source-links"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">Publisher: odds conversion methods ↗</a><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL GSIS outcome records ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V2 · As-of timestamp / leakage</strong></td>
+              <td>Build features only from information available at the decision timestamp; use chronological train, calibration and test periods. Never use post-kickoff or postgame information to price a pregame event.</td>
+              <td>Any feature with an unknown/late timestamp invalidates the affected forecast; random shuffling is not accepted as the final NFL time split.</td>
+              <td><span class="status-text pending">Not run</span></td>
+              <td><div class="source-links"><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html" target="_blank" rel="noopener noreferrer">Time-ordered split documentation ↗</a><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener noreferrer">NFL time-varying reports ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V3 · Forecast quality</strong></td>
+              <td>Score probability forecasts with proper scoring rules (Brier/log loss for categorical outcomes; a scoring rule suited to the stated continuous/quantile target for props) and compare with a pre-defined simple baseline and market reference.</td>
+              <td>Accuracy alone is insufficient. A strategy that does not improve the pre-registered held-out score is not labeled predictive skill.</td>
+              <td><span class="status-text pending">Not run</span></td>
+              <td><div class="source-links"><a href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener noreferrer">Scikit-learn scoring guide ↗</a><a href="https://scikit-learn.org/stable/modules/calibration.html" target="_blank" rel="noopener noreferrer">Probability calibration guide ↗</a><a href="https://www.tandfonline.com/doi/abs/10.1198/016214506000001437" target="_blank" rel="noopener noreferrer">JASA proper scoring rules ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V4 · Calibration & uncertainty</strong></td>
+              <td>Report calibration by probability/line segment, sample size and uncertainty intervals. Estimate uncertainty with resampling that preserves the game-level unit of dependence.</td>
+              <td>Do not advance a noisy positive average if its pre-specified uncertainty interval fails the eligibility rule. The interval and rule must be declared before looking at the final holdout.</td>
+              <td><span class="status-text pending">Not run</span></td>
+              <td><div class="source-links"><a href="https://www.itl.nist.gov/div898/handbook/eda/section3/bootplot.htm" target="_blank" rel="noopener noreferrer">NIST bootstrap guidance ↗</a><a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm" target="_blank" rel="noopener noreferrer">NIST confidence intervals ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V5 · Price-aware edge</strong></td>
+              <td>Use a named, timestamped price source; record the market margin and a pre-registered no-vig conversion; account for fees, voids and the actual quoted price. Track closing-line value and net results separately.</td>
+              <td>No line/price archive means no positive edge claim. A model probability difference is not itself an expected return.</td>
+              <td><span class="status-text pending">Blocked · no price archive</span></td>
+              <td><div class="source-links"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">Publisher: odds-to-probability study ↗</a><a href="https://journals.sagepub.com/doi/abs/10.1177/1527002512437744" target="_blank" rel="noopener noreferrer">Publisher: NFL lines & totals study ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V6 · Joint outcomes / correlation</strong></td>
+              <td>For combos, measure the paired outcome distribution and correlation in an aligned sample; report N, conditioning and uncertainty. Price the joint event directly where possible.</td>
+              <td>Never use an independence product without evidence. Missing or unstable joint estimates block a parlay entry.</td>
+              <td><span class="status-text pending">Blocked · values blank</span></td>
+              <td><div class="source-links"><a href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST correlation definition ↗</a><a href="https://www.nflgsis.com/Help/About.html" target="_blank" rel="noopener noreferrer">NFL GSIS paired outcomes ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V7 · Multiplicity / replication</strong></td>
+              <td>Register strategy families and parameter searches before testing; keep a genuinely untouched final period; report every tried model and repeat performance on a later season before calling a signal robust.</td>
+              <td>Do not select the winner from the final holdout, hide unsuccessful variants or rank an underpowered comparison as a reward winner.</td>
+              <td><span class="status-text pending">Not run</span></td>
+              <td><div class="source-links"><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html" target="_blank" rel="noopener noreferrer">Time-series split reference ↗</a><a href="https://scholarworks.wmich.edu/math_pubs/42/" target="_blank" rel="noopener noreferrer">University-hosted backtest-selection paper ↗</a></div></td>
+            </tr>
+            <tr>
+              <td><strong>V8 · Competition eligibility</strong></td>
+              <td>Only strategies passing V0–V7 are ranked. Set sample-size/power requirements and market-specific settlement treatment before launch; publish score definitions and audit trail.</td>
+              <td>Unqualified strategies remain visible as “not ranked”; no numeric threshold or cash reward is invented in this build.</td>
+              <td><span class="status-text pending">Specification only</span></td>
+              <td><div class="source-links"><a href="https://www.itl.nist.gov/div898/handbook/glossary.htm" target="_blank" rel="noopener noreferrer">NIST sample-size considerations ↗</a><a href="https://operations.nfl.com/programs-initiatives/innovation/big-data-bowl" target="_blank" rel="noopener noreferrer">NFL judged analytics contest ↗</a></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <section class="section compact">
+        <div class="section-heading"><div><p class="kicker">Do not collapse prediction and decision</p><h2>One report card is not enough.</h2></div><p>Forecast quality and economic value answer different questions. Report them side-by-side and require both to be acceptable under the pre-registered policy.</p></div>
+        <div class="card-grid">
+          <article class="card"><span class="pill">Forecast</span><h3>Are probabilities honest?</h3><p>Use probability scores and calibration diagnostics on data not used to fit or calibrate the model.</p><a class="card-link" href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener noreferrer">Scoring methodology ↗</a></article>
+          <article class="card"><span class="pill">Decision</span><h3>Was the price valuable?</h3><p>Record the quote, de-vig method, market movement, fees and settlement convention at the instant the decision would have been made.</p><a class="card-link" href="https://www.sciencedirect.com/science/article/abs/pii/S0169207014000533" target="_blank" rel="noopener noreferrer">Odds conversion methods ↗</a></article>
+          <article class="card"><span class="pill">Uncertainty</span><h3>Could the record be noise?</h3><p>Publish sample size and intervals; a positive short-run result without uncertainty analysis is not leaderboard proof.</p><a class="card-link" href="https://www.itl.nist.gov/div898/handbook/eda/section3/bootplot.htm" target="_blank" rel="noopener noreferrer">NIST bootstrap guidance ↗</a></article>
+        </div>
+      </section>
+    </section>
+  </main>
+  <footer class="footer"><div class="footer-inner"><p><strong>NFL Line Lab</strong> · Independent project; not affiliated with or endorsed by the NFL or any sportsbook. No validation gate has passed.</p><div class="footer-right"><a href="pages/strategies.html">Strategy designs</a><a href="pages/sources.html">Verified source register</a><a href="pages/review.html">Flagged items</a></div></div></footer>
+</body>
+</html>
