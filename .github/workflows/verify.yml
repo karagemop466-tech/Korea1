@@ -1,10 +1,9 @@
-name: Verify static site
+name: Verify dashboard
 
 on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, arena/cbd229fe-korea1]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +13,8 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v5
-      - name: Validate local links and sourced data-table rows
-        run: python3 scripts/check_site.py
+      - uses: actions/checkout@v4
+      - name: Check every internal link, anchor and asset
+        run: python3 tests/check_links.py
+      - name: Check every table row links to a source
+        run: python3 tests/check_sources.py

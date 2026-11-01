@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <base href="../">
+  <base href="../index.html">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Proposed NFL line-origination strategies for game lines, player props, and correlated combinations, with source links and evidence status.">
   <title>Strategy designs | NFL Line Lab</title>
-  <link rel="stylesheet" href="assets/site.css">
-  <script defer src="assets/site.js"></script>
+  <link rel="stylesheet" href="../assets/site.css">
+  <script defer src="../assets/site.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="pages/strategies.html#main">Skip to main content</a>
+  <a class="skip-link" href="strategies.html#main">Skip to main content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="NFL Line Lab home"><span class="brand-mark" aria-hidden="true">NFL</span><span><span class="brand-name">Line Lab</span><span class="brand-tag">Evidence first</span></span></a>
+      <a class="brand" href="../index.html" aria-label="NFL Line Lab home"><span class="brand-mark" aria-hidden="true">NFL</span><span><span class="brand-name">Line Lab</span><span class="brand-tag">Evidence first</span></span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
       <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
-        <a href="index.html">Overview</a><a href="pages/strategies.html" aria-current="page">Strategies</a><a href="pages/validation.html">Validation</a><a href="pages/correlation.html">Correlation</a><a href="pages/leaderboard.html">Leaderboard</a><a href="pages/sources.html">Data sources</a><a href="pages/review.html">Flagged for review</a>
+        <a href="../index.html">Overview</a><a href="strategies.html" aria-current="page">Strategies</a><a href="validation.html">Validation</a><a href="correlation.html">Correlation</a><a href="leaderboard.html">Leaderboard</a><a href="sources.html">Data sources</a><a href="review.html">Flagged for review</a>
       </nav>
     </div>
   </header>
@@ -26,7 +26,7 @@
       <p>Every entry below is a proposed research design—not a tested betting system or a published pick. Its source links identify available NFL input families; actual edge and performance remain unmeasured.</p>
     </div></section>
     <section class="page-shell container">
-      <div class="callout"><span class="callout-icon" aria-hidden="true">!</span><div><strong>No invented lines or winning claims</strong><p>The 2025 NFL stat pages, 2026 injury/schedule pages and official Next Gen Stats references were checked as source endpoints. No observations were copied into a training set, no bookmaker prices were collected, and no candidate strategy has passed a validation gate. See <a href="pages/review.html">Flagged for Review</a>.</p></div></div>
+      <div class="callout"><span class="callout-icon" aria-hidden="true">!</span><div><strong>No invented lines or winning claims</strong><p>The 2025 NFL stat pages, 2026 injury/schedule pages and official Next Gen Stats references were checked as source endpoints. No observations were copied into a training set, no bookmaker prices were collected, and no candidate strategy has passed a validation gate. See <a href="review.html">Flagged for Review</a>.</p></div></div>
       <div class="section-heading" id="game-lines">
         <div><p class="kicker">Candidate strategy register</p><h2>Signal designs</h2></div>
         <p>Use features available at the intended quote time only. Convert the forecast distribution into a line only after probability calibration, settlement rules and a contemporaneous price benchmark are established.</p>
@@ -111,13 +111,13 @@
       <section class="section compact" style="padding-bottom:0">
         <div class="section-heading"><div><p class="kicker">Recommended sequence</p><h2>Build the distribution before building the ticket.</h2></div><p>The league’s own Next Gen Stats material documents tracking-derived metrics and probability distributions for specific play outcomes. That establishes feature/target possibilities—not betting profitability.</p></div>
         <div class="card-grid">
-          <article class="card"><span class="pill">01 · Ingest</span><h3>Freeze the as-of view</h3><p>Record source, event, player/team ID, season/week, quote timestamp, extraction time and final-stat revision. Keep historical snapshots immutable.</p><a class="card-link" href="pages/sources.html">Source register →</a></article>
-          <article class="card"><span class="pill">02 · Forecast</span><h3>Estimate a distribution</h3><p>Start with a simple baseline, add features one family at a time and calibrate only on data not used to fit the base model.</p><a class="card-link" href="pages/validation.html">Validation gates →</a></article>
-          <article class="card"><span class="pill">03 · Decide</span><h3>Price, or pass</h3><p>Require a recorded price, settlement rule and uncertainty-aware edge. A model can return “no bet” whenever inputs, calibration or price quality fail.</p><a class="card-link" href="pages/leaderboard.html">Leaderboard rules →</a></article>
+          <article class="card"><span class="pill">01 · Ingest</span><h3>Freeze the as-of view</h3><p>Record source, event, player/team ID, season/week, quote timestamp, extraction time and final-stat revision. Keep historical snapshots immutable.</p><a class="card-link" href="sources.html">Source register →</a></article>
+          <article class="card"><span class="pill">02 · Forecast</span><h3>Estimate a distribution</h3><p>Start with a simple baseline, add features one family at a time and calibrate only on data not used to fit the base model.</p><a class="card-link" href="validation.html">Validation gates →</a></article>
+          <article class="card"><span class="pill">03 · Decide</span><h3>Price, or pass</h3><p>Require a recorded price, settlement rule and uncertainty-aware edge. A model can return “no bet” whenever inputs, calibration or price quality fail.</p><a class="card-link" href="leaderboard.html">Leaderboard rules →</a></article>
         </div>
       </section>
     </section>
   </main>
-  <footer class="footer"><div class="footer-inner"><p><strong>NFL Line Lab</strong> · Independent project; not affiliated with or endorsed by the NFL or any sportsbook. Proposed strategies only.</p><div class="footer-right"><a href="pages/sources.html">Verified source register</a><a href="pages/review.html">Flagged items</a><a href="index.html">Overview</a></div></div></footer>
+  <footer class="footer"><div class="footer-inner"><p><strong>NFL Line Lab</strong> · Independent project; not affiliated with or endorsed by the NFL or any sportsbook. Proposed strategies only.</p><div class="footer-right"><a href="sources.html">Verified source register</a><a href="review.html">Flagged items</a><a href="../index.html">Overview</a></div></div></footer>
 </body>
 </html>

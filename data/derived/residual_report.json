@@ -1,0 +1,25 @@
+{
+ "cover": {
+  "n": 6400,
+  "seasons": [
+   2001,
+   2026
+  ],
+  "logloss_model": 0.69644,
+  "logloss_coinflip": 0.69315,
+  "brier_model": 0.25156,
+  "brier_coinflip": 0.25,
+  "auc": 0.5088,
+  "mean_pred": 0.4923,
+  "mean_actual": 0.4888
+ },
+ "total": {
+  "n": 6486,
+  "logloss_model": 0.69458,
+  "logloss_coinflip": 0.69315,
+  "brier_model": 0.25071,
+  "auc": 0.5108,
+  "mean_pred": 0.4936,
+  "mean_actual": 0.4955
+ }
+}
