@@ -95,12 +95,74 @@ def nfl_game_url(away: str, home: str, season: int, week: int) -> str:
     return f"https://www.nfl.com/games/{a}-at-{h}-{season}-reg-{week}"
 
 
+REPO_URL = "https://github.com/karagemop466-tech/Korea1"
+_NFLDATA = SOURCES["nfldata"]["blob"]
+_CODE_LABEL = {
+    "model.py": "line model",
+    "signals.py": "strategy rules",
+    "backtest.py": "backtest",
+    "parlays.py": "parlay math",
+    "props.py": "prop study",
+    "build_players.py": "player-week build",
+    "verify.py": "verification",
+    "residual_model.py": "residual model",
+    "portfolio.py": "portfolio",
+}
+_FILE_URL = {
+    "games.csv": _NFLDATA + "games.csv",
+    "closing_lines.csv": _NFLDATA + "closing_lines.csv",
+    "initial_lines.csv": _NFLDATA + "initial_lines.csv",
+    "sc_lines.csv": _NFLDATA + "sc_lines.csv",
+    "schedules.csv": _NFLDATA + "schedules.csv",
+    "gamecenter": SOURCES["nflfastR-raw"]["blob"],
+    "statmap": SOURCES["nflfastR"]["blob"],
+}
+_TABLE_SOURCE: str = ""
+
+
+def prov(*items: str) -> str:
+    """Build a provenance cell: pinned upstream file(s) and/or the code that computes the value.
+
+    Items are either a key of _FILE_URL (an official/pinned upstream artifact) or "code:<module>"
+    for the analysis module that derives the number from it.
+    """
+    out = []
+    for it in items:
+        if it.startswith("code:"):
+            mod = it[5:]
+            out.append(link(f"{REPO_URL}/blob/main/analysis/{mod}", _CODE_LABEL.get(mod, mod)))
+        else:
+            out.append(link(_FILE_URL[it], {"gamecenter": "NFL Game Center JSON",
+                                            "statmap": "nflFastR stat mapping"}.get(it, it)))
+    return " · ".join(out)
+
+
+def set_provenance(*items: str) -> None:
+    """Default provenance cell for every table on the page being rendered."""
+    global _TABLE_SOURCE
+    _TABLE_SOURCE = prov(*items)
+
+
+_UNSET = object()
+
+
 def table(headers: list[str], rows: list[list[str]], table_id: str = "",
-          note: str = "", cls: str = "") -> str:
+          note: str = "", cls: str = "", source=_UNSET) -> str:
+    if source is _UNSET:
+        source = _TABLE_SOURCE
+    # A table whose every row already cites an external source keeps its own column instead.
+    if source and not all(any('href="http' in c for c in r) for r in rows):
+        headers = list(headers) + ["Source"]
+        rows = [list(r) + [source] for r in rows]
     th = "".join(f"<th>{h}</th>" for h in headers)
+    # An empty cell means "no value could be confirmed against an official source". It stays empty
+    # (never inferred) but carries an explicit unverified marker so the checkers and the reader can
+    # see it, and the Flagged for review page lists why.
+    blank = ('<span class="unverified" title="no verified value - see Flagged for review"></span>')
     body = []
     for r in rows:
-        body.append("<tr>" + "".join(f"<td>{c}</td>" for c in r) + "</tr>")
+        body.append("<tr>" + "".join(
+            f"<td>{blank if str(c).strip() == '' else c}</td>" for c in r) + "</tr>")
     return (f'<div class="tablewrap"><table class="{cls}" id="{table_id}">'
             f"<thead><tr>{th}</tr></thead><tbody>{''.join(body)}</tbody></table></div>"
             + (f'<p class="note">{note}</p>' if note else ""))
@@ -150,6 +212,7 @@ def page(title: str, subtitle: str, body: str, active: str = "", meta: str = "")
 # pages
 # ---------------------------------------------------------------------------
 def page_index(data: dict) -> str:
+    set_provenance("games.csv", "code:signals.py")
     bt = data["backtest"]
     lines = data["lines"]
     ver = data["verification"]
@@ -316,6 +379,7 @@ def _phi_lookup(props, a, b):
 
 
 def page_lines(data: dict) -> str:
+    set_provenance("games.csv", "code:model.py")
     lines = data["lines"]
     model = data["model_report"]["model"]
     cal = data["model_report"]["calibration"]
@@ -418,6 +482,7 @@ ESPN game page for verification.</p>
 
 
 def page_strategies(data: dict) -> str:
+    set_provenance("games.csv", "code:signals.py")
     bt = data["backtest"]
     rows = []
     for s in bt["strategies"]:
@@ -449,7 +514,8 @@ def page_strategies(data: dict) -> str:
     for s in bt["strategies"]:
         meta = data["strategy_meta"][s["strategy"]]
         gate_rows = "".join(
-            f'<tr><td>{esc(k)}</td><td>{badge("pass", "ok") if v else badge("fail", "bad")}</td></tr>'
+            f'<tr><td>{esc(k)}</td><td>{badge("pass", "ok") if v else badge("fail", "bad")}</td>'
+            f'<td>{prov("games.csv", "code:signals.py")}</td></tr>'
             for k, v in s["gates"].items())
         season_cells = "".join(
             f'<div class="sc {"pos" if v["roi"] > 0 else "neg"}"><span>{k}</span>{pct(v["roi"], 1)}</div>'
@@ -469,7 +535,7 @@ def page_strategies(data: dict) -> str:
       <p><strong>Sources.</strong></p><ul class="srcs">{srcs}</ul>
     </div>
     <div>
-      <table class="gates"><tbody>{gate_rows}</tbody></table>
+      <table class="gates"><thead><tr><th>Gate</th><th>Result</th><th>Source</th></tr></thead><tbody>{gate_rows}</tbody></table>
       <div class="seasonstrip">{season_cells}</div>
       <p class="small">Last 10 seasons, ROI per bet. Train
       {bt['universe']['train'][0]}–{bt['universe']['train'][1]} ROI {pct(s['roi_train'])} ·
@@ -498,6 +564,7 @@ The reward ladder in the <a href="validation.html">Validation</a> page explains 
 
 
 def page_parlays(data: dict) -> str:
+    set_provenance("games.csv", "code:parlays.py")
     par = data["parlays"]
     wg = pd.DataFrame(par["within_game"]["pairs"])
     multi = pd.DataFrame(par["within_game_multi"]["combos"])
@@ -577,6 +644,7 @@ strategy therefore has to beat a bigger baseline than a single bet.</p></div>
 
 
 def page_props(data: dict) -> str:
+    set_provenance("gamecenter", "statmap", "code:props.py")
     pr = data["props"]
     if not pr.get("available"):
         return page("Player props", "Player data unavailable.", '<div class="callout warn">No player feed staged.</div>',
@@ -656,6 +724,7 @@ verified against official play-by-play.</p>
 
 
 def page_validation(data: dict) -> str:
+    set_provenance("games.csv", "code:backtest.py")
     bt = data["backtest"]
     port = data["portfolio"]
     gates = [
@@ -737,6 +806,7 @@ correlation work here already quantifies the structure a prop strategy would nee
 
 
 def page_data(data: dict) -> str:
+    set_provenance("games.csv")
     src = SOURCES
     rep = data["build_report"]
     ver = data["verification"]
@@ -825,6 +895,7 @@ every run, so a fresh clone reproduces the identical numbers.</p>
 
 
 def page_verification(data: dict) -> str:
+    set_provenance("games.csv", "code:verify.py")
     ver = data["verification"]
     man_rows = []
     for m in ver["manual"]:
@@ -869,6 +940,7 @@ silently corrected — see <a href="flagged.html">Flagged for review</a>.</p></d
 
 
 def page_flagged(data: dict) -> str:
+    set_provenance("code:verify.py")
     ver = data["verification"]
     sev_kind = {"high": "bad", "medium": "warn", "low": "muted"}
     rows = []
@@ -965,6 +1037,8 @@ th{background:#fafbfc;font-size:11.5px;text-transform:uppercase;letter-spacing:.
 tbody tr:hover{background:#fbfcfe}
 tbody tr:last-child td{border-bottom:none}
 td .tiny,.tiny{font-size:11px;color:var(--muted);font-family:var(--mono)}
+span.unverified::after{content:"—";color:var(--muted);font-weight:600}
+span.unverified{cursor:help}
 .rank{display:inline-block;min-width:22px;font-weight:650;color:var(--muted)}
 .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:600;
   background:var(--bg);color:var(--muted);border:1px solid var(--line);white-space:nowrap}

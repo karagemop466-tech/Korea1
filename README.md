@@ -65,3 +65,25 @@ repository root (`index.html` + eight subpages + `assets/`) plus `.nojekyll` so 
 3. **No hand-entered numbers on the site.** Pages are generated from `data/site/*.json` and
    `data/derived/*.csv`.
 4. **Unverified stays blank.** Unconfirmed values are empty and flagged, never inferred.
+
+---
+
+## Parallel dashboard, kept for provenance
+
+`origin/main` also merged a hand-written, design-only dashboard (session `arena/cbd229fe-korea1`) whose
+position was that no empirical results could be published. It is preserved at
+`archive/arena-cbd229fe/` (`index.html`, `pages/`, `assets/`, `docs/`, `index.md`,
+`FLAGGED_FOR_REVIEW.md`, `check_site.py`) and is **not** the canonical site — the generated dashboard at the
+repository root is. Two reconciliations matter:
+
+- Its objection (no rights-cleared outcomes, no timestamped price archive) does not hold here: nflverse
+  game data pinned to fixed commits supplies both outcomes and closing prices. It still holds for player
+  props, which carry no prices — flagged as IR-03, not filled in.
+- Its caution that the earlier draft's YoY correlation ranges (EPA ~0.55–0.65, ATS% −0.05, …) were
+  unsupported by official sources was correct. Those numbers are used nowhere in this pipeline; the
+  correlation table is measured from the data.
+
+Their README's verified-source register (NFL GSIS, official NFL stats pages, NGS glossary, NIST,
+scikit-learn, GitHub Pages docs, Singapore GRA) remains a useful list of *official* references and is
+retained in their README, quoted here in the archived copy.
+

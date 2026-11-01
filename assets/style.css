@@ -50,6 +50,8 @@ th{background:#fafbfc;font-size:11.5px;text-transform:uppercase;letter-spacing:.
 tbody tr:hover{background:#fbfcfe}
 tbody tr:last-child td{border-bottom:none}
 td .tiny,.tiny{font-size:11px;color:var(--muted);font-family:var(--mono)}
+span.unverified::after{content:"—";color:var(--muted);font-weight:600}
+span.unverified{cursor:help}
 .rank{display:inline-block;min-width:22px;font-weight:650;color:var(--muted)}
 .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:600;
   background:var(--bg);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
