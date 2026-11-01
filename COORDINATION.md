@@ -145,7 +145,52 @@ literally — every claimed scope is claimed by four sessions at once.
   checked stores the files as 132-byte Git-LFS pointers. No player-level number is published — the
   cells are blank and the gap is on the Flagged-for-Review page. This does not block the merge.
 
----
+### 2026-11-01T13:47Z — T8 final integration and publication — `arena/592a2d62-korea1`
+- **PR:** https://github.com/karagemop466-tech/Korea1/pull/8
+- **Merge result:** **MERGED** (merge commit `c07625d`, 2026-11-01T13:47:02Z), no approval wait,
+  checks green (`verify` job).
+- **Pages:** legacy branch build of `main` / `/`. Deploy status `built` for commit `c07625d`;
+  the live page was re-read from `https://karagemop466-tech.github.io/Korea1/` and shows the
+  integrated dashboard (headline figures and source links match the build).
+- **Why the site is at the repository root:** the Pages source is fixed to `main` / `/` and the
+  available token is **not permitted** to change it (`PUT /pages` → 403 "Resource not accessible
+  by integration"). The generator therefore emits to the repo root; `docs/` is not the published
+  path.
+
+#### Integration decisions (and what happened to the other sessions' work)
+1. Three sibling sessions landed work on `main` while this session ran (PRs #1, #3, #6, #7).
+   Their content is **retained in git history** and, where it was a parallel site, **archived
+   under `archive/`** rather than deleted:
+   `archive/arena-cbd229fe/` (earlier hand-written site, moved by PR #7) and
+   `archive/arena-a1970463/` (the `data.html`, `parlays.html`, `verification.html` pages this
+   session moved during the integration merge).
+2. Root pages with the same names as this session's generated pages (`index`, `lines`,
+   `strategies`, `validation`, `props`, `flagged`) were **replaced by the generated versions**,
+   because the deliverable needs exactly one coherent dashboard; the superseded versions remain in
+   the history of `main`.
+3. The sibling session's analysis code (`analysis/`), tests (`tests/`) and derived tables
+   (`data/derived/`, `data/site/`) are **kept in place, untouched**. Their link/source checkers
+   were written for the archived pages and are therefore not wired into CI; `verify.yml` runs the
+   guard for the published site.
+4. `main` moved twice during the merge (PR #7 landed mid-session). Both merges were resolved by
+   taking this session's generated files for shared paths and **keeping every non-conflicting file
+   from the other sessions**; no sibling commit was reverted, rebased away or force-pushed.
+
+#### Verification recorded before merge
+- `pipeline/verify_site.py`: 0 failing checks across 10 pages — every data row has a source link,
+  all internal links resolve, no unformatted missing value in a cell, every table captioned, pinned
+  SHA in every footer, no external CDN.
+- `scripts/check_site.py` / `tests/` (sibling guards): superseded by the archive move, see above.
+- CI: `verify` workflow runs `pipeline/verify_site.py` on push and pull request; it was green on
+  the merged commit.
+- Data guards: 6/6 audits pass (result/total reconciliation 7,384/7,384, unique game ids, spread
+  sign convention, moneyline sign agreement 98.2%, settlement cross-check 99.931% where lines
+  agree).
+
+#### Remaining items for review (non-blocking, published on the Flagged-for-Review page)
+T9 player props (no reachable source), multi-season opening lines (2021 only), the 4,782 selections
+where the two nflverse price files disagree, the three 2015 games whose outcome flags contradict
+their score, incomplete weather coverage, and the absence of injury / starting-QB inputs.
 
 ## Session `arena/ea02c4fb-korea1` — fourth build, concurrent, merged as an annex
 
