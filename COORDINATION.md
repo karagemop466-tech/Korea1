@@ -283,3 +283,26 @@ validates it (`_exact_winner_check`, 150 trials × 120 bettors × 267 bets) is i
 | IR-10 | medium | Annex sample stops at 2021 with four seasons of nulled closing lines (260 spreads, 259 totals); the canonical build runs 1999–2026. Annex conclusions are stated for 2011–2021 only. |
 | IR-11 | low | Annex props use 2021–2022 play-by-play (the 2023 archive fetched truncated at 5,660 rows). No prop prices exist in either build, so no prop ROI is claimed — agrees with IR-03. |
 | IR-12 | medium | Found during integration, now fixed but recorded: `tests/check_links.py` and `tests/check_sources.py` were **red on `main`** (three missing pages), `props.html` rows 2–4 had no unverified marker, and `.github/workflows/pages.yml` plus `README.md` both described the site as living in `docs/` when Pages serves the repository root and no `docs/` exists. |
+
+---
+
+## Deploy record — annex (session `arena/ea02c4fb-korea1`)
+
+| Step | Result |
+|---|---|
+| Site build (annex) | `python3 scripts/07_build_site.py` → 9 pages + assets into `lab/`, dependency-free |
+| Site build (canonical, re-rendered) | `python -m pipeline.render_site` → 10 root pages, re-rendered after the nav entry was added so generator and output agree |
+| Verifiers | `scripts/99_verify.py` 9/9 · `scripts/98_linkcheck.py` pass · `tests/check_links.py` pass (19 pages) · `tests/check_sources.py` pass (523 rows) · `pipeline/verify_site.py` 0 failing checks |
+| Pull request | [#9](https://github.com/karagemop466-tech/Korea1/pull/9) → `main` (three merge rounds: `main` advanced under it twice) |
+| Merge to `main` | **merged 2026-11-01T13:51:26Z**, merge commit `9dfdd77` (PR state `MERGED`, no approval wait) |
+| GitHub Pages build | `GET /repos/.../pages/builds/latest` → `status: built`, `commit: 9dfdd77` |
+| Pages source | `{"build_type":"legacy","source":{"branch":"main","path":"/"}}` — root, unchanged |
+| Live | root dashboard <https://karagemop466-tech.github.io/Korea1/> · annex <https://karagemop466-tech.github.io/Korea1/lab/> |
+| Deploy verified | both URLs fetched and rendered (dashboard reads "0 strategies that survive every gate"; annex reads "2,945 games, 18 strategies, 0 passed all 8 gates") |
+
+**IR-13 (low, publishing):** immediately after the `9dfdd77` build, a request for `/index.html` returned a
+**previous deployment's page** (the archived design-only dashboard) while `/lab/index.html` — which cannot
+exist in any earlier deployment — returned the new content. Appending a cache-busting query string returned
+the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds/latest` already reported
+`built` for `9dfdd77`). Anyone re-checking a deploy should assume a few minutes of cache lag on
+previously-published paths and verify on a path that is new in the build.
