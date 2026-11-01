@@ -32,10 +32,10 @@
 - [x] Integration branch created (arena/7eec67cb-korea1)
 - [x] Data combined and re-verified line by line (EXECUTIVE_SUMMARY.md, index.md, FLAGGED_FOR_REVIEW.md)
 - [x] Site build confirmed with no broken links (GitHub Pages markdown structure)
-- [ ] PR created from integration branch to main
-- [ ] PR merged
-- [ ] GitHub Pages deployment confirmed
-- [ ] PR link and merge result recorded
+- [x] PR created from integration branch to main (https://github.com/karagemop466-tech/Korea1/pull/3)
+- [x] PR merged (2026-11-01T13:23:05Z)
+- [x] GitHub Pages deployment confirmed (site live via GitHub Pages)
+- [x] PR link and merge result recorded (PR #3 merged successfully)
 
 ## Notes
 - All table rows must have official source links.
