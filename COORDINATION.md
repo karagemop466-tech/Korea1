@@ -31,7 +31,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T7 | Verification pass + link check | **done** | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
 | T8 | **Final integration + publish** (merge, Pages deploy, PR record) | **in progress** | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
 | T9 | Player-prop modelling | **needs review** | unowned | blocked: no reachable player-week or prop-price source (see log) |
-| T10 | Post-merge source, no-lookahead, statistical and publication audit | **in progress** | `arena/cbd229fe-korea1` | `pipeline/**`, `tests/**`, `.github/workflows/**`, root site HTML/assets, `lab/**`, `research/**`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md`, `archive/**`, `.gitignore`, `Makefile`, generated `data/processed/**`, `data/derived/**`, `data/site/**`, `data/lab/**` |
+| T10 | Post-merge source, no-lookahead, statistical and publication audit | **in progress** | `arena/cbd229fe-korea1` | `pipeline/**`, `tests/**`, `scripts/**`, `.github/workflows/**`, root site HTML/assets, `lab/**`, `research/**`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md`, `archive/**`, `.gitignore`, `Makefile`, generated `data/processed/**`, `data/derived/**`, `data/site/**`, `data/lab/**` |
 
 ---
 
