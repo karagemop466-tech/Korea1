@@ -98,7 +98,7 @@ def main():
            + (f": {bad[:4]}" if bad else ""), "scripts/03_strategies.py")
 
     # ---------- V06 source register
-    with open(os.path.join(DATA, "sources.json")) as f:
+    with open(os.path.join(LAB, "sources.json")) as f:
         src = json.load(f)
     allowed = {"official", "peer_reviewed", "verified_third_party"}
     bad_src = [s["id"] for s in src["sources"]

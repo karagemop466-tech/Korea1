@@ -5,7 +5,7 @@
 Checks, for every page in docs/:
   L01 every internal .html link resolves to a file
   L02 every asset (css/js) reference resolves
-  L03 every data-source attribute resolves to an entry in data/sources.json
+  L03 every data-source attribute resolves to an entry in data/lab/sources.json
   L04 every page is reachable from the navigation rendered on every page
   L05 well-formedness: table / div / tbody tag counts balance
   L06 every page declares a title, a lang and the stylesheet
@@ -24,7 +24,7 @@ DOCS = os.path.join(ROOT, "lab")
 NAV = ["index.html", "lines.html", "strategies.html", "correlation.html", "props.html",
        "validation.html", "leaderboard.html", "sources.html", "flagged.html"]
 
-with open(os.path.join(ROOT, "data", "sources.json")) as f:
+with open(os.path.join(ROOT, "data", "lab", "sources.json")) as f:
     SOURCES = {s["id"] for s in json.load(f)["sources"]}
 
 pages = sorted(f for f in os.listdir(DOCS) if f.endswith(".html"))

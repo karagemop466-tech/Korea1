@@ -1,117 +1,126 @@
-# K1 NFL Line Lab
+# NFL Line Lab
 
-Originating NFL lines, running a leaderboard of betting strategies, and measuring how much of each
-strategy's record is skill versus luck.
+Line origination, strategy competition and luck removal for NFL markets.
 
-**Live dashboard:** published with GitHub Pages from `main` (repository root — the Pages site is configured
-as "deploy from branch `main`, `/`" and the session token has no Pages write scope, so the generated pages
-live at the root). See `COORDINATION.md` for the deploy record and URL.
+**Live site:** https://karagemop466-tech.github.io/Korea1/
 
-## Read this first
+Every number on that site is produced by the code in this repository from a pinned,
+hash-verified upstream snapshot. Nothing is typed in by hand, and nothing is estimated to
+fill a gap — where a value could not be verified it is left blank and listed on the
+[Flagged for review](https://karagemop466-tech.github.io/Korea1/flagged.html) page.
 
-- **[EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md)** — the whole project on one page, with every number.
-- **[COORDINATION.md](COORDINATION.md)** — task board, sources, verification performed, flagged items,
-  deploy record, handoff notes.
+---
 
-## What is in here
+## What this is
 
-| Path | What it is |
+| Question the project answers | Where |
 |---|---|
-| `analysis/common.py` | pinned sources, odds maths, bootstrap/FDR/Reality-Check statistics |
-| `analysis/fetch_data.py` | stages the pinned raw data into `data/raw` (git-ignored) |
-| `analysis/build_games.py` | canonical game table + leak-free pre-game features + integrity report |
-| `analysis/model.py` | walk-forward ridge power ratings → originated spread and total |
-| `analysis/residual_model.py` | walk-forward P(cover) / P(over) edge models |
-| `analysis/signals.py` | the 24-strategy library (hypothesis, rule, motivation, source per strategy) |
-| `analysis/backtest.py` | scoring, 8 validation gates, FDR, White Reality Check, leaderboard |
-| `analysis/portfolio.py` | walk-forward "selective skill" allocation test |
-| `analysis/parlays.py` | correlation values and parlay pricing (same-game and cross-game) |
-| `analysis/build_players.py` | player-game stats from the official NFL Game Center feed |
-| `analysis/props.py` | prop correlations, combo pricing framework, interval calibration |
-| `analysis/verify.py` | automated integrity checks + the live official cross-check log |
-| `analysis/build_site.py` | static dashboard generator → repository root (served by Pages) |
-| `tests/` | look-ahead/leak tests and the site link checker |
+| Can a market-free model originate a usable NFL spread, total and moneyline? | `pipeline/models.py` → `lines.html` |
+| Do any betting strategies beat the closing market after the vig? | `pipeline/strategies.py` → `strategies.html` |
+| Which of those results are skill, and which are luck? | `pipeline/validation.py` → `validation.html` |
+| How correlated are the legs of a parlay or same-game parlay? | `pipeline/correlations.py` → `correlations.html` |
+| What would a player-prop model need, and what is missing? | `props.html` |
+| What is unverified, contradictory or incomplete? | `flagged.html` |
 
-## Results in one paragraph
+## Headline result
 
-24 strategies, 27,330 bets priced at real two-sided closing quotes (2006–2026). **No strategy passes all
-eight validation gates.** The best raw performer (+7.14% ROI, wind-driven unders, n = 430) fails the
-false-discovery-rate gate; White's Reality Check gives p = 0.970. The originated line model lands within
-0.4 points of the market's spread error but has no exploitable edge (out-of-sample calibration slope
-−0.0011). Correlations are measured rather than assumed: spread × moneyline φ = +0.672, spread × total
-φ = +0.014, and player-prop QB pass yards × WR1 receiving yards φ = +0.249. Cross-game parlays cost
-−7.9% (2 legs), −14.4% (3), −15.4% (4). Everything that could not be verified is blank and listed on the
-site's **Flagged for review** page.
+* The ensemble line is **good but not better than the market**: spread MAE 10.527 vs the
+  closing line's 10.215; totals 10.727 vs 10.527, out of sample, 6,073 games, 2004–2026.
+* **0 of 18 strategies clear all eight validation gates.** The best raw ROI (+21.6% on a 3-leg
+  parlay ladder, 377 tickets) is what a high-variance long-shot book looks like, not an edge.
+* **White's reality check does not reject** (p = 0.144 across 18 strategies and 425 weekly
+  blocks): the library's best performance is consistent with luck.
+* The closing prices used carry a **2.7% two-way hold**, so break-even is ≈51.4%, not 52.4%.
+* Same-game legs are **not** independent: cover↔moneyline φ ≈ 0.68, cover↔total φ ≈ 0.024,
+  cross-game legs φ ≈ 0.01 (interval spans zero).
 
-## Run it
+## Data
+
+Single pinned commit of `nflverse/nfldata`, archived from `codeload.github.com` and SHA-256
+hashed on arrival. The exact commit and per-file hashes are in
+[`data/sources.json`](data/sources.json).
+
+| File | Rows | Use |
+|---|---|---|
+| `games.csv` | 7,548 | schedules, final scores, closing spread/total/moneyline and prices |
+| `closing_lines.csv` | 20,490 | independent per-side price + outcome (settlement cross-check) |
+| `initial_lines.csv` | 1,088 | 2021 openers only |
+| `sc_lines.csv` | 4,092 | SuperContest consensus lines 2013–2020 |
+| `win_totals.csv` | 576 | season win totals with prices |
+
+## Reproduce
 
 ```bash
-pip install -r requirements.txt
-python -m analysis.run_all     # fetch → build → model → backtest → verify → site  (~4 min)
-python -m tests.check_links    # verify the generated site has no broken links
-pytest -q tests                # leak / look-ahead tests
+python3 -m venv .venv && . .venv/bin/activate
+pip install pandas numpy scipy
+make build        # fetch → build → models → backtest → strategies → correlations → site → verify
 ```
 
-Raw data is git-ignored and re-staged from pinned commits on every run, so a fresh clone reproduces the
-same numbers. The site is plain static HTML/CSS/JS with no external dependencies, emitted at the
-repository root (`index.html` + eight subpages + `assets/`) plus `.nojekyll` so Pages serves it raw.
+`make build` ends with `pipeline/verify_site.py`, which fails the build if any table row lacks a
+source link, any internal link is broken, or any unformatted missing value reaches a table.
 
-## Ground rules the code enforces
+## Repository layout
 
-1. **No look-ahead.** Every feature, and every model output, is a function of games that kicked off
-   earlier only — enforced by `tests/test_no_lookahead.py`.
-2. **No invented prices.** Bets settle at the two-sided quotes stored upstream; a bet without a quote is
-   dropped, never filled with −110.
-3. **No hand-entered numbers on the site.** Pages are generated from `data/site/*.json` and
-   `data/derived/*.csv`.
-4. **Unverified stays blank.** Unconfirmed values are empty and flagged, never inferred.
+```
+pipeline/            all analysis code (see methodology.html for the dataflow)
+data/processed/      generated tables (committed; the site reads them)
+data/sources.json    pinned commit SHA + per-file SHA-256
+*.html + assets/     the GitHub Pages site (static HTML/CSS, no CDN, no framework) — served from
+                     the repository root, because Pages is configured as `main` / (verified against
+                     the Pages API; an earlier note here said docs/, which does not exist)
+lab/                 the replication annex (see below) — a second site, same questions, other data
+scripts/             the annex pipeline and its own verifiers
+COORDINATION.md      multi-session task board and work log
+```
 
----
+## Honesty rules used in this build
 
-## Parallel dashboard, kept for provenance
+1. No value is inferred, interpolated or back-filled. Missing → blank → flagged.
+2. Models never see the market, and never see anything after kickoff (asserted in code).
+3. Every bet is settled at the **recorded** closing price; `-110` is never substituted.
+4. All strategies are declared before they are run; every result is published, including failures.
+5. The settlement engine is cross-checked against nflverse's own outcome column (99.93% exact
+   agreement where the two files carry the same line).
 
-`origin/main` also merged a hand-written, design-only dashboard (session `arena/cbd229fe-korea1`) whose
-position was that no empirical results could be published. It is preserved at
-`archive/arena-cbd229fe/` (`index.html`, `pages/`, `assets/`, `docs/`, `index.md`,
-`FLAGGED_FOR_REVIEW.md`, `check_site.py`) and is **not** the canonical site — the generated dashboard at the
-repository root is. Two reconciliations matter:
+## Licence and attribution
 
-- Its objection (no rights-cleared outcomes, no timestamped price archive) does not hold here: nflverse
-  game data pinned to fixed commits supplies both outcomes and closing prices. It still holds for player
-  props, which carry no prices — flagged as IR-03, not filled in.
-- Its caution that the earlier draft's YoY correlation ranges (EPA ~0.55–0.65, ATS% −0.05, …) were
-  unsupported by official sources was correct. Those numbers are used nowhere in this pipeline; the
-  correlation table is measured from the data.
-
-Their README's verified-source register (NFL GSIS, official NFL stats pages, NGS glossary, NIST,
-scikit-learn, GitHub Pages docs, Singapore GRA) remains a useful list of *official* references and is
-retained in their README, quoted here in the archived copy.
-
+Data: [nflverse](https://github.com/nflverse/nfldata) (open data). Official NFL rules:
+[operations.nfl.com](https://operations.nfl.com/the-rules/nfl-rulebook/). This repository contains
+analysis code and derived tables only; it redistributes no play-by-play data.
 
 ---
 
-## Independent replication annex (second build, different data)
+## Replication annex: a fourth build, on different data (`lab/`)
 
-Session `arena/ea02c4fb-korea1` ran in parallel with the build above and reached `main` second. Rather than
-throw away a full second pipeline, it is published as a **replication annex** — the same four questions
-(originating lines, strategy leaderboard, correlation, luck removal) answered from a *different* odds
-archive, by different code, so that the main results can be checked against an independent draw.
+Four sessions claimed this repository at the same moment and three of them built the whole thing. Rather
+than delete a finished pipeline, session `arena/ea02c4fb-korea1` publishes its build as a **replication
+annex**: the same four questions answered from a *different* odds archive by *different* code, so the main
+results can be checked against an independent draw. Its site is at [`lab/index.html`](lab/index.html) and
+it is reachable from the dashboard navigation ("Replication annex").
 
-| | Canonical build | Replication annex |
-|---|---|---|
-| Code | `analysis/` | `scripts/` |
-| Odds source | nflverse `nfldata` closing lines (2006–2026) | Sportsbook Review 10-year archive (2011–2021) |
-| Games | 7,384 | 2,945 |
-| Priced bets | 27,330 | 2,280 (959 qualifying) |
-| Site | repo root (Pages) | [`lab/`](lab/index.html) |
+| | `pipeline/` (canonical) | `analysis/` (first build, retained) | `lab/` (annex) |
+|---|---|---|---|
+| Odds source | nflverse `nfldata` | nflverse `nfldata` | Sportsbook Review 10-year archive |
+| Games | 7,384 (1999–2026) | 7,384 | 2,945 (2011–2021) |
+| Priced bets | 26,168 | 27,330 | 959 qualifying of 2,280 |
+| Strategies | 18 | 24 | 18 |
+| Site | root | root pages superseded | `lab/` |
 
-Entry points: `bash scripts/run_all.sh` (annex pipeline + both verifiers),
-[`research/05-annex-executive-summary.md`](research/05-annex-executive-summary.md),
-[`lab/index.html`](lab/index.html). The annex writes only to `data/lab/` and `lab/`, and touches no file in
-`analysis/`, `data/site/` or the root pages (the single exception is one nav entry in
-`analysis/build_site.py`, logged in `COORDINATION.md`).
+Reproduce the annex with `bash scripts/run_all.sh` (adds `data/lab/` + `lab/`, runs its two verifiers,
+exits non-zero on any failure). Read its narrative in
+[`research/05-annex-executive-summary.md`](research/05-annex-executive-summary.md).
 
-**What replicated:** no strategy clears every gate; the originated model is *worse* than the closing line
-(spread MAE 10.473 vs 10.151); in-sample ROI rank barely survives out of sample (r = 0.485, expected best
-Sharpe of 18 zero-skill trials = 0.093); and CLV — not ROI — is the statistic that separates a skilled bettor
-from a lucky one (P(ranked first) 0.79 by CLV vs 0.003 by ROI against 999 zero-skill bettors).
+**What replicated, independently:**
+
+1. **No strategy clears every gate** — 0 of 18 in the annex, 0 of 24 in the first build, and the canonical
+   build's best candidate fails its false-discovery gate.
+2. **The originated line does not beat the close** — annex spread MAE 10.473 vs market 10.151; canonical
+   10.527 vs 10.216.
+3. **Apparent edge is mostly luck** — annex in-sample → out-of-sample ROI rank correlation 0.485 against an
+   expected best Sharpe of 0.093 for 18 zero-skill trials.
+4. **CLV, not ROI, is the skill-bearing statistic** — in a 20,000-trial field of 999 zero-skill bettors plus
+   one skilled bettor, the skilled bettor finishes first 78.9% of the time by CLV and 0.32% by ROI.
+
+The annex writes only to `data/lab/` and `lab/`; it never touches `pipeline/`, `analysis/`, `data/processed/`
+or the root pages' content (the one shared edit is a single nav entry in `pipeline/render_site.py`, logged
+in `COORDINATION.md`).

@@ -6,7 +6,7 @@ Design rules:
   * Every number on every page is read from data/*.json. Nothing is typed by hand, so the
     site can never drift from the computations.
   * Every table row carries a source link (data-source attribute) that must resolve to an id
-    in data/sources.json; scripts/99_verify.py enforces that.
+    in data/lab/sources.json; scripts/99_verify.py enforces that.
   * Anything that could not be verified is rendered as "unverified" and also appears on the
     Flagged for Review page. Nothing is silently dropped.
 """
@@ -943,6 +943,22 @@ def build_flagged():
          "their formulas are unit-tested, but the DOI links were not opened.",
          "Formula correctness is checked in scripts/tests/test_math.py; the citations should be "
          "confirmed by hand before external reuse.", "Needs review", "PAPER-BH"),
+        ("IR-09", "This build disagrees with the canonical build on market cost: 3.79% vs 2.70%",
+         "Mean overround here is 3.79% (n = 2,941) against 2.70% measured by the canonical build from "
+         "a different archive. Neither figure is wrong; the archives are different. Reported, not "
+         "reconciled, because reconciling them would mean inventing which archive is right.",
+         "Both figures published side by side (COORDINATION.md IR-09). Anyone comparing the two sites "
+         "should compare within a site, never across.", "Needs review", "SBR-10Y"),
+        ("IR-10", "The annex sample stops at 2021 and has four seasons of nulled closing lines",
+         "260 closing spreads and 259 closing totals could not be read from the archive; the canonical "
+         "build covers 1999-2026 from a different source.",
+         "Every annex conclusion is stated for 2011-2021 only, and rows that depend on a nulled field "
+         "are excluded rather than guessed.", "Needs review", "SBR-10Y"),
+        ("IR-11", "The annex prop layer uses 2021-2022 play-by-play only",
+         "The 2023 archive fetched truncated (5,660 rows instead of ~50,000), so prop correlations are "
+         "estimated on two seasons (1,086 team-games) and nothing later.",
+         "Sample size is stated on every prop row; no prop ROI is claimed, since no prop prices exist "
+         "in either build (matches IR-03 on the canonical site).", "Needs review", "NFLVERSE-PBP"),
         ("F-05", "Playoff games are included in the backtest sample",
          "The archive has no season-type field and 267 games per season implies ~11 playoff games; "
          "they are not separable without a schedule feed.", "The effect is bounded (≈4% of games) and "
@@ -1137,7 +1153,7 @@ def main():
     build_leaderboard()
     build_sources()
     build_flagged()
-    print(f"built {len(PAGES)} annex pages into lab/")
+    print(f"built {len(NAV) - 1} annex pages into lab/")
 
 
 if __name__ == "__main__":

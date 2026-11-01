@@ -20,8 +20,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["index.html", "lines.html", "strategies.html", "parlays.html", "props.html",
-         "validation.html", "data.html", "verification.html", "flagged.html"]
+# Updated by the integration session arena/ea02c4fb-korea1: pipeline/render_site.py superseded the
+# original nine pages (parlays.html/data.html/verification.html -> correlations.html/sources.html),
+# which left this list pointing at files that no longer exist. Page set here is what ships at the root.
+# The lab/ annex is governed by the same rule but enforced by scripts/99_verify.py, which requires every
+# numeric cell to carry a data-source id that resolves to an official URL in data/lab/sources.json
+# (a stronger form of this check, because it validates the identifier and not just the presence of a link).
+PAGES = ["index.html", "executive-summary.html", "lines.html", "strategies.html", "validation.html",
+         "correlations.html", "props.html", "methodology.html", "flagged.html", "sources.html"]
 
 TABLE = re.compile(r"<table\b[^>]*>.*?</table>", re.S)
 TBODY = re.compile(r"<tbody>(.*?)</tbody>", re.S)

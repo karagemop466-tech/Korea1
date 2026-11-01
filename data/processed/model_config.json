@@ -1,0 +1,111 @@
+{
+  "alphas": {
+    "2004": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2005": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2006": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2007": {
+      "margin": 300.0,
+      "total": 3.0
+    },
+    "2008": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2009": {
+      "margin": 300.0,
+      "total": 100.0
+    },
+    "2010": {
+      "margin": 100.0,
+      "total": 300.0
+    },
+    "2011": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2012": {
+      "margin": 300.0,
+      "total": 100.0
+    },
+    "2013": {
+      "margin": 300.0,
+      "total": 30.0
+    },
+    "2014": {
+      "margin": 300.0,
+      "total": 30.0
+    },
+    "2015": {
+      "margin": 300.0,
+      "total": 100.0
+    },
+    "2016": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2017": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2018": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2019": {
+      "margin": 3.0,
+      "total": 300.0
+    },
+    "2020": {
+      "margin": 30.0,
+      "total": 100.0
+    },
+    "2021": {
+      "margin": 30.0,
+      "total": 100.0
+    },
+    "2022": {
+      "margin": 100.0,
+      "total": 300.0
+    },
+    "2023": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2024": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2025": {
+      "margin": 300.0,
+      "total": 300.0
+    },
+    "2026": {
+      "margin": 3.0,
+      "total": 100.0
+    }
+  },
+  "families": [
+    "ridge",
+    "matchup",
+    "elo",
+    "ensemble"
+  ],
+  "decay_halflife_seasons": 4.0,
+  "first_test_season": 2004,
+  "future_fit": {
+    "alpha_margin": 300.0,
+    "alpha_total": 300.0,
+    "sigma_margin": 13.482936679217234,
+    "sigma_total": 13.628054521303273,
+    "trained_through": 2026
+  }
+}
