@@ -1,50 +1,48 @@
-name: Deploy GitHub Pages
+name: Deploy NFL Line Lab
+
 on:
   push:
     branches: [main]
-    paths: ['docs/**', '.github/workflows/pages.yml']
   workflow_dispatch:
+
 permissions:
   contents: read
-  pages: write
-  id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Check local links
-        run: |
-          python - <<'PY'
-          from html.parser import HTMLParser
-          from pathlib import Path
-          root = Path('docs')
-          class Links(HTMLParser):
-              def __init__(self): super().__init__(); self.links=[]
-              def handle_starttag(self, tag, attrs):
-                  for k,v in attrs:
-                      if k in ('href','src') and v and not v.startswith(('http://','https://','#','mailto:','tel:','data:','javascript:')): self.links.append(v.split('#')[0].split('?')[0])
-          errors=[]
-          for page in root.glob('*.html'):
-              parser=Links(); parser.feed(page.read_text())
-              for link in parser.links:
-                  if link and not (page.parent / link).exists(): errors.append(f'{page}: missing {link}')
-          if errors: raise SystemExit('\n'.join(errors))
-          print('All local links resolve.')
-          PY
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Verify links and sourced table rows
+        run: python3 scripts/check_site.py
   deploy:
+    needs: verify
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    permissions:
+      pages: write
+      id-token: write
     steps:
-      - id: deployment
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Assemble public site artifact
+        run: |
+          mkdir -p site-build
+          cp index.html site-build/
+          cp -R assets pages site-build/
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-build
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
