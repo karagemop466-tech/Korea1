@@ -1,0 +1,50 @@
+{
+ "available": true,
+ "seasons": [
+  2024,
+  2025
+ ],
+ "files_parsed": 570,
+ "files_failed": 0,
+ "total_plays": 109104,
+ "player_game_rows": 11202,
+ "unique_players": 752,
+ "team_recv_minus_pass_yards": {
+  "mean": 0.0,
+  "p05": 0.0,
+  "p95": 0.0,
+  "share_within_25": 1.0,
+  "note": "Receiving yards are not required to equal passing yards (sacks, scrambles, laterals, two-point plays), but a systematic offset would indicate a mapping error."
+ },
+ "scoring_reconciliation": {
+  "n_team_games": 1140,
+  "share_diff_in_0_1_2": 0.086,
+  "share_diff_in_neg2_to_8": 0.595,
+  "median_diff": 8.0,
+  "explanation": "Residual = official points - (offensive TDs*6 + 2pt*2). Remaining points come from extra points, defensive/special-teams TDs and safeties, so a residual of roughly 0-8 points per team-game is expected.",
+  "note": "Score minus (offensive TD*6 + 2-pt) should be 0, 1 or 2 (extra point, failed extra point, safeties, defensive/return TDs). A large departure would indicate a stat-mapping error."
+ },
+ "league_averages_per_team_game": {
+  "passing_yards": 229.5,
+  "rushing_yards": 118.6,
+  "receptions": 21.0,
+  "offensive_tds": 2.43,
+  "benchmark_note": "NFL league averages sit near 215-235 passing yards, 110-125 rushing yards, 20-22 receptions and 2.3-2.7 offensive TDs per team-game; a mapping error shifts these materially."
+ },
+ "games_in_schedule": 570,
+ "coverage_share": 0.076,
+ "source": {
+  "repo": "nflverse/nflfastR-raw",
+  "commit": "61ab6b3dd2179d06766834784c8ba24649c8ba6c",
+  "commit_date": "2026-02-09T03:36:14Z",
+  "blob": "https://github.com/nflverse/nflfastR-raw/tree/61ab6b3dd2179d06766834784c8ba24649c8ba6c/raw",
+  "note": "Per-game NFL Game Center JSON (official league stat feed), scraped by nflverse."
+ },
+ "stat_mapping_source": {
+  "repo": "nflverse/nflfastR",
+  "commit": "701bbf38bc1c030ff9f1f4825a23191287d3903c",
+  "tarball": "https://codeload.github.com/nflverse/nflfastR/tar.gz/701bbf38bc1c030ff9f1f4825a23191287d3903c",
+  "blob": "https://github.com/nflverse/nflfastR/blob/701bbf38bc1c030ff9f1f4825a23191287d3903c/R/calculate_stats.R",
+  "note": "Reference implementation used for the NFL stat-id -> player stat mapping (calculate_stats.R)."
+ }
+}

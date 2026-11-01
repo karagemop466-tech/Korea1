@@ -1,0 +1,396 @@
+{
+ "n_games_scored": 6880,
+ "seasons": [
+  1999,
+  2026
+ ],
+ "within_game": {
+  "pairs": [
+   {
+    "leg_a": "HOME_ATS",
+    "leg_b": "OVER",
+    "n_games": 4968,
+    "p_a": 0.4877,
+    "p_b": 0.4966,
+    "p_joint_empirical": 0.2456,
+    "p_joint_independent": 0.2503,
+    "lift": 0.9809,
+    "phi": 0.0135,
+    "book_decimal": 3.786,
+    "fair_decimal": 4.072,
+    "hold_vs_fair": -0.0702,
+    "ev_per_unit": -0.0702,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "HOME_ATS",
+    "leg_b": "UNDER",
+    "n_games": 4968,
+    "p_a": 0.4877,
+    "p_b": 0.5034,
+    "p_joint_empirical": 0.2421,
+    "p_joint_independent": 0.2496,
+    "lift": 0.97,
+    "phi": -0.0135,
+    "book_decimal": 3.797,
+    "fair_decimal": 4.13,
+    "hold_vs_fair": -0.0805,
+    "ev_per_unit": -0.0805,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "HOME_ATS",
+    "leg_b": "HOME_ML",
+    "n_games": 5023,
+    "p_a": 0.4868,
+    "p_b": 0.5525,
+    "p_joint_empirical": 0.436,
+    "p_joint_independent": 0.2813,
+    "lift": 1.5501,
+    "phi": 0.6723,
+    "book_decimal": 3.928,
+    "fair_decimal": 2.294,
+    "hold_vs_fair": 0.7124,
+    "ev_per_unit": 0.7124,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "HOME_ATS",
+    "leg_b": "AWAY_ML",
+    "n_games": 5023,
+    "p_a": 0.4868,
+    "p_b": 0.4475,
+    "p_joint_empirical": 0.0508,
+    "p_joint_independent": 0.2187,
+    "lift": 0.2321,
+    "phi": -0.6723,
+    "book_decimal": 5.521,
+    "fair_decimal": 19.698,
+    "hold_vs_fair": -0.7197,
+    "ev_per_unit": -0.7197,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "AWAY_ATS",
+    "leg_b": "OVER",
+    "n_games": 4968,
+    "p_a": 0.5123,
+    "p_b": 0.4966,
+    "p_joint_empirical": 0.251,
+    "p_joint_independent": 0.2504,
+    "lift": 1.0026,
+    "phi": -0.0135,
+    "book_decimal": 3.786,
+    "fair_decimal": 3.984,
+    "hold_vs_fair": -0.0497,
+    "ev_per_unit": -0.0497,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "AWAY_ATS",
+    "leg_b": "UNDER",
+    "n_games": 4968,
+    "p_a": 0.5123,
+    "p_b": 0.5034,
+    "p_joint_empirical": 0.2613,
+    "p_joint_independent": 0.2497,
+    "lift": 1.0466,
+    "phi": 0.0135,
+    "book_decimal": 3.797,
+    "fair_decimal": 3.827,
+    "hold_vs_fair": -0.008,
+    "ev_per_unit": -0.008,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "AWAY_ATS",
+    "leg_b": "HOME_ML",
+    "n_games": 5023,
+    "p_a": 0.5132,
+    "p_b": 0.5525,
+    "p_joint_empirical": 0.1165,
+    "p_joint_independent": 0.2822,
+    "lift": 0.4126,
+    "phi": -0.6723,
+    "book_decimal": 3.944,
+    "fair_decimal": 8.586,
+    "hold_vs_fair": -0.5406,
+    "ev_per_unit": -0.5406,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "AWAY_ATS",
+    "leg_b": "AWAY_ML",
+    "n_games": 5023,
+    "p_a": 0.5132,
+    "p_b": 0.4475,
+    "p_joint_empirical": 0.3968,
+    "p_joint_independent": 0.2178,
+    "lift": 1.8217,
+    "phi": 0.6723,
+    "book_decimal": 5.493,
+    "fair_decimal": 2.52,
+    "hold_vs_fair": 1.1794,
+    "ev_per_unit": 1.1794,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "OVER",
+    "leg_b": "HOME_ML",
+    "n_games": 5086,
+    "p_a": 0.4972,
+    "p_b": 0.5552,
+    "p_joint_empirical": 0.2762,
+    "p_joint_independent": 0.2824,
+    "lift": 0.9783,
+    "phi": 0.0006,
+    "book_decimal": 3.912,
+    "fair_decimal": 3.62,
+    "hold_vs_fair": 0.0808,
+    "ev_per_unit": 0.0808,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "OVER",
+    "leg_b": "AWAY_ML",
+    "n_games": 5086,
+    "p_a": 0.4972,
+    "p_b": 0.4448,
+    "p_joint_empirical": 0.221,
+    "p_joint_independent": 0.2184,
+    "lift": 1.012,
+    "phi": -0.0006,
+    "book_decimal": 5.474,
+    "fair_decimal": 4.525,
+    "hold_vs_fair": 0.2097,
+    "ev_per_unit": 0.2097,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "UNDER",
+    "leg_b": "HOME_ML",
+    "n_games": 5086,
+    "p_a": 0.5028,
+    "p_b": 0.5552,
+    "p_joint_empirical": 0.279,
+    "p_joint_independent": 0.2815,
+    "lift": 0.9912,
+    "phi": -0.0006,
+    "book_decimal": 3.922,
+    "fair_decimal": 3.584,
+    "hold_vs_fair": 0.0943,
+    "ev_per_unit": 0.0943,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   },
+   {
+    "leg_a": "UNDER",
+    "leg_b": "AWAY_ML",
+    "n_games": 5086,
+    "p_a": 0.5028,
+    "p_b": 0.4448,
+    "p_joint_empirical": 0.2238,
+    "p_joint_independent": 0.2178,
+    "lift": 1.0275,
+    "phi": 0.0006,
+    "book_decimal": 5.492,
+    "fair_decimal": 4.469,
+    "hold_vs_fair": 0.2288,
+    "ev_per_unit": 0.2288,
+    "same_game": true,
+    "pricing_note": "Same-game legs: books run correlation-adjusted SGP pricing, so ev_per_unit is the value ONLY if the book paid product-of-decimals. Read it as 'how much correlation moves the price', not as an arb."
+   }
+  ]
+ },
+ "across_game": {
+  "combos": [
+   {
+    "legs": 2,
+    "draws": 40000,
+    "mean_ev_per_unit": -0.0788,
+    "empirical_joint_rate": 0.2434,
+    "independence_joint_rate": 0.2503,
+    "lift": 0.9724,
+    "mean_book_decimal": 3.786,
+    "mean_fair_decimal": 4.108,
+    "share_positive_ev": 0.2434
+   },
+   {
+    "legs": 3,
+    "draws": 40000,
+    "mean_ev_per_unit": -0.1436,
+    "empirical_joint_rate": 0.1161,
+    "independence_joint_rate": 0.1252,
+    "lift": 0.9274,
+    "mean_book_decimal": 7.381,
+    "mean_fair_decimal": 8.613,
+    "share_positive_ev": 0.1161
+   },
+   {
+    "legs": 4,
+    "draws": 40000,
+    "mean_ev_per_unit": -0.1538,
+    "empirical_joint_rate": 0.0591,
+    "independence_joint_rate": 0.0627,
+    "lift": 0.9428,
+    "mean_book_decimal": 14.337,
+    "mean_fair_decimal": 16.928,
+    "share_positive_ev": 0.0591
+   }
+  ],
+  "n_games_pool": 4968,
+  "note": "Legs are drawn independently across games (HOME_ATS from one game, OVER from another, alternating). Independence means lift ~ 1.00 and the EV is set by the compounded vig: this is the 'parlay tax'."
+ },
+ "within_game_multi": {
+  "combos": [
+   {
+    "legs": "HOME_ATS + OVER + HOME_ML",
+    "n_games": 4954,
+    "p_joint_empirical": 0.2168,
+    "p_joint_independent": 0.1409,
+    "lift": 1.539,
+    "book_decimal": 7.62,
+    "fair_decimal": 4.61,
+    "ev_per_unit": 0.6527,
+    "same_game": true,
+    "pricing_note": "Naive product pricing only. Real SGP engines price the correlation, so this is a measure of correlation strength, not free money."
+   },
+   {
+    "legs": "HOME_ATS + UNDER + HOME_ML",
+    "n_games": 4954,
+    "p_joint_empirical": 0.2198,
+    "p_joint_independent": 0.1405,
+    "lift": 1.565,
+    "book_decimal": 7.64,
+    "fair_decimal": 4.55,
+    "ev_per_unit": 0.6797,
+    "same_game": true,
+    "pricing_note": "Naive product pricing only. Real SGP engines price the correlation, so this is a measure of correlation strength, not free money."
+   },
+   {
+    "legs": "AWAY_ATS + OVER + AWAY_ML",
+    "n_games": 4954,
+    "p_joint_empirical": 0.194,
+    "p_joint_independent": 0.109,
+    "lift": 1.78,
+    "book_decimal": 10.65,
+    "fair_decimal": 5.16,
+    "ev_per_unit": 1.0668,
+    "same_game": true,
+    "pricing_note": "Naive product pricing only. Real SGP engines price the correlation, so this is a measure of correlation strength, not free money."
+   },
+   {
+    "legs": "AWAY_ATS + UNDER + AWAY_ML",
+    "n_games": 4954,
+    "p_joint_empirical": 0.2019,
+    "p_joint_independent": 0.1087,
+    "lift": 1.857,
+    "book_decimal": 10.69,
+    "fair_decimal": 4.95,
+    "ev_per_unit": 1.1573,
+    "same_game": true,
+    "pricing_note": "Naive product pricing only. Real SGP engines price the correlation, so this is a measure of correlation strength, not free money."
+   },
+   {
+    "legs": "HOME_ATS + OVER",
+    "n_games": 4968,
+    "p_joint_empirical": 0.2456,
+    "p_joint_independent": 0.2503,
+    "lift": 0.981,
+    "book_decimal": 3.79,
+    "fair_decimal": 4.07,
+    "ev_per_unit": -0.0702,
+    "same_game": true,
+    "pricing_note": "Naive product pricing only. Real SGP engines price the correlation, so this is a measure of correlation strength, not free money."
+   },
+   {
+    "legs": "HOME_ATS + UNDER",
+    "n_games": 4968,
+    "p_joint_empirical": 0.2421,
+    "p_joint_independent": 0.2496,
+    "lift": 0.97,
+    "book_decimal": 3.8,
+    "fair_decimal": 4.13,
+    "ev_per_unit": -0.0805,
+    "same_game": true,
+    "pricing_note": "Naive product pricing only. Real SGP engines price the correlation, so this is a measure of correlation strength, not free money."
+   }
+  ]
+ },
+ "kelly": {
+  "sizing": [
+   {
+    "legs": "HOME_ATS+OVER",
+    "full_kelly": 0.0,
+    "quarter_kelly": 0.0
+   },
+   {
+    "legs": "HOME_ATS+UNDER",
+    "full_kelly": 0.0,
+    "quarter_kelly": 0.0
+   },
+   {
+    "legs": "HOME_ATS+HOME_ML",
+    "full_kelly": 0.2434,
+    "quarter_kelly": 0.0608
+   },
+   {
+    "legs": "HOME_ATS+AWAY_ML",
+    "full_kelly": 0.0,
+    "quarter_kelly": 0.0
+   },
+   {
+    "legs": "AWAY_ATS+OVER",
+    "full_kelly": 0.0,
+    "quarter_kelly": 0.0
+   },
+   {
+    "legs": "AWAY_ATS+UNDER",
+    "full_kelly": 0.0,
+    "quarter_kelly": 0.0
+   },
+   {
+    "legs": "AWAY_ATS+HOME_ML",
+    "full_kelly": 0.0,
+    "quarter_kelly": 0.0
+   },
+   {
+    "legs": "AWAY_ATS+AWAY_ML",
+    "full_kelly": 0.2625,
+    "quarter_kelly": 0.0656
+   },
+   {
+    "legs": "OVER+HOME_ML",
+    "full_kelly": 0.0276,
+    "quarter_kelly": 0.0069
+   },
+   {
+    "legs": "OVER+AWAY_ML",
+    "full_kelly": 0.0469,
+    "quarter_kelly": 0.0117
+   },
+   {
+    "legs": "UNDER+HOME_ML",
+    "full_kelly": 0.0323,
+    "quarter_kelly": 0.0081
+   },
+   {
+    "legs": "UNDER+AWAY_ML",
+    "full_kelly": 0.051,
+    "quarter_kelly": 0.0128
+   }
+  ],
+  "note": "Positive Kelly requires positive edge. A zero or tiny fraction means the bet is not worth placing."
+ },
+ "method": "phi and joint frequencies are measured on settled games with two-sided quotes. Book parlay price = product of quoted decimals (the standard rule, no correlation adjustment for cross-game parlays; some books do adjust SGPs)."
+}
