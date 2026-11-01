@@ -184,6 +184,17 @@ IRREGULARITIES = [
         "evidence": "data/derived/games.csv season 2026 week 8",
         "mitigation": "Stated on the Lines page; Week 9 model inputs are labelled as such.",
     },
+    {
+        "id": "IR-08",
+        "severity": "low",
+        "item": "Publishing constraint: the site is served from the repository root",
+        "detail": ("GitHub Pages for this repository is configured as \"deploy from branch main, /\" and the "
+                   "session token has no pages write scope, so the dashboard is generated at the repository "
+                   "root instead of in docs/. Content and links are unaffected: the live URL serves "
+                   "index.html at /Korea1/."),
+        "evidence": "https://api.github.com/repos/karagemop466-tech/Korea1/pages",
+        "mitigation": "Documented rather than worked around with a redirect page.",
+    },
 ]
 
 

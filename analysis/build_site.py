@@ -1,4 +1,8 @@
-"""Static dashboard builder -> docs/ (GitHub Pages).
+"""Static dashboard builder -> repository root (GitHub Pages serves main / root).
+
+Note: the Pages site for this repository is configured as "deploy from branch main, /" and the
+session token has no `pages` write scope, so the dashboard is emitted at the repository root
+instead of inside docs/. Recorded as IR-08 in COORDINATION.md.
 
 Design rules
   * every data cell is read from data/site/*.json or data/derived/*.csv - no
@@ -19,9 +23,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .common import DERIVED, DOCS, SITE, SOURCES
+from .common import DERIVED, ROOT, SITE, SOURCES
 
-ASSETS = DOCS / "assets"
+ASSETS = ROOT / "assets"
 
 SLUG = {
     "ARI": "cardinals", "ATL": "falcons", "BAL": "ravens", "BUF": "bills", "CAR": "panthers",
@@ -1024,7 +1028,7 @@ document.querySelectorAll('table').forEach(function (t) {
   });
 });
 """)
-    (DOCS / ".nojekyll").write_text("")
+    (ROOT / ".nojekyll").write_text("")
 
 
 def main() -> None:
@@ -1056,8 +1060,9 @@ def main() -> None:
         "flagged.html": page_flagged(data),
     }
     for name, html_text in pages.items():
-        (DOCS / name).write_text(html_text)
-    print(f"[build_site] wrote {len(pages)} pages + assets to {DOCS}")
+        (ROOT / name).write_text(html_text)
+    print(f"[build_site] wrote {len(pages)} pages + assets to the repository root "
+          f"(GitHub Pages serves main / -> the root of this repo)")
 
 
 def _board_rows(cur, season, wk):

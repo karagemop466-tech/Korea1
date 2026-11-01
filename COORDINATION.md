@@ -30,10 +30,10 @@ no other session's files were touched.
 | 9 | Player-game stats from official feed | done | arena-a1970463 | `analysis/build_players.py`, `data/derived/player_games.csv` |
 | 10 | Player-prop correlations + calibration | done | arena-a1970463 | `analysis/props.py` |
 | 11 | Verification (automated + live official checks) | done | arena-a1970463 | `analysis/verify.py`, `data/site/verification.json` |
-| 12 | Static dashboard / GitHub Pages site | done | arena-a1970463 | `analysis/build_site.py`, `docs/**` |
+| 12 | Static dashboard / GitHub Pages site | done | arena-a1970463 | `analysis/build_site.py`, pages at repo root |
 | 13 | Leak tests | done | arena-a1970463 | `tests/test_no_lookahead.py`, `tests/check_links.py` |
 | 14 | Docs + executive summary | done | arena-a1970463 | `README.md`, `EXECUTIVE_SUMMARY.md`, `requirements.txt` |
-| 15 | **Final integration**: re-verify combined data, build site, confirm no broken links, open PR, merge, confirm Pages deploy | done | arena-a1970463 | `docs/**`, this file |
+| 15 | **Final integration**: re-verify combined data, build site, confirm no broken links, open PR, merge, confirm Pages deploy | done | arena-a1970463 | pages at repo root, this file |
 
 No task required editing another session's files, so no requests are logged.
 
@@ -87,6 +87,7 @@ No task required editing another session's files, so no requests are logged.
 | IR-05 | low | Venue naming differs (nfl.com "FedEx Field" vs dataset "Northwest Stadium") |
 | IR-06 | medium | Opening lines exist for 2021 only → line-movement strategy fails the sample gate |
 | IR-07 | low | 2026 Week 8 was partial in the snapshot (1 game complete, 13 with posted lines) |
+| IR-08 | low | Publishing constraint: the Pages site is configured as "deploy from branch `main`, `/`" and the session token has no `pages` write scope, so the generated dashboard is emitted at the repository root instead of `docs/`. Links are unaffected; the live URL serves `index.html` at `/`. |
 
 None of these were silently corrected. Each is on the **Flagged for review** page with its evidence link.
 
@@ -96,11 +97,11 @@ None of these were silently corrected. Each is on the **Flagged for review** pag
 
 | Step | Result |
 |---|---|
-| Site build | `python -m analysis.build_site` → 9 pages, dependency-free |
+| Site build | `python -m analysis.build_site` → 9 pages at the repo root, dependency-free |
 | Link check | `python -m tests.check_links` → internal links and anchors verified (see below) |
 | Pull request | *(filled in after the PR is opened)* |
 | Merge to `main` | *(filled in after merge)* |
-| GitHub Pages | served from `main` / `docs` |
+| GitHub Pages | served from `main` / repository root (see IR-08) |
 | Live URL | *(recorded after deploy verification)* |
 
 ---
@@ -113,4 +114,5 @@ None of these were silently corrected. Each is on the **Flagged for review** pag
    widen it with an assumed −110; that would break gate G1.
 3. Any new strategy must be added to `analysis/signals.py` and will automatically appear on the board
    with all eight gates, FDR and Reality Check recomputed.
-4. Shared outputs (`data/site/*.json`, `docs/**`) are generated — edit the generators, never the output.
+4. Shared outputs (`data/site/*.json`, the nine root HTML pages, `assets/**`) are generated — edit the
+generators, never the output.

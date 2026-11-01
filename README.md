@@ -3,8 +3,9 @@
 Originating NFL lines, running a leaderboard of betting strategies, and measuring how much of each
 strategy's record is skill versus luck.
 
-**Live dashboard:** published with GitHub Pages from `main` → `docs/` (see `COORDINATION.md` for the
-deploy record and URL).
+**Live dashboard:** published with GitHub Pages from `main` (repository root — the Pages site is configured
+as "deploy from branch `main`, `/`" and the session token has no Pages write scope, so the generated pages
+live at the root). See `COORDINATION.md` for the deploy record and URL.
 
 ## Read this first
 
@@ -28,7 +29,7 @@ deploy record and URL).
 | `analysis/build_players.py` | player-game stats from the official NFL Game Center feed |
 | `analysis/props.py` | prop correlations, combo pricing framework, interval calibration |
 | `analysis/verify.py` | automated integrity checks + the live official cross-check log |
-| `analysis/build_site.py` | static dashboard generator → `docs/` |
+| `analysis/build_site.py` | static dashboard generator → repository root (served by Pages) |
 | `tests/` | look-ahead/leak tests and the site link checker |
 
 ## Results in one paragraph
@@ -52,7 +53,8 @@ pytest -q tests                # leak / look-ahead tests
 ```
 
 Raw data is git-ignored and re-staged from pinned commits on every run, so a fresh clone reproduces the
-same numbers. The site is plain static HTML/CSS/JS with no external dependencies.
+same numbers. The site is plain static HTML/CSS/JS with no external dependencies, emitted at the
+repository root (`index.html` + eight subpages + `assets/`) plus `.nojekyll` so Pages serves it raw.
 
 ## Ground rules the code enforces
 

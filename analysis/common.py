@@ -19,9 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 DERIVED = ROOT / "data" / "derived"
 SITE = ROOT / "data" / "site"
-DOCS = ROOT / "docs"
 
-for _p in (RAW, DERIVED, SITE, DOCS):
+for _p in (RAW, DERIVED, SITE):
     _p.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------

@@ -14,15 +14,19 @@ import re
 import sys
 from pathlib import Path
 
-DOCS = Path(__file__).resolve().parents[1] / "docs"
+ROOT = Path(__file__).resolve().parents[1]
+PAGES = ["index.html", "lines.html", "strategies.html",
+         "parlays.html", "props.html", "validation.html", "data.html",
+         "verification.html", "flagged.html"]
 HREF = re.compile(r'href="([^"]+)"')
 ID = re.compile(r'id="([^"]+)"')
 SRC = re.compile(r'src="([^"]+)"')
 
 
 def main() -> int:
-    pages = sorted(DOCS.glob("*.html"))
-    errors: list[str] = []
+    pages = [ROOT / p for p in PAGES if (ROOT / p).exists()]
+    missing = [p for p in PAGES if not (ROOT / p).exists()]
+    errors: list[str] = [f"missing page {m}" for m in missing]
     for page in pages:
         text = page.read_text()
         local_ids = set(ID.findall(text))
@@ -31,7 +35,7 @@ def main() -> int:
                 continue
             target, _, anchor = href.partition("#")
             if target:
-                path = (DOCS / target).resolve()
+                path = (ROOT / target).resolve()
                 if not path.exists():
                     errors.append(f"{page.name}: missing file for href {href}")
                     continue
@@ -42,7 +46,7 @@ def main() -> int:
         for s in SRC.findall(text):
             if s.startswith(("http://", "https://")):
                 errors.append(f"{page.name}: external script/style dependency {s}")
-            elif not (DOCS / s).exists():
+            elif not (ROOT / s).exists():
                 errors.append(f"{page.name}: missing asset {s}")
         if ">None<" in text:
             errors.append(f"{page.name}: leaked None cell")
