@@ -1,0 +1,219 @@
+{
+  "generated_utc": "2026-11-01T13:24:09Z",
+  "upstream": {
+    "repo": "nflverse/nfldata",
+    "branch": "master",
+    "commit_sha": "a270278f3ac4e937295fe6a27814b3c4a2b62645",
+    "commit_url": "https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645",
+    "archive_url": "https://codeload.github.com/nflverse/nfldata/tar.gz/a270278f3ac4e937295fe6a27814b3c4a2b62645",
+    "browse_url": "https://github.com/nflverse/nfldata/tree/a270278f3ac4e937295fe6a27814b3c4a2b62645"
+  },
+  "network_policy": {
+    "reachable": [
+      "github.com",
+      "codeload.github.com",
+      "api.github.com",
+      "registry.npmjs.org",
+      "pypi.org",
+      "files.pythonhosted.org"
+    ],
+    "blocked_observed": [
+      "raw.githubusercontent.com",
+      "release-assets.githubusercontent.com",
+      "objects.githubusercontent.com",
+      "www.nfl.com",
+      "operations.nfl.com"
+    ],
+    "note": "Cited nfl.com pages are read with the agent's page-fetch tool, not the shell; the shell's TLS handshake to nfl.com is refused by the sandbox egress allowlist."
+  },
+  "files": [
+    {
+      "logical": "DATASETS.md",
+      "local": "data/raw/DATASETS.md",
+      "bytes": 17642,
+      "sha256": "8835ca9c15784a2cdc04c2c599c54b373629f8fbe91117acd5b7d0c615e03bf4",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md"
+    },
+    {
+      "logical": "data/closing_lines.csv",
+      "local": "data/raw/closing_lines.csv",
+      "bytes": 942229,
+      "sha256": "3571e1c9fc8d7396f405fb7c17d43c15676d335ffc932fbb03ff18da691d1729",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv",
+      "rows": 20490,
+      "columns": [
+        "game_id",
+        "alt_game_id",
+        "type",
+        "side",
+        "line",
+        "odds",
+        "outcome"
+      ]
+    },
+    {
+      "logical": "data/games.csv",
+      "local": "data/raw/games.csv",
+      "bytes": 2187803,
+      "sha256": "ba34f3619067eb4459eb257f629d7f29adce74cba824e1708e7bbb9ef3246e6a",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "rows": 7548,
+      "columns": [
+        "game_id",
+        "season",
+        "game_type",
+        "week",
+        "gameday",
+        "weekday",
+        "gametime",
+        "away_team",
+        "away_score",
+        "home_team",
+        "home_score",
+        "location",
+        "result",
+        "total",
+        "overtime",
+        "old_game_id",
+        "gsis",
+        "nfl_detail_id",
+        "pfr",
+        "pff",
+        "espn",
+        "ftn",
+        "away_rest",
+        "home_rest",
+        "away_moneyline",
+        "home_moneyline",
+        "spread_line",
+        "away_spread_odds",
+        "home_spread_odds",
+        "total_line",
+        "under_odds",
+        "over_odds",
+        "div_game",
+        "roof",
+        "surface",
+        "temp",
+        "wind",
+        "away_qb_id",
+        "home_qb_id",
+        "away_qb_name",
+        "home_qb_name",
+        "away_coach",
+        "home_coach",
+        "referee",
+        "stadium_id",
+        "stadium"
+      ]
+    },
+    {
+      "logical": "data/initial_lines.csv",
+      "local": "data/raw/initial_lines.csv",
+      "bytes": 45068,
+      "sha256": "654770173d11fdb2074537d520f6b1213d663e3bbf47689e5cc9994c1af255e5",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/initial_lines.csv",
+      "rows": 1088,
+      "columns": [
+        "season",
+        "sportsbook",
+        "type",
+        "about",
+        "side",
+        "line"
+      ]
+    },
+    {
+      "logical": "data/predictions.csv",
+      "local": "data/raw/predictions.csv",
+      "bytes": 696703,
+      "sha256": "72d42fb07158bda19ee75b1c853d96fc4cca3a38a50822b98b92332c219c380f",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/predictions.csv",
+      "rows": 21915,
+      "columns": [
+        "game_id",
+        "screen_name",
+        "prediction"
+      ]
+    },
+    {
+      "logical": "data/sc_lines.csv",
+      "local": "data/raw/sc_lines.csv",
+      "bytes": 140765,
+      "sha256": "384039e92630831eaf4d851471ba9e521f4a7b0207d0d7da7d376c4a1cc5004e",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/sc_lines.csv",
+      "rows": 4092,
+      "columns": [
+        "season",
+        "week",
+        "away_team",
+        "home_team",
+        "game_id",
+        "side",
+        "line"
+      ]
+    },
+    {
+      "logical": "data/win_totals.csv",
+      "local": "data/raw/win_totals.csv",
+      "bytes": 12811,
+      "sha256": "6228fe8c2cf41b340a9df27dc862b63f3da765068ee7c09474397279c1b75c20",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/win_totals.csv",
+      "rows": 576,
+      "columns": [
+        "season",
+        "team",
+        "line",
+        "over_odds",
+        "under_odds"
+      ]
+    }
+  ],
+  "definitions": {
+    "nflverse_nfldata": {
+      "label": "nflverse/nfldata — games.csv (nflverse game-level schedule + closing lines)",
+      "url": "https://github.com/nflverse/nfldata/blob/master/data/games.csv",
+      "kind": "open data mirror of NFL GSIS game results; maintained by nflverse"
+    },
+    "nflverse_nfldata_repo": {
+      "label": "nflverse/nfldata repository (data dictionary: DATASETS.md)",
+      "url": "https://github.com/nflverse/nfldata/blob/master/DATASETS.md",
+      "kind": "documentation"
+    },
+    "nflverse_closing": {
+      "label": "nflverse/nfldata — closing_lines.csv (per-side close price + outcome, 2006-2018)",
+      "url": "https://github.com/nflverse/nfldata/blob/master/data/closing_lines.csv",
+      "kind": "open data"
+    },
+    "nflverse_initial": {
+      "label": "nflverse/nfldata — initial_lines.csv (2021 openers, book WSGT)",
+      "url": "https://github.com/nflverse/nfldata/blob/master/data/initial_lines.csv",
+      "kind": "open data"
+    },
+    "nflverse_sclines": {
+      "label": "nflverse/nfldata — sc_lines.csv (SuperContest consensus lines 2013-2020)",
+      "url": "https://github.com/nflverse/nfldata/blob/master/data/sc_lines.csv",
+      "kind": "open data"
+    },
+    "nflverse_schedules_release": {
+      "label": "nflverse-data release `schedules` (canonical games.csv distribution point)",
+      "url": "https://github.com/nflverse/nflverse-data/releases/tag/schedules",
+      "kind": "open data release"
+    },
+    "nfl_operations": {
+      "label": "NFL Football Operations — official playing rules (scoring, overtime, spots)",
+      "url": "https://operations.nfl.com/the-rules/nfl-rulebook/",
+      "kind": "official NFL"
+    },
+    "nfl_rule_ot": {
+      "label": "NFL Rulebook, Rule 16 — sudden death / overtime procedures",
+      "url": "https://operations.nfl.com/the-rules/nfl-rulebook/",
+      "kind": "official NFL"
+    },
+    "nfl_gsis": {
+      "label": "NFL Game Statistics & Information System (GSIS) — source of the game IDs used here",
+      "url": "https://www.nfl.com/",
+      "kind": "official NFL"
+    }
+  }
+}

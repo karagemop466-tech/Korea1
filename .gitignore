@@ -1,0 +1,6 @@
+# raw downloads (large, re-fetchable) are not committed
+data/raw/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
