@@ -1,0 +1,53 @@
+name: Deploy NFL Line Lab (manual)
+
+# Integration note (2026-11-01): GitHub Pages for this repository is configured as a
+# branch build of `main` / `docs`, which publishes the integrated dashboard in docs/.
+# This workflow is retained from the sibling session and repointed at docs/ so that, if
+# it is ever run by hand, it deploys the same site rather than a different one. It is
+# no longer triggered on push, so it cannot race the branch build.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Verify links and sourced table rows
+        run: |
+          python3 scripts/check_site.py
+          pip install pandas numpy scipy
+          python pipeline/verify_site.py
+  deploy:
+    needs: verify
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Assemble public site artifact
+        run: |
+          mkdir -p site-build
+          cp -R docs/. site-build/
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-build
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

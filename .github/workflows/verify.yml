@@ -1,20 +1,31 @@
-name: verify-site
+name: Verify site
 
+# Two independent guards, both kept after the integration merge:
+#   * scripts/check_site.py  — the sibling session's guard for the legacy root site
+#     (index.html + pages/), which is retained in the repository unchanged.
+#   * pipeline/verify_site.py — the integration guard for the published docs/ site:
+#     every table row must carry a source link and every internal link must resolve.
 on:
   push:
     branches: [main, "arena/**"]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install pandas numpy scipy
-      - name: Verify every table row has a source link and every internal link resolves
+      - name: Legacy root-site guard (sibling session)
+        run: python3 scripts/check_site.py
+      - name: Published docs/ site guard (integration session)
         run: python pipeline/verify_site.py
