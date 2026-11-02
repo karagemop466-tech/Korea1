@@ -22,6 +22,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import DOCS, PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
+from render_audit import build_audit, irregularity_rows  # noqa: E402
 
 # GitHub Pages for this repository is a branch build of `main` / `/` (the repo root),
 # and the API token in this environment is not permitted to change that. The site is
@@ -54,8 +55,9 @@ NAV = [
     ("props.html", "Player props"),
     ("methodology.html", "Methodology"),
     ("flagged.html", "Flagged for review"),
-    ("verification.html", "Verification"),
+    ("verification.html", "Reproducibility"),
     ("sources.html", "Sources"),
+    ("audit.html", "Independent audit"),
     # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
     # same questions from a different odds archive. Served from lab/ and not part of this render.
     ("lab/index.html", "Replication annex"),
@@ -279,6 +281,10 @@ proxies.</li>
 games have outcome flags that contradict their own score.</li>
 <li>The model omits injuries, starting-quarterback status and depth charts.</li>
 <li>Weather is recorded for only two thirds of games, so weather strategies run on a subset.</li>
+<li><strong>Official-source coverage is partial.</strong> An independent audit read 39 games on NFL.com and
+found 31 scores identical to the pinned data (the other 8 are 2026 week-8 games the pinned snapshot predates);
+historical betting lines have no official NFL source; and 516 of 523 table rows link to a community
+mirror rather than an NFL site. See the <a href="audit.html">Independent audit</a>.</li>
 </ul>
 </section>
 
@@ -1154,6 +1160,14 @@ the half point that decides pushes.</p>
 </section>
 
 <section>
+<h2>Added by the independent audit (2026-11-02)</h2>
+<p>Found by re-checking the published tables against NFL.com and by re-running the build.
+Full detail, the 39-game score comparison and the reproduction results are on the
+<a href="audit.html">Independent audit</a> page.</p>
+{table(irregularity_rows(SHA, src_link), ["ID", "Severity", "Finding", "Source"], caption="Irregularities found by the independent audit")}
+</section>
+
+<section>
 <h2>How each flagged item was handled in the build</h2>
 <ul class="findings">
 <li>Player-level and prop cells are <strong>blank</strong>, not zero and not estimated. Any table that
@@ -1489,6 +1503,10 @@ def build_verification(d) -> str:
     body = f"""
 <section>
 <h2>Independent audit</h2>
+<p>This page asks whether the build is <em>faithful</em> to its pinned source. Whether the source
+values themselves are right is a different question — official-source spot checks against NFL.com,
+and the source-tier inventory of every table row, are on the
+<a href="audit.html">Independent audit</a> page.</p>
 <p>Nothing on this page is a claim made by the build about itself. Each table is produced by
 <code>pipeline/audit.py</code>, which re-downloads the pinned upstream archive, re-hashes it,
 rebuilds every artefact from that archive in a throwaway directory, and re-derives published table
@@ -1509,7 +1527,10 @@ cells from the CSVs they name. A mismatch is a hard failure — the audit exits 
 <h2>B · Clean-room rebuild</h2>
 <p>The rebuild copies the code into a temporary tree, stages only the pinned archive, runs the whole
 pipeline there, and compares digests. The only field normalised is the <code>generated …</code>
-timestamp in the footer, which must change; every number and every row must not.</p>
+timestamp in the footer, which must change; every number and every row must not. This page is
+excluded from the comparison because the audit rewrites it at the end of its own run (a
+self-reference); it is still covered by the six page checks in <code>pipeline/verify_site.py</code>
+and by the claims table above.</p>
 {rb_tab}
 </section>
 
@@ -1545,9 +1566,11 @@ reach more (for example the player-week release assets) and would change what is
 </ul>
 </section>
 """
-    return layout("verification.html", "Verification",
-                  "An independent audit of this build: provenance re-hashed, artefacts rebuilt, "
-                  "published cells re-derived, drift to upstream measured.", body, wide=True)
+    return layout("verification.html", "Reproducibility audit",
+                  "Is this build faithful to its pinned source? Provenance re-hashed, artefacts "
+                  "rebuilt from scratch, published cells re-derived, drift to upstream measured. "
+                  "Whether the values themselves are right is a separate question, answered on the "
+                  "Independent audit page.", body, wide=True)
 
 
 def main() -> None:
@@ -1572,6 +1595,8 @@ def main() -> None:
         "requirements.html": build_requirements(d),
         "verification.html": build_verification(d),
         "sources.html": build_sources(d),
+        # T10 (arena/1642ee06-korea1): independent official-source audit
+        "audit.html": build_audit(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
     }
     for name, html_text in pages.items():
         (SITE / name).write_text(html_text, encoding="utf-8")

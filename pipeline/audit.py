@@ -143,6 +143,12 @@ def audit_digests() -> pd.DataFrame:
             entry["rows"] = None
         rows.append(entry)
     for page in sorted(SITE.glob("*.html")):
+        # verification.html is written by this audit at the end of its own run, so including it
+        # would compare the page against a baseline it has already replaced (self-reference).
+        # It is still verified: pipeline/verify_site.py runs all six page checks on it and stage E
+        # re-derives the claims on it.
+        if page.name == "verification.html":
+            continue
         norm = GEN_TS.sub("generated <normalised>", page.read_text(encoding="utf-8"))
         rows.append({"file": page.name, "bytes": len(norm), "rows": None,
                      "sha256": sha256_bytes(norm.encode())})

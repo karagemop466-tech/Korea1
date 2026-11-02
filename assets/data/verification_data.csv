@@ -3,3 +3,4 @@ data_audit all passed,True,6/6 checks
 every strategy has a verdict,True,18 strategies
 no strategy claimed SKILL without passing all gates,True,verdict logic consistent
 prop page publishes no unverified value,True,player-level cells left blank by design
+every scheduled game carries an originated line,True,164 scheduled games priced

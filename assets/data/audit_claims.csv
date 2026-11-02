@@ -47,6 +47,7 @@ lines.html,MAE market/spread,10.22,10.22,True,data/processed/model_metrics.csv
 lines.html,MAE market/total,10.53,10.53,True,data/processed/model_metrics.csv
 sources.html,provenance DATASETS.md: bytes + SHA-256 prefix,"17,642 / 8835ca9c15784a2c…","17,642 / 8835ca9c15784a2c",True,https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md
 lines.html,open board: our spread is published for every row,28/28 rows,all rows,True,data/processed/originated_upcoming.csv
+audit.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
 correlations.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
 executive-summary.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
 flagged.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645

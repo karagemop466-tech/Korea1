@@ -1,0 +1,40 @@
+game_id,season,week,away,home,nfl_com_away,nfl_com_home,dataset_away,dataset_home,status,nfl_com_url,scores_page
+2026_08_CAR_GB,2026,8,CAR,GB,19,27,19,27,MATCH,https://www.nfl.com/games/panthers-at-packers-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_BAL_BUF,2026,8,BAL,BUF,10,36,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/ravens-at-bills-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_TEN_CIN,2026,8,TEN,CIN,36,43,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/titans-at-bengals-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_ARI_DAL,2026,8,ARI,DAL,33,30,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/cardinals-at-cowboys-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_MIN_DET,2026,8,MIN,DET,15,19,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/vikings-at-lions-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_IND_JAX,2026,8,IND,JAX,7,42,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/colts-at-jaguars-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_LV_NYJ,2026,8,LV,NYJ,38,33,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/raiders-at-jets-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_CLE_PIT,2026,8,CLE,PIT,6,27,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/browns-at-steelers-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2026_08_ATL_TB,2026,8,ATL,TB,0,16,,,DATASET BLANK (NFL.com shows Final),https://www.nfl.com/games/falcons-at-buccaneers-2026-reg-8,https://www.nfl.com/scores/2026/REG8
+2022_10_ATL_CAR,2022,10,ATL,CAR,15,25,15,25,MATCH,https://www.nfl.com/games/falcons-at-panthers-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_SEA_TB,2022,10,SEA,TB,16,21,16,21,MATCH,https://www.nfl.com/games/seahawks-at-buccaneers-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_MIN_BUF,2022,10,MIN,BUF,33,30,33,30,MATCH,https://www.nfl.com/games/vikings-at-bills-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_DET_CHI,2022,10,DET,CHI,31,30,31,30,MATCH,https://www.nfl.com/games/lions-at-bears-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_JAX_KC,2022,10,JAX,KC,17,27,17,27,MATCH,https://www.nfl.com/games/jaguars-at-chiefs-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_CLE_MIA,2022,10,CLE,MIA,17,39,17,39,MATCH,https://www.nfl.com/games/browns-at-dolphins-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_HOU_NYG,2022,10,HOU,NYG,16,24,16,24,MATCH,https://www.nfl.com/games/texans-at-giants-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_NO_PIT,2022,10,NO,PIT,10,20,10,20,MATCH,https://www.nfl.com/games/saints-at-steelers-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2022_10_DEN_TEN,2022,10,DEN,TEN,10,17,10,17,MATCH,https://www.nfl.com/games/broncos-at-titans-2022-reg-10,https://www.nfl.com/scores/2022/REG10
+2014_15_ARI_STL,2014,15,ARI,STL,12,6,12,6,MATCH,https://www.nfl.com/games/cardinals-at-rams-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_PIT_ATL,2014,15,PIT,ATL,27,20,27,20,MATCH,https://www.nfl.com/games/steelers-at-falcons-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_JAX_BAL,2014,15,JAX,BAL,12,20,12,20,MATCH,https://www.nfl.com/games/jaguars-at-ravens-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_GB_BUF,2014,15,GB,BUF,13,21,13,21,MATCH,https://www.nfl.com/games/packers-at-bills-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_TB_CAR,2014,15,TB,CAR,17,19,17,19,MATCH,https://www.nfl.com/games/buccaneers-at-panthers-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_CIN_CLE,2014,15,CIN,CLE,30,0,30,0,MATCH,https://www.nfl.com/games/bengals-at-browns-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_HOU_IND,2014,15,HOU,IND,10,17,10,17,MATCH,https://www.nfl.com/games/texans-at-colts-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_OAK_KC,2014,15,OAK,KC,13,31,13,31,MATCH,https://www.nfl.com/games/raiders-at-chiefs-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2014_15_MIA_NE,2014,15,MIA,NE,13,41,13,41,MATCH,https://www.nfl.com/games/dolphins-at-patriots-2014-reg-15,https://www.nfl.com/scores/2014/REG15
+2016_08_JAX_TEN,2016,8,JAX,TEN,22,36,22,36,MATCH,https://www.nfl.com/games/jaguars-at-titans-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_WAS_CIN,2016,8,WAS,CIN,27,27,27,27,MATCH,https://www.nfl.com/games/redskins-at-bengals-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_NE_BUF,2016,8,NE,BUF,41,25,41,25,MATCH,https://www.nfl.com/games/patriots-at-bills-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_NYJ_CLE,2016,8,NYJ,CLE,31,28,31,28,MATCH,https://www.nfl.com/games/jets-at-browns-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_DET_HOU,2016,8,DET,HOU,13,20,13,20,MATCH,https://www.nfl.com/games/lions-at-texans-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_KC_IND,2016,8,KC,IND,30,14,30,14,MATCH,https://www.nfl.com/games/chiefs-at-colts-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_SEA_NO,2016,8,SEA,NO,20,25,20,25,MATCH,https://www.nfl.com/games/seahawks-at-saints-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_OAK_TB,2016,8,OAK,TB,30,24,30,24,MATCH,https://www.nfl.com/games/raiders-at-buccaneers-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2016_08_ARI_CAR,2016,8,ARI,CAR,20,30,20,30,MATCH,https://www.nfl.com/games/cardinals-at-panthers-2016-reg-8,https://www.nfl.com/scores/2016/REG8
+2015_06_ARI_PIT,2015,6,ARI,PIT,13,25,13,25,MATCH,https://www.nfl.com/games/cardinals-at-steelers-2015-reg-6,https://www.nfl.com/scores/2015/REG6
+2015_09_PHI_DAL,2015,9,PHI,DAL,33,27,33,27,MATCH,https://www.nfl.com/games/eagles-at-cowboys-2015-reg-9,https://www.nfl.com/scores/2015/REG9
+2015_15_KC_BAL,2015,15,KC,BAL,34,14,34,14,MATCH,https://www.nfl.com/games/chiefs-at-ravens-2015-reg-15,https://www.nfl.com/scores/2015/REG15
