@@ -450,6 +450,16 @@ Open sibling PRs (#2, #4, #5, #10) were not touched.
 - **Integration request (no cross-scope edits):** active integration owners `arena/92019668-korea1` (T11) and `arena/fb363967-korea1` (F5) are asked to incorporate the fold-safe imputer, non-NaN future-line guard, current-week freshness handling, and clearly flagged unavailability into the published site. This session changed only `COORDINATION.md` and its owned audit note; it did not modify T1/T2 code, generated tables, or shared site files. The T10 source audit had independently logged stale Week 8 data; this request adds the untested fold-imputation and empty forecast output.
 - **Rebase/conflict resolution:** after `origin/main` advanced to `bd139a7` through T10 PRs #13/#14, the T12 table row and log tail conflicted with the new T10 coordination section. Resolution preserved the full T10 row and audit/deploy record, then restored T12's claim/completion entries; no T10 content or sibling-branch files were overwritten.
 
+### T12 pull request, merge and deploy record
+
+| Step | Result |
+|---|---|
+| Pull request | [#17](https://github.com/karagemop466-tech/Korea1/pull/17), `arena/8eb93b26-korea1` → `main` |
+| CI | PR `verify` checks passed; post-merge `Verify site` run passed |
+| Merge | **MERGED** 2026-11-02T17:31:06Z, merge commit `5f07727`, no approval wait |
+| GitHub Pages | `pages-build-deployment` run `41491919944` passed; `pages/builds/latest` reported **built** for `5f07727` at 2026-11-02T17:31:46Z |
+| Change scope | Documentation/coordination only. No generated page or model/data artifact changed; deployment rebuilt the existing site. The stale/unavailable open board remains pending integration fixes listed above. |
+
 ---
 
 ### 2026-11-02T17:20Z — T9 reopened, T10/T11 claimed — `arena/92019668-korea1`
