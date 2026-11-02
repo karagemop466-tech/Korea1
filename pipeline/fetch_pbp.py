@@ -72,7 +72,7 @@ def main() -> int:
     RAW.mkdir(parents=True, exist_ok=True)
     PROC.mkdir(parents=True, exist_ok=True)
     previous = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"files": []}
-    retrieved = previous.get("retrieved_utc", RETRIEVED)
+    retrieved = previous.get("generated_utc", RETRIEVED)
     prev_hash = {f["season"]: f["sha256"] for f in previous.get("files", [])}
 
     files = []
@@ -107,7 +107,7 @@ def main() -> int:
         print(f"  {season}: {nbytes:,} bytes  sha256 {digest[:16]}…")
 
     manifest = {
-        "generated_utc": RETRIEVED,
+        "generated_utc": retrieved,
         "repository": f"https://github.com/{REPO}",
         "path": PBP_DIR,
         "access_method": ("GitHub git-blob API (api.github.com/repos/{repo}/git/blobs/{sha}, "
