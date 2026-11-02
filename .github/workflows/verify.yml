@@ -44,4 +44,8 @@ jobs:
           git diff --stat >> "$GITHUB_STEP_SUMMARY"
           git diff -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md > /tmp/generated-drift.patch
           head -c 50000 /tmp/generated-drift.patch >> "$GITHUB_STEP_SUMMARY"
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            echo "::error file=$f::Generated output drift in $f"
+          done < <(git diff --name-only -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md)
           git diff --exit-code -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md
