@@ -38,14 +38,4 @@ jobs:
       - name: Regression tests
         run: make test
       - name: Verify committed generated outputs
-        run: |
-          echo '## Generated-output drift' >> "$GITHUB_STEP_SUMMARY"
-          git diff --name-only >> "$GITHUB_STEP_SUMMARY"
-          git diff --stat >> "$GITHUB_STEP_SUMMARY"
-          git diff -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md > /tmp/generated-drift.patch
-          head -c 50000 /tmp/generated-drift.patch >> "$GITHUB_STEP_SUMMARY"
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            echo "::error file=$f::Generated output drift in $f"
-          done < <(git diff --name-only -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md)
-          git diff --exit-code -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md
+        run: python tests/check_rebuild.py
