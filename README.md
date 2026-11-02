@@ -9,6 +9,10 @@ hash-verified upstream snapshot. Nothing is typed in by hand, and nothing is est
 fill a gap — where a value could not be verified it is left blank and listed on the
 [Flagged for review](https://karagemop466-tech.github.io/Korea1/flagged.html) page.
 
+> **Audit note (2026-11-02):** an independent check against NFL.com found the sampled scores correct, but most table rows
+> link to a community mirror and historical betting lines have no official source — they are published, not blanked, and flagged.
+> See the [Independent audit](https://karagemop466-tech.github.io/Korea1/audit.html).
+
 ---
 
 ## What this is

@@ -45,6 +45,27 @@ measures a mean 3.79% overround against 2.70% here (IR-09).
 """
 
 
+# The independent-audit section belongs to session `arena/1642ee06-korea1` (it ships `audit.html` and
+# `data/audit/`). Their session appended it by hand to this generated file; embedding it here is the
+# same fix applied for the annex below, so a regeneration cannot delete another session's work.
+AUDIT_SECTION = """## Independent official-source audit (2026-11-02, session `arena/1642ee06-korea1`)
+
+Full detail: [`audit.html`](audit.html) · data in [`data/audit/`](data/audit/) · scripts `scripts/audit_*.py`.
+
+- **Scores.** 39 games read on NFL.com (2014, 2015, 2016, 2022 and 2026 week pages, plus the three 2015 games
+  whose nflverse outcome flag contradicts the score): **31 match the pinned data, 0 mismatch**, 8 are 2026
+  week-8 games that NFL.com lists as Final and the pinned snapshot predates (left blank, flagged).
+  This is a sample, not a census; games before 2010 (2,913) and playoff games (309) were not checked.
+- **Inputs.** All 7 pinned nfldata files re-downloaded from the pinned commit: SHA-256 and byte count match.
+  Rebuilding every table from them reproduces the published files byte for byte; `tests/test_no_lookahead.py` 4/4.
+- **Official sources.** Of 523 table rows on the ten root pages, 3 link to nfl.com and 516 link only to
+  nflverse (a community project). Historical closing lines, totals and prices have **no official NFL source**
+  and the upstream data dictionary does not name the sportsbook. These are flagged (IR-T10-01, -02), not blanked.
+- **Defect fixed.** `scripts/99_verify.py` V02 failed on every fresh checkout; it now passes (9/9).
+- **Does not change the conclusion.** 0 of 18 strategies pass all gates; no figure in this summary was altered.
+"""
+
+
 def main() -> None:
     pred = pd.read_csv(PROC / "originated_lines.csv")
     gates = pd.read_csv(PROC / "strategy_gates.csv")
@@ -235,8 +256,23 @@ detail, with sources: `flagged.html`.
 3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
 
 """
-    lines = lines.rstrip() + "\n\n---\n\n" + ANNEX_SECTION.strip() + "\n"
-    (ROOT / "EXECUTIVE_SUMMARY.md").write_text(lines, encoding="utf-8")
+    lines = (
+        lines.rstrip() + "\n\n---\n\n" + ANNEX_SECTION.strip()
+        + "\n\n---\n\n" + AUDIT_SECTION.strip() + "\n"
+    )
+
+    # Safety net: keep any `---`-separated section that some other session appended by hand and that
+    # this generator does not know about. Without this, regenerating the summary silently deletes
+    # cross-session work (it has already happened twice).
+    dest = ROOT / "EXECUTIVE_SUMMARY.md"
+    if dest.exists():
+        known = lines
+        for block in dest.read_text(encoding="utf-8").split("\n---\n\n## ")[1:]:
+            header = "## " + block.split("\n", 1)[0].strip()
+            if header not in known:
+                lines = lines.rstrip() + "\n\n---\n\n" + header + "\n" + block.split("\n", 1)[1]
+                print(f"preserved external section: {header}")
+    dest.write_text(lines, encoding="utf-8")
     print(f"wrote EXECUTIVE_SUMMARY.md ({len(lines):,} bytes)")
 
 

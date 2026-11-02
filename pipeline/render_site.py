@@ -22,6 +22,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import DOCS, PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
+from render_audit import build_audit, irregularity_rows  # noqa: E402
 
 # GitHub Pages for this repository is a branch build of `main` / `/` (the repo root),
 # and the API token in this environment is not permitted to change that. The site is
@@ -58,6 +59,7 @@ NAV = [
     ("methodology.html", "Methodology"),
     ("flagged.html", "Flagged for review"),
     ("sources.html", "Sources"),
+    ("audit.html", "Independent audit"),
     # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
     # same questions from a different odds archive. Served from lab/ and not part of this render.
     ("lab/index.html", "Replication annex"),
@@ -300,6 +302,10 @@ return is not available anywhere this build can reach, so gate G6 fails for ever
 games have outcome flags that contradict their own score.</li>
 <li>The model omits injuries, starting-quarterback status and depth charts.</li>
 <li>Weather is recorded for only two thirds of games, so weather strategies run on a subset.</li>
+<li><strong>Official-source coverage is partial.</strong> An independent audit read 39 games on NFL.com and
+found 31 scores identical to the pinned data (the other 8 are 2026 week-8 games the pinned snapshot predates);
+historical betting lines have no official NFL source; and 516 of 523 table rows link to a community
+mirror rather than an NFL site. See the <a href="audit.html">Independent audit</a>.</li>
 </ul>
 </section>
 
@@ -1356,6 +1362,14 @@ the half point that decides pushes.</p>
 </section>
 
 <section>
+<h2>Added by the independent audit (2026-11-02)</h2>
+<p>Found by re-checking the published tables against NFL.com and by re-running the build.
+Full detail, the 39-game score comparison and the reproduction results are on the
+<a href="audit.html">Independent audit</a> page.</p>
+{table(irregularity_rows(SHA, src_link), ["ID", "Severity", "Finding", "Source"], caption="Irregularities found by the independent audit")}
+</section>
+
+<section>
 <h2>How each flagged item was handled in the build</h2>
 <ul class="findings">
 <li>Prop <em>prices</em> are <strong>blank</strong>, not assumed. Where a prop price would be needed
@@ -1578,6 +1592,8 @@ def main() -> None:
         "methodology.html": build_methodology(d),
         "flagged.html": build_flagged(d),
         "sources.html": build_sources(d),
+        # T10 (arena/1642ee06-korea1): independent official-source audit
+        "audit.html": build_audit(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
     }
     for name, html_text in pages.items():
         (SITE / name).write_text(html_text, encoding="utf-8")

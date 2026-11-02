@@ -48,6 +48,21 @@ def main():
 
     # ---------- V02 divisions
     ref_path = os.path.join(DATA, "raw", "teams_colors_logos.csv")
+    # T10 repair (arena/1642ee06-korea1): nothing in scripts/00_ingest.py ever downloaded this
+    # reference file, so V02 failed on every fresh checkout.  Fetch it through api.github.com
+    # (reachable from the sandbox; raw.githubusercontent.com is not).  Failure to fetch still
+    # fails V02 -- the check is never skipped or waved through.
+    if not os.path.exists(ref_path):
+        try:
+            import urllib.request
+            req = urllib.request.Request(
+                "https://api.github.com/repos/nflverse/nflverse-pbp/contents/teams_colors_logos.csv",
+                headers={"Accept": "application/vnd.github.raw", "User-Agent": "korea1-verify"})
+            os.makedirs(os.path.dirname(ref_path), exist_ok=True)
+            with urllib.request.urlopen(req, timeout=60) as r, open(ref_path, "wb") as f:
+                f.write(r.read())
+        except Exception as exc:  # noqa: BLE001 - reported below as a failed check
+            print(f"  could not download V02 reference file: {exc}", file=sys.stderr)
     if os.path.exists(ref_path):
         sys.path.insert(0, os.path.join(ROOT, "scripts"))
         from lib.data import DIVISIONS

@@ -101,6 +101,14 @@ def main() -> None:
             target = RAW / parts[1].replace("data/", "")
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
+            # The archived packages (`analysis/`, `archive/**`) and the leak tests in
+            # `tests/test_no_lookahead.py` read the upstream checkout layout
+            # (`data/raw/nfldata/data/*.csv`) rather than the flat `data/raw/*.csv`.
+            # Write both so one fetch serves every consumer; the flat copy is the
+            # manifest-tracked one, the mirror is git-ignored.
+            mirror = RAW / "nfldata" / parts[1]
+            mirror.parent.mkdir(parents=True, exist_ok=True)
+            mirror.write_bytes(data)
             extracted[parts[1]] = target
             print(f"  {parts[1]:28s} {len(data):>10,} bytes -> {target.relative_to(ROOT)}")
 
