@@ -593,7 +593,7 @@ def build_strategies(d) -> str:
             f'<span class="rank">{int(np.where(m.strategy.to_numpy() == r.strategy)[0][0]) + 1}</span>',
             f'<strong>{e(r.strategy)}</strong><br><span class="muted">{e(r.name)}</span>',
             e(r.family), f"{int(r.n):,}",
-            f"{int(r.wins)}–{int(r.losses)}–{int(r.pushes)}", pct(r.win_rate), pct(r.roi, 2),
+            f"{int(r.wins):,}–{int(r.losses):,}–{int(r.pushes):,}", pct(r.win_rate), pct(r.roi, 2),
             f"{r.profit:+.1f}", fmt(r.G4_p_adj, 3), fmt(r.G5_dsr, 3),
             f'<span class="pill {r.verdict.split()[0].lower()}">{e(r.verdict)}</span>',
             src_link(URL_GAMES, "games.csv"),
