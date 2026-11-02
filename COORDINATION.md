@@ -306,3 +306,31 @@ exist in any earlier deployment — returned the new content. Appending a cache-
 the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds/latest` already reported
 `built` for `9dfdd77`). Anyone re-checking a deploy should assume a few minutes of cache lag on
 previously-published paths and verify on a path that is new in the build.
+
+---
+
+## Session `arena/fb363967-korea1` — independent audit, requirements traceability, final publish
+
+**Claimed:** 2026-11-02T17:20Z. At claim time `main` = `3453d41` (merge of PR #12), the site at
+<https://karagemop466-tech.github.io/Korea1/> was built from that commit (`pages/builds/latest`
+reported `status: built`, `commit: 3453d41`), and every task on the board above was `done` except
+T9 (`needs review`). There is no sibling branch with unmerged work at the pinned scope: all 13
+remote `arena/*` branches are ancestors of, or fully merged into, `main` as of this claim.
+
+This session does **not** rebuild the canonical analysis (that work is done and its artefacts are
+committed). It audits it against the pinned upstream, closes the one artefact that was never
+produced — a requirements traceability document — and performs the final publish.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| F1 | Independent audit: pinned-snapshot hash check, clean-room rebuild, byte-diff of every derived table, upstream-drift report | in progress | `arena/fb363967-korea1` | `pipeline/audit.py`, `AUDIT.md`, `data/processed/audit_*.csv` |
+| F2 | Requirements traceability (the "full list of requirements" from the brief → implementation → evidence) | in progress | `arena/fb363967-korea1` | `requirements/requirements.csv`, `pipeline/render_requirements.py`, `REQUIREMENTS.md`, `requirements.html` |
+| F3 | Site defect fixes found by the audit (summary regeneration destroyed the annex section; stale open-board caption; stale Makefile message) | in progress | `arena/fb363967-korea1` | `pipeline/render_summary.py`, `pipeline/render_site.py`, `Makefile`, `EXECUTIVE_SUMMARY.md` |
+| F4 | Verification page + integration of nav/link-checker lists | in progress | `arena/fb363967-korea1` | `verification.html`, `tests/check_links.py`, `tests/check_sources.py`, `README.md`, `COORDINATION.md` |
+| F5 | Publish: PR → `main`, merge without waiting, confirm the Pages build, record the result here | in progress | `arena/fb363967-korea1` | `COORDINATION.md`, branch `arena/fb363967-korea1` → `main` |
+
+**Scopes that stay with their owners:** `pipeline/fetch_data.py`, `build_datasets.py`, `models.py`,
+`strategies.py`, `backtest.py`, `validation.py`, `correlations.py`, `data/raw/**`,
+`data/processed/**` (analysis tables — this session only *reads* them and adds `audit_*` files),
+`data/lab/**`, `lab/**`, `scripts/**`, `analysis/**`, `research/**`, `archive/**`. No file in those
+scopes is edited by this session; defects found there are logged, not patched.
