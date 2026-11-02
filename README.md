@@ -26,6 +26,9 @@ fill a gap — where a value could not be verified it is left blank and listed o
 | Can player props be originated, and how correlated are the legs? | `pipeline/props_model.py` → `props.html` |
 | What would a player-prop model need, and what is missing? | `props.html` |
 | What is unverified, contradictory or incomplete? | `flagged.html` |
+| Is every requirement I asked for actually delivered, and where is the evidence? | `requirements/requirements.csv` → `requirements.html` |
+| Can a stranger re-derive every published number from the pinned archive? | `pipeline/audit.py` → `verification.html` |
+| Which values were checked against a second, official source — and which could not be? | `verification.html` (independent-source audit) |
 
 ## Headline result
 
@@ -72,8 +75,24 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install pandas numpy scipy
 make build        # fetch → datasets → models → backtest → strategies → props → site → verify
 make props        # player-level play-by-play → prop lines, calibration, correlations, combos
-make test         # prop leakage/integrity tests + link check + per-row source check
+make requirements # 42 traced requirements → REQUIREMENTS.md + requirements.html
+make audit        # re-hash the pinned archive, re-derive published cells (--no-network to skip fetch)
+make audit-full   # + clean-room rebuild of every artefact in a throwaway tree (byte comparison)
+make test         # leakage/integrity tests + link check + per-row source check
 ```
+
+Every published number is tied to one pinned commit of `nflverse/nfldata`, recorded in
+`data/sources.json`. `make build` re-pins whatever upstream `main` is *now*; to reproduce the
+published site instead, pin the recorded snapshot:
+
+```bash
+NFDATA_SHA=$(python3 -c "import json;print(json.load(open('data/sources.json'))['commit'])") make build
+```
+
+`pipeline/audit.py` does that for you: it re-downloads the pinned archive, re-hashes all seven
+files against `data/sources.json`, re-derives the published table cells from the data, and (with
+`--rebuild`) rebuilds every artefact in a throwaway tree and compares it byte for byte. Its result
+is published on `verification.html`.
 
 `make build` ends with `pipeline/verify_site.py`, which fails the build if any table row lacks a
 source link, any internal link is broken, or any unformatted missing value reaches a table.
@@ -91,12 +110,19 @@ data/sources.json    pinned commit SHA + per-file SHA-256
                      the Pages API; an earlier note here said docs/, which does not exist)
 lab/                 the replication annex (see below) — a second site, same questions, other data
 scripts/             the annex pipeline and its own verifiers
+tests/               leakage tests (models, weather fill, props), originated-line regression,
+                     link check and the per-row source check run by CI
+requirements/        the 42 traced requirements, one row per ask, with evidence and source URL
+pipeline/audit.py    provenance + byte-identical rebuild + published-cell re-derivation
+analysis/            superseded first prototype — kept for provenance, not run (see analysis/README.md)
 COORDINATION.md      multi-session task board and work log
 ```
 
 ## Honesty rules used in this build
 
-1. No value is inferred, interpolated or back-filled. Missing → blank → flagged.
+1. No value is inferred, interpolated or back-filled. Missing → blank → flagged. Weather is the one
+   exception and it is not an estimate: it is the median of games on **strictly earlier dates**
+   (`fold_safe_weather_fill`), written to `weather_fill.json` and asserted in `data_audit.csv`.
 2. Models never see the market, and never see anything after kickoff (asserted in code).
 3. Every bet is settled at the **recorded** closing price; `-110` is never substituted.
 4. All strategies are declared before they are run; every result is published, including failures.

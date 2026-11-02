@@ -5,7 +5,11 @@ else
 PY := .venv/bin/python
 endif
 
-.PHONY: build data model backtest props site summary verify test serve clean all
+# `make build` pins and fetches whatever nflverse/nfldata master is at run time, then rebuilds
+# everything. To reproduce a *published* build instead, pin the snapshot recorded in
+# data/sources.json:
+#     NFDATA_SHA=a270278f3ac4e937295fe6a27814b3c4a2b62645 make build
+.PHONY: build data model backtest props requirements summary site audit audit-full verify test serve clean all
 
 all: build
 
@@ -25,20 +29,34 @@ props:
 	$(PY) pipeline/fetch_pbp.py
 	$(PY) pipeline/props_model.py
 
+requirements:
+	$(PY) pipeline/render_requirements.py
+
 site:
 	$(PY) pipeline/render_site.py
 	$(PY) pipeline/render_summary.py
+
+# the audit re-fetches the pinned archive, rebuilds every artefact in a throwaway tree and
+# re-derives published table cells; it exits non-zero on any mismatch. `audit-full` adds the
+# clean-room rebuild (~90 s).
+audit:
+	$(PY) pipeline/audit.py
+
+audit-full:
+	$(PY) pipeline/audit.py --rebuild
 
 verify:
 	$(PY) pipeline/verify_site.py
 
 test:
-	$(PY) -m pytest tests/test_props_integrity.py tests/test_weather_fold.py -q
+	$(PY) tests/test_future_lines.py
+	$(PY) tests/test_weather_fold.py
+	$(PY) tests/test_props_integrity.py
 	$(PY) tests/check_links.py
 	$(PY) tests/check_sources.py
 
-build: data model backtest props site verify
-	@echo "build complete — site rendered to the repository root, verification passed"
+build: data model backtest props requirements site audit verify
+	@echo "build complete — site rendered to the repository root, audit and verification passed"
 
 serve: build
 	$(PY) -m http.server 8000 --bind 0.0.0.0 --directory .

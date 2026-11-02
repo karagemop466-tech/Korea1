@@ -168,6 +168,13 @@ def main() -> int:
                    ~(pd.read_csv(PROC / 'strategy_gates.csv')[['G1_data', 'G2_leakage', 'G3_power',
                     'G4_significance', 'G5_luck', 'G6_economic', 'G7_stability']].all(axis=1))).any()),
          "verdict logic consistent"),
+        # regression guard for defect D-01 (2026-11-02): unplayed games carry no weather, and a
+        # missing design-matrix input once blanked every originated future line
+        ("every scheduled game carries an originated line",
+         bool(pd.read_csv(PROC / "originated_upcoming.csv")
+              [["fair_spread", "fair_total", "originated_home_ml", "originated_away_ml"]]
+              .notna().all().all()),
+         f"{len(pd.read_csv(PROC / 'originated_upcoming.csv'))} scheduled games priced"),
         ("prop definitions reproduce published season totals",
          bool(pd.read_csv(PROC / "prop_definition_validation.csv").match.all()),
          f"{int(pd.read_csv(PROC / 'prop_definition_validation.csv').match.sum())}/"

@@ -52,6 +52,39 @@ DECAY_HALFLIFE_SEASONS = 4.0
 # ---------------------------------------------------------------------------
 # linear algebra helpers
 # ---------------------------------------------------------------------------
+WEATHER = ("wind", "temp")
+
+
+def impute_weather(train: pd.DataFrame, apply_to: pd.DataFrame) -> pd.DataFrame:
+    """Fit the weather imputer on `train` only, then apply it to `apply_to`.
+
+    Kickoff temperature and wind are missing for ~29% of played rows and for every unplayed row.
+    Imputing with the median of the rows being transformed would leak later seasons into earlier
+    walk-forward folds (defect D-07), so the medians are always taken from the training window and
+    applied unchanged to the test window / the future slate.
+    """
+    med = train[list(WEATHER)].median()
+    out = apply_to.copy()
+    for col in WEATHER:
+        out[col] = out[col].fillna(float(med[col]))
+    return out
+
+
+def _ensure_complete(train: pd.DataFrame, test: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Weather completeness guard.
+
+    `build_datasets.fold_safe_weather_fill` already fills every outdoor row from games on
+    strictly earlier dates and encodes indoor rows as 0, so in a normal build this is a
+    no-op and the per-fold imputer below is never reached. It stays as a hard stop against
+    a *partially rebuilt* frame (which is what blanked all 164 scheduled lines in D-01):
+    if any gap survives, fill it from the training fold only — never from the test rows —
+    rather than handing NaN to the ridge fit.
+    """
+    if not (train[list(WEATHER)].isna().any().any() or test[list(WEATHER)].isna().any().any()):
+        return train, test
+    return impute_weather(train, train), impute_weather(train, test)
+
+
 def _weights(season_train: np.ndarray, season_test: int) -> np.ndarray:
     return 0.5 ** (np.abs(season_test - season_train) / DECAY_HALFLIFE_SEASONS)
 
@@ -161,8 +194,10 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
         if len(tr) < 400 or te.empty:
             continue
 
-        Xm = tr[FEATURES_MARGIN].to_numpy(float)
-        Xt = tr[FEATURES_TOTAL].to_numpy(float)
+        # normally a no-op: build_datasets has already filled weather fold-safely
+        tr_i, te_i = _ensure_complete(tr, te)
+        Xm = tr_i[FEATURES_MARGIN].to_numpy(float)
+        Xt = tr_i[FEATURES_TOTAL].to_numpy(float)
         ym = tr["result"].to_numpy(float)
         yt = tr["total"].to_numpy(float)
         seas = tr["season"].to_numpy(int)
@@ -175,34 +210,34 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
         b_m, mu_m, sd_m = fit_ridge(Xm, ym, w, a_m)
         b_t, mu_t, sd_t = fit_ridge(Xt, yt, w, a_t)
 
-        Tm = te[FEATURES_MARGIN].to_numpy(float)
-        Tt = te[FEATURES_TOTAL].to_numpy(float)
+        Tm = te_i[FEATURES_MARGIN].to_numpy(float)
+        Tt = te_i[FEATURES_TOTAL].to_numpy(float)
         pred_m = predict_ridge(b_m, mu_m, sd_m, Tm)
         pred_t = predict_ridge(b_t, mu_t, sd_t, Tt)
         resid_m = ym - predict_ridge(b_m, mu_m, sd_m, Xm)
         resid_t = yt - predict_ridge(b_t, mu_t, sd_t, Xt)
 
         # M2: matchup identity, one scale + intercept
-        b2m = fit_ols(tr["exp_margin"].to_numpy(float), ym, w)
-        b2t = fit_ols(tr["exp_total"].to_numpy(float), yt, w)
-        m2_m = b2m[0] + b2m[1] * te["exp_margin"].to_numpy(float)
-        m2_t = b2t[0] + b2t[1] * te["exp_total"].to_numpy(float)
-        r2m = ym - (b2m[0] + b2m[1] * tr["exp_margin"].to_numpy(float))
-        r2t = yt - (b2t[0] + b2t[1] * tr["exp_total"].to_numpy(float))
+        b2m = fit_ols(tr_i["exp_margin"].to_numpy(float), ym, w)
+        b2t = fit_ols(tr_i["exp_total"].to_numpy(float), yt, w)
+        m2_m = b2m[0] + b2m[1] * te_i["exp_margin"].to_numpy(float)
+        m2_t = b2t[0] + b2t[1] * te_i["exp_total"].to_numpy(float)
+        r2m = ym - (b2m[0] + b2m[1] * tr_i["exp_margin"].to_numpy(float))
+        r2t = yt - (b2t[0] + b2t[1] * tr_i["exp_total"].to_numpy(float))
 
         # M3: Elo difference, linear calibration
-        b3m = fit_ols(tr["elo_diff"].to_numpy(float), ym, w)
-        m3_m = b3m[0] + b3m[1] * te["elo_diff"].to_numpy(float)
-        r3m = ym - (b3m[0] + b3m[1] * tr["elo_diff"].to_numpy(float))
+        b3m = fit_ols(tr_i["elo_diff"].to_numpy(float), ym, w)
+        m3_m = b3m[0] + b3m[1] * te_i["elo_diff"].to_numpy(float)
+        r3m = ym - (b3m[0] + b3m[1] * tr_i["elo_diff"].to_numpy(float))
 
         # ensemble: fixed equal weights, never fitted
         ens_m = (pred_m + m2_m + m3_m) / 3.0
         ens_t = (pred_t + m2_t) / 2.0
         rens_m = ym - ((predict_ridge(b_m, mu_m, sd_m, Xm)
-                        + (b2m[0] + b2m[1] * tr["exp_margin"].to_numpy(float))
-                        + (b3m[0] + b3m[1] * tr["elo_diff"].to_numpy(float))) / 3.0)
+                        + (b2m[0] + b2m[1] * tr_i["exp_margin"].to_numpy(float))
+                        + (b3m[0] + b3m[1] * tr_i["elo_diff"].to_numpy(float))) / 3.0)
         rens_t = yt - ((predict_ridge(b_t, mu_t, sd_t, Xt)
-                        + (b2t[0] + b2t[1] * tr["exp_total"].to_numpy(float))) / 2.0)
+                        + (b2t[0] + b2t[1] * tr_i["exp_total"].to_numpy(float))) / 2.0)
 
         frame = te[["game_id", "alt_game_id", "season", "week", "game_type", "gameday",
                     "home_team", "away_team", "home_score", "away_score", "result", "total",
@@ -295,9 +330,24 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
 
 
 def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd.DataFrame:
-    """Fit on every completed game and price the scheduled games."""
+    """Fit on every completed game and price the scheduled games.
+
+    FIX (2026-11-02, session arena/fb363967-korea1 — defect D-01): kickoff temperature and
+    wind are recorded only *after* a game is played, so `upcoming.csv` carries them as NULL
+    for every scheduled game. Both columns are design-matrix inputs, and NaN propagates
+    through the ridge product, so every originated future line came out NaN and the site's
+    "open board" and "pure origination" tables published only em dashes. The training median
+    (the same statistic `build_datasets.py` applies to played rows) is substituted here so the
+    matrix is finite; the `wind_missing` / `temp_missing` flags are already 1 on these rows,
+    so the published data still states that no observation exists. Nothing is imputed into a
+    settled game and no backtest number changes — this path only prices unplayed games.
+    """
     if future.empty:
         return future
+    # training frames are imputed with their own medians (this *is* the training window for the
+    # future slate), the future rows with the training medians — never with their own
+    df, _ = _ensure_complete(df, df)
+    future = impute_weather(df, future)
     S = int(df.season.max()) + 1
     Xm, Xt = df[FEATURES_MARGIN].to_numpy(float), df[FEATURES_TOTAL].to_numpy(float)
     ym, yt = df["result"].to_numpy(float), df["total"].to_numpy(float)
@@ -312,6 +362,11 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     b3m = fit_ols(df["elo_diff"].to_numpy(float), ym, w)
 
     Fm, Ft = future[FEATURES_MARGIN].to_numpy(float), future[FEATURES_TOTAL].to_numpy(float)
+    # fail loudly rather than publishing a blank line: a non-finite design matrix would make
+    # every originated number NaN, which is exactly the defect this guard prevents recurring.
+    if not (np.isfinite(Fm).all() and np.isfinite(Ft).all()):
+        bad = sorted({c for c in FEATURES_MARGIN + FEATURES_TOTAL if future[c].isna().any()})
+        raise ValueError(f"future design matrix is not finite; unobserved inputs: {bad}")
     ens_m = (predict_ridge(b_m, mu_m, sd_m, Fm)
              + b2m[0] + b2m[1] * future["exp_margin"].to_numpy(float)
              + b3m[0] + b3m[1] * future["elo_diff"].to_numpy(float)) / 3.0
@@ -323,7 +378,6 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     rt = yt - ((predict_ridge(b_t, mu_t, sd_t, Xt) + b2t[0] + b2t[1] * df["exp_total"].to_numpy(float)) / 2.0)
     sm, st = float(np.std(rm, ddof=1)), float(np.std(rt, ddof=1))
 
-    future = future.copy()
     future["fair_spread"] = ens_m
     future["fair_total"] = ens_t
     future["sigma_margin"] = sm

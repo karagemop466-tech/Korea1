@@ -261,6 +261,13 @@ detail, with sources: `flagged.html`.
         + "\n\n---\n\n" + AUDIT_SECTION.strip() + "\n"
     )
 
+    # Generated addendum (annex + corrections). It is appended to `lines` BEFORE the safety net
+    # below, so the net sees the section as known and cannot duplicate it, and a rebuild cannot
+    # delete it either. F3/D-04, session arena/fb363967-korea1.
+    addendum = ROOT / "pipeline" / "executive_summary_addendum.md"
+    if addendum.exists():
+        lines = lines.rstrip() + "\n\n" + addendum.read_text(encoding="utf-8").strip() + "\n"
+
     # Safety net: keep any `---`-separated section that some other session appended by hand and that
     # this generator does not know about. Without this, regenerating the summary silently deletes
     # cross-session work (it has already happened twice).

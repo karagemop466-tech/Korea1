@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-11-02T17:32:46Z",
+  "generated_utc": "2026-11-02T17:45:27Z",
   "repository": "https://github.com/clausherther/nfl-dbt",
   "path": "data_prep/data_files_load/pbp",
   "access_method": "GitHub git-blob API (api.github.com/repos/{repo}/git/blobs/{sha}, Accept: application/vnd.github.raw). Release assets are NOT used: they redirect to release-assets.githubusercontent.com, which the sandbox egress allowlist refuses.",
