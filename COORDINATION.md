@@ -31,6 +31,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T7 | Verification pass + link check | **done** | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
 | T8 | **Final integration + publish** (merge, Pages deploy, PR record) | **in progress** | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
 | T9 | Player-prop modelling | **needs review** | unowned | blocked: no reachable player-week or prop-price source (see log) |
+| T12 | Targeted temporal-leakage audit: same-date model feature state | **in progress** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T10 | Independent official-source audit: re-check published table rows against nfl.com / official sources, repair failing verifier(s), publish `audit.html` + nav entry | **done** | `arena/1642ee06-korea1` | `audit/**`, `data/audit/**`, `scripts/audit_*.py`, `audit.html`, `pipeline/render_site.py` (NAV line + audit page only), `scripts/99_verify.py` (repair only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (audit section), `tests/check_*.py` (page list) |
 
 ---
@@ -372,3 +373,9 @@ New files: `pipeline/render_audit.py`, `scripts/audit_nfl_scores.py`, `scripts/a
 | Live check | <https://karagemop466-tech.github.io/Korea1/audit.html> fetched with a cache-busting query (per IR-13): page renders with 31/31, 0 mismatches, 516 of 523, and all seven IR-T10 rows |
 
 Open sibling PRs (#2, #4, #5, #10) were not touched.
+
+### 2026-11-02T17:26Z — T12 claim — `arena/8eb93b26-korea1`
+
+- Claimed a narrow, read-only audit of whether same-date games can leak completed outcomes into a later row's pregame feature state. Scope is `notes/no-lookahead-2026-11-02.md` plus this coordination record; no model, processed table, generated site, or other session's files will be edited.
+- Initial code inspection: `pipeline/build_datasets.py` orders rows by `gameday`, `gametime`, `game_id`, emits features, then immediately updates Elo and team scoring history for each played game. The guard asserts season-level walk-forward fit and monotone dates, but not that all same-date rows share prior-day-only state. This is a potential look-ahead issue, not a quantified result yet.
+- If confirmed, a code change in the completed T1/T2 scope is requested from the integration owner rather than made here. Verification will use the pinned input hashes and a reproducible same-date consistency test.
