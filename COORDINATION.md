@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-02T18:40Z
+Last updated: 2026-11-02T19:25Z
 
 ## How to use this board
 
@@ -43,6 +43,56 @@ board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-s
 renumbered to T12. Resolution, applied to the board above: the audits keep **T10** and **T12**; the repair
 work is **T13**. The 17:20Z/18:05Z entries of `arena/92019668-korea1` say "T10" and mean T13; nothing else
 was renumbered. Both audits are done and neither branch was overwritten.
+
+### 2026-11-02T19:25Z — T11 integration: two merges, fold-safe weather, PR #15 — `arena/92019668-korea1`
+
+`main` advanced twice while PR #15 was in CI — `bd139a7` (T10 audit, #13/#14) and then `5f07727`
+(T12 temporal audit, #17). Both were merged into the branch rather than rebuilt on top of it:
+
+| Merge | What conflicted | Resolution |
+|---|---|---|
+| `bd139a7` (T10 audit) | `COORDINATION.md`, `verification_report.csv` (both copies) | Logs kept newest-first; the audit keeps T10 and my repair work was renumbered; the CSVs were not hand-merged — the verifier was re-run against the merged render, which regenerates them |
+| `5f07727` (T12 audit) | `COORDINATION.md` only | Same rule; a second number collision appeared (their T12 vs my new T12), so my repair work became **T13** and the numbering note now records both collisions |
+
+**The T12 audit's integration request is carried out** (commit `a164ab5`); it was addressed to this
+session as integration owner, so the code change is here rather than in their branch:
+
+1. **Fold-safe weather imputation.** `build_datasets.py` filled missing `temp`/`wind` with
+   `frame[col].median()` — a statistic of the *whole* history, so a 2004 row was imputed with a number
+   that depends on 2025 games, and the all-NaN scheduled frame stayed NaN. The replacement,
+   `fold_safe_weather_fill()`, uses the median of games played on a **strictly earlier date**. Indoor
+   games (dome/closed) are encoded `0` with their missing flag and the roof indicator, which is a fixed
+   encoding rather than an estimate. If any played row is left unfilled the build **fails** rather than
+   inventing a constant. The fills are written to `data/processed/weather_fill.json` and asserted in
+   `data_audit.csv`, so the rule is auditable from the published site.
+2. **No blank future lines.** All 164 rows of `originated_upcoming.csv` used to carry blank fair lines
+   because the future frame had no weather fill. They are now all finite, and `models.py` refuses to
+   write the file if any originated price is blank.
+3. **The open board is labelled a snapshot.** It prints the date of the pinned upstream commit and links
+   the official [NFL Week 8 schedule](https://www.nfl.com/schedules/2026/by-week/week-8) that the audit
+   used, instead of implying a live feed. Re-pinning would move every published number, so the board is
+   labelled, not refreshed.
+4. **New leak tests.** `tests/test_weather_fold.py` (3 tests): fills use strictly earlier dates only, the
+   fills are prefix-stable when future games are deleted (this is what fails under the old whole-frame
+   median), and the first date has no fill. Wired into `make test` and both workflows.
+
+**Published numbers moved, and this is why** (recorded rather than silently restated): bets
+26,168 → **26,149**; White reality-check p 0.144 → **0.186**; best raw ROI 21.64% → **19.44%**
+(`PARLAY3_EDGE`, 377 tickets, still `LUCK`); spread MAE 10.5272 → **10.5267** vs market 10.2155;
+total MAE 10.7267 → **10.7261** vs 10.5273. The verdicts did not move: 0 of 18 strategies pass, 10
+`NO EDGE` / 8 `LUCK`. The props module is independent of this feature set — it was re-run and produced
+byte-identical output, so no prop number changed.
+
+**IR-15 (win-rate definition) is now reconciled, not just documented.** The leaderboard prints
+W–L–P for every strategy, and `verify_site.py` recomputes *win rate = wins ÷ (wins + losses)* and
+*n = wins + losses + pushes* from `strategy_summary.csv` for all 18 strategies (max error 0.0e+00).
+ROI keeps the all-tickets denominator; both definitions are now printed and both are machine-checked.
+
+**Verification before the merge:** `pytest tests/` 13 passed (6 props + 3 weather + 4 no-lookahead),
+`verify_site.py` 0 failing (11 pages), `check_links.py` 20 pages, `check_sources.py` 11 pages /
+650 rows, `make build` reproduces the committed outputs. PR #15's `verify` job passed on the first
+merge; the merge/deploy record follows in a second, documentation-only commit once Pages rebuilds.
+
 
 ---
 
