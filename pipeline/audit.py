@@ -263,6 +263,46 @@ def props() -> None:
           + (f": {bad}" if bad else ""), SRC_PBP, "play-by-play")
 
 
+# ------------------------------------------------------- sibling findings (T12/T10)
+def sibling_findings() -> None:
+    up = pd.read_csv(PROC / "originated_upcoming.csv")
+    nonblank_spread = int(up["fair_spread"].notna().sum()) if "fair_spread" in up else -1
+    nonblank_total = int(up["fair_total"].notna().sum()) if "fair_total" in up else -1
+    check("LINE-01", "The open board publishes no forecast line (documented, not hidden)",
+          nonblank_spread == 0 and nonblank_total == 0,
+          f"{nonblank_spread}/{len(up)} upcoming rows carry a fair spread and {nonblank_total}/{len(up)} "
+          "a fair total: every one is blank because future weather is missing and the imputer has no "
+          "training values for it. The Lines page says so; no guessed line is published. Found by the "
+          "T12 audit (notes/no-lookahead-2026-11-02.md) and re-checked here",
+          "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+          "T12 note")
+
+    gpath = RAW / "games.csv"
+    if gpath.exists():
+        g = pd.read_csv(gpath, low_memory=False).dropna(subset=["home_score", "away_score"])
+        g["temp"] = pd.to_numeric(g["temp"], errors="coerce")
+        full = float(g.temp.median())
+        prior = {}
+        for season in (2004, 2018):
+            prior[season] = float(g[g.season < season].temp.median())
+        ok = abs(full - 59.0) < 1e-9 and abs(prior[2004] - 60.0) < 1e-9 and abs(prior[2018] - 60.0) < 1e-9
+        check("LEAK-01", "Fold-preprocessing leak: full-sample weather imputation (confirmed)",
+              ok,
+              f"full-sample temperature median {full:.0f}F vs prior-only medians {prior[2004]:.0f}F "
+              f"(2004 test fold) and {prior[2018]:.0f}F (2018): the build fills missing weather with the "
+              "full-sample median before the walk-forward split, so earlier folds see later seasons. "
+              "Direction and size of the effect on the reported MAE are NOT re-estimated; the defect is "
+              "disclosed and the fix needs a fold-fitted imputer (out of scope for a verification session)",
+              "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+              "T12 note")
+    else:
+        check("LEAK-01", "Fold-preprocessing leak: full-sample weather imputation (confirmed)", None,
+              "raw snapshot not staged, so the medians could not be recomputed in CI; the finding is "
+              "recorded in notes/no-lookahead-2026-11-02.md and disclosed on the page",
+              "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+              "T12 note")
+
+
 # ---------------------------------------------------------------- reproducibility
 def reproducibility() -> None:
     record = [
@@ -373,12 +413,30 @@ IRREGULARITIES = [
      "Spread hold averages 2.45% (2006-2022) and 4.7% (2023-2026); break-even moves from about 51.4% "
      "to 52.4%. Every bet settles at its own recorded price, so no result changes, but the headline "
      "break-even is now labelled with both eras.", SRC_GAMES, "games.csv"),
+    ("IR-21", "high", "The weather imputer is fitted on the full sample, not inside each walk-forward fold",
+     "disclosed",
+     "Confirmed independently by the T12 audit and re-checked here: missing temperature/wind are filled "
+     "with medians computed over all played games before the season split, so a 2004 or 2018 test fold "
+     "sees later seasons (prior-only temperature median 60F vs 59F full-sample). The size and direction "
+     "of the effect on the published MAE are NOT re-estimated and no number was changed. Fixing it "
+     "requires re-fitting the imputer per fold, which changes results and is therefore out of scope for "
+     "a verification session.",
+     "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md", "T12 note"),
+    ("IR-22", "medium", "The open board is empty and stale", "flagged",
+     "All 164 upcoming rows carry a blank fair spread and total because future weather is missing and "
+     "the imputer has no training values for it; separately, the pinned snapshot predates the completion "
+     "of 2026 week 8, so games NFL.com lists as Final are still listed as upcoming. No forecast is "
+     "published and nothing was back-filled; the Lines page states its as-of time.",
+     "https://www.nfl.com/schedules/2026/by-week/week-8", "NFL.com week 8"),
     ("IR-20", "low", "The seeded bootstrap p-value is order-sensitive", "documented",
      "White's reality check reproduces p = 0.1443 when the strategy matrix is stacked in library "
      "order; stacking the same bets alphabetically gives 0.1367 because the same random week indices "
      "map to different weeks. Both fail to reject. The audit pins library order so the published value "
      "is reproducible.", SRC_GAMES, "games.csv"),
 ]
+
+# render in ID order: the two findings inherited from the sibling T12 audit were recorded last
+IRREGULARITIES.sort(key=lambda r: int(r[0].split("-")[1]))
 
 
 def main() -> None:
@@ -389,6 +447,7 @@ def main() -> None:
     reality_check()
     correlations()
     props()
+    sibling_findings()
     reproducibility()
 
     auto = [c for c in checks if c["passed"] is not None]

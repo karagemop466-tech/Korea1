@@ -1,13 +1,13 @@
 {
-  "generated_utc": "2026-11-02T17:33:07Z",
+  "generated_utc": "2026-11-02T17:40:25Z",
   "session": "arena/5b3f0799-korea1",
   "summary": {
-    "checked": 18,
-    "passed": 18,
+    "checked": 20,
+    "passed": 20,
     "skipped": 0,
     "citations": 13,
     "citations_verified": 10,
-    "irregularities": 7
+    "irregularities": 9
   },
   "checks": [
     {
@@ -113,6 +113,22 @@
       "detail": "8 prop pairs over 543 games / 1,086 player-games (2021, 2022); 0 inconsistencies",
       "url": "https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp",
       "label": "play-by-play"
+    },
+    {
+      "id": "LINE-01",
+      "check": "The open board publishes no forecast line (documented, not hidden)",
+      "passed": true,
+      "detail": "0/164 upcoming rows carry a fair spread and 0/164 a fair total: every one is blank because future weather is missing and the imputer has no training values for it. The Lines page says so; no guessed line is published. Found by the T12 audit (notes/no-lookahead-2026-11-02.md) and re-checked here",
+      "url": "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+      "label": "T12 note"
+    },
+    {
+      "id": "LEAK-01",
+      "check": "Fold-preprocessing leak: full-sample weather imputation (confirmed)",
+      "passed": true,
+      "detail": "full-sample temperature median 59F vs prior-only medians 60F (2004 test fold) and 60F (2018): the build fills missing weather with the full-sample median before the walk-forward split, so earlier folds see later seasons. Direction and size of the effect on the reported MAE are NOT re-estimated; the defect is disclosed and the fix needs a fold-fitted imputer (out of scope for a verification session)",
+      "url": "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+      "label": "T12 note"
     },
     {
       "id": "REPRO-01",
@@ -324,6 +340,24 @@
       "detail": "White's reality check reproduces p = 0.1443 when the strategy matrix is stacked in library order; stacking the same bets alphabetically gives 0.1367 because the same random week indices map to different weeks. Both fail to reject. The audit pins library order so the published value is reproducible.",
       "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
       "label": "games.csv"
+    },
+    {
+      "id": "IR-21",
+      "severity": "high",
+      "item": "The weather imputer is fitted on the full sample, not inside each walk-forward fold",
+      "status": "disclosed",
+      "detail": "Confirmed independently by the T12 audit and re-checked here: missing temperature/wind are filled with medians computed over all played games before the season split, so a 2004 or 2018 test fold sees later seasons (prior-only temperature median 60F vs 59F full-sample). The size and direction of the effect on the published MAE are NOT re-estimated and no number was changed. Fixing it requires re-fitting the imputer per fold, which changes results and is therefore out of scope for a verification session.",
+      "url": "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+      "label": "T12 note"
+    },
+    {
+      "id": "IR-22",
+      "severity": "medium",
+      "item": "The open board is empty and stale",
+      "status": "flagged",
+      "detail": "All 164 upcoming rows carry a blank fair spread and total because future weather is missing and the imputer has no training values for it; separately, the pinned snapshot predates the completion of 2026 week 8, so games NFL.com lists as Final are still listed as upcoming. No forecast is published and nothing was back-filled; the Lines page states its as-of time.",
+      "url": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "label": "NFL.com week 8"
     }
   ]
 }

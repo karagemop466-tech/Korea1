@@ -48,13 +48,26 @@ def main():
            "scripts/tests/test_math.py")
 
     # ---------- V02 divisions
-    # The reference used to live only in the git-ignored data/raw/ staging area, so a fresh
-    # clone failed this check (found 2026-11-02). The pinned copy under data/lab/reference/ is
-    # now the fallback, and its SHA-256 is checked before it is used.
+    # T10 repair (arena/1642ee06-korea1): nothing in scripts/00_ingest.py ever downloaded this
+    # reference file, so V02 failed on every fresh checkout. Fetch it through api.github.com
+    # (reachable from the sandbox; raw.githubusercontent.com is not).
     raw_ref = os.path.join(DATA, "raw", "teams_colors_logos.csv")
     pinned_ref = os.path.join(LAB, "reference", "teams_colors_logos.csv")
-    ref_path = raw_ref if os.path.exists(raw_ref) else pinned_ref
     expected = "4eab559fcf89cb4eaf61cb63a88abc47b01b6c9049187c59f3efe95888c3d048"
+    if not os.path.exists(raw_ref):
+        try:
+            import urllib.request
+            req = urllib.request.Request(
+                "https://api.github.com/repos/nflverse/nflverse-pbp/contents/teams_colors_logos.csv",
+                headers={"Accept": "application/vnd.github.raw", "User-Agent": "korea1-verify"})
+            os.makedirs(os.path.dirname(raw_ref), exist_ok=True)
+            with urllib.request.urlopen(req, timeout=60) as r, open(raw_ref, "wb") as f:
+                f.write(r.read())
+        except Exception as exc:  # noqa: BLE001 - reported below as a failed check
+            print(f"  could not download V02 reference file: {exc}", file=sys.stderr)
+    # This session (arena/5b3f0799-korea1): a copy is also committed at data/lab/reference/ with a
+    # SHA-256 sidecar, so the check still runs offline; whichever copy is used must hash to `expected`.
+    ref_path = raw_ref if os.path.exists(raw_ref) else pinned_ref
     if os.path.exists(ref_path):
         got = hashlib.sha256(open(ref_path, "rb").read()).hexdigest()
         sys.path.insert(0, os.path.join(ROOT, "scripts"))

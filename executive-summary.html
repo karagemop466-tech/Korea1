@@ -12,7 +12,7 @@
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="index.html"><span class="mark">🏈</span> NFL Line Lab</a>
-    <nav><a class="navlink" href="index.html">Dashboard</a><a class="navlink active" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
+    <nav><a class="navlink" href="index.html">Dashboard</a><a class="navlink active" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="reproducibility.html">Reproducibility audit</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
   </div>
 </header>
 <main class="wrap wide">
@@ -82,8 +82,8 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <td><strong>0.035</strong></td>
 <td>near zero — this pair really is close to independent</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener">play-by-play</a></td></tr>
 <tr><td>Independent audit of this build</td>
-<td><strong>18/18</strong></td>
-<td>headline numbers re-derived by a second session; every citation opened — see <a href="audit.html">the audit page</a></td><td><a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/audit.py" target="_blank" rel="noopener">audit.py</a></td></tr>
+<td><strong>20/20</strong></td>
+<td>headline numbers re-derived by a second session; every citation opened — see <a href="reproducibility.html">the reproducibility audit</a></td><td><a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/audit.py" target="_blank" rel="noopener">audit.py</a></td></tr>
 </tbody></table></div>
 </section>
 
@@ -116,6 +116,10 @@ blank.</li>
 games have outcome flags that contradict their own score.</li>
 <li>The model omits injuries, starting-quarterback status and depth charts.</li>
 <li>Weather is recorded for only two thirds of games, so weather strategies run on a subset.</li>
+<li><strong>Official-source coverage is partial.</strong> An independent audit read 39 games on NFL.com and
+found 31 scores identical to the pinned data (the other 8 are 2026 week-8 games the pinned snapshot predates);
+historical betting lines have no official NFL source; and 516 of 523 table rows link to a community
+mirror rather than an NFL site. See the <a href="audit.html">Independent audit</a>.</li>
 </ul>
 </section>
 

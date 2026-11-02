@@ -1,7 +1,13 @@
 # 06 — Independent audit of the published build
 
 *Session `arena/5b3f0799-korea1`, 2026-11-02. This note is the manual-review companion to
-[`audit.html`](../audit.html) and [`data/processed/audit.json`](../data/processed/audit.json).*
+[`reproducibility.html`](../reproducibility.html) and [`data/processed/audit.json`](../data/processed/audit.json).*
+
+> **Changed by the 2026-11-02 merge.** The page was first published as `audit.html`; a sibling session
+> (T10) published its own official-source audit under that name, so this one moved to
+> `reproducibility.html` and the two now sit side by side in the nav. The sibling reports and their
+> findings are linked in §"Findings from the sibling audits" below — including two findings this audit
+> could confirm but did not repair.*
 
 ## Mandate
 
@@ -32,7 +38,9 @@ limited to verification code, provenance, disclosure, and three defects listed b
 | Full pipeline | `pipeline/validation.py` on the staged snapshot | `strategy_bets.csv`, `strategy_gates.csv`, `strategy_summary.csv`, `reality_check.json` byte-identical |
 | Annex pipeline | `bash scripts/run_all.sh` | 0/18 pass, 0/0/0 podium, signal persistence 0.485; 9/9 verifier checks after the V02 fix |
 | Prop layer | `scripts/05_props.py` on the staged pbp | `data/lab/props.json` reproduced exactly |
-| No lookahead | `pytest tests/test_no_lookahead.py` (staging the raw snapshot in the layout that build expects) | 4/4 pass |
+| No lookahead | `pytest tests/test_no_lookahead.py` (staging the raw snapshot in the layout that build expects) | 4/4 pass — boundary/order/same-date only, **not** preprocessing (see LEAK-01) |
+| Fold-preprocessing leak (sibling finding, re-checked) | Recompute the full-sample and prior-only temperature medians from `games.csv` | 59 °F full-sample vs 60 °F prior-only for the 2004 and 2018 folds → leak confirmed; effect on MAE **not** re-estimated |
+| Open board (sibling finding, re-checked) | Count non-blank forecasts in `originated_upcoming.csv` | 0/164 fair spreads and 0/164 totals — every upcoming row is blank |
 
 The automated subset runs in `pipeline/audit.py` and is wired into `make build` before
 `pipeline/verify_site.py`, so a build whose numbers no longer recompute cannot be published.
@@ -66,6 +74,8 @@ The automated subset runs in `pipeline/audit.py` and is wired into `make build` 
 | IR-18 | Kelly DOI and the Nevada PDF cannot be re-verified. | Flagged as F-04/F-07; neither underlies a computed number. |
 | IR-19 | Single "break-even 51.4%" headline hid a hold regime change in 2023 (2.25% → 4.70%). | Both eras shown, with break-even ≈51.4% / ≈52.4%. |
 | IR-20 | White's reality check is order-sensitive under its fixed seed (0.1443 library order vs 0.1367 alphabetical). | Documented in the audit; the audit pins library order so the published p is exactly reproducible. Both fail to reject. |
+| IR-21 | **Leak (sibling finding).** Missing weather is imputed with a full-sample median *before* the walk-forward split, so earlier folds see later seasons (`build_datasets.py` ~303–318, split in `models.py` ~149–180). | **Disclosed, not fixed.** Re-checked here (LEAK-01); effect on the reported MAE not re-estimated and no number changed. The fix — a per-fold imputer — changes results and needs a methods decision, not a verification one. |
+| IR-22 | **Empty, stale board (sibling finding).** All 164 upcoming rows carry a blank line (future weather is all-missing, so the imputer yields NaN), and the pinned snapshot predates completion of 2026 week 8, so games NFL.com lists as Final are still marked upcoming. | **Flagged, not back-filled.** Re-checked here (LINE-01). Nothing was guessed or filled; the Lines page states its as-of time. |
 
 ## What remains unverifiable from inside this repository
 
@@ -74,7 +84,8 @@ The automated subset runs in `pipeline/audit.py` and is wired into `make build` 
   row against a second feed.
 - **Prop and team-total prices.** None exist in any reached source, so no P&L is claimed for those
   markets. Player statistics exist; prices do not.
-- **Live markets.** The archives stop before the current season.
+- **Live markets.** The archives stop before the current season; the open board is blank and stale (IR-22).
+- **The fold leak.** Confirmed and disclosed; its effect on the published MAE has not been measured here.
 - **The raw snapshot in CI.** `data/raw/` is git-ignored (23 MB, re-fetchable). Provenance checks
   report "not staged" in CI rather than pretending to pass; they pass in full on a machine that has
   run `make data`.
@@ -85,7 +96,27 @@ The automated subset runs in `pipeline/audit.py` and is wired into `make build` 
 python3 -m venv .venv && . .venv/bin/activate
 pip install pandas numpy scipy pytest
 make data                     # fetch the pinned archive and verify hashes (needs network)
-python pipeline/audit.py      # 18 automatic checks + 13 citations -> data/processed/audit.json
+python pipeline/audit.py      # 20 automatic checks + 13 citations -> data/processed/audit.json
 python pipeline/validation.py  # optional: re-run the whole strategy/validation stage
 python pipeline/render_site.py && python pipeline/verify_site.py
 ```
+
+## Findings from the sibling audits
+
+Three sessions audited this repository on 2026-11-02 without seeing each other's conclusions. They are
+published separately because they asked different questions, and this note does not restate their
+evidence as its own:
+
+| Report | Session | Question | What it adds |
+|---|---|---|---|
+| [`audit.html`](../audit.html) | `arena/1642ee06-korea1` | Do the scores match an *official* source, and how many rows rest on a community mirror? | 39 NFL.com game pages read: 31 match, 0 mismatch, 8 blank (season not final in the snapshot). Of 523 root-page rows, 516 link only to nflverse; historical prices have no official NFL source (IR-T10-01/-02). |
+| [`notes/no-lookahead-2026-11-02.md`](../notes/no-lookahead-2026-11-02.md) | `arena/8eb93b26-korea1` | Does any step look ahead, and is the board live? | Fold-preprocessing leak (IR-21) and empty/stale board (IR-22); also checks and rejects a same-date team-state leak. |
+
+Two consequences for how this audit should be read:
+
+1. `tests/test_no_lookahead.py` passing 4/4 is **not** a clean bill of health. It checks split boundaries,
+   ordering and same-date state; it never inspects preprocessing. The leak survived it, which is exactly
+   why the sibling's finding matters and why it is disclosed here rather than argued away.
+2. Reproducibility is not accuracy. This audit shows the published numbers are the ones the committed
+   code and data produce; it does not show that the inputs are official or that the method is unbiased.
+   Both limits are now stated on the reproducibility page itself.

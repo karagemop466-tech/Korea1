@@ -1,12 +1,13 @@
 page,data_rows,tables,rows_without_source,broken_links,bad_tokens,external_assets,V1_rows_all_have_source,V2_internal_links_resolve,V3_no_unformatted_missing,V4_tables_captioned,V5_pinned_sha_in_footer,V6_no_external_assets,passed
-audit.html,38,3,0,,,,True,True,True,True,True,True,True
+audit.html,76,6,0,,,,True,True,True,True,True,True,True
 correlations.html,62,7,0,,,,True,True,True,True,True,True,True
 executive-summary.html,12,2,0,,,,True,True,True,True,True,True,True
-flagged.html,23,2,0,,,,True,True,True,True,True,True,True
+flagged.html,30,3,0,,,,True,True,True,True,True,True,True
 index.html,18,1,0,,,,True,True,True,True,True,True,True
 lines.html,239,5,0,,,,True,True,True,True,True,True,True
 methodology.html,33,3,0,,,,True,True,True,True,True,True,True
 props.html,21,4,0,,,,True,True,True,True,True,True,True
+reproducibility.html,45,4,0,,,,True,True,True,True,True,True,True
 sources.html,23,3,0,,,,True,True,True,True,True,True,True
 strategies.html,58,4,0,,,,True,True,True,True,True,True,True
 validation.html,48,4,0,,,,True,True,True,True,True,True,True

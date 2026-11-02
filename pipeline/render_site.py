@@ -22,6 +22,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import DOCS, PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
+from render_audit import build_audit, irregularity_rows  # noqa: E402
 
 # GitHub Pages for this repository is a branch build of `main` / `/` (the repo root),
 # and the API token in this environment is not permitted to change that. The site is
@@ -53,6 +54,7 @@ NAV = [
     ("props.html", "Player props"),
     ("methodology.html", "Methodology"),
     ("audit.html", "Independent audit"),
+    ("reproducibility.html", "Reproducibility audit"),
     ("flagged.html", "Flagged for review"),
     ("sources.html", "Sources"),
     # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
@@ -255,7 +257,7 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <td>near zero — this pair really is close to independent</td><td>{src_link(URL_PBP, "play-by-play")}</td></tr>
 <tr><td>Independent audit of this build</td>
 <td><strong>{(d.get("audit") or {}).get("summary", {}).get("passed", 0)}/{(d.get("audit") or {}).get("summary", {}).get("checked", 0)}</strong></td>
-<td>headline numbers re-derived by a second session; every citation opened — see <a href="audit.html">the audit page</a></td><td>{src_link(REPO_URL + "/blob/main/pipeline/audit.py", "audit.py")}</td></tr>
+<td>headline numbers re-derived by a second session; every citation opened — see <a href="reproducibility.html">the reproducibility audit</a></td><td>{src_link(REPO_URL + "/blob/main/pipeline/audit.py", "audit.py")}</td></tr>
 </tbody></table></div>
 </section>
 
@@ -288,6 +290,10 @@ blank.</li>
 games have outcome flags that contradict their own score.</li>
 <li>The model omits injuries, starting-quarterback status and depth charts.</li>
 <li>Weather is recorded for only two thirds of games, so weather strategies run on a subset.</li>
+<li><strong>Official-source coverage is partial.</strong> An independent audit read 39 games on NFL.com and
+found 31 scores identical to the pinned data (the other 8 are 2026 week-8 games the pinned snapshot predates);
+historical betting lines have no official NFL source; and 516 of 523 table rows link to a community
+mirror rather than an NFL site. See the <a href="audit.html">Independent audit</a>.</li>
 </ul>
 </section>
 
@@ -416,7 +422,7 @@ honestly — including when the result is that nothing survives.</p>
   <a class="minicard" href="validation.html"><strong>Validation</strong><span>the eight gates and how each was applied</span></a>
   <a class="minicard" href="correlations.html"><strong>Correlations</strong><span>measured dependence for parlay pricing</span></a>
   <a class="minicard" href="props.html"><strong>Player props</strong><span>measured prop-combo dependence, and what is missing</span></a>
-  <a class="minicard" href="audit.html"><strong>Independent audit</strong><span>every headline number re-derived; every citation opened</span></a>
+  <a class="minicard" href="reproducibility.html"><strong>Reproducibility audit</strong><span>every headline number re-derived; every citation opened</span></a>
   <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>irregularities and unverified items</span></a>
 </div>
 </section>
@@ -1210,6 +1216,14 @@ the half point that decides pushes.</p>
 </section>
 
 <section>
+<h2>Added by the independent audit (2026-11-02)</h2>
+<p>Found by re-checking the published tables against NFL.com and by re-running the build.
+Full detail, the 39-game score comparison and the reproduction results are on the
+<a href="audit.html">Independent audit</a> page.</p>
+{table(irregularity_rows(SHA, src_link), ["ID", "Severity", "Finding", "Source"], caption="Irregularities found by the independent audit")}
+</section>
+
+<section>
 <h2>How each flagged item was handled in the build</h2>
 <ul class="findings">
 <li>Player-level and prop cells are <strong>blank</strong>, not zero and not estimated. Any table that
@@ -1227,10 +1241,10 @@ cross-check against <code>closing_lines.csv</code> is published with its residua
                   "the source and what would unblock it.", body, wide=True)
 
 
-def build_audit(d) -> str:
+def build_repro_audit(d) -> str:
     a = d.get("audit") or {}
     if not a:
-        return layout("audit.html", "Independent audit",
+        return layout("reproducibility.html", "Reproducibility audit",
                       "This build did not publish an audit file.", "<p>data/processed/audit.json is missing.</p>")
     sm = a["summary"]
     cards = kpi_grid([
@@ -1293,9 +1307,11 @@ could not be confirmed and is therefore flagged, not quietly kept.</p>
 
 <section>
 <h2>3 · Irregularities found by this session</h2>
-<p>Three of these were defects in the published site or pipeline and are fixed. The rest are
-limitations that cannot be fixed from inside this repository; they are published so the numbers they
-touch can be read with the right caution.</p>
+<p>{sum(1 for r in a['irregularities'] if r['status'] == 'fixed')} of these were defects in the published
+site or pipeline and are <strong>fixed</strong>. The rest are limitations that cannot be fixed from
+inside a verification session — some need new data, two need the analysis re-run with a different method
+— so they are <strong>published</strong>, with their status, so the numbers they touch can be read with
+the right caution.</p>
 {irr}
 </section>
 
@@ -1309,16 +1325,60 @@ second price feed, because no second feed exists in this environment.</li>
 prop P&amp;L is claimed anywhere. The measured prop <em>correlations</em> are re-derived and checked
 (PROP-01).</li>
 <li><strong>Live 2026 markets.</strong> The pinned archives stop before the current season, so the
-strategy results are historical only.</li>
+strategy results are historical only. The open board itself is empty and out of date: all 164 upcoming
+rows carry a blank line (future weather is missing) and games the NFL now lists as Final are still
+marked upcoming (IR-22). Both facts are shown, not papered over.</li>
 <li><strong>The raw snapshot.</strong> <code>data/raw/</code> is git-ignored because it is 23 MB of
 re-fetchable data. In CI the provenance checks report "not staged" rather than pretending to pass;
 they pass in full on a machine that has run <code>make data</code>.</li>
 </ul>
 </section>
+
+<section>
+<h2>5 · The sibling audits — and what they found that this one did not</h2>
+<p>Three sessions audited this repository on 2026-11-02, in parallel and without seeing each other's
+conclusions. They are published side by side rather than merged into one voice, because they asked
+different questions:</p>
+<div class="tablewrap"><table><thead><tr><th>Page</th><th>Session</th><th>Question it asked</th></tr></thead><tbody>
+<tr><td><a href="reproducibility.html">Reproducibility audit</a> (this page)</td>
+<td><a href="https://github.com/karagemop466-tech/Korea1/pull/19" target="_blank" rel="noopener"
+><code>arena/5b3f0799-korea1</code></a></td>
+<td>Can every headline number be re-derived from the committed data, and does every citation resolve?</td></tr>
+<tr><td><a href="audit.html">Independent audit</a></td>
+<td><a href="https://github.com/karagemop466-tech/Korea1/pull/13" target="_blank" rel="noopener"
+><code>arena/1642ee06-korea1</code></a></td>
+<td>Do the scores match an <em>official</em> source, and how many table rows rest on a community mirror?</td></tr>
+<tr><td><a href="https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md"
+ target="_blank" rel="noopener">Temporal audit note</a></td>
+<td><a href="https://github.com/karagemop466-tech/Korea1/pull/17" target="_blank" rel="noopener"
+><code>arena/8eb93b26-korea1</code></a></td>
+<td>Does any step look ahead in time, and is the live board actually live?</td></tr>
+</tbody></table></div>
+<p>Their findings are reported on this page as well, marked as theirs, because a verification page that
+omitted them would overstate what was checked:</p>
+<ul class="findings">
+<li><strong>Official-source gap (their finding).</strong> Of 523 table rows on the root pages, only 3 link
+to nfl.com; 516 rest on nflverse, a community project. Historical closing lines have no official NFL
+source and the upstream dictionary does not name the sportsbook. Published and flagged, not blanked —
+see <a href="audit.html">Independent audit</a>, IR-T10-01/-02.</li>
+<li><strong>Fold-preprocessing leak (their finding, re-checked here as LEAK-01).</strong> Missing weather
+is filled with a median computed over <em>all</em> played games before the walk-forward split, so the
+2004 and 2018 folds see later seasons. The defect is confirmed; the size and direction of its effect on
+the published MAE are <strong>not</strong> re-estimated here, and no figure was changed (IR-21).</li>
+<li><strong>Empty, stale board (their finding, re-checked here as LINE-01).</strong> All 164 upcoming rows
+carry a blank line, and the snapshot predates the completion of 2026 week 8. Nothing was back-filled
+(IR-22).</li>
+<li><strong>The leakage tests are not a clean bill of health.</strong> <code>tests/test_no_lookahead.py</code>
+passes 4/4 and checks the split boundaries, order and same-date state; it does not inspect preprocessing.
+That gap is exactly how the fold leak survived, and it is why the two findings above are disclosed rather
+than argued away.</li>
+</ul>
+</section>
 """
-    return layout("audit.html", "Independent audit",
+    return layout("reproducibility.html", "Reproducibility audit",
                   "A second session re-derived every headline number, opened every cited link, and "
-                  "recorded what it found — including three defects it fixed.", body, wide=True)
+                  "recorded what it found — including the defects it fixed and the two findings of its "
+                  "sibling audits that it could confirm but not repair.", body, wide=True)
 
 
 def build_sources(d) -> str:
@@ -1489,9 +1549,11 @@ def main() -> None:
         "correlations.html": build_correlations(d),
         "props.html": build_props(d),
         "methodology.html": build_methodology(d),
-        "audit.html": build_audit(d),
+        "reproducibility.html": build_repro_audit(d),
         "flagged.html": build_flagged(d),
         "sources.html": build_sources(d),
+        # T10 (arena/1642ee06-korea1): independent official-source audit
+        "audit.html": build_audit(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
     }
     for name, html_text in pages.items():
         (SITE / name).write_text(html_text, encoding="utf-8")

@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-01T14:05Z
+Last updated: 2026-11-02T17:20Z
 
 ## How to use this board
 
@@ -31,6 +31,8 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T7 | Verification pass + link check | **done** | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
 | T8 | **Final integration + publish** (merge, Pages deploy, PR record) | **in progress** | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
 | T9 | Player-prop modelling | **needs review** | unowned | blocked: no reachable player-week or prop-price source (see log) |
+| T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
+| T10 | Independent official-source audit: re-check published table rows against nfl.com / official sources, repair failing verifier(s), publish `audit.html` + nav entry | **done** | `arena/1642ee06-korea1` | `audit/**`, `data/audit/**`, `scripts/audit_*.py`, `audit.html`, `pipeline/render_site.py` (NAV line + audit page only), `scripts/99_verify.py` (repair only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (audit section), `tests/check_*.py` (page list) |
 
 ---
 
@@ -307,9 +309,20 @@ the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds
 `built` for `9dfdd77`). Anyone re-checking a deploy should assume a few minutes of cache lag on
 previously-published paths and verify on a path that is new in the build.
 
+# Session `arena/5b3f0799-korea1` — independent audit + final integration (2026-11-02)
+
+> **Merge note (2026-11-02T17:45Z).** While this session ran, two sibling sessions landed real audit
+> work on `main` (T10 `arena/1642ee06-korea1`, PRs #13/#14; T12 `arena/8eb93b26-korea1`, PRs #17/#18).
+> Their work is **kept in full and unmodified** below. To avoid two generators writing the same file,
+> the two audits now publish side by side: `audit.html` is T10's official-source audit (NFL.com score
+> sample, row-level source tiers), and `reproducibility.html` is this session's re-derivation audit
+> (`pipeline/audit.py`). The Flagged and Sources pages link both. Nothing from either sibling was
+> reverted, rebased away or deleted; no result, method or threshold was changed by this merge.
+
+Because the board's `T10` belongs to the sibling session, this session's two tasks are renumbered **T13**
+(reproducibility audit) and **T14** (final integration) below. The renumbering is cosmetic — no scope moved.
 ---
 
-# Session `arena/5b3f0799-korea1` — independent audit + final integration (2026-11-02)
 
 **Status at claim:** `main` = `3453d41` (PR #12 merged), ten root pages + a nine-page replication annex,
 all prior verifiers green. No other session had an open claim, an open PR, or a commit newer than
@@ -319,8 +332,8 @@ all prior verifiers green. No other session had an open claim, an open PR, or a 
 
 | # | Task | Status | Owner | File scope |
 |---|------|--------|-------|-----------|
-| T10 | **Independent audit**: re-derive every headline number from the pinned raw data and the committed tables; open every cited link; record and fix defects | **in progress** | `arena/5b3f0799-korea1` | `pipeline/audit.py` (new), `data/processed/audit.json` (new), `pipeline/verify_site.py`, `pipeline/correlations.py`, `pipeline/render_site.py`, `audit.html` (new), `lab/**` via generators, `tests/check_*.py`, `data/lab/reference/**` (new), `scripts/00_ingest.py`, `scripts/07_build_site.py`, `scripts/99_verify.py` |
-| T11 | **Final integration + publish**: rebuild every artefact, re-verify line by line, merge to `main`, confirm the Pages deploy, record the PR | **in progress** | `arena/5b3f0799-korea1` | `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `research/06-independent-audit.md`, root pages, branch `arena/5b3f0799-korea1` → `main` |
+| T13 | **Reproducibility audit**: re-derive every headline number from the pinned raw data and the committed tables; open every cited link; record and fix defects | **done** | `arena/5b3f0799-korea1` | `pipeline/audit.py` (new), `data/processed/audit.json` (new), `pipeline/verify_site.py`, `pipeline/correlations.py`, `pipeline/render_site.py`, `reproducibility.html` (new), `lab/**` via generators, `tests/check_*.py`, `data/lab/reference/**` (new), `scripts/00_ingest.py`, `scripts/07_build_site.py`, `scripts/99_verify.py`, `research/06-independent-audit.md` |
+| T14 | **Final integration + publish**: rebuild every artefact, re-verify line by line, merge to `main`, confirm the Pages deploy, record the PR | **done** | `arena/5b3f0799-korea1` | `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `research/06-independent-audit.md`, root pages, branch `arena/5b3f0799-korea1` → `main` |
 
 Scope boundaries: this session does **not** rewrite any analysis method, retune a strategy, or change a
 published result. It changes verification, provenance and disclosure only — plus the three defects
@@ -370,11 +383,128 @@ listed below. The annex keeps its own generator and verifiers; the root site kee
 | IR-20 | low | White's reality check is order-sensitive under a fixed seed (p = 0.1443 in library order vs 0.1367 in alphabetical order, same bets). | Documented; the audit pins library order, so the published p reproduces exactly and both values fail to reject. |
 
 ### 2026-11-02T17:31Z — new audit surface (T10)
-- New `pipeline/audit.py` → `data/processed/audit.json` → new **`audit.html`** ("Independent audit" in the
-  nav on every page). **18/18 automatic checks pass** (provenance hashes, schedule reconciliation,
+- New `pipeline/audit.py` → `data/processed/audit.json` → new **`reproducibility.html`** ("Reproducibility
+  audit" in the nav on every page; the filename was `audit.html` before the merge described above).
+  **20/20 automatic checks pass** (provenance hashes, schedule reconciliation,
   settlement cross-check, MAE, per-strategy ROI, gate count, reality check, three correlation checks,
   prop fair-odds identity) plus five recorded re-runs (full pipeline, annex run, props, no-lookahead
   tests 4/4, deterministic re-render). The page also lists 13 citations with their live status and all
   seven irregularities above, each with the URL used.
 - `Makefile` now runs `pipeline/audit.py` before `pipeline/verify_site.py`, so a build cannot publish a
   page whose numbers no longer recompute.
+
+### 2026-11-02T17:50Z — merge with `main` (`dbd1a49`): two audits, one file name (T14)
+- **The collision.** Both this session and T10 wrote a generator function called `build_audit()` and both
+  rendered it to `audit.html`. Git reported 17 conflicted paths — every generated page and CSV, plus
+  `COORDINATION.md`, `scripts/99_verify.py` and the two `tests/check_*.py`.
+- **Resolution.** `audit.html` stays T10's official-source audit (their generator, untouched, still
+  rendered by `render_audit.build_audit`); this session's page moved to **`reproducibility.html`**
+  (`build_repro_audit`), with the nav, index card and Flagged/Sources links pointing at both. All
+  generated pages and both copies of `verification_report.csv` were **regenerated from the merged
+  generators** rather than hand-merged, then re-verified.
+- **Verifier merged, not picked.** `scripts/99_verify.py` V02 now combines both repairs: it tries the
+  GitHub-contents download T10 added, falls back to the pinned `data/lab/reference/` copy this session
+  committed, and requires the same SHA-256 on whichever path is taken. `tests/check_links.py` and
+  `tests/check_sources.py` list both audit pages.
+- **Their findings, not absorbed into silence.** This session ran two new checks against the sibling T12
+  note: `LEAK-01` re-derives the full-sample vs prior-only temperature medians (59 °F vs 60 °F) and
+  `LINE-01` confirms all 164 upcoming rows carry a blank line. Both are published as **IR-21** (fold
+  preprocessing leak, disclosed) and **IR-22** (empty and stale open board, flagged). Neither is fixed:
+  fixing them changes published results, which is outside a verification session's scope; no figure,
+  method or threshold was altered, and no line was back-filled or guessed.
+- **Re-verified after the merge:** `audit.py` **20/20** · `render_site.py` · `verify_site.py` **0 failing**
+  · `check_links.py` **21 pages** · `check_sources.py` **665 rows, 0 unlinked** · `99_verify.py` **9/9**
+  · `98_linkcheck.py` PASS · `pytest` 4/4.
+
+---
+
+---
+
+## Session `arena/1642ee06-korea1` — T10 independent official-source audit (2026-11-02)
+
+**Claim:** committed first (`COORDINATION: claim T10 ...`). The board showed T1–T8 done and T9 blocked, so the
+only unclaimed work was verification. Scope and cross-scope edits are listed below; no sibling branch was touched.
+The brief's `session-<id>/<task>` branch name is not available (the platform pins this session to its branch).
+
+### What was verified, and against what
+
+| Check | Result | Official / primary source |
+|---|---|---|
+| 39 final scores (2026 wk 8; 2022 wk 10; 2016 wk 8; 2014 wk 15; ARI@PIT, PHI@DAL, KC@BAL 2015) vs NFL.com | 31 match, 0 mismatch, 8 blank in the pinned data (2026 wk-8 games NFL.com lists as Final; snapshot predates them) | <https://www.nfl.com/scores/2026/REG8>, <https://www.nfl.com/scores/2022/REG10>, <https://www.nfl.com/scores/2016/REG8>, <https://www.nfl.com/scores/2014/REG15>, Game Center pages linked per row on `audit.html` |
+| 7 pinned `nflverse/nfldata@a270278` files, re-downloaded | SHA-256 and byte count equal `data/sources.json` for 7/7 | <https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645> |
+| Full rebuild from the verified files (`build_datasets`, `models`, `backtest`, `validation`, `correlations`, `render_site`) | zero tracked files changed other than the new nav entry / audit rows | `pipeline/` |
+| `tests/test_no_lookahead.py` | 4 passed | `tests/` |
+| Annex `00_ingest.py` re-run then `99_verify.py` | annex tables reproduce byte for byte; 9/9 after V02 repair | `scripts/` |
+| `operations.nfl.com/the-rules/nfl-rulebook/` | redirects to the 2026 NFL Rulebook page; "Rule 16" label not located in the part read, so **not** marked verified | <https://operations.nfl.com/the-rules/nfl-rulebook/> |
+
+### Not verified (and why)
+
+Pre-2010 scores (2,913 games; NFL.com's scores page offers 2010–2026), playoff games (309; one attempt at
+`/scores/2011/POST19` returned "SCORES DATA UNAVAILABLE"), every historical closing line / total / moneyline / price
+(no official NFL source; the upstream `DATASETS.md` does not name the sportsbook), weather/roof/referee fields, and the
+two sampled weeks that were drawn but not read (2022 wk 9, 2011 wk 17). NFL.com page volume made a full 7,384-game
+check impractical in one session; the 39-game sample is stated as a sample everywhere it appears.
+
+### Irregularities (also on `flagged.html` and `audit.html`)
+
+IR-T10-01 (high) 516 of 523 root-page table rows link only to a community mirror, not an official site, so the brief's
+"every row links to an official site" is not met; earlier checkers accepted any external URL. IR-T10-02 (high) closing
+lines have no official source. IR-T10-03 (medium) pinned snapshot is stale (`nflverse/nfldata` master is 108 commits ahead;
+8 final games blank). IR-T10-04 (low) Sources page cites the nfl.com home page for GSIS and calls games.csv a "mirror of NFL
+GSIS results"; `DATASETS.md` supports only the `gsis` id field. IR-T10-05 (low) sample design. IR-T10-06 (medium) annex check
+V02 failed on every fresh checkout — **fixed** (reference file now fetched via `api.github.com`). IR-T10-07 (info) the three 2015
+games with contradictory outcome flags: NFL.com confirms `games.csv` is right and `closing_lines.csv` is wrong.
+
+**Decision left for review (IR-T10-02):** values with no official source are published with their community link rather than
+blanked. Blanking every line would empty the analysis; the page says so plainly and the call is the owner's.
+
+### Cross-scope edits (logged as required)
+
+`pipeline/render_site.py` (import, one NAV entry, one `audit.html` page, one section on Flagged, one bullet in the executive
+summary — all re-rendered, diff on every other page is exactly the one nav line), `scripts/99_verify.py` (V02 repair),
+`tests/check_links.py` and `tests/check_sources.py` (add `audit.html` to the page list), `EXECUTIVE_SUMMARY.md` (appended section).
+New files: `pipeline/render_audit.py`, `scripts/audit_nfl_scores.py`, `scripts/audit_sources.py`, `data/audit/*.csv`, `audit.html`.
+
+### Verifiers after the final render
+
+`pipeline/verify_site.py` 0 failing checks · `tests/check_links.py` pass (20 pages) · `tests/check_sources.py` pass (11 pages, 606 rows) ·
+`scripts/99_verify.py` 9/9 · `scripts/98_linkcheck.py` pass.
+
+### T10 pull request, merge and deploy record
+
+| Step | Result |
+|---|---|
+| Pull request | [#13](https://github.com/karagemop466-tech/Korea1/pull/13) `arena/1642ee06-korea1` → `main` |
+| CI | `verify` job passed before merge |
+| Merge | **MERGED** 2026-11-02T17:22:14Z, merge commit `bc4545e`, no approval wait |
+| GitHub Pages build | `pages/builds/latest` → `built`, commit `bc4545e` (source unchanged: `main` / root) |
+| Live check | <https://karagemop466-tech.github.io/Korea1/audit.html> fetched with a cache-busting query (per IR-13): page renders with 31/31, 0 mismatches, 516 of 523, and all seven IR-T10 rows |
+
+Open sibling PRs (#2, #4, #5, #10) were not touched.
+
+### 2026-11-02T17:19Z — T12 claim — `arena/8eb93b26-korea1`
+
+- Claimed a narrow, read-only audit of whether same-date games can leak completed outcomes into a later row's pregame feature state. Scope is `notes/no-lookahead-2026-11-02.md` plus this coordination record; no model, processed table, generated site, or other session's files will be edited.
+- Initial code inspection: `pipeline/build_datasets.py` orders rows by `gameday`, `gametime`, `game_id`, emits features, then immediately updates Elo and team scoring history for each played game. The guard asserts season-level walk-forward fit and monotone dates, but not that all same-date rows share prior-day-only state. This is a potential look-ahead issue, not a quantified result yet.
+- If confirmed, a code change in the completed T1/T2 scope is requested from the integration owner rather than made here. Verification will use the pinned input hashes and a reproducible same-date consistency test.
+
+### 2026-11-02T17:27Z — T12 audit complete — `arena/8eb93b26-korea1`
+
+- Re-downloaded the exact `nflverse/nfldata@a270278f3ac4e937295fe6a27814b3c4a2b62645` archive from its pinned codeload URL; `data/raw/games.csv` SHA-256 matched `data/sources.json` (`ba34f3619067eb4459eb257f629d7f29adce74cba824e1708e7bbb9ef3246e6a`). The source is a third-party nflverse snapshot, not an official NFL feed.
+- Confirmed a fold-preprocessing defect: the `temp`/`wind` medians are calculated/fill-applied on the full played-game frame before the walk-forward season split. With this snapshot, full medians are 59°F / 8 mph; prior-only temperature medians are 60°F for 2004 and 2018 test splits. Effect on reported metrics was not re-estimated.
+- Confirmed all 164 `originated_upcoming.csv` rows have blank fair spread/total and moneyline probabilities/prices because future `temp`/`wind` are all missing and the future-frame median fill remains NaN. An in-memory diagnostic using completed-game medians made all outputs finite, but no diagnostic lines were published.
+- Confirmed a freshness mismatch against the official [NFL Week 8 schedule](https://www.nfl.com/schedules/2026/by-week/week-8) and [Ravens–Bills Game Center](https://www.nfl.com/games/ravens-at-bills-2026-reg-8): the pinned file still calls 12 November 1 games upcoming; the official page reports Ravens 10–Bills 36, Final. Snapshot timestamp is 2026-11-01T13:24:09Z.
+- Checked same-date team-state handling: 711 season/date groups contain multiple games, but no team appears in two games on the same date; no cross-game same-date state leak was identified from the sequential Elo/offence/defence updates. This corrects the initial suspicion in the claim note.
+- Reproduction and file/line-level detail are recorded in `notes/no-lookahead-2026-11-02.md`. `.venv/bin/python -m pipeline.verify_site`, `python3 tests/check_links.py` (20 pages), `python3 tests/check_sources.py` (11 pages / 606 rows), and `pytest -q tests/test_no_lookahead.py` (4 passed) pass. The test used an ignored symlink from its expected `data/raw/nfldata/data/games.csv` path to the already hash-verified pinned input; no tracked data was changed. The site guards did not catch the forecast/freshness defects.
+- **Integration request (no cross-scope edits):** active integration owners `arena/92019668-korea1` (T11) and `arena/fb363967-korea1` (F5) are asked to incorporate the fold-safe imputer, non-NaN future-line guard, current-week freshness handling, and clearly flagged unavailability into the published site. This session changed only `COORDINATION.md` and its owned audit note; it did not modify T1/T2 code, generated tables, or shared site files. The T10 source audit had independently logged stale Week 8 data; this request adds the untested fold-imputation and empty forecast output.
+- **Rebase/conflict resolution:** after `origin/main` advanced to `bd139a7` through T10 PRs #13/#14, the T12 table row and log tail conflicted with the new T10 coordination section. Resolution preserved the full T10 row and audit/deploy record, then restored T12's claim/completion entries; no T10 content or sibling-branch files were overwritten.
+
+### T12 pull request, merge and deploy record
+
+| Step | Result |
+|---|---|
+| Pull request | [#17](https://github.com/karagemop466-tech/Korea1/pull/17), `arena/8eb93b26-korea1` → `main` |
+| CI | PR `verify` checks passed; post-merge `Verify site` run passed |
+| Merge | **MERGED** 2026-11-02T17:31:06Z, merge commit `5f07727`, no approval wait |
+| GitHub Pages | `pages-build-deployment` run `41491919944` passed; `pages/builds/latest` reported **built** for `5f07727` at 2026-11-02T17:31:46Z |
+| Change scope | Documentation/coordination only. No generated page or model/data artifact changed; deployment rebuilt the existing site. The stale/unavailable open board remains pending integration fixes listed above. |

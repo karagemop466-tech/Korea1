@@ -40,7 +40,7 @@ further.
 | Cross-game r, margin / total | 0.011 / 0.008 | `corr_cross_game.csv` |
 | Prop-combo r, QB passing + WR1 receiving (within player) | 0.441 | `data/lab/props.json` |
 | Prop pairs measured (2021–2022 play-by-play) | 8 | `data/lab/props.json` |
-| Independent-audit checks passed | 18/18 | `pipeline/audit.py` |
+| Independent-audit checks passed | 20/20 | `pipeline/audit.py` |
 
 ## What was built
 
@@ -126,20 +126,27 @@ misprices every one of these. No prop *price* exists in either build, so no prop
 | spread sign convention | spread_line>0: home win rate 67.4% n=4795; spread_line<0: 35.3% n=2558 |
 | settlement vs independent outcome column | 13,284/13,472 exact (98.605%) |
 | site tables with a source link on every row | 100% (enforced by `pipeline/verify_site.py`) |
-| independent audit of every headline number | 18/18 automatic checks pass (`pipeline/audit.py`) |
+| independent audit of every headline number | 20/20 automatic checks pass (`pipeline/audit.py`) |
 | citations opened one by one | 10/13 verified on 2026-11-02 |
 
 ## Independent audit (2026-11-02)
 
 A session that did not write the analysis re-derived every headline number from the pinned raw data
-and the committed tables, and opened every cited link. Result: **18/18
+and the committed tables, and opened every cited link. Result: **20/20
 automatic checks pass**, five pipeline re-runs reproduce their artefacts byte-for-byte (including the
 reality-check p-value), and **10 of 13
 citations verify** on the date shown. It found and fixed three defects: a Player-props page that
 contradicted the repository's own manifest, a verifier check that was hard-coded to pass, and an
 annex check (V02) that failed on a clean clone. It also disclosed two citation problems (the
 FiveThirtyEight URL is dead; the Kelly DOI returns HTTP 500) and a hold-regime change in 2023.
-Everything is on `audit.html`, with the URL used for each check.
+Everything is on `reproducibility.html`, with the URL used for each check.
+
+Two further findings came from a sibling audit and are **disclosed, not fixed**, because fixing them
+changes results: missing weather is imputed with a *full-sample* median before the walk-forward split, so
+the 2004 and 2018 folds see later seasons (prior-only temperature median 60 °F against 59 °F); and all 164
+upcoming rows carry a blank line because future weather is missing, while the pinned snapshot predates the
+completion of 2026 week 8. No number in this summary was re-estimated for either, and no line was guessed.
+See [`notes/no-lookahead-2026-11-02.md`](notes/no-lookahead-2026-11-02.md) for the leak demonstration.
 
 ## Flagged for review
 
@@ -182,3 +189,21 @@ Four findings replicate independently, which is the strongest evidence in this r
 
 Where the builds disagree, the archives disagree, and that is flagged rather than reconciled: the annex
 measures a mean 3.79% overround against 2.70% here (IR-09).
+
+## Independent official-source audit (2026-11-02, session `arena/1642ee06-korea1`)
+
+Full detail: [`audit.html`](audit.html) · data in [`data/audit/`](data/audit/) · scripts `scripts/audit_*.py`.
+
+- **Scores.** 39 games read on NFL.com (2014, 2015, 2016, 2022 and 2026 week pages, plus the three 2015 games
+  whose nflverse outcome flag contradicts the score): **31 match the pinned data, 0 mismatch**, 8 are 2026
+  week-8 games that NFL.com lists as Final and the pinned snapshot predates (left blank, flagged).
+  This is a sample, not a census; games before 2010 (2,913) and playoff games (309) were not checked.
+- **Inputs.** All 7 pinned nfldata files re-downloaded from the pinned commit: SHA-256 and byte count match.
+  Rebuilding every table from them reproduces the published files byte for byte; `tests/test_no_lookahead.py` 4/4.
+- **Official sources.** Of 523 table rows on the root pages, 3 link to nfl.com and 516 link only to
+  nflverse (a community project). Historical closing lines, totals and prices have **no official NFL source**
+  and the upstream data dictionary does not name the sportsbook. These are flagged (IR-T10-01, -02), not blanked.
+- **Defect fixed.** `scripts/99_verify.py` V02 failed on every fresh checkout; both sessions repaired it —
+  the merged check now downloads the file from the pinned commit and falls back to the committed copy,
+  and either path must hash to the recorded SHA-256 (9/9).
+- **Does not change the conclusion.** 0 of 18 strategies pass all gates; no figure in this summary was altered.
