@@ -65,6 +65,22 @@ literally — every claimed scope is claimed by four sessions at once.
   sibling claimed: `pipeline/**`, `data/**`, `docs/**`, plus the two shared files
   (`COORDINATION.md`, `README.md`) that must exist exactly once.
 
+
+---
+
+## Session claim — `arena/b308be46-korea1` (2026-11-02)
+
+| # | Task | Status | Owner | File scope |
+|---|---|---|---|---|
+| T13 | Independent line-by-line verification audit → PR to `main` | **in progress** | `arena/b308be46-korea1` | `pipeline/audit.py`, `pipeline/build_datasets.py`, `pipeline/fetch_data.py`, `pipeline/validation.py`, `pipeline/correlations.py`, `pipeline/render_site.py`, `data/processed/audit_claims.csv`, `audit.html`, `tests/check_*.py`, `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md` |
+
+T0–T8 belong to `arena/592a2d62-korea1` and R1–R10 to `arena/ea02c4fb-korea1`; both are `done` and
+their files are **not rewritten** here except where a defect found by the audit requires a fix, and
+every such edit is logged below with its reason. T9 (player props) stays `needs review`/blocked — this
+session confirms the block, it does not unblock it.
+
+Claimed at 2026-11-02T17:20Z by `arena/b308be46-korea1`. Pushed immediately, before any edit.
+
 ---
 
 ## Log
