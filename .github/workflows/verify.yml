@@ -39,6 +39,9 @@ jobs:
         run: make test
       - name: Verify committed generated outputs
         run: |
-          git diff --stat
-          git diff -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md
+          echo '## Generated-output drift' >> "$GITHUB_STEP_SUMMARY"
+          git diff --name-only >> "$GITHUB_STEP_SUMMARY"
+          git diff --stat >> "$GITHUB_STEP_SUMMARY"
+          git diff -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md > /tmp/generated-drift.patch
+          head -c 50000 /tmp/generated-drift.patch >> "$GITHUB_STEP_SUMMARY"
           git diff --exit-code -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md
