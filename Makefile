@@ -5,7 +5,7 @@ else
 PY := .venv/bin/python
 endif
 
-.PHONY: build data model backtest strategies corr site verify serve clean all
+.PHONY: build data model backtest strategies corr audit site verify serve clean all
 
 all: build
 
@@ -24,10 +24,14 @@ backtest:
 site:
 	$(PY) pipeline/render_site.py
 
+audit:
+	$(PY) pipeline/audit.py
+
 verify:
+	$(PY) pipeline/audit.py
 	$(PY) pipeline/verify_site.py
 
-build: data model backtest site verify
+build: data model backtest audit site verify
 	@echo "build complete — site in docs/, verification passed"
 
 serve: build

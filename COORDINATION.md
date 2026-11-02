@@ -306,3 +306,75 @@ exist in any earlier deployment — returned the new content. Appending a cache-
 the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds/latest` already reported
 `built` for `9dfdd77`). Anyone re-checking a deploy should assume a few minutes of cache lag on
 previously-published paths and verify on a path that is new in the build.
+
+---
+
+# Session `arena/5b3f0799-korea1` — independent audit + final integration (2026-11-02)
+
+**Status at claim:** `main` = `3453d41` (PR #12 merged), ten root pages + a nine-page replication annex,
+all prior verifiers green. No other session had an open claim, an open PR, or a commit newer than
+2026-11-01, so nothing here collides or duplicates work in flight.
+
+**Claim (written before any edit, as the protocol requires):**
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| T10 | **Independent audit**: re-derive every headline number from the pinned raw data and the committed tables; open every cited link; record and fix defects | **in progress** | `arena/5b3f0799-korea1` | `pipeline/audit.py` (new), `data/processed/audit.json` (new), `pipeline/verify_site.py`, `pipeline/correlations.py`, `pipeline/render_site.py`, `audit.html` (new), `lab/**` via generators, `tests/check_*.py`, `data/lab/reference/**` (new), `scripts/00_ingest.py`, `scripts/07_build_site.py`, `scripts/99_verify.py` |
+| T11 | **Final integration + publish**: rebuild every artefact, re-verify line by line, merge to `main`, confirm the Pages deploy, record the PR | **in progress** | `arena/5b3f0799-korea1` | `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `research/06-independent-audit.md`, root pages, branch `arena/5b3f0799-korea1` → `main` |
+
+Scope boundaries: this session does **not** rewrite any analysis method, retune a strategy, or change a
+published result. It changes verification, provenance and disclosure only — plus the three defects
+listed below. The annex keeps its own generator and verifiers; the root site keeps `pipeline/`.
+
+## Log
+
+### 2026-11-02T17:15Z — provenance verified against the live upstream (T10)
+- Re-downloaded `nflverse/nfldata@a270278f3ac4` from `codeload.github.com` (2,658,745-byte archive,
+  HTTP 200) and hashed all seven files: **7/7 SHA-256 match** `data/sources.json` exactly
+  (`games.csv` `ba34f361…`, `closing_lines.csv` `3571e1c9…`, `initial_lines.csv` `65477017…`,
+  `sc_lines.csv` `384039e9…`, `win_totals.csv` `6228fe8c…`, `predictions.csv` `72d42fb0…`,
+  `DATASETS.md` `8835ca9c…`).
+- Re-cloned the annex mirrors: Sportsbook Review archive **hash matches** (`b8a577c8…`, 1,487,435 bytes)
+  and all three cached play-by-play gzips **match** (`26cf60bc…`, `f303a9d1…`, `6cf0040a…`). This
+  matters because the root site claimed no player data was retrievable — the repository's own manifest
+  recorded a mirror that has it.
+- Staged the pinned snapshot into `data/raw/` (git-ignored) and re-ran the pipeline stages:
+  `pipeline/validation.py` reproduced `strategy_bets.csv` (26,168 rows), `strategy_gates.csv`,
+  `strategy_summary.csv` and `reality_check.json` **byte-for-byte** (p = 0.1443);
+  `pipeline/correlations.py` reproduced every correlation table (only `prop_inputs.csv` changed, and
+  only its text, because this session corrected that text); `scripts/05_props.py` reproduced
+  `data/lab/props.json` exactly; `bash scripts/run_all.sh` completed with 18 strategies, 0/18 passing.
+
+### 2026-11-02T17:20Z — citations opened one by one (T10)
+| Citation | Result |
+|---|---|
+| 2026 NFL Rulebook, `operations.nfl.com/rules-officiating/2026-nfl-rulebook` | **verified** — Rule 16 §1 is "Overtime Procedures"; the 2026 change table lists 6-1-3, 6-1-5, 6-1-6, 19-2 exactly as cited. The older `/the-rules/nfl-rulebook/` URL now redirects here. |
+| Bailey & López de Prado (2014) DSR, doi 10.3905/jpm.2014.40.5.094 | **verified** — JPM 40(5) 94–107, both authors, exact title. |
+| Gray & Gray (1997), RePEc | **verified** — JF 52(4) 1725–1737. |
+| Levitt (2004), NBER w9422 | **verified** — published version Economic Journal 114(495) 223–246. |
+| Shin (1993), doi 10.2307/2234240 | **verified** — Economic Journal 103(420) 1141. |
+| Benjamini & Hochberg (1995), doi 10.1111/j.2517-6161.1995.tb02031.x | **verified** — JRSS-B 57(1) 289. |
+| Kelly (1956), doi 10.1002/j.1538-7305.1956.tb03809.x | **unverified** — doi.org returns HTTP 500. Flagged, not used to compute anything. |
+| FiveThirtyEight "How Our NFL Predictions Work" | **live URL dead** (redirects to abcnews.com/politics). Read the 2025-01-16 Internet Archive capture: it confirms K = 20, `ln(diff+1)·2.2/(0.001·Δelo+2.2)`, and a one-third regression toward **1505** — the annex implements 1500. Disclosed. |
+| Nevada Gaming Control Board, Nov-2025 revenue PDF | **not re-verifiable** — the 48-page PDF returns no readable text from gaming.nv.gov or the Wayback Machine. Figures recorded 2026-11-01 remain, now labelled unverified; trade coverage corroborates ~8% pool / 9.2% football / ~19% parlay hold, not the decimals. |
+
+### 2026-11-02T17:25Z — defects found and fixed (T10)
+| ID | Severity | Defect | Fix |
+|---|---|---|---|
+| IR-14 | high | `props.html` said no player-level data could be retrieved and that "every GitHub mirror stores 132-byte LFS pointers", contradicting `data/raw_manifest.json` (a 17 MB-per-season mirror whose hashes verify) and the annex, which measures prop correlations from it. | Page now publishes the eight measured prop-combo correlations with the hashed mirror as their source, keeps the honest "no prop prices, no prop P&L" flag, and the false sentence is gone from both the page and `prop_inputs.csv`. |
+| IR-15 | medium | `pipeline/verify_site.py` contained a check hard-coded to `True` ("prop page publishes no unverified value"). | Replaced with a real check: every published prop row must match `data/lab/props.json` to 3 d.p. and link to the hashed play-by-play mirror. |
+| IR-16 | medium | `scripts/run_all.sh` reported **8/9** on a clean checkout: annex check V02 needed a reference file that lived only in git-ignored `data/raw/`. | 19 KB reference committed at `data/lab/reference/teams_colors_logos.csv` with a provenance/SHA-256 sidecar; V02 checks the hash before use and falls back to the committed copy; `00_ingest.py` fetches it through the GitHub contents API with a hard hash assertion. Re-run: **9/9**, twice. |
+| IR-17 | medium | The FiveThirtyEight URL cited by the annex is dead. | Register carries the archived URL, the value difference (1505 vs 1500) and a flagged item F-06. |
+| IR-18 | medium | Kelly DOI (HTTP 500) and the Nevada PDF cannot be re-verified today. | Flagged items F-04/F-07 on the annex Flagged page; neither underlies a computed number. |
+| IR-19 | low | The two-way hold steps from ~2.3% (2006–2022) to 4.7% (2023–2026), so the single "break-even ≈51.4%" headline was incomplete. | Correlations page computes and shows both eras; break-even stated for each (≈51.4% / ≈52.4%). |
+| IR-20 | low | White's reality check is order-sensitive under a fixed seed (p = 0.1443 in library order vs 0.1367 in alphabetical order, same bets). | Documented; the audit pins library order, so the published p reproduces exactly and both values fail to reject. |
+
+### 2026-11-02T17:31Z — new audit surface (T10)
+- New `pipeline/audit.py` → `data/processed/audit.json` → new **`audit.html`** ("Independent audit" in the
+  nav on every page). **18/18 automatic checks pass** (provenance hashes, schedule reconciliation,
+  settlement cross-check, MAE, per-strategy ROI, gate count, reality check, three correlation checks,
+  prop fair-odds identity) plus five recorded re-runs (full pipeline, annex run, props, no-lookahead
+  tests 4/4, deterministic re-render). The page also lists 13 citations with their live status and all
+  seven irregularities above, each with the URL used.
+- `Makefile` now runs `pipeline/audit.py` before `pipeline/verify_site.py`, so a build cannot publish a
+  page whose numbers no longer recompute.

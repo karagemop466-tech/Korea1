@@ -359,7 +359,9 @@ def build_lines():
   <h2>Model specification</h2>
   {table(["Component", "Specification", "Source"], [
       ["Elo", "K = 20, margin-of-victory multiplier ln(|margin|+1)·2.2/(0.001·Δelo+2.2), "
-              "home field 48 Elo, season regression ⅓ toward 1500",
+              "home field 48 Elo, season regression ⅓ toward 1500 in this implementation "
+              "(FiveThirtyEight's published target is 1505; the 5-point difference is disclosed, "
+              "not hidden)",
        src_link("FTE-ELO")],
       ["Elo → spread", "OLS on prior seasons only; slope is estimated from this dataset, not assumed "
                        "(≈0.04 points per Elo point, i.e. 25 Elo ≈ 1 point)", src_link("SBR-10Y")],
@@ -856,7 +858,10 @@ def build_sources():
                      badge(s["tier"].replace("_", " "),
                            {"official": "ok", "peer_reviewed": "neutral",
                             "verified_third_party": "warn"}[s["tier"]]),
-                     esc(s["used_for"]), esc(s["verification"]), esc(s.get("verified_on", ""))])
+                     esc(s["used_for"]), esc(s["verification"]),
+                     esc(s.get("verified_on", "")) + (
+                         f'<br><a href="{s["url_archived"]}" target="_blank" rel="noopener">archived copy</a>'
+                         if s.get("url_archived") else "")])
     body = f"""
 <section>
   <p class="prose">Every value on this site resolves to one of the {len(SRC['sources'])} entries below.
@@ -938,11 +943,34 @@ def build_flagged():
          "inverse would have been profitable out of sample.", "NOT published as a strategy: inverting "
          "a rule after seeing its results is an ex-post idea and starts a new trial counter. Logged "
          "here so it can be pre-registered and tested forward.", "Needs review", "SBR-10Y"),
-        ("F-04", "Two peer-reviewed DOIs were not re-resolved in this session",
-         "Benjamini-Hochberg (1995) and Kelly (1956) are cited from their bibliographic details and "
-         "their formulas are unit-tested, but the DOI links were not opened.",
-         "Formula correctness is checked in scripts/tests/test_math.py; the citations should be "
-         "confirmed by hand before external reuse.", "Needs review", "PAPER-BH"),
+        ("F-04", "One peer-reviewed DOI still does not resolve; one is now confirmed",
+         "Re-checked 2026-11-02. Benjamini-Hochberg (1995) DOI 10.1111/j.2517-6161.1995.tb02031.x "
+         "resolves to JRSS-B 57(1) 289. Kelly (1956) DOI 10.1002/j.1538-7305.1956.tb03809.x returns "
+         "HTTP 500 from doi.org, so that citation is carried on its bibliographic details only.",
+         "Both formulas are unit-tested in scripts/tests/test_math.py. The Kelly citation should be "
+         "confirmed by hand against a library copy before external reuse.", "Needs review", "PAPER-KELLY"),
+        ("F-06", "The FiveThirtyEight methodology URL no longer serves the article",
+         "The live URL redirects to abcnews.com/politics (FiveThirtyEight was wound down in 2025). "
+         "The archived capture of 2025-01-16 was read instead and does confirm K = 20, the "
+         "margin-of-victory formula, and a one-third regression toward a mean of 1505.",
+         "Source register now links the archived copy and states that this implementation regresses "
+         "toward 1500. A 5-point difference on the regression target, disclosed rather than hidden.",
+         "Resolved with disclosure", "FTE-ELO"),
+        ("F-07", "Nevada Gaming Control Board figures could not be re-fetched on 2026-11-02",
+         "The November 2025 monthly revenue PDF (48 pages) returns no readable text to this "
+         "environment from gaming.nv.gov or from the Internet Archive. The figures on the site were "
+         "recorded from a read on 2026-11-01; trade coverage of the same report corroborates the order "
+         "of magnitude (sportsbook hold ~8%, football 9.2%, parlays ~19%), not the exact decimals.",
+         "Published with the 2026-11-01 verification date and flagged here. No value was changed or "
+         "re-estimated; the register notes it is not re-verifiable today.", "Needs review",
+         "NVGCB-NOV2025"),
+        ("I-09", "Annex check V02 failed on a fresh clone (found 2026-11-02, fixed)",
+         "The 32-club division map was compared against a reference file that existed only in the "
+         "git-ignored data/raw/ staging area, so 'bash scripts/run_all.sh' on a clean checkout "
+         "reported 8/9 checks instead of 9/9.",
+         "The 19 KB reference is now committed at data/lab/reference/ with its SHA-256, the verifier "
+         "checks that hash before using it, and the ingest script fetches it from the GitHub contents "
+         "API when online. Re-run: 9/9.", "Resolved", "NFLVERSE-TEAMS"),
         ("IR-09", "This build disagrees with the canonical build on market cost: 3.79% vs 2.70%",
          "Mean overround here is 3.79% (n = 2,941) against 2.70% measured by the canonical build from "
          "a different archive. Neither figure is wrong; the archives are different. Reported, not "
@@ -977,8 +1005,11 @@ def build_flagged():
         ["Whether the archive's 'closing' line is the true close", "Single aggregator, no independent "
          "snapshot", "Cross-checked against nflverse on 2021: 97.1% within 1 point",
          src_link("NFLVERSE-PBP")],
-        ["BH (1995) and Kelly (1956) DOIs", "Not re-resolved this session", "Formulas unit-tested",
-         src_link("PAPER-BH")],
+        ["Kelly (1956) DOI", "doi.org returns HTTP 500 (re-checked 2026-11-02)",
+         "Formula unit-tested; citation flagged", src_link("PAPER-KELLY")],
+        ["Nevada Gaming Control Board exact decimals (8.02% / 6.74% / 45.14% / 19.94%)",
+         "PDF not re-readable on 2026-11-02 (48 pages, no text layer reachable)",
+         "Carried with the 2026-11-01 verification date and flagged", src_link("NVGCB-NOV2025")],
     ]
     body = f"""
 <section>

@@ -19,6 +19,7 @@ Checks
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import os
 import re
@@ -47,16 +48,26 @@ def main():
            "scripts/tests/test_math.py")
 
     # ---------- V02 divisions
-    ref_path = os.path.join(DATA, "raw", "teams_colors_logos.csv")
+    # The reference used to live only in the git-ignored data/raw/ staging area, so a fresh
+    # clone failed this check (found 2026-11-02). The pinned copy under data/lab/reference/ is
+    # now the fallback, and its SHA-256 is checked before it is used.
+    raw_ref = os.path.join(DATA, "raw", "teams_colors_logos.csv")
+    pinned_ref = os.path.join(LAB, "reference", "teams_colors_logos.csv")
+    ref_path = raw_ref if os.path.exists(raw_ref) else pinned_ref
+    expected = "4eab559fcf89cb4eaf61cb63a88abc47b01b6c9049187c59f3efe95888c3d048"
     if os.path.exists(ref_path):
+        got = hashlib.sha256(open(ref_path, "rb").read()).hexdigest()
         sys.path.insert(0, os.path.join(ROOT, "scripts"))
         from lib.data import DIVISIONS
         with open(ref_path) as f:
             ref = {row["team_abbr"]: row["team_division"] for row in csv.DictReader(f)}
         mism = [(k, v, ref.get(k)) for k, v in DIVISIONS.items() if ref.get(k) != v]
-        record("V02", "Club division map vs nflverse reference", not mism,
-               f"{len(DIVISIONS)} clubs checked, {len(mism)} mismatches"
-               + (f": {mism[:5]}" if mism else ""),
+        ok = (not mism) and got == expected
+        detail = (f"{len(DIVISIONS)} clubs checked, {len(mism)} mismatches; "
+                  f"reference sha256 {got[:16]}… ({os.path.relpath(ref_path, ROOT)})")
+        if got != expected:
+            detail += " - HASH MISMATCH against the pinned reference"
+        record("V02", "Club division map vs nflverse reference", ok, detail,
                "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv")
     else:
         record("V02", "Club division map vs nflverse reference", False,

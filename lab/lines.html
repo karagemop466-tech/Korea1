@@ -18,7 +18,7 @@
   <div class="pagehead">
     <h1>Originated lines</h1>
     <p class="sub">A walk-forward Elo + pace engine that produces its own spread, total and moneyline — and an honest scoreboard against the closing line.</p>
-    <p class="meta">Built 2026-11-01 13:50 UTC · data window 2011–2021 · every value computed by a script in
+    <p class="meta">Built 2026-11-02 17:30 UTC · data window 2011–2021 · every value computed by a script in
     <code>scripts/</code> · verification 9/9 checks</p>
   </div>
   
@@ -53,7 +53,7 @@
   <h2>Model specification</h2>
   <div class="tablewrap"><table class="">
 <thead><tr><th>Component</th><th>Specification</th><th>Source</th></tr></thead><tbody>
-<tr><td>Elo</td><td>K = 20, margin-of-victory multiplier ln(|margin|+1)·2.2/(0.001·Δelo+2.2), home field 48 Elo, season regression ⅓ toward 1500</td><td><a class="src t-third" data-source="FTE-ELO" href="https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/" target="_blank" rel="noopener" title="FiveThirtyEight">FTE-ELO</a></td></tr>
+<tr><td>Elo</td><td>K = 20, margin-of-victory multiplier ln(|margin|+1)·2.2/(0.001·Δelo+2.2), home field 48 Elo, season regression ⅓ toward 1500 in this implementation (FiveThirtyEight's published target is 1505; the 5-point difference is disclosed, not hidden)</td><td><a class="src t-third" data-source="FTE-ELO" href="https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/" target="_blank" rel="noopener" title="FiveThirtyEight">FTE-ELO</a></td></tr>
 <tr><td>Elo → spread</td><td>OLS on prior seasons only; slope is estimated from this dataset, not assumed (≈0.04 points per Elo point, i.e. 25 Elo ≈ 1 point)</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
 <tr><td>Total</td><td>Exponentially weighted points scored/allowed, half-life 6 games, (own offence + opponent defence)/2 per side, OLS-recalibrated on prior seasons</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>
 <tr><td>Moneyline</td><td>Φ(model margin / σ), σ estimated from walk-forward residuals</td><td><a class="src t-third" data-source="SBR-10Y" href="https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json" target="_blank" rel="noopener" title="Sportsbook Review, mirrored at github.com/flancast90/sportsbookreview-scraper">SBR-10Y</a></td></tr>

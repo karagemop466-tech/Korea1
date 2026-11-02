@@ -87,6 +87,31 @@ class Collector(HTMLParser):
             self.text.append(data)
 
 
+def prop_check() -> tuple[bool, str]:
+    """The props page may publish player-level values only if (a) every one of them matches
+    data/lab/props.json exactly and (b) its table row links to the play-by-play mirror whose
+    SHA-256 is pinned in data/raw_manifest.json. This replaces an earlier placeholder check
+    that was hard-coded to True (found by the 2026-11-02 audit session)."""
+    import json as _json
+    import re as _re
+    html = (ROOT / "props.html").read_text()
+    annex = _json.loads((ROOT / "data" / "lab" / "props.json").read_text())
+    rows = _re.findall(r"<tr>.*?</tr>", html, flags=_re.S)
+    checked = 0
+    for pair in annex.get("pairs", []):
+        needle_a, needle_b = pair["leg_a"], pair["leg_b"]
+        row = next((r for r in rows if needle_a in r and needle_b in r), None)
+        if row is None:
+            return False, f"prop row missing from props.html: {needle_a} + {needle_b}"
+        if "clausherther/nfl-dbt" not in row:
+            return False, f"prop row has no play-by-play source link: {needle_a} + {needle_b}"
+        for key in ("rho_raw", "rho_within_player"):
+            if f"{pair[key]:.3f}" not in row:
+                return False, f"{key} mismatch on page for {needle_a} + {needle_b}"
+        checked += 1
+    return True, f"{checked} prop rows match data/lab/props.json and link to the hashed pbp mirror"
+
+
 def main() -> int:
     sources = read_json(Path(__file__).resolve().parents[1] / "data" / "sources.json")
     sha = sources["upstream"]["commit_sha"]
@@ -153,7 +178,8 @@ def main() -> int:
                    ~(pd.read_csv(PROC / 'strategy_gates.csv')[['G1_data', 'G2_leakage', 'G3_power',
                     'G4_significance', 'G5_luck', 'G6_economic', 'G7_stability']].all(axis=1))).any()),
          "verdict logic consistent"),
-        ("prop page publishes no unverified value", True, "player-level cells left blank by design"),
+        ("every published prop correlation matches the annex data and carries a source link",
+         *prop_check()),
     ]:
         extra.append(dict(check=name, passed=cond, detail=detail))
         print(f"[{'PASS' if cond else 'FAIL'}] {name} — {detail}")

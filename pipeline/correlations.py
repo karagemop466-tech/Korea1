@@ -207,11 +207,14 @@ def main() -> None:
     # ------------------------------------------------------- prop inputs
     prop = pd.DataFrame([
         dict(component="Player game logs (passing/rushing/receiving yards, receptions, TDs)",
-             available="NO", status="UNVERIFIED — source not reachable in this build",
-             note=("nflverse release assets (`player_stats`, `stats_player`) are served from "
-                   "release-assets.githubusercontent.com, which this environment's egress "
-                   "blocklist refuses; every GitHub mirror checked stores these files as "
-                   "132-byte Git-LFS pointers. No value was estimated to fill the gap.")),
+             available="NO", status="NOT USED BY THIS BUILD — available from a hashed mirror",
+             note=("The nflverse player_stats release is served from "
+                   "release-assets.githubusercontent.com, which this environment's egress blocklist "
+                   "refuses, so this build uses no player-level value. It is NOT true that every "
+                   "mirror holds only LFS pointers: data/raw_manifest.json records a public mirror "
+                   "(clausherther/nfl-dbt) with 17 MB per-season play-by-play, hash-verified on "
+                   "2026-11-02, and the replication annex measures the prop-combo correlations from "
+                   "it (lab/props.html). No prop PRICES exist in any retrieved source.")),
         dict(component="Team scoring totals", available="YES",
              status="VERIFIED", note="games.csv home_score/away_score, reconciled 7,384/7,384"),
         dict(component="Game total lines", available="YES", status="VERIFIED",

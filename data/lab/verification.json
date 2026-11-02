@@ -15,7 +15,7 @@
       "id": "V02",
       "check": "Club division map vs nflverse reference",
       "passed": true,
-      "detail": "32 clubs checked, 0 mismatches",
+      "detail": "32 clubs checked, 0 mismatches; reference sha256 4eab559fcf89cb4e\u2026 (data/raw/teams_colors_logos.csv)",
       "source": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv"
     },
     {
