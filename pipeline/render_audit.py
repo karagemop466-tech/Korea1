@@ -101,7 +101,7 @@ def build_audit(layout, table, card, kpi_grid, flag, src_link, sha: str, sources
                  src_link(REPO + "data/audit/source_tier_inventory.csv", "inventory CSV")] for r in inv]
 
     status_rows = [
-        ["Final scores (7,384 played games)", f"{match} games read on NFL.com and compared: {match} match, 0 mismatch",
+        ["Final scores (7,384 played games)", f"{n} games read on NFL.com and compared: {match} match, {mism} mismatch, {blank} blank in the pinned data",
          "partially verified — the rest are not individually checked", src_link("https://www.nfl.com/scores/", "NFL.com scores")],
         ["Scores before 2010 (2,913 games)", "NFL.com's scores page offers 2010–2026 only (year selector)",
          "unverified against NFL.com", src_link("https://www.nfl.com/scores/", "NFL.com scores")],
