@@ -1,10 +1,10 @@
 {
   "pages_checked": 9,
   "counts": {
-    "internal_links": 119,
-    "assets": 9,
-    "source_refs": 33,
-    "external_links": 276
+    "internal_links": 100,
+    "assets": 0,
+    "source_refs": 0,
+    "external_links": 95
   },
   "problems": [],
   "passed": true

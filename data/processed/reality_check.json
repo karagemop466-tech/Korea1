@@ -1,6 +1,12 @@
 {
-  "observed_best_mean_pnl": 0.19435736079165036,
-  "p_value": 0.18633333333333332,
-  "n_weeks": 425,
-  "n_strategies": 18
+  "observed_best_mean_pnl": 0.07935852676510771,
+  "p_value": 0.43185604798400534,
+  "n_weeks": 475,
+  "n_strategies": 18,
+  "n_boot": 3000,
+  "seed": 20261101,
+  "mean_block_weeks": 4,
+  "estimand": "equal-calendar-week ROI; no-bet weeks return zero",
+  "trial_count_lower_bound": 60,
+  "library_reality_check_only": true
 }

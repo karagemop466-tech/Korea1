@@ -45,7 +45,7 @@ NFL = [
 ALIAS = {"JAC":"JAX","LAR":"LA","STL":"LA","SD":"LAC","OAK":"LV","WSH":"WAS"}
 norm = lambda t: ALIAS.get(t, t)
 def main():
-    rows = list(csv.DictReader(open(os.path.join(ROOT, "data/derived/games.csv"))))
+    rows = list(csv.DictReader(open(os.path.join(ROOT, "data/raw/games.csv"))))
     idx = {}
     for r in rows:
         if r["game_type"] == "REG":

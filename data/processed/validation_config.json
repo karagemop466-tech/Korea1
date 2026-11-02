@@ -1,0 +1,30 @@
+{
+  "gates": {
+    "G3_min_bets": 100,
+    "G3_min_seasons": 3,
+    "G3_min_weeks": 100,
+    "G4_fwer": 0.05,
+    "G5_dsr": 0.95,
+    "G6_roi": 0.02,
+    "G7_season_share": 0.6,
+    "G7_min_bets_season": 20,
+    "G8_overlap": 0.9,
+    "target_roi": 0.02,
+    "power": 0.8,
+    "adverse_cents_per_leg": 5
+  },
+  "gate_names": [
+    "G1_data",
+    "G2_leakage",
+    "G3_power",
+    "G4_significance",
+    "G5_luck",
+    "G6_economic",
+    "G7_stability",
+    "G8_redundancy"
+  ],
+  "trial_count_lower_bound": 60,
+  "dsr_is_provisional": true,
+  "official_quote_source_available": false,
+  "parlay_stress": "five adverse American-odds cents per original leg; not a book quote"
+}

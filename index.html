@@ -3,109 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NFL Line Lab · line origination, strategy competition and luck control</title>
-<meta name="description" content="Line origination, strategy competition and luck control for NFL markets — every number traceable to a pinned source file.">
+<title>NFL Line Lab · line origination, strategy competition and luck removal</title>
+<meta name="description" content="An auditable NFL line-origination and strategy-research dashboard.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark">🏈</span> NFL Line Lab</a>
-    <nav><a class="navlink active" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+    <nav aria-label="Main navigation"><a class="navlink active" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
   </div>
 </header>
-<main class="wrap">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<main id="main-content" class="wrap wide">
   <h1>NFL Line Lab</h1>
-  <p class="lede">Line origination, strategy competition and luck control for NFL markets — every number traceable to a pinned source file.</p>
+  <p class="lede">An auditable NFL line-origination and strategy-research dashboard.</p>
   
-<div class="cards"><div class="card bad"><div class="card-value">0</div><div class="card-label">strategies that survive every gate</div><div class=card-note>reality-check p = 0.186</div></div></div>
-
-<section>
-<h2>What this project does</h2>
-<p>It originates its own NFL lines from a market-free model, prices them, then tests a fixed
-library of betting strategies against the closing market. The point is <strong>not</strong> to
-produce a winner at any cost: it is to apply gates that remove luck, and to publish the result
-honestly — including when the result is that nothing survives.</p>
-<div class="split">
-  <div>
-    <h3>Line origination</h3>
-    <p>Three independent model families (weighted ridge, matchup points, Elo) are fitted
-    walk-forward and averaged. The ensemble is the published line. Its accuracy is measured
-    against the closing market on the same games.</p>
-    <p><a class="btn" href="lines.html">See the originated lines →</a></p>
-  </div>
-  <div>
-    <h3>Strategy competition</h3>
-    <p>18 strategies — single bets, parlays and angle rules — are run over every priced
-    game. Each must clear five statistical gates and three structural ones before it can be
-    called skill rather than luck.</p>
-    <p><a class="btn" href="strategies.html">See the leaderboard →</a></p>
-  </div>
-  <div>
-    <h3>Luck removal</h3>
-    <p>Stationary bootstrap, Benjamini–Hochberg FDR and deflated Sharpe ratios, plus White's
-    reality check across the whole library. The headline: the best strategy in the library is
-    not distinguishable from luck.</p>
-    <p><a class="btn" href="validation.html">See the gates →</a></p>
-  </div>
+<div class="hero">
+  <div><span class="eyebrow">NFL research · evidence first</span><h2>Originate lines. Test the edge.<br>Don't reward luck.</h2>
+  <p>A reproducible research workspace for single bets, parlays and player-prop combinations.
+  The current evidence does <strong>not</strong> support a validated betting strategy or a prize award.</p>
+  <div class="actions"><a class="btn primary" href="executive-summary.html">Read the executive summary</a>
+  <a class="btn" href="strategies.html">Explore the leaderboard</a></div></div>
+  <div class="hero-status"><span class="status-dot"></span> Research only<br><strong>No validated edge</strong><small>Official quote coverage is incomplete.</small></div>
 </div>
+<p class="flag info"><strong>Evidence boundary.</strong> Official observations, model estimates and community-market research are separate. Unverified observations are blank in the public tables, not filled in. Reproducible estimates remain in the <a href="lab/index.html">clearly labelled research annex</a> and downloadable CSVs; they are not betting recommendations.</p>
+<div class="cards"><div class="card bad"><div class="card-value">0</div><div class="card-label">validated strategies</div><div class=card-note>18 research candidates · no rewards</div></div><div class="card good"><div class="card-value">31</div><div class="card-label">official score matches</div><div class=card-note>NFL.com sample; not a full-history census</div></div><div class="card "><div class="card-value">0</div><div class="card-label">verified prop-price tickets</div><div class=card-note>No prop ROI is claimed</div></div><div class="card "><div class="card-value">8</div><div class="card-label">fail-closed gates</div><div class=card-note>All must pass before recognition</div></div></div>
+<section><div class="section-head"><h2>Strategy leaderboard</h2><a href="strategies.html">Full competition rules →</a></div>
+<p>Unverified performance cells are intentionally blank. “Unverified” is not a finding of zero edge;
+it means the evidence is insufficient. Search or sort the table without changing its evidence status.</p>
+<div class="table-tools"><label>Search strategies <input class="filter" type="search" placeholder="Try spread, parlay, wind…"></label><span class="small">Click a column heading to sort</span></div>
+<div class="tablewrap"><table class=""><caption>Strict evidence view · research estimates are not represented as official observations</caption><thead><tr><th>Strategy</th><th>Market</th><th>ROI</th><th>Adjusted p</th><th>Correlation</th><th>Status</th><th>Reward</th><th>Official reference</th></tr></thead><tbody><tr><td>BUY_LOW_ATS</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>COLD_UNDER</td><td>Total</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>DIV_UNDER</td><td>Total</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>FADE_BLOWOUT_ATS</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>HOME_DOG_ATS</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>ML_EDGE_10</td><td>Moneyline</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>ML_EDGE_5</td><td>Moneyline</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>PARLAY2_EDGE</td><td>Parlay</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>PARLAY2_ML</td><td>Parlay</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>PARLAY3_EDGE</td><td>Parlay</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>REST_ADV_ATS</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>ROAD_FAV_ATS</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>SP_EDGE_1_0</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>SP_EDGE_2_0</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>SP_EDGE_3_0</td><td>Spread</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>TOT_EDGE_2_0</td><td>Total</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>TOT_EDGE_3_5</td><td>Total</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>WIND_UNDER</td><td>Total</td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="blank" aria-label="blank: unverified"></span></td><td><span class="pill unverified">UNVERIFIED</span></td><td>Unawarded</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr></tbody></table></div>
 </section>
-
-<section>
-<h2>Headline findings</h2>
-<ol class="findings">
-  <li><strong>The market is still better than the model.</strong> Spread MAE 10.215
-      (market) vs 10.527 (ours); totals 10.527 vs
-      10.726. The gap is roughly a third of a point and it is the whole game.</li>
-  <li><strong>Nothing clears the gates.</strong> 0 of 18 strategies survive.
-      The best raw ROI (+19.4%) sits on a 3-leg parlay ladder and
-      dies the moment it is deflated for the number of trials.</li>
-  <li><strong>White's reality check does not reject.</strong> p = 0.186
-      across 18 strategies and 425 weekly blocks — the
-      library's best performance is consistent with luck.</li>
-  <li><strong>The pricing environment is sharp.</strong> Mean two-way hold in the closing prices is
-      2.72% on spreads — a low-margin book, so the
-      break-even win rate is about 51.4%, not 52.4%.</li>
-  <li><strong>Same-game correlation is structural, not cosmetic.</strong> Cover and moneyline on the
-      same team correlate at φ = 0.676; cover and total
-      correlate at φ = 0.024. Independent pricing of a
-      same-game parlay is wrong for one pair and fine for the other.</li>
-  <li><strong>Prop legs are correlated, and the market cannot be checked.</strong> Player-level
-      play-by-play is now ingested (2019–2022, 21,033 player-games) and prop lines are originated
-      out of sample: AUC 0.66–0.73. Same-game legs are measurably dependent — QB passing yards with
-      his own WR1's receiving yards lift the joint hit rate 1.14× over independence — but no reachable
-      source carries a prop <em>price</em>, so every prop combo fails the economic gate and nothing is
-      awarded. See <a href="props.html">Player props</a>.</li>
-</ol>
-</section>
-
-<section>
-<h2>Leaderboard snapshot</h2>
-<div class="tablewrap"><table class=""><caption>Top of the leaderboard (full table on the Leaderboard page)</caption><thead><tr><th>Strategy</th><th>Bets</th><th>Win rate</th><th>ROI</th><th>FDR p</th><th>Deflated SR</th><th>Verdict</th><th>Source</th></tr></thead><tbody><tr><td>PARLAY3_EDGE</td><td>377</td><td>17.2%</td><td>19.44%</td><td>0.473</td><td>0.365</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>PARLAY2_EDGE</td><td>400</td><td>31.2%</td><td>14.60%</td><td>0.407</td><td>0.461</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>WIND_UNDER</td><td>456</td><td>56.1%</td><td>9.15%</td><td>0.383</td><td>0.548</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>FADE_BLOWOUT_ATS</td><td>922</td><td>52.4%</td><td>1.80%</td><td>0.886</td><td>0.016</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>SP_EDGE_3_0</td><td>1,687</td><td>52.3%</td><td>1.50%</td><td>0.886</td><td>0.001</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>TOT_EDGE_3_5</td><td>1,094</td><td>52.0%</td><td>1.17%</td><td>0.886</td><td>0.005</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>DIV_UNDER</td><td>1,908</td><td>51.9%</td><td>1.12%</td><td>0.886</td><td>0.000</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>SP_EDGE_2_0</td><td>2,672</td><td>51.7%</td><td>0.44%</td><td>0.913</td><td>0.000</td><td><span class="pill luck">LUCK</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>TOT_EDGE_2_0</td><td>2,446</td><td>51.3%</td><td>-0.29%</td><td>0.964</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>BUY_LOW_ATS</td><td>1,349</td><td>51.0%</td><td>-1.07%</td><td>0.964</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>ML_EDGE_10</td><td>1,195</td><td>33.7%</td><td>-1.28%</td><td>0.964</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>SP_EDGE_1_0</td><td>3,927</td><td>50.5%</td><td>-1.78%</td><td>0.964</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>HOME_DOG_ATS</td><td>1,939</td><td>50.3%</td><td>-2.16%</td><td>0.964</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>REST_ADV_ATS</td><td>515</td><td>50.3%</td><td>-2.22%</td><td>0.964</td><td>0.005</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>ROAD_FAV_ATS</td><td>1,939</td><td>49.7%</td><td>-2.94%</td><td>0.964</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>ML_EDGE_5</td><td>2,640</td><td>34.6%</td><td>-3.84%</td><td>0.964</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>PARLAY2_ML</td><td>405</td><td>10.4%</td><td>-5.39%</td><td>0.964</td><td>0.020</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>COLD_UNDER</td><td>278</td><td>45.6%</td><td>-11.31%</td><td>0.975</td><td>0.000</td><td><span class="pill no">NO EDGE</span></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr></tbody></table></div>
-<p class="small">Verdicts: <span class="pill skill">SKILL</span> all gates ·
-<span class="pill luck">LUCK</span> positive but not significant ·
-<span class="pill no">NO EDGE</span> ROI ≤ 0 · <span class="pill underpowered">UNDERPOWERED</span> too few bets.</p>
-</section>
-
-<section>
-<h2>How to read this site</h2>
-<div class="cards smallcards">
-  <a class="minicard" href="lines.html"><strong>Originated lines</strong><span>model vs market, per season and per game</span></a>
-  <a class="minicard" href="strategies.html"><strong>Leaderboard</strong><span>all strategies, ranked, with their gates</span></a>
-  <a class="minicard" href="validation.html"><strong>Validation</strong><span>the eight gates and how each was applied</span></a>
-  <a class="minicard" href="correlations.html"><strong>Correlations</strong><span>measured dependence for parlay pricing</span></a>
-  <a class="minicard" href="props.html"><strong>Player props</strong><span>framework, and what is missing</span></a>
-  <a class="minicard" href="requirements.html"><strong>Requirements</strong><span>every requirement in the brief, traced to evidence</span></a>
-  <a class="minicard" href="verification.html"><strong>Reproducibility</strong><span>re-hash, clean-room rebuild, cell re-derivation</span></a>
-  <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>irregularities and unverified items</span></a>
-</div>
-</section>
-
+<section><h2>Explore the research</h2><div class="cards smallcards">
+<a class="minicard" href="lines.html"><strong>Originated lines</strong><span>Market-free models, paired benchmarks and upcoming research lines.</span></a>
+<a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, multiplicity, costs and replication.</span></a>
+<a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
+<a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
+<a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
+<a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
+</div></section>
+<section><h2>What the audit changed</h2><ul class="findings">
+<li>Default builds now use the published commit, not a silently moving upstream branch.</li>
+<li>Missing weather is no longer filled from the full history. Weather and roof fields are excluded from the default model until their pre-kickoff availability is verified.</li>
+<li>Model and market errors are compared on identical games. Parlays use simultaneous kickoffs, not a whole week selected with hindsight.</li>
+<li>Significance uses weekly blocks and Holm correction. The deflated Sharpe is provisional because the complete search history is unknown.</li>
+<li>No strategy is called “skill” merely because it was profitable. No cash prize or capital allocation is authorized.</li>
+</ul></section>
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
-    produced by <code>pipeline/</code> from the files listed on the
-    <a href="sources.html">Sources</a> page.</p>
+    <p>Research snapshot <code>a270278f3ac4</code> · source register generated 2026-11-02T17:26:06Z.
+    Official observations and unverified research estimates are distinguished on every page.
+    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a>.</p>
+    <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
 </body>

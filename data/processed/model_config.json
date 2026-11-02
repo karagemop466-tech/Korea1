@@ -2,15 +2,15 @@
   "alphas": {
     "2004": {
       "margin": 300.0,
-      "total": 300.0
+      "total": 100.0
     },
     "2005": {
       "margin": 300.0,
-      "total": 300.0
+      "total": 30.0
     },
     "2006": {
       "margin": 300.0,
-      "total": 300.0
+      "total": 3.0
     },
     "2007": {
       "margin": 300.0,
@@ -25,24 +25,24 @@
       "total": 100.0
     },
     "2010": {
-      "margin": 300.0,
-      "total": 300.0
+      "margin": 100.0,
+      "total": 100.0
     },
     "2011": {
       "margin": 300.0,
-      "total": 300.0
+      "total": 30.0
     },
     "2012": {
       "margin": 300.0,
-      "total": 100.0
+      "total": 3.0
     },
     "2013": {
       "margin": 300.0,
-      "total": 30.0
+      "total": 3.0
     },
     "2014": {
       "margin": 300.0,
-      "total": 100.0
+      "total": 3.0
     },
     "2015": {
       "margin": 300.0,
@@ -54,7 +54,7 @@
     },
     "2017": {
       "margin": 300.0,
-      "total": 300.0
+      "total": 100.0
     },
     "2018": {
       "margin": 300.0,
@@ -62,35 +62,35 @@
     },
     "2019": {
       "margin": 3.0,
-      "total": 300.0
+      "total": 100.0
     },
     "2020": {
-      "margin": 300.0,
+      "margin": 3.0,
       "total": 100.0
     },
     "2021": {
-      "margin": 30.0,
+      "margin": 3.0,
       "total": 100.0
     },
     "2022": {
-      "margin": 100.0,
+      "margin": 3.0,
       "total": 300.0
     },
     "2023": {
-      "margin": 300.0,
+      "margin": 3.0,
       "total": 300.0
     },
     "2024": {
-      "margin": 300.0,
-      "total": 300.0
+      "margin": 3.0,
+      "total": 3.0
     },
     "2025": {
-      "margin": 300.0,
-      "total": 300.0
+      "margin": 3.0,
+      "total": 3.0
     },
     "2026": {
       "margin": 3.0,
-      "total": 10.0
+      "total": 3.0
     }
   },
   "families": [
@@ -101,11 +101,128 @@
   ],
   "decay_halflife_seasons": 4.0,
   "first_test_season": 2004,
+  "predictive_errors": {
+    "2004": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 793,
+      "n_total": 793
+    },
+    "2005": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2006": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2007": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2008": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2009": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2010": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2011": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2012": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2013": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2014": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2015": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2016": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2017": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2018": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2019": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2020": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 801,
+      "n_total": 801
+    },
+    "2021": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 803,
+      "n_total": 803
+    },
+    "2022": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 821,
+      "n_total": 821
+    },
+    "2023": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 838,
+      "n_total": 838
+    },
+    "2024": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 854,
+      "n_total": 854
+    },
+    "2025": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 854,
+      "n_total": 854
+    },
+    "2026": {
+      "method": "expanding three-season out-of-fold ensemble residuals",
+      "n_margin": 855,
+      "n_total": 855
+    }
+  },
   "future_fit": {
     "alpha_margin": 300.0,
-    "alpha_total": 300.0,
-    "sigma_margin": 13.482882136520853,
-    "sigma_total": 13.626030330078196,
+    "alpha_total": 3.0,
+    "sigma_margin": 13.43234171260027,
+    "sigma_total": 13.267034138820408,
     "trained_through": 2026
   }
 }

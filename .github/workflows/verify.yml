@@ -32,20 +32,10 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install pandas numpy scipy pytest
-      - name: Leakage and integrity tests (pytest)
-        run: |
-          python -m pytest -q \
-            tests/test_no_lookahead.py \
-            tests/test_weather_fold.py \
-            tests/test_props_integrity.py
-      - name: Originated-line regression tests
-        run: python tests/test_future_lines.py
-      - name: Verify every table cell has a source link and every link resolves
-        run: |
-          python tests/check_links.py
-          python tests/check_sources.py
-      - name: Verify the published site
-        run: python pipeline/verify_site.py
-      - name: Audit published claims against the data (offline)
-        run: python pipeline/audit.py --no-network
+        run: pip install -r requirements.txt
+      - name: Verify pinned inputs and rebuild
+        run: make build
+      - name: Regression tests
+        run: make test
+      - name: Verify committed generated outputs
+        run: python tests/check_rebuild.py

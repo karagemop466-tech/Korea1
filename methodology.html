@@ -4,133 +4,41 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Methodology</title>
-<meta name="description" content="How the lines are built, how the bets are settled, and how the numbers are checked.">
+<meta name="description" content="How the engine works, what was tested and what the tests do not establish.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark">🏈</span> NFL Line Lab</a>
-    <nav><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink active" href="methodology.html">Methodology</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+    <nav aria-label="Main navigation"><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink active" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
   </div>
 </header>
-<main class="wrap wide">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<main id="main-content" class="wrap wide">
   <h1>Methodology</h1>
-  <p class="lede">How the lines are built, how the bets are settled, and how the numbers are checked.</p>
-  
-<section>
-<h2>Pipeline</h2>
-<pre class="pipeline">pipeline/fetch_data.py     pin upstream commit, download archive, hash every file -> data/sources.json
-pipeline/build_datasets.py  chronological walk-forward features (no leakage), audits -> games_model.csv
-pipeline/models.py          three model families, walk-forward -> originated_lines.csv
-pipeline/backtest.py        settlement engine, cross-checked against nflverse outcomes
-pipeline/strategies.py      the pre-declared strategy library
-pipeline/stats_tools.py     bootstrap, FDR, deflated Sharpe, reality check
-pipeline/validation.py      run the library, apply the eight gates -> strategy_*.csv
-pipeline/correlations.py    measured dependence -> corr_*.csv
-pipeline/fetch_pbp.py       player-level play-by-play, pinned by git blob SHA -> data/sources_pbp.json
-pipeline/props_model.py     prop lines, calibration, leg dependence, combo pricing -> prop_*.csv
-pipeline/render_site.py     this site
-pipeline/verify_site.py     row-level source check + internal link check</pre>
-<p>Reproduce with <code>make build</code>, which runs the game-level pipeline and then the props
-stage, or <code>make props</code> on its own. Everything is deterministic: the upstream commit is
-pinned, every download is SHA-256 hashed, and both data sources are recorded in
-<code>data/sources.json</code> and <code>data/sources_pbp.json</code>.</p>
-</section>
-
-<section>
-<h2>Line origination models</h2>
-<div class="tablewrap"><table><thead><tr><th>Family</th><th>Inputs</th><th>Fit</th><th>Source</th></tr></thead><tbody>
-<tr><td><strong>ridge</strong></td><td>Elo difference, matchup expected points, opponent-adjusted
-expected points, rest differential, divisional flag, neutral site, week, playoff, roof, wind,
-temperature (+ missing flags)</td><td>Weighted ridge, sample decay halflife 4.0
-seasons, alpha by inner expanding CV</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td><strong>matchup</strong></td><td>exp_margin / exp_total from shrunk, recency-weighted
-team offence and defence ratings</td><td>One intercept + scale pair fitted on the training window</td>
-<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td><strong>elo</strong></td><td>Elo difference only (K = 20, MOV multiplier, 0.75 season
-retention)</td><td>Linear calibration on the training window</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td><strong>ensemble</strong></td><td>Equal weights 1/3 · 1/3 · 1/3 (never fitted)</td>
-<td>—</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
-</tbody></table></div>
-</section>
-
-<section>
-<h2>Prop origination and combo pricing</h2>
-<div class="tablewrap"><table><thead><tr><th>Stage</th><th>Method</th><th>Why this and not something else</th>
-<th>Source</th></tr></thead><tbody>
-<tr><td><strong>aggregation</strong></td><td>Play-by-play → player-game passing / rushing / receiving
-yards and receptions; 2-point conversions excluded</td><td>Validated against seven published season
-totals keyed on player id, because a name key silently merges two players
-(J.Taylor = 1,811 + 37)</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
-<tr><td><strong>predictive mean</strong></td><td>Exponentially weighted mean of the player's prior
-games (120-day half-life), shrunk toward a prior-season league mean</td><td>Uses only earlier games;
-the leakage assertion walks every player history in date order</td>
-<td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
-<tr><td><strong>predictive spread</strong></td><td>Within-player variance pooled across
-player-seasons, shrunk the same way</td><td>A pooled across-player sd would contain the differences
-between players and make every interval too wide</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
-<tr><td><strong>distribution</strong></td><td>Shifted lognormal for yardage, negative binomial for
-receptions</td><td>Yardage is right-skewed: a line at the mean is not a 50/50 line, and the normal
-assumption put the over-rate at 40% during development</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
-<tr><td><strong>line</strong></td><td>Half-integer nearest the predictive median, chosen as the one
-whose over-probability is closest to 0.5</td><td>No pushes by construction; a genuine 50/50 line
-rather than a mean</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">computed</a></td></tr>
-<tr><td><strong>role labels</strong></td><td>QB / RB1 / WR1 / WR2 ranked on <em>prior</em> usage,
-not on the game being measured</td><td>Labelling WR1 as the player with the most targets in the game
-conditions on a good game and inflates every marginal</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
-<tr><td><strong>dependence</strong></td><td>φ at the 50/50 split with a 2,000-draw bootstrap
-interval; within-player correlation; a cross-game control</td><td>The control is what shows the
-estimator does not manufacture correlation</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">computed</a></td></tr>
-<tr><td><strong>calibration</strong></td><td>Slope of the realised 0/1 outcome on logit(p) plus AUC
-at a fixed benchmark line</td><td>Slope 1 = calibrated; slope 0 = no information. It is the gate that
-stops a model from being praised for ordering alone</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">computed</a></td></tr>
-</tbody></table></div>
-</section>
-
-<section>
-<h2>Probability, price and push</h2>
-<p>A margin (or total) is modelled as normal around the model line with a continuity correction, so
-a spread that lands exactly on the number is priced as a push rather than a half-win:</p>
-<pre class="math">P(push) = Φ((L+0.5−m)/σ) − Φ((L−0.5−m)/σ)
-P(win)  = 1 − Φ((L+0.5−m)/σ)
-
-fair American price = 100·(1−p)/p        for p &lt; 0.5
-                    = −100·p/(1−p)       for p &gt; 0.5</pre>
-<p>The published "posted" moneyline applies a 4.5% two-way hold, so the numbers on the
-<a href="lines.html">Originated lines</a> page are a bettable pair rather than a vig-free pair.</p>
-</section>
-
-<section>
-<h2>Data integrity</h2>
-<div class="tablewrap"><table class=""><caption>Data integrity checks run at build time</caption><thead><tr><th></th><th>Check</th><th>Result</th><th>Source</th></tr></thead><tbody><tr><td>✓</td><td>result == home_score - away_score</td><td>7384/7384</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>total == home_score + away_score</td><td>7384/7384</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>game_id unique</td><td>7548 unique of 7548 rows</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>spread_line sign convention = home team (positive =&gt; home favoured)</td><td>spread_line&gt;0: home win rate 67.4% n=4795; spread_line&lt;0: 35.3% n=2558</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>corr(spread_line, moneyline sign) — favourite must carry the negative price</td><td>agreement 98.2%</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>closing_lines.csv parses (independent per-side price + outcome file)</td><td>20,490 rows; outcome in {0, 0.5, 1} for all: True; pushes recorded as 0.5: 328 (spread 200, total 114, moneyline 14)</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>✓</td><td>weather fill uses only earlier dates</td><td>outdoor temp/wind filled with the median of games dated before each game (final 59.0°F / 8.0 mph); indoor rows encoded 0 with the missing flag kept; 164 scheduled rows filled from the same rule</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr></tbody></table></div>
-</section>
-
-<section>
-<h2>Settlement engine cross-check</h2>
-<p>The backtest does not trust itself: every spread and total selection for 2006–2018 is re-settled
-and compared with nflverse's own per-side <code>outcome</code> column in
-<code>closing_lines.csv</code>.</p>
-<div class="cards">
-<div class="card "><div class="card-value">13,472</div><div class="card-label">selections re-settled</div><div class=card-note>2006–2018</div></div>
-<div class="card "><div class="card-value">98.605%</div><div class="card-label">exact agreement, all rows</div><div class=card-note>two independent implementations</div></div>
-<div class="card "><div class="card-value">99.931%</div><div class="card-label">agreement where the line matches</div><div class=card-note>n = 8,690</div></div>
-</div>
-<p class="small">The residual disagreements are concentrated in rows where the two nflverse files
-carry a different closing number for the same game — documented on the
-<a href="flagged.html">Flagged for review</a> page rather than papered over.</p>
-</section>
-
-<section>
-<h2>Feature dictionary</h2>
-<div class="tablewrap"><table class=""><caption>Feature dictionary</caption><thead><tr><th>Feature</th><th>Definition</th><th>Used in</th><th>Source</th></tr></thead><tbody><tr><td>elo_diff</td><td>Elo(home) − Elo(away), FiveThirtyEight-style, updated after each game</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>elo_h</td><td>Home team Elo before kickoff (start 1500, 0.75 season retention, K=20, MOV multiplier)</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>elo_a</td><td>Away team Elo before kickoff</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_margin</td><td>exp_h_pts − exp_a_pts (raw rating matchup expected home margin)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_total</td><td>exp_h_pts + exp_a_pts (raw rating matchup expected game total)</td><td>total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>adj_exp_margin</td><td>Opponent-adjusted expected home margin (weekly ridge team ratings, prior alpha=12)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>adj_exp_total</td><td>Opponent-adjusted expected game total</td><td>total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_h_pts</td><td>off_h + def_a − league_avg</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>exp_a_pts</td><td>off_a + def_h − league_avg</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>off_h</td><td>Home offence rating: exp-weighted points scored, halflife 8 games, shrunk to league mean (k=4)</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>def_h</td><td>Home defence rating: exp-weighted points allowed, same shrinkage</td><td>context</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>rest_diff</td><td>Days since last game, home − away (clipped 0–21)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>div_game</td><td>Divisional matchup flag</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>neutral</td><td>Neutral-site flag (Super Bowl / international)</td><td>margin</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>is_playoff</td><td>Post-season flag</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>week</td><td>Regular-season week 1–18, playoffs 19–22</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>season_idx</td><td>season − 1999; lets the total model track league scoring drift</td><td>total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>roof_dome</td><td>Roof closed/dome</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>roof_open</td><td>Retractable roof, open</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>temp</td><td>Kickoff temperature (°F); outdoor median of earlier games, 0 indoors, missing flag kept</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>wind</td><td>Kickoff wind (mph); outdoor median of earlier games, 0 indoors, missing flag kept</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>temp_missing</td><td>1 if temperature not recorded</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr><tr><td>wind_missing</td><td>1 if wind not recorded</td><td>margin,total</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">dictionary</a></td></tr></tbody></table></div>
-</section>
-
+  <p class="lede">How the engine works, what was tested and what the tests do not establish.</p>
+  <p class="flag info"><strong>Evidence boundary.</strong> Official observations, model estimates and community-market research are separate. Unverified observations are blank in the public tables, not filled in. Reproducible estimates remain in the <a href="lab/index.html">clearly labelled research annex</a> and downloadable CSVs; they are not betting recommendations.</p><section><h2>Reproducible dataflow</h2><div class="tablewrap"><table class=""><caption>Pipeline design and evidence boundaries</caption><thead><tr><th>Step</th><th>Stage</th><th>Implementation</th><th>Reference</th></tr></thead><tbody><tr><td>1</td><td>Pin and hash</td><td>Download the exact committed archive; never silently refresh the pin during a normal build.</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a></td></tr><tr><td>2</td><td>Validate raw fields</td><td>Check identifiers, score arithmetic, valid prices and missingness. Internal consistency is not official verification.</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>3</td><td>Build prior-only features</td><td>Update team state after emitting each game; no full-history weather imputation.</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>4</td><td>Walk forward</td><td>Fit on seasons before the test season; choose regularization only inside training data.</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>5</td><td>Price and settle</td><td>Separate model fair prices from community observations and executable quotes; refund pushes.</td><td><a href="https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push" target="_blank" rel="noopener">FanDuel push settlement rules</a></td></tr><tr><td>6</td><td>Validate the library</td><td>Use weekly dependence, multiplicity, power, costs and redundancy; fail closed on missing provenance.</td><td><a href="https://www.pm-research.com/content/iijpormgmt/40/5/94" target="_blank" rel="noopener">Bailey &amp; López de Prado (2014), publisher</a></td></tr><tr><td>7</td><td>Publish and audit</td><td>Render static pages, check every row and internal link, merge, then confirm the deployed commit.</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a></td></tr></tbody></table></div>
+<pre class="pipeline">pinned archive → integrity checks → prior-only features → walk-forward lines
+→ research selections → settlement → weekly inference → eight gates
+→ strict public dashboard + labelled research annex → link/provenance tests</pre></section>
+<section><h2>Executed leakage checks</h2><div class="tablewrap"><table class=""><caption>Checks emitted by the build, not hard-coded gate labels</caption><thead><tr><th>Check</th><th>Result</th><th>Meaning</th><th>Reference</th></tr></thead><tbody><tr><td>unique game IDs</td><td>PASS</td><td>Executed structural check; not an official data endorsement</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>no outcome or market fields in model feature lists</td><td>PASS</td><td>Executed structural check; not an official data endorsement</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>chronological game order</td><td>PASS</td><td>Executed structural check; not an official data endorsement</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>first franchise appearance Elo=1500</td><td>PASS</td><td>Executed structural check; not an official data endorsement</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>no observed weather/roof imputation in default features</td><td>PASS</td><td>Executed structural check; not an official data endorsement</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr></tbody></table></div></section>
+<section><h2>Important definitions</h2><ul class="findings">
+<li><strong>Overround</strong> is the sum of implied probabilities minus one. <strong>Hold</strong> is sportsbook revenue divided by handle; they are not interchangeable.</li>
+<li><strong>MAE</strong> compares absolute point errors. <strong>Brier score</strong> evaluates probability calibration; neither is betting ROI.</li>
+<li><strong>CLV</strong> compares entry and closing prices at the same book, line and terms. It requires real timestamps.</li>
+<li><strong>Holm p</strong> controls family-wise error under arbitrary dependence. <strong>Deflated Sharpe</strong> is an approximation sensitive to the trial count and return distribution.</li>
+<li><strong>Verified</strong> means checked against the cited authoritative source. <strong>Hash-verified</strong> means only that downloaded bytes match a pin.</li></ul></section>
+<section><h2>Repository audit</h2><p>The canonical pipeline, historical analysis, replication annex, source registers,
+workflows and tests were reviewed. Material defects and their repairs are listed on <a href="flagged.html">Flagged for review</a>.
+This is a targeted code and claim audit with executable tests—not a claim that every historical third-party observation has been individually authenticated.</p></section>
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
-    produced by <code>pipeline/</code> from the files listed on the
-    <a href="sources.html">Sources</a> page.</p>
+    <p>Research snapshot <code>a270278f3ac4</code> · source register generated 2026-11-02T17:26:06Z.
+    Official observations and unverified research estimates are distinguished on every page.
+    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a>.</p>
+    <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
 </body>

@@ -50,7 +50,7 @@
       "id": "V07",
       "check": "Every source referenced by the site exists in the register",
       "passed": true,
-      "detail": "12 distinct source ids referenced by the site",
+      "detail": "0 distinct source ids referenced by the site",
       "source": "lab/*.html"
     },
     {

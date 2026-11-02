@@ -3,85 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sources</title>
-<meta name="description" content="The pinned snapshot, the hashes, the official references and the verification log.">
+<title>Sources &amp; downloads</title>
+<meta name="description" content="Official references, primary methods and hash-pinned research inputs.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark">🏈</span> NFL Line Lab</a>
-    <nav><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink active" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+    <nav aria-label="Main navigation"><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink active" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
   </div>
 </header>
-<main class="wrap wide">
-  <h1>Sources</h1>
-  <p class="lede">The pinned snapshot, the hashes, the official references and the verification log.</p>
-  
-<section>
-<h2>Pinned snapshot</h2>
-<p>All data comes from a single upstream commit, downloaded as an archive from
-<code>codeload.github.com</code> and hashed on arrival. The commit is
-<a href="https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645" target="_blank" rel="noopener">a270278f3ac4e937295fe6a27814b3c4a2b62645</a>
-of <code>nflverse/nfldata</code>.</p>
-<div class="tablewrap"><table class=""><caption>Every input file, pinned to a commit and hashed</caption><thead><tr><th>File</th><th>Bytes</th><th>Rows</th><th>SHA-256</th><th>Source</th></tr></thead><tbody><tr><td>DATASETS.md</td><td>17,642</td><td>—</td><td><code>8835ca9c15784a2c…</code></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">file</a></td></tr><tr><td>data/closing_lines.csv</td><td>942,229</td><td>20490</td><td><code>3571e1c9fc8d7396…</code></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">file</a></td></tr><tr><td>data/games.csv</td><td>2,187,803</td><td>7548</td><td><code>ba34f3619067eb44…</code></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">file</a></td></tr><tr><td>data/initial_lines.csv</td><td>45,068</td><td>1088</td><td><code>654770173d11fdb2…</code></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/initial_lines.csv" target="_blank" rel="noopener">file</a></td></tr><tr><td>data/predictions.csv</td><td>696,703</td><td>21915</td><td><code>72d42fb07158bda1…</code></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/predictions.csv" target="_blank" rel="noopener">file</a></td></tr><tr><td>data/sc_lines.csv</td><td>140,765</td><td>4092</td><td><code>384039e92630831e…</code></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/sc_lines.csv" target="_blank" rel="noopener">file</a></td></tr><tr><td>data/win_totals.csv</td><td>12,811</td><td>576</td><td><code>6228fe8c2cf41b34…</code></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/win_totals.csv" target="_blank" rel="noopener">file</a></td></tr></tbody></table></div>
-</section>
-
-<section>
-<h2>Player-level play-by-play</h2>
-<p>The props stage uses a second source. It is fetched through the GitHub git-blob API, pinned by
-blob SHA (not by a branch), and SHA-256 hashed on arrival into <code>data/sources_pbp.json</code>.</p>
-<div class="tablewrap"><table class=""><caption>Player-level inputs — pinned blob and hash (data/sources_pbp.json)</caption><thead><tr><th>File</th><th>Bytes</th><th>git blob SHA</th><th>SHA-256</th><th>Source</th></tr></thead><tbody><tr><td>play_by_play_2019.gzip</td><td>16,479,104</td><td><code>ca455dc08e86…</code></td><td><code>a49fe0c7c5a6424b…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2019.gzip" target="_blank" rel="noopener">file</a></td></tr><tr><td>play_by_play_2020.gzip</td><td>16,664,760</td><td><code>4daf7bdf2303…</code></td><td><code>d55fe0648b99077e…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2020.gzip" target="_blank" rel="noopener">file</a></td></tr><tr><td>play_by_play_2021.gzip</td><td>17,546,160</td><td><code>0dea4d024c1d…</code></td><td><code>26cf60bc202f9bd2…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2021.gzip" target="_blank" rel="noopener">file</a></td></tr><tr><td>play_by_play_2022.gzip</td><td>17,257,188</td><td><code>97b78a439e9e…</code></td><td><code>f303a9d126745665…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2022.gzip" target="_blank" rel="noopener">file</a></td></tr></tbody></table></div><p class="muted">Access method: GitHub git-blob API (api.github.com/repos/{repo}/git/blobs/{sha}, Accept: application/vnd.github.raw). Release assets are NOT used: they redirect to release-assets.githubusercontent.com, which the sandbox egress allowlist refuses.. Tier: verified third party: nflverse play-by-play, itself built from NFL gamebooks, mirrored byte-for-byte inside a public Git repository. Excluded seasons: 2023 (partial season in this repository (2,034,432 bytes, 5,660 plays); would silently understate rates).</p>
-</section>
-
-<section>
-<h2>Why this source and not another</h2>
-<p>The canonical distribution point for nflverse data is its release assets. In this build
-environment those assets redirect to <code>release-assets.githubusercontent.com</code>, which the
-egress policy refuses (measured, not assumed). The <code>nfldata</code> repository publishes the same
-game-level tables as ordinary files, so it is used instead, pinned by commit. Player-level
-play-by-play is not in that repository, so it is taken from the per-season gzip blobs mirrored in
-<code>clausherther/nfl-dbt</code> and fetched through the <code>api.github.com</code> git-blob
-endpoint, which <em>is</em> reachable. The provenance difference is recorded on the
-<a href="flagged.html">Flagged for review</a> page.</p>
-<pre class="pipeline">reachable : github.com · codeload.github.com · api.github.com (incl. git-blob raw)
-            registry.npmjs.org · pypi.org
-blocked   : raw.githubusercontent.com · release-assets.githubusercontent.com
-            objects.githubusercontent.com · www.nfl.com · operations.nfl.com (from the shell)</pre>
-<p>Official NFL rule pages are cited directly and were read with the agent's page-fetch tool, which
-is not subject to the shell's egress allowlist.</p>
-</section>
-
-<section>
-<h2>References</h2>
-<div class="tablewrap"><table class=""><caption>Definitions and official references cited</caption><thead><tr><th>Reference</th><th>What it is</th><th>Link</th></tr></thead><tbody><tr><td>nflverse/nfldata — games.csv (nflverse game-level schedule + closing lines)</td><td>open data mirror of NFL GSIS game results; maintained by nflverse</td><td><a href="https://github.com/nflverse/nfldata/blob/master/data/games.csv" target="_blank" rel="noopener">open</a></td></tr><tr><td>nflverse/nfldata repository (data dictionary: DATASETS.md)</td><td>documentation</td><td><a href="https://github.com/nflverse/nfldata/blob/master/DATASETS.md" target="_blank" rel="noopener">open</a></td></tr><tr><td>nflverse/nfldata — closing_lines.csv (per-side close price + outcome, 2006-2018)</td><td>open data</td><td><a href="https://github.com/nflverse/nfldata/blob/master/data/closing_lines.csv" target="_blank" rel="noopener">open</a></td></tr><tr><td>nflverse/nfldata — initial_lines.csv (2021 openers, book WSGT)</td><td>open data</td><td><a href="https://github.com/nflverse/nfldata/blob/master/data/initial_lines.csv" target="_blank" rel="noopener">open</a></td></tr><tr><td>nflverse/nfldata — sc_lines.csv (SuperContest consensus lines 2013-2020)</td><td>open data</td><td><a href="https://github.com/nflverse/nfldata/blob/master/data/sc_lines.csv" target="_blank" rel="noopener">open</a></td></tr><tr><td>nflverse-data release `schedules` (canonical games.csv distribution point)</td><td>open data release</td><td><a href="https://github.com/nflverse/nflverse-data/releases/tag/schedules" target="_blank" rel="noopener">open</a></td></tr><tr><td>NFL Football Operations — official playing rules (scoring, overtime, spots)</td><td>official NFL</td><td><a href="https://operations.nfl.com/the-rules/nfl-rulebook/" target="_blank" rel="noopener">open</a></td></tr><tr><td>NFL Rulebook, Rule 16 — sudden death / overtime procedures</td><td>official NFL</td><td><a href="https://operations.nfl.com/the-rules/nfl-rulebook/" target="_blank" rel="noopener">open</a></td></tr><tr><td>NFL Game Statistics &amp; Information System (GSIS) — source of the game IDs used here</td><td>official NFL</td><td><a href="https://www.nfl.com/" target="_blank" rel="noopener">open</a></td></tr></tbody></table></div>
-</section>
-
-<section>
-<h2>Verification log</h2>
-<div class="tablewrap"><table><thead><tr><th>Check</th><th>Result</th><th>Where</th></tr></thead><tbody>
-<tr><td>result reconciles with the score</td><td>7,384 / 7,384 games</td>
-<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>total reconciles with the score</td><td>7,384 / 7,384 games</td>
-<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>game_id uniqueness</td><td>7,548 unique of 7,548 rows</td>
-<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>spread sign convention</td><td>home-favoured rows win 67.4%, dog rows 35.3%</td>
-<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>spread sign vs moneyline sign</td><td>98.2% agreement</td>
-<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>settlement vs independent outcome column</td><td>99.93% where lines agree</td>
-<td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">closing_lines.csv</a></td></tr>
-<tr><td>every site table row has a source link</td><td>enforced by <code>pipeline/verify_site.py</code></td>
-<td><a href="flagged.html">build log</a></td></tr>
-</tbody></table></div>
-</section>
-
+<a class="skip-link" href="#main-content">Skip to content</a>
+<main id="main-content" class="wrap wide">
+  <h1>Sources &amp; downloads</h1>
+  <p class="lede">Official references, primary methods and hash-pinned research inputs.</p>
+  <p class="flag info"><strong>Evidence boundary.</strong> Official observations, model estimates and community-market research are separate. Unverified observations are blank in the public tables, not filled in. Reproducible estimates remain in the <a href="lab/index.html">clearly labelled research annex</a> and downloadable CSVs; they are not betting recommendations.</p><section><h2>Source hierarchy</h2><ol class="findings">
+<li><strong>Official observations:</strong> NFL game results, schedules, rules and player availability.</li>
+<li><strong>Primary methods:</strong> original paper, publisher or author/university record; a citation does not validate our implementation by itself.</li>
+<li><strong>Operator terms:</strong> the specific bookmaker's published settlement rules, not universal betting law.</li>
+<li><strong>Community research:</strong> pinned nflverse and replication archives, with hashes and explicit unverified status.</li></ol>
+<p>A source link is not a blanket endorsement. NFL.com does not authenticate the community sportsbook prices.</p></section>
+<section><h2>Official and primary references</h2><div class="tablewrap"><table class=""><caption>Authoritative context and method sources</caption><thead><tr><th>Reference</th><th>Type</th><th>Verification scope</th><th>Link</th></tr></thead><tbody><tr><td>NFL scores</td><td>NFL</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>NFL rules</td><td>NFL</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://operations.nfl.com/rules-officiating/2026-nfl-rulebook" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>NFL injuries</td><td>NFL</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>NFL schedule</td><td>NFL</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://www.nfl.com/schedules/" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>White (2000), Econometric Society</td><td>Primary paper</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>Bailey &amp; López de Prado (2014), publisher</td><td>Primary paper</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://www.pm-research.com/content/iijpormgmt/40/5/94" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>Benjamini &amp; Hochberg (1995), university record</td><td>University paper record</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://cris.tau.ac.il/en/publications/controlling-the-false-discovery-rate-a-practical-and-powerful-app-2/" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>Politis &amp; Romano (1994), publisher</td><td>Primary paper</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://www.tandfonline.com/doi/abs/10.1080/01621459.1994.10476870" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>FanDuel push settlement rules</td><td>Operator</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push" target="_blank" rel="noopener">Official / primary source</a></td></tr><tr><td>GitHub Pages documentation</td><td>Platform</td><td>Read during this integration; supports only the stated scope</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">Official / primary source</a></td></tr></tbody></table></div></section>
+<section><h2>Pinned research inputs</h2><div class="tablewrap"><table class=""><caption>Exact upstream snapshot; hash verification is not official NFL verification</caption><thead><tr><th>File</th><th>Bytes</th><th>SHA-256 prefix</th><th>Verification</th><th>Publisher link</th></tr></thead><tbody><tr><td>DATASETS.md</td><td>17642</td><td>8835ca9c15784a2c</td><td>Hash match; community source</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a> · <a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">Pinned publisher file</a></td></tr><tr><td>data/closing_lines.csv</td><td>942229</td><td>3571e1c9fc8d7396</td><td>Hash match; community source</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a> · <a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">Pinned publisher file</a></td></tr><tr><td>data/games.csv</td><td>2187803</td><td>ba34f3619067eb44</td><td>Hash match; community source</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a> · <a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">Pinned publisher file</a></td></tr><tr><td>data/initial_lines.csv</td><td>45068</td><td>654770173d11fdb2</td><td>Hash match; community source</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a> · <a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/initial_lines.csv" target="_blank" rel="noopener">Pinned publisher file</a></td></tr><tr><td>data/predictions.csv</td><td>696703</td><td>72d42fb07158bda1</td><td>Hash match; community source</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a> · <a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/predictions.csv" target="_blank" rel="noopener">Pinned publisher file</a></td></tr><tr><td>data/sc_lines.csv</td><td>140765</td><td>384039e92630831e</td><td>Hash match; community source</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a> · <a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/sc_lines.csv" target="_blank" rel="noopener">Pinned publisher file</a></td></tr><tr><td>data/win_totals.csv</td><td>12811</td><td>6228fe8c2cf41b34</td><td>Hash match; community source</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a> · <a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/win_totals.csv" target="_blank" rel="noopener">Pinned publisher file</a></td></tr></tbody></table></div></section>
+<section><h2>Download the evidence</h2><div class="cards smallcards">
+<a class="minicard" href="assets/data/strategy_gates.csv"><strong>Strategy gates</strong><span>Calculated research diagnostics and public verdicts.</span></a>
+<a class="minicard" href="assets/data/model_metrics.csv"><strong>Model metrics</strong><span>Paired per-market and per-season results.</span></a>
+<a class="minicard" href="assets/data/verification_report.csv"><strong>Site checks</strong><span>Row sources, links and evidence markers.</span></a>
+<a class="minicard" href="audit.html"><strong>Game-level audit</strong><span>NFL.com score comparisons with direct links.</span></a>
+<a class="minicard" href="data/audit/official_review.json"><strong>Official review log</strong><span>Source URLs, read dates and exact verification scope.</span></a>
+</div></section>
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
-    produced by <code>pipeline/</code> from the files listed on the
-    <a href="sources.html">Sources</a> page.</p>
+    <p>Research snapshot <code>a270278f3ac4</code> · source register generated 2026-11-02T17:26:06Z.
+    Official observations and unverified research estimates are distinguished on every page.
+    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a>.</p>
+    <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
 </body>

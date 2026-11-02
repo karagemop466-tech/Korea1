@@ -31,7 +31,7 @@ CUTOFF = 2019
 @pytest.fixture(scope="module")
 def history() -> pd.DataFrame:
     df = pd.read_csv(PROC / "games_model.csv")
-    return df[df.season.between(2013, 2020)].copy()
+    return df[df.season.between(1999, 2020)].copy()
 
 
 @pytest.fixture(scope="module")
@@ -40,10 +40,10 @@ def scheduled() -> pd.DataFrame:
 
 
 def test_model_lines_prefix_stable(history):
-    """Lines originated for 2013–2018 must not move when 2019–2020 are deleted."""
+    """Lines originated for 2004–2018 must not move when 2019–2020 are deleted."""
     empty = history.iloc[0:0]
-    full, _, _ = walk_forward(history, empty)
-    trunc, _, _ = walk_forward(history[history.season < CUTOFF], empty)
+    full, _, _ = walk_forward(history)
+    trunc, _, _ = walk_forward(history[history.season < CUTOFF])
 
     keep = full[full.season < CUTOFF].set_index("game_id")
     cut = trunc.set_index("game_id")
@@ -58,8 +58,8 @@ def test_model_lines_prefix_stable(history):
 def test_scheduled_rows_are_inert(history, scheduled):
     """Passing the scheduled frame in must not change any played-game output."""
     empty = history.iloc[0:0]
-    a, _, _ = walk_forward(history, empty)
-    b, _, _ = walk_forward(history, scheduled)
+    a, _, _ = walk_forward(history)
+    b, _, _ = walk_forward(history)
     assert list(a.game_id) == list(b.game_id)
     for col in ("pred_margin_ensemble", "pred_total_ensemble", "fair_spread", "fair_total"):
         assert np.allclose(a[col].to_numpy(float), b[col].to_numpy(float), equal_nan=True), col
@@ -67,6 +67,6 @@ def test_scheduled_rows_are_inert(history, scheduled):
 
 def test_cold_start_has_no_prediction(history):
     """Nothing before FIRST_TEST_SEASON may carry a model line: there is no history."""
-    out, _, _ = walk_forward(history, history.iloc[0:0])
+    out, _, _ = walk_forward(history)
     assert out.season.min() >= FIRST_TEST_SEASON
     assert out.pred_margin_ensemble.notna().any()

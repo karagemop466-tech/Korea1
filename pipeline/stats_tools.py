@@ -28,6 +28,10 @@ SEED = 20261101
 def bh_fdr(pvals: np.ndarray, q: float = 0.05) -> tuple[np.ndarray, np.ndarray]:
     """Benjamini–Hochberg. Returns (reject_mask, adjusted_p)."""
     p = np.asarray(pvals, float)
+    if not len(p):
+        return np.zeros(0, dtype=bool), np.empty(0)
+    if not np.isfinite(p).all() or ((p < 0) | (p > 1)).any():
+        raise ValueError("p-values must be finite and in [0,1]")
     n = len(p)
     order = np.argsort(p)
     ranked = p[order]
@@ -72,7 +76,7 @@ def stationary_bootstrap(pnl: np.ndarray, weeks: np.ndarray, n_boot: int = 10000
 
 def deflated_sharpe(sr: float, n_obs: int, n_trials: int, skew: float,
                     kurt: float, sr_variance_across_trials: float) -> float:
-    """P(true Sharpe > 0) after accounting for `n_trials` attempts.
+    """Approximate selection-adjusted tail probability, NOT P(skill).
 
     sr     : observed per-bet Sharpe (mean/sd of the ledger's pnl)
     skew   : skewness of the ledger pnl
@@ -92,28 +96,75 @@ def deflated_sharpe(sr: float, n_obs: int, n_trials: int, skew: float,
     return float(stats.norm.cdf((sr - sr0) * np.sqrt(n_obs - 1) / np.sqrt(denom)))
 
 
-def reality_check(week_matrix: np.ndarray, n_boot: int = 5000, seed: int = SEED) -> dict:
-    """White's Reality Check on a (weeks × strategies) matrix of mean pnl.
+def block_indices(n_blocks: int, n_boot: int, mean_block: float = 4.0,
+                  seed: int = SEED) -> np.ndarray:
+    """Shared circular stationary-bootstrap indices for aligned weekly returns."""
+    if n_blocks < 1 or mean_block <= 0:
+        raise ValueError("invalid block count or mean block length")
+    rng = np.random.default_rng(seed)
+    out = np.empty((n_boot, n_blocks), dtype=int)
+    p_continue = 1.0 - 1.0 / max(1.0, mean_block)
+    for b in range(n_boot):
+        pos = int(rng.integers(n_blocks))
+        for j in range(n_blocks):
+            out[b, j] = pos
+            pos = (pos + 1) % n_blocks if rng.random() < p_continue else int(rng.integers(n_blocks))
+    return out
 
-    H0: the best strategy in the library has no expected edge.
+
+def bootstrap_mean_test(returns: np.ndarray, n_boot: int = 5000,
+                        mean_block: float = 4.0, seed: int = SEED) -> dict:
+    """Centered null bootstrap and percentile CI for equal-week mean ROI.
+
+    Weekly returns, not individual bets, are the independent-ish observations.
+    The p-value is conditional on stationarity and adequate block length; it
+    does not establish causality or remove every source of luck.
+    """
+    x = np.asarray(returns, float)
+    if len(x) < 3 or not np.isfinite(x).all() or np.std(x, ddof=1) == 0:
+        return {k: float("nan") for k in ("p_raw", "ci_lo", "ci_hi", "mean")}
+    idx = block_indices(len(x), n_boot, mean_block, seed)
+    means = x[idx].mean(axis=1)
+    null = means - x.mean()
+    return {"p_raw": float((1 + np.sum(null >= x.mean())) / (n_boot + 1)),
+            "ci_lo": float(np.percentile(means, 2.5)),
+            "ci_hi": float(np.percentile(means, 97.5)), "mean": float(x.mean())}
+
+
+def holm(pvals: np.ndarray) -> np.ndarray:
+    """Holm adjusted p-values: FWER control under arbitrary dependence."""
+    p = np.asarray(pvals, float)
+    if not len(p):
+        return p.copy()
+    if not np.isfinite(p).all() or ((p < 0) | (p > 1)).any():
+        raise ValueError("invalid p-values")
+    order = np.argsort(p)
+    adjusted = np.maximum.accumulate((len(p) - np.arange(len(p))) * p[order])
+    out = np.empty(len(p))
+    out[order] = np.minimum(1, adjusted)
+    return out
+
+
+def reality_check(week_matrix: np.ndarray, n_boot: int = 5000, seed: int = SEED) -> dict:
+    """Centered, shared stationary bootstrap for the best equal-week return.
+
+    All strategies must be aligned on the SAME complete calendar-week index,
+    with zero return in weeks with no ticket. NaNs are not silently dropped.
     """
     X = np.asarray(week_matrix, float)
     T, k = X.shape
-    rng = np.random.default_rng(seed)
-    obs = np.nanmean(X, axis=0)
-    best = np.nanmax(obs)
+    if T < 3 or k < 1 or not np.isfinite(X).all():
+        raise ValueError("reality check requires a finite aligned weekly matrix")
+    obs = X.mean(axis=0)
+    best = float(obs.max())
+    idx = block_indices(T, n_boot, seed=seed)
     centred = X - obs
-    stats_b = np.empty(n_boot)
-    for b in range(n_boot):
-        idx = rng.integers(0, T, T)          # week-level resampling, whole rows
-        sample = centred[idx]
-        stats_b[b] = np.nanmax(np.nanmean(sample, axis=0))
-    return {
-        "observed_best_mean_pnl": float(best),
-        "p_value": float(np.mean(stats_b >= best)),
-        "n_weeks": int(T),
-        "n_strategies": int(k),
-    }
+    stats_b = centred[idx].mean(axis=1).max(axis=1)
+    return {"observed_best_mean_pnl": best,
+            "p_value": float((1 + np.sum(stats_b >= best)) / (n_boot + 1)),
+            "n_weeks": int(T), "n_strategies": int(k), "n_boot": n_boot,
+            "seed": seed, "mean_block_weeks": 4,
+            "estimand": "equal-calendar-week ROI; no-bet weeks return zero"}
 
 
 def required_n(roi: float, sd: float = 1.0, alpha: float = 0.05,

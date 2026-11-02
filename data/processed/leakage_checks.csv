@@ -1,0 +1,6 @@
+check,passed
+unique game IDs,True
+no outcome or market fields in model feature lists,True
+chronological game order,True
+first franchise appearance Elo=1500,True
+no observed weather/roof imputation in default features,True

@@ -9,15 +9,17 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import math
+import numpy as np
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROC = ROOT / "data" / "processed"
-DOCS = ROOT / "docs"
-DOCS_DATA = DOCS / "data"
+SITE = ROOT
+SITE_DATA = SITE / "assets" / "data"
 
-for _p in (RAW, PROC, DOCS, DOCS_DATA):
+for _p in (RAW, PROC, SITE_DATA):
     _p.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
@@ -77,8 +79,10 @@ def pct(x, nd=1, dash="—"):
 
 # American odds helpers ------------------------------------------------------
 def american_to_decimal(a: float) -> float:
-    """Convert American odds to decimal (payout multiple incl. stake)."""
+    """Convert valid American odds to decimal (payout multiple incl. stake)."""
     a = float(a)
+    if not math.isfinite(a) or -100 < a < 100:
+        raise ValueError(f"invalid American odds: {a}")
     if a > 0:
         return 1.0 + a / 100.0
     return 1.0 + 100.0 / abs(a)

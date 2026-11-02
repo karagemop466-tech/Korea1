@@ -21,7 +21,6 @@ from __future__ import annotations
 import datetime as dt
 import io
 import json
-import os
 import subprocess
 import sys
 import tarfile
@@ -45,33 +44,8 @@ FILES = [
 ]
 
 
-def pinned_sha() -> str | None:
-    """The commit already recorded in data/sources.json, if any.
-
-    The build must reproduce the *published* numbers, so an existing pin wins. Resolving the
-    live branch head on every run would silently re-pin the whole project to a newer upstream
-    commit and change every figure on the site without a single line of analysis changing.
-    """
-    manifest = ROOT / "data" / "sources.json"
-    if not manifest.exists():
-        return None
-    try:
-        recorded = json.loads(manifest.read_text()).get("upstream", {}).get("commit_sha")
-    except (json.JSONDecodeError, OSError):
-        return None
-    return recorded or None
-
-
 def resolve_sha() -> str:
-    """Pin the exact upstream commit.
-
-    `NFDATA_SHA=<commit> make build` reproduces a *published* build byte-for-byte; without it the
-    build pins whatever master is at run time (which is why the published snapshot is dated).
-    """
-    pinned = os.environ.get("NFDATA_SHA", "").strip()
-    if pinned:
-        print(f"using NFDATA_SHA={pinned} (explicit pin, not resolved from master)")
-        return pinned
+    """Pin the exact upstream commit with git (github.com is reachable)."""
     out = subprocess.run(
         ["git", "ls-remote", f"https://github.com/{REPO}", f"refs/heads/{BRANCH}"],
         capture_output=True, text=True, timeout=120, check=True,
@@ -89,11 +63,26 @@ def download_archive(sha: str) -> bytes:
 
 
 def main() -> None:
-    sha = os.environ.get("NFDATA_SHA") or pinned_sha()
-    if sha:
-        print(f"using pinned commit from data/sources.json: {sha}")
+    import argparse
+    from common import read_json
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--refresh-pin", action="store_true",
+                        help="Explicitly resolve upstream master and replace the pin; audited review required")
+    args = parser.parse_args()
+    manifest = ROOT / "data" / "sources.json"
+    prior = read_json(manifest) if manifest.exists() else None
+    if prior and not args.refresh_pin:
+        expected = prior["files"]
+        if all((ROOT / f["local"]).exists() and sha256_of(ROOT / f["local"]) == f["sha256"]
+               and (ROOT / f["local"]).stat().st_size == f["bytes"] for f in expected):
+            print("Pinned inputs already staged; all hashes match. Manifest unchanged.")
+            return
+    if manifest.exists() and not args.refresh_pin:
+        sha = read_json(manifest)["upstream"]["commit_sha"]
     else:
         sha = resolve_sha()
+    if len(sha) != 40 or any(c not in "0123456789abcdef" for c in sha):
+        raise ValueError("upstream pin must be a full lowercase commit SHA")
     print(f"pinned {REPO}@{sha}")
     blob = download_archive(sha)
     print(f"archive bytes: {len(blob):,}")
@@ -109,14 +98,6 @@ def main() -> None:
             target = RAW / parts[1].replace("data/", "")
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
-            # The archived packages (`analysis/`, `archive/**`) and the leak tests in
-            # `tests/test_no_lookahead.py` read the upstream checkout layout
-            # (`data/raw/nfldata/data/*.csv`) rather than the flat `data/raw/*.csv`.
-            # Write both so one fetch serves every consumer; the flat copy is the
-            # manifest-tracked one, the mirror is git-ignored.
-            mirror = RAW / "nfldata" / parts[1]
-            mirror.parent.mkdir(parents=True, exist_ok=True)
-            mirror.write_bytes(data)
             extracted[parts[1]] = target
             print(f"  {parts[1]:28s} {len(data):>10,} bytes -> {target.relative_to(ROOT)}")
 
@@ -163,6 +144,13 @@ def main() -> None:
             entry["columns"] = list(df.columns)
         record["files"].append(entry)
 
+    if prior and not args.refresh_pin:
+        by_path = {f["local"]: f for f in record["files"]}
+        for old in prior["files"]:
+            new = by_path[old["local"]]
+            if new["sha256"] != old["sha256"] or new["bytes"] != old["bytes"]:
+                raise RuntimeError(f"pinned input changed: {old['local']}")
+        record["generated_utc"] = prior["generated_utc"]
     write_json(ROOT / "data" / "sources.json", record)
     print("wrote data/sources.json")
 
