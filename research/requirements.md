@@ -9,7 +9,7 @@ Final integration owner: `arena/ed58af62-korea1`. Updated 2026-11-02.
 | R03 | Research signal strategies | `pipeline/strategies.py`; complete candidate and hypothesis register | Implemented; no validated edge |
 | R04 | Single bets | Spread, total, moneyline and situational candidates | Implemented; executable quotes unavailable |
 | R05 | Parlays | Simultaneous-slate selection; push-aware research settlement; price stress | Implemented; not executable ticket validation |
-| R06 | Player-prop combinations | `props.html`; input inventory and joint-distribution protocol | Blocked by missing verified prop prices/quotes |
+| R06 | Player-prop combinations | Pinned community player statistics, research lines, dependence and combo calculations | Executable validation blocked by missing verified prop prices/quotes |
 | R07 | Every strategy passes validation gates | Eight fail-closed gates; `strategy_gates.csv`; regression tests | Enforced; no strategy currently validated |
 | R08 | Determine correlation values | Weekly-cluster research estimates; strict public blanks for unverified inputs | Partial; no invented prop correlations |
 | R09 | Remove luck / build selectively skill-based strategies | Weekly bootstrap, Holm, power, provisional DSR, stability, redundancy, prospective protocol | Mitigation implemented; luck cannot be eliminated |

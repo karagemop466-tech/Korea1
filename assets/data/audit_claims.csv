@@ -1,0 +1,62 @@
+page,claim,published,rederived,match,source
+strategies.html,leaderboard PARLAY3_EDGE: bets/win rate/ROI,377 / 17.2% / 19.44%,377 / 17.2% / 19.44%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard PARLAY2_EDGE: bets/win rate/ROI,400 / 31.2% / 14.60%,400 / 31.2% / 14.60%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard WIND_UNDER: bets/win rate/ROI,456 / 56.1% / 9.15%,456 / 56.1% / 9.15%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard FADE_BLOWOUT_ATS: bets/win rate/ROI,922 / 52.4% / 1.80%,922 / 52.4% / 1.80%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard SP_EDGE_3_0: bets/win rate/ROI,"1,687 / 52.3% / 1.50%",1687 / 52.3% / 1.50%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard TOT_EDGE_3_5: bets/win rate/ROI,"1,094 / 52.0% / 1.17%",1094 / 52.0% / 1.17%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard DIV_UNDER: bets/win rate/ROI,"1,908 / 51.9% / 1.12%",1908 / 51.9% / 1.12%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard SP_EDGE_2_0: bets/win rate/ROI,"2,672 / 51.7% / 0.44%",2672 / 51.7% / 0.44%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard TOT_EDGE_2_0: bets/win rate/ROI,"2,446 / 51.3% / -0.29%",2446 / 51.3% / -0.29%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard BUY_LOW_ATS: bets/win rate/ROI,"1,349 / 51.0% / -1.07%",1349 / 51.0% / -1.07%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard ML_EDGE_10: bets/win rate/ROI,"1,195 / 33.7% / -1.28%",1195 / 33.7% / -1.28%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard SP_EDGE_1_0: bets/win rate/ROI,"3,927 / 50.5% / -1.78%",3927 / 50.5% / -1.78%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard HOME_DOG_ATS: bets/win rate/ROI,"1,939 / 50.3% / -2.16%",1939 / 50.3% / -2.16%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard REST_ADV_ATS: bets/win rate/ROI,515 / 50.3% / -2.22%,515 / 50.3% / -2.22%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard ROAD_FAV_ATS: bets/win rate/ROI,"1,939 / 49.7% / -2.94%",1939 / 49.7% / -2.94%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard ML_EDGE_5: bets/win rate/ROI,"2,640 / 34.6% / -3.84%",2640 / 34.6% / -3.84%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard PARLAY2_ML: bets/win rate/ROI,405 / 10.4% / -5.39%,405 / 10.4% / -5.39%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard COLD_UNDER: bets/win rate/ROI,278 / 45.6% / -11.31%,278 / 45.6% / -11.31%,True,data/processed/strategy_summary.csv
+validation.html,verdict PARLAY3_EDGE,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict PARLAY2_EDGE,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict WIND_UNDER,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict FADE_BLOWOUT_ATS,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict SP_EDGE_3_0,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict TOT_EDGE_3_5,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict DIV_UNDER,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict SP_EDGE_2_0,LUCK,LUCK,True,data/processed/strategy_gates.csv
+validation.html,verdict TOT_EDGE_2_0,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict BUY_LOW_ATS,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict ML_EDGE_10,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict SP_EDGE_1_0,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict HOME_DOG_ATS,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict REST_ADV_ATS,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict ROAD_FAV_ATS,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict ML_EDGE_5,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict PARLAY2_ML,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+validation.html,verdict COLD_UNDER,NO EDGE,NO EDGE,True,data/processed/strategy_gates.csv
+lines.html,MAE ridge/spread,10.53,10.53,True,data/processed/model_metrics.csv
+lines.html,MAE ridge/total,10.73,10.73,True,data/processed/model_metrics.csv
+lines.html,MAE matchup/spread,10.53,10.53,True,data/processed/model_metrics.csv
+lines.html,MAE matchup/total,10.76,10.76,True,data/processed/model_metrics.csv
+lines.html,MAE elo/spread,10.60,10.60,True,data/processed/model_metrics.csv
+lines.html,MAE elo/total,—,—,True,data/processed/model_metrics.csv
+lines.html,MAE ensemble/spread,10.53,10.53,True,data/processed/model_metrics.csv
+lines.html,MAE ensemble/total,10.73,10.73,True,data/processed/model_metrics.csv
+lines.html,MAE market/spread,10.22,10.22,True,data/processed/model_metrics.csv
+lines.html,MAE market/total,10.53,10.53,True,data/processed/model_metrics.csv
+sources.html,provenance DATASETS.md: bytes + SHA-256 prefix,"17,642 / 8835ca9c15784a2c…","17,642 / 8835ca9c15784a2c",True,https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md
+lines.html,open board: our spread is published for every row,28/28 rows,all rows,True,data/processed/originated_upcoming.csv
+audit.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+correlations.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+executive-summary.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+flagged.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+index.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+lines.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+methodology.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+props.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+requirements.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+sources.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+strategies.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+validation.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645
+verification.html,footer carries the pinned commit,True,a270278f3ac4,True,https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645

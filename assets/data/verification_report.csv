@@ -6,11 +6,12 @@ flagged.html,19,2,0,,,,True,True,True,True,True,True,True,True
 index.html,18,1,0,,,,True,True,True,True,True,True,True,True
 lines.html,190,3,0,,,,True,True,True,True,True,True,True,True
 methodology.html,12,2,0,,,,True,True,True,True,True,True,True,True
-props.html,10,2,0,,,,True,True,True,True,True,True,True,True
+props.html,17,3,0,,,,True,True,True,True,True,True,True,True
 requirements.html,18,1,0,,,,True,True,True,True,True,True,True,True
 sources.html,17,2,0,,,,True,True,True,True,True,True,True,True
 strategies.html,23,2,0,,,,True,True,True,True,True,True,True,True
 validation.html,26,2,0,,,,True,True,True,True,True,True,True,True
+verification.html,9,1,0,,,,True,True,True,True,True,True,True,True
 lab/correlation.html,6,1,0,,,,True,True,True,True,True,True,True,True
 lab/flagged.html,4,1,0,,,,True,True,True,True,True,True,True,True
 lab/index.html,4,1,0,,,,True,True,True,True,True,True,True,True

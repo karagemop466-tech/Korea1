@@ -194,9 +194,30 @@ def prior_oof_residuals(tr: pd.DataFrame, target: str) -> np.ndarray:
         else:
             p /= 2
         errors.extend(valid[target_col].to_numpy(float) - p)
-    if len(errors) < 200:
-        raise ValueError("insufficient out-of-fold history for predictive distribution")
-    return np.asarray(errors)
+    if len(errors) >= 200:
+        return np.asarray(errors)
+    # Early-history fallback: expanding prefix predictions, still never the
+    # target season's outcomes. Used only when three OOF seasons are unavailable.
+    fallback=[]
+    for season in sorted(tr.season.unique()):
+        fit,valid=tr[tr.season<season],tr[tr.season==season]
+        if len(fit)<400 or len(valid)<20:
+            continue
+        X,y=fit[feature_cols].to_numpy(float),fit[target_col].to_numpy(float)
+        w=_weights(fit.season.to_numpy(int),int(season))
+        alpha=inner_cv_alpha(X,y,fit.season.to_numpy(int),int(season))
+        beta,mu,sd=fit_ridge(X,y,w,alpha)
+        b2=fit_ols(fit[exp_col].to_numpy(float),y,w)
+        p=predict_ridge(beta,mu,sd,valid[feature_cols].to_numpy(float))+b2[0]+b2[1]*valid[exp_col].to_numpy(float)
+        if target=="margin":
+            b3=fit_ols(fit.elo_diff.to_numpy(float),y,w)
+            p=(2*p+b3[0]+b3[1]*valid.elo_diff.to_numpy(float))/3
+        else:
+            p/=2
+        fallback.extend(valid[target_col].to_numpy(float)-p)
+    if len(fallback)<50:
+        raise ValueError("insufficient prior-only history for predictive distribution")
+    return np.asarray(fallback)
 
 
 # ---------------------------------------------------------------------------

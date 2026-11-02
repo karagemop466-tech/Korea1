@@ -146,6 +146,47 @@ def adjusted_ratings(raw: pd.DataFrame, alpha: float = 12.0,
 
     return out
 
+WEATHER_COLS = ("temp", "wind")
+
+
+def fold_safe_weather_fill(played: pd.DataFrame) -> tuple[dict, dict]:
+    """Expanding weather fill: the median of games played on a *strictly earlier* date.
+
+    Why not ``frame[col].median()``: that statistic is computed on the whole history, so a
+    2004 row is imputed with a number that depends on games played in 2025 — and, for the
+    scheduled frame, with a median that includes the very games being priced. Session
+    ``arena/8eb93b26-korea1`` flagged this as a fold-preprocessing defect
+    (``notes/no-lookahead-2026-11-02.md``).
+
+    The rule here is chronological by construction: for a game on date ``d`` the fill is
+    the median of observed values at all dates ``< d``. Scheduled games take the final
+    expanding median (all games played up to the snapshot) — fold-safe, and never NaN.
+    """
+    played = played.copy()
+    played["_date"] = pd.to_datetime(played["gameday"])
+    fills: dict[str, pd.Series] = {}
+    record: dict = {"method": "median of games played on a strictly earlier date",
+                    "columns": {}, "as_of": str(played["_date"].max().date())}
+    for col in WEATHER_COLS:
+        obs = played.dropna(subset=[col]).sort_values(["_date", "game_id"])
+        obs_dates = obs["_date"].to_numpy()
+        obs_values = obs[col].to_numpy(float)
+        dates = np.sort(played["_date"].unique())
+        med = np.empty(len(dates), dtype=float)
+        for i, d in enumerate(dates):
+            j = int(np.searchsorted(obs_dates, d, side="left"))
+            med[i] = np.median(obs_values[:j]) if j else np.nan
+        fills[col] = pd.Series(med, index=pd.DatetimeIndex(dates))
+        record["columns"][col] = {
+            "observed_games": int(len(obs)),
+            "missing_in_played": int(played[col].isna().sum()),
+            "final_fill": round(float(np.median(obs_values)), 3) if len(obs_values) else None,
+            "fill_min": round(float(np.nanmin(med)), 3) if len(med) else None,
+            "fill_max": round(float(np.nanmax(med)), 3) if len(med) else None,
+        }
+    return fills, record
+
+
 def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
     raw = pd.read_csv(RAW / "games.csv")
     raw["gameday"] = pd.to_datetime(raw["gameday"], errors="coerce")

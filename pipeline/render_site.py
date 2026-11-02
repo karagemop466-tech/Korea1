@@ -55,6 +55,7 @@ NAV = [
     ("flagged.html", "Flagged for review"),
     ("sources.html", "Sources"),
     ("audit.html", "Independent audit"),
+    ("verification.html", "Reproducibility"),
     # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
     # same questions from a different odds archive. Served from lab/ and not part of this render.
     ("lab/index.html", "Replication annex"),
@@ -221,7 +222,7 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="lines.html"><strong>Originated lines</strong><span>Market-free models, paired benchmarks and upcoming research lines.</span></a>
 <a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, multiplicity, costs and replication.</span></a>
 <a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
-<a class="minicard" href="props.html"><strong>Player props</strong><span>Required inputs, combo design and missing evidence.</span></a>
+<a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
 <a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
 </div></section>
@@ -252,7 +253,7 @@ has passed every gate. This is an evidence gap, not proof that every strategy ha
 ["Official score verification", f"{matched} matching games", "A sampled NFL.com check, not verification of all historical results.", official("NFL scores")],
 ["Market verification", BLANK + " UNVERIFIED", "Community closing lines are hash-verified as files, not authenticated as bookmaker quotes.", official("NFL scores")],
 ["Single bets and parlays", f"{len(gates)} candidates; none validated", "Parlay products are research simulations, not confirmed ticket offers. Simultaneous-slate selection prevents the observed whole-week lookahead.", official("FanDuel push settlement rules")],
-["Player-prop combinations", BLANK + " UNVERIFIED", "No verified prop-price history or joint ticket quotes; no prop ROI or correlation is presented as established.", official("NFL injuries")],
+["Player-prop combinations", BLANK + " UNVERIFIED", "Community play-by-play and calculated prop lines are integrated; verified prop prices and joint ticket quotes are still missing. No prop ROI is claimed.", official("NFL injuries")],
 ["Luck control", "Implemented with limits", "Weekly-block bootstrap, Holm FWER, power, cost stress, stability and redundancy. No test can eliminate luck entirely.", official("White (2000), Econometric Society")],
 ["Competition rewards", "Unawarded", "Recognition only after every gate; no funded prize pool is represented as existing.", official("White (2000), Econometric Society")],
 ["Publication", "Static GitHub Pages", "Root publishing source is confirmed through the repository Pages API; deployment is rechecked after merge.", official("GitHub Pages documentation")],
@@ -414,7 +415,7 @@ Fair parlay EV = Σ joint-outcome probability × net payout</pre>
 
 def build_props(d):
     rows = [[name, BLANK, status, official(ref)] for name,status,ref in [
-        ("Player opportunity / role history", "UNVERIFIED — no official row-level archive integrated", "NFL injuries"),
+        ("Player opportunity / role history", "UNVERIFIED — community play-by-play integrated; official row-level census incomplete", "NFL injuries"),
         ("Timestamped injury / active status", "UNVERIFIED — current official page exists; historical snapshots not integrated", "NFL injuries"),
         ("Player prop opening / closing prices", "UNVERIFIED — no authenticated price archive", "NFL scores"),
         ("Bookmaker prop settlement terms", "UNVERIFIED — market-specific terms required", "FanDuel push settlement rules"),
@@ -429,10 +430,16 @@ def build_props(d):
     ]]
     body = f"""{notice()}
 <section><h2>No invented prop edge</h2><p>Player-prop combinations are a research category, not a validated product.
-The canonical archive has no authenticated prop prices or joint ticket quotes. The annex contains historical
-play-by-play research, but that does not verify a prop line, player role at decision time, or executable payout.
+A sibling session subsequently integrated hash-pinned community play-by-play (2019–2022) and originated
+research prop lines. That is real calculated research, but it is not an official row-level census or an
+authenticated prop-price archive. Player role at decision time and executable joint payouts remain unverified.
 No prop ROI is claimed.</p>{table(rows, ["Input", "Value", "Verification status", "Official reference"], caption="Prop evidence inventory")}</section>
 <section><h2>Combo hypotheses to test—not picks</h2>{table(combos, ["Combo", "Mechanism to test", "Validated ROI", "Status", "Official context"], caption="No player, line, price or correlation is inferred")}</section>
+<section><h2>Integrated research prop module</h2><p>The pinned community mirror supports calculated player-game lines and dependence estimates.
+The public numeric cells stay blank until official row-level and price provenance is complete.</p>
+{table([[e(r.pair), BLANK, BLANK, BLANK, "UNVERIFIED", official("NFL scores")] for r in pd.read_csv(PROC / "prop_correlation_summary.csv").itertuples()],
+["Leg pair", "Within correlation", "Joint lift", "Interval", "Status", "Official context"], caption="Calculated prop dependence; unverified research estimates")}
+<p><a href="data/processed/prop_lines.csv">Originated research prop lines</a> · <a href="assets/data/prop_combos.csv">Combo calculations</a> · <a href="assets/data/prop_gates.csv">Prop gates</a></p></section>
 <section><h2>Build protocol</h2><ol class="findings">
 <li>Archive official player statistics and reconstruct the information available before kickoff.</li>
 <li>Use stable player IDs and franchise mappings; account for inactive players and role changes.</li>
@@ -480,7 +487,7 @@ def build_flagged(d):
         ["F-04", "High · repaired", "Whole-week parlay selection could use later-game information. Selection now uses an earliest eligible simultaneous kickoff slate.", official("FanDuel push settlement rules")],
         ["F-05", "High · repaired", "Gates used hard-coded leakage, inadequate fixed sample thresholds, bet-level inference and an incomplete final verdict check. Gates now fail closed and use weekly inference, Holm, power and all eight checks.", official("White (2000), Econometric Society")],
         ["F-06", "High · open", "No authenticated historical executable quote archive. Strict public market values are blank; research calculations remain separately labelled.", official("NFL scores")],
-        ["F-07", "High · open", "No verified player-prop prices or joint SGP quotes. No prop ROI is claimed.", official("NFL injuries")],
+        ["F-07", "High · open", "Community player statistics and research prop lines are integrated, but no verified prop prices or joint SGP quotes. No prop ROI is claimed.", official("NFL injuries")],
         ["F-08", "Medium · open", "The complete number of exploratory trials is unknown. Deflated Sharpe is provisional and cannot validate a strategy.", official("Bailey & López de Prado (2014), publisher")],
         ["F-09", "Medium · open", "Official score verification is a sample, not a census. Community file hashes do not authenticate every score, line or weather observation.", official("NFL scores")],
         ["F-10", "Medium · repaired", "A normal continuity correction was described as correctly pricing NFL key numbers. The model now uses prior out-of-fold empirical residuals; predictive calibration remains unverified.", official("NFL scores")],
@@ -547,6 +554,18 @@ def build_requirements(d):
 not proof of a betting edge. Blocked evidence is published rather than fabricated.</p>
 {table(rows, ["ID", "Requirement", "Status", "Delivery / limitation", "Reference"], caption="Line-by-line coverage of the requested work")}</section>"""
     return layout("requirements.html", "Requirements", "Requested work mapped to delivered artifacts and explicit evidence gaps.", body, wide=True)
+
+
+def build_reproducibility(d):
+    checks = pd.read_csv(PROC / "verification_data.csv") if (PROC / "verification_data.csv").exists() else pd.DataFrame()
+    rows = [[e(r.check), "PASS" if r.passed else "FAIL", "Executed final-build guard", official("GitHub Pages documentation")] for r in checks.itertuples()]
+    rows += [["Pinned input hashes", "Checked on fetch", "A hash mismatch stops the build", official("GitHub Pages documentation")],
+             ["Historical independent audit", "Preserved", "Earlier re-derivation is retained in data/processed/audit.json; its old headline numbers are superseded by the final pipeline.", official("White (2000), Econometric Society")],
+             ["Prop source integrity", "Pinned community blobs", "Player statistics are available through a hash-pinned community mirror; official row-level verification and prop prices are still missing.", official("NFL scores")]]
+    body = notice() + table(rows, ["Check", "Result", "Scope", "Reference"], caption="Final reproducibility guards and preserved sibling audit") + """
+<section><h2>Reproduce</h2><pre class="pipeline">make build
+make test</pre><p><a href="assets/data/verification_report.csv">Page verification CSV</a> · <a href="assets/data/verification_data.csv">Data guards CSV</a> · <a href="https://github.com/karagemop466-tech/Korea1/blob/main/data/processed/audit.json">Historical independent audit JSON (superseded headlines)</a></p></section>"""
+    return layout("verification.html", "Reproducibility", "Executed guards, pinned inputs and the preserved independent audit.", body)
 
 
 CSS = """
@@ -656,6 +675,7 @@ def main() -> None:
         # T10 (arena/1642ee06-korea1): independent official-source audit
         "audit.html": build_audit(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
         "requirements.html": build_requirements(d),
+        "verification.html": build_reproducibility(d),
     }
     for name, html_text in pages.items():
         (SITE / name).write_text(html_text, encoding="utf-8")
@@ -667,7 +687,7 @@ def main() -> None:
     # only the small result tables are mirrored for download; the large working
     # tables stay in data/processed/ so the repository does not carry two copies.
     skip = {"games_model.csv", "strategy_bets.csv", "settlement_crosscheck.csv",
-            "originated_lines.csv", "upcoming.csv"}
+            "originated_lines.csv", "upcoming.csv", "prop_lines.csv", "prop_player_games.csv"}
     for f in PROC.glob("*.csv"):
         if f.name in skip or f.stat().st_size > 200_000:
             continue

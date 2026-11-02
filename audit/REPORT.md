@@ -55,7 +55,7 @@ GitHub Pages documentation was read. Failed regulator PDF fetches were not used 
 
 ## Remaining limitations
 
-No authenticated historical executable quote archive; no verified prop-price/SGP archive; incomplete
+No authenticated historical executable quote archive; community player statistics and research prop lines are integrated, but no verified prop-price/SGP archive; incomplete
 trial history; partial official score coverage; no verified pregame availability timestamps for historical
 weather/roof; no untouched prospective replication. These block validation and rewards, not publication
 of a transparent research dashboard.
