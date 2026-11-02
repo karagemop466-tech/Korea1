@@ -986,3 +986,11 @@ resolved in the generators and then rebuilt, not by hand-editing HTML:
 Post-merge verification: `make build` passed; 29 pytest regressions passed; 22 pages had zero broken
 internal links/assets and zero missing official/primary row references; annex 9/9 checks and link check
 passed. The final canonical verdict remains 0 validated strategies and no reward award.
+
+### Push-time rebase conflict — resolved by retaining the integration merge
+
+After the final merge commit, `git pull --rebase origin main` attempted to replay the original claim
+and implementation commits across the already-integrated merge and stopped on an append-only
+`COORDINATION.md` conflict. The rebase was aborted before any work was discarded. A non-rebasing
+pull confirmed the integration merge already contains the current `main`; the merge commit preserves
+both histories and the resolved generators. The branch is pushed without rewriting that merge.
