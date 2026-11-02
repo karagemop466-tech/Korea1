@@ -994,3 +994,20 @@ and implementation commits across the already-integrated merge and stopped on an
 `COORDINATION.md` conflict. The rebase was aborted before any work was discarded. A non-rebasing
 pull confirmed the integration merge already contains the current `main`; the merge commit preserves
 both histories and the resolved generators. The branch is pushed without rewriting that merge.
+
+## F1–F3 DONE — final PR, merge and live deployment record
+
+| Step | Result |
+|---|---|
+| Final integration PR | [#20](https://github.com/karagemop466-tech/Korea1/pull/20), `arena/ed58af62-korea1` → `main` |
+| CI before merge | `verify` passed on both push and pull_request events (run 41521979578 / 41521990550); pinned rebuild, 29 regressions, strict source/link checks and numerical-tolerance generated-output check |
+| Merge | **MERGED** 2026-11-02T20:52:18Z without waiting for approval; merge commit `4d8d0ff9d09e30b0e030b1acda54102e667f0919` |
+| GitHub Pages | source unchanged: `main` / repository root; `pages/builds/latest` returned `built`, commit `4d8d0ff9d09e30b0e030b1acda54102e667f0919`, error message null |
+| Live landing page | <https://karagemop466-tech.github.io/Korea1/?v=20> fetched successfully: strict evidence view, 0 validated strategies, 31 official score matches, blank unverified metrics and official references rendered |
+| Live category checks | `props.html`, `flagged.html` and `lab/index.html` fetched with cache-busting query after the merge |
+| Final decision | 0 canonical strategies validated; no reward award; missing authenticated executable quotes and verified prop prices remain flagged |
+
+F1 (audit), F2 (repairs/dashboard) and F3 (integration/deploy) are complete for this session.
+Open sibling PR #19 was not closed or force-pushed. All merged sibling work through PRs #15–#18
+was preserved and re-verified. The final public dashboard is live at
+<https://karagemop466-tech.github.io/Korea1/>.
