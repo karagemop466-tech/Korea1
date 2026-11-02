@@ -1,0 +1,8 @@
+season,player,player_id,stat,ours,published,delta,match,source,url
+2021,T.Brady,00-0019596,pass_yds,5316.0,5316.0,0.0,True,Pro-Football-Reference 2021 passing,https://www.pro-football-reference.com/years/2021/passing.htm
+2021,M.Stafford,00-0026498,pass_yds,4886.0,4886.0,0.0,True,Pro-Football-Reference 2021 passing,https://www.pro-football-reference.com/years/2021/passing.htm
+2021,P.Mahomes,00-0033873,pass_yds,4839.0,4839.0,0.0,True,Pro-Football-Reference 2021 passing,https://www.pro-football-reference.com/years/2021/passing.htm
+2021,D.Carr,00-0031280,pass_yds,4804.0,4804.0,0.0,True,Pro-Football-Reference 2021 passing,https://www.pro-football-reference.com/years/2021/passing.htm
+2021,C.Kupp,00-0033908,rec,145.0,145.0,0.0,True,Pro-Football-Reference 2021 receiving,https://www.pro-football-reference.com/years/2021/receiving.htm
+2021,C.Kupp,00-0033908,rec_yds,1947.0,1947.0,0.0,True,Pro-Football-Reference 2021 receiving,https://www.pro-football-reference.com/years/2021/receiving.htm
+2021,J.Taylor,00-0036223,rush_yds,1811.0,1811.0,0.0,True,Pro-Football-Reference 2021 rushing,https://www.pro-football-reference.com/years/2021/rushing.htm

@@ -21,6 +21,7 @@ from __future__ import annotations
 import datetime as dt
 import io
 import json
+import os
 import subprocess
 import sys
 import tarfile
@@ -44,6 +45,23 @@ FILES = [
 ]
 
 
+def pinned_sha() -> str | None:
+    """The commit already recorded in data/sources.json, if any.
+
+    The build must reproduce the *published* numbers, so an existing pin wins. Resolving the
+    live branch head on every run would silently re-pin the whole project to a newer upstream
+    commit and change every figure on the site without a single line of analysis changing.
+    """
+    manifest = ROOT / "data" / "sources.json"
+    if not manifest.exists():
+        return None
+    try:
+        recorded = json.loads(manifest.read_text()).get("upstream", {}).get("commit_sha")
+    except (json.JSONDecodeError, OSError):
+        return None
+    return recorded or None
+
+
 def resolve_sha() -> str:
     """Pin the exact upstream commit with git (github.com is reachable)."""
     out = subprocess.run(
@@ -63,7 +81,11 @@ def download_archive(sha: str) -> bytes:
 
 
 def main() -> None:
-    sha = resolve_sha()
+    sha = os.environ.get("NFDATA_SHA") or pinned_sha()
+    if sha:
+        print(f"using pinned commit from data/sources.json: {sha}")
+    else:
+        sha = resolve_sha()
     print(f"pinned {REPO}@{sha}")
     blob = download_archive(sha)
     print(f"archive bytes: {len(blob):,}")
@@ -79,6 +101,14 @@ def main() -> None:
             target = RAW / parts[1].replace("data/", "")
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
+            # The archived packages (`analysis/`, `archive/**`) and the leak tests in
+            # `tests/test_no_lookahead.py` read the upstream checkout layout
+            # (`data/raw/nfldata/data/*.csv`) rather than the flat `data/raw/*.csv`.
+            # Write both so one fetch serves every consumer; the flat copy is the
+            # manifest-tracked one, the mirror is git-ignored.
+            mirror = RAW / "nfldata" / parts[1]
+            mirror.parent.mkdir(parents=True, exist_ok=True)
+            mirror.write_bytes(data)
             extracted[parts[1]] = target
             print(f"  {parts[1]:28s} {len(data):>10,} bytes -> {target.relative_to(ROOT)}")
 

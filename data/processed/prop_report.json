@@ -1,0 +1,45 @@
+{
+  "seasons": [
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "test_seasons": [
+    2021,
+    2022
+  ],
+  "plays": 188018,
+  "player_games": 21033,
+  "players": 1079,
+  "lines": 9730,
+  "markets": {
+    "passing_yards": {
+      "n": 693,
+      "over_rate": 0.46464646464646464,
+      "mean_p_over": 0.4999485572057356
+    },
+    "rushing_yards": {
+      "n": 1523,
+      "over_rate": 0.5331582403151675,
+      "mean_p_over": 0.5000422589468784
+    },
+    "receiving_yards": {
+      "n": 3757,
+      "over_rate": 0.4966728772957147,
+      "mean_p_over": 0.4999909754963158
+    },
+    "receptions": {
+      "n": 3757,
+      "over_rate": 0.48815544317274423,
+      "mean_p_over": 0.49796802541508617
+    }
+  },
+  "definition_checks": 7,
+  "definition_checks_passed": 7,
+  "combos_tested": 7,
+  "combos_structure_verified": 3,
+  "combos_awarded": 0,
+  "blocking_gate": "G6 economic significance — no prop price feed is reachable, so no ROI can be computed and nothing is awarded",
+  "source_manifest": "data/sources_pbp.json"
+}

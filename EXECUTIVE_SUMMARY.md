@@ -1,6 +1,6 @@
 # Executive summary — NFL Line Lab
 
-*Generated from the pipeline output on 2026-11-01T13:24:09Z · upstream commit `a270278f3ac4` ·
+*Generated from the pipeline output on 2026-11-02T17:26:06Z · upstream commit `a270278f3ac4` ·
 reproduce with `make build`.*
 
 ## The question
@@ -14,7 +14,7 @@ The pipeline produces a defensible, market-free NFL line — within about a thir
 closing line on both the spread and the total — but that gap is decisive. Once every strategy is
 forced through power, multiple-testing, bootstrap and deflated-Sharpe gates, the apparent winners
 dissolve. **0 of 18 strategies clear all eight gates**, and White's reality check
-across the whole library returns **p = 0.144**, which does not
+across the whole library returns **p = 0.186**, which does not
 reject the hypothesis that the best result is luck. The deliverable is therefore the machinery that
 can tell the difference — plus a documented list of exactly which data would be needed to go
 further.
@@ -25,18 +25,24 @@ further.
 |---|---|---|
 | Games with an out-of-sample line | 6,073 (2004–2026, of 7,384 played) | `games.csv` |
 | Closing-line spread MAE | 10.2155 | `games.csv` |
-| Our spread MAE | 10.5272 | `pipeline/models.py` |
+| Our spread MAE | 10.5267 | `pipeline/models.py` |
 | Closing-line total MAE | 10.5273 | `games.csv` |
-| Our total MAE | 10.7267 | `pipeline/models.py` |
-| Bets simulated | 26,168 | `strategy_bets.csv` |
+| Our total MAE | 10.7261 | `pipeline/models.py` |
+| Bets simulated | 26,149 | `strategy_bets.csv` |
 | Strategies tested | 18 | `strategy_gates.csv` |
 | Strategies validated as skill | 0 | `strategy_gates.csv` |
-| Best raw ROI | 21.6% (PARLAY3_EDGE, 377 tickets) | `strategy_summary.csv` |
-| Reality-check p-value | 0.144 | `reality_check.json` |
+| Best raw ROI | 19.4% (PARLAY3_EDGE, 377 tickets) | `strategy_summary.csv` |
+| Reality-check p-value | 0.186 | `reality_check.json` |
 | Mean two-way hold, spreads | 2.72% | `vig_by_season.csv` |
 | Same-game φ, cover ↔ moneyline | 0.676 | `corr_same_game.csv` |
 | Same-game φ, cover ↔ total | 0.024 | `corr_same_game.csv` |
 | Cross-game r, margin / total | 0.011 / 0.008 | `corr_cross_game.csv` |
+| Player-games aggregated (props) | 21,033 (2019–2022) | `prop_player_games.csv` |
+| Prop definitions verified | 7/7 player-seasons exact | `prop_definition_validation.csv` |
+| Prop forecast AUC, 4 markets | 0.66–0.73 | `prop_skill.csv` |
+| Prop leg correlation, φ range | -0.066 to 0.580 | `prop_combos.csv` |
+| Largest same-game lift | 1.446× (Receptions ↔ rec yds (same player)) | `prop_combos.csv` |
+| Prop combos awarded | 0 — G6 cannot pass without prop prices | `prop_gates.csv` |
 
 ## What was built
 
@@ -57,19 +63,19 @@ further.
 ## Findings
 
 **1 — The market is still better than the model.** 10.2155 vs
-10.5272 on spreads and 10.5273 vs
-10.7267 on totals. The gap is roughly the width of the vig, which is why
+10.5267 on spreads and 10.5273 vs
+10.7261 on totals. The gap is roughly the width of the vig, which is why
 nothing below gets paid. It is the value of injury reports, starting-quarterback news and sharp
 money, none of which the model is allowed to see.
 
 **2 — Nothing survives validation.** 0 of 18 strategies pass. The best raw ROI is
-21.6% on 377 tickets (PARLAY3_EDGE) — a high-variance long-shot ladder
-whose win rate is 17.5%. Its FDR-adjusted p-value is
-0.357 and its deflated Sharpe is
-0.415: not an edge.
+19.4% on 377 tickets (PARLAY3_EDGE) — a high-variance long-shot ladder
+whose win rate is 17.2%. Its FDR-adjusted p-value is
+0.473 and its deflated Sharpe is
+0.365: not an edge.
 
 **3 — The library as a whole cannot beat luck.** White's reality check p =
-0.144 over 18 strategies and
+0.186 over 18 strategies and
 425 weekly blocks.
 
 **4 — Power is the binding constraint, not the model.** Detecting a true 1% per-bet edge at 80%
@@ -85,6 +91,30 @@ be priced by multiplication but a same-game parlay cannot.
 **6 — The pricing environment is sharp.** Mean two-way hold in the closing prices is
 2.72% on spreads and 2.93% on
 totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
+
+## Player props: what the extra data bought
+
+Player-level play-by-play was fetched for 2019–2022 (67.9 MB, four pinned blobs) after an earlier
+build wrongly recorded it as unreachable. That unlocks the prop module:
+
+- **21,033 player-games** aggregated into passing, rushing and receiving yards
+  and receptions. Seven published season totals — Brady 5316
+  passing yards, Kupp 145
+  receptions, Taylor 1811 rushing yards —
+  are reproduced exactly, keyed on player id (a name key silently merged J.Taylor of New England
+  into J.Taylor of Indianapolis).
+- **9,730 originated prop lines**, walk-forward, no market input. Out of sample the
+  AUC is 0.66–0.73, so the lines rank players well above
+  chance; the calibration slope is only 0.14–0.23
+  against 1.0, so the probabilities are compressed and should not be used as prices.
+- **Prop legs are measurably dependent.** QB passing yards with his own WR1's receiving yards lift
+  the joint hit rate 1.136× over independence, and receptions with the same player's
+  receiving yards lift it 1.446×. Two WR1 legs from unrelated games give
+  φ = -0.036 with an interval spanning zero, so the estimator does not manufacture
+  dependence.
+- **Nothing is awarded.** No reachable source carries a player-prop price, so gate G6 cannot be
+  assessed and all 7 combos are withheld. The correlation is the finding; the ROI
+  would be an invention.
 
 ## Decisions that shaped the result
 
@@ -113,7 +143,8 @@ totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 
 ## Flagged for review
 
-Player-week statistics and prop prices were **not retrievable** in this build (nflverse release
+Player-level **statistics** are now retrieved and used (2019–2022 play-by-play, see the props
+section above); prop **prices** were not retrievable in this build (nflverse release
 assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
 exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
 third of games, and three 2015 games carry outcome flags that contradict their own score. Full
@@ -122,7 +153,8 @@ detail, with sources: `flagged.html`.
 ## What would change the answer
 
 1. A pre-kickoff injury and starting-quarterback feed — the largest known component of the MAE gap.
-2. Player-week statistics and prop prices — unlocks the entire prop and SGP programme.
+2. Prop **prices** (the statistics are now in hand) — turns the measured prop dependence into a
+   testable return; without a price, gate G6 stays unanswerable.
 3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
 
 ---
