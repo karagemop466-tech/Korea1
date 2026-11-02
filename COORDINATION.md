@@ -360,3 +360,15 @@ New files: `pipeline/render_audit.py`, `scripts/audit_nfl_scores.py`, `scripts/a
 
 `pipeline/verify_site.py` 0 failing checks · `tests/check_links.py` pass (20 pages) · `tests/check_sources.py` pass (11 pages, 606 rows) ·
 `scripts/99_verify.py` 9/9 · `scripts/98_linkcheck.py` pass.
+
+### T10 pull request, merge and deploy record
+
+| Step | Result |
+|---|---|
+| Pull request | [#13](https://github.com/karagemop466-tech/Korea1/pull/13) `arena/1642ee06-korea1` → `main` |
+| CI | `verify` job passed before merge |
+| Merge | **MERGED** 2026-11-02T17:22:14Z, merge commit `bc4545e`, no approval wait |
+| GitHub Pages build | `pages/builds/latest` → `built`, commit `bc4545e` (source unchanged: `main` / root) |
+| Live check | <https://karagemop466-tech.github.io/Korea1/audit.html> fetched with a cache-busting query (per IR-13): page renders with 31/31, 0 mismatches, 516 of 523, and all seven IR-T10 rows |
+
+Open sibling PRs (#2, #4, #5, #10) were not touched.
