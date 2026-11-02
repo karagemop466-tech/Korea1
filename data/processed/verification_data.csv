@@ -1,5 +1,7 @@
 check,passed,detail
-data_audit all passed,True,6/6 checks
+"strategy win rate = wins / (wins + losses), pushes excluded",True,"18 strategies, max |error| 0.00e+00"
+strategy tickets = wins + losses + pushes,True,"18 strategies, 26,149 tickets"
+data_audit all passed,True,7/7 checks
 every strategy has a verdict,True,18 strategies
 no strategy claimed SKILL without passing all gates,True,verdict logic consistent
 prop definitions reproduce published season totals,True,7/7 player-seasons exact

@@ -25,7 +25,7 @@
 strategies that beat the market for reasons other than luck?</em> — and answered it with a
 reproducible pipeline rather than an opinion. The short version: the lines are good, the
 strategies are not validated, and the pipeline is able to say so.</p>
-<div class="cards"><div class="card "><div class="card-value">6,073</div><div class="card-label">out-of-sample games</div><div class=card-note>2004–2026</div></div><div class="card "><div class="card-value">26,168</div><div class="card-label">bets simulated</div><div class=card-note>every strategy, closing prices</div></div><div class="card bad"><div class="card-value">0</div><div class="card-label">strategies validated</div><div class=card-note>of 18 tested</div></div><div class="card "><div class="card-value">0.144</div><div class="card-label">reality-check p</div><div class=card-note>no rejection of luck</div></div></div>
+<div class="cards"><div class="card "><div class="card-value">6,073</div><div class="card-label">out-of-sample games</div><div class=card-note>2004–2026</div></div><div class="card "><div class="card-value">26,149</div><div class="card-label">bets simulated</div><div class=card-note>every strategy, closing prices</div></div><div class="card bad"><div class="card-value">0</div><div class="card-label">strategies validated</div><div class=card-note>of 18 tested</div></div><div class="card "><div class="card-value">0.186</div><div class="card-label">reality-check p</div><div class=card-note>no rejection of luck</div></div></div>
 </section>
 
 <section>
@@ -52,7 +52,7 @@ unverified or contradictory.</li>
 
 <section>
 <h2>2 · What the numbers say</h2>
-<div class="tablewrap"><table class=""><caption>Out-of-sample accuracy against the close</caption><thead><tr><th>Market</th><th>Closing-line MAE</th><th>Our MAE</th><th>Gap</th><th>Source</th></tr></thead><tbody><tr><td>Spread</td><td>10.215</td><td>10.527</td><td>+0.312</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>Total</td><td>10.527</td><td>10.727</td><td>+0.199</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr></tbody></table></div>
+<div class="tablewrap"><table class=""><caption>Out-of-sample accuracy against the close</caption><thead><tr><th>Market</th><th>Closing-line MAE</th><th>Our MAE</th><th>Gap</th><th>Source</th></tr></thead><tbody><tr><td>Spread</td><td>10.215</td><td>10.527</td><td>+0.311</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>Total</td><td>10.527</td><td>10.726</td><td>+0.199</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr></tbody></table></div>
 <p>The model is roughly <strong>a third of a point worse than the closing line</strong> on both
 markets. That gap is not a coding artefact: it is the value of injury reports, starting-quarterback
 news and sharp money, none of which the model is allowed to see. It is also, conveniently, about the
@@ -61,9 +61,9 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <div class="tablewrap"><table><thead><tr><th>Result</th><th>Value</th><th>Reading</th><th>Source</th></tr></thead><tbody>
 <tr><td>Strategies passing all eight gates</td><td><strong>0 of 18</strong></td>
 <td>nothing is validated as skill</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">gates</a></td></tr>
-<tr><td>Best raw ROI</td><td><strong>21.6%</strong> (PARLAY3_EDGE, 377 tickets)</td>
+<tr><td>Best raw ROI</td><td><strong>19.4%</strong> (PARLAY3_EDGE, 377 tickets)</td>
 <td>a high-variance long-shot ladder, not an edge</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">gates</a></td></tr>
-<tr><td>White's reality check</td><td><strong>p = 0.144</strong></td>
+<tr><td>White's reality check</td><td><strong>p = 0.186</strong></td>
 <td>best-of-library is consistent with luck</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
 <tr><td>Two-way hold in closing prices</td>
 <td><strong>2.72%</strong> spread / 2.93% total</td>
@@ -132,7 +132,7 @@ mirror rather than an NFL site. See the <a href="audit.html">Independent audit</
 of the close, with no market input at all — but that gap is decisive. Once every strategy is forced
 through power, FDR, bootstrap and deflated-Sharpe gates, the apparent winners dissolve: the best
 result in the library is a 3-leg parlay ladder that a reality check cannot distinguish from luck
-(p = 0.144). The honest deliverable is therefore the
+(p = 0.186). The honest deliverable is therefore the
 <em>machinery that can tell the difference</em>, plus a documented list of exactly which data would
 be needed to go further.</p>
 </section>

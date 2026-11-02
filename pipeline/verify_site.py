@@ -146,7 +146,16 @@ def main() -> int:
 
     # data-level checks that the site depends on
     extra = []
+
+    # Published win rates must be recomputable from the ledger with the definition the page states.
+    summ = pd.read_csv(PROC / "strategy_summary.csv")
+    wr_err = float((summ.win_rate - summ.wins / (summ.wins + summ.losses)).abs().max())
     for name, cond, detail in [
+        ("strategy win rate = wins / (wins + losses), pushes excluded",
+         bool(wr_err < 1e-9), f"{len(summ)} strategies, max |error| {wr_err:.2e}"),
+        ("strategy tickets = wins + losses + pushes",
+         bool((summ.n == summ.wins + summ.losses + summ.pushes).all()),
+         f"{len(summ)} strategies, {int(summ.n.sum()):,} tickets"),
         ("data_audit all passed",
          bool(pd.read_csv(PROC / "data_audit.csv").passed.all()),
          f"{int(pd.read_csv(PROC / 'data_audit.csv').passed.sum())}/"

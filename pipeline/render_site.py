@@ -519,6 +519,16 @@ def build_lines(d) -> str:
                      caption=f"Pure origination: {len(unpriced)} games with no market line yet — "
                              "these are our numbers only")
 
+    board_note = flag(
+        "<strong>This is a snapshot, not a live feed.</strong> The schedule comes from the pinned "
+        f"upstream commit dated {e(GENERATED)}; games played after that date are still listed as "
+        "scheduled. Session <code>arena/8eb93b26-korea1</code> checked the board against the official "
+        '<a href="https://www.nfl.com/schedules/2026/by-week/week-8" target="_blank" rel="noopener">'
+        "NFL Week 8 schedule</a> and found that the snapshot predates results it now publishes "
+        '(see <a href="audit.html">the audit</a> and <code>notes/no-lookahead-2026-11-02.md</code>). '
+        "Re-pinning would move every published number, so the board is labelled rather than refreshed.",
+        "warn")
+
     body = f"""
 <section>
 <h2>The originated line</h2>
@@ -542,6 +552,7 @@ sees a price.</p>
 <p>Fitted on every completed game in the pinned file, the same ensemble prices the scheduled
 games. Where the market already has a number, the edge column shows the disagreement; where it
 does not, this is pure origination.</p>
+{board_note}
 {up_table}
 </section>
 
@@ -581,12 +592,13 @@ def build_strategies(d) -> str:
         rows.append([
             f'<span class="rank">{int(np.where(m.strategy.to_numpy() == r.strategy)[0][0]) + 1}</span>',
             f'<strong>{e(r.strategy)}</strong><br><span class="muted">{e(r.name)}</span>',
-            e(r.family), f"{int(r.n):,}", pct(r.win_rate), pct(r.roi, 2),
+            e(r.family), f"{int(r.n):,}",
+            f"{int(r.wins)}–{int(r.losses)}–{int(r.pushes)}", pct(r.win_rate), pct(r.roi, 2),
             f"{r.profit:+.1f}", fmt(r.G4_p_adj, 3), fmt(r.G5_dsr, 3),
             f'<span class="pill {r.verdict.split()[0].lower()}">{e(r.verdict)}</span>',
             src_link(URL_GAMES, "games.csv"),
         ])
-    main_table = table(rows, ["#", "Strategy", "Family", "Bets", "Win rate", "ROI",
+    main_table = table(rows, ["#", "Strategy", "Family", "Bets", "W–L–P", "Win rate", "ROI",
                               "Units P/L", "FDR p", "Deflated SR", "Verdict", "Source"],
                        caption="Leaderboard — every strategy, ranked by ROI at closing prices")
 
@@ -655,11 +667,13 @@ deliberately withheld from anything that has not cleared them.</p>
 <section>
 <h2>Leaderboard</h2>
 {main_table}
-<p class="muted"><strong>Column definitions.</strong> <em>Win rate</em> is wins ÷ <em>decided</em>
-bets, so pushes are excluded from the denominator; <em>ROI</em> is profit ÷ <em>all</em> tickets with
-a push staked and refunded at zero; <em>Units P/L</em> is profit in units at one unit per bet. The two
-win-rate denominators differ on purpose — excluding pushes makes the hit rate comparable to the
-break-even threshold, while ROI has to charge the stake that was actually tied up.</p>
+<p class="muted"><strong>Column definitions, and why the denominators differ.</strong>
+<em>W–L–P</em> is wins–losses–pushes, so every row can be recomputed by hand.
+<em>Win rate</em> is wins ÷ (wins + losses): pushes are excluded because a push is not a hit or a
+miss, and excluding it makes the number comparable to the break-even threshold.
+<em>ROI</em> is profit ÷ <em>all</em> tickets, with a push staked and refunded at zero, because the
+stake really was tied up. <em>Units P/L</em> is the same profit in units at one unit per bet.
+A verifier check recomputes both from the ledger, so the two definitions cannot silently drift.</p>
 </section>
 
 <section>

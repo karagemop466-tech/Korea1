@@ -33,7 +33,7 @@ verify:
 	$(PY) pipeline/verify_site.py
 
 test:
-	$(PY) -m pytest tests/test_props_integrity.py -q
+	$(PY) -m pytest tests/test_props_integrity.py tests/test_weather_fold.py -q
 	$(PY) tests/check_links.py
 	$(PY) tests/check_sources.py
 

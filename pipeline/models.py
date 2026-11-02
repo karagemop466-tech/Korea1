@@ -355,7 +355,18 @@ def main() -> None:
     print(f"originated_lines: {pred.shape}, seasons {pred.season.min()}–{pred.season.max()}")
     allrows = metrics[metrics.season == "ALL"]
     print(allrows.pivot(index="model", columns="market", values="mae").round(3).to_string())
-    print(f"\nupcoming priced: {len(fut_line)} games, {fut_line.market_spread.notna().sum()} with a market line")
+    # A scheduled game with a blank fair line is a published hole: the earlier build emitted
+    # 164 of them because the future frame had no weather fill. Refuse to write such a file.
+    priced_cols = ["fair_spread", "fair_total", "p_home_ml", "p_away_ml",
+                   "originated_home_ml", "originated_away_ml"]
+    blank = int(fut_line[priced_cols].isna().any(axis=1).sum())
+    if blank:
+        bad = fut_line[fut_line[priced_cols].isna().any(axis=1)]
+        raise SystemExit(
+            f"refusing to publish {blank} scheduled games with blank originated lines: "
+            + ", ".join(bad.game_id.head(5)))
+    print(f"\nupcoming priced: {len(fut_line)} games, {fut_line.market_spread.notna().sum()} with a market line, "
+          f"{blank} blank lines")
 
 
 if __name__ == "__main__":

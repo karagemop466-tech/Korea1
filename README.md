@@ -30,10 +30,10 @@ fill a gap — where a value could not be verified it is left blank and listed o
 ## Headline result
 
 * The ensemble line is **good but not better than the market**: spread MAE 10.527 vs the
-  closing line's 10.215; totals 10.727 vs 10.527, out of sample, 6,073 games, 2004–2026.
-* **0 of 18 strategies clear all eight validation gates.** The best raw ROI (+21.6% on a 3-leg
+  closing line's 10.215; totals 10.726 vs 10.527, out of sample, 6,073 games, 2004–2026.
+* **0 of 18 strategies clear all eight validation gates.** The best raw ROI (+19.4% on a 3-leg
   parlay ladder, 377 tickets) is what a high-variance long-shot book looks like, not an edge.
-* **White's reality check does not reject** (p = 0.144 across 18 strategies and 425 weekly
+* **White's reality check does not reject** (p = 0.186 across 18 strategies and 425 weekly
   blocks): the library's best performance is consistent with luck.
 * The closing prices used carry a **2.7% two-way hold**, so break-even is ≈51.4%, not 52.4%.
 * Same-game legs are **not** independent: cover↔moneyline φ ≈ 0.68, cover↔total φ ≈ 0.024,
@@ -129,7 +129,7 @@ it is reachable from the dashboard navigation ("Replication annex").
 |---|---|---|---|
 | Odds source | nflverse `nfldata` | nflverse `nfldata` | Sportsbook Review 10-year archive |
 | Games | 7,384 (1999–2026) | 7,384 | 2,945 (2011–2021) |
-| Priced bets | 26,168 | 27,330 | 959 qualifying of 2,280 |
+| Priced bets | 26,149 | 27,330 | 959 qualifying of 2,280 |
 | Strategies | 18 | 24 | 18 |
 | Site | root | root pages superseded | `lab/` |
 

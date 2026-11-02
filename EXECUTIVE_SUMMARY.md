@@ -14,7 +14,7 @@ The pipeline produces a defensible, market-free NFL line — within about a thir
 closing line on both the spread and the total — but that gap is decisive. Once every strategy is
 forced through power, multiple-testing, bootstrap and deflated-Sharpe gates, the apparent winners
 dissolve. **0 of 18 strategies clear all eight gates**, and White's reality check
-across the whole library returns **p = 0.144**, which does not
+across the whole library returns **p = 0.186**, which does not
 reject the hypothesis that the best result is luck. The deliverable is therefore the machinery that
 can tell the difference — plus a documented list of exactly which data would be needed to go
 further.
@@ -25,14 +25,14 @@ further.
 |---|---|---|
 | Games with an out-of-sample line | 6,073 (2004–2026, of 7,384 played) | `games.csv` |
 | Closing-line spread MAE | 10.2155 | `games.csv` |
-| Our spread MAE | 10.5272 | `pipeline/models.py` |
+| Our spread MAE | 10.5267 | `pipeline/models.py` |
 | Closing-line total MAE | 10.5273 | `games.csv` |
-| Our total MAE | 10.7267 | `pipeline/models.py` |
-| Bets simulated | 26,168 | `strategy_bets.csv` |
+| Our total MAE | 10.7261 | `pipeline/models.py` |
+| Bets simulated | 26,149 | `strategy_bets.csv` |
 | Strategies tested | 18 | `strategy_gates.csv` |
 | Strategies validated as skill | 0 | `strategy_gates.csv` |
-| Best raw ROI | 21.6% (PARLAY3_EDGE, 377 tickets) | `strategy_summary.csv` |
-| Reality-check p-value | 0.144 | `reality_check.json` |
+| Best raw ROI | 19.4% (PARLAY3_EDGE, 377 tickets) | `strategy_summary.csv` |
+| Reality-check p-value | 0.186 | `reality_check.json` |
 | Mean two-way hold, spreads | 2.72% | `vig_by_season.csv` |
 | Same-game φ, cover ↔ moneyline | 0.676 | `corr_same_game.csv` |
 | Same-game φ, cover ↔ total | 0.024 | `corr_same_game.csv` |
@@ -63,19 +63,19 @@ further.
 ## Findings
 
 **1 — The market is still better than the model.** 10.2155 vs
-10.5272 on spreads and 10.5273 vs
-10.7267 on totals. The gap is roughly the width of the vig, which is why
+10.5267 on spreads and 10.5273 vs
+10.7261 on totals. The gap is roughly the width of the vig, which is why
 nothing below gets paid. It is the value of injury reports, starting-quarterback news and sharp
 money, none of which the model is allowed to see.
 
 **2 — Nothing survives validation.** 0 of 18 strategies pass. The best raw ROI is
-21.6% on 377 tickets (PARLAY3_EDGE) — a high-variance long-shot ladder
-whose win rate is 17.5%. Its FDR-adjusted p-value is
-0.357 and its deflated Sharpe is
-0.415: not an edge.
+19.4% on 377 tickets (PARLAY3_EDGE) — a high-variance long-shot ladder
+whose win rate is 17.2%. Its FDR-adjusted p-value is
+0.473 and its deflated Sharpe is
+0.365: not an edge.
 
 **3 — The library as a whole cannot beat luck.** White's reality check p =
-0.144 over 18 strategies and
+0.186 over 18 strategies and
 425 weekly blocks.
 
 **4 — Power is the binding constraint, not the model.** Detecting a true 1% per-bet edge at 80%

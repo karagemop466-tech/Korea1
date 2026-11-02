@@ -2,8 +2,8 @@
   "generated_utc": "2026-11-02T17:26:06Z",
   "upstream_commit": "a270278f3ac4e937295fe6a27814b3c4a2b62645",
   "games_modelled": 7384,
-  "bets_simulated": 26168,
+  "bets_simulated": 26149,
   "strategies_tested": 18,
   "strategies_passing": 0,
-  "reality_check_p": 0.14433333333333334
+  "reality_check_p": 0.18633333333333332
 }

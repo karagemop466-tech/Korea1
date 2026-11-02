@@ -26,7 +26,7 @@ jobs:
       - name: Verify links and sourced table rows
         run: |
           pip install pandas numpy scipy pytest
-          python -m pytest tests/test_props_integrity.py -q
+          python -m pytest tests/test_props_integrity.py tests/test_weather_fold.py -q
           python3 tests/check_links.py
           python3 tests/check_sources.py
           python pipeline/verify_site.py
