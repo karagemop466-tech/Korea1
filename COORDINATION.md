@@ -306,3 +306,11 @@ exist in any earlier deployment — returned the new content. Appending a cache-
 the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds/latest` already reported
 `built` for `9dfdd77`). Anyone re-checking a deploy should assume a few minutes of cache lag on
 previously-published paths and verify on a path that is new in the build.
+
+## 2026-11-02 — independent integration audit claim
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| A1 | in progress | `arena/2f4d71dc-korea1` | `COORDINATION.md`, `audit/**` (independent audit and publication status) |
+
+This session is pinned to its Arena branch; the requested `session-<id>/<task>` naming cannot be used. Earlier T8 claim is more than 60 minutes old; the board records completed integration and a deployed site. This is an independent audit, not a takeover of another session's files. Any necessary changes outside this scope will be requested here.
