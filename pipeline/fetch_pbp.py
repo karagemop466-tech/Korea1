@@ -72,6 +72,7 @@ def main() -> int:
     RAW.mkdir(parents=True, exist_ok=True)
     PROC.mkdir(parents=True, exist_ok=True)
     previous = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"files": []}
+    retrieved = previous.get("retrieved_utc", RETRIEVED)
     prev_hash = {f["season"]: f["sha256"] for f in previous.get("files", [])}
 
     files = []

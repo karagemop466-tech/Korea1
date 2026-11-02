@@ -38,4 +38,7 @@ jobs:
       - name: Regression tests
         run: make test
       - name: Verify committed generated outputs
-        run: git diff --exit-code -- '*.html' assets data/processed EXECUTIVE_SUMMARY.md
+        run: |
+          git diff --stat
+          git diff -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md
+          git diff --exit-code -- '*.html' assets data/processed data/sources_pbp.json EXECUTIVE_SUMMARY.md
