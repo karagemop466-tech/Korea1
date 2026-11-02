@@ -360,3 +360,35 @@ New files: `pipeline/render_audit.py`, `scripts/audit_nfl_scores.py`, `scripts/a
 
 `pipeline/verify_site.py` 0 failing checks · `tests/check_links.py` pass (20 pages) · `tests/check_sources.py` pass (11 pages, 606 rows) ·
 `scripts/99_verify.py` 9/9 · `scripts/98_linkcheck.py` pass.
+---
+
+## Final verification and integration — session `arena/ed58af62-korea1`
+
+Claimed at 2026-11-02T17:20Z. Previous whole-project owners last reported on 2026-11-01;
+no active edit to the scopes below was present in the starting tree. This is a new final
+integration/audit task, not a second concurrent implementation. The earlier task statuses
+are retained unchanged.
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| F1 | in progress | arena/ed58af62-korea1 | `audit/**`, `tests/test_integration.py`, `requirements.txt`, `.gitignore` |
+| F2 | in progress | arena/ed58af62-korea1 | `pipeline/**`, generated `data/processed/**`, `assets/**`, root `*.html`, `README.md`, `EXECUTIVE_SUMMARY.md`, `Makefile`, `.github/workflows/**`, `research/requirements.md` |
+| F3 | in progress | arena/ed58af62-korea1 | Final integration: `COORDINATION.md`, generated root site; PR only from `arena/ed58af62-korea1` to `main` |
+
+Historical replication work in `lab/`, `scripts/`, `analysis/`, `data/derived/`,
+`data/lab/`, `data/site/`, and `archive/` is preserved. Requests affecting those historical
+outputs will be recorded here, not silently overwritten.
+
+Platform constraint: this Arena session is pinned to `arena/ed58af62-korea1`; creating or
+switching to the requested `session-<id>/<task>` branches is prohibited by the runtime.
+All claims, commits, and the PR use the pinned branch, with the scope recorded here.
+Other open PRs/branches will be checked before integration; unrelated work will not be
+closed, force-pushed, or discarded. Shared outputs are owned by this final integration task.
+
+### 2026-11-02 — integration coordination conflict resolved
+`git pull --rebase origin main` encountered an append-only conflict because T10
+(`arena/1642ee06-korea1`) merged PR #13 while this claim was being written. Both the
+complete T10 audit and this session's claim are retained. T10 is done; F1–F3 are the
+subsequent final audit/integration, not a competing claim on an active task. No work
+was discarded. The first pull targeted the not-yet-created remote session branch;
+the subsequent pull from `main` is recorded here rather than hidden.
