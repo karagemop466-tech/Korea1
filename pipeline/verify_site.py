@@ -137,6 +137,12 @@ def main() -> int:
 
     df = pd.DataFrame(results)
     df.to_csv(PROC / "verification_report.csv", index=False)
+    # Published mirror: `assets/data/` holds the downloadable copies of the processed
+    # tables. It is written here too, otherwise the mirror keeps whatever numbers the
+    # last session that touched it by hand saw and silently contradicts this report.
+    mirror = ROOT / "assets" / "data"
+    mirror.mkdir(parents=True, exist_ok=True)
+    df.to_csv(mirror / "verification_report.csv", index=False)
 
     # data-level checks that the site depends on
     extra = []
