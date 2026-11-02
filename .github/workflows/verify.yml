@@ -32,6 +32,12 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install pandas numpy scipy
+        run: pip install pandas numpy scipy pytest
+      - name: Prop leakage and integrity tests
+        run: python -m pytest tests/test_props_integrity.py -q
+      - name: Verify every table cell has a source link and every link resolves
+        run: |
+          python tests/check_links.py
+          python tests/check_sources.py
       - name: Verify the published site
         run: python pipeline/verify_site.py

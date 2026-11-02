@@ -25,7 +25,8 @@ jobs:
         uses: actions/checkout@v5
       - name: Verify links and sourced table rows
         run: |
-          pip install pandas numpy scipy
+          pip install pandas numpy scipy pytest
+          python -m pytest tests/test_props_integrity.py -q
           python3 tests/check_links.py
           python3 tests/check_sources.py
           python pipeline/verify_site.py
