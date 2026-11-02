@@ -300,21 +300,24 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
     df = pd.DataFrame(rows)
     up = pd.DataFrame(upcoming)
 
-    # derived flags. Weather is median-imputed from the *played* games only:
-    # a scheduled game has no recorded weather yet, so filling from its own
-    # median would leave an all-NaN column and poison every downstream model.
-    wind_med = float(df.wind.median())
-    temp_med = float(df.temp.median())
+    # Derived flags only. Weather is deliberately NOT imputed here.
+    #
+    # CHANGE (2026-11-02, session arena/fb363967-korea1 — defect D-07, raised by the T12 temporal
+    # audit and reproduced): temperature and wind used to be filled with the median of the whole
+    # played sample *before* the walk-forward split, so every training fold was prepared with
+    # information from later seasons (59 F full-sample vs 60 F prior-only in 2004 and 2018). The
+    # imputer now lives in `models.walk_forward`, where it is fitted on each fold's training rows
+    # only and applied to that fold's test rows. Missing weather is left missing here — the
+    # `wind_missing` / `temp_missing` flags record it, and the weather angle rules already require
+    # `*_missing == 0`, so no strategy picks up an imputed value.
     for frame in (df, up):
         if frame.empty:
             continue
         frame["roof_dome"] = frame.roof.isin(["dome", "closed"]).astype(int)
         frame["roof_open"] = frame.roof.isin(["open"]).astype(int)
-        frame["wind"] = frame.wind.fillna(frame.wind.median())
         if "adj_exp_margin" in frame:
             frame["adj_exp_margin"] = frame["adj_exp_margin"].fillna(frame["exp_margin"])
             frame["adj_exp_total"] = frame["adj_exp_total"].fillna(frame["exp_total"])
-        frame["temp"] = frame.temp.fillna(frame.temp.median())
         frame["season_idx"] = frame.season - 1999
 
     # ---- leakage assertions ------------------------------------------------

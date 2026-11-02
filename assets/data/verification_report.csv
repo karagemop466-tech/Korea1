@@ -2,7 +2,7 @@ page,data_rows,tables,rows_without_source,broken_links,bad_tokens,external_asset
 audit.html,76,6,0,,,,True,True,True,True,True,True,True
 correlations.html,62,7,0,,,,True,True,True,True,True,True,True
 executive-summary.html,9,2,0,,,,True,True,True,True,True,True,True
-flagged.html,30,3,0,,,,True,True,True,True,True,True,True
+flagged.html,31,3,0,,,,True,True,True,True,True,True,True
 index.html,18,1,0,,,,True,True,True,True,True,True,True
 lines.html,239,5,0,,,,True,True,True,True,True,True,True
 methodology.html,33,3,0,,,,True,True,True,True,True,True,True
@@ -11,4 +11,4 @@ requirements.html,58,2,0,,,,True,True,True,True,True,True,True
 sources.html,23,3,0,,,,True,True,True,True,True,True,True
 strategies.html,58,4,0,,,,True,True,True,True,True,True,True
 validation.html,48,4,0,,,,True,True,True,True,True,True,True
-verification.html,109,4,0,,,,True,True,True,True,True,True,True
+verification.html,110,4,0,,,,True,True,True,True,True,True,True

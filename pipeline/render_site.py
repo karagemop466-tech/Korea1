@@ -524,8 +524,9 @@ sees a price.</p>
 <p>Fitted on every completed game in the pinned file, the same ensemble prices the scheduled
 games. Where the market already has a number, the edge column shows the disagreement; where it
 does not, this is pure origination. Unplayed games have no recorded kickoff weather, so the model
-uses the training median for temperature and wind and keeps the <code>temp_missing</code> /
-<code>wind_missing</code> flags at 1 — the assumption is listed on the
+uses the median of the completed games for temperature and wind (fitted on the training data, never
+on the game being priced) and keeps the <code>temp_missing</code> / <code>wind_missing</code> flags
+at 1 — the assumption is listed on the
 <a href="flagged.html">Flagged for review</a> page.</p>
 {up_table}
 </section>
@@ -999,6 +1000,28 @@ retention)</td><td>Linear calibration on the training window</td><td>{src_link(U
 </section>
 
 <section>
+<h2>Preprocessing and leakage controls</h2>
+<p>The split is the only place leakage can enter, so preprocessing is fitted inside it:</p>
+<ul class="findings">
+<li><strong>The weather imputer is fitted on the training window only</strong> and applied unchanged
+to that fold's test rows (and, for the future slate, to the completed games). Before 2026-11-02 it
+was fitted on the whole played sample, which let later seasons inform earlier folds — a defect found
+by the temporal audit in <code>notes/no-lookahead-2026-11-02.md</code> and fixed in
+<a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/models.py" target="_blank" rel="noopener">models.py</a>
+(<code>impute_weather</code>); its effect on every published number was at most 0.0035 points on the
+line and no verdict or bet count changed.</li>
+<li><strong>No outcome or market column may be a feature.</strong> A build-time assertion rejects any
+input that is a final score, a market line or a price, so a strategy cannot be fitted on the answer it
+is trying to predict (<a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/build_datasets.py" target="_blank" rel="noopener">build_datasets.py</a>).</li>
+<li><strong>Nothing after kickoff is observable to the model.</strong> Elo, offence/defence ratings and
+rest are updated only from completed games before the season being predicted, and the future slate
+carries no result, score or market outcome.</li>
+<li><strong>The test is the check.</strong> <code>tests/test_no_lookahead.py</code> asserts the fold
+boundaries and <code>tests/test_fold_imputer.py</code> asserts the imputer is fitted inside the fold.</li>
+</ul>
+</section>
+
+<section>
 <h2>Probability, price and push</h2>
 <p>A margin (or total) is modelled as normal around the model line with a continuity correction, so
 a spread that lands exactly on the number is priced as a push rather than a half-win:</p>
@@ -1076,8 +1099,10 @@ def build_flagged(d) -> str:
         ["Wind and temperature coverage is incomplete",
          "65–80% of games", "partial",
          "Recorded kickoff weather is present for roughly two thirds of games (38% in 2022, 55% in "
-         "2023). Weather strategies therefore run on a subset; missing values are flagged and never "
-         "imputed into a bet condition.",
+         "2023). Weather strategies therefore run on a subset and require wind_missing / "
+         "temp_missing = 0, so no strategy ever acts on an imputed value. For the line model, missing "
+         "weather is filled with the median of the training window only — fitted per walk-forward "
+         "fold, never across the whole sample (defect D-07).",
          src_link(URL_GAMES, "games.csv"), "A complete weather feed."],
         ["Line origination excludes injury and QB status",
          "model limitation", "documented",
@@ -1091,6 +1116,19 @@ def build_flagged(d) -> str:
          "No retrieved source carries team-total or player-prop prices, so no ROI can be computed for "
          "those markets. The prop page presents the framework and the measured structure only.",
          src_link(URL_DATASETS, "DATASETS.md"), "Any prop price feed."],
+        ["The weather imputer was fitted on the full sample (temporal leakage)",
+         "fixed 2026-11-02", "documented",
+         "Until this session, build_datasets.py filled missing temperature and wind with the median "
+         "of the entire played sample BEFORE the walk-forward split, so every training fold was "
+         "prepared with information from later seasons (59 F full-sample vs 60 F prior-only in 2004 "
+         "and 2018). Found by the T12 temporal audit (notes/no-lookahead-2026-11-02.md), fixed here: "
+         "the imputer is now fitted inside each fold on that fold's training rows and applied "
+         "unchanged to its test rows, and the future slate uses the completed-game median. Measured "
+         "effect on the published build: at most 0.0011 points on the originated spread and 0.0035 "
+         "on the total, 534 of 6,073 games moved at all, and no bet count, ROI or gate verdict "
+         "changed (26,168 bets, 0 of 18 pass, reality-check p = 0.144 before and after).",
+         src_link(f"{REPO_BLOB}/pipeline/models.py", "impute_weather()"),
+         "Nothing further; a regression test now fails if the imputer is fitted outside the fold."],
         ["Future-game lines substitute a training-median weather value",
          "disclosed assumption", "documented",
          "Kickoff temperature and wind are recorded only after a game is played, so every "

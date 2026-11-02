@@ -537,3 +537,44 @@ covered instead by the six page checks and stage C.
 | `python tests/test_future_lines.py` | pass — 3 tests |
 | `python scripts/99_verify.py` | 9/9 |
 | `python scripts/98_linkcheck.py` | pass — 9 annex pages, 119 internal links |
+
+### Second integration merge — `main` moved again (PRs #17, #18: temporal-leakage audit, T12)
+
+While PR #16 was open, session `arena/8eb93b26-korea1` landed a read-only temporal audit
+(`notes/no-lookahead-2026-11-02.md`, PRs #17/#18). Its findings were addressed rather than merged
+around, because two of them are real:
+
+**D-07 (medium, fixed) — the weather imputer was fitted on the full sample.** `build_datasets.py`
+filled missing kickoff temperature and wind with the median of **all** played games *before* the
+walk-forward split, so every training fold was prepared with information from later seasons
+(59 F full-sample vs 60 F prior-only in 2004 and 2018; wind identical). Reproduced independently and
+fixed: `build_datasets.py` no longer imputes at all (the gaps stay, the `*_missing` flags record
+them), and `models.impute_weather` fits the medians on each fold's **training rows only** and applies
+them unchanged to that fold's test rows, with the future slate using the completed-game medians.
+Regression test `tests/test_fold_imputer.py` (CI) fails if the imputer is fitted outside the fold or
+if the dataset starts carrying imputed values again. Measured effect on the published build: at most
+**0.0011 points** on the originated spread and **0.0035** on the total; 534 of 6,073 games moved at
+all; **no bet count, ROI or gate verdict changed** (26,168 bets, 0 of 18 pass, p = 0.144 before and
+after). The claims audit re-derives all 61 published cells against the rebuilt data.
+
+**T12 finding 2 (blank open board)** is the same defect this session fixed as D-01, independently
+confirmed by that audit — two sessions reached it from different directions, which is the strongest
+evidence either is right. **T12 finding 3 (stale open board)** is handled by labelling, not by
+refreshing: the captions now carry the snapshot date, the drift table lists the twelve games settled
+upstream after the pin with their scores, and the flagged page states that a rebuild re-pins. The
+snapshot is deliberately not refreshed mid-session, because that would move every published number
+without re-review — `NFDATA_SHA=` makes a deliberate refresh reproducible instead.
+
+**T12 finding 4** (no cross-game same-date state leak) required no change.
+
+Also fixed at the same time: `originate_future` used the raw (unimputed) training frame after the
+D-07 change, which briefly reintroduced blank future lines — caught by the build-blocking guard added
+for D-01 before it could reach a page, then fixed and re-verified (38/38 rebuild, 61/61 claims).
+
+| Re-verified after the second merge | Result |
+|---|---|
+| `python pipeline/audit.py --rebuild` | 7/7 · 38/38 · 61/61 · 0 failures |
+| `python pipeline/verify_site.py` | 0 failing checks (13 pages, 5 data guards) |
+| `python tests/check_links.py` / `check_sources.py` | pass (22 pages) / pass (13 pages, 777+ rows) |
+| `python tests/test_future_lines.py` / `test_fold_imputer.py` | pass (3) / pass (3) |
+| `python scripts/99_verify.py` / `98_linkcheck.py` | 9/9 / pass |

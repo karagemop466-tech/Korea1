@@ -53,6 +53,28 @@ retention)</td><td>Linear calibration on the training window</td><td><a href="ht
 </section>
 
 <section>
+<h2>Preprocessing and leakage controls</h2>
+<p>The split is the only place leakage can enter, so preprocessing is fitted inside it:</p>
+<ul class="findings">
+<li><strong>The weather imputer is fitted on the training window only</strong> and applied unchanged
+to that fold's test rows (and, for the future slate, to the completed games). Before 2026-11-02 it
+was fitted on the whole played sample, which let later seasons inform earlier folds — a defect found
+by the temporal audit in <code>notes/no-lookahead-2026-11-02.md</code> and fixed in
+<a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/models.py" target="_blank" rel="noopener">models.py</a>
+(<code>impute_weather</code>); its effect on every published number was at most 0.0035 points on the
+line and no verdict or bet count changed.</li>
+<li><strong>No outcome or market column may be a feature.</strong> A build-time assertion rejects any
+input that is a final score, a market line or a price, so a strategy cannot be fitted on the answer it
+is trying to predict (<a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/build_datasets.py" target="_blank" rel="noopener">build_datasets.py</a>).</li>
+<li><strong>Nothing after kickoff is observable to the model.</strong> Elo, offence/defence ratings and
+rest are updated only from completed games before the season being predicted, and the future slate
+carries no result, score or market outcome.</li>
+<li><strong>The test is the check.</strong> <code>tests/test_no_lookahead.py</code> asserts the fold
+boundaries and <code>tests/test_fold_imputer.py</code> asserts the imputer is fitted inside the fold.</li>
+</ul>
+</section>
+
+<section>
 <h2>Probability, price and push</h2>
 <p>A margin (or total) is modelled as normal around the model line with a continuity correction, so
 a spread that lands exactly on the number is priced as a push rather than a half-win:</p>

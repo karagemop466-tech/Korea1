@@ -52,6 +52,24 @@ DECAY_HALFLIFE_SEASONS = 4.0
 # ---------------------------------------------------------------------------
 # linear algebra helpers
 # ---------------------------------------------------------------------------
+WEATHER = ("wind", "temp")
+
+
+def impute_weather(train: pd.DataFrame, apply_to: pd.DataFrame) -> pd.DataFrame:
+    """Fit the weather imputer on `train` only, then apply it to `apply_to`.
+
+    Kickoff temperature and wind are missing for ~29% of played rows and for every unplayed row.
+    Imputing with the median of the rows being transformed would leak later seasons into earlier
+    walk-forward folds (defect D-07), so the medians are always taken from the training window and
+    applied unchanged to the test window / the future slate.
+    """
+    med = train[list(WEATHER)].median()
+    out = apply_to.copy()
+    for col in WEATHER:
+        out[col] = out[col].fillna(float(med[col]))
+    return out
+
+
 def _weights(season_train: np.ndarray, season_test: int) -> np.ndarray:
     return 0.5 ** (np.abs(season_test - season_train) / DECAY_HALFLIFE_SEASONS)
 
@@ -161,8 +179,11 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
         if len(tr) < 400 or te.empty:
             continue
 
-        Xm = tr[FEATURES_MARGIN].to_numpy(float)
-        Xt = tr[FEATURES_TOTAL].to_numpy(float)
+        # imputer fitted on THIS fold's training rows only, then applied to train and test
+        tr_i = impute_weather(tr, tr)
+        te_i = impute_weather(tr, te)
+        Xm = tr_i[FEATURES_MARGIN].to_numpy(float)
+        Xt = tr_i[FEATURES_TOTAL].to_numpy(float)
         ym = tr["result"].to_numpy(float)
         yt = tr["total"].to_numpy(float)
         seas = tr["season"].to_numpy(int)
@@ -175,34 +196,34 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
         b_m, mu_m, sd_m = fit_ridge(Xm, ym, w, a_m)
         b_t, mu_t, sd_t = fit_ridge(Xt, yt, w, a_t)
 
-        Tm = te[FEATURES_MARGIN].to_numpy(float)
-        Tt = te[FEATURES_TOTAL].to_numpy(float)
+        Tm = te_i[FEATURES_MARGIN].to_numpy(float)
+        Tt = te_i[FEATURES_TOTAL].to_numpy(float)
         pred_m = predict_ridge(b_m, mu_m, sd_m, Tm)
         pred_t = predict_ridge(b_t, mu_t, sd_t, Tt)
         resid_m = ym - predict_ridge(b_m, mu_m, sd_m, Xm)
         resid_t = yt - predict_ridge(b_t, mu_t, sd_t, Xt)
 
         # M2: matchup identity, one scale + intercept
-        b2m = fit_ols(tr["exp_margin"].to_numpy(float), ym, w)
-        b2t = fit_ols(tr["exp_total"].to_numpy(float), yt, w)
-        m2_m = b2m[0] + b2m[1] * te["exp_margin"].to_numpy(float)
-        m2_t = b2t[0] + b2t[1] * te["exp_total"].to_numpy(float)
-        r2m = ym - (b2m[0] + b2m[1] * tr["exp_margin"].to_numpy(float))
-        r2t = yt - (b2t[0] + b2t[1] * tr["exp_total"].to_numpy(float))
+        b2m = fit_ols(tr_i["exp_margin"].to_numpy(float), ym, w)
+        b2t = fit_ols(tr_i["exp_total"].to_numpy(float), yt, w)
+        m2_m = b2m[0] + b2m[1] * te_i["exp_margin"].to_numpy(float)
+        m2_t = b2t[0] + b2t[1] * te_i["exp_total"].to_numpy(float)
+        r2m = ym - (b2m[0] + b2m[1] * tr_i["exp_margin"].to_numpy(float))
+        r2t = yt - (b2t[0] + b2t[1] * tr_i["exp_total"].to_numpy(float))
 
         # M3: Elo difference, linear calibration
-        b3m = fit_ols(tr["elo_diff"].to_numpy(float), ym, w)
-        m3_m = b3m[0] + b3m[1] * te["elo_diff"].to_numpy(float)
-        r3m = ym - (b3m[0] + b3m[1] * tr["elo_diff"].to_numpy(float))
+        b3m = fit_ols(tr_i["elo_diff"].to_numpy(float), ym, w)
+        m3_m = b3m[0] + b3m[1] * te_i["elo_diff"].to_numpy(float)
+        r3m = ym - (b3m[0] + b3m[1] * tr_i["elo_diff"].to_numpy(float))
 
         # ensemble: fixed equal weights, never fitted
         ens_m = (pred_m + m2_m + m3_m) / 3.0
         ens_t = (pred_t + m2_t) / 2.0
         rens_m = ym - ((predict_ridge(b_m, mu_m, sd_m, Xm)
-                        + (b2m[0] + b2m[1] * tr["exp_margin"].to_numpy(float))
-                        + (b3m[0] + b3m[1] * tr["elo_diff"].to_numpy(float))) / 3.0)
+                        + (b2m[0] + b2m[1] * tr_i["exp_margin"].to_numpy(float))
+                        + (b3m[0] + b3m[1] * tr_i["elo_diff"].to_numpy(float))) / 3.0)
         rens_t = yt - ((predict_ridge(b_t, mu_t, sd_t, Xt)
-                        + (b2t[0] + b2t[1] * tr["exp_total"].to_numpy(float))) / 2.0)
+                        + (b2t[0] + b2t[1] * tr_i["exp_total"].to_numpy(float))) / 2.0)
 
         frame = te[["game_id", "alt_game_id", "season", "week", "game_type", "gameday",
                     "home_team", "away_team", "home_score", "away_score", "result", "total",
@@ -309,11 +330,10 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     """
     if future.empty:
         return future
-    future = future.copy()
-    for col in ("wind", "temp"):
-        if future[col].isna().any():
-            med = float(df[col].median())
-            future[col] = future[col].fillna(med)
+    # training frames are imputed with their own medians (this *is* the training window for the
+    # future slate), the future rows with the training medians — never with their own
+    df = impute_weather(df, df)
+    future = impute_weather(df, future)
     S = int(df.season.max()) + 1
     Xm, Xt = df[FEATURES_MARGIN].to_numpy(float), df[FEATURES_TOTAL].to_numpy(float)
     ym, yt = df["result"].to_numpy(float), df["total"].to_numpy(float)
