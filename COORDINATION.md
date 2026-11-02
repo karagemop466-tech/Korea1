@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-01T14:05Z
+Last updated: 2026-11-02T17:20Z
 
 ## How to use this board
 
@@ -31,6 +31,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T7 | Verification pass + link check | **done** | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
 | T8 | **Final integration + publish** (merge, Pages deploy, PR record) | **in progress** | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
 | T9 | Player-prop modelling | **needs review** | unowned | blocked: no reachable player-week or prop-price source (see log) |
+| T10 | Independent official-source audit: re-check published table rows against nfl.com / official sources, repair failing verifier(s), publish `audit.html` + nav entry | **in progress** | `arena/1642ee06-korea1` | `audit/**`, `data/audit/**`, `scripts/audit_*.py`, `audit.html`, `pipeline/render_site.py` (NAV line + audit page only), `scripts/99_verify.py` (repair only), `COORDINATION.md` (own section), `README.md` (one link) |
 
 ---
 

@@ -1,8 +1,8 @@
 {
   "run_utc": "2026-11-01",
   "total": 9,
-  "passed": 9,
-  "failed": 0,
+  "passed": 8,
+  "failed": 1,
   "checks": [
     {
       "id": "V01",
@@ -14,9 +14,9 @@
     {
       "id": "V02",
       "check": "Club division map vs nflverse reference",
-      "passed": true,
-      "detail": "32 clubs checked, 0 mismatches",
-      "source": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv"
+      "passed": false,
+      "detail": "reference file missing - re-run scripts/00_ingest.py",
+      "source": "NFLVERSE-TEAMS"
     },
     {
       "id": "V03",
