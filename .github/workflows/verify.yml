@@ -32,6 +32,10 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install pandas numpy scipy
-      - name: Verify the published site
-        run: python pipeline/verify_site.py
+        run: pip install -r requirements.txt
+      - name: Verify pinned inputs and rebuild
+        run: make build
+      - name: Regression tests
+        run: make test
+      - name: Verify committed generated outputs
+        run: git diff --exit-code -- '*.html' assets data/processed EXECUTIVE_SUMMARY.md

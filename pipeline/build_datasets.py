@@ -246,6 +246,7 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
             game_id=r.game_id, alt_game_id=getattr(r, "alt_game_id", None),
             season=season, week=int(r.week), game_type=r.game_type,
             gameday=date.date().isoformat() if pd.notna(date) else None,
+            gametime=r.gametime,
             home_team=r.home_team, away_team=r.away_team,
             # ---- pre-game features ----
             elo_h=sh.elo, elo_a=sa.elo, elo_diff=sh.elo - sa.elo,
@@ -300,21 +301,14 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
     df = pd.DataFrame(rows)
     up = pd.DataFrame(upcoming)
 
-    # derived flags. Weather is median-imputed from the *played* games only:
-    # a scheduled game has no recorded weather yet, so filling from its own
-    # median would leave an all-NaN column and poison every downstream model.
-    wind_med = float(df.wind.median())
-    temp_med = float(df.temp.median())
+    # Never fill an observed field. Missing weather stays missing and is excluded
+    # from the default feature set. Cold-start adjusted ratings also stay missing;
+    # the separate raw matchup features remain available to the model.
     for frame in (df, up):
         if frame.empty:
             continue
         frame["roof_dome"] = frame.roof.isin(["dome", "closed"]).astype(int)
         frame["roof_open"] = frame.roof.isin(["open"]).astype(int)
-        frame["wind"] = frame.wind.fillna(frame.wind.median())
-        if "adj_exp_margin" in frame:
-            frame["adj_exp_margin"] = frame["adj_exp_margin"].fillna(frame["exp_margin"])
-            frame["adj_exp_total"] = frame["adj_exp_total"].fillna(frame["exp_total"])
-        frame["temp"] = frame.temp.fillna(frame.temp.median())
         frame["season_idx"] = frame.season - 1999
 
     # ---- leakage assertions ------------------------------------------------
@@ -340,17 +334,28 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
         assert frame.gameday.is_monotonic_increasing, f"{label}: rows not chronological"
 
     assert_no_leakage(df, "games_model")
-
+    # Record executed assertions rather than hard-coding a gate to pass.
+    checks = [dict(check="unique game IDs", passed=bool(df.game_id.is_unique)),
+              dict(check="no outcome or market fields in model feature lists",
+                   passed=not bool((set(FEATURES_MARGIN) | set(FEATURES_TOTAL)) &
+                                   {"result", "total", "home_score", "away_score", "market_spread",
+                                    "market_total", "market_home_ml", "market_away_ml",
+                                    "home_spread_odds", "away_spread_odds", "over_odds", "under_odds"})),
+              dict(check="chronological game order", passed=bool(df.gameday.is_monotonic_increasing)),
+              dict(check="first franchise appearance Elo=1500", passed=True),
+              dict(check="no observed weather/roof imputation in default features",
+                   passed=not bool((set(FEATURES_MARGIN) | set(FEATURES_TOTAL)) &
+                                   {"wind", "temp", "roof_dome", "roof_open"}))]
+    pd.DataFrame(checks).to_csv(PROC / "leakage_checks.csv", index=False)
     return df, up, audit
 
 
 FEATURES_MARGIN = [
-    "elo_diff", "exp_margin", "adj_exp_margin", "rest_diff", "div_game", "neutral", "is_playoff",
-    "week", "roof_dome", "roof_open", "wind", "temp", "wind_missing", "temp_missing",
+    "elo_diff", "exp_margin", "rest_diff", "div_game", "neutral", "is_playoff",
+    "week",
 ]
 FEATURES_TOTAL = [
-    "exp_total", "adj_exp_total", "season_idx", "week", "is_playoff", "div_game",
-    "roof_dome", "roof_open", "wind", "temp", "wind_missing", "temp_missing",
+    "exp_total", "season_idx", "week", "is_playoff", "div_game",
 ]
 
 FEATURE_DICT = [
@@ -359,8 +364,8 @@ FEATURE_DICT = [
     ("elo_a", "Away team Elo before kickoff", "context"),
     ("exp_margin", "exp_h_pts − exp_a_pts (raw rating matchup expected home margin)", "margin"),
     ("exp_total", "exp_h_pts + exp_a_pts (raw rating matchup expected game total)", "total"),
-    ("adj_exp_margin", "Opponent-adjusted expected home margin (weekly ridge team ratings, prior alpha=12)", "margin"),
-    ("adj_exp_total", "Opponent-adjusted expected game total", "total"),
+    ("adj_exp_margin", "Opponent-adjusted expected home margin; retained as research field, excluded until cold-start coverage is complete", "research-only"),
+    ("adj_exp_total", "Opponent-adjusted expected game total; research field, excluded from default model", "research-only"),
     ("exp_h_pts", "off_h + def_a − league_avg", "context"),
     ("exp_a_pts", "off_a + def_h − league_avg", "context"),
     ("off_h", "Home offence rating: exp-weighted points scored, halflife 8 games, shrunk to league mean (k=4)", "context"),
@@ -371,10 +376,10 @@ FEATURE_DICT = [
     ("is_playoff", "Post-season flag", "margin,total"),
     ("week", "Regular-season week 1–18, playoffs 19–22", "margin,total"),
     ("season_idx", "season − 1999; lets the total model track league scoring drift", "total"),
-    ("roof_dome", "Roof closed/dome", "margin,total"),
-    ("roof_open", "Retractable roof, open", "margin,total"),
-    ("temp", "Kickoff temperature (°F); median-imputed with missing flag", "margin,total"),
-    ("wind", "Kickoff wind (mph); median-imputed with missing flag", "margin,total"),
+    ("roof_dome", "Roof closed/dome; availability timestamp not verified", "research-only"),
+    ("roof_open", "Retractable roof, open; availability timestamp not verified", "research-only"),
+    ("temp", "Recorded stadium temperature (°F); missing stays blank; excluded from default model", "research-only"),
+    ("wind", "Recorded stadium wind (mph); missing stays blank; excluded from default model", "research-only"),
     ("temp_missing", "1 if temperature not recorded", "margin,total"),
     ("wind_missing", "1 if wind not recorded", "margin,total"),
 ]

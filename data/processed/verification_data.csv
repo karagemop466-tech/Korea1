@@ -1,5 +1,7 @@
-check,passed,detail
-data_audit all passed,True,6/6 checks
-every strategy has a verdict,True,18 strategies
-no strategy claimed SKILL without passing all gates,True,verdict logic consistent
-prop page publishes no unverified value,True,player-level cells left blank by design
+check,passed
+data integrity,True
+leakage checks,True
+all strategies have verdict,True
+validated iff all eight gates,True
+no reward without validation,True
+official quote gate fails without evidence,True

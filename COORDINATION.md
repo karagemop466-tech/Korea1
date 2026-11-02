@@ -392,3 +392,27 @@ complete T10 audit and this session's claim are retained. T10 is done; F1–F3 a
 subsequent final audit/integration, not a competing claim on an active task. No work
 was discarded. The first pull targeted the not-yet-created remote session branch;
 the subsequent pull from `main` is recorded here rather than hidden.
+
+### F1–F3 implementation checkpoint — 2026-11-02
+
+The final audit found and repaired moving-pin fetches, full-history weather fill,
+mismatched benchmark samples, whole-week parlay lookahead, weak/hard-coded gates,
+iid bet-level inference, misleading key-number pricing claims and permissive source checks.
+The public dashboard and annex now use a strict-source view: official/primary reference on
+every row, unverified metric cells blank, historical calculations preserved in labelled downloads.
+No strategy is validated or rewarded without authenticated executable quotes and all eight gates.
+
+Cross-scope integration edits (all prior owners finished/merged): `scripts/run_all.sh` now
+renders the strict annex after its historical checks; `scripts/audit_nfl_scores.py` reads the
+canonical pinned raw score file rather than a sibling derivative. Historical `analysis/`,
+`scripts/` calculations and `data/lab/` are preserved. The final integration owns shared site outputs.
+
+Verification before integration: `make build` passed; 14 integration regressions passed;
+4 preserved no-lookahead tests passed; 33 annex math checks passed; annex 9/9 checks and
+link check passed; canonical 21 pages had zero missing official row references or broken links.
+Official/primary review scope is recorded in `data/audit/official_review.json` and `audit/REPORT.md`.
+
+A subsequent fetch found `main` advanced through PRs #15/#16/#17/#18 and an open PR #19.
+Those additions (prop model, temporal tests, reproducibility audit and requirements register)
+will be merged and re-verified, not discarded. PR #19 remains open unless its own owner merges it;
+this session will not close or force-push another session's branch.

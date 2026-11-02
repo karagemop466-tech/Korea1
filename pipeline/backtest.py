@@ -32,10 +32,17 @@ class Bet:
     market: str
     side: str            # home / away / over / under
     line: float          # handicap or total (NaN for moneyline)
-    price: float         # American odds actually available at the close
+    price: float         # Recorded community American price; executability unverified
     outcome: float       # 1 win, 0.5 push, 0 loss
     pnl: float           # per 1 unit staked
     signal: float        # the value of the signal that triggered the bet
+    n_legs: int
+    leg_prices: str
+    slate_time: str
+    selection_keys: str
+    quote_timestamp: str
+    official_quote_url: str
+    executable_quote_verified: bool
 
 
 def settle_row(row, market: str, side: str, price: float) -> tuple[float, float]:
@@ -151,6 +158,9 @@ def run_strategy(pred: pd.DataFrame, spec) -> pd.DataFrame:
             gameday=row["gameday"], market=row["_market"], side=row["_side"],
             line=float(line_for(row, row["_market"])), price=float(price),
             outcome=outcome, pnl=pnl, signal=float(row["_signal"]),
+            n_legs=1, leg_prices="[]", slate_time="",
+            selection_keys=f'{row["game_id"]}:{row["_market"]}:{row["_side"]}',
+            quote_timestamp="", official_quote_url="", executable_quote_verified=False,
         ).__dict__)
     return pd.DataFrame(out)
 

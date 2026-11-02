@@ -45,6 +45,22 @@ def phi(x: np.ndarray, y: np.ndarray) -> float:
     return float(np.corrcoef(x, y)[0, 1])
 
 
+
+def block_corr_ci(x, y, groups, n_boot=1000, seed=20261101):
+    """Cluster bootstrap by NFL week; no iid Fisher assumption for binary legs."""
+    x,y,groups=np.asarray(x,float),np.asarray(y,float),np.asarray(groups)
+    unique=np.unique(groups)
+    if len(unique)<4 or len(x)<4:
+        return float("nan"),float("nan")
+    indices=[np.flatnonzero(groups==u) for u in unique]
+    rng=np.random.default_rng(seed); vals=[]
+    for _ in range(n_boot):
+        idx=np.concatenate([indices[i] for i in rng.integers(len(indices),size=len(indices))])
+        if np.std(x[idx])>0 and np.std(y[idx])>0:
+            vals.append(np.corrcoef(x[idx],y[idx])[0,1])
+    return (float(np.percentile(vals,2.5)),float(np.percentile(vals,97.5))) if vals else (float("nan"),float("nan"))
+
+
 def main() -> None:
     g = pd.read_csv(PROC / "originated_lines.csv")
     g = g.sort_values(["season", "week", "game_id"]).reset_index(drop=True)
@@ -70,7 +86,8 @@ def main() -> None:
     ]:
         sub = g[[a, b]].dropna()
         r = float(np.corrcoef(sub[a], sub[b])[0, 1])
-        lo, hi = ci_r(r, len(sub))
+        groups=(g.loc[sub.index,"season"].astype(str)+"_"+g.loc[sub.index,"week"].astype(str)).to_numpy()
+        lo, hi = block_corr_ci(sub[a],sub[b],groups)
         rho = float(stats.spearmanr(sub[a], sub[b]).statistic)
         rows.append(dict(pair=label, x=a, y=b, n=len(sub), pearson=r, ci_lo=lo, ci_hi=hi,
                          spearman=rho))
@@ -87,7 +104,8 @@ def main() -> None:
         sub = g[[a, b]].dropna()
         ph = phi(sub[a].to_numpy(), sub[b].to_numpy())
         n = len(sub)
-        lo, hi = ci_r(ph, n)
+        groups=(g.loc[sub.index,"season"].astype(str)+"_"+g.loc[sub.index,"week"].astype(str)).to_numpy()
+        lo, hi = block_corr_ci(sub[a],sub[b],groups)
         # independence benchmark
         p_joint = float(((sub[a] == 1) & (sub[b] == 1)).mean())
         p_indep = float((sub[a] == 1).mean() * (sub[b] == 1).mean())
@@ -97,39 +115,24 @@ def main() -> None:
     pd.DataFrame(sgp).to_csv(PROC / "corr_same_game.csv", index=False)
 
     # --------------------------------------------------------- cross-game
-    # Two games in the same week are different teams, so they cannot be aligned
-    # game-by-game across weeks. Instead: inside each (season, week) slate we pair
-    # consecutive games, giving one (x, y) pair per slate, and estimate the pooled
-    # correlation with a week-block bootstrap CI. Under independence the estimate
-    # is ~0 whatever the pairing rule is.
-    cross = []
-    for col, label in [("result", "margin"), ("total", "total")]:
-        xs, ys, wk = [], [], []
-        for (s, w), grp in g.groupby(["season", "week"]):
-            v = grp[[col]].dropna()[col].to_numpy()
-            if len(v) < 4:
-                continue
-            for i in range(0, len(v) - 1, 2):
-                xs.append(v[i]); ys.append(v[i + 1]); wk.append(f"{s}_{w}")
-        xs, ys = np.array(xs), np.array(ys)
-        r = float(np.corrcoef(xs, ys)[0, 1]) if len(xs) > 3 else np.nan
-        # week-block bootstrap for the CI
-        rng = np.random.default_rng(20261101)
-        wk_arr = np.array(wk)
-        uniq = np.unique(wk_arr)
-        boots = []
-        for _ in range(2000):
-            pick = rng.choice(uniq, len(uniq), replace=True)
-            idx = np.concatenate([np.where(wk_arr == u)[0] for u in pick])
-            if len(idx) > 3 and xs[idx].std() > 0 and ys[idx].std() > 0:
-                boots.append(np.corrcoef(xs[idx], ys[idx])[0, 1])
-        boots = np.array([b for b in boots if np.isfinite(b)])
-        cross.append(dict(quantity=label, n_pairs=int(len(xs)), n_slates=int(len(uniq)),
-                          corr=r, ci_lo=float(np.percentile(boots, 2.5)) if len(boots) else np.nan,
-                          ci_hi=float(np.percentile(boots, 97.5)) if len(boots) else np.nan,
-                          p_independence_fails=bool(
-                              len(boots) and (np.percentile(boots, 2.5) > 0 or np.percentile(boots, 97.5) < 0))))
-    pd.DataFrame(cross).to_csv(PROC / "corr_cross_game.csv", index=False)
+    # All unordered distinct-game pairs within a slate, not an arbitrary adjacent
+    # pairing. Cluster uncertainty by slate because pairs share games. This is a
+    # pooled association diagnostic, not proof of independence or tail independence.
+    cross=[]
+    for col,label in [("result","margin"),("total","total")]:
+        xs,ys,wk=[],[],[]
+        for (season,week),grp in g.groupby(["season","week"]):
+            v=grp.sort_values("game_id")[col].dropna().to_numpy()
+            for i in range(len(v)):
+                for j in range(i+1,len(v)):
+                    xs.append(v[i]);ys.append(v[j]);wk.append(f"{season}_{week}")
+        xs,ys=np.asarray(xs),np.asarray(ys)
+        r=float(np.corrcoef(xs,ys)[0,1]) if len(xs)>3 else float("nan")
+        lo,hi=block_corr_ci(xs,ys,np.asarray(wk))
+        cross.append(dict(quantity=label,n_pairs=len(xs),n_slates=len(set(wk)),corr=r,
+                          ci_lo=lo,ci_hi=hi,method="all within-slate pairs; slate-cluster bootstrap",
+                          interval_excludes_zero=bool(np.isfinite(lo) and np.isfinite(hi) and (lo>0 or hi<0))))
+    pd.DataFrame(cross).to_csv(PROC/"corr_cross_game.csv",index=False)
 
     # ------------------------------------------------------- team totals
     vh, va = g.home_score.var(ddof=1), g.away_score.var(ddof=1)
@@ -171,9 +174,9 @@ def main() -> None:
             return float(np.mean(vals)) if vals else np.nan
         vig.append(dict(season=int(season),
                         n=int(len(grp)),
-                        spread_hold=hold("home_spread_odds", "away_spread_odds"),
-                        total_hold=hold("over_odds", "under_odds"),
-                        ml_hold=hold("market_home_ml", "market_away_ml")))
+                        spread_overround=hold("home_spread_odds", "away_spread_odds"),
+                        total_overround=hold("over_odds", "under_odds"),
+                        ml_overround=hold("market_home_ml", "market_away_ml")))
     pd.DataFrame(vig).to_csv(PROC / "vig_by_season.csv", index=False)
 
     # -------------------------------------------------- favourite/longshot
@@ -213,17 +216,17 @@ def main() -> None:
                    "blocklist refuses; every GitHub mirror checked stores these files as "
                    "132-byte Git-LFS pointers. No value was estimated to fill the gap.")),
         dict(component="Team scoring totals", available="YES",
-             status="VERIFIED", note="games.csv home_score/away_score, reconciled 7,384/7,384"),
-        dict(component="Game total lines", available="YES", status="VERIFIED",
-             note="games.csv total_line, 100% present 1999–2025"),
+             status="INTERNALLY CONSISTENT; official verification partial", note="games.csv score arithmetic reconciles; only the sampled NFL.com rows are officially checked"),
+        dict(component="Game total lines", available="YES", status="UNVERIFIED — community market observations",
+             note="games.csv total_line is present but has no authenticated bookmaker quote provenance"),
         dict(component="Team total lines", available="NO",
              status="UNVERIFIED — not present in any retrieved source",
              note="nflverse game-level files carry only the full-game total, not the 8-way team total market."),
         dict(component="Player prop prices", available="NO",
              status="UNVERIFIED — not present in any retrieved source",
              note="No retrieved source carries prop prices, so no prop ROI can be computed."),
-        dict(component="Correlation of team scoring", available="YES", status="VERIFIED",
-             note="computed in corr_team_totals.csv"),
+        dict(component="Correlation of team scoring", available="YES", status="RESEARCH ESTIMATE; official verification partial",
+             note="computed in corr_team_totals.csv from the pinned community archive"),
     ])
     prop.to_csv(PROC / "prop_inputs.csv", index=False)
 

@@ -1,3 +1,3 @@
-quantity,n_pairs,n_slates,corr,ci_lo,ci_hi,p_independence_fails
-margin,2964,430,0.0109225578124228,-0.02741572622529566,0.04825481664166926,False
-total,2964,430,0.008496192854487165,-0.025867707089704255,0.04392440968107186,False
+quantity,n_pairs,n_slates,corr,ci_lo,ci_hi,method,interval_excludes_zero
+margin,41502,452,0.000565167631933333,-0.008118917390053652,0.011066954054406587,all within-slate pairs; slate-cluster bootstrap,False
+total,41502,452,0.004378543863195659,-0.005311124493672478,0.014435298733336276,all within-slate pairs; slate-cluster bootstrap,False

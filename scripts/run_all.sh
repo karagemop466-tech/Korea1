@@ -20,4 +20,7 @@ python3 scripts/98_linkcheck.py
 python3 scripts/07_build_site.py
 python3 scripts/99_verify.py
 python3 scripts/98_linkcheck.py
+# Final integration: strict public view; historical JSON remains unchanged.
+"${PYTHON:-python3}" pipeline/render_annex.py
+"${PYTHON:-python3}" pipeline/verify_site.py
 echo "PIPELINE OK"

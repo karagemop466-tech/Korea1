@@ -1,0 +1,27 @@
+{
+  "reviewed_on": "2026-11-02",
+  "session": "arena/ed58af62-korea1",
+  "method": "Agent page-fetch and official/primary-source search; no shell access to NFL hosts assumed",
+  "scope_note": "A source supports only the stated scope. Context links do not authenticate community prices or model estimates.",
+  "sources": [
+    {"url":"https://www.nfl.com/scores/2026/REG8","status":"read","scope":"Week 8 final-score sample; eight pinned scores blank"},
+    {"url":"https://www.nfl.com/scores/2022/REG10","status":"read","scope":"First-chunk final-score sample"},
+    {"url":"https://www.nfl.com/scores/2016/REG8","status":"read","scope":"First-chunk final-score sample"},
+    {"url":"https://www.nfl.com/scores/2014/REG15","status":"read","scope":"First-chunk final-score sample"},
+    {"url":"https://www.nfl.com/games/cardinals-at-steelers-2015-reg-6","status":"read","scope":"ARI 13–25 PIT final score"},
+    {"url":"https://www.nfl.com/games/eagles-at-cowboys-2015-reg-9","status":"read","scope":"PHI 33–27 DAL overtime final score"},
+    {"url":"https://www.nfl.com/games/chiefs-at-ravens-2015-reg-15","status":"read","scope":"KC 34–14 BAL final score"},
+    {"url":"https://operations.nfl.com/rules-officiating/2026-nfl-rulebook","status":"read","scope":"Official rulebook and 2026 rule changes; not a betting-price source"},
+    {"url":"https://www.nfl.com/injuries/","status":"read","scope":"Official current injury-report format and availability statuses; not a historical prop-price archive"},
+    {"url":"https://www.nfl.com/schedules/","status":"read","scope":"Official schedule interface; not a complete future-week verification"},
+    {"url":"https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping","status":"read","scope":"White (2000) data-snooping abstract and bibliographic record"},
+    {"url":"https://www.pm-research.com/content/iijpormgmt/40/5/94","status":"read","scope":"Bailey/López de Prado (2014) DSR abstract and bibliographic record"},
+    {"url":"https://www.tandfonline.com/doi/abs/10.1080/01621459.1994.10476870","status":"read","scope":"Politis/Romano stationary-bootstrap journal record"},
+    {"url":"https://www.tandfonline.com/doi/abs/10.1198/073500105000000063","status":"read","scope":"Hansen SPA journal record"},
+    {"url":"https://cris.tau.ac.il/en/publications/controlling-the-false-discovery-rate-a-practical-and-powerful-app-2/","status":"read","scope":"Benjamini/Hochberg bibliographic record"},
+    {"url":"https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push","status":"read","scope":"Operator push-settlement example; not universal SGP terms"},
+    {"url":"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages","status":"read","scope":"Official static-site hosting documentation"},
+    {"url":"https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md","status":"read","scope":"Community field definitions; not official NFL price provenance"},
+    {"url":"https://gaming.nv.gov/siteassets/content/about/gaming-revenue/monthly-revenue-report----september-2026.pdf","status":"fetch_failed","scope":"No numeric evidence used from this failed fetch"}
+  ]
+}

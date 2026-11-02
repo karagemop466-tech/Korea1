@@ -4,89 +4,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Player props</title>
-<meta name="description" content="The prop-pricing framework, the measured structural inputs, and an explicit list of what could not be verified.">
+<meta name="description" content="A source-first framework for player-prop combinations; no fabricated prices or returns.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark">🏈</span> NFL Line Lab</a>
-    <nav><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink active" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+    <nav aria-label="Main navigation"><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink active" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
   </div>
 </header>
-<main class="wrap wide">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<main id="main-content" class="wrap wide">
   <h1>Player props</h1>
-  <p class="lede">The prop-pricing framework, the measured structural inputs, and an explicit list of what could not be verified.</p>
-  
-<section>
-<h2>Status: framework built, player-level numbers deliberately blank</h2>
-<p class="flag bad"><strong>No player-level value is published on this page.</strong> Player game logs (passing, rushing and receiving yards, receptions, touchdowns) could not be retrieved from any source reachable in this build. Rather than estimate them, every player-level cell is left blank and the gap is recorded on the <a href='flagged.html'>Flagged for review</a> page.</p>
-<div class="tablewrap"><table class=""><caption>Component audit for the player-prop project</caption><thead><tr><th>Input a prop model needs</th><th>Available</th><th>Status</th><th>Note</th><th>Source</th></tr></thead><tbody><tr><td>Player game logs (passing/rushing/receiving yards, receptions, TDs)</td><td><span class="pill no">NO</span></td><td>UNVERIFIED — source not reachable in this build</td><td>nflverse release assets (`player_stats`, `stats_player`) are served from release-assets.githubusercontent.com, which this environment&#x27;s egress blocklist refuses; every GitHub mirror checked stores these files as 132-byte Git-LFS pointers. No value was estimated to fill the gap.</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">source</a></td></tr><tr><td>Team scoring totals</td><td><span class="pill skill">YES</span></td><td>VERIFIED</td><td>games.csv home_score/away_score, reconciled 7,384/7,384</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>Game total lines</td><td><span class="pill skill">YES</span></td><td>VERIFIED</td><td>games.csv total_line, 100% present 1999–2025</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>Team total lines</td><td><span class="pill no">NO</span></td><td>UNVERIFIED — not present in any retrieved source</td><td>nflverse game-level files carry only the full-game total, not the 8-way team total market.</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">source</a></td></tr><tr><td>Player prop prices</td><td><span class="pill no">NO</span></td><td>UNVERIFIED — not present in any retrieved source</td><td>No retrieved source carries prop prices, so no prop ROI can be computed.</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">source</a></td></tr><tr><td>Correlation of team scoring</td><td><span class="pill skill">YES</span></td><td>VERIFIED</td><td>computed in corr_team_totals.csv</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr></tbody></table></div>
-</section>
-
-<section>
-
-<h2>The framework, stated precisely</h2>
-<p>A player prop is a bet on a count. Pricing it needs three things, in this order:</p>
-<ol class="findings">
-<li><strong>A per-game distribution for the player's count</strong> — not a mean. Receptions and
-carries are over-dispersed counts (negative binomial); yards are right-skewed and better modelled
-as a shifted lognormal or a gamma; touchdowns are near-Poisson with a huge zero mass.</li>
-<li><strong>An availability model</strong> — a prop is void if the player does not play. Snap
-share and injury status drive both the mean and the void probability, and a model that ignores
-them is biased, not just noisy.</li>
-<li><strong>The joint distribution across legs</strong> — this is where parlay pricing lives, and
-where almost every public SGP calculator quietly cheats by multiplying.</li>
-</ol>
-<p>For a two-leg same-game parlay the fair price is <code>P(A∩B) = P(A)·P(B) + Cov(A,B)</code>. If
-the legs are positively correlated and the book prices them independently, the book is
-<em>underpricing</em> the parlay — you should take it. The measured covariance for the closest
-available analogue in this dataset is in the table below.</p>
-
-<div class="tablewrap"><table class=""><caption>Measured dependence on the closest available legs</caption><thead><tr><th>Pair</th><th>n</th><th>φ</th><th>Lift</th><th>Source</th></tr></thead><tbody><tr><td>Home −line &amp; Over</td><td>5,830</td><td>0.0241</td><td>1.025</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr><tr><td>Home −line &amp; Home ML</td><td>5,900</td><td>0.6756</td><td>1.619</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr><tr><td>Over &amp; Home ML</td><td>5,971</td><td>0.0076</td><td>1.007</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr></tbody></table></div>
-</section>
-
-<section>
-<h2>What can be said without player data</h2>
-<p>The structural parents of prop markets are measurable here, and they are the part that usually
-goes wrong in public calculators:</p>
-<ul class="findings">
-<li>Team scoring variance is large relative to its covariance:
-var(home) = 104.57,
-var(away) = 99.96,
-cov(home, away) = -3.98.</li>
-<li>The home share of total variance is
-0.532 — a team-total over
-is not simply "half a game-total over".</li>
-<li>Game total sd is 14.02 points against a
-mean of 44.83.</li>
-</ul>
-<p>Those three numbers are enough to price a <em>team total</em> honestly and to know how much a
-pair of opposing team-total legs co-move. They are <strong>not</strong> enough to price a player
-prop, which is why the player layer stays empty rather than invented.</p>
-</section>
-
-<section>
-<h2>What would unblock it</h2>
-<div class="tablewrap"><table><thead><tr><th>Step</th><th>Requirement</th><th>Blocked by</th><th>Source</th></tr></thead><tbody>
-<tr><td>1</td><td>Player-week stat lines (nflverse <code>player_stats</code> release)</td>
-<td>Release assets redirect to <code>release-assets.githubusercontent.com</code>, refused by this
-environment's egress policy; every GitHub mirror checked stores 132-byte LFS pointers</td>
-<td><a href="https://github.com/nflverse/nflverse-data/releases/tag/player_stats" target="_blank" rel="noopener">release</a></td></tr>
-<tr><td>2</td><td>Prop prices (any sportsbook)</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-<tr><td>3</td><td>Team total prices</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-<tr><td>4</td><td>Injury / snap-share feeds</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-</tbody></table></div>
-</section>
-
+  <p class="lede">A source-first framework for player-prop combinations; no fabricated prices or returns.</p>
+  <p class="flag info"><strong>Evidence boundary.</strong> Official observations, model estimates and community-market research are separate. Unverified observations are blank in the public tables, not filled in. Reproducible estimates remain in the <a href="lab/index.html">clearly labelled research annex</a> and downloadable CSVs; they are not betting recommendations.</p>
+<section><h2>No invented prop edge</h2><p>Player-prop combinations are a research category, not a validated product.
+The canonical archive has no authenticated prop prices or joint ticket quotes. The annex contains historical
+play-by-play research, but that does not verify a prop line, player role at decision time, or executable payout.
+No prop ROI is claimed.</p><div class="tablewrap"><table class=""><caption>Prop evidence inventory</caption><thead><tr><th>Input</th><th>Value</th><th>Verification status</th><th>Official reference</th></tr></thead><tbody><tr><td>Player opportunity / role history</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED — no official row-level archive integrated</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">NFL injuries</a></td></tr><tr><td>Timestamped injury / active status</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED — current official page exists; historical snapshots not integrated</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">NFL injuries</a></td></tr><tr><td>Player prop opening / closing prices</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED — no authenticated price archive</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>Bookmaker prop settlement terms</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED — market-specific terms required</td><td><a href="https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push" target="_blank" rel="noopener">FanDuel push settlement rules</a></td></tr><tr><td>Joint SGP ticket quotes</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED — no authenticated quote archive</td><td><a href="https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push" target="_blank" rel="noopener">FanDuel push settlement rules</a></td></tr><tr><td>Prop combo ROI</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED — not calculated from invented prices</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr></tbody></table></div></section>
+<section><h2>Combo hypotheses to test—not picks</h2><div class="tablewrap"><table class=""><caption>No player, line, price or correlation is inferred</caption><thead><tr><th>Combo</th><th>Mechanism to test</th><th>Validated ROI</th><th>Status</th><th>Official context</th></tr></thead><tbody><tr><td>QB passing + primary receiver receiving</td><td>Shared passing volume may create positive dependence; target selection must be frozen before outcomes.</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">NFL injuries</a></td></tr><tr><td>RB rushing + team moneyline</td><td>Lead protection and game script may change rush volume; direction is not assumed.</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">NFL injuries</a></td></tr><tr><td>Receiver receptions + receiving yards</td><td>Different thresholds and yardage distributions require a joint model, not one correlation constant.</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">NFL injuries</a></td></tr><tr><td>Two receivers on the same team</td><td>Target competition and passing volume can act in opposite directions; do not assume a hedge.</td><td><span class="blank" aria-label="blank: unverified"></span></td><td>UNVERIFIED</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">NFL injuries</a></td></tr></tbody></table></div></section>
+<section><h2>Build protocol</h2><ol class="findings">
+<li>Archive official player statistics and reconstruct the information available before kickoff.</li>
+<li>Use stable player IDs and franchise mappings; account for inactive players and role changes.</li>
+<li>Record the exact prop threshold, price, timestamp, bookmaker and settlement terms.</li>
+<li>Model the joint distribution of legs, including pushes and voids; calibrate on untouched games.</li>
+<li>Compare expected value with the actual SGP quote, then run all eight gates.</li></ol></section>
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
-    produced by <code>pipeline/</code> from the files listed on the
-    <a href="sources.html">Sources</a> page.</p>
+    <p>Research snapshot <code>a270278f3ac4</code> · source register generated 2026-11-01T13:24:09Z.
+    Official observations and unverified research estimates are distinguished on every page.
+    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a>.</p>
+    <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
 </body>

@@ -1,174 +1,79 @@
-"""Generate EXECUTIVE_SUMMARY.md from the same tables the site uses.
-
-Writing the summary from the data (rather than by hand) is the only way to keep it
-from drifting out of sync with the numbers it quotes.
-"""
+"""Generate the executive summary from final public evidence, not stale headlines."""
 from __future__ import annotations
-
 import sys
 from pathlib import Path
-
 import pandas as pd
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from common import ROOT,PROC,read_json
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import PROC, ROOT, fmt, pct, read_json  # noqa: E402
+def main():
+    gates=pd.read_csv(PROC/'strategy_gates.csv')
+    scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
+    src=read_json(ROOT/'data/sources.json')
+    n=int(gates.verdict.eq('VALIDATED').sum()); matched=int(scores.status.eq('MATCH').sum())
+    text=f'''# Executive summary — NFL Line Lab
 
-SRC = read_json(ROOT / "data" / "sources.json")
-SHA = SRC["upstream"]["commit_sha"]
+Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
 
+## Decision
 
-def main() -> None:
-    pred = pd.read_csv(PROC / "originated_lines.csv")
-    gates = pd.read_csv(PROC / "strategy_gates.csv")
-    summ = pd.read_csv(PROC / "strategy_summary.csv")
-    allm = pd.read_csv(PROC / "model_metrics.csv")
-    rc = read_json(PROC / "reality_check.json")
-    vig = pd.read_csv(PROC / "vig_by_season.csv")
-    sg = pd.read_csv(PROC / "corr_same_game.csv")
-    cg = pd.read_csv(PROC / "corr_cross_game.csv")
-    audit = pd.read_csv(PROC / "data_audit.csv")
-    chk = pd.read_csv(PROC / "settlement_crosscheck.csv")
+**Keep the research engine; do not fund or reward a betting strategy yet.** The repository originates
+NFL lines and evaluates single-bet, situational and parlay candidates. It does not contain authenticated,
+timestamped executable bookmaker quotes or verified player-prop ticket prices. **{n} of {len(gates)} canonical
+strategies pass all eight final gates.** No prize, capital allocation or profitable recommendation is authorized.
 
-    def mae(model, market):
-        r = allm[(allm.model == model) & (allm.market == market) & (allm.season == "ALL")]
-        return float(r.mae.iloc[0])
+“Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
+Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
-    best = summ.sort_values("roi", ascending=False).iloc[0]
-    n_skill = int((gates.verdict == "SKILL").sum())
-    n_bets = int(summ.n.sum())
-    winners = summ[summ.roi > 0].sort_values("roi", ascending=False)
+## What was delivered
 
-    lines = f"""# Executive summary — NFL Line Lab
+| Requirement | Delivery | Evidence status | Official / primary reference |
+|---|---|---|---|
+| Requirements register | `research/requirements.md` and `requirements.html` | Implemented | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Own NFL lines | Walk-forward Elo, rolling matchup and ridge models; margin, total and moneyline estimates | Implemented; benchmark inputs unverified | [NFL official scores](https://www.nfl.com/scores/) |
+| Signal strategies | {len(gates)} canonical candidates plus preserved historical annex | No validated edge | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+| Parlays | Simultaneous-slate selection, push-aware research settlement and adverse-price stress | Executable ticket quotes unavailable | [FanDuel push rules](https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push) |
+| Player-prop combos | Input inventory, joint-distribution protocol and combo hypotheses | Blocked by missing verified prices and joint quotes | [NFL injury report](https://www.nfl.com/injuries/) |
+| Correlations | Reproducible research estimates; strict public values blank where inputs unverified | Partial evidence | [NFL official scores](https://www.nfl.com/scores/) |
+| Luck mitigation | Weekly-block bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
+| Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+| Official score audit | {matched} matching games in a {len(scores)}-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
+| Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
-*Generated from the pipeline output on {SRC['generated_utc']} · upstream commit `{SHA[:12]}` ·
-reproduce with `make build`.*
+## Material audit corrections
 
-## The question
+1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.
+2. **No future weather fill:** missing observations stay blank. Weather and roof fields are excluded from the default model until pre-kickoff availability is verified.
+3. **Fair benchmark comparison:** each model and market metric uses identical available games for that market.
+4. **No whole-week parlay hindsight:** tickets use an earliest eligible simultaneous kickoff slate. They remain research simulations, not confirmed ticket offers.
+5. **Discrete predictive probabilities:** prior out-of-fold empirical errors replace the claim that a normal continuity correction correctly prices key numbers.
+6. **Dependence-aware inference:** weekly returns, shared stationary-bootstrap resampling and Holm correction replace bet-level independence and an unsupported FDR claim.
+7. **Fail-closed verdicts:** all eight gates, including redundancy and official quote provenance, are required. A profitable backtest is not labelled skill.
+8. **Trial-count uncertainty:** the complete exploratory search history is unknown. Deflated Sharpe is provisional and cannot certify a strategy.
+9. **Source policy:** community hashes are not official NFL verification. Strict public tables blank unverified observations; historical calculations remain in labelled data downloads.
+10. **Settlement conflicts:** three 2015 closing-file outcome flags conflict with NFL.com Game Center scores. The score file agrees with NFL.com; the conflicting price-file flags remain flagged.
 
-Can we originate our own NFL lines, and build betting strategies that beat the market for
-reasons other than luck?
+## What remains blocked
 
-## The answer, in one paragraph
-
-The pipeline produces a defensible, market-free NFL line — within about a third of a point of the
-closing line on both the spread and the total — but that gap is decisive. Once every strategy is
-forced through power, multiple-testing, bootstrap and deflated-Sharpe gates, the apparent winners
-dissolve. **{n_skill} of {len(gates)} strategies clear all eight gates**, and White's reality check
-across the whole library returns **p = {fmt(rc.get('p_value', float('nan')), 3)}**, which does not
-reject the hypothesis that the best result is luck. The deliverable is therefore the machinery that
-can tell the difference — plus a documented list of exactly which data would be needed to go
-further.
-
-## Key numbers
-
-| Quantity | Value | Source |
+| Missing evidence | Consequence | Official context |
 |---|---|---|
-| Games with an out-of-sample line | {len(pred):,} ({int(pred.season.min())}–{int(pred.season.max())}, of 7,384 played) | `games.csv` |
-| Closing-line spread MAE | {fmt(mae('market','spread'), 4)} | `games.csv` |
-| Our spread MAE | {fmt(mae('ensemble','spread'), 4)} | `pipeline/models.py` |
-| Closing-line total MAE | {fmt(mae('market','total'), 4)} | `games.csv` |
-| Our total MAE | {fmt(mae('ensemble','total'), 4)} | `pipeline/models.py` |
-| Bets simulated | {n_bets:,} | `strategy_bets.csv` |
-| Strategies tested | {len(gates)} | `strategy_gates.csv` |
-| Strategies validated as skill | {n_skill} | `strategy_gates.csv` |
-| Best raw ROI | {pct(best.roi, 1)} ({best.strategy}, {int(best.n)} tickets) | `strategy_summary.csv` |
-| Reality-check p-value | {fmt(rc.get('p_value', float('nan')), 3)} | `reality_check.json` |
-| Mean two-way hold, spreads | {pct(float(vig.spread_hold.mean()), 2)} | `vig_by_season.csv` |
-| Same-game φ, cover ↔ moneyline | {fmt(float(sg.phi.iloc[1]), 3)} | `corr_same_game.csv` |
-| Same-game φ, cover ↔ total | {fmt(float(sg.phi.iloc[0]), 3)} | `corr_same_game.csv` |
-| Cross-game r, margin / total | {fmt(float(cg['corr'].iloc[0]), 3)} / {fmt(float(cg['corr'].iloc[1]), 3)} | `corr_cross_game.csv` |
+| Authenticated historical entry/closing quotes with timestamps and limits | No executable ROI or CLV validation | [NFL official scores](https://www.nfl.com/scores/) |
+| Verified player-prop prices and joint SGP quotes | No prop-combo ROI or validated correlation | [NFL injury report](https://www.nfl.com/injuries/) |
+| Complete trial registry and untouched prospective replication | No reward eligibility | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+| Full official census of historical scores and pregame fields | Research inputs remain only partially officially verified | [NFL official scores](https://www.nfl.com/scores/) |
 
-## What was built
+## Reproduce and inspect
 
-1. **Data layer.** One pinned commit of `nflverse/nfldata`, archived from `codeload.github.com`
-   and SHA-256 hashed on arrival into `data/sources.json`. 7,548 schedule rows, 7,384 played games
-   1999–2026, plus an independent per-side price file used to cross-check settlement.
-2. **Line origination.** Three model families — weighted ridge on pre-game structure, matchup
-   expected points, Elo — fitted walk-forward and averaged with fixed weights. No model sees a
-   price; none sees anything after kickoff. Both facts are asserted in code.
-3. **Strategy library.** {len(gates)} pre-declared strategies (single bets, 2- and 3-leg parlays,
-   classic angle rules), one unit per bet at the recorded closing price, pushes refunded, no `-110`
-   substitution and no line shopping.
-4. **Validation.** Eight gates: data integrity, leakage, power, significance with FDR control,
-   bootstrap + deflated Sharpe, economic significance, stability, redundancy.
-5. **Site.** A static dashboard where every table row links to its source file, plus a
-   Flagged-for-Review page.
+Run `make build` and `make test`. The canonical pipeline writes `data/processed/`; the independent
+replication annex is preserved under `scripts/`, `data/lab/` and `lab/`. Public annex tables use the same
+strict-source policy. Historical JSON/CSV calculations are explicitly unverified research data.
 
-## Findings
+See `audit/REPORT.md`, `data/audit/`, `flagged.html` and `COORDINATION.md` for the audit scope,
+conflicts, verification commands and final PR/deployment record. A code/data audit is not a claim that
+every third-party historical observation has been individually authenticated.
 
-**1 — The market is still better than the model.** {fmt(mae('market','spread'), 4)} vs
-{fmt(mae('ensemble','spread'), 4)} on spreads and {fmt(mae('market','total'), 4)} vs
-{fmt(mae('ensemble','total'), 4)} on totals. The gap is roughly the width of the vig, which is why
-nothing below gets paid. It is the value of injury reports, starting-quarterback news and sharp
-money, none of which the model is allowed to see.
-
-**2 — Nothing survives validation.** {n_skill} of {len(gates)} strategies pass. The best raw ROI is
-{pct(best.roi, 1)} on {int(best.n)} tickets ({best.strategy}) — a high-variance long-shot ladder
-whose win rate is {pct(best.win_rate)}. Its FDR-adjusted p-value is
-{fmt(float(gates[gates.strategy == best.strategy].G4_p_adj.iloc[0]), 3)} and its deflated Sharpe is
-{fmt(float(gates[gates.strategy == best.strategy].G5_dsr.iloc[0]), 3)}: not an edge.
-
-**3 — The library as a whole cannot beat luck.** White's reality check p =
-{fmt(rc.get('p_value', float('nan')), 3)} over {rc.get('n_strategies')} strategies and
-{rc.get('n_weeks')} weekly blocks.
-
-**4 — Power is the binding constraint, not the model.** Detecting a true 1% per-bet edge at 80%
-power needs about 78,000 bets — roughly 290 NFL seasons. At 5% it needs about 3,100 bets, or twelve
-seasons. Most published betting edges are under-powered noise; the gates are calibrated to say so.
-
-**5 — Correlation is measurable, and it is not symmetric.** Same-game cover ↔ moneyline has
-φ = {fmt(float(sg.phi.iloc[1]), 3)}: near-duplicate legs. Cover ↔ total is φ =
-{fmt(float(sg.phi.iloc[0]), 3)}: close to independent. Cross-game legs are independent
-(r = {fmt(float(cg['corr'].iloc[0]), 3)}, interval spans zero), which is why an ordinary parlay can
-be priced by multiplication but a same-game parlay cannot.
-
-**6 — The pricing environment is sharp.** Mean two-way hold in the closing prices is
-{pct(float(vig.spread_hold.mean()), 2)} on spreads and {pct(float(vig.total_hold.mean()), 2)} on
-totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
-
-## Decisions that shaped the result
-
-- **Bet the close, not the opener.** Multi-season openers do not exist in the pinned data, so every
-  strategy is measured against the hardest benchmark available. This makes results worse and more
-  honest.
-- **Declare first, run second.** All strategies were written down before any ran; every result is
-  published, including the failures. No threshold was retuned after seeing a result.
-- **Correct for the number of tries.** Eighteen strategies tested at p < 0.05 would produce a
-  winner about 60% of the time by chance; Benjamini–Hochberg and the deflated Sharpe exist to stop
-  exactly that.
-- **Never fill a gap.** Player-level props, team-total prices and multi-season openers are not
-  available from any reachable source, so they are blank and flagged rather than modelled from
-  proxies.
-
-## Verification performed
-
-| Check | Result |
-|---|---|
-| result == home_score − away_score | {audit[audit.check.str.startswith('result ==')].detail.iloc[0]} |
-| total == home_score + away_score | {audit[audit.check.str.startswith('total ==')].detail.iloc[0]} |
-| game_id uniqueness | {audit[audit.check.str.startswith('game_id')].detail.iloc[0]} |
-| spread sign convention | {audit[audit.check.str.startswith('spread_line sign')].detail.iloc[0]} |
-| settlement vs independent outcome column | {int(chk.outcome_match.sum()):,}/{len(chk):,} exact ({pct(float(chk.outcome_match.mean()), 3)}) |
-| site tables with a source link on every row | 100% (enforced by `pipeline/verify_site.py`) |
-
-## Flagged for review
-
-Player-week statistics and prop prices were **not retrievable** in this build (nflverse release
-assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
-exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
-third of games, and three 2015 games carry outcome flags that contradict their own score. Full
-detail, with sources: `flagged.html`.
-
-## What would change the answer
-
-1. A pre-kickoff injury and starting-quarterback feed — the largest known component of the MAE gap.
-2. Player-week statistics and prop prices — unlocks the entire prop and SGP programme.
-3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
-
-"""
-    (ROOT / "EXECUTIVE_SUMMARY.md").write_text(lines, encoding="utf-8")
-    print(f"wrote EXECUTIVE_SUMMARY.md ({len(lines):,} bytes)")
-
-
-if __name__ == "__main__":
-    main()
+**Research and education only. No guaranteed returns.**
+'''
+    (ROOT/'EXECUTIVE_SUMMARY.md').write_text(text)
+    print('wrote EXECUTIVE_SUMMARY.md')
+if __name__=='__main__':main()

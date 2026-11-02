@@ -63,7 +63,26 @@ def download_archive(sha: str) -> bytes:
 
 
 def main() -> None:
-    sha = resolve_sha()
+    import argparse
+    from common import read_json
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--refresh-pin", action="store_true",
+                        help="Explicitly resolve upstream master and replace the pin; audited review required")
+    args = parser.parse_args()
+    manifest = ROOT / "data" / "sources.json"
+    prior = read_json(manifest) if manifest.exists() else None
+    if prior and not args.refresh_pin:
+        expected = prior["files"]
+        if all((ROOT / f["local"]).exists() and sha256_of(ROOT / f["local"]) == f["sha256"]
+               and (ROOT / f["local"]).stat().st_size == f["bytes"] for f in expected):
+            print("Pinned inputs already staged; all hashes match. Manifest unchanged.")
+            return
+    if manifest.exists() and not args.refresh_pin:
+        sha = read_json(manifest)["upstream"]["commit_sha"]
+    else:
+        sha = resolve_sha()
+    if len(sha) != 40 or any(c not in "0123456789abcdef" for c in sha):
+        raise ValueError("upstream pin must be a full lowercase commit SHA")
     print(f"pinned {REPO}@{sha}")
     blob = download_archive(sha)
     print(f"archive bytes: {len(blob):,}")
@@ -125,6 +144,13 @@ def main() -> None:
             entry["columns"] = list(df.columns)
         record["files"].append(entry)
 
+    if prior and not args.refresh_pin:
+        by_path = {f["local"]: f for f in record["files"]}
+        for old in prior["files"]:
+            new = by_path[old["local"]]
+            if new["sha256"] != old["sha256"] or new["bytes"] != old["bytes"]:
+                raise RuntimeError(f"pinned input changed: {old['local']}")
+        record["generated_utc"] = prior["generated_utc"]
     write_json(ROOT / "data" / "sources.json", record)
     print("wrote data/sources.json")
 

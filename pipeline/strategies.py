@@ -56,7 +56,7 @@ def _mk(rows, market, side, signal):
 # ---------------------------------------------------------------------------
 def add_prev_form(df: pd.DataFrame) -> pd.DataFrame:
     """Each team's margin in its previous game (pre-game information)."""
-    df = df.sort_values(["season", "week", "game_id"]).reset_index(drop=True)
+    df = df.sort_values(["gameday", "gametime", "game_id"]).reset_index(drop=True)
     last = {}
     prev_h, prev_a = [], []
     for r in df.itertuples(index=False):
@@ -166,8 +166,8 @@ def build_library() -> list[Spec]:
         rationale=("Exact mirror of the home-dog angle (same games, opposite side). The two "
                    "ROIs must sum to about minus the vig if settlement is correct — a built-in "
                    "arithmetic check on the backtest engine."),
-        # spread_line > 0 means the HOME team is favoured, so a road favourite is
-        # spread_line < 0 and the bet is on the away side.
+        # Positive spread_line means home favoured. Road favourites therefore
+        # have spread_line < 0; the selected side is away (the opposite of HOME_DOG).
         select=lambda df: _fixed(df[df.market_spread < 0], "SPREAD", "away", "market_spread")))
 
     L.append(Spec(
@@ -212,16 +212,15 @@ def build_library() -> list[Spec]:
     L.append(Spec(
         id="PARLAY2_EDGE", name="2-leg parlay — top spread edges", family="parlay",
         market="PARLAY",
-        rule="Each week, combine the two largest |spread edge| bets on the slate",
-        rationale="Compounding independent edges; the legs come from different games, so "
-                  "cross-game correlation should be ≈ 0 and the naive price should be fair.",
+        rule="Earliest simultaneous kickoff slate each week: two largest absolute spread edges; distinct games",
+        rationale="Research hypothesis only. Distinct games need not be independent; actual parlay ticket quotes and timestamps are unavailable.",
         select=lambda df: _parlay(df, 2, "edge_spread"),
         params={"legs": 2}))
 
     L.append(Spec(
         id="PARLAY3_EDGE", name="3-leg parlay — top spread edges", family="parlay",
         market="PARLAY",
-        rule="Each week, combine the three largest |spread edge| bets on the slate",
+        rule="Earliest simultaneous kickoff slate each week: three largest absolute spread edges; distinct games",
         rationale="As above with a third leg; shows how variance scales with leg count.",
         select=lambda df: _parlay(df, 3, "edge_spread"),
         params={"legs": 3}))
@@ -229,7 +228,7 @@ def build_library() -> list[Spec]:
     L.append(Spec(
         id="PARLAY2_ML", name="2-leg moneyline parlay — top ML edges", family="parlay",
         market="PARLAY",
-        rule="Each week, combine the two largest moneyline probability edges",
+        rule="Earliest simultaneous kickoff slate each week: two largest moneyline probability edges; distinct games",
         rationale="Moneyline legs offer bigger prices; tests whether the ML edges compound.",
         select=lambda df: _parlay(df, 2, "ml_edge"),
         params={"legs": 2}))
@@ -255,7 +254,7 @@ def _fade(df: pd.DataFrame, threshold: float, fade_winner: bool) -> list[dict]:
 
 
 def _parlay(df: pd.DataFrame, legs: int, edge_col: str) -> list[dict]:
-    """One ticket per (season, week): the biggest edges on that slate."""
+
     d = df.copy()
     if edge_col == "ml_edge":
         d["ml_edge_home"] = d.p_home_ml - d.mkt_p_home_ml
@@ -269,19 +268,32 @@ def _parlay(df: pd.DataFrame, legs: int, edge_col: str) -> list[dict]:
         d["_market"] = "SPREAD"
     d = d[np.isfinite(d._e)]
     out = []
-    for (season, week), g in d.groupby(["season", "week"]):
-        g = g.sort_values("_e", ascending=False)
-        picks = g.head(legs)
-        if len(picks) < legs:
-            continue
-        if picks.game_id.nunique() < legs:
-            continue
-        out.append({"_parlay_legs": picks.to_dict("records"), "_season": season, "_week": week})
+    # Never select Sunday/Monday legs using information unavailable at the
+    # earliest kickoff. A ticket can contain only a simultaneous kickoff slate.
+    # One ticket per week: the earliest slate with enough simultaneous games,
+    # chosen without outcomes. A one-game Thursday slate is simply ineligible.
+    if "gametime" not in d:
+        return []
+    for (season, week), weeks in d.groupby(["season", "week"]):
+        candidates = []
+        for (day, time), g in weeks.groupby(["gameday", "gametime"]):
+            g = g.sort_values(["_e", "game_id"], ascending=[False, True])
+            picks = g.head(legs)
+            if len(picks) == legs and picks.game_id.nunique() == legs:
+                candidates.append((day, time, picks))
+        if candidates:
+            day, time, picks = min(candidates, key=lambda x: (x[0], x[1]))
+            out.append({"_parlay_legs": picks.to_dict("records"), "_season": season,
+                        "_week": week, "_slate_time": f"{day} {time}"})
     return out
 
 
 def price_parlay(legs: list[dict]) -> tuple[float, list[dict]]:
-    """Multiply leg decimals; pushed legs drop out (ties reduce)."""
+    """Research-only decimal product, NOT an executable sportsbook parlay quote.
+
+    Standard parlay pushes reduce the ticket; actual SGP/prop rules can differ.
+    No bookmaker ticket price is inferred from this product.
+    """
     from common import american_to_decimal
     dec = 1.0
     kept = []

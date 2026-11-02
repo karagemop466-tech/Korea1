@@ -4,129 +4,48 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Executive summary</title>
-<meta name="description" content="What was built, what the numbers say, what is not proven, and the one-paragraph conclusion.">
+<meta name="description" content="The decision, the evidence and the limits—without a promised betting edge.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark">🏈</span> NFL Line Lab</a>
-    <nav><a class="navlink" href="index.html">Dashboard</a><a class="navlink active" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+    <nav aria-label="Main navigation"><a class="navlink" href="index.html">Dashboard</a><a class="navlink active" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
   </div>
 </header>
-<main class="wrap wide">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<main id="main-content" class="wrap">
   <h1>Executive summary</h1>
-  <p class="lede">What was built, what the numbers say, what is not proven, and the one-paragraph conclusion.</p>
+  <p class="lede">The decision, the evidence and the limits—without a promised betting edge.</p>
   
-<section>
-<h2>Executive summary</h2>
-<p>This project asked one question — <em>can we originate our own NFL lines and build
-strategies that beat the market for reasons other than luck?</em> — and answered it with a
-reproducible pipeline rather than an opinion. The short version: the lines are good, the
-strategies are not validated, and the pipeline is able to say so.</p>
-<div class="cards"><div class="card "><div class="card-value">6,073</div><div class="card-label">out-of-sample games</div><div class=card-note>2004–2026</div></div><div class="card "><div class="card-value">26,168</div><div class="card-label">bets simulated</div><div class=card-note>every strategy, closing prices</div></div><div class="card bad"><div class="card-value">0</div><div class="card-label">strategies validated</div><div class=card-note>of 18 tested</div></div><div class="card "><div class="card-value">0.144</div><div class="card-label">reality-check p</div><div class=card-note>no rejection of luck</div></div></div>
-</section>
-
-<section>
-<h2>1 · What was built</h2>
-<ol class="findings">
-<li><strong>A pinned, hash-verified data layer.</strong> One commit of <code>nflverse/nfldata</code>,
-7,548 schedule rows, 7,384 played games 1999–2026, plus an independent per-side price file used to
-cross-check settlement. Every file is SHA-256 hashed into <code>data/sources.json</code>.</li>
-<li><strong>A market-free line-origination engine.</strong> Three independent model families
-(weighted ridge on pre-game structure, matchup expected points, Elo) fitted walk-forward and
-averaged with fixed weights. No model sees a price, and none sees anything after kickoff — both are
-asserted in code, not just claimed.</li>
-<li><strong>A priced, settled strategy library.</strong> 18 strategies — single bets,
-2- and 3-leg parlays, and classic angle rules — staked one unit per bet at the recorded closing
-price. No -110 substitution, no line shopping, pushes refunded.</li>
-<li><strong>Eight validation gates</strong> covering data integrity, leakage, statistical power,
-significance with FDR control across the library, bootstrap and deflated-Sharpe luck filters,
-economic significance, season-to-season stability and redundancy.</li>
-<li><strong>A static dashboard</strong> (this site) where every table row links to the source that
-produced it, plus a <a href="flagged.html">Flagged for review</a> page listing everything that is
-unverified or contradictory.</li>
-</ol>
-</section>
-
-<section>
-<h2>2 · What the numbers say</h2>
-<div class="tablewrap"><table class=""><caption>Out-of-sample accuracy against the close</caption><thead><tr><th>Market</th><th>Closing-line MAE</th><th>Our MAE</th><th>Gap</th><th>Source</th></tr></thead><tbody><tr><td>Spread</td><td>10.215</td><td>10.527</td><td>+0.312</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>Total</td><td>10.527</td><td>10.727</td><td>+0.199</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr></tbody></table></div>
-<p>The model is roughly <strong>a third of a point worse than the closing line</strong> on both
-markets. That gap is not a coding artefact: it is the value of injury reports, starting-quarterback
-news and sharp money, none of which the model is allowed to see. It is also, conveniently, about the
-size of the vig — which is why the strategies below cannot get paid.</p>
-
-<div class="tablewrap"><table><thead><tr><th>Result</th><th>Value</th><th>Reading</th><th>Source</th></tr></thead><tbody>
-<tr><td>Strategies passing all eight gates</td><td><strong>0 of 18</strong></td>
-<td>nothing is validated as skill</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">gates</a></td></tr>
-<tr><td>Best raw ROI</td><td><strong>21.6%</strong> (PARLAY3_EDGE, 377 tickets)</td>
-<td>a high-variance long-shot ladder, not an edge</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">gates</a></td></tr>
-<tr><td>White's reality check</td><td><strong>p = 0.144</strong></td>
-<td>best-of-library is consistent with luck</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
-<tr><td>Two-way hold in closing prices</td>
-<td><strong>2.72%</strong> spread / 2.93% total</td>
-<td>break-even ≈ 51.4% win rate, not 52.4%</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>Same-game φ, cover ↔ moneyline</td><td><strong>0.676</strong></td>
-<td>near-duplicate legs; independent pricing is wrong</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
-<tr><td>Same-game φ, cover ↔ total</td><td><strong>0.024</strong></td>
-<td>genuinely close to independent</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
-<tr><td>Cross-game φ (margin, total)</td>
-<td><strong>0.011, 0.008</strong></td>
-<td>intervals span zero → parlays can be multiplied</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
-</tbody></table></div>
-</section>
-
-<section>
-<h2>3 · Decisions that shaped the result</h2>
-<ul class="findings">
-<li><strong>Bet the close, not the opener.</strong> Openers exist for one season only, so every
-strategy is measured against the hardest available benchmark. This makes results worse and more
-honest.</li>
-<li><strong>Declare the library first.</strong> All 18 strategies were written down before
-any of them ran, and every one is published. No result was dropped, no threshold retuned.</li>
-<li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
-manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
-exist to stop that from happening here.</li>
-<li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
-are unavailable from reachable sources, so they are blank and flagged instead of modelled from
-proxies.</li>
-</ul>
-</section>
-
-<section>
-<h2>4 · What is not proven</h2>
-<p>Everything on the <a href="flagged.html">Flagged for review</a> page, in one sentence each:</p>
-<ul class="findings">
-<li>Player-prop behaviour is <strong>unmeasured</strong> — no player-week or prop-price data was retrievable.</li>
-<li>Open-to-close movement is measured for <strong>2021 only</strong>.</li>
-<li>The two nflverse price files disagree by half a point on about a third of games, and three 2015
-games have outcome flags that contradict their own score.</li>
-<li>The model omits injuries, starting-quarterback status and depth charts.</li>
-<li>Weather is recorded for only two thirds of games, so weather strategies run on a subset.</li>
-<li><strong>Official-source coverage is partial.</strong> An independent audit read 39 games on NFL.com and
-found 31 scores identical to the pinned data (the other 8 are 2026 week-8 games the pinned snapshot predates);
-historical betting lines have no official NFL source; and 516 of 523 table rows link to a community
-mirror rather than an NFL site. See the <a href="audit.html">Independent audit</a>.</li>
-</ul>
-</section>
-
-<section>
-<h2>5 · The one-paragraph conclusion</h2>
-<p class="lede">The pipeline can originate a defensible NFL line — within about a third of a point
-of the close, with no market input at all — but that gap is decisive. Once every strategy is forced
-through power, FDR, bootstrap and deflated-Sharpe gates, the apparent winners dissolve: the best
-result in the library is a 3-leg parlay ladder that a reality check cannot distinguish from luck
-(p = 0.144). The honest deliverable is therefore the
-<em>machinery that can tell the difference</em>, plus a documented list of exactly which data would
-be needed to go further.</p>
-</section>
-
+<p class="flag info"><strong>Evidence boundary.</strong> Official observations, model estimates and community-market research are separate. Unverified observations are blank in the public tables, not filled in. Reproducible estimates remain in the <a href="lab/index.html">clearly labelled research annex</a> and downloadable CSVs; they are not betting recommendations.</p>
+<section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
+<p>The repository contains a working line-origination pipeline, a strategy library, settlement tests,
+correlation diagnostics and a fail-closed competition. It does not contain the verified, timestamped
+sportsbook quotes needed to establish an executable edge. No single bet, parlay or player-prop combo
+has passed every gate. This is an evidence gap, not proof that every strategy has zero expected value.</p></section>
+<section><h2>Important details</h2>
+<div class="tablewrap"><table class=""><caption>Executive decision register</caption><thead><tr><th>Area</th><th>Public verified value / status</th><th>Interpretation</th><th>Official reference</th></tr></thead><tbody><tr><td>Line origination</td><td>Implemented</td><td>Elo, rolling matchup points and ridge; season-by-season walk-forward fitting. Model outputs are estimates, not official lines.</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>Official score verification</td><td>31 matching games</td><td>A sampled NFL.com check, not verification of all historical results.</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>Market verification</td><td><span class="blank" aria-label="blank: unverified"></span> UNVERIFIED</td><td>Community closing lines are hash-verified as files, not authenticated as bookmaker quotes.</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td></tr><tr><td>Single bets and parlays</td><td>18 candidates; none validated</td><td>Parlay products are research simulations, not confirmed ticket offers. Simultaneous-slate selection prevents the observed whole-week lookahead.</td><td><a href="https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push" target="_blank" rel="noopener">FanDuel push settlement rules</a></td></tr><tr><td>Player-prop combinations</td><td><span class="blank" aria-label="blank: unverified"></span> UNVERIFIED</td><td>No verified prop-price history or joint ticket quotes; no prop ROI or correlation is presented as established.</td><td><a href="https://www.nfl.com/injuries/" target="_blank" rel="noopener">NFL injuries</a></td></tr><tr><td>Luck control</td><td>Implemented with limits</td><td>Weekly-block bootstrap, Holm FWER, power, cost stress, stability and redundancy. No test can eliminate luck entirely.</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>Competition rewards</td><td>Unawarded</td><td>Recognition only after every gate; no funded prize pool is represented as existing.</td><td><a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping" target="_blank" rel="noopener">White (2000), Econometric Society</a></td></tr><tr><td>Publication</td><td>Static GitHub Pages</td><td>Root publishing source is confirmed through the repository Pages API; deployment is rechecked after merge.</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank" rel="noopener">GitHub Pages documentation</a></td></tr></tbody></table></div>
+</section><section><h2>Corrections to the earlier report</h2>
+<ul class="findings"><li>The previous headline compared model errors on all games with market errors on a priced subset. The corrected pipeline uses paired samples.</li>
+<li>The old probability mapping claimed a normal continuity correction priced NFL key numbers correctly. It now uses prior out-of-fold empirical residuals; calibration remains an estimate.</li>
+<li>The old parlay entries selected the largest edges across an entire week, including later kickoffs. They now select an earliest eligible simultaneous slate.</li>
+<li>The old “LUCK” label confused failure to reject with proof of luck. Public verdicts now distinguish unverified evidence from validated performance.</li>
+<li>Earlier results remain available in the research annex for comparison. They are superseded for decision-making, not deleted.</li></ul></section>
+<section><h2>Next evidence needed</h2><ol class="findings">
+<li>Timestamped, bookmaker-published pre-kickoff lines and executable ticket quotes, including limits and settlement terms.</li>
+<li>Official game results and timestamped player availability, with archived player statistics and prop settlement rules.</li>
+<li>A frozen prospective registry of all strategy trials, followed by untouched paper-trading replication.</li>
+<li>Joint prop outcomes and actual SGP prices to test correlation rather than assume independence.</li>
+</ol><p><a class="btn" href="requirements.html">See the complete requirements matrix →</a></p></section>
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
-    produced by <code>pipeline/</code> from the files listed on the
-    <a href="sources.html">Sources</a> page.</p>
+    <p>Research snapshot <code>a270278f3ac4</code> · source register generated 2026-11-01T13:24:09Z.
+    Official observations and unverified research estimates are distinguished on every page.
+    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a>.</p>
+    <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
 </body>

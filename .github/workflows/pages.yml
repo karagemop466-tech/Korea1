@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v5
       - name: Verify links and sourced table rows
         run: |
-          pip install pandas numpy scipy
+          pip install -r requirements.txt
           python3 tests/check_links.py
           python3 tests/check_sources.py
           python pipeline/verify_site.py
@@ -47,7 +47,7 @@ jobs:
         run: |
           mkdir -p site-build
           # the root site (Pages serves main:/) plus the annex it links to
-          cp -R *.html *.md .nojekyll assets lab site-build/
+          cp -R *.html *.md .nojekyll assets lab data site-build/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
