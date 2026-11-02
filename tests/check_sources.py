@@ -1,17 +1,8 @@
-"""Enforce the project's sourcing rule on every generated page.
+"""Check external-link/flag presence on root-page table rows.
 
-Rule (from the brief): every table row must link to an official source, and any value that could not be
-confirmed against an official source must be left blank and flagged rather than inferred. This checker
-walks every ``<tbody>`` row of the nine pages and requires one of
-
-  * at least one ``<a href="http...">`` in the row (an external, citable source), or
-  * an explicit unverified marker (``class="unverified"`` / the word "unverified" / "flagged"), which is
-    only acceptable where the value is blank.
-
-It also verifies that no row leaves a numeric-looking cell empty without such a marker, and that the
-number of ``<td>`` cells matches the ``<th>`` count of its table.
-
-Usage: python -m tests.check_sources
+This structural check does NOT verify a source's official status, establish that a
+link supports a value, or ensure unverified values are blank. It is not evidence
+of compliance with a line-by-line official-source verification requirement.
 """
 from __future__ import annotations
 
@@ -85,7 +76,7 @@ def main() -> int:
         if len(problems) > 40:
             print(f"  ... {len(problems) - 40} more")
         return 1
-    print("every table row links to an official source or is flagged as unverified")
+    print("every checked row has an external link or unverified flag; official status and values were NOT checked")
     return 0
 
 

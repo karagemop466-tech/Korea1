@@ -153,7 +153,6 @@ def main() -> int:
                    ~(pd.read_csv(PROC / 'strategy_gates.csv')[['G1_data', 'G2_leakage', 'G3_power',
                     'G4_significance', 'G5_luck', 'G6_economic', 'G7_stability']].all(axis=1))).any()),
          "verdict logic consistent"),
-        ("prop page publishes no unverified value", True, "player-level cells left blank by design"),
     ]:
         extra.append(dict(check=name, passed=cond, detail=detail))
         print(f"[{'PASS' if cond else 'FAIL'}] {name} — {detail}")
@@ -161,6 +160,7 @@ def main() -> int:
             failures += 1
     pd.DataFrame(extra).to_csv(PROC / "verification_data.csv", index=False)
 
+    print("Structural checks only; official publisher status and row values were not verified.")
     print(f"\n{failures} failing checks")
     return 1 if failures else 0
 
