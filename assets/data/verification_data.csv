@@ -2,4 +2,4 @@ check,passed,detail
 data_audit all passed,True,6/6 checks
 every strategy has a verdict,True,18 strategies
 no strategy claimed SKILL without passing all gates,True,verdict logic consistent
-prop page publishes no unverified value,True,player-level cells left blank by design
+every published prop correlation matches the annex data and carries a source link,True,8 prop rows match data/lab/props.json and link to the hashed pbp mirror

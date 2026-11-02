@@ -53,8 +53,10 @@
       "url": "https://www.gaming.nv.gov/siteassets/content/about/gaming-revenue/november-2025-monthly-revenue-report.pdf",
       "tier": "official",
       "used_for": "Observed sportsbook hold, including the parlay-card hold that motivates the parlay work",
-      "verification": "Report fetched 2026-11-01. Statewide, all nonrestricted locations: Sports Pool win 8.02% for the month / 6.74% over twelve months; Sports-Football 9.19% / 6.14%; Sports-Mobile 7.17% / 6.41%; Sports Parlay Cards 45.14% for the month / 19.94% over twelve months.",
-      "verified_on": "2026-11-01"
+      "verification": "Figures recorded from a read of the report on 2026-11-01: statewide, all nonrestricted locations, Sports Pool win 8.02% for the month / 6.74% over twelve months; Sports-Football 9.19% / 6.14%; Sports-Mobile 7.17% / 6.41%; Sports Parlay Cards 45.14% for the month / 19.94% over twelve months. RE-CHECK 2026-11-02: the PDF could not be re-fetched from gaming.nv.gov or from the Internet Archive (the 48-page PDF returns no text to this environment), so the exact decimals are NOT independently re-verified here and are flagged for manual review. Independent trade coverage of the same report corroborates the order of magnitude (sportsbook hold 'nearly 8%', football 9.2%, parlays ~19%), not the decimals.",
+      "verified_on": "2026-11-01",
+      "url_archived": "https://web.archive.org/web/20260628110425/https://www.gaming.nv.gov/siteassets/content/about/gaming-revenue/november-2025-monthly-revenue-report.pdf",
+      "verification_status": "recorded 2026-11-01, not re-verifiable 2026-11-02 - see flagged.html"
     },
     {
       "id": "FTE-ELO",
@@ -63,8 +65,9 @@
       "url": "https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/",
       "tier": "verified_third_party",
       "used_for": "Structure and constants of the walk-forward Elo component",
-      "verification": "Methodology URL confirmed live 2026-11-01; the K=20 and one-third regression values are quoted from the published method, not fitted here. The points-per-Elo conversion is estimated from this project's own data and is not taken from any source.",
-      "verified_on": "2026-11-01"
+      "verification": "RE-CHECKED 2026-11-02 by the audit session. The live URL no longer resolves to the article: fivethirtyeight.com redirects to abcnews.com/politics (FiveThirtyEight was wound down in 2025). The archived capture of 2025-01-16 was read instead and confirms K = 20, the margin-of-victory multiplier ln(point diff + 1) x 2.2 / (0.001 x Elo diff + 2.2), and an end-of-season regression of one third toward a mean of 1505. This project's implementation regresses toward 1500 (a 5-point difference, disclosed on the Lines page); the points-per-Elo conversion is estimated from this project's own data and is not taken from any source.",
+      "verified_on": "2026-11-02 (archived copy)",
+      "url_archived": "https://web.archive.org/web/20250116054745/https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/"
     },
     {
       "id": "PAPER-DSR",
@@ -113,8 +116,8 @@
       "url": "https://doi.org/10.1111/j.2517-6161.1995.tb02031.x",
       "tier": "peer_reviewed",
       "used_for": "Gate G2 multiple-testing control across the strategy battery",
-      "verification": "Implementation checked against a hand-computed worked example in scripts/tests/test_math.py. DOI not independently re-resolved in this session - flagged on the Flagged for Review page.",
-      "verified_on": "2026-11-01"
+      "verification": "Implementation checked against a hand-computed worked example in scripts/tests/test_math.py. RE-CHECKED 2026-11-02: DOI 10.1111/j.2517-6161.1995.tb02031.x resolves to JRSS-B 57(1) 289, 'Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing'.",
+      "verified_on": "2026-11-02"
     },
     {
       "id": "PAPER-KELLY",
@@ -123,7 +126,7 @@
       "url": "https://doi.org/10.1002/j.1538-7305.1956.tb03809.x",
       "tier": "peer_reviewed",
       "used_for": "Stake-sizing section of the competition rules",
-      "verification": "Formula verified numerically in scripts/tests/test_math.py. DOI not independently re-resolved in this session - flagged on the Flagged for Review page.",
+      "verification": "Formula verified numerically in scripts/tests/test_math.py. RE-CHECK 2026-11-02: DOI 10.1002/j.1538-7305.1956.tb03809.x returns HTTP 500 from doi.org, so the citation is still NOT independently resolved; the bibliographic details are carried as published and flagged.",
       "verified_on": "2026-11-01"
     }
   ]

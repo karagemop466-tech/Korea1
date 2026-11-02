@@ -18,7 +18,7 @@
   <div class="pagehead">
     <h1>Validation gates</h1>
     <p class="sub">Eight pre-specified gates, three independent luck-removal measurements, and the verification harness output for this build.</p>
-    <p class="meta">Built 2026-11-01 13:50 UTC · data window 2011–2021 · every value computed by a script in
+    <p class="meta">Built 2026-11-02 17:30 UTC · data window 2011–2021 · every value computed by a script in
     <code>scripts/</code> · verification 9/9 checks</p>
   </div>
   
@@ -127,7 +127,7 @@
   <div class="tablewrap"><table class="wide">
 <thead><tr><th>ID</th><th>Check</th><th>Result</th><th>Detail</th><th>Artifact</th></tr></thead><tbody>
 <tr><td>V01</td><td>Formula verification (odds, de-vig, copula, Kelly, BH, DSR, settlement)</td><td><span class="badge ok">pass</span></td><td>33 assertions passed; exit code 0</td><td>scripts/tests/test_math.py</td></tr>
-<tr><td>V02</td><td>Club division map vs nflverse reference</td><td><span class="badge ok">pass</span></td><td>32 clubs checked, 0 mismatches</td><td>https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv</td></tr>
+<tr><td>V02</td><td>Club division map vs nflverse reference</td><td><span class="badge ok">pass</span></td><td>32 clubs checked, 0 mismatches; reference sha256 4eab559fcf89cb4e… (data/raw/teams_colors_logos.csv)</td><td>https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv</td></tr>
 <tr><td>V03</td><td>Integrity gate G0 thresholds</td><td><span class="badge ok">pass</span></td><td>2945 usable games from 2956 source rows; excluded rows: 10 team name unresolvable (neutral-site game (Super Bowl) stored as team &#x27;0&#x27;); 1 team name unresolvable (NFL has two &#x27;New York&#x27; clubs (NYG, NYJ) - unresolved)</td><td>SBR-10Y</td></tr>
 <tr><td>V04</td><td>Independent-source cross-validation, 2021</td><td><span class="badge ok">pass</span></td><td>final scores 263/263 agree; closing totals within 1 pt on 97.1%; closing spreads 86.5%</td><td>NFLVERSE-PBP vs SBR-10Y</td></tr>
 <tr><td>V05</td><td>Strategy bookkeeping (counts, pushes, profit totals)</td><td><span class="badge ok">pass</span></td><td>18 strategies checked, 0 inconsistencies</td><td>scripts/03_strategies.py</td></tr>

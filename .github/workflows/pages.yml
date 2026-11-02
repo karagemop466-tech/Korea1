@@ -28,6 +28,7 @@ jobs:
           pip install pandas numpy scipy
           python3 tests/check_links.py
           python3 tests/check_sources.py
+          python pipeline/audit.py
           python pipeline/verify_site.py
   deploy:
     needs: verify

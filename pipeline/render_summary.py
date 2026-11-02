@@ -13,7 +13,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PROC, ROOT, fmt, pct, read_json  # noqa: E402
 
+from datetime import datetime, timezone  # noqa: E402
+
 SRC = read_json(ROOT / "data" / "sources.json")
+GENERATED = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 SHA = SRC["upstream"]["commit_sha"]
 
 
@@ -28,6 +31,13 @@ def main() -> None:
     cg = pd.read_csv(PROC / "corr_cross_game.csv")
     audit = pd.read_csv(PROC / "data_audit.csv")
     chk = pd.read_csv(PROC / "settlement_crosscheck.csv")
+    audit_json = read_json(PROC / "audit.json")
+    annex_props = read_json(ROOT / "data" / "lab" / "props.json")
+    qb_wr1 = next((x for x in annex_props.get("pairs", [])
+                   if x["leg_a"] == "QB passing yards" and x["leg_b"] == "WR1 receiving yards"), None)
+    hold_pre = vig[vig.season < 2023]
+    hold_post = vig[vig.season >= 2023]
+    a_sum = audit_json.get("summary", {})
 
     def mae(model, market):
         r = allm[(allm.model == model) & (allm.market == market) & (allm.season == "ALL")]
@@ -40,8 +50,8 @@ def main() -> None:
 
     lines = f"""# Executive summary — NFL Line Lab
 
-*Generated from the pipeline output on {SRC['generated_utc']} · upstream commit `{SHA[:12]}` ·
-reproduce with `make build`.*
+*Regenerated {GENERATED} from the pipeline output; data pinned {SRC['generated_utc']} at upstream
+commit `{SHA[:12]}`. Reproduce with `make build`.*
 
 ## The question
 
@@ -73,10 +83,14 @@ further.
 | Strategies validated as skill | {n_skill} | `strategy_gates.csv` |
 | Best raw ROI | {pct(best.roi, 1)} ({best.strategy}, {int(best.n)} tickets) | `strategy_summary.csv` |
 | Reality-check p-value | {fmt(rc.get('p_value', float('nan')), 3)} | `reality_check.json` |
-| Mean two-way hold, spreads | {pct(float(vig.spread_hold.mean()), 2)} | `vig_by_season.csv` |
+| Mean two-way hold, spreads (season mean) | {pct(float(vig.spread_hold.mean()), 2)} | `vig_by_season.csv` |
+| Mean two-way hold, spreads, 2006–2022 / 2023–2026 | {pct(float(hold_pre.spread_hold.mean()), 2)} / {pct(float(hold_post.spread_hold.mean()), 2)} | `vig_by_season.csv` |
 | Same-game φ, cover ↔ moneyline | {fmt(float(sg.phi.iloc[1]), 3)} | `corr_same_game.csv` |
 | Same-game φ, cover ↔ total | {fmt(float(sg.phi.iloc[0]), 3)} | `corr_same_game.csv` |
 | Cross-game r, margin / total | {fmt(float(cg['corr'].iloc[0]), 3)} / {fmt(float(cg['corr'].iloc[1]), 3)} | `corr_cross_game.csv` |
+| Prop-combo r, QB passing + WR1 receiving (within player) | {fmt(qb_wr1['rho_within_player'], 3) if qb_wr1 else '—'} | `data/lab/props.json` |
+| Prop pairs measured (2021–2022 play-by-play) | {len(annex_props.get('pairs', []))} | `data/lab/props.json` |
+| Independent-audit checks passed | {a_sum.get('passed', 0)}/{a_sum.get('checked', 0)} | `pipeline/audit.py` |
 
 ## What was built
 
@@ -91,8 +105,8 @@ further.
    substitution and no line shopping.
 4. **Validation.** Eight gates: data integrity, leakage, power, significance with FDR control,
    bootstrap + deflated Sharpe, economic significance, stability, redundancy.
-5. **Site.** A static dashboard where every table row links to its source file, plus a
-   Flagged-for-Review page.
+5. **Site.** A static dashboard where every table row links to its source file, a Flagged-for-Review
+   page, and an Independent-audit page that re-derives the headline numbers instead of restating them.
 
 ## Findings
 
@@ -122,9 +136,20 @@ seasons. Most published betting edges are under-powered noise; the gates are cal
 (r = {fmt(float(cg['corr'].iloc[0]), 3)}, interval spans zero), which is why an ordinary parlay can
 be priced by multiplication but a same-game parlay cannot.
 
-**6 — The pricing environment is sharp.** Mean two-way hold in the closing prices is
-{pct(float(vig.spread_hold.mean()), 2)} on spreads and {pct(float(vig.total_hold.mean()), 2)} on
-totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
+**6 — The pricing environment is sharp, and it changes in 2023.** Mean two-way hold in the closing
+prices is {pct(float(vig.spread_hold.mean()), 2)} on spreads and {pct(float(vig.total_hold.mean()), 2)}
+on totals across the sample, but that average hides a step: {pct(float(hold_pre.spread_hold.mean()), 2)}
+over 2006–2022 and {pct(float(hold_post.spread_hold.mean()), 2)} over 2023–2026. Break-even is
+therefore about 51.4% on the earlier era and about 52.4% on the later one, and the site shows both
+rather than quoting one number for the whole history.
+
+**7 — Prop combos are strongly dependent, and the direction is leg-specific.** Measured on 2021–2022
+play-by-play: QB passing yards with WR1 receiving yards has r = {fmt(qb_wr1['rho_within_player'], 3) if qb_wr1 else '—'}
+within player (fair two-leg price {fmt(qb_wr1['fair_decimal_2leg'], 2) if qb_wr1 else '—'} against
+{fmt(qb_wr1['independent_decimal_2leg'], 2) if qb_wr1 else '—'} if multiplied); WR1 and WR2 receiving
+yards are nearly independent (r = {fmt(next((x['rho_within_player'] for x in annex_props['pairs'] if x['leg_b']=='WR2 receiving yards'), float('nan')), 3)});
+QB passing yards against RB1 rushing yards is negative (game script). A calculator that multiplies
+misprices every one of these. No prop *price* exists in either build, so no prop P&L is claimed.
 
 ## Decisions that shaped the result
 
@@ -136,9 +161,10 @@ totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 - **Correct for the number of tries.** Eighteen strategies tested at p < 0.05 would produce a
   winner about 60% of the time by chance; Benjamini–Hochberg and the deflated Sharpe exist to stop
   exactly that.
-- **Never fill a gap.** Player-level props, team-total prices and multi-season openers are not
-  available from any reachable source, so they are blank and flagged rather than modelled from
-  proxies.
+- **Never fill a gap.** Team-total prices, prop prices and multi-season openers do not exist in any
+  reached source, so they are blank and flagged rather than modelled from proxies. Player-level
+  *statistics* do exist behind a hash-verified mirror, so the prop **correlations** are measured and
+  published while the prop **prices** stay blank.
 
 ## Verification performed
 
@@ -150,21 +176,87 @@ totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 | spread sign convention | {audit[audit.check.str.startswith('spread_line sign')].detail.iloc[0]} |
 | settlement vs independent outcome column | {int(chk.outcome_match.sum()):,}/{len(chk):,} exact ({pct(float(chk.outcome_match.mean()), 3)}) |
 | site tables with a source link on every row | 100% (enforced by `pipeline/verify_site.py`) |
+| independent audit of every headline number | {a_sum.get('passed', 0)}/{a_sum.get('checked', 0)} automatic checks pass (`pipeline/audit.py`) |
+| citations opened one by one | {a_sum.get('citations_verified', 0)}/{a_sum.get('citations', 0)} verified on 2026-11-02 |
+
+## Independent audit (2026-11-02)
+
+A session that did not write the analysis re-derived every headline number from the pinned raw data
+and the committed tables, and opened every cited link. Result: **{a_sum.get('passed', 0)}/{a_sum.get('checked', 0)}
+automatic checks pass**, five pipeline re-runs reproduce their artefacts byte-for-byte (including the
+reality-check p-value), and **{a_sum.get('citations_verified', 0)} of {a_sum.get('citations', 0)}
+citations verify** on the date shown. It found and fixed three defects: a Player-props page that
+contradicted the repository's own manifest, a verifier check that was hard-coded to pass, and an
+annex check (V02) that failed on a clean clone. It also disclosed two citation problems (the
+FiveThirtyEight URL is dead; the Kelly DOI returns HTTP 500) and a hold-regime change in 2023.
+Everything is on `reproducibility.html`, with the URL used for each check.
+
+Two further findings came from a sibling audit and are **disclosed, not fixed**, because fixing them
+changes results: missing weather is imputed with a *full-sample* median before the walk-forward split, so
+the 2004 and 2018 folds see later seasons (prior-only temperature median 60 °F against 59 °F); and all 164
+upcoming rows carry a blank line because future weather is missing, while the pinned snapshot predates the
+completion of 2026 week 8. No number in this summary was re-estimated for either, and no line was guessed.
+See [`notes/no-lookahead-2026-11-02.md`](notes/no-lookahead-2026-11-02.md) for the leak demonstration.
 
 ## Flagged for review
 
-Player-week statistics and prop prices were **not retrievable** in this build (nflverse release
-assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
-exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
+There is **no prop price** anywhere in this repository and no prop P&L is claimed; team-total prices
+and multi-season openers are likewise absent. Player-level statistics are a different story: they were
+not used by the canonical build, but a mirror whose SHA-256 is recorded in `data/raw_manifest.json`
+does carry 2021–2022 play-by-play plus a partial 2023 season, and the annex measures prop correlations from the two complete seasons — an earlier note
+claiming every mirror stores only 132-byte LFS pointers was wrong and has been corrected. Two
+citations cannot be confirmed today: the Kelly (1956) DOI returns HTTP 500 and the Nevada regulator's
+PDF returns no readable text. The two nflverse price files disagree by a median 0.5 points on about a
 third of games, and three 2015 games carry outcome flags that contradict their own score. Full
-detail, with sources: `flagged.html`.
+detail, with sources: `flagged.html` and `audit.html`.
 
 ## What would change the answer
 
 1. A pre-kickoff injury and starting-quarterback feed — the largest known component of the MAE gap.
-2. Player-week statistics and prop prices — unlocks the entire prop and SGP programme.
+2. A licensed player-prop **price** history — player statistics already exist via the hashed mirror,
+   so prices are the only missing piece of a prop P&L and a priced SGP programme.
 3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
 
+## Annex: independent replication on a second odds archive
+
+A fourth session (`arena/ea02c4fb-korea1`) built the same four questions from a **different** source — the
+Sportsbook Review 10-year archive, 2011–2021, 2,945 games, 2,280 priced bets — with separate code
+(`scripts/`), published at [`lab/`](lab/index.html) and narrated in
+[`research/05-annex-executive-summary.md`](research/05-annex-executive-summary.md).
+
+Four findings replicate independently, which is the strongest evidence in this repository:
+
+1. **No strategy passes every gate** in any build (annex 0 of 18; first build 0 of 24; this build's best
+   candidate fails its false-discovery-rate gate).
+2. **The originated line does not beat the market** — annex spread MAE 10.473 vs market 10.151, and it also
+   loses on totals and straight-up; this build 10.527 vs 10.216.
+3. **Most apparent edge is luck.** Annex in-sample → out-of-sample ROI rank correlation is 0.485 while the
+   best of 18 zero-skill trials has an expected Sharpe of 0.093 — reached from the other direction here by
+   White's Reality Check (p = 0.970).
+4. **Closing-line value is the skill-bearing statistic; ROI is not.** In a 20,000-trial mixed field of 999
+   zero-skill bettors plus one genuinely skilled bettor, the skilled bettor ranks first 78.9% of the time on
+   CLV and 0.32% of the time on ROI.
+
+Where the builds disagree, the archives disagree, and that is flagged rather than reconciled: the annex
+measures a mean 3.79% overround against 2.70% here (IR-09).
+
+## Independent official-source audit (2026-11-02, session `arena/1642ee06-korea1`)
+
+Full detail: [`audit.html`](audit.html) · data in [`data/audit/`](data/audit/) · scripts `scripts/audit_*.py`.
+
+- **Scores.** 39 games read on NFL.com (2014, 2015, 2016, 2022 and 2026 week pages, plus the three 2015 games
+  whose nflverse outcome flag contradicts the score): **31 match the pinned data, 0 mismatch**, 8 are 2026
+  week-8 games that NFL.com lists as Final and the pinned snapshot predates (left blank, flagged).
+  This is a sample, not a census; games before 2010 (2,913) and playoff games (309) were not checked.
+- **Inputs.** All 7 pinned nfldata files re-downloaded from the pinned commit: SHA-256 and byte count match.
+  Rebuilding every table from them reproduces the published files byte for byte; `tests/test_no_lookahead.py` 4/4.
+- **Official sources.** Of 523 table rows on the root pages, 3 link to nfl.com and 516 link only to
+  nflverse (a community project). Historical closing lines, totals and prices have **no official NFL source**
+  and the upstream data dictionary does not name the sportsbook. These are flagged (IR-T10-01, -02), not blanked.
+- **Defect fixed.** `scripts/99_verify.py` V02 failed on every fresh checkout; both sessions repaired it —
+  the merged check now downloads the file from the pinned commit and falls back to the committed copy,
+  and either path must hash to the recorded SHA-256 (9/9).
+- **Does not change the conclusion.** 0 of 18 strategies pass all gates; no figure in this summary was altered.
 """
     (ROOT / "EXECUTIVE_SUMMARY.md").write_text(lines, encoding="utf-8")
     print(f"wrote EXECUTIVE_SUMMARY.md ({len(lines):,} bytes)")

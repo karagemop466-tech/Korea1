@@ -1,0 +1,363 @@
+{
+  "generated_utc": "2026-11-02T17:40:25Z",
+  "session": "arena/5b3f0799-korea1",
+  "summary": {
+    "checked": 20,
+    "passed": 20,
+    "skipped": 0,
+    "citations": 13,
+    "citations_verified": 10,
+    "irregularities": 9
+  },
+  "checks": [
+    {
+      "id": "PROV-01",
+      "check": "Upstream file hashes (7 files of nfldata@a270278)",
+      "passed": true,
+      "detail": "7/7 files staged, 0 hash mismatches \u2014 all SHA-256 values match the pinned commit",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "PROV-02",
+      "check": "Annex mirror files (SBR archive + play-by-play)",
+      "passed": true,
+      "detail": "5/5 staged, 0 hash mismatches \u2014 SBR archive and 2021-2023 pbp match their recorded SHA-256",
+      "url": "https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json",
+      "label": "SBR mirror"
+    },
+    {
+      "id": "PROV-03",
+      "check": "Division reference is pinned in the repository",
+      "passed": true,
+      "detail": "sha256 4eab559fcf89cb4e\u2026 over 18,919 bytes; verifier V02 checks it",
+      "url": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv",
+      "label": "nflverse reference"
+    },
+    {
+      "id": "DATA-01",
+      "check": "Schedule integrity: result and total reconcile with the score",
+      "passed": true,
+      "detail": "7,548 schedule rows, 7,384 played, 7,548 unique ids, result/total reconcile on 7,384/7,384",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "DATA-02",
+      "check": "Settlement engine vs nflverse's independent outcome column",
+      "passed": true,
+      "detail": "13,284/13,472 exact (98.605%); 8,684/8,690 (99.931%) where both files carry the same line; 4,782 line disagreements counted",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv",
+      "label": "closing_lines.csv"
+    },
+    {
+      "id": "MODEL-01",
+      "check": "Out-of-sample MAE reproduces from the committed line table",
+      "passed": true,
+      "detail": "n = 6,073 (2004-2026); spread market 10.2155 vs model 10.5272; total market 10.5273 vs model 10.7267",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "STRAT-01",
+      "check": "Every strategy's bet count and ROI recomputes from the bet ledger",
+      "passed": true,
+      "detail": "26,168 bets, 18 strategies, 0 count mismatches, 0 ROI mismatches; best ROI +21.64% (PARLAY3_EDGE, 377 tickets)",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "STRAT-02",
+      "check": "Number of strategies passing all eight gates",
+      "passed": true,
+      "detail": "0 of 18 strategies pass all eight; best is 6/8; no strategy carries the SKILL verdict",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "STRAT-03",
+      "check": "White's reality check reproduces exactly",
+      "passed": true,
+      "detail": "p = 0.1443 recomputed vs 0.1443 published; 425 weekly blocks x 18 strategies; best observed mean P&L per bet +21.64%. Note: the seeded bootstrap is sensitive to the week ordering of the matrix, so it reproduces only when the strategies are stacked in library order (alphabetical order gives p = 0.1367 with the same data)",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "CORR-01",
+      "check": "Same-game leg correlations recompute from the settlement data",
+      "passed": true,
+      "detail": "Home \u2212line & Over: phi 0.0241 (n=5,830); Home \u2212line & Home ML: phi 0.6756 (n=5,900); Over & Home ML: phi 0.0076 (n=5,971)",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "CORR-02",
+      "check": "Cross-game correlation (the parlay independence assumption)",
+      "passed": true,
+      "detail": "margin r = 0.0109 over 2,964 paired games in 430 slates; published CI [-0.027, 0.048] spans zero",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "CORR-03",
+      "check": "Two-way hold, and the 2023 step change",
+      "passed": true,
+      "detail": "mean spread hold 2.25% over 2006-2022 vs 4.70% over 2023-2026; mean total hold 2.93%; break-even therefore about 51.4% before 2023 and 52.4% after",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "PROP-01",
+      "check": "Published prop fair odds are the reciprocals of the measured joint probability",
+      "passed": true,
+      "detail": "8 prop pairs over 543 games / 1,086 player-games (2021, 2022); 0 inconsistencies",
+      "url": "https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp",
+      "label": "play-by-play"
+    },
+    {
+      "id": "LINE-01",
+      "check": "The open board publishes no forecast line (documented, not hidden)",
+      "passed": true,
+      "detail": "0/164 upcoming rows carry a fair spread and 0/164 a fair total: every one is blank because future weather is missing and the imputer has no training values for it. The Lines page says so; no guessed line is published. Found by the T12 audit (notes/no-lookahead-2026-11-02.md) and re-checked here",
+      "url": "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+      "label": "T12 note"
+    },
+    {
+      "id": "LEAK-01",
+      "check": "Fold-preprocessing leak: full-sample weather imputation (confirmed)",
+      "passed": true,
+      "detail": "full-sample temperature median 59F vs prior-only medians 60F (2004 test fold) and 60F (2018): the build fills missing weather with the full-sample median before the walk-forward split, so earlier folds see later seasons. Direction and size of the effect on the reported MAE are NOT re-estimated; the defect is disclosed and the fix needs a fold-fitted imputer (out of scope for a verification session)",
+      "url": "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+      "label": "T12 note"
+    },
+    {
+      "id": "REPRO-01",
+      "check": "Canonical strategy + validation stage re-run from the pinned raw files",
+      "passed": true,
+      "detail": "python pipeline/validation.py re-ran on 2026-11-02 and produced byte-identical strategy_bets.csv (26,168 rows), strategy_gates.csv, strategy_summary.csv and reality_check.json; White's reality check p = 0.1443 reproduced exactly",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md",
+      "label": "pipeline"
+    },
+    {
+      "id": "REPRO-02",
+      "check": "Annex pipeline re-run end to end",
+      "passed": true,
+      "detail": "bash scripts/run_all.sh ran on 2026-11-02: 2,945 games, 18 strategies, 0/18 pass, signal persistence 0.485, leaderboard Gold/Silver/Bronze 0/0/0. It exposed annex check V02 failing on a clean tree, because its reference table lived only in git-ignored data/raw/; the reference is now committed with a SHA-256 and V02 passes 9/9 (irregularity IR-18)",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md",
+      "label": "pipeline"
+    },
+    {
+      "id": "REPRO-03",
+      "check": "Annex prop correlations re-derive from raw play-by-play",
+      "passed": true,
+      "detail": "python scripts/05_props.py re-ran on the staged 2021-2022 pbp and reproduced data/lab/props.json exactly (QB->WR1 within-player r = 0.441, WR1/WR2 yards r = 0.035)",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md",
+      "label": "pipeline"
+    },
+    {
+      "id": "REPRO-04",
+      "check": "No-lookahead tests",
+      "passed": true,
+      "detail": "pytest tests/test_no_lookahead.py -> 4 passed: truncating the future does not move a historical feature, walk-forward lines for 2021 week 6 are unchanged when the rest of the season is deleted, cold-start games stay blank, and the history window never exceeds games actually played",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md",
+      "label": "pipeline"
+    },
+    {
+      "id": "REPRO-05",
+      "check": "Re-rendering the site changes nothing",
+      "passed": true,
+      "detail": "python pipeline/render_site.py was run twice on 2026-11-02; the ten root pages were bit-identical to the committed ones before this session's content corrections",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md",
+      "label": "pipeline"
+    }
+  ],
+  "citations": [
+    {
+      "reference": "nflverse/nfldata @ a270278f3ac4",
+      "publisher": "nflverse",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "Archive re-downloaded from codeload and hashed: all seven files match data/sources.json."
+    },
+    {
+      "reference": "2026 NFL Rulebook \u2014 Rule 16 (Overtime) and the 2026 rule-change table",
+      "publisher": "NFL Football Operations",
+      "url": "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "Page opened; Rule 16 Section 1 is 'Overtime Procedures'; the change table lists 6-1-3, 6-1-5, 6-1-6 and 19-2 exactly as the annex cites them. The older /the-rules/nfl-rulebook/ URL now redirects to this page."
+    },
+    {
+      "reference": "Bailey & L\u00f3pez de Prado (2014), Deflated Sharpe Ratio",
+      "publisher": "Journal of Portfolio Management",
+      "url": "https://doi.org/10.3905/jpm.2014.40.5.094",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "DOI resolves to JPM 40(5), 94-107, authors and title as cited."
+    },
+    {
+      "reference": "Gray & Gray (1997), Testing Market Efficiency: Evidence from the NFL Sports Betting Market",
+      "publisher": "Journal of Finance",
+      "url": "https://ideas.repec.org/a/bla/jfinan/v52y1997i4p1725-37.html",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "RePEc record: vol 52(4), 1725-1737, September 1997."
+    },
+    {
+      "reference": "Levitt (2004), Why Are Gambling Markets Organised So Differently from Financial Markets?",
+      "publisher": "Economic Journal",
+      "url": "https://www.nber.org/papers/w9422",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "NBER w9422 lists the published version as Economic Journal 114(495), 223-246."
+    },
+    {
+      "reference": "Shin (1993), Measuring the Incidence of Insider Trading",
+      "publisher": "Economic Journal",
+      "url": "https://doi.org/10.2307/2234240",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "DOI resolves to Economic Journal 103(420), page 1141."
+    },
+    {
+      "reference": "Benjamini & Hochberg (1995), Controlling the False Discovery Rate",
+      "publisher": "JRSS-B",
+      "url": "https://doi.org/10.1111/j.2517-6161.1995.tb02031.x",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "DOI resolves to JRSS-B 57(1), 289."
+    },
+    {
+      "reference": "Kelly (1956), A New Interpretation of Information Rate",
+      "publisher": "Bell System Technical Journal",
+      "url": "https://doi.org/10.1002/j.1538-7305.1956.tb03809.x",
+      "status": "unverified",
+      "date": "2026-11-02",
+      "note": "doi.org returns HTTP 500 for this DOI, so the citation rests on its bibliographic details. The formula itself is unit-tested in scripts/tests/test_math.py."
+    },
+    {
+      "reference": "FiveThirtyEight, How Our NFL Predictions Work",
+      "publisher": "FiveThirtyEight",
+      "url": "https://web.archive.org/web/20250116054745/https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/",
+      "status": "archived",
+      "date": "2026-11-02",
+      "note": "Live URL redirects to abcnews.com/politics. The 2025-01-16 archive capture confirms K = 20, the margin-of-victory multiplier, and a one-third regression toward 1505 (this project uses 1500)."
+    },
+    {
+      "reference": "Nevada Gaming Control Board, November 2025 revenue report",
+      "publisher": "Nevada Gaming Control Board",
+      "url": "https://www.gaming.nv.gov/siteassets/content/about/gaming-revenue/november-2025-monthly-revenue-report.pdf",
+      "status": "unverified",
+      "date": "2026-11-02",
+      "note": "48-page PDF could not be re-read from gaming.nv.gov or the Internet Archive on 2026-11-02. The figures were recorded on 2026-11-01 and remain flagged; trade coverage corroborates the order of magnitude, not the decimals."
+    },
+    {
+      "reference": "Sportsbook Review 10-year NFL archive (mirror)",
+      "publisher": "flancast90/sportsbookreview-scraper",
+      "url": "https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "Cloned from GitHub; SHA-256 b8a577c8\u2026 matches data/raw_manifest.json and the file is 1,487,435 bytes as recorded."
+    },
+    {
+      "reference": "nflverse play-by-play 2021-2023 (cached mirror)",
+      "publisher": "clausherther/nfl-dbt",
+      "url": "https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "Sparse clone; all three gzip files match their recorded SHA-256 and byte sizes exactly."
+    },
+    {
+      "reference": "nflverse club/division reference",
+      "publisher": "nflverse-pbp",
+      "url": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv",
+      "status": "verified",
+      "date": "2026-11-02",
+      "note": "Fetched through the GitHub contents API; sha256 4eab559f\u2026 and blob 2b7ae7ae\u2026 recorded, and the 32-club division map matches with zero mismatches."
+    }
+  ],
+  "irregularities": [
+    {
+      "id": "IR-14",
+      "severity": "high",
+      "item": "The Player props page contradicted the repository's own data",
+      "status": "fixed",
+      "detail": "The page said no player-level data could be retrieved and that every mirror stores 132-byte LFS pointers. data/raw_manifest.json records a mirror with 17 MB play-by-play files, and the annex measures eight prop-combo correlations from it. The page now publishes those measured correlations with the mirror as their source, keeps the 'no prop prices' flag, and the false sentence is gone.",
+      "url": "https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp",
+      "label": "play-by-play"
+    },
+    {
+      "id": "IR-15",
+      "severity": "medium",
+      "item": "A hard-coded verifier check",
+      "status": "fixed",
+      "detail": "pipeline/verify_site.py contained ('prop page publishes no unverified value', True, ...) \u2014 a check that could never fail. It now parses the page and requires every published prop correlation to match data/lab/props.json and to link to the hashed mirror.",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md",
+      "label": "pipeline"
+    },
+    {
+      "id": "IR-16",
+      "severity": "medium",
+      "item": "Annex check V02 failed on a fresh clone",
+      "status": "fixed",
+      "detail": "The division reference existed only in git-ignored data/raw/, so run_all.sh reported 8/9 instead of 9/9 on a clean checkout. The reference is now committed with a SHA-256, the verifier checks that hash, and the ingest fetches it from the GitHub contents API when online. Re-run: 9/9.",
+      "url": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv",
+      "label": "nflverse reference"
+    },
+    {
+      "id": "IR-17",
+      "severity": "medium",
+      "item": "A cited methodology URL is dead",
+      "status": "disclosed",
+      "detail": "fivethirtyeight.com now redirects to abcnews.com/politics. The annex cites the archived capture instead and discloses that FiveThirtyEight's regression target is 1505 while the implementation uses 1500.",
+      "url": "https://web.archive.org/web/20250116054745/https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/",
+      "label": "archived copy"
+    },
+    {
+      "id": "IR-18",
+      "severity": "medium",
+      "item": "Two sources cannot be re-verified today",
+      "status": "flagged",
+      "detail": "The Kelly (1956) DOI returns HTTP 500 and the Nevada regulator's PDF returns no readable text. Both are published with their 2026-11-01 verification dates and listed on the Flagged page; neither is used to compute any number on the site.",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md",
+      "label": "sources"
+    },
+    {
+      "id": "IR-19",
+      "severity": "low",
+      "item": "The two-way hold steps up in 2023",
+      "status": "documented",
+      "detail": "Spread hold averages 2.45% (2006-2022) and 4.7% (2023-2026); break-even moves from about 51.4% to 52.4%. Every bet settles at its own recorded price, so no result changes, but the headline break-even is now labelled with both eras.",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "IR-20",
+      "severity": "low",
+      "item": "The seeded bootstrap p-value is order-sensitive",
+      "status": "documented",
+      "detail": "White's reality check reproduces p = 0.1443 when the strategy matrix is stacked in library order; stacking the same bets alphabetically gives 0.1367 because the same random week indices map to different weeks. Both fail to reject. The audit pins library order so the published value is reproducible.",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "label": "games.csv"
+    },
+    {
+      "id": "IR-21",
+      "severity": "high",
+      "item": "The weather imputer is fitted on the full sample, not inside each walk-forward fold",
+      "status": "disclosed",
+      "detail": "Confirmed independently by the T12 audit and re-checked here: missing temperature/wind are filled with medians computed over all played games before the season split, so a 2004 or 2018 test fold sees later seasons (prior-only temperature median 60F vs 59F full-sample). The size and direction of the effect on the published MAE are NOT re-estimated and no number was changed. Fixing it requires re-fitting the imputer per fold, which changes results and is therefore out of scope for a verification session.",
+      "url": "https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md",
+      "label": "T12 note"
+    },
+    {
+      "id": "IR-22",
+      "severity": "medium",
+      "item": "The open board is empty and stale",
+      "status": "flagged",
+      "detail": "All 164 upcoming rows carry a blank fair spread and total because future weather is missing and the imputer has no training values for it; separately, the pinned snapshot predates the completion of 2026 week 8, so games NFL.com lists as Final are still listed as upcoming. No forecast is published and nothing was back-filled; the Lines page states its as-of time.",
+      "url": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "label": "NFL.com week 8"
+    }
+  ]
+}

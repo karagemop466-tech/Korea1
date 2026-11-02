@@ -40,6 +40,8 @@ URL_SCLINES = BASE + "sc_lines.csv"
 URL_WINTOT = BASE + "win_totals.csv"
 URL_DATASETS = f"https://github.com/nflverse/nfldata/blob/{SHA}/DATASETS.md"
 URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
+URL_PBP = "https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp"
+REPO_URL = "https://github.com/karagemop466-tech/Korea1"
 GENERATED = SRC["generated_utc"]
 
 NAV = [
@@ -51,9 +53,10 @@ NAV = [
     ("correlations.html", "Correlations"),
     ("props.html", "Player props"),
     ("methodology.html", "Methodology"),
+    ("audit.html", "Independent audit"),
+    ("reproducibility.html", "Reproducibility audit"),
     ("flagged.html", "Flagged for review"),
     ("sources.html", "Sources"),
-    ("audit.html", "Independent audit"),
     # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
     # same questions from a different odds archive. Served from lab/ and not part of this render.
     ("lab/index.html", "Replication annex"),
@@ -142,7 +145,18 @@ def load():
     d["model_config"] = read_json(P / "model_config.json")
     d["reality_check"] = read_json(P / "reality_check.json")
     d["sources"] = SRC
+    # replication-annex prop measurements (2021-2022 play-by-play, independently hashed)
+    d["audit"] = read_json(P / "audit.json")
+    annex_props = ROOT / "data" / "lab" / "props.json"
+    d["annex_props"] = read_json(annex_props) if annex_props.exists() else {}
     return d
+
+
+def _annex_pair(d, a, b, field):
+    for p in (d.get("annex_props") or {}).get("pairs", []):
+        if p["leg_a"] == a and p["leg_b"] == b:
+            return p[field]
+    return float("nan")
 
 
 def build_executive(d) -> str:
@@ -227,7 +241,7 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <td>best-of-library is consistent with luck</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
 <tr><td>Two-way hold in closing prices</td>
 <td><strong>{pct(float(vig.spread_hold.mean()), 2)}</strong> spread / {pct(float(vig.total_hold.mean()), 2)} total</td>
-<td>break-even ≈ 51.4% win rate, not 52.4%</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>
+<td>break-even ≈51.4% for 2006–2022 prices, ≈52.4% for 2023–2026</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>
 <tr><td>Same-game φ, cover ↔ moneyline</td><td><strong>{fmt(float(sg.phi.iloc[1]), 3)}</strong></td>
 <td>near-duplicate legs; independent pricing is wrong</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
 <tr><td>Same-game φ, cover ↔ total</td><td><strong>{fmt(float(sg.phi.iloc[0]), 3)}</strong></td>
@@ -235,6 +249,15 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <tr><td>Cross-game φ (margin, total)</td>
 <td><strong>{fmt(float(cg["corr"].iloc[0]), 3)}, {fmt(float(cg["corr"].iloc[1]), 3)}</strong></td>
 <td>intervals span zero → parlays can be multiplied</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+<tr><td>Prop-combo r, QB passing + WR1 receiving (within player)</td>
+<td><strong>{fmt(_annex_pair(d, "QB passing yards", "WR1 receiving yards", "rho_within_player"), 3)}</strong></td>
+<td>positive and large; multiplying the legs misprices the parlay</td><td>{src_link(URL_PBP, "play-by-play")}</td></tr>
+<tr><td>Prop-combo r, WR1 + WR2 receiving yards (within player)</td>
+<td><strong>{fmt(_annex_pair(d, "WR1 receiving yards", "WR2 receiving yards", "rho_within_player"), 3)}</strong></td>
+<td>near zero — this pair really is close to independent</td><td>{src_link(URL_PBP, "play-by-play")}</td></tr>
+<tr><td>Independent audit of this build</td>
+<td><strong>{(d.get("audit") or {}).get("summary", {}).get("passed", 0)}/{(d.get("audit") or {}).get("summary", {}).get("checked", 0)}</strong></td>
+<td>headline numbers re-derived by a second session; every citation opened — see <a href="reproducibility.html">the reproducibility audit</a></td><td>{src_link(REPO_URL + "/blob/main/pipeline/audit.py", "audit.py")}</td></tr>
 </tbody></table></div>
 </section>
 
@@ -249,9 +272,11 @@ any of them ran, and every one is published. No result was dropped, no threshold
 <li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
 manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
 exist to stop that from happening here.</li>
-<li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
-are unavailable from reachable sources, so they are blank and flagged instead of modelled from
-proxies.</li>
+<li><strong>Never fill a gap.</strong> Prop prices, team-total prices and multi-season openers do not
+exist in any reached source, so they are blank and flagged instead of modelled from proxies.
+Player-level <em>statistics</em> do exist behind a hash-verified mirror, so the prop
+<strong>correlations</strong> are measured and published while prop <strong>prices</strong> stay
+blank.</li>
 </ul>
 </section>
 
@@ -366,9 +391,11 @@ honestly — including when the result is that nothing survives.</p>
   <li><strong>White's reality check does not reject.</strong> p = {fmt(rc.get('p_value', float('nan')), 3)}
       across {rc.get('n_strategies', '—')} strategies and {rc.get('n_weeks', '—')} weekly blocks — the
       library's best performance is consistent with luck.</li>
-  <li><strong>The pricing environment is sharp.</strong> Mean two-way hold in the closing prices is
-      {pct(float(d['vig_by_season'].spread_hold.mean()), 2)} on spreads — a low-margin book, so the
-      break-even win rate is about 51.4%, not 52.4%.</li>
+  <li><strong>The pricing environment is sharp, and it changes in 2023.</strong> Mean two-way hold in
+      the closing prices is {pct(float(d['vig_by_season'].spread_hold.mean()), 2)} on spreads over the
+      whole sample, but that is {pct(float(d['vig_by_season'][d['vig_by_season'].season<2023].spread_hold.mean()), 2)}
+      for 2006–2022 and {pct(float(d['vig_by_season'][d['vig_by_season'].season>=2023].spread_hold.mean()), 2)}
+      for 2023–2026; break-even is about 51.4% on the earlier era and about 52.4% on the later one.</li>
   <li><strong>Same-game correlation is structural, not cosmetic.</strong> Cover and moneyline on the
       same team correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[1]), 3)}; cover and total
       correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[0]), 3)}. Independent pricing of a
@@ -394,7 +421,8 @@ honestly — including when the result is that nothing survives.</p>
   <a class="minicard" href="strategies.html"><strong>Leaderboard</strong><span>all strategies, ranked, with their gates</span></a>
   <a class="minicard" href="validation.html"><strong>Validation</strong><span>the eight gates and how each was applied</span></a>
   <a class="minicard" href="correlations.html"><strong>Correlations</strong><span>measured dependence for parlay pricing</span></a>
-  <a class="minicard" href="props.html"><strong>Player props</strong><span>framework, and what is missing</span></a>
+  <a class="minicard" href="props.html"><strong>Player props</strong><span>measured prop-combo dependence, and what is missing</span></a>
+  <a class="minicard" href="reproducibility.html"><strong>Reproducibility audit</strong><span>every headline number re-derived; every citation opened</span></a>
   <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>irregularities and unverified items</span></a>
 </div>
 </section>
@@ -764,6 +792,16 @@ def build_correlations(d) -> str:
                  pct(r.ml_hold, 2), src_link(URL_GAMES, "games.csv")] for r in vig.itertuples()],
                ["Season", "Games", "Spread hold", "Total hold", "Moneyline hold", "Source"],
                caption="Two-way hold in the closing prices used for every backtest")
+    pre = vig[vig.season < 2023]
+    post = vig[vig.season >= 2023]
+    hold_note = flag(
+        f"<strong>The hold is not constant.</strong> Mean spread hold is "
+        f"{pct(pre.spread_hold.mean(), 2)} over {int(pre.season.min())}-2022 and "
+        f"{pct(post.spread_hold.mean(), 2)} over {int(post.season.min())}-{int(post.season.max())}: the "
+        "upstream price file changes convention in 2023. Break-even is therefore about 51.4% on the "
+        "earlier era and about 52.4% on the later one. Every bet is settled at its own recorded price, "
+        "so no result is adjusted; this note exists so the headline break-even cannot be misread as "
+        "applying to 2023+ prices.", "warn")
 
     flt = table([[e(r.side), e(r.bucket), f"{int(r.n):,}", pct(r.roi, 2),
                   f"[{fmt(r.ci_lo,3)}, {fmt(r.ci_hi,3)}]",
@@ -821,6 +859,7 @@ project prices them with a continuity-corrected distribution instead.</p>
 
 <section>
 <h2>6 · The price of doing business</h2>
+{hold_note}
 {vt}
 </section>
 
@@ -870,19 +909,63 @@ available analogue in this dataset is in the table below.</p>
                 ["Pair", "n", "φ", "Lift", "Source"],
                 caption="Measured dependence on the closest available legs")
 
+    ap = d.get("annex_props") or {}
+    annex_tbl = ""
+    if ap.get("pairs"):
+        annex_tbl = table(
+            [[e(p["leg_a"]) + " + " + e(p["leg_b"]),
+              f'{p["n_player_games"]:,}',
+              fmt(p["rho_raw"], 3), fmt(p["rho_within_player"], 3),
+              fmt(p["p_joint_empirical"], 3),
+              ("—" if p.get("p_joint_copula_prediction") is None
+               else fmt(p["p_joint_copula_prediction"], 3)),
+              fmt(p["fair_decimal_2leg"], 2),
+              fmt(p["independent_decimal_2leg"], 2),
+              src_link(URL_PBP, "play-by-play")]
+             for p in ap["pairs"]],
+            ["Two-leg same-game combo", "n", "r (raw)", "r (within player)",
+             "P(both) empirical", "P(both) copula",
+             "Fair odds 1/P(both)", "Product of legs", "Source"],
+            caption="Prop-combo dependence measured in the replication annex: "
+                    f"{ap.get('n_games', 0):,} regular-season games, "
+                    f"{ap.get('n_player_games', 0):,} player-game observations, seasons "
+                    f"{', '.join(str(x) for x in ap.get('seasons', []))}. Fair odds are "
+                    "vig-free decimals, not book prices.")
+
     body = f"""
 <section>
-<h2>Status: framework built, player-level numbers deliberately blank</h2>
-{flag("<strong>No player-level value is published on this page.</strong> Player game logs "
-      "(passing, rushing and receiving yards, receptions, touchdowns) could not be retrieved from any "
-      "source reachable in this build. Rather than estimate them, every player-level cell is left "
-      "blank and the gap is recorded on the <a href='flagged.html'>Flagged for review</a> page.", "bad")}
+<h2>Status: prop prices do not exist here; prop dependence does</h2>
+{flag("<strong>No prop price is published anywhere in this repository, and no prop ROI is "
+      "claimed.</strong> What the canonical build could not retrieve was the nflverse "
+      "<code>player_stats</code> release (its assets are served from a host this environment refuses). "
+      "A second build in this repository did retrieve raw play-by-play from a public GitHub mirror "
+      "whose SHA-256 is recorded in <code>data/raw_manifest.json</code>, and measured the correlations "
+      "in the table further down. Neither build has prop <em>prices</em>, so the honest position "
+      "remains: structure measured, P&amp;L not claimed. See the "
+      "<a href='flagged.html'>Flagged for review</a> page for both gaps.", "warn")}
 {pt}
 </section>
 
 <section>
 {framework}
 {sgt}
+</section>
+
+<section>
+<h2>Player-prop combos, measured on real play-by-play</h2>
+<p>The replication annex (<a href="lab/props.html">lab/props.html</a>) aggregates 2021–2022 regular-season
+play-by-play into player-game counts and measures how the legs of a same-game prop parlay actually
+co-move. Two estimators are reported: the raw correlation, and the correlation after removing each
+player's own season mean (pure game-to-game co-movement). The last two columns show what a two-leg
+parlay on empirical-median lines should pay, against what naive multiplication would pay — the gap is
+the book's edge if it multiplies.</p>
+{annex_tbl}
+<p>The pattern is the one a prop modeller needs: the QB→WR1 stack is
+<strong>strongly positively correlated</strong> (r ≈ 0.44 within player), same-player legs are near
+duplicates, WR1 and WR2 receiving yards are nearly independent (r ≈ 0.03) while their reception counts
+co-move (r ≈ 0.18), and QB passing yards against RB1 rushing yards is <strong>negative</strong>
+(r ≈ −0.13) because of game script. A calculator that multiplies treats all of these as independent
+and misprices every one.</p>
 </section>
 
 <section>
@@ -910,8 +993,10 @@ prop, which is why the player layer stays empty rather than invented.</p>
 <div class="tablewrap"><table><thead><tr><th>Step</th><th>Requirement</th><th>Blocked by</th><th>Source</th></tr></thead><tbody>
 <tr><td>1</td><td>Player-week stat lines (nflverse <code>player_stats</code> release)</td>
 <td>Release assets redirect to <code>release-assets.githubusercontent.com</code>, refused by this
-environment's egress policy; every GitHub mirror checked stores 132-byte LFS pointers</td>
-<td><a href="https://github.com/nflverse/nflverse-data/releases/tag/player_stats" target="_blank" rel="noopener">release</a></td></tr>
+environment's egress policy. <strong>Partly solved:</strong> the annex obtained 2021–2022 raw
+play-by-play from the public mirror listed in <code>data/raw_manifest.json</code> (SHA-256 verified)
+and measured the combos above; the canonical build itself still uses no player-level value</td>
+<td><a href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener">mirror</a></td></tr>
 <tr><td>2</td><td>Prop prices (any sportsbook)</td><td>UNVERIFIED — not present in any retrieved dataset</td>
 <td><a href="sources.html">sources</a></td></tr>
 <tr><td>3</td><td>Team total prices</td><td>UNVERIFIED — not present in any retrieved dataset</td>
@@ -1020,13 +1105,41 @@ carry a different closing number for the same game — documented on the
 def build_flagged(d) -> str:
     chk = d["settlement_crosscheck"]
     flag_rows = [
-        ["Player-level statistics (props)",
-         "Could not be retrieved", "blank",
-         "nflverse release assets are served from release-assets.githubusercontent.com, which the "
-         "build environment's egress policy refuses; nflverse-data-archives contains only a README; "
-         "two GitHub mirrors store the pbp CSVs as 132-byte Git-LFS pointers. No value was estimated.",
-         src_link("https://github.com/nflverse/nflverse-data/releases/tag/player_stats", "release"),
-         "Needs a network path to nflverse release assets, or an equivalent player-week feed."],
+        ["Player-level statistics (props) — canonical build",
+         "Not retrieved here; measured in the annex", "partial",
+         "This build does not use any player-level value: the nflverse player_stats release is served "
+         "from release-assets.githubusercontent.com, which this environment refuses. An earlier note "
+         "here said every mirror holds only 132-byte LFS pointers; that is not true of the mirror this "
+         "repository already records in data/raw_manifest.json (clausherther/nfl-dbt, 17.5 MB per "
+         "season, SHA-256 verified). The annex therefore does measure prop-combo correlations from "
+         "2021–2022 play-by-play; this build still publishes no player value of its own. Corrected by "
+         "the 2026-11-02 audit session.",
+         src_link("https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp",
+                  "verified mirror"),
+         "Nothing for the correlations; a prop price feed for any P&L."],
+        ["Prop, team-total and player-price feeds",
+         "Do not exist in any retrieved source", "blank",
+         "No retrieved source carries player-prop prices, team-total prices or a live board, so no prop "
+         "or team-total ROI is claimed anywhere. The annex prices prop combos at vig-free fair odds "
+         "derived from measured dependence, and says so explicitly.",
+         src_link(URL_DATASETS, "DATASETS.md"), "Any licensed prop-price history."],
+        ["Two-way hold is not constant across the sample",
+         "2.45% before 2023, 4.7% after", "documented",
+         "Mean two-way hold in the recorded closing prices is 1.9–2.7% from 2006 to 2022 (about 2.3% "
+         "on average), then jumps to 4.7% for 2023–2026 (the price file changes book convention, not the sport). The headline "
+         "break-even of ≈51.4% is the 2006–2022 figure; for 2023+ prices it is ≈52.4%. Both are shown "
+         "season by season on the Correlations page and no strategy result is adjusted for it.",
+         src_link(URL_GAMES, "games.csv"),
+         "Book identity per season from the upstream publisher."],
+        ["A cited methodology URL is dead",
+         "FiveThirtyEight link no longer serves the article", "documented",
+         "The live URL now redirects to abcnews.com/politics. The annex reads the Internet Archive "
+         "capture of 2025-01-16 instead, which confirms K = 20 and the margin-of-victory formula, and "
+         "shows its regression target is 1505 while the annex implements 1500. Disclosed on the annex "
+         "Lines and Sources pages.",
+         src_link("https://web.archive.org/web/20250116054745/https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/",
+                  "archived copy"),
+         "A stable publisher-side copy, or a citation to the archived URL."],
         ["Opening lines (true open→close movement)",
          "Only 2021 available", "partial",
          "initial_lines.csv covers a single season (272 games, one book 'WSGT'). Every other season "
@@ -1126,6 +1239,146 @@ cross-check against <code>closing_lines.csv</code> is published with its residua
     return layout("flagged.html", "Flagged for review",
                   "Everything on this site that is unverified, incomplete or contradictory — with "
                   "the source and what would unblock it.", body, wide=True)
+
+
+def build_repro_audit(d) -> str:
+    a = d.get("audit") or {}
+    if not a:
+        return layout("reproducibility.html", "Reproducibility audit",
+                      "This build did not publish an audit file.", "<p>data/processed/audit.json is missing.</p>")
+    sm = a["summary"]
+    cards = kpi_grid([
+        card(f"{sm['passed']}/{sm['checked']}", "automatic checks passed",
+             "recomputed from the committed tables, not copied from the build", "pos"),
+        card(f"{sm['citations_verified']}/{sm['citations']}", "citations verified",
+             "each one opened on the date shown, with the URL linked", ""),
+        card(str(sm["irregularities"]), "irregularities recorded", "every one has a source and a status", ""),
+        card(sm["skipped"], "checks not re-runnable in CI", "raw snapshot is git-ignored; see the note", ""),
+    ])
+    status_pill = {"verified": "skill", "archived": "luck", "unverified": "no",
+                   "fixed": "skill", "disclosed": "luck", "documented": "luck", "flagged": "no"}
+    ck = table([[e(c["id"]), e(c["check"]),
+                 ('<span class="pill skill">PASS</span>' if c["passed"] else
+                  '<span class="pill no">FAIL</span>' if c["passed"] is not None else
+                  '<span class="pill luck">NOT RE-RUN</span>'),
+                 e(c["detail"]), src_link(c["url"], c["label"])] for c in a["checks"]],
+               ["ID", "Check", "Result", "What was recomputed", "Source"],
+               caption="Automatic checks — every figure below is re-derived from the committed data")
+    cit = table([[e(c["reference"]), e(c["publisher"]),
+                  f'<span class="pill {status_pill.get(c["status"], "luck")}">{e(c["status"]).upper()}</span>',
+                  e(c["date"]), e(c["note"]), src_link(c["url"], "open")] for c in a["citations"]],
+                ["Reference", "Publisher", "Status", "Checked", "What the check found", "Link"],
+                caption="Citation audit — the status is the state of the link on the date shown")
+    irr = table([[e(r["id"]), e(r["severity"]),
+                  f'<strong>{e(r["item"])}</strong>', e(r["detail"]),
+                  f'<span class="pill {status_pill.get(r["status"], "luck")}">{e(r["status"]).upper()}</span>',
+                  src_link(r["url"], r["label"])] for r in a["irregularities"]],
+                ["ID", "Severity", "Item", "What was found and what was done", "Status", "Source"],
+                caption="Irregularities found by this audit, including the ones it fixed")
+    body = f"""
+<section>
+<h2>What this page is</h2>
+<p>Every other page on this site reports a result produced by the build. This page is the
+<em>check on the build</em>. It was written by a session that did not write the analysis
+(<code>{e(a['session'])}</code>, {e(a['generated_utc'])}), and it re-derives the headline numbers from
+the committed tables rather than restating them. Where a figure could not be re-derived, it says so
+instead of passing it.</p>
+{flag("<strong>Two classes of check appear below.</strong> Automatic checks run in "
+      "<code>pipeline/audit.py</code> and fail the build if they disagree. Recorded checks are runs "
+      "that need the git-ignored raw snapshot (re-running the whole pipeline, the leakage tests, "
+      "the play-by-play aggregation); they were executed on 2026-11-02 and are described with their "
+      "command and result, and the provenance hashes they rest on are re-checked automatically.", "warn")}
+{cards}
+</section>
+
+<section>
+<h2>1 · Automatic checks</h2>
+{ck}
+</section>
+
+<section>
+<h2>2 · Citation audit</h2>
+<p>Each link below was opened on the date shown. A source is marked <strong>verified</strong> only if
+the page it resolves to carries the thing being cited; <strong>archived</strong> means the live URL no
+longer serves it and the Internet Archive copy was read instead; <strong>unverified</strong> means it
+could not be confirmed and is therefore flagged, not quietly kept.</p>
+{cit}
+</section>
+
+<section>
+<h2>3 · Irregularities found by this session</h2>
+<p>{sum(1 for r in a['irregularities'] if r['status'] == 'fixed')} of these were defects in the published
+site or pipeline and are <strong>fixed</strong>. The rest are limitations that cannot be fixed from
+inside a verification session — some need new data, two need the analysis re-run with a different method
+— so they are <strong>published</strong>, with their status, so the numbers they touch can be read with
+the right caution.</p>
+{irr}
+</section>
+
+<section>
+<h2>4 · What could not be checked, and why</h2>
+<ul class="findings">
+<li><strong>Individual odds rows.</strong> The prices come from a single upstream file. They are
+checked structurally (sign convention, hold, settlement cross-check) but not row by row against a
+second price feed, because no second feed exists in this environment.</li>
+<li><strong>Prop prices.</strong> No source in this repository carries a player-prop price, so no
+prop P&amp;L is claimed anywhere. The measured prop <em>correlations</em> are re-derived and checked
+(PROP-01).</li>
+<li><strong>Live 2026 markets.</strong> The pinned archives stop before the current season, so the
+strategy results are historical only. The open board itself is empty and out of date: all 164 upcoming
+rows carry a blank line (future weather is missing) and games the NFL now lists as Final are still
+marked upcoming (IR-22). Both facts are shown, not papered over.</li>
+<li><strong>The raw snapshot.</strong> <code>data/raw/</code> is git-ignored because it is 23 MB of
+re-fetchable data. In CI the provenance checks report "not staged" rather than pretending to pass;
+they pass in full on a machine that has run <code>make data</code>.</li>
+</ul>
+</section>
+
+<section>
+<h2>5 · The sibling audits — and what they found that this one did not</h2>
+<p>Three sessions audited this repository on 2026-11-02, in parallel and without seeing each other's
+conclusions. They are published side by side rather than merged into one voice, because they asked
+different questions:</p>
+<div class="tablewrap"><table><thead><tr><th>Page</th><th>Session</th><th>Question it asked</th></tr></thead><tbody>
+<tr><td><a href="reproducibility.html">Reproducibility audit</a> (this page)</td>
+<td><a href="https://github.com/karagemop466-tech/Korea1/pull/19" target="_blank" rel="noopener"
+><code>arena/5b3f0799-korea1</code></a></td>
+<td>Can every headline number be re-derived from the committed data, and does every citation resolve?</td></tr>
+<tr><td><a href="audit.html">Independent audit</a></td>
+<td><a href="https://github.com/karagemop466-tech/Korea1/pull/13" target="_blank" rel="noopener"
+><code>arena/1642ee06-korea1</code></a></td>
+<td>Do the scores match an <em>official</em> source, and how many table rows rest on a community mirror?</td></tr>
+<tr><td><a href="https://github.com/karagemop466-tech/Korea1/blob/main/notes/no-lookahead-2026-11-02.md"
+ target="_blank" rel="noopener">Temporal audit note</a></td>
+<td><a href="https://github.com/karagemop466-tech/Korea1/pull/17" target="_blank" rel="noopener"
+><code>arena/8eb93b26-korea1</code></a></td>
+<td>Does any step look ahead in time, and is the live board actually live?</td></tr>
+</tbody></table></div>
+<p>Their findings are reported on this page as well, marked as theirs, because a verification page that
+omitted them would overstate what was checked:</p>
+<ul class="findings">
+<li><strong>Official-source gap (their finding).</strong> Of 523 table rows on the root pages, only 3 link
+to nfl.com; 516 rest on nflverse, a community project. Historical closing lines have no official NFL
+source and the upstream dictionary does not name the sportsbook. Published and flagged, not blanked —
+see <a href="audit.html">Independent audit</a>, IR-T10-01/-02.</li>
+<li><strong>Fold-preprocessing leak (their finding, re-checked here as LEAK-01).</strong> Missing weather
+is filled with a median computed over <em>all</em> played games before the walk-forward split, so the
+2004 and 2018 folds see later seasons. The defect is confirmed; the size and direction of its effect on
+the published MAE are <strong>not</strong> re-estimated here, and no figure was changed (IR-21).</li>
+<li><strong>Empty, stale board (their finding, re-checked here as LINE-01).</strong> All 164 upcoming rows
+carry a blank line, and the snapshot predates the completion of 2026 week 8. Nothing was back-filled
+(IR-22).</li>
+<li><strong>The leakage tests are not a clean bill of health.</strong> <code>tests/test_no_lookahead.py</code>
+passes 4/4 and checks the split boundaries, order and same-date state; it does not inspect preprocessing.
+That gap is exactly how the fold leak survived, and it is why the two findings above are disclosed rather
+than argued away.</li>
+</ul>
+</section>
+"""
+    return layout("reproducibility.html", "Reproducibility audit",
+                  "A second session re-derived every headline number, opened every cited link, and "
+                  "recorded what it found — including the defects it fixed and the two findings of its "
+                  "sibling audits that it could confirm but not repair.", body, wide=True)
 
 
 def build_sources(d) -> str:
@@ -1296,6 +1549,7 @@ def main() -> None:
         "correlations.html": build_correlations(d),
         "props.html": build_props(d),
         "methodology.html": build_methodology(d),
+        "reproducibility.html": build_repro_audit(d),
         "flagged.html": build_flagged(d),
         "sources.html": build_sources(d),
         # T10 (arena/1642ee06-korea1): independent official-source audit

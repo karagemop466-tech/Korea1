@@ -19,6 +19,7 @@ Checks
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import os
 import re
@@ -47,31 +48,39 @@ def main():
            "scripts/tests/test_math.py")
 
     # ---------- V02 divisions
-    ref_path = os.path.join(DATA, "raw", "teams_colors_logos.csv")
     # T10 repair (arena/1642ee06-korea1): nothing in scripts/00_ingest.py ever downloaded this
-    # reference file, so V02 failed on every fresh checkout.  Fetch it through api.github.com
-    # (reachable from the sandbox; raw.githubusercontent.com is not).  Failure to fetch still
-    # fails V02 -- the check is never skipped or waved through.
-    if not os.path.exists(ref_path):
+    # reference file, so V02 failed on every fresh checkout. Fetch it through api.github.com
+    # (reachable from the sandbox; raw.githubusercontent.com is not).
+    raw_ref = os.path.join(DATA, "raw", "teams_colors_logos.csv")
+    pinned_ref = os.path.join(LAB, "reference", "teams_colors_logos.csv")
+    expected = "4eab559fcf89cb4eaf61cb63a88abc47b01b6c9049187c59f3efe95888c3d048"
+    if not os.path.exists(raw_ref):
         try:
             import urllib.request
             req = urllib.request.Request(
                 "https://api.github.com/repos/nflverse/nflverse-pbp/contents/teams_colors_logos.csv",
                 headers={"Accept": "application/vnd.github.raw", "User-Agent": "korea1-verify"})
-            os.makedirs(os.path.dirname(ref_path), exist_ok=True)
-            with urllib.request.urlopen(req, timeout=60) as r, open(ref_path, "wb") as f:
+            os.makedirs(os.path.dirname(raw_ref), exist_ok=True)
+            with urllib.request.urlopen(req, timeout=60) as r, open(raw_ref, "wb") as f:
                 f.write(r.read())
         except Exception as exc:  # noqa: BLE001 - reported below as a failed check
             print(f"  could not download V02 reference file: {exc}", file=sys.stderr)
+    # This session (arena/5b3f0799-korea1): a copy is also committed at data/lab/reference/ with a
+    # SHA-256 sidecar, so the check still runs offline; whichever copy is used must hash to `expected`.
+    ref_path = raw_ref if os.path.exists(raw_ref) else pinned_ref
     if os.path.exists(ref_path):
+        got = hashlib.sha256(open(ref_path, "rb").read()).hexdigest()
         sys.path.insert(0, os.path.join(ROOT, "scripts"))
         from lib.data import DIVISIONS
         with open(ref_path) as f:
             ref = {row["team_abbr"]: row["team_division"] for row in csv.DictReader(f)}
         mism = [(k, v, ref.get(k)) for k, v in DIVISIONS.items() if ref.get(k) != v]
-        record("V02", "Club division map vs nflverse reference", not mism,
-               f"{len(DIVISIONS)} clubs checked, {len(mism)} mismatches"
-               + (f": {mism[:5]}" if mism else ""),
+        ok = (not mism) and got == expected
+        detail = (f"{len(DIVISIONS)} clubs checked, {len(mism)} mismatches; "
+                  f"reference sha256 {got[:16]}… ({os.path.relpath(ref_path, ROOT)})")
+        if got != expected:
+            detail += " - HASH MISMATCH against the pinned reference"
+        record("V02", "Club division map vs nflverse reference", ok, detail,
                "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv")
     else:
         record("V02", "Club division map vs nflverse reference", False,

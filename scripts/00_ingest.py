@@ -40,6 +40,13 @@ os.makedirs(DERIVED, exist_ok=True)
 RETRIEVED = "2026-11-01"
 
 # --------------------------------------------------------------------------- sources
+# Reference table for the division map (V02). Fetched from the GitHub contents API, which
+# this environment can reach; raw.githubusercontent.com cannot be reached.
+TEAMS_REPO = "nflverse/nflverse-pbp"
+TEAMS_PATH = "teams_colors_logos.csv"
+TEAMS_BLOB_SHA = "2b7ae7ae0b05b6c3f71b9ca60ca9dd4e0995f830"
+TEAMS_SHA256 = "4eab559fcf89cb4eaf61cb63a88abc47b01b6c9049187c59f3efe95888c3d048"
+
 SBR_REPO = "flancast90/sportsbookreview-scraper"
 SBR_PATH = "data/nfl_archive_10Y.json"
 SBR_BLOB_SHA = "da844ea01aafffc034918e36b5e99bc8c1dadee0"
@@ -93,6 +100,29 @@ def gh_blob_download(repo: str, sha: str, dest: str) -> None:
 
 def ensure_raw() -> dict:
     manifest = {"retrieved_utc": RETRIEVED, "sources": []}
+
+    # --- A0. club / division reference (used by verifier V02)
+    teams_path = os.path.join(RAW, "teams_colors_logos.csv")
+    if not os.path.exists(teams_path):
+        import base64
+        url = f"https://api.github.com/repos/{TEAMS_REPO}/contents/{TEAMS_PATH}"
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req, timeout=300) as r:
+            payload = json.load(r)
+        with open(teams_path, "wb") as f:
+            f.write(base64.b64decode(payload["content"]))
+    teams_hash = sha256_file(teams_path)
+    if teams_hash != TEAMS_SHA256:
+        raise SystemExit(f"division reference hash mismatch: {teams_hash} != {TEAMS_SHA256}")
+    manifest["sources"].append({
+        "id": "NFLVERSE-TEAMS", "role": "club / division reference for verifier V02",
+        "repository": f"https://github.com/{TEAMS_REPO}", "path": TEAMS_PATH,
+        "url": f"https://github.com/{TEAMS_REPO}/blob/master/{TEAMS_PATH}",
+        "git_blob_sha": TEAMS_BLOB_SHA, "file": os.path.relpath(teams_path, ROOT),
+        "bytes": os.path.getsize(teams_path), "sha256": teams_hash,
+        "tier": "verified third party (nflverse reference table)",
+        "verification": "32-club division map compared club by club in scripts/99_verify.py",
+    })
 
     # --- A. odds / results archive
     p = os.path.join(RAW, "nfl_archive_10Y.json")

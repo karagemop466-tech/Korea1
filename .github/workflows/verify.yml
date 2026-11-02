@@ -33,5 +33,7 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install pandas numpy scipy
+      - name: Audit the published numbers (re-derive, do not restate)
+        run: python pipeline/audit.py
       - name: Verify the published site
         run: python pipeline/verify_site.py

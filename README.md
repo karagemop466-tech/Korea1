@@ -9,9 +9,17 @@ hash-verified upstream snapshot. Nothing is typed in by hand, and nothing is est
 fill a gap — where a value could not be verified it is left blank and listed on the
 [Flagged for review](https://karagemop466-tech.github.io/Korea1/flagged.html) page.
 
-> **Audit note (2026-11-02):** an independent check against NFL.com found the sampled scores correct, but most table rows
-> link to a community mirror and historical betting lines have no official source — they are published, not blanked, and flagged.
-> See the [Independent audit](https://karagemop466-tech.github.io/Korea1/audit.html).
+> **Audit note (2026-11-02).** Three sessions audited this repository the same day and their reports are
+> published separately, not blended:
+> an independent check against NFL.com found the sampled scores correct, but most table rows link to a
+> community mirror and historical betting lines have no official source — published, not blanked, and
+> flagged ([Independent audit](https://karagemop466-tech.github.io/Korea1/audit.html));
+> a second audit re-derived every headline number (20/20 checks) and opened every citation
+> ([Reproducibility audit](https://karagemop466-tech.github.io/Korea1/reproducibility.html));
+> a third found two things neither of the others had: the weather imputer is fitted on the full sample
+> before the walk-forward split (a leak our own tests did not catch), and the open board is empty and
+> stale. Both are disclosed on the reproducibility page (IR-21, IR-22) and neither was fixed by
+> back-filling or re-estimating — no published figure changed.
 
 ---
 
@@ -25,6 +33,8 @@ fill a gap — where a value could not be verified it is left blank and listed o
 | How correlated are the legs of a parlay or same-game parlay? | `pipeline/correlations.py` → `correlations.html` |
 | What would a player-prop model need, and what is missing? | `props.html` |
 | What is unverified, contradictory or incomplete? | `flagged.html` |
+| Are the published numbers reproducible, and are the citations real? | `pipeline/audit.py` → `reproducibility.html` |
+| Do the scores and sources match an *official* feed? | `pipeline/render_audit.py` → `audit.html` |
 
 ## Headline result
 
@@ -34,9 +44,17 @@ fill a gap — where a value could not be verified it is left blank and listed o
   parlay ladder, 377 tickets) is what a high-variance long-shot book looks like, not an edge.
 * **White's reality check does not reject** (p = 0.144 across 18 strategies and 425 weekly
   blocks): the library's best performance is consistent with luck.
-* The closing prices used carry a **2.7% two-way hold**, so break-even is ≈51.4%, not 52.4%.
+* The closing prices carry a **2.72% mean two-way hold** over the whole sample — 2.25% for
+  2006–2022 and 4.70% for 2023–2026 — so break-even is ≈51.4% on the earlier era and ≈52.4% on the
+  later one. The site shows both rather than quoting one number for 20 seasons.
 * Same-game legs are **not** independent: cover↔moneyline φ ≈ 0.68, cover↔total φ ≈ 0.024,
-  cross-game legs φ ≈ 0.01 (interval spans zero).
+  cross-game legs r ≈ 0.01 (interval spans zero).
+* Prop combos are **leg-specific**: QB passing + WR1 receiving co-move (r ≈ 0.44 within player),
+  WR1/WR2 receiving yards are nearly independent (r ≈ 0.03), and QB passing vs RB1 rushing is
+  negative (r ≈ −0.13). No prop *price* exists in any reached source, so no prop P&L is claimed.
+* An independent audit session re-derived **20/20** headline checks from the pinned data and opened
+  every citation (**10/13** verify today; the rest are flagged, not hidden). Two findings of parallel
+  audits — a fold-preprocessing leak and an empty, stale open board — are disclosed, not repaired.
 
 ## Data
 
@@ -67,9 +85,11 @@ source link, any internal link is broken, or any unformatted missing value reach
 
 ```
 pipeline/            all analysis code (see methodology.html for the dataflow)
+pipeline/audit.py    independent re-derivation of every headline number (reproducibility.html)
+pipeline/render_audit.py  NFL.com score sample and per-row source tiers (audit.html)
 data/processed/      generated tables (committed; the site reads them)
 data/sources.json    pinned commit SHA + per-file SHA-256
-*.html + assets/     the GitHub Pages site (static HTML/CSS, no CDN, no framework) — served from
+*.html + assets/     the GitHub Pages site, including audit.html and reproducibility.html — served from
                      the repository root, because Pages is configured as `main` / (verified against
                      the Pages API; an earlier note here said docs/, which does not exist)
 lab/                 the replication annex (see below) — a second site, same questions, other data
@@ -85,6 +105,9 @@ COORDINATION.md      multi-session task board and work log
 4. All strategies are declared before they are run; every result is published, including failures.
 5. The settlement engine is cross-checked against nflverse's own outcome column (99.93% exact
    agreement where the two files carry the same line).
+6. A second session audits the build rather than trusting it: `pipeline/audit.py` recomputes the
+   headline numbers, hashes the raw files against the pinned commit, and records the status of every
+   cited link with the date it was opened. It fails the build on a mismatch. See `reproducibility.html`.
 
 ## Licence and attribution
 

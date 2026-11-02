@@ -1,7 +1,7 @@
 # Executive summary — NFL Line Lab
 
-*Generated from the pipeline output on 2026-11-01T13:24:09Z · upstream commit `a270278f3ac4` ·
-reproduce with `make build`.*
+*Regenerated 2026-11-02 from the pipeline output; data pinned 2026-11-01T13:24:09Z at upstream
+commit `a270278f3ac4`. Reproduce with `make build`.*
 
 ## The question
 
@@ -33,10 +33,14 @@ further.
 | Strategies validated as skill | 0 | `strategy_gates.csv` |
 | Best raw ROI | 21.6% (PARLAY3_EDGE, 377 tickets) | `strategy_summary.csv` |
 | Reality-check p-value | 0.144 | `reality_check.json` |
-| Mean two-way hold, spreads | 2.72% | `vig_by_season.csv` |
+| Mean two-way hold, spreads (season mean) | 2.72% | `vig_by_season.csv` |
+| Mean two-way hold, spreads, 2006–2022 / 2023–2026 | 2.25% / 4.70% | `vig_by_season.csv` |
 | Same-game φ, cover ↔ moneyline | 0.676 | `corr_same_game.csv` |
 | Same-game φ, cover ↔ total | 0.024 | `corr_same_game.csv` |
 | Cross-game r, margin / total | 0.011 / 0.008 | `corr_cross_game.csv` |
+| Prop-combo r, QB passing + WR1 receiving (within player) | 0.441 | `data/lab/props.json` |
+| Prop pairs measured (2021–2022 play-by-play) | 8 | `data/lab/props.json` |
+| Independent-audit checks passed | 20/20 | `pipeline/audit.py` |
 
 ## What was built
 
@@ -51,8 +55,8 @@ further.
    substitution and no line shopping.
 4. **Validation.** Eight gates: data integrity, leakage, power, significance with FDR control,
    bootstrap + deflated Sharpe, economic significance, stability, redundancy.
-5. **Site.** A static dashboard where every table row links to its source file, plus a
-   Flagged-for-Review page.
+5. **Site.** A static dashboard where every table row links to its source file, a Flagged-for-Review
+   page, and an Independent-audit page that re-derives the headline numbers instead of restating them.
 
 ## Findings
 
@@ -82,9 +86,20 @@ seasons. Most published betting edges are under-powered noise; the gates are cal
 (r = 0.011, interval spans zero), which is why an ordinary parlay can
 be priced by multiplication but a same-game parlay cannot.
 
-**6 — The pricing environment is sharp.** Mean two-way hold in the closing prices is
-2.72% on spreads and 2.93% on
-totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
+**6 — The pricing environment is sharp, and it changes in 2023.** Mean two-way hold in the closing
+prices is 2.72% on spreads and 2.93%
+on totals across the sample, but that average hides a step: 2.25%
+over 2006–2022 and 4.70% over 2023–2026. Break-even is
+therefore about 51.4% on the earlier era and about 52.4% on the later one, and the site shows both
+rather than quoting one number for the whole history.
+
+**7 — Prop combos are strongly dependent, and the direction is leg-specific.** Measured on 2021–2022
+play-by-play: QB passing yards with WR1 receiving yards has r = 0.441
+within player (fair two-leg price 2.81 against
+3.92 if multiplied); WR1 and WR2 receiving
+yards are nearly independent (r = 0.035);
+QB passing yards against RB1 rushing yards is negative (game script). A calculator that multiplies
+misprices every one of these. No prop *price* exists in either build, so no prop P&L is claimed.
 
 ## Decisions that shaped the result
 
@@ -96,9 +111,10 @@ totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 - **Correct for the number of tries.** Eighteen strategies tested at p < 0.05 would produce a
   winner about 60% of the time by chance; Benjamini–Hochberg and the deflated Sharpe exist to stop
   exactly that.
-- **Never fill a gap.** Player-level props, team-total prices and multi-season openers are not
-  available from any reachable source, so they are blank and flagged rather than modelled from
-  proxies.
+- **Never fill a gap.** Team-total prices, prop prices and multi-season openers do not exist in any
+  reached source, so they are blank and flagged rather than modelled from proxies. Player-level
+  *statistics* do exist behind a hash-verified mirror, so the prop **correlations** are measured and
+  published while the prop **prices** stay blank.
 
 ## Verification performed
 
@@ -110,22 +126,46 @@ totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 | spread sign convention | spread_line>0: home win rate 67.4% n=4795; spread_line<0: 35.3% n=2558 |
 | settlement vs independent outcome column | 13,284/13,472 exact (98.605%) |
 | site tables with a source link on every row | 100% (enforced by `pipeline/verify_site.py`) |
+| independent audit of every headline number | 20/20 automatic checks pass (`pipeline/audit.py`) |
+| citations opened one by one | 10/13 verified on 2026-11-02 |
+
+## Independent audit (2026-11-02)
+
+A session that did not write the analysis re-derived every headline number from the pinned raw data
+and the committed tables, and opened every cited link. Result: **20/20
+automatic checks pass**, five pipeline re-runs reproduce their artefacts byte-for-byte (including the
+reality-check p-value), and **10 of 13
+citations verify** on the date shown. It found and fixed three defects: a Player-props page that
+contradicted the repository's own manifest, a verifier check that was hard-coded to pass, and an
+annex check (V02) that failed on a clean clone. It also disclosed two citation problems (the
+FiveThirtyEight URL is dead; the Kelly DOI returns HTTP 500) and a hold-regime change in 2023.
+Everything is on `reproducibility.html`, with the URL used for each check.
+
+Two further findings came from a sibling audit and are **disclosed, not fixed**, because fixing them
+changes results: missing weather is imputed with a *full-sample* median before the walk-forward split, so
+the 2004 and 2018 folds see later seasons (prior-only temperature median 60 °F against 59 °F); and all 164
+upcoming rows carry a blank line because future weather is missing, while the pinned snapshot predates the
+completion of 2026 week 8. No number in this summary was re-estimated for either, and no line was guessed.
+See [`notes/no-lookahead-2026-11-02.md`](notes/no-lookahead-2026-11-02.md) for the leak demonstration.
 
 ## Flagged for review
 
-Player-week statistics and prop prices were **not retrievable** in this build (nflverse release
-assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
-exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
+There is **no prop price** anywhere in this repository and no prop P&L is claimed; team-total prices
+and multi-season openers are likewise absent. Player-level statistics are a different story: they were
+not used by the canonical build, but a mirror whose SHA-256 is recorded in `data/raw_manifest.json`
+does carry 2021–2022 play-by-play plus a partial 2023 season, and the annex measures prop correlations from the two complete seasons — an earlier note
+claiming every mirror stores only 132-byte LFS pointers was wrong and has been corrected. Two
+citations cannot be confirmed today: the Kelly (1956) DOI returns HTTP 500 and the Nevada regulator's
+PDF returns no readable text. The two nflverse price files disagree by a median 0.5 points on about a
 third of games, and three 2015 games carry outcome flags that contradict their own score. Full
-detail, with sources: `flagged.html`.
+detail, with sources: `flagged.html` and `audit.html`.
 
 ## What would change the answer
 
 1. A pre-kickoff injury and starting-quarterback feed — the largest known component of the MAE gap.
-2. Player-week statistics and prop prices — unlocks the entire prop and SGP programme.
+2. A licensed player-prop **price** history — player statistics already exist via the hashed mirror,
+   so prices are the only missing piece of a prop P&L and a priced SGP programme.
 3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
-
----
 
 ## Annex: independent replication on a second odds archive
 
@@ -150,8 +190,6 @@ Four findings replicate independently, which is the strongest evidence in this r
 Where the builds disagree, the archives disagree, and that is flagged rather than reconciled: the annex
 measures a mean 3.79% overround against 2.70% here (IR-09).
 
----
-
 ## Independent official-source audit (2026-11-02, session `arena/1642ee06-korea1`)
 
 Full detail: [`audit.html`](audit.html) · data in [`data/audit/`](data/audit/) · scripts `scripts/audit_*.py`.
@@ -162,8 +200,10 @@ Full detail: [`audit.html`](audit.html) · data in [`data/audit/`](data/audit/) 
   This is a sample, not a census; games before 2010 (2,913) and playoff games (309) were not checked.
 - **Inputs.** All 7 pinned nfldata files re-downloaded from the pinned commit: SHA-256 and byte count match.
   Rebuilding every table from them reproduces the published files byte for byte; `tests/test_no_lookahead.py` 4/4.
-- **Official sources.** Of 523 table rows on the ten root pages, 3 link to nfl.com and 516 link only to
+- **Official sources.** Of 523 table rows on the root pages, 3 link to nfl.com and 516 link only to
   nflverse (a community project). Historical closing lines, totals and prices have **no official NFL source**
   and the upstream data dictionary does not name the sportsbook. These are flagged (IR-T10-01, -02), not blanked.
-- **Defect fixed.** `scripts/99_verify.py` V02 failed on every fresh checkout; it now passes (9/9).
+- **Defect fixed.** `scripts/99_verify.py` V02 failed on every fresh checkout; both sessions repaired it —
+  the merged check now downloads the file from the pinned commit and falls back to the committed copy,
+  and either path must hash to the recorded SHA-256 (9/9).
 - **Does not change the conclusion.** 0 of 18 strategies pass all gates; no figure in this summary was altered.

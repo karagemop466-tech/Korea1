@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 # original nine pages with its own ten; the list below is the page set that actually ships, plus the
 # annex pages in lab/. Every href on these pages (including the nav entry to lab/) is resolved.
 PAGES = ["index.html", "executive-summary.html", "lines.html", "strategies.html", "validation.html",
-         "correlations.html", "props.html", "methodology.html", "flagged.html", "sources.html", "audit.html",
+         "correlations.html", "props.html", "methodology.html", "audit.html", "reproducibility.html",
+         "flagged.html", "sources.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]

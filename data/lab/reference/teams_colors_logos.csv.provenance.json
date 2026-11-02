@@ -1,0 +1,13 @@
+{
+  "id": "NFLVERSE-TEAMS",
+  "file": "data/lab/reference/teams_colors_logos.csv",
+  "bytes": 18919,
+  "sha256": "4eab559fcf89cb4eaf61cb63a88abc47b01b6c9049187c59f3efe95888c3d048",
+  "repository": "https://github.com/nflverse/nflverse-pbp",
+  "git_blob_sha": "2b7ae7ae0b05b6c3f71b9ca60ca9dd4e0995f830",
+  "url": "https://github.com/nflverse/nflverse-pbp/blob/master/teams_colors_logos.csv",
+  "api_url": "https://api.github.com/repos/nflverse/nflverse-pbp/contents/teams_colors_logos.csv",
+  "retrieved_utc": "2026-11-02",
+  "why_committed": "The annex verifier V02 compares the 32-club division map against this reference. It used to live only in the git-ignored data/raw/ staging area, so a fresh clone could not pass V02 (found by the 2026-11-02 audit session). Committed here (19 KB, third-party open data) together with its SHA-256 so the check is reproducible offline.",
+  "tier": "verified third party (nflverse reference table)"
+}
