@@ -16,6 +16,7 @@
   </div>
 </header>
 <main class="wrap wide">
+  <aside class="flag warn" role="note"><strong>Research under review — not betting advice.</strong> Historical results use third-party data, not row-by-row official verification; weather imputation leaks future information, and parlay prices may not be simultaneously executable. No strategy is certified as skill. <a href="flagged.html#audit-2026">Read the audit and limitations</a>.</aside>
   <h1>Validation gates</h1>
   <p class="lede">Eight gates, applied to every strategy before any of them is allowed to claim skill.</p>
   
@@ -26,7 +27,7 @@
 <tr><td><strong>G1 data</strong></td><td>Is every bet settled against a real recorded price?</td>
 <td>100% of bets carry a closing price from the pinned file</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
 <tr><td><strong>G2 leakage</strong></td><td>Could the model have seen the future?</td>
-<td>Walk-forward only: season S is predicted from seasons &lt; S</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
+<td>UNVERIFIED: model fitting uses previous seasons, but full-sample weather imputation introduces lookahead; G2 is hard-coded true.</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
 <tr><td><strong>G3 power</strong></td><td>Is there enough evidence to say anything?</td>
 <td>≥ 100 bets and ≥ 3 seasons</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
 <tr><td><strong>G4 significance</strong></td><td>Is the edge bigger than noise?</td>

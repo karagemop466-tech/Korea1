@@ -16,6 +16,7 @@
   </div>
 </header>
 <main class="wrap">
+  <aside class="flag warn" role="note"><strong>Research under review — not betting advice.</strong> Historical results use third-party data, not row-by-row official verification; weather imputation leaks future information, and parlay prices may not be simultaneously executable. No strategy is certified as skill. <a href="flagged.html#audit-2026">Read the audit and limitations</a>.</aside>
   <h1>NFL Line Lab</h1>
   <p class="lede">Line origination, strategy competition and luck removal for NFL markets — every number traceable to a pinned source file.</p>
   
@@ -25,12 +26,12 @@
 <h2>What this project does</h2>
 <p>It originates its own NFL lines from a market-free model, prices them, then tests a fixed
 library of betting strategies against the closing market. The point is <strong>not</strong> to
-produce a winner at any cost: it is to apply gates that remove luck, and to publish the result
+produce a winner at any cost: it is to apply gates that assess uncertainty, and to publish the result
 honestly — including when the result is that nothing survives.</p>
 <div class="split">
   <div>
     <h3>Line origination</h3>
-    <p>Three independent model families (weighted ridge, matchup points, Elo) are fitted
+    <p>Three model families (weighted ridge, matchup points, Elo) are fitted
     walk-forward and averaged. The ensemble is the published line. Its accuracy is measured
     against the closing market on the same games.</p>
     <p><a class="btn" href="lines.html">See the originated lines →</a></p>
@@ -64,9 +65,9 @@ honestly — including when the result is that nothing survives.</p>
   <li><strong>White's reality check does not reject.</strong> p = 0.144
       across 18 strategies and 425 weekly blocks — the
       library's best performance is consistent with luck.</li>
-  <li><strong>The pricing environment is sharp.</strong> Mean two-way hold in the closing prices is
+  <li><strong>The pricing environment is sharp.</strong> Mean two-way overround in the closing prices is
       2.72% on spreads — a low-margin book, so the
-      break-even win rate is about 51.4%, not 52.4%.</li>
+      break-even depends on each quoted price and push rules.</li>
   <li><strong>Same-game correlation is structural, not cosmetic.</strong> Cover and moneyline on the
       same team correlate at φ = 0.676; cover and total
       correlate at φ = 0.024. Independent pricing of a

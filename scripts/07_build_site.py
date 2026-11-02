@@ -152,6 +152,7 @@ def page(filename, title, subtitle, body, active=None):
   </div>
 </header>
 <main class="wrap">
+  <aside class="notice" role="note"><strong>Research under review — not betting advice.</strong> This annex uses third-party data; row-by-row official verification and prospective skill validation are incomplete. <a href="../flagged.html#audit-2026">Read the independent audit</a>.</aside>
   <div class="pagehead">
     <h1>{esc(title)}</h1>
     <p class="sub">{subtitle}</p>

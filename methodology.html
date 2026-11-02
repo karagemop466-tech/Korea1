@@ -16,23 +16,23 @@
   </div>
 </header>
 <main class="wrap wide">
+  <aside class="flag warn" role="note"><strong>Research under review — not betting advice.</strong> Historical results use third-party data, not row-by-row official verification; weather imputation leaks future information, and parlay prices may not be simultaneously executable. No strategy is certified as skill. <a href="flagged.html#audit-2026">Read the audit and limitations</a>.</aside>
   <h1>Methodology</h1>
   <p class="lede">How the lines are built, how the bets are settled, and how the numbers are checked.</p>
   
 <section>
 <h2>Pipeline</h2>
 <pre class="pipeline">pipeline/fetch_data.py     pin upstream commit, download archive, hash every file -> data/sources.json
-pipeline/build_datasets.py  chronological walk-forward features (no leakage), audits -> games_model.csv
+pipeline/build_datasets.py  chronological features; weather-imputation lookahead flagged -> games_model.csv
 pipeline/models.py          three model families, walk-forward -> originated_lines.csv
 pipeline/backtest.py        settlement engine, cross-checked against nflverse outcomes
-pipeline/strategies.py      the pre-declared strategy library
+pipeline/strategies.py      strategy definitions (independent preregistration unverified)
 pipeline/stats_tools.py     bootstrap, FDR, deflated Sharpe, reality check
 pipeline/validation.py      run the library, apply the eight gates -> strategy_*.csv
 pipeline/correlations.py    measured dependence -> corr_*.csv
 pipeline/render_site.py     this site
 pipeline/verify_site.py     row-level source check + internal link check</pre>
-<p>Reproduce with <code>make build</code> (or run the eight scripts in order). Everything is
-deterministic: the upstream commit is pinned and every download is SHA-256 hashed.</p>
+<p><code>make build</code> currently resolves the upstream branch head and does not reproduce the recorded snapshot. See the <a href="flagged.html#audit-2026">audit</a>.</p>
 </section>
 
 <section>
@@ -61,8 +61,7 @@ P(win)  = 1 − Φ((L+0.5−m)/σ)
 
 fair American price = 100·(1−p)/p        for p &lt; 0.5
                     = −100·p/(1−p)       for p &gt; 0.5</pre>
-<p>The published "posted" moneyline applies a 4.5% two-way hold, so the numbers on the
-<a href="lines.html">Originated lines</a> page are a bettable pair rather than a vig-free pair.</p>
+<p>The model contains an illustrative price transformation; it is not a verified bookmaker quote. The open board is disabled.</p>
 </section>
 
 <section>

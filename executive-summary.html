@@ -16,6 +16,7 @@
   </div>
 </header>
 <main class="wrap wide">
+  <aside class="flag warn" role="note"><strong>Research under review — not betting advice.</strong> Historical results use third-party data, not row-by-row official verification; weather imputation leaks future information, and parlay prices may not be simultaneously executable. No strategy is certified as skill. <a href="flagged.html#audit-2026">Read the audit and limitations</a>.</aside>
   <h1>Executive summary</h1>
   <p class="lede">What was built, what the numbers say, what is not proven, and the one-paragraph conclusion.</p>
   
@@ -32,12 +33,11 @@ strategies are not validated, and the pipeline is able to say so.</p>
 <h2>1 · What was built</h2>
 <ol class="findings">
 <li><strong>A pinned, hash-verified data layer.</strong> One commit of <code>nflverse/nfldata</code>,
-7,548 schedule rows, 7,384 played games 1999–2026, plus an independent per-side price file used to
+7,548 schedule rows, 7,384 played games 1999–2026, plus a second per-side price file used to
 cross-check settlement. Every file is SHA-256 hashed into <code>data/sources.json</code>.</li>
-<li><strong>A market-free line-origination engine.</strong> Three independent model families
+<li><strong>A market-free line-origination engine.</strong> Three model families
 (weighted ridge on pre-game structure, matchup expected points, Elo) fitted walk-forward and
-averaged with fixed weights. No model sees a price, and none sees anything after kickoff — both are
-asserted in code, not just claimed.</li>
+averaged with fixed weights. No model directly uses a market price. The historical weather imputation uses future rows, so the no-lookahead claim is not established.</li>
 <li><strong>A priced, settled strategy library.</strong> 18 strategies — single bets,
 2- and 3-leg parlays, and classic angle rules — staked one unit per bet at the recorded closing
 price. No -110 substitution, no line shopping, pushes refunded.</li>
@@ -53,10 +53,7 @@ unverified or contradictory.</li>
 <section>
 <h2>2 · What the numbers say</h2>
 <div class="tablewrap"><table class=""><caption>Out-of-sample accuracy against the close</caption><thead><tr><th>Market</th><th>Closing-line MAE</th><th>Our MAE</th><th>Gap</th><th>Source</th></tr></thead><tbody><tr><td>Spread</td><td>10.215</td><td>10.527</td><td>+0.312</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>Total</td><td>10.527</td><td>10.727</td><td>+0.199</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr></tbody></table></div>
-<p>The model is roughly <strong>a third of a point worse than the closing line</strong> on both
-markets. That gap is not a coding artefact: it is the value of injury reports, starting-quarterback
-news and sharp money, none of which the model is allowed to see. It is also, conveniently, about the
-size of the vig — which is why the strategies below cannot get paid.</p>
+<p>These are historical sample estimates, not a causal attribution or proof of an actionable edge. The weather imputation issue makes the backtest subject to review.</p>
 
 <div class="tablewrap"><table><thead><tr><th>Result</th><th>Value</th><th>Reading</th><th>Source</th></tr></thead><tbody>
 <tr><td>Strategies passing all eight gates</td><td><strong>0 of 18</strong></td>
@@ -65,16 +62,16 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <td>a high-variance long-shot ladder, not an edge</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">gates</a></td></tr>
 <tr><td>White's reality check</td><td><strong>p = 0.144</strong></td>
 <td>best-of-library is consistent with luck</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
-<tr><td>Two-way hold in closing prices</td>
+<tr><td>Two-way overround in closing prices</td>
 <td><strong>2.72%</strong> spread / 2.93% total</td>
-<td>break-even ≈ 51.4% win rate, not 52.4%</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
+<td>break-even depends on the specific price and pushes</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
 <tr><td>Same-game φ, cover ↔ moneyline</td><td><strong>0.676</strong></td>
 <td>near-duplicate legs; independent pricing is wrong</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
 <tr><td>Same-game φ, cover ↔ total</td><td><strong>0.024</strong></td>
-<td>genuinely close to independent</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
+<td>small pooled correlation; independence not established</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
 <tr><td>Cross-game φ (margin, total)</td>
 <td><strong>0.011, 0.008</strong></td>
-<td>intervals span zero → parlays can be multiplied</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
+<td>intervals span zero; independence is not established</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
 </tbody></table></div>
 </section>
 
@@ -84,10 +81,9 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <li><strong>Bet the close, not the opener.</strong> Openers exist for one season only, so every
 strategy is measured against the hardest available benchmark. This makes results worse and more
 honest.</li>
-<li><strong>Declare the library first.</strong> All 18 strategies were written down before
-any of them ran, and every one is published. No result was dropped, no threshold retuned.</li>
+<li><strong>Declare the library first.</strong> The code defines 18 strategies and publishes their results. Independent preregistration before seeing the data has not been established.</li>
 <li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
-manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
+manufacture a winner about 60% of the time if tests are independent; the Benjamini–Hochberg step and the deflated Sharpe
 exist to stop that from happening here.</li>
 <li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
 are unavailable from reachable sources, so they are blank and flagged instead of modelled from
@@ -111,7 +107,7 @@ games have outcome flags that contradict their own score.</li>
 <section>
 <h2>5 · The one-paragraph conclusion</h2>
 <p class="lede">The pipeline can originate a defensible NFL line — within about a third of a point
-of the close, with no market input at all — but that gap is decisive. Once every strategy is forced
+of the close in a historical sample, but the results require review. When each strategy is forced
 through power, FDR, bootstrap and deflated-Sharpe gates, the apparent winners dissolve: the best
 result in the library is a 3-leg parlay ladder that a reality check cannot distinguish from luck
 (p = 0.144). The honest deliverable is therefore the

@@ -88,6 +88,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
   </div>
 </header>
 <main class="wrap{' wide' if wide else ''}">
+  <aside class="flag warn" role="note"><strong>Research under review — not betting advice.</strong> Historical results use third-party data, not row-by-row official verification; weather imputation leaks future information, and parlay prices may not be simultaneously executable. No strategy is certified as skill. <a href="flagged.html#audit-2026">Read the audit and limitations</a>.</aside>
   <h1>{e(title)}</h1>
   <p class="lede">{subtitle}</p>
   {body}
@@ -190,12 +191,11 @@ strategies are not validated, and the pipeline is able to say so.</p>
 <h2>1 · What was built</h2>
 <ol class="findings">
 <li><strong>A pinned, hash-verified data layer.</strong> One commit of <code>nflverse/nfldata</code>,
-7,548 schedule rows, 7,384 played games 1999–2026, plus an independent per-side price file used to
+7,548 schedule rows, 7,384 played games 1999–2026, plus a second per-side price file used to
 cross-check settlement. Every file is SHA-256 hashed into <code>data/sources.json</code>.</li>
-<li><strong>A market-free line-origination engine.</strong> Three independent model families
+<li><strong>A market-free line-origination engine.</strong> Three model families
 (weighted ridge on pre-game structure, matchup expected points, Elo) fitted walk-forward and
-averaged with fixed weights. No model sees a price, and none sees anything after kickoff — both are
-asserted in code, not just claimed.</li>
+averaged with fixed weights. No model directly uses a market price. The historical weather imputation uses future rows, so the no-lookahead claim is not established.</li>
 <li><strong>A priced, settled strategy library.</strong> {len(gates)} strategies — single bets,
 2- and 3-leg parlays, and classic angle rules — staked one unit per bet at the recorded closing
 price. No -110 substitution, no line shopping, pushes refunded.</li>
@@ -211,10 +211,7 @@ unverified or contradictory.</li>
 <section>
 <h2>2 · What the numbers say</h2>
 {model_tbl}
-<p>The model is roughly <strong>a third of a point worse than the closing line</strong> on both
-markets. That gap is not a coding artefact: it is the value of injury reports, starting-quarterback
-news and sharp money, none of which the model is allowed to see. It is also, conveniently, about the
-size of the vig — which is why the strategies below cannot get paid.</p>
+<p>These are historical sample estimates, not a causal attribution or proof of an actionable edge. The weather imputation issue makes the backtest subject to review.</p>
 
 <div class="tablewrap"><table><thead><tr><th>Result</th><th>Value</th><th>Reading</th><th>Source</th></tr></thead><tbody>
 <tr><td>Strategies passing all eight gates</td><td><strong>{n_skill} of {len(gates)}</strong></td>
@@ -223,16 +220,16 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <td>a high-variance long-shot ladder, not an edge</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
 <tr><td>White's reality check</td><td><strong>p = {fmt(rc.get('p_value', float('nan')), 3)}</strong></td>
 <td>best-of-library is consistent with luck</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
-<tr><td>Two-way hold in closing prices</td>
+<tr><td>Two-way overround in closing prices</td>
 <td><strong>{pct(float(vig.spread_hold.mean()), 2)}</strong> spread / {pct(float(vig.total_hold.mean()), 2)} total</td>
-<td>break-even ≈ 51.4% win rate, not 52.4%</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>
+<td>break-even depends on the specific price and pushes</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>
 <tr><td>Same-game φ, cover ↔ moneyline</td><td><strong>{fmt(float(sg.phi.iloc[1]), 3)}</strong></td>
 <td>near-duplicate legs; independent pricing is wrong</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
 <tr><td>Same-game φ, cover ↔ total</td><td><strong>{fmt(float(sg.phi.iloc[0]), 3)}</strong></td>
-<td>genuinely close to independent</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+<td>small pooled correlation; independence not established</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
 <tr><td>Cross-game φ (margin, total)</td>
 <td><strong>{fmt(float(cg["corr"].iloc[0]), 3)}, {fmt(float(cg["corr"].iloc[1]), 3)}</strong></td>
-<td>intervals span zero → parlays can be multiplied</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+<td>intervals span zero; independence is not established</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
 </tbody></table></div>
 </section>
 
@@ -242,10 +239,9 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <li><strong>Bet the close, not the opener.</strong> Openers exist for one season only, so every
 strategy is measured against the hardest available benchmark. This makes results worse and more
 honest.</li>
-<li><strong>Declare the library first.</strong> All {len(gates)} strategies were written down before
-any of them ran, and every one is published. No result was dropped, no threshold retuned.</li>
+<li><strong>Declare the library first.</strong> The code defines {len(gates)} strategies and publishes their results. Independent preregistration before seeing the data has not been established.</li>
 <li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
-manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
+manufacture a winner about 60% of the time if tests are independent; the Benjamini–Hochberg step and the deflated Sharpe
 exist to stop that from happening here.</li>
 <li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
 are unavailable from reachable sources, so they are blank and flagged instead of modelled from
@@ -269,7 +265,7 @@ games have outcome flags that contradict their own score.</li>
 <section>
 <h2>5 · The one-paragraph conclusion</h2>
 <p class="lede">The pipeline can originate a defensible NFL line — within about a third of a point
-of the close, with no market input at all — but that gap is decisive. Once every strategy is forced
+of the close in a historical sample, but the results require review. When each strategy is forced
 through power, FDR, bootstrap and deflated-Sharpe gates, the apparent winners dissolve: the best
 result in the library is a 3-leg parlay ladder that a reality check cannot distinguish from luck
 (p = {fmt(rc.get('p_value', float('nan')), 3)}). The honest deliverable is therefore the
@@ -321,12 +317,12 @@ def build_index(d) -> str:
 <h2>What this project does</h2>
 <p>It originates its own NFL lines from a market-free model, prices them, then tests a fixed
 library of betting strategies against the closing market. The point is <strong>not</strong> to
-produce a winner at any cost: it is to apply gates that remove luck, and to publish the result
+produce a winner at any cost: it is to apply gates that assess uncertainty, and to publish the result
 honestly — including when the result is that nothing survives.</p>
 <div class="split">
   <div>
     <h3>Line origination</h3>
-    <p>Three independent model families (weighted ridge, matchup points, Elo) are fitted
+    <p>Three model families (weighted ridge, matchup points, Elo) are fitted
     walk-forward and averaged. The ensemble is the published line. Its accuracy is measured
     against the closing market on the same games.</p>
     <p><a class="btn" href="lines.html">See the originated lines →</a></p>
@@ -360,9 +356,9 @@ honestly — including when the result is that nothing survives.</p>
   <li><strong>White's reality check does not reject.</strong> p = {fmt(rc.get('p_value', float('nan')), 3)}
       across {rc.get('n_strategies', '—')} strategies and {rc.get('n_weeks', '—')} weekly blocks — the
       library's best performance is consistent with luck.</li>
-  <li><strong>The pricing environment is sharp.</strong> Mean two-way hold in the closing prices is
+  <li><strong>The pricing environment is sharp.</strong> Mean two-way overround in the closing prices is
       {pct(float(d['vig_by_season'].spread_hold.mean()), 2)} on spreads — a low-margin book, so the
-      break-even win rate is about 51.4%, not 52.4%.</li>
+      break-even depends on each quoted price and push rules.</li>
   <li><strong>Same-game correlation is structural, not cosmetic.</strong> Cover and moneyline on the
       same team correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[1]), 3)}; cover and total
       correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[0]), 3)}. Independent pricing of a
@@ -446,7 +442,7 @@ def build_lines(d) -> str:
                                  "Our spread", "Edge", "Close total", "Our total", "Edge", "Source"],
                          caption="Most recent settled games: our line next to the closing line")
 
-    up = fut[fut.market_spread.notna()].sort_values(["week", "gameday"])
+    up = fut.iloc[0:0].copy()  # Disabled until freshness and temporal integrity are validated.
     urows = []
     for r in up.itertuples():
         posted = getattr(r, "posted_home_ml", None)
@@ -461,7 +457,7 @@ def build_lines(d) -> str:
                              "Our fair away ML", "Source"],
                      caption=f"Open board: {len(up)} scheduled games that already carry a market line")
 
-    unpriced = fut[fut.market_spread.isna()].sort_values(["week", "gameday"])
+    unpriced = fut.iloc[0:0].copy()  # Do not publish stale or unvalidated future prices.
     np_rows = []
     for r in unpriced.itertuples():
         np_rows.append([e(r.gameday), e(r.week), f"{e(r.away_team)} @ {e(r.home_team)}",
@@ -476,14 +472,12 @@ def build_lines(d) -> str:
     body = f"""
 <section>
 <h2>The originated line</h2>
-<p>The published line is an equal-weight ensemble of three model families. All three see only
-pre-kickoff information: Elo with margin-of-victory updates, opponent-adjusted offence/defence
+<p>The published line is an equal-weight ensemble of three model families. The intended inputs are pre-kickoff information: Elo with margin-of-victory updates, opponent-adjusted offence/defence
 ratings solved weekly by ridge regression, rest, venue, roof and recorded weather. None of them
 sees a price.</p>
 {acc_table}
-{flag("The model is <strong>behind</strong> the closing market on both markets. That is the honest "
-      "result, and it is the reason most strategies below fail: a line that is a third of a point "
-      "worse than the close cannot beat a vig that is worth about the same.", "warn")}
+{flag("The model is <strong>behind</strong> the closing market on both markets in this historical sample. A line "
+      "worse than the close does not, by itself, establish the cause of the gap or profitability.", "warn")}
 </section>
 
 <section>
@@ -492,16 +486,9 @@ sees a price.</p>
 </section>
 
 <section>
-<h2>Open board — lines we would post now</h2>
-<p>Fitted on every completed game in the pinned file, the same ensemble prices the scheduled
-games. Where the market already has a number, the edge column shows the disagreement; where it
-does not, this is pure origination.</p>
-{up_table}
-</section>
+<h2>Open board — disabled pending review</h2>
+<p>The snapshot is stale and future-line inputs require a no-lookahead audit. No current prices are published. See <a href="flagged.html#audit-2026">audit</a>.</p>
 
-<section>
-<h2>Games with no market yet</h2>
-{np_table}
 </section>
 
 <section>
@@ -656,7 +643,7 @@ def build_validation(d) -> str:
 <tr><td><strong>G1 data</strong></td><td>Is every bet settled against a real recorded price?</td>
 <td>100% of bets carry a closing price from the pinned file</td><td>{src_link(URL_GAMES,"games.csv")}</td></tr>
 <tr><td><strong>G2 leakage</strong></td><td>Could the model have seen the future?</td>
-<td>Walk-forward only: season S is predicted from seasons &lt; S</td><td>{src_link(URL_GAMES,"games.csv")}</td></tr>
+<td>UNVERIFIED: model fitting uses previous seasons, but full-sample weather imputation introduces lookahead; G2 is hard-coded true.</td><td>{src_link(URL_GAMES,"games.csv")}</td></tr>
 <tr><td><strong>G3 power</strong></td><td>Is there enough evidence to say anything?</td>
 <td>≥ 100 bets and ≥ 3 seasons</td><td>{src_link(URL_GAMES,"games.csv")}</td></tr>
 <tr><td><strong>G4 significance</strong></td><td>Is the edge bigger than noise?</td>
@@ -739,7 +726,7 @@ def build_correlations(d) -> str:
 
     cgt = table([[e(r.quantity), f"{int(r.n_pairs):,}", f"{int(r.n_slates):,}", fmt(r.corr, 4),
                   f"[{fmt(r.ci_lo,3)}, {fmt(r.ci_hi,3)}]",
-                  "independence holds" if not r.p_independence_fails else "independence fails",
+                  "CI includes zero; independence unproven" if not r.p_independence_fails else "CI excludes zero",
                   src_link(URL_GAMES, "computed")] for r in cg.itertuples()],
                 ["Quantity", "Pairs", "Slates", "r", "95% CI", "Verdict", "Source"],
                 caption="Cross-game legs: can a standard parlay be priced by multiplication?")
@@ -751,13 +738,13 @@ def build_correlations(d) -> str:
     kn_thresh = kn[(kn.number.isin([3, 6, 7, 10, 14]))]
     kt = table([[e(int(r.number)), pct(r.margin_eq, 2), pct(r.margin_eq_neg, 2),
                  pct(r.spread_push, 2), src_link(URL_GAMES, "computed")] for r in kn_thresh.itertuples()],
-               ["Number", "Final margin = +k", "Final margin = −k", "Push rate when line = k", "Source"],
+               ["Number", "Final margin = +k", "Final margin = −k", "Share of all games with line = k and push", "Source"],
                caption="Key numbers: why a half point matters")
 
     vt = table([[e(int(r.season)), f"{int(r.n):,}", pct(r.spread_hold, 2), pct(r.total_hold, 2),
                  pct(r.ml_hold, 2), src_link(URL_GAMES, "games.csv")] for r in vig.itertuples()],
-               ["Season", "Games", "Spread hold", "Total hold", "Moneyline hold", "Source"],
-               caption="Two-way hold in the closing prices used for every backtest")
+               ["Season", "Games", "Spread overround", "Total overround", "Moneyline overround", "Source"],
+               caption="Two-way overround in the closing prices used for every backtest")
 
     flt = table([[e(r.side), e(r.bucket), f"{int(r.n):,}", pct(r.roi, 2),
                   f"[{fmt(r.ci_lo,3)}, {fmt(r.ci_hi,3)}]",
@@ -780,29 +767,27 @@ is measured on the pinned settlement data, not imported from a textbook.</p>
 {mkt}
 {flag("Two numbers carry the whole project. <strong>Home covers vs home moneyline: φ ≈ 0.68</strong> — "
       "these two legs are close to the same bet, so combining them in a 'parlay' buys almost no extra "
-      "price for the risk. <strong>Home covers vs over: φ ≈ 0.02</strong> — genuinely nearly independent.", "info")}
+      "price for the risk. <strong>Home covers vs over: φ ≈ 0.02</strong> — small pooled correlation; this does not establish independence in each matchup.", "info")}
 </section>
 
 <section>
 <h2>2 · Same-game leg pairs (the SGP table)</h2>
 {sgt}
 <p class="small">φ is the Pearson correlation of two binary outcomes. Lift is the joint hit rate
-divided by the rate independence would predict; lift = 1.000 means independent.</p>
+divided by the rate independence would predict; lift = 1.000 indicates equality for this particular joint event; it does not establish independence in other settings.</p>
 </section>
 
 <section>
 <h2>3 · Cross-game dependence</h2>
 {cgt}
-<p class="small">If the interval contains zero, cross-game legs can be multiplied. Both do.</p>
+<p class="small">An interval containing zero does not prove independence, especially for selected bets. These are correlations of paired game margins or totals, not directly of selected parlay outcomes.</p>
 </section>
 
 <section>
 <h2>4 · The variance structure under team and player totals</h2>
 {tt_table}
 <p class="small">Home and away scoring are very slightly <em>negatively</em> correlated
-(r = {fmt(float(tt[tt.quantity=='corr(home, away)'].value.iloc[0]), 4)}): a game script in which one
-team runs the clock suppresses the other's possessions. This is the mechanism that makes two
-opposing team-total overs slightly anti-correlated.</p>
+(r = {fmt(float(tt[tt.quantity=='corr(home, away)'].value.iloc[0]), 4)}). The correlation alone does not establish a causal game-script mechanism or a prop-market dependence.</p>
 </section>
 
 <section>
@@ -937,17 +922,16 @@ def build_methodology(d) -> str:
 <section>
 <h2>Pipeline</h2>
 <pre class="pipeline">pipeline/fetch_data.py     pin upstream commit, download archive, hash every file -> data/sources.json
-pipeline/build_datasets.py  chronological walk-forward features (no leakage), audits -> games_model.csv
+pipeline/build_datasets.py  chronological features; weather-imputation lookahead flagged -> games_model.csv
 pipeline/models.py          three model families, walk-forward -> originated_lines.csv
 pipeline/backtest.py        settlement engine, cross-checked against nflverse outcomes
-pipeline/strategies.py      the pre-declared strategy library
+pipeline/strategies.py      strategy definitions (independent preregistration unverified)
 pipeline/stats_tools.py     bootstrap, FDR, deflated Sharpe, reality check
 pipeline/validation.py      run the library, apply the eight gates -> strategy_*.csv
 pipeline/correlations.py    measured dependence -> corr_*.csv
 pipeline/render_site.py     this site
 pipeline/verify_site.py     row-level source check + internal link check</pre>
-<p>Reproduce with <code>make build</code> (or run the eight scripts in order). Everything is
-deterministic: the upstream commit is pinned and every download is SHA-256 hashed.</p>
+<p><code>make build</code> currently resolves the upstream branch head and does not reproduce the recorded snapshot. See the <a href="flagged.html#audit-2026">audit</a>.</p>
 </section>
 
 <section>
@@ -976,8 +960,7 @@ P(win)  = 1 − Φ((L+0.5−m)/σ)
 
 fair American price = 100·(1−p)/p        for p &lt; 0.5
                     = −100·p/(1−p)       for p &gt; 0.5</pre>
-<p>The published "posted" moneyline applies a 4.5% two-way hold, so the numbers on the
-<a href="lines.html">Originated lines</a> page are a bettable pair rather than a vig-free pair.</p>
+<p>The model contains an illustrative price transformation; it is not a verified bookmaker quote. The open board is disabled.</p>
 </section>
 
 <section>
@@ -1051,10 +1034,10 @@ def build_flagged(d) -> str:
         ["Line origination excludes injury and QB status",
          "model limitation", "documented",
          "The models use no injury reports, no starting-QB designation and no depth charts. Those are "
-         "the largest known contributors to the gap between the model MAE and the market MAE, and they "
+         "potential contributors to the gap, but their contribution was not measured, and they "
          "were excluded deliberately because a post-hoc QB field would leak information that is not "
          "reliably known before kickoff.",
-         src_link(URL_GAMES, "games.csv"), "A pre-kickoff injury feed would close most of the gap."],
+         src_link(URL_GAMES, "games.csv"), "Test an appropriately timestamped injury feed prospectively."],
         ["Team total and prop prices absent",
          "not retrievable", "blank",
          "No retrieved source carries team-total or player-prop prices, so no ROI can be computed for "
@@ -1081,7 +1064,17 @@ def build_flagged(d) -> str:
 
     body = f"""
 <section>
-<h2>Flagged for review</h2>
+<h2 id="audit-2026">Independent audit · 2 November 2026</h2>
+<p><strong>Not certified for wagering.</strong> The source links below support manual review; they do not certify the model's derived numbers. The full findings and evidence are in <a href="AUDIT_2026-11-02.md">the audit report</a>.</p>
+<ul class="findings">
+<li><strong>Official-source verification incomplete:</strong> <a href="https://github.com/nflverse/nfldata">nflverse</a> is an independent project, not the NFL. The automated row checker accepts any external link or a flag, and does not validate values or official status. No complete row-by-row NFL or sportsbook reconciliation was performed.</li>
+<li><strong>Lookahead:</strong> <a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/build_datasets.py">feature construction</a> fills missing historical weather with medians from the entire played dataset. Gate G2 is hard-coded true and does not test this.</li>
+<li><strong>Parlay execution:</strong> weekly selections use each game's closing price without proving all quotes were available at one ticket time; multiplications are illustrative, not verified sportsbook parlay payouts. <a href="https://www.nfl.com/schedules/">Official NFL schedule</a>.</li>
+<li><strong>Stale future board:</strong> the pinned snapshot treats the Ravens–Bills game on 1 November as upcoming, but the <a href="https://www.nfl.com/games/ravens-at-bills-2026-reg-8">NFL game page</a> shows it is final. The open board is disabled.</li>
+<li><strong>Statistical interpretation:</strong> a confidence interval containing zero does not prove independence; a non-significant test does not prove luck. Reward eligibility is unverified pending an independent prospective test.</li>
+<li><strong>Reproducibility:</strong> the fetch script resolves the current upstream branch rather than the recorded snapshot; annex verification requires an ignored raw reference file. The existing checks do not establish a complete reproducible or official-source audit. <a href="https://github.com/nflverse/nfldata">Upstream project</a>.</li>
+</ul>
+<h2>Prior flagged items</h2>
 <p>This page lists everything that is <strong>not</strong> verified, not complete, or not what it
 first appears to be. Nothing here is hidden from the analysis: where a value could not be confirmed
 it is left blank on the site and recorded here instead.</p>
