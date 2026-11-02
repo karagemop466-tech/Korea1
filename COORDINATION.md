@@ -306,3 +306,11 @@ exist in any earlier deployment — returned the new content. Appending a cache-
 the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds/latest` already reported
 `built` for `9dfdd77`). Anyone re-checking a deploy should assume a few minutes of cache lag on
 previously-published paths and verify on a path that is new in the build.
+
+## Session `arena/b72723b8-korea1` — independent audit and integration
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| A1 | Audit existing dashboard, reproducibility, evidence and deployment; publish material limitations | in progress | `arena/b72723b8-korea1` | `COORDINATION.md`, `AUDIT_2026-11-02.md`, `audit-2026-11-02.html`, `tests/test_audit.py`; integration updates to existing site generators/pages and summaries only where needed after audit |
+
+This session is pinned by Arena to its existing branch; it cannot create the requested session-named branch. Earlier integration records show the previous work was merged, but the original T8 status was never updated. No active implementation claim is assumed abandoned solely from its timestamp. Scope changes or necessary shared-file integration will be logged here.
