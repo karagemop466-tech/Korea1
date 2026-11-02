@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-02T17:20Z
+Last updated: 2026-11-02T19:25Z
 
 ## How to use this board
 
@@ -30,9 +30,69 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T6 | Site render (dashboards, tables, flagged page) | **done** | `arena/592a2d62-korea1` | `docs/**`, `pipeline/render_site.py`, `pipeline/render_summary.py`, `.github/workflows/**` |
 | T7 | Verification pass + link check | **done** | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
 | T8 | **Final integration + publish** (merge, Pages deploy, PR record) | **in progress** | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
-| T9 | Player-prop modelling | **needs review** | unowned | blocked: no reachable player-week or prop-price source (see log) |
-| T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
+| T9 | Player-prop modelling (reopened: the git-blob route serves the data) | **done** | `arena/92019668-korea1` | `pipeline/fetch_pbp.py`, `pipeline/props_model.py`, `data/processed/prop_*.csv`, `data/sources_pbp.json` |
 | T10 | Independent official-source audit: re-check published table rows against nfl.com / official sources, repair failing verifier(s), publish `audit.html` + nav entry | **done** | `arena/1642ee06-korea1` | `audit/**`, `data/audit/**`, `scripts/audit_*.py`, `audit.html`, `pipeline/render_site.py` (NAV line + audit page only), `scripts/99_verify.py` (repair only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (audit section), `tests/check_*.py` (page list) |
+| T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
+| T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
+| T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
+
+**Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
+board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while
+`arena/92019668-korea1` also took T10 (repair of the defects found while auditing the shipped build), and
+`arena/8eb93b26-korea1` took **T12** = temporal preprocessing audit while the same repair work was being
+renumbered to T12. Resolution, applied to the board above: the audits keep **T10** and **T12**; the repair
+work is **T13**. The 17:20Z/18:05Z entries of `arena/92019668-korea1` say "T10" and mean T13; nothing else
+was renumbered. Both audits are done and neither branch was overwritten.
+
+### 2026-11-02T19:25Z — T11 integration: two merges, fold-safe weather, PR #15 — `arena/92019668-korea1`
+
+`main` advanced twice while PR #15 was in CI — `bd139a7` (T10 audit, #13/#14) and then `5f07727`
+(T12 temporal audit, #17). Both were merged into the branch rather than rebuilt on top of it:
+
+| Merge | What conflicted | Resolution |
+|---|---|---|
+| `bd139a7` (T10 audit) | `COORDINATION.md`, `verification_report.csv` (both copies) | Logs kept newest-first; the audit keeps T10 and my repair work was renumbered; the CSVs were not hand-merged — the verifier was re-run against the merged render, which regenerates them |
+| `5f07727` (T12 audit) | `COORDINATION.md` only | Same rule; a second number collision appeared (their T12 vs my new T12), so my repair work became **T13** and the numbering note now records both collisions |
+
+**The T12 audit's integration request is carried out** (commit `a164ab5`); it was addressed to this
+session as integration owner, so the code change is here rather than in their branch:
+
+1. **Fold-safe weather imputation.** `build_datasets.py` filled missing `temp`/`wind` with
+   `frame[col].median()` — a statistic of the *whole* history, so a 2004 row was imputed with a number
+   that depends on 2025 games, and the all-NaN scheduled frame stayed NaN. The replacement,
+   `fold_safe_weather_fill()`, uses the median of games played on a **strictly earlier date**. Indoor
+   games (dome/closed) are encoded `0` with their missing flag and the roof indicator, which is a fixed
+   encoding rather than an estimate. If any played row is left unfilled the build **fails** rather than
+   inventing a constant. The fills are written to `data/processed/weather_fill.json` and asserted in
+   `data_audit.csv`, so the rule is auditable from the published site.
+2. **No blank future lines.** All 164 rows of `originated_upcoming.csv` used to carry blank fair lines
+   because the future frame had no weather fill. They are now all finite, and `models.py` refuses to
+   write the file if any originated price is blank.
+3. **The open board is labelled a snapshot.** It prints the date of the pinned upstream commit and links
+   the official [NFL Week 8 schedule](https://www.nfl.com/schedules/2026/by-week/week-8) that the audit
+   used, instead of implying a live feed. Re-pinning would move every published number, so the board is
+   labelled, not refreshed.
+4. **New leak tests.** `tests/test_weather_fold.py` (3 tests): fills use strictly earlier dates only, the
+   fills are prefix-stable when future games are deleted (this is what fails under the old whole-frame
+   median), and the first date has no fill. Wired into `make test` and both workflows.
+
+**Published numbers moved, and this is why** (recorded rather than silently restated): bets
+26,168 → **26,149**; White reality-check p 0.144 → **0.186**; best raw ROI 21.64% → **19.44%**
+(`PARLAY3_EDGE`, 377 tickets, still `LUCK`); spread MAE 10.5272 → **10.5267** vs market 10.2155;
+total MAE 10.7267 → **10.7261** vs 10.5273. The verdicts did not move: 0 of 18 strategies pass, 10
+`NO EDGE` / 8 `LUCK`. The props module is independent of this feature set — it was re-run and produced
+byte-identical output, so no prop number changed.
+
+**IR-15 (win-rate definition) is now reconciled, not just documented.** The leaderboard prints
+W–L–P for every strategy, and `verify_site.py` recomputes *win rate = wins ÷ (wins + losses)* and
+*n = wins + losses + pushes* from `strategy_summary.csv` for all 18 strategies (max error 0.0e+00).
+ROI keeps the all-tickets denominator; both definitions are now printed and both are machine-checked.
+
+**Verification before the merge:** `pytest tests/` 13 passed (6 props + 3 weather + 4 no-lookahead),
+`verify_site.py` 0 failing (11 pages), `check_links.py` 20 pages, `check_sources.py` 11 pages /
+650 rows, `make build` reproduces the committed outputs. PR #15's `verify` job passed on the first
+merge; the merge/deploy record follows in a second, documentation-only commit once Pages rebuilds.
+
 
 ---
 
@@ -310,6 +370,186 @@ the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds
 previously-published paths and verify on a path that is new in the build.
 
 ---
+
+## Session `arena/1642ee06-korea1` — T10 independent official-source audit (2026-11-02)
+
+**Claim:** committed first (`COORDINATION: claim T10 ...`). The board showed T1–T8 done and T9 blocked, so the
+only unclaimed work was verification. Scope and cross-scope edits are listed below; no sibling branch was touched.
+The brief's `session-<id>/<task>` branch name is not available (the platform pins this session to its branch).
+
+### What was verified, and against what
+
+| Check | Result | Official / primary source |
+|---|---|---|
+| 39 final scores (2026 wk 8; 2022 wk 10; 2016 wk 8; 2014 wk 15; ARI@PIT, PHI@DAL, KC@BAL 2015) vs NFL.com | 31 match, 0 mismatch, 8 blank in the pinned data (2026 wk-8 games NFL.com lists as Final; snapshot predates them) | <https://www.nfl.com/scores/2026/REG8>, <https://www.nfl.com/scores/2022/REG10>, <https://www.nfl.com/scores/2016/REG8>, <https://www.nfl.com/scores/2014/REG15>, Game Center pages linked per row on `audit.html` |
+| 7 pinned `nflverse/nfldata@a270278` files, re-downloaded | SHA-256 and byte count equal `data/sources.json` for 7/7 | <https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645> |
+| Full rebuild from the verified files (`build_datasets`, `models`, `backtest`, `validation`, `correlations`, `render_site`) | zero tracked files changed other than the new nav entry / audit rows | `pipeline/` |
+| `tests/test_no_lookahead.py` | 4 passed | `tests/` |
+| Annex `00_ingest.py` re-run then `99_verify.py` | annex tables reproduce byte for byte; 9/9 after V02 repair | `scripts/` |
+| `operations.nfl.com/the-rules/nfl-rulebook/` | redirects to the 2026 NFL Rulebook page; "Rule 16" label not located in the part read, so **not** marked verified | <https://operations.nfl.com/the-rules/nfl-rulebook/> |
+
+### Not verified (and why)
+
+Pre-2010 scores (2,913 games; NFL.com's scores page offers 2010–2026), playoff games (309; one attempt at
+`/scores/2011/POST19` returned "SCORES DATA UNAVAILABLE"), every historical closing line / total / moneyline / price
+(no official NFL source; the upstream `DATASETS.md` does not name the sportsbook), weather/roof/referee fields, and the
+two sampled weeks that were drawn but not read (2022 wk 9, 2011 wk 17). NFL.com page volume made a full 7,384-game
+check impractical in one session; the 39-game sample is stated as a sample everywhere it appears.
+
+### Irregularities (also on `flagged.html` and `audit.html`)
+
+IR-T10-01 (high) 516 of 523 root-page table rows link only to a community mirror, not an official site, so the brief's
+"every row links to an official site" is not met; earlier checkers accepted any external URL. IR-T10-02 (high) closing
+lines have no official source. IR-T10-03 (medium) pinned snapshot is stale (`nflverse/nfldata` master is 108 commits ahead;
+8 final games blank). IR-T10-04 (low) Sources page cites the nfl.com home page for GSIS and calls games.csv a "mirror of NFL
+GSIS results"; `DATASETS.md` supports only the `gsis` id field. IR-T10-05 (low) sample design. IR-T10-06 (medium) annex check
+V02 failed on every fresh checkout — **fixed** (reference file now fetched via `api.github.com`). IR-T10-07 (info) the three 2015
+games with contradictory outcome flags: NFL.com confirms `games.csv` is right and `closing_lines.csv` is wrong.
+
+**Decision left for review (IR-T10-02):** values with no official source are published with their community link rather than
+blanked. Blanking every line would empty the analysis; the page says so plainly and the call is the owner's.
+
+### Cross-scope edits (logged as required)
+
+`pipeline/render_site.py` (import, one NAV entry, one `audit.html` page, one section on Flagged, one bullet in the executive
+summary — all re-rendered, diff on every other page is exactly the one nav line), `scripts/99_verify.py` (V02 repair),
+`tests/check_links.py` and `tests/check_sources.py` (add `audit.html` to the page list), `EXECUTIVE_SUMMARY.md` (appended section).
+New files: `pipeline/render_audit.py`, `scripts/audit_nfl_scores.py`, `scripts/audit_sources.py`, `data/audit/*.csv`, `audit.html`.
+
+### Verifiers after the final render
+
+`pipeline/verify_site.py` 0 failing checks · `tests/check_links.py` pass (20 pages) · `tests/check_sources.py` pass (11 pages, 606 rows) ·
+`scripts/99_verify.py` 9/9 · `scripts/98_linkcheck.py` pass.
+
+### T10 pull request, merge and deploy record
+
+| Step | Result |
+|---|---|
+| Pull request | [#13](https://github.com/karagemop466-tech/Korea1/pull/13) `arena/1642ee06-korea1` → `main` |
+| CI | `verify` job passed before merge |
+| Merge | **MERGED** 2026-11-02T17:22:14Z, merge commit `bc4545e`, no approval wait |
+| GitHub Pages build | `pages/builds/latest` → `built`, commit `bc4545e` (source unchanged: `main` / root) |
+| Live check | <https://karagemop466-tech.github.io/Korea1/audit.html> fetched with a cache-busting query (per IR-13): page renders with 31/31, 0 mismatches, 516 of 523, and all seven IR-T10 rows |
+
+Open sibling PRs (#2, #4, #5, #10) were not touched.
+
+### 2026-11-02T17:19Z — T12 claim — `arena/8eb93b26-korea1`
+
+- Claimed a narrow, read-only audit of whether same-date games can leak completed outcomes into a later row's pregame feature state. Scope is `notes/no-lookahead-2026-11-02.md` plus this coordination record; no model, processed table, generated site, or other session's files will be edited.
+- Initial code inspection: `pipeline/build_datasets.py` orders rows by `gameday`, `gametime`, `game_id`, emits features, then immediately updates Elo and team scoring history for each played game. The guard asserts season-level walk-forward fit and monotone dates, but not that all same-date rows share prior-day-only state. This is a potential look-ahead issue, not a quantified result yet.
+- If confirmed, a code change in the completed T1/T2 scope is requested from the integration owner rather than made here. Verification will use the pinned input hashes and a reproducible same-date consistency test.
+
+### 2026-11-02T17:27Z — T12 audit complete — `arena/8eb93b26-korea1`
+
+- Re-downloaded the exact `nflverse/nfldata@a270278f3ac4e937295fe6a27814b3c4a2b62645` archive from its pinned codeload URL; `data/raw/games.csv` SHA-256 matched `data/sources.json` (`ba34f3619067eb4459eb257f629d7f29adce74cba824e1708e7bbb9ef3246e6a`). The source is a third-party nflverse snapshot, not an official NFL feed.
+- Confirmed a fold-preprocessing defect: the `temp`/`wind` medians are calculated/fill-applied on the full played-game frame before the walk-forward season split. With this snapshot, full medians are 59°F / 8 mph; prior-only temperature medians are 60°F for 2004 and 2018 test splits. Effect on reported metrics was not re-estimated.
+- Confirmed all 164 `originated_upcoming.csv` rows have blank fair spread/total and moneyline probabilities/prices because future `temp`/`wind` are all missing and the future-frame median fill remains NaN. An in-memory diagnostic using completed-game medians made all outputs finite, but no diagnostic lines were published.
+- Confirmed a freshness mismatch against the official [NFL Week 8 schedule](https://www.nfl.com/schedules/2026/by-week/week-8) and [Ravens–Bills Game Center](https://www.nfl.com/games/ravens-at-bills-2026-reg-8): the pinned file still calls 12 November 1 games upcoming; the official page reports Ravens 10–Bills 36, Final. Snapshot timestamp is 2026-11-01T13:24:09Z.
+- Checked same-date team-state handling: 711 season/date groups contain multiple games, but no team appears in two games on the same date; no cross-game same-date state leak was identified from the sequential Elo/offence/defence updates. This corrects the initial suspicion in the claim note.
+- Reproduction and file/line-level detail are recorded in `notes/no-lookahead-2026-11-02.md`. `.venv/bin/python -m pipeline.verify_site`, `python3 tests/check_links.py` (20 pages), `python3 tests/check_sources.py` (11 pages / 606 rows), and `pytest -q tests/test_no_lookahead.py` (4 passed) pass. The test used an ignored symlink from its expected `data/raw/nfldata/data/games.csv` path to the already hash-verified pinned input; no tracked data was changed. The site guards did not catch the forecast/freshness defects.
+- **Integration request (no cross-scope edits):** active integration owners `arena/92019668-korea1` (T11) and `arena/fb363967-korea1` (F5) are asked to incorporate the fold-safe imputer, non-NaN future-line guard, current-week freshness handling, and clearly flagged unavailability into the published site. This session changed only `COORDINATION.md` and its owned audit note; it did not modify T1/T2 code, generated tables, or shared site files. The T10 source audit had independently logged stale Week 8 data; this request adds the untested fold-imputation and empty forecast output.
+- **Rebase/conflict resolution:** after `origin/main` advanced to `bd139a7` through T10 PRs #13/#14, the T12 table row and log tail conflicted with the new T10 coordination section. Resolution preserved the full T10 row and audit/deploy record, then restored T12's claim/completion entries; no T10 content or sibling-branch files were overwritten.
+
+### T12 pull request, merge and deploy record
+
+| Step | Result |
+|---|---|
+| Pull request | [#17](https://github.com/karagemop466-tech/Korea1/pull/17), `arena/8eb93b26-korea1` → `main` |
+| CI | PR `verify` checks passed; post-merge `Verify site` run passed |
+| Merge | **MERGED** 2026-11-02T17:31:06Z, merge commit `5f07727`, no approval wait |
+| GitHub Pages | `pages-build-deployment` run `41491919944` passed; `pages/builds/latest` reported **built** for `5f07727` at 2026-11-02T17:31:46Z |
+| Change scope | Documentation/coordination only. No generated page or model/data artifact changed; deployment rebuilt the existing site. The stale/unavailable open board remains pending integration fixes listed above. |
+
+---
+
+### 2026-11-02T17:20Z — T9 reopened, T10/T11 claimed — `arena/92019668-korea1`
+
+- Session `arena/92019668-korea1` checked out `main` at `3453d41` and re-ran every existing verifier:
+  `pipeline/verify_site.py` (0 failing checks), `tests/check_links.py` (19 pages), `tests/check_sources.py`
+  (523 rows). All green — the tree shipped in a verifiable state.
+- **T9 is reopened, not blocked.** The previous board entry (13:47Z) states player-week data is
+  unreachable because nflverse release assets redirect to `release-assets.githubusercontent.com`.
+  That is true of *release assets* only. It was tested again this session: the GitHub **git-blob API**
+  (`api.github.com/repos/{owner}/{repo}/git/blobs/{sha}`, `Accept: application/vnd.github.raw`) serves
+  nflverse play-by-play gzip blobs of 17 MB from an allowlisted host, and the repository's own annex
+  (`scripts/00_ingest.py`) already relies on exactly that route. So "no reachable player-week source"
+  was wrong on the facts, and the props page said so. T9 is claimed to build the real thing.
+- Prop *prices* remain unavailable from any reachable source. That half of the old note stands, and
+  no prop ROI will be claimed.
+- Defects found in the shipped build so far (T10): the leaderboard's reward-tier table hard-codes
+  "12 strategies" and "6 strategies" against 8 positive-ROI and 10 negative-ROI strategies in the data;
+  the "Win rate" column is wins/decided while ROI is profit/staked and neither is defined on the page;
+  `Makefile` still prints "site in docs/" when the site is rendered to the repository root.
+
+### 2026-11-02T18:05Z — T9 complete, T10 complete — `arena/92019668-korea1`
+
+**Sources.** Player-level play-by-play, four regular seasons (2019–2022), from
+`clausherther/nfl-dbt` at `data_prep/data_files_load/pbp/`, fetched through
+`GET https://api.github.com/repos/clausherther/nfl-dbt/git/blobs/{sha}` with
+`Accept: application/vnd.github.raw`, pinned by blob SHA and SHA-256 hashed:
+
+| Season | git blob SHA | bytes | SHA-256 (head) |
+|---|---|---|---|
+| 2019 | `ca455dc08e8670efd7c4ccc4eadfa1077d6f39ec` | 16,479,104 | `a49fe0c7c5a6424b…` |
+| 2020 | `4daf7bdf2303e1a09b3a501466b2d631db27f92a` | 16,664,760 | `d55fe0648b99077e…` |
+| 2021 | `0dea4d024c1d0def95d0f718508e4e4035b094d3` | 17,546,160 | `26cf60bc202f9bd2…` |
+| 2022 | `97b78a439e9e25a215db6b1feeaec57e2818e94d` | 17,257,188 | `f303a9d126745665…` |
+| 2023 | `529b59afb8bc42202bb4289ef9ffef8261d97f0b` | 2,034,432 | **excluded** — partial season (5,660 plays) |
+
+Recorded in `data/sources_pbp.json`. Definition validation, recomputed from our own aggregation and
+compared with a published season total **keyed on player id**:
+
+| Season | Player | Stat | Ours | Published | Source |
+|---|---|---|---|---|---|
+| 2021 | T.Brady | passing yards | 5,316 | 5,316 | [PFR 2021 passing](https://www.pro-football-reference.com/years/2021/passing.htm) |
+| 2021 | M.Stafford | passing yards | 4,886 | 4,886 | same |
+| 2021 | P.Mahomes | passing yards | 4,839 | 4,839 | same |
+| 2021 | D.Carr | passing yards | 4,804 | 4,804 | same |
+| 2021 | C.Kupp | receptions | 145 | 145 | [PFR 2021 receiving](https://www.pro-football-reference.com/years/2021/receiving.htm) |
+| 2021 | C.Kupp | receiving yards | 1,947 | 1,947 | same |
+| 2021 | J.Taylor | rushing yards | 1,811 | 1,811 | [PFR 2021 rushing](https://www.pro-football-reference.com/years/2021/rushing.htm) |
+
+**Verification performed.** 7/7 definition checks exact; prefix-stability test
+(`tests/test_props_integrity.py`, 6 tests) proves deleting the future does not move a single
+prediction; every published line is a half-integer; `over == actual > line`; mean predicted
+over-probability 0.4992; no duplicate (market, game, player); G2 leakage assertion walks every player
+history in date order and finds 0 violations; `pipeline/verify_site.py` 0 failing checks including
+four new prop checks; a full `make build` from an empty `data/raw/` reproduced every committed
+analysis CSV byte-for-byte (only timestamps moved).
+
+**Results published** (out of sample, 2021–2022, walk-forward): 21,033 player-games, 9,730 originated
+lines; AUC 0.657 / 0.734 / 0.725 / 0.721 for passing / rushing / receiving / receptions; calibration
+slope 0.14–0.23 against 1.0. Dependence at the 50/50 split: QB↔own WR1 φ = 0.152 (lift 1.136, CI
+[+0.012, +0.064]), QB↔own WR2 φ = 0.145 (1.150), receptions↔receiving yards φ = 0.580 (1.446);
+QB↔own RB1 φ = −0.066, WR1↔WR2 φ = 0.034, QB(home)↔QB(away) φ = 0.045, **cross-game control
+φ = −0.036 with an interval spanning zero**. 3 of 7 combos have verified structure; **0 awarded**,
+because G6 (economic significance) cannot be assessed without a prop price feed.
+
+**Irregularities found and fixed (T10).** Recorded rather than quietly corrected:
+
+| ID | Severity | Item | Disposition |
+|---|---|---|---|
+| IR-14 | high | The shipped leaderboard hard-coded "12 strategies" for Tier 3 and "6" for Unranked, and "none" for Tier 2. The data has 8 positive-ROI and 10 negative-ROI strategies, and 3 strategies pass G3+G6+G7. | Tiers are now computed from `strategy_gates.csv` at render time: 0 / 3 / 5 / 10 = 18. |
+| IR-15 | medium | The "Win rate" column was wins ÷ *decided* bets while ROI was profit ÷ *all* tickets, and neither denominator was defined anywhere on the site. | Both definitions now printed under the leaderboard table. |
+| IR-16 | high | The props page said player-level data was unreachable "from any source reachable in this build". The repository's own annex already fetched it through the git-blob API. | Corrected on the page, kept visible as a CORRECTED row on the Flagged page, and the data is now used. |
+| IR-17 | high | `pipeline/fetch_data.py` resolved the *live* branch head on every run instead of honouring the pin in `data/sources.json`, so `make build` would silently re-pin the project to a newer upstream commit and change every published number. | `pinned_sha()` is now preferred (env var → recorded pin → live head), and a full rebuild reproduces the committed outputs byte-for-byte. |
+| IR-18 | medium | `Makefile` printed "site in docs/" and cleaned `docs/data`; the site is rendered to the repository root and there is no `docs/`. | Corrected, and `make props` / `make test` added. |
+| IR-19 | medium | Development bug caught by the new validation: aggregating on player *name* merged J.J. Taylor (NE, 37 rush yds) into Jonathan Taylor (IND, 1,811), producing 1,848. | Aggregation and validation now key on the GSIS player id; the check is published. |
+| IR-20 | medium | Development bug caught by the residual check: modelling yardage as normal around the mean put the originated 50/50 line above the median of a right-skewed distribution (realised over-rate 0.40). | Shifted-lognormal for yardage, negative binomial for counts, line chosen at the predictive median; mean p(over) now 0.4992. |
+| IR-21 | medium | Roles were first assigned post-hoc ("WR1 = most targets in the game just played"), which conditions on a good game and inflates every marginal. | Roles are ranked on *prior* usage only. |
+| IR-22 | low | Regenerating `EXECUTIVE_SUMMARY.md` deleted the annex session's section (IR from `arena/ea02c4fb-korea1`). | The annex block is embedded in `render_summary.py` and survives regeneration; the diff now only adds. |
+| IR-23 | low | `EXECUTIVE_SUMMARY.md` and the executive page said "player-week statistics … not retrievable" and "luck removal". | Updated; the tagline now says **luck control**, on the audit's point (A-08, PR #5) that a gate can bound luck but cannot remove it. |
+
+**Stale pull requests closed, not deleted.** #2, #4, #5 and #10 were left open by earlier sessions
+against a tree that no longer exists. Each was closed with a comment explaining that its branch and
+diff remain readable, where its content is preserved (`archive/`), and which of its findings were
+adopted. PR #5's audit produced three shipped changes (A-06 odds labelling, A-08 "luck control",
+A-09 scope-and-jurisdiction section on the Flagged page).
+
+---
+
+<!-- Retained from branch arena/fb363967-korea1 after the third integration merge (see the note at the
+     end of this section): the session's own claim, work log, defect list and verification record. -->
 
 ## Session `arena/fb363967-korea1` — independent audit, requirements traceability, final publish
 
@@ -605,3 +845,64 @@ for D-01 before it could reach a page, then fixed and re-verified (38/38 rebuild
 | Merge | **MERGED** 2026-11-02T17:31:06Z, merge commit `5f07727`, no approval wait |
 | GitHub Pages | `pages-build-deployment` run `41491919944` passed; `pages/builds/latest` reported **built** for `5f07727` at 2026-11-02T17:31:46Z |
 | Change scope | Documentation/coordination only. No generated page or model/data artifact changed; deployment rebuilt the existing site. The stale/unavailable open board remains pending integration fixes listed above. |
+
+### Third integration merge — `main` moved again (PR #15, T11: fold-safe weather fill + props model)
+
+While PR #16 was open, session `arena/92019668-korea1` landed a much larger change (PR #15): a
+**fold-safe, date-ordered weather fill** in `build_datasets.py` (`fold_safe_weather_fill`), a
+**player-level play-by-play ingest** through the `api.github.com` git-blob endpoint
+(`pipeline/fetch_pbp.py`, pinned by blob SHA + SHA-256), a **player-prop model** with its own gates
+and calibration (`pipeline/props_model.py`, `prop_*.csv`), and live-board labelling.
+
+That work supersedes two of this session's patches and was kept in preference to them:
+
+| Item | Resolution |
+|---|---|
+| Weather imputation (this session's **D-07** fix, per-fold median in `models.impute_weather`) | **Theirs.** `fold_safe_weather_fill` is strictly stronger: every row is filled from games on *strictly earlier dates*, indoor games are encoded rather than median-filled, and the scheduled frame takes the final expanding median (never NaN). `tests/test_fold_imputer.py` was therefore **deleted** — its assertion that `games_model.csv` still carries gaps is false under the better rule — and `tests/test_weather_fold.py` (theirs, prefix-stability test) is the guard instead. |
+| Blank future lines (this session's **D-01** fix in `models.originate_future`) | **Theirs** (they now refuse to write a file with blank originated lines) **plus** this session's build-blocking guard in `pipeline/verify_site.py` and its regression test `tests/test_future_lines.py`, both kept. |
+| `pipeline/render_site.py`, `render_summary.py`, `verify_site.py` | **theirs as the base**, with this session's additions re-applied to the generator (Requirements + Reproducibility pages, NAV, KPI cards, the audit-artefact loader, the executive-summary addendum append, the D-01 guard). |
+| Props findings | **theirs.** The earlier "player-level data unreachable" conclusion was wrong — the git-blob API path works — and their page says so. `requirements/requirements.csv` rows R15 (prop combos) and R41 (team-total/prop prices) were **re-graded** against the new artefacts in this merge: prop modelling is now delivered; prop *prices* are still absent, so no prop ROI is claimed. |
+| `data/processed/**`, `assets/data/**` | regenerated by re-running the whole pipeline on the merged code, never hand-merged. |
+| `COORDINATION.md`, `README.md`, `Makefile` | both logs kept; Makefile merged (their `props`/`test` targets + this session's `requirements`, `audit`, `audit-full`, `NFDATA_SHA` note). |
+
+After the merge the whole pipeline was re-run (`build_datasets` → `models` → `backtest` →
+`validation` → `correlations` → `fetch_pbp` → `props_model` → `render_site` → `render_summary` →
+`render_requirements` → `audit --rebuild` → `verify_site`), and every artefact on the site was
+regenerated from the merged code.
+
+#### Verification after the third merge (all re-run on the merged tree, 2026-11-02 UTC)
+
+| Check | Result |
+|---|---|
+| `pipeline/audit.py --rebuild` | provenance **7/7** re-hashed; **50/50** artefacts reproduced byte-for-byte from the pinned archive; published cells **61/61** re-derived; 0 failures |
+| `pipeline/verify_site.py` | **0 failing** checks (13 pages, incl. their prop guards and this session's originated-line guard) |
+| `pytest tests/` | **15 passed** (3 prefix-stability, 3 weather fold, 3 no-lookahead, 6 props integrity) |
+| `tests/test_future_lines.py` | 3 passed |
+| `tests/check_links.py` / `check_sources.py` | 22 pages, no broken link, no CDN · 13 pages / 830 table rows, every row sourced or flagged |
+| `scripts/98_linkcheck.py` / `99_verify.py` (annex) | pass · 9/9 |
+
+**Irregularities found and dispositioned in this merge**
+
+* **IR-16 — dead duplicate pipeline.** `analysis/` (merged at `3453d41`, PR #12) is a second
+  implementation that reads `data/raw/nfldata/data/*.csv`, a layout `pipeline/fetch_data.py` no longer
+  writes, so `analysis/build_games.py`, `analysis/model.py` and `analysis/signals.py` raise
+  `FileNotFoundError` in a tree built by the current pipeline. Nothing in `pipeline/`, `scripts/`, the
+  Makefile or CI imports it. Kept for provenance (not deleted), marked with `analysis/README.md`, and the
+  one test that depended on it (`tests/test_no_lookahead.py`) was **rewritten against
+  `pipeline/models.py`** — the code that actually originates the published lines — so the leak guarantee
+  now covers what ships.
+* **IR-17 — placeholder in the executive summary.** The annex text contained a literal
+  `{{spread_hold}}` in the overround sentence. Replaced with the measured figure (2.70% mean, 2.42%
+  median across the 5,403 priced games) and the sentence now names the file it comes from.
+* **IR-18 — stale figures in the rendered summary.** The annex's `p = 0.144` was the pre-merge value;
+  the build now reports `p = 0.186`, and the text says so with the reason (the weather fill moved 19
+  tickets and no verdict), rather than silently restating the old number.
+* **IR-19 — requirements re-graded against delivered work.** R15 (prop combinations) was `FLAGGED` on the
+  assumption that player-level data was unreachable; it is now `PARTIAL` because the git-blob ingest
+  delivered 21,033 player-games, seven priced combos and a calibration, while prop *prices* are still
+  absent (so R41 stays `NOT MET`, no prop ROI is claimed, and G6 still fails for every combo).
+  Roll-up is now 38 MET / 3 PARTIAL / 0 FLAGGED / 1 NOT MET.
+* **IR-20 — audit did not cover the newer stages.** The clean-room rebuild ran only
+  `build_datasets`→`render_site`, so `props_model.py`, `render_summary.py` and
+  `render_requirements.py` were outside the byte-comparison. Added; the rebuild is now 50/50 including
+  every prop table, the executive summary and the requirements page.

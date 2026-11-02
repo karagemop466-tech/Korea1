@@ -1,6 +1,6 @@
 # NFL Line Lab
 
-Line origination, strategy competition and luck removal for NFL markets.
+Line origination, strategy competition and luck control for NFL markets.
 
 **Live site:** https://karagemop466-tech.github.io/Korea1/
 
@@ -19,57 +19,39 @@ fill a gap — where a value could not be verified it is left blank and listed o
 
 | Question the project answers | Where |
 |---|---|
-| What does the brief actually require, and what proves each item? | `requirements/requirements.csv` → [`REQUIREMENTS.md`](REQUIREMENTS.md), `requirements.html` |
 | Can a market-free model originate a usable NFL spread, total and moneyline? | `pipeline/models.py` → `lines.html` |
 | Do any betting strategies beat the closing market after the vig? | `pipeline/strategies.py` → `strategies.html` |
 | Which of those results are skill, and which are luck? | `pipeline/validation.py` → `validation.html` |
 | How correlated are the legs of a parlay or same-game parlay? | `pipeline/correlations.py` → `correlations.html` |
+| Can player props be originated, and how correlated are the legs? | `pipeline/props_model.py` → `props.html` |
 | What would a player-prop model need, and what is missing? | `props.html` |
 | What is unverified, contradictory or incomplete? | `flagged.html` |
-| Is the published site actually reproducible, cell by cell? | `pipeline/audit.py` → `verification.html` |
-| Are the *values* right, not just reproducible? | `scripts/audit_*.py` → `audit.html` |
+| Is every requirement I asked for actually delivered, and where is the evidence? | `requirements/requirements.csv` → `requirements.html` |
+| Can a stranger re-derive every published number from the pinned archive? | `pipeline/audit.py` → `verification.html` |
+| Which values were checked against a second, official source — and which could not be? | `verification.html` (independent-source audit) |
 
 ## Headline result
 
 * The ensemble line is **good but not better than the market**: spread MAE 10.527 vs the
-  closing line's 10.215; totals 10.727 vs 10.527, out of sample, 6,073 games, 2004–2026.
-* **0 of 18 strategies clear all eight validation gates.** The best raw ROI (+21.6% on a 3-leg
+  closing line's 10.215; totals 10.726 vs 10.527, out of sample, 6,073 games, 2004–2026.
+* **0 of 18 strategies clear all eight validation gates.** The best raw ROI (+19.4% on a 3-leg
   parlay ladder, 377 tickets) is what a high-variance long-shot book looks like, not an edge.
-* **White's reality check does not reject** (p = 0.144 across 18 strategies and 425 weekly
+* **White's reality check does not reject** (p = 0.186 across 18 strategies and 425 weekly
   blocks): the library's best performance is consistent with luck.
 * The closing prices used carry a **2.7% two-way hold**, so break-even is ≈51.4%, not 52.4%.
 * Same-game legs are **not** independent: cover↔moneyline φ ≈ 0.68, cover↔total φ ≈ 0.024,
   cross-game legs φ ≈ 0.01 (interval spans zero).
-* The **open board** publishes the model's own spread, total and both moneyline prices for every
-  scheduled game at the snapshot — 164 games, 28 of which also carry a market number to compare
-  against (fixed this session; before the fix every future line was blank).
-
-## Independent audit of this build (2026-11-02)
-
-`python pipeline/audit.py --rebuild` does not trust the build's own claims. It re-downloads the
-**pinned** upstream archive and re-hashes every file, rebuilds every artefact from that archive in a
-throwaway directory, and re-derives published table cells from the CSVs they name. Current result:
-
-| Audit stage | Result |
-|---|---|
-| Provenance — pinned files re-hashed from the recorded commit | **7 / 7 match** |
-| Rebuild — derived tables and rendered pages reproduced byte-for-byte | **36 / 36 identical** (only the `generated …` footer timestamp is normalised) |
-| Claims — published cells re-derived from the underlying data | **60 / 60 exact** |
-| Drift — upstream HEAD vs the pin | upstream has moved ahead; **12 games were settled upstream after the pin** |
-
-That drift is published, not patched: the site's numbers stay tied to one snapshot so they are
-reproducible, and the delta is measured on [`verification.html`](https://karagemop466-tech.github.io/Korea1/verification.html).
-Defects found by this audit and fixed are recorded in `COORDINATION.md` — the largest was that every
-future line on the "open board" was blank, because unplayed games carry no recorded kickoff weather
-and the missing input propagated into the design matrix (D-01).
+* **Player props are now modelled, not blank.** 21,033 player-games (2019–2022 play-by-play) produce
+  9,730 walk-forward prop lines with out-of-sample AUC 0.66–0.73; QB passing yards and his own WR1's
+  receiving yards lift the joint hit rate 1.14× over independence (φ = 0.152, CI excludes zero), and
+  a cross-game control sits at φ = −0.036 with an interval spanning zero. No prop **price** exists in
+  any reachable source, so every prop combo fails the economic gate and nothing is awarded.
 
 ## Data
 
 Single pinned commit of `nflverse/nfldata`, archived from `codeload.github.com` and SHA-256
 hashed on arrival. The exact commit and per-file hashes are in
-[`data/sources.json`](data/sources.json). Because upstream refreshes continuously, the site states
-its snapshot date in every footer; `make build` re-pins to whatever master is at run time, while
-`NFDATA_SHA=<pinned commit> make build` reproduces the published build exactly.
+[`data/sources.json`](data/sources.json).
 
 | File | Rows | Use |
 |---|---|---|
@@ -79,23 +61,48 @@ its snapshot date in every footer; `make build` re-pins to whatever master is at
 | `sc_lines.csv` | 4,092 | SuperContest consensus lines 2013–2020 |
 | `win_totals.csv` | 576 | season win totals with prices |
 
+A second source carries player-level play-by-play: 2019–2022 gzip blobs from
+`clausherther/nfl-dbt`, fetched through the GitHub git-blob API (release assets are blocked at the
+network level, git blobs are not), pinned by blob SHA and SHA-256 hashed into
+[`data/sources_pbp.json`](data/sources_pbp.json). The aggregation is validated against seven
+published season totals, keyed on player id — a name key silently merges J.J. Taylor into
+Jonathan Taylor.
+
 ## Reproduce
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
 pip install pandas numpy scipy
-make build        # fetch → build → models → backtest → correlations → site → summary → audit → verify
-make audit-full   # the same audit with the clean-room rebuild (~90 s)
+make build        # fetch → datasets → models → backtest → strategies → props → site → verify
+make props        # player-level play-by-play → prop lines, calibration, correlations, combos
+make requirements # 42 traced requirements → REQUIREMENTS.md + requirements.html
+make audit        # re-hash the pinned archive, re-derive published cells (--no-network to skip fetch)
+make audit-full   # + clean-room rebuild of every artefact in a throwaway tree (byte comparison)
+make test         # leakage/integrity tests + link check + per-row source check
 ```
 
+Every published number is tied to one pinned commit of `nflverse/nfldata`, recorded in
+`data/sources.json`. `make build` re-pins whatever upstream `main` is *now*; to reproduce the
+published site instead, pin the recorded snapshot:
+
+```bash
+NFDATA_SHA=$(python3 -c "import json;print(json.load(open('data/sources.json'))['commit'])") make build
+```
+
+`pipeline/audit.py` does that for you: it re-downloads the pinned archive, re-hashes all seven
+files against `data/sources.json`, re-derives the published table cells from the data, and (with
+`--rebuild`) rebuilds every artefact in a throwaway tree and compares it byte for byte. Its result
+is published on `verification.html`.
+
 `make build` ends with `pipeline/verify_site.py`, which fails the build if any table row lacks a
-source link, any internal link is broken, or any unformatted missing value reaches a table. CI runs
-that verifier, the offline form of the audit, and both page checkers on every push.
+source link, any internal link is broken, or any unformatted missing value reaches a table.
 
 ## Repository layout
 
 ```
 pipeline/            all analysis code (see methodology.html for the dataflow)
+pipeline/fetch_pbp.py  pinned per-season play-by-play (git-blob API) → data/sources_pbp.json
+pipeline/props_model.py prop lines, calibration, leg correlations, combo pricing → prop_*.csv
 data/processed/      generated tables (committed; the site reads them)
 data/sources.json    pinned commit SHA + per-file SHA-256
 *.html + assets/     the GitHub Pages site (static HTML/CSS, no CDN, no framework) — served from
@@ -103,21 +110,30 @@ data/sources.json    pinned commit SHA + per-file SHA-256
                      the Pages API; an earlier note here said docs/, which does not exist)
 lab/                 the replication annex (see below) — a second site, same questions, other data
 scripts/             the annex pipeline and its own verifiers
-requirements/        the requirement list (CSV) that generates REQUIREMENTS.md and requirements.html
+tests/               leakage tests (models, weather fill, props), originated-line regression,
+                     link check and the per-row source check run by CI
+requirements/        the 42 traced requirements, one row per ask, with evidence and source URL
+pipeline/audit.py    provenance + byte-identical rebuild + published-cell re-derivation
+analysis/            superseded first prototype — kept for provenance, not run (see analysis/README.md)
 COORDINATION.md      multi-session task board and work log
 ```
 
 ## Honesty rules used in this build
 
-1. No value is inferred, interpolated or back-filled. Missing → blank → flagged. The one
-   substitution in the build is disclosed on the flagged page: unplayed games have no recorded
-   kickoff weather, so future lines use the training median for temperature and wind while the
-   `temp_missing` / `wind_missing` flags stay at 1. No settled-game number uses it.
+1. No value is inferred, interpolated or back-filled. Missing → blank → flagged. Weather is the one
+   exception and it is not an estimate: it is the median of games on **strictly earlier dates**
+   (`fold_safe_weather_fill`), written to `weather_fill.json` and asserted in `data_audit.csv`.
 2. Models never see the market, and never see anything after kickoff (asserted in code).
 3. Every bet is settled at the **recorded** closing price; `-110` is never substituted.
 4. All strategies are declared before they are run; every result is published, including failures.
 5. The settlement engine is cross-checked against nflverse's own outcome column (99.93% exact
    agreement where the two files carry the same line).
+6. Prop lines carry no market input, are built only from earlier games, and are re-tested for
+   prefix stability in `tests/test_props_integrity.py`: deleting every game after a cut-off must
+   not move a single prediction at or before it.
+7. A build re-pins nothing: `pipeline/fetch_data.py` reuses the commit recorded in
+   `data/sources.json`, so `make build` reproduces the published numbers instead of drifting to
+   today's upstream head.
 
 ## Licence and attribution
 
@@ -139,7 +155,7 @@ it is reachable from the dashboard navigation ("Replication annex").
 |---|---|---|---|
 | Odds source | nflverse `nfldata` | nflverse `nfldata` | Sportsbook Review 10-year archive |
 | Games | 7,384 (1999–2026) | 7,384 | 2,945 (2011–2021) |
-| Priced bets | 26,168 | 27,330 | 959 qualifying of 2,280 |
+| Priced bets | 26,149 | 27,330 | 959 qualifying of 2,280 |
 | Strategies | 18 | 24 | 18 |
 | Site | root | root pages superseded | `lab/` |
 

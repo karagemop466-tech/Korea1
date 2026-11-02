@@ -1,6 +1,11 @@
 check,passed,detail
-data_audit all passed,True,6/6 checks
+"strategy win rate = wins / (wins + losses), pushes excluded",True,"18 strategies, max |error| 0.00e+00"
+strategy tickets = wins + losses + pushes,True,"18 strategies, 26,149 tickets"
+data_audit all passed,True,7/7 checks
 every strategy has a verdict,True,18 strategies
 no strategy claimed SKILL without passing all gates,True,verdict logic consistent
-prop page publishes no unverified value,True,player-level cells left blank by design
 every scheduled game carries an originated line,True,164 scheduled games priced
+prop definitions reproduce published season totals,True,7/7 player-seasons exact
+no prop combo is awarded without the economic gate,True,G6 fails for every combo: no prop price feed exists
+"every prop combo has a verdict, and STRUCTURE needs G4",True,7 combos
+originated prop lines are fair (mean p(over) within 0.02 of 0.5),True,mean p(over) = 0.4992

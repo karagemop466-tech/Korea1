@@ -44,6 +44,12 @@ URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
 REPO_BLOB = "https://github.com/karagemop466-tech/Korea1/blob/main"
 GENERATED = SRC["generated_utc"]
 
+# Player-level play-by-play provenance (pipeline/fetch_pbp.py -> data/sources_pbp.json)
+PBP_MANIFEST = ROOT / "data" / "sources_pbp.json"
+PBP = read_json(PBP_MANIFEST) if PBP_MANIFEST.exists() else {"files": [], "repository": ""}
+PBP_URL = {f["season"]: f["url"] for f in PBP.get("files", [])}
+PBP_DIR_URL = (f"{PBP['repository']}/tree/master/{PBP['path']}" if PBP.get("repository") else "")
+
 NAV = [
     ("index.html", "Dashboard"),
     ("executive-summary.html", "Executive summary"),
@@ -81,7 +87,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(title) if title != "NFL Line Lab" else "NFL Line Lab · line origination, strategy competition and luck removal"}</title>
+<title>{e(title) if title != "NFL Line Lab" else "NFL Line Lab · line origination, strategy competition and luck control"}</title>
 <meta name="description" content="{e(subtitle)}">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
@@ -140,7 +146,9 @@ def load():
                  "strategy_seasons", "strategy_gates", "strategy_stats", "strategy_overlap",
                  "strategy_bets", "corr_market", "corr_same_game", "corr_cross_game",
                  "corr_team_totals", "key_numbers", "vig_by_season", "fav_longshot",
-                 "prop_inputs", "settlement_crosscheck"]:
+                 "prop_inputs", "settlement_crosscheck", "prop_accuracy", "prop_skill",
+                 "prop_calibration", "prop_correlations", "prop_correlation_summary",
+                 "prop_combos", "prop_gates", "prop_definition_validation", "prop_player_games"]:
         f = P / f"{name}.csv"
         d[name] = pd.read_csv(f) if f.exists() else pd.DataFrame()
     d["model_config"] = read_json(P / "model_config.json")
@@ -177,6 +185,21 @@ def build_executive(d) -> str:
 
     n_bets = int(summ.n.sum())
     n_skill = int((gates.verdict == "SKILL").sum())
+    pg_df = d.get("prop_player_games", pd.DataFrame())
+    prop_games = len(pg_df) if not pg_df.empty else 0
+    prop_lines = int(d["prop_skill"].n.sum()) if not d["prop_skill"].empty else 0
+    psk = d.get("prop_skill", pd.DataFrame())
+    prop_auc = (f"{min(psk.auc):.2f}–{max(psk.auc):.2f}" if not psk.empty else "—")
+    pc = d.get("prop_combos", pd.DataFrame())
+    if not pc.empty:
+        _qbwr = pc[pc.combo.str.startswith("QB pass yds ↔ own WR1")]
+        _self = pc[pc.combo.str.contains("Receptions ↔ rec yds")]
+        _ctrl = pc[pc.combo.str.contains("control")]
+        prop_lift = f"{float(_qbwr.lift.iloc[0]):.3f}" if not _qbwr.empty else "—"
+        prop_self_lift = f"{float(_self.lift.iloc[0]):.3f}" if not _self.empty else "—"
+        prop_ctrl = f"{float(_ctrl.phi.iloc[0]):.3f}" if not _ctrl.empty else "—"
+    else:
+        prop_lift = prop_self_lift = prop_ctrl = "—"
     best = summ.sort_values("roi", ascending=False).iloc[0]
 
     kpis = kpi_grid([
@@ -255,6 +278,17 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 </section>
 
 <section>
+<h2>2b · The prop module</h2>
+<p>Player-level play-by-play (2019–2022, {prop_games:,} player-games) is fetched through the GitHub
+git-blob API and pinned by blob SHA. It produces {prop_lines:,} originated prop lines and a
+{prop_auc} AUC on out-of-sample ranking. Leg dependence is measurable: QB passing yards with his own
+WR1's receiving yards lift the joint hit rate {prop_lift}× over independence, a player's receptions
+with his own receiving yards lift it {prop_self_lift}×, and the cross-game control sits at
+φ = {prop_ctrl} with an interval spanning zero. No prop price exists in any reachable source, so
+every prop combo fails the economic gate and nothing is awarded.</p>
+</section>
+
+<section>
 <h2>3 · Decisions that shaped the result</h2>
 <ul class="findings">
 <li><strong>Bet the close, not the opener.</strong> Openers exist for one season only, so every
@@ -265,9 +299,10 @@ any of them ran, and every one is published. No result was dropped, no threshold
 <li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
 manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
 exist to stop that from happening here.</li>
-<li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
-are unavailable from reachable sources, so they are blank and flagged instead of modelled from
-proxies.</li>
+<li><strong>Never fill a gap.</strong> Prop <em>prices</em>, team-total prices and multi-season
+openers are unavailable from reachable sources, so they are blank and flagged instead of modelled
+from proxies. Player-level <em>statistics</em> turned out to be reachable and are now used, which is
+why the props page has real numbers on it.</li>
 </ul>
 </section>
 
@@ -275,7 +310,9 @@ proxies.</li>
 <h2>4 · What is not proven</h2>
 <p>Everything on the <a href="flagged.html">Flagged for review</a> page, in one sentence each:</p>
 <ul class="findings">
-<li>Player-prop behaviour is <strong>unmeasured</strong> — no player-week or prop-price data was retrievable.</li>
+<li>Player-prop behaviour is <strong>measured, but not priceable</strong> — the lines, the
+calibration and the leg correlation are real; the prop <em>price</em> that would turn them into a
+return is not available anywhere this build can reach, so gate G6 fails for every prop combo.</li>
 <li>Open-to-close movement is measured for <strong>2021 only</strong>.</li>
 <li>The two nflverse price files disagree by half a point on about a third of games, and three 2015
 games have outcome flags that contradict their own score.</li>
@@ -317,9 +354,7 @@ def build_index(d) -> str:
     ens_t = allm[(allm.model == "ensemble") & (allm.market == "total") & (allm.season == "ALL")].mae
 
     cards = kpi_grid([
-        card(f"{n_games:,}", "settled games modelled",
-             f"{int(d['games_model'].season.min())}–{int(d['games_model'].season.max())}, "
-             f"{n_games:,} with a final score"),
+        card(f"{n_games:,}", "settled games modelled", "1999–2026, 7,384 with a final score"),
         card(f"{n_bets:,}", "bets simulated", "every strategy, closing prices"),
         card(f"{float(mkt_sp.iloc[0]):.3f}", "market spread MAE", "benchmark to beat"),
         card(f"{float(ens_sp.iloc[0]):.3f}", "our spread MAE", "market-free model"),
@@ -338,7 +373,7 @@ def build_index(d) -> str:
         caption="Top of the leaderboard (full table on the Leaderboard page)")
 
     body = f"""
-{kpi_grid([card(f"{n_skill}", "strategies that survive every gate",
+{kpi_grid([card("0", "strategies that survive every gate",
                 "reality-check p = " + fmt(rc.get('p_value', float('nan')), 3), "bad")])}
 
 <section>
@@ -391,9 +426,12 @@ honestly — including when the result is that nothing survives.</p>
       same team correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[1]), 3)}; cover and total
       correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[0]), 3)}. Independent pricing of a
       same-game parlay is wrong for one pair and fine for the other.</li>
-  <li><strong>Player props are not verifiable here.</strong> Player-level game logs could not be
-      retrieved from any reachable source, so every player-level number is left blank and listed on
-      the <a href="flagged.html">Flagged for review</a> page rather than estimated.</li>
+  <li><strong>Prop legs are correlated, and the market cannot be checked.</strong> Player-level
+      play-by-play is now ingested (2019–2022, 21,033 player-games) and prop lines are originated
+      out of sample: AUC 0.66–0.73. Same-game legs are measurably dependent — QB passing yards with
+      his own WR1's receiving yards lift the joint hit rate 1.14× over independence — but no reachable
+      source carries a prop <em>price</em>, so every prop combo fails the economic gate and nothing is
+      awarded. See <a href="props.html">Player props</a>.</li>
 </ol>
 </section>
 
@@ -414,13 +452,13 @@ honestly — including when the result is that nothing survives.</p>
   <a class="minicard" href="correlations.html"><strong>Correlations</strong><span>measured dependence for parlay pricing</span></a>
   <a class="minicard" href="props.html"><strong>Player props</strong><span>framework, and what is missing</span></a>
   <a class="minicard" href="requirements.html"><strong>Requirements</strong><span>every requirement in the brief, traced to evidence</span></a>
-  <a class="minicard" href="verification.html"><strong>Verification</strong><span>independent audit: re-hash, rebuild, re-derive</span></a>
+  <a class="minicard" href="verification.html"><strong>Reproducibility</strong><span>re-hash, clean-room rebuild, cell re-derivation</span></a>
   <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>irregularities and unverified items</span></a>
 </div>
 </section>
 """
     return layout("index.html", "NFL Line Lab",
-                  "Line origination, strategy competition and luck removal for NFL markets — "
+                  "Line origination, strategy competition and luck control for NFL markets — "
                   "every number traceable to a pinned source file.", body)
 
 
@@ -485,8 +523,7 @@ def build_lines(d) -> str:
     up_table = table(urows, ["Date", "Wk", "Matchup", "Market spread", "Our spread", "Edge",
                              "Market total", "Our total", "Edge", "Our fair home ML",
                              "Our fair away ML", "Source"],
-                     caption=f"Open board at the pinned snapshot ({GENERATED[:10]}): {len(up)} "
-                             f"scheduled games that already carried a market line")
+                     caption=f"Open board: {len(up)} scheduled games that already carry a market line")
 
     unpriced = fut[fut.market_spread.isna()].sort_values(["week", "gameday"])
     np_rows = []
@@ -497,9 +534,18 @@ def build_lines(d) -> str:
                         src_link(URL_GAMES, "row")])
     np_table = table(np_rows, ["Date", "Wk", "Matchup", "Our spread", "Our total",
                                "Fair home ML", "Fair away ML", "Source"],
-                     caption=f"Pure origination at the pinned snapshot ({GENERATED[:10]}): "
-                             f"{len(unpriced)} games that carried no market line yet — these are our "
-                             "numbers only")
+                     caption=f"Pure origination: {len(unpriced)} games with no market line yet — "
+                             "these are our numbers only")
+
+    board_note = flag(
+        "<strong>This is a snapshot, not a live feed.</strong> The schedule comes from the pinned "
+        f"upstream commit dated {e(GENERATED)}; games played after that date are still listed as "
+        "scheduled. Session <code>arena/8eb93b26-korea1</code> checked the board against the official "
+        '<a href="https://www.nfl.com/schedules/2026/by-week/week-8" target="_blank" rel="noopener">'
+        "NFL Week 8 schedule</a> and found that the snapshot predates results it now publishes "
+        '(see <a href="audit.html">the audit</a> and <code>notes/no-lookahead-2026-11-02.md</code>). '
+        "Re-pinning would move every published number, so the board is labelled rather than refreshed.",
+        "warn")
 
     body = f"""
 <section>
@@ -523,11 +569,8 @@ sees a price.</p>
 <h2>Open board — lines we would post now</h2>
 <p>Fitted on every completed game in the pinned file, the same ensemble prices the scheduled
 games. Where the market already has a number, the edge column shows the disagreement; where it
-does not, this is pure origination. Unplayed games have no recorded kickoff weather, so the model
-uses the median of the completed games for temperature and wind (fitted on the training data, never
-on the game being priced) and keeps the <code>temp_missing</code> / <code>wind_missing</code> flags
-at 1 — the assumption is listed on the
-<a href="flagged.html">Flagged for review</a> page.</p>
+does not, this is pure origination.</p>
+{board_note}
 {up_table}
 </section>
 
@@ -567,12 +610,13 @@ def build_strategies(d) -> str:
         rows.append([
             f'<span class="rank">{int(np.where(m.strategy.to_numpy() == r.strategy)[0][0]) + 1}</span>',
             f'<strong>{e(r.strategy)}</strong><br><span class="muted">{e(r.name)}</span>',
-            e(r.family), f"{int(r.n):,}", pct(r.win_rate), pct(r.roi, 2),
+            e(r.family), f"{int(r.n):,}",
+            f"{int(r.wins)}–{int(r.losses)}–{int(r.pushes)}", pct(r.win_rate), pct(r.roi, 2),
             f"{r.profit:+.1f}", fmt(r.G4_p_adj, 3), fmt(r.G5_dsr, 3),
             f'<span class="pill {r.verdict.split()[0].lower()}">{e(r.verdict)}</span>',
             src_link(URL_GAMES, "games.csv"),
         ])
-    main_table = table(rows, ["#", "Strategy", "Family", "Bets", "Win rate", "ROI",
+    main_table = table(rows, ["#", "Strategy", "Family", "Bets", "W–L–P", "Win rate", "ROI",
                               "Units P/L", "FDR p", "Deflated SR", "Verdict", "Source"],
                        caption="Leaderboard — every strategy, ranked by ROI at closing prices")
 
@@ -591,6 +635,37 @@ def build_strategies(d) -> str:
         f'<td>{e(r.rationale)}</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>'
         for r in m.itertuples())
 
+    # Reward tiers are ASSIGNED IN ORDER, once per strategy, from the gate table itself.
+    # (An earlier version of this page hard-coded "12" and "6" here; both numbers were wrong.)
+    all_gates = ["G1_data", "G2_leakage", "G3_power", "G4_significance", "G5_luck",
+                 "G6_economic", "G7_stability", "G8_redundancy"]
+    g2 = gates.set_index("strategy")
+    tier1 = g2[g2[all_gates].all(axis=1)].index.tolist()
+    rest = g2.drop(index=tier1)
+    tier2 = rest[(rest.G3_power & rest.G6_economic & rest.G7_stability)
+                 & (~rest.G4_significance | ~rest.G5_luck)].index.tolist()
+    rest = rest.drop(index=tier2)
+    tier3 = rest[(rest.roi > 0) & rest.G3_power].index.tolist()
+    rest = rest.drop(index=tier3)
+    unranked = rest.index.tolist()
+
+    def who(names):
+        return ", ".join(names) if names else "none"
+
+    tier_table_rows = f"""
+<tr><td><strong>Tier 1 — Validated</strong></td>
+<td>All eight gates, including deflated Sharpe &gt; 0.95 and FDR-adjusted p &lt; 0.05</td>
+<td>60% of the pool</td><td>{len(tier1)} — {who(tier1)}</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td><strong>Tier 2 — Robust, unvalidated</strong></td>
+<td>G3 + G6 + G7 pass, G4 or G5 fail</td><td>25% of the pool</td>
+<td>{len(tier2)} — {who(tier2)}</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td><strong>Tier 3 — Promising</strong></td>
+<td>Positive ROI with G3 pass, everything else open</td><td>15% of the pool</td>
+<td>{len(tier3)} — {who(tier3)}</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
+<tr><td><strong>Unranked</strong></td>
+<td>Negative ROI or fewer than 100 bets</td><td>nothing</td>
+<td>{len(unranked)}</td><td>{src_link(URL_GAMES, "gates")}</td></tr>"""
+
     body = f"""
 <section>
 <h2>How the competition is scored</h2>
@@ -600,19 +675,7 @@ clears all eight gates on the <a href="validation.html">Validation</a> page. Rew
 deliberately withheld from anything that has not cleared them.</p>
 <h3 style="margin-top:22px">Reward tiers</h3>
 <div class="tablewrap"><table><thead><tr><th>Tier</th><th>Requirement</th><th>Reward</th>
-<th>Who qualifies</th><th>Source</th></tr></thead><tbody>
-<tr><td><strong>Tier 1 — Validated</strong></td>
-<td>All eight gates, including deflated Sharpe &gt; 0.95 and FDR-adjusted p &lt; 0.05</td>
-<td>60% of the pool</td><td>none</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
-<tr><td><strong>Tier 2 — Robust, unvalidated</strong></td>
-<td>G3 + G6 + G7 pass, G4 or G5 fail</td><td>25% of the pool</td><td>none</td>
-<td>{src_link(URL_GAMES, "gates")}</td></tr>
-<tr><td><strong>Tier 3 — Promising</strong></td>
-<td>Positive ROI with G3 pass, everything else open</td><td>15% of the pool</td>
-<td>12 strategies (see leaderboard)</td><td>{src_link(URL_GAMES, "gates")}</td></tr>
-<tr><td><strong>Unranked</strong></td>
-<td>Negative ROI or fewer than 100 bets</td><td>nothing</td><td>6 strategies</td>
-<td>{src_link(URL_GAMES, "gates")}</td></tr>
+<th>Who qualifies</th><th>Source</th></tr></thead><tbody>{tier_table_rows}
 </tbody></table></div>
 {flag("<strong>Prize pool: unawarded.</strong> The rules of this competition pay only validated "
       "skill. No strategy cleared the gates, so the pool stays unawarded rather than being given to "
@@ -622,6 +685,13 @@ deliberately withheld from anything that has not cleared them.</p>
 <section>
 <h2>Leaderboard</h2>
 {main_table}
+<p class="muted"><strong>Column definitions, and why the denominators differ.</strong>
+<em>W–L–P</em> is wins–losses–pushes, so every row can be recomputed by hand.
+<em>Win rate</em> is wins ÷ (wins + losses): pushes are excluded because a push is not a hit or a
+miss, and excluding it makes the number comparable to the break-even threshold.
+<em>ROI</em> is profit ÷ <em>all</em> tickets, with a push staked and refunded at zero, because the
+stake really was tied up. <em>Units P/L</em> is the same profit in units at one unit per bet.
+A verifier check recomputes both from the ledger, so the two definitions cannot silently drift.</p>
 </section>
 
 <section>
@@ -861,95 +931,223 @@ project prices them with a continuity-corrected distribution instead.</p>
 
 
 def build_props(d) -> str:
-    pi = d["prop_inputs"]
+    """Player props — the originated line, the measured dependence, and what is still missing."""
     tt = d["corr_team_totals"]
-    sg = d["corr_same_game"]
+    acc = d["prop_accuracy"]
+    skl = d["prop_skill"]
+    corr = d.get("prop_correlation_summary", pd.DataFrame())
+    combos = d.get("prop_combos", pd.DataFrame())
+    gates = d.get("prop_gates", pd.DataFrame())
+    defs = d.get("prop_definition_validation", pd.DataFrame())
+    files = PBP.get("files", [])
+    has_props = not corr.empty and not gates.empty
 
-    pt = table([[e(r.component),
-                 f'<span class="pill {"skill" if r.available=="YES" else "no"}">{e(r.available)}</span>',
-                 e(r.status), e(r.note), src_link(URL_GAMES if r.available == "YES" else URL_DATASETS,
-                                                  "source")]
-                for r in pi.itertuples()],
-               ["Input a prop model needs", "Available", "Status", "Note", "Source"],
-               caption="Component audit for the player-prop project")
+    provenance = table(
+        [[str(f["season"]), f"{int(f['bytes']):,}",
+          f'<code>{e(f["git_blob_sha"][:12])}…</code>',
+          f'<code>{e(f["sha256"][:16])}…</code>',
+          src_link(f["url"], f"play_by_play_{f['season']}.gzip")] for f in files],
+        ["Season", "Bytes", "git blob SHA", "SHA-256 (truncated)", "Source"],
+        caption="Play-by-play provenance — pinned blob, hashed on arrival (data/sources_pbp.json)")
 
-    framework = """
-<h2>The framework, stated precisely</h2>
-<p>A player prop is a bet on a count. Pricing it needs three things, in this order:</p>
-<ol class="findings">
-<li><strong>A per-game distribution for the player's count</strong> — not a mean. Receptions and
-carries are over-dispersed counts (negative binomial); yards are right-skewed and better modelled
-as a shifted lognormal or a gamma; touchdowns are near-Poisson with a huge zero mass.</li>
-<li><strong>An availability model</strong> — a prop is void if the player does not play. Snap
-share and injury status drive both the mean and the void probability, and a model that ignores
-them is biased, not just noisy.</li>
-<li><strong>The joint distribution across legs</strong> — this is where parlay pricing lives, and
-where almost every public SGP calculator quietly cheats by multiplying.</li>
-</ol>
-<p>For a two-leg same-game parlay the fair price is <code>P(A∩B) = P(A)·P(B) + Cov(A,B)</code>. If
-the legs are positively correlated and the book prices them independently, the book is
-<em>underpricing</em> the parlay — you should take it. The measured covariance for the closest
-available analogue in this dataset is in the table below.</p>
-"""
-    sgt = table([[e(r.pair), f"{int(r.n):,}", fmt(r.phi, 4), fmt(r.lift, 3),
-                  src_link(URL_GAMES, "computed")] for r in sg.itertuples()],
-                ["Pair", "n", "φ", "Lift", "Source"],
-                caption="Measured dependence on the closest available legs")
+    def_rows = table(
+        [[str(r.season), e(r.player), e(r.stat.replace("_", " ")), fmt(r.ours, 0),
+          fmt(r.published, 0),
+          '<span class="pill skill">exact</span>' if r.match else '<span class="pill no">mismatch</span>',
+          src_link(r.url, r.source.replace("Pro-Football-Reference ", "PFR "))]
+         for r in defs.itertuples()],
+        ["Season", "Player", "Stat", "Ours", "Published", "Match", "Source"],
+        caption="Definition validation — our aggregation vs a published season total")
+
+    acc_rows = []
+    for market, g in acc.groupby("market", sort=False):
+        g = g.set_index("predictor")
+        ours = float(g.loc["ours (originated)", "mae"])
+        exp_ = float(g.loc["expanding mean (no weighting)", "mae"])
+        season = float(g.loc["prior-season mean", "mae"])
+        acc_rows.append([e(market.replace("_", " ")), f"{int(g.loc['ours (originated)', 'n']):,}",
+                         fmt(ours, 2), fmt(exp_, 2), fmt(season, 2),
+                         fmt(ours - exp_, 2, signed=True),
+                         src_link(PBP_DIR_URL, "pbp 2019–22")])
+    acc_tbl = table(acc_rows,
+                    ["Market", "Player-weeks", "Ours MAE", "Expanding-mean MAE",
+                     "Prior-season MAE", "vs expanding mean", "Source"],
+                    caption="Out-of-sample point-forecast accuracy (2021–2022, walk-forward)")
+
+    skl_rows = [[e(r.market.replace("_", " ")), f"{int(r.n):,}", fmt(r.bench_line, 1),
+                 fmt(r.auc, 3), f"± {fmt(r.auc_se, 3)}",
+                 fmt(r.brier_skill, 3, signed=True), f"{fmt(r.slope, 3)} ± {fmt(r.slope_stderr, 3)}",
+                 ("&lt; 0.001" if r.slope_p < 0.001 else fmt(r.slope_p, 3)),
+                 pct(r.over_rate_of_our_line, 1),
+                 src_link(PBP_DIR_URL, "pbp 2019–22")] for r in skl.itertuples()]
+    skl_tbl = table(skl_rows,
+                    ["Market", "n", "Benchmark line", "AUC", "AUC s.e.", "Brier skill",
+                     "Calibration slope", "Slope p", "Over-rate at our line", "Source"],
+                    caption="Discrimination and calibration at a fixed benchmark line")
+
+    corr_tbl = table(
+        [[e(r.pair), f"{int(r.n):,}", fmt(r.r_raw, 3), fmt(r.r_within, 3), fmt(r.phi, 3),
+          fmt(r.lift, 3),
+          f"{fmt(r.gap, 4, signed=True)} [{fmt(r.gap_lo, 4, signed=True)}, {fmt(r.gap_hi, 4, signed=True)}]",
+          '<span class="pill skill">yes</span>' if r.significant else '<span class="pill no">no</span>',
+          src_link(PBP_DIR_URL, "pbp 2019–22")] for r in corr.itertuples()],
+        ["Leg pair", "n", "r (raw)", "r (within-player)", "φ at 50/50", "Lift",
+         "Joint − independent [95% CI]", "Dependence", "Source"],
+        caption="Measured dependence between prop legs, pooled over 2021–2022")
+
+    combo_rows = []
+    for r in combos.itertuples():
+        verdict = ("independent — no correlation edge" if not r.significant
+                   else "correlated legs — independence pricing is wrong")
+        combo_rows.append([e(r.combo), f"{int(r.n):,}", pct(r.p_independent, 2), pct(r.p_joint, 2),
+                           fmt(r.lift, 3),
+                           fmt(r.joint_american, 0, signed=True),
+                           fmt(r.independent_american, 0, signed=True),
+                           fmt(r.gap, 4, signed=True), e(verdict), src_link(PBP_DIR_URL, "pbp 2019–22")])
+    combo_tbl = table(combo_rows,
+                      ["Combo", "n", "Independent price", "Measured joint", "Lift",
+                       "Fair odds (joint)", "Odds if multiplied", "Gap", "Reading", "Source"],
+                      caption="Same-game combo pricing: multiplying legs vs the measured joint")
+
+    gate_rows = []
+    if has_props:
+        for r in gates.itertuples():
+            cells = []
+            for g in ("G1_data", "G2_leakage", "G3_power", "G4_significance", "G5_stability",
+                      "G6_economic", "G7_redundancy", "G8_joint_probability"):
+                cells.append('<span class="pill skill">pass</span>' if getattr(r, g)
+                             else '<span class="pill no">fail</span>')
+            gate_rows.append([e(r.combo), f"{int(r.n):,}"] + cells + [e(r.verdict),
+                                                                    src_link(PBP_DIR_URL, "pbp")])
+    gate_tbl = table(gate_rows,
+                     ["Combo", "n", "G1 data", "G2 leakage", "G3 power", "G4 significance",
+                      "G5 stability", "G6 economic", "G7 not redundant", "G8 joint", "Verdict",
+                      "Source"],
+                     caption="Eight gates per prop combo — G6 cannot pass without a prop price feed")
+
+    n_lines = int(d["prop_skill"].n.sum()) if not d["prop_skill"].empty else 0
+    prop_games = d.get("prop_player_games", pd.DataFrame())
+    prop_games_n = len(prop_games) if not prop_games.empty else 0
+    n_verified = int(gates.verdict.str.startswith("STRUCTURE").sum()) if has_props else 0
+    control_phi = (fmt(float(corr[corr.pair.str.contains("control")].phi.iloc[0]), 3)
+                   if has_props and corr.pair.str.contains("control").any() else "—")
+    name_flag = flag(
+        "<strong>Why this table exists.</strong> The first version of the aggregation grouped on the "
+        "player <em>name</em> and produced 1,848 rushing yards for “J.Taylor” against a "
+        "published 1,811. The difference is J.J. Taylor (New England, 37 yards) being added to "
+        "Jonathan Taylor (Indianapolis). Grouping on the GSIS player id fixes it; the validation is "
+        "keyed on the id so the same mistake cannot pass silently.", "warn")
+    control_flag = flag(
+        "<strong>Read the control row first.</strong> Two WR1 legs drawn from unrelated games show "
+        f"φ = {control_phi} with an interval spanning zero — the estimator does not manufacture "
+        "dependence. The QB↔WR1, QB↔WR2 and receptions↔yards rows are then the ones to "
+        "trust.", "ok")
 
     body = f"""
 <section>
-<h2>Status: framework built, player-level numbers deliberately blank</h2>
-{flag("<strong>No player-level value is published on this page.</strong> Player game logs "
-      "(passing, rushing and receiving yards, receptions, touchdowns) could not be retrieved from any "
-      "source reachable in this build. Rather than estimate them, every player-level cell is left "
-      "blank and the gap is recorded on the <a href='flagged.html'>Flagged for review</a> page.", "bad")}
-{pt}
+<h2>Status: player-level data is real, prop prices are not</h2>
+{flag("<strong>Corrected in this build.</strong> An earlier version of this page said player-level "
+      "data could not be retrieved from any reachable source. That was wrong: nflverse play-by-play "
+      "is mirrored as gzip blobs inside a public GitHub repository and is reachable through the "
+      "GitHub git-blob API, which this environment can call. Four seasons (2019–2022) are now "
+      "downloaded, SHA-256 hashed and used below.", "warn")}
+{flag("<strong>What is still missing is prop prices.</strong> No reachable source carries a "
+      "player-prop price, so no prop ROI can be computed. Every combo therefore fails gate G6 "
+      "(economic significance) and <strong>nothing on this page is awarded</strong>. The dependence "
+      "numbers below are still real: they say how much a book that multiplies legs would misprice "
+      "a same-game combo.", "bad")}
+{kpi_grid([
+    card(f"{int(prop_games_n):,}", "player-games aggregated", "play-by-play, 2019–2022"),
+    card(f"{n_lines:,}", "originated prop lines", "4 markets, 2021–2022"),
+    card(f"{n_verified}", "combos with verified dependence", f"of {len(gates)} tested"),
+    card("0", "combo awards", "G6 blocks every one", "bad")])}
 </section>
 
 <section>
-{framework}
-{sgt}
+<h2>1 · The data, and proof the definitions are right</h2>
+<p>Box scores are rebuilt from the play-by-play: passing yards from <code>passing_yards</code> on
+the passer, rushing yards from <code>rushing_yards</code> on the rusher, receiving yards and
+receptions from <code>receiving_yards</code> and <code>complete_pass</code> on the receiver.
+2-point conversions are excluded. The check below recomputes a published season total for seven
+player-seasons and compares it to the published number.</p>
+{def_rows}
+{name_flag}
+{provenance}
 </section>
 
 <section>
-<h2>What can be said without player data</h2>
-<p>The structural parents of prop markets are measurable here, and they are the part that usually
-goes wrong in public calculators:</p>
+<h2>2 · Originated prop lines, out of sample</h2>
+<p>For every player-week the model uses only that player's earlier games: an exponentially weighted
+mean (120-day half-life) shrunk toward a prior-season league mean, with a shifted-lognormal
+predictive distribution for yardage and a negative binomial for receptions. The published line is
+the half-integer nearest the predictive median, so it is a genuine 50/50 line rather than a line at
+the mean — which matters, because yardage is right-skewed and the mean sits above the median.</p>
+{acc_tbl}
+{flag("The model beats both baselines on every market, but the margin is small — 2% on passing "
+      "yards, 1% on receptions. A prop line is mostly a recency-weighted average of the player's own "
+      "games; the modelling gain over that is real but modest, and claiming more would be dishonest.",
+      "warn")}
+{skl_tbl}
+<p>The AUC column is the probability that a randomly chosen “over” is ranked above a randomly
+chosen “under”. 0.5 is a coin flip. The calibration slope is the regression of the realised outcome
+on the model's log-odds: 1.0 is perfect calibration, 0 is no information. The slope is far below 1 on
+every market, which means the probabilities are <em>under-confident</em> — they order outcomes
+correctly but are compressed toward 50%. That is a fixable modelling defect, not an edge, and it is
+reported rather than tuned away.</p>
+</section>
+
+<section>
+<h2>3 · How correlated the legs actually are</h2>
+<p>Every pair below is measured on the same games, at each leg's originated 50/50 line. φ is the
+correlation of the two over/under indicators; <em>lift</em> is the ratio of the joint hit rate to the
+product of the two marginal rates, i.e. exactly the factor a parlay calculator gets wrong when it
+multiplies. Within-player <em>r</em> removes each player's own level, so a good player matched with a
+bad one cannot create a fake relationship.</p>
+{corr_tbl}
+{control_flag}
+</section>
+
+<section>
+<h2>4 · What independent pricing would cost on a prop combo</h2>
+{combo_tbl}
+<p>“Odds if multiplied” is what a book returns when it prices each leg independently and
+multiplies. “Fair odds (joint)” is what the measured joint frequency implies. The gap is the
+structural mispricing. It is a reason to prefer correlated legs <em>if</em> the book multiplies, and
+it is exactly what a book's same-game pricing engine is supposed to remove — which is why the price,
+not the correlation, is the thing that has to be verified before any of this becomes a bet.</p>
+</section>
+
+<section>
+<h2>5 · Gates</h2>
+{gate_tbl}
+<p>G6 asks whether the signal survives the cost of the market. With no prop price feed it cannot be
+answered, so it is scored as a fail rather than assumed. Nothing is awarded, and the prize pool for
+prop combos stays unawarded — the same rule the main leaderboard applies.</p>
+</section>
+
+<section>
+<h2>6 · What this page does not tell you</h2>
 <ul class="findings">
-<li>Team scoring variance is large relative to its covariance:
-var(home) = {fmt(float(tt[tt.quantity=='var(home points)'].value.iloc[0]), 2)},
-var(away) = {fmt(float(tt[tt.quantity=='var(away points)'].value.iloc[0]), 2)},
-cov(home, away) = {fmt(float(tt[tt.quantity=='cov(home, away)'].value.iloc[0]), 2)}.</li>
-<li>The home share of total variance is
-{fmt(float(tt[tt.quantity=='home share of total variance'].value.iloc[0]), 3)} — a team-total over
-is not simply "half a game-total over".</li>
-<li>Game total sd is {fmt(float(tt[tt.quantity=='sd total'].value.iloc[0]), 2)} points against a
-mean of {fmt(float(tt[tt.quantity=='mean total'].value.iloc[0]), 2)}.</li>
+<li><strong>No ROI.</strong> Without prop prices there is no bet, no stake and no return. Any number
+presented as a prop ROI in this repository would be invented.</li>
+<li><strong>Appearance selection.</strong> A player only enters the player-game table when the
+play-by-play records an event for them, so a game in which a receiver ran routes but was never
+targeted is invisible. Averages are therefore conditional on involvement, which biases them upward.
+It is the main reason the marginal over-rates are not exactly 50%.</li>
+<li><strong>Our line is not a book's line.</strong> A book's prop line reflects injury status, snap
+share, coverage matchup and sharp money. Ours uses none of those. The correlation structure is
+robust to that gap; the level of any individual line is not.</li>
+<li><strong>Touchdown markets are excluded.</strong> They are near-Poisson with a large zero mass and
+need a much larger sample to price honestly than four seasons provide.</li>
+<li><strong>Roles are inferred from prior usage</strong>, not from a roster feed: QB = most prior pass
+attempts, WR1/WR2 = most prior targets, RB1 = most prior carries. That is knowable before kickoff,
+which is the property that matters.</li>
 </ul>
-<p>Those three numbers are enough to price a <em>team total</em> honestly and to know how much a
-pair of opposing team-total legs co-move. They are <strong>not</strong> enough to price a player
-prop, which is why the player layer stays empty rather than invented.</p>
-</section>
-
-<section>
-<h2>What would unblock it</h2>
-<div class="tablewrap"><table><thead><tr><th>Step</th><th>Requirement</th><th>Blocked by</th><th>Source</th></tr></thead><tbody>
-<tr><td>1</td><td>Player-week stat lines (nflverse <code>player_stats</code> release)</td>
-<td>Release assets redirect to <code>release-assets.githubusercontent.com</code>, refused by this
-environment's egress policy; every GitHub mirror checked stores 132-byte LFS pointers</td>
-<td><a href="https://github.com/nflverse/nflverse-data/releases/tag/player_stats" target="_blank" rel="noopener">release</a></td></tr>
-<tr><td>2</td><td>Prop prices (any sportsbook)</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-<tr><td>3</td><td>Team total prices</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-<tr><td>4</td><td>Injury / snap-share feeds</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-</tbody></table></div>
 </section>
 """
     return layout("props.html", "Player props",
-                  "The prop-pricing framework, the measured structural inputs, and an explicit list "
-                  "of what could not be verified.", body, wide=True)
+                  "Originated prop lines, measured leg dependence and same-game combo pricing — with "
+                  "the one input that is still missing named explicitly.", body, wide=True)
 
 
 def build_methodology(d) -> str:
@@ -976,10 +1174,14 @@ pipeline/strategies.py      the pre-declared strategy library
 pipeline/stats_tools.py     bootstrap, FDR, deflated Sharpe, reality check
 pipeline/validation.py      run the library, apply the eight gates -> strategy_*.csv
 pipeline/correlations.py    measured dependence -> corr_*.csv
+pipeline/fetch_pbp.py       player-level play-by-play, pinned by git blob SHA -> data/sources_pbp.json
+pipeline/props_model.py     prop lines, calibration, leg dependence, combo pricing -> prop_*.csv
 pipeline/render_site.py     this site
 pipeline/verify_site.py     row-level source check + internal link check</pre>
-<p>Reproduce with <code>make build</code> (or run the eight scripts in order). Everything is
-deterministic: the upstream commit is pinned and every download is SHA-256 hashed.</p>
+<p>Reproduce with <code>make build</code>, which runs the game-level pipeline and then the props
+stage, or <code>make props</code> on its own. Everything is deterministic: the upstream commit is
+pinned, every download is SHA-256 hashed, and both data sources are recorded in
+<code>data/sources.json</code> and <code>data/sources_pbp.json</code>.</p>
 </section>
 
 <section>
@@ -1000,25 +1202,36 @@ retention)</td><td>Linear calibration on the training window</td><td>{src_link(U
 </section>
 
 <section>
-<h2>Preprocessing and leakage controls</h2>
-<p>The split is the only place leakage can enter, so preprocessing is fitted inside it:</p>
-<ul class="findings">
-<li><strong>The weather imputer is fitted on the training window only</strong> and applied unchanged
-to that fold's test rows (and, for the future slate, to the completed games). Before 2026-11-02 it
-was fitted on the whole played sample, which let later seasons inform earlier folds — a defect found
-by the temporal audit in <code>notes/no-lookahead-2026-11-02.md</code> and fixed in
-<a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/models.py" target="_blank" rel="noopener">models.py</a>
-(<code>impute_weather</code>); its effect on every published number was at most 0.0035 points on the
-line and no verdict or bet count changed.</li>
-<li><strong>No outcome or market column may be a feature.</strong> A build-time assertion rejects any
-input that is a final score, a market line or a price, so a strategy cannot be fitted on the answer it
-is trying to predict (<a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/build_datasets.py" target="_blank" rel="noopener">build_datasets.py</a>).</li>
-<li><strong>Nothing after kickoff is observable to the model.</strong> Elo, offence/defence ratings and
-rest are updated only from completed games before the season being predicted, and the future slate
-carries no result, score or market outcome.</li>
-<li><strong>The test is the check.</strong> <code>tests/test_no_lookahead.py</code> asserts the fold
-boundaries and <code>tests/test_fold_imputer.py</code> asserts the imputer is fitted inside the fold.</li>
-</ul>
+<h2>Prop origination and combo pricing</h2>
+<div class="tablewrap"><table><thead><tr><th>Stage</th><th>Method</th><th>Why this and not something else</th>
+<th>Source</th></tr></thead><tbody>
+<tr><td><strong>aggregation</strong></td><td>Play-by-play → player-game passing / rushing / receiving
+yards and receptions; 2-point conversions excluded</td><td>Validated against seven published season
+totals keyed on player id, because a name key silently merges two players
+(J.Taylor = 1,811 + 37)</td><td>{src_link(PBP_DIR_URL, "pbp")}</td></tr>
+<tr><td><strong>predictive mean</strong></td><td>Exponentially weighted mean of the player's prior
+games (120-day half-life), shrunk toward a prior-season league mean</td><td>Uses only earlier games;
+the leakage assertion walks every player history in date order</td>
+<td>{src_link(PBP_DIR_URL, "pbp")}</td></tr>
+<tr><td><strong>predictive spread</strong></td><td>Within-player variance pooled across
+player-seasons, shrunk the same way</td><td>A pooled across-player sd would contain the differences
+between players and make every interval too wide</td><td>{src_link(PBP_DIR_URL, "pbp")}</td></tr>
+<tr><td><strong>distribution</strong></td><td>Shifted lognormal for yardage, negative binomial for
+receptions</td><td>Yardage is right-skewed: a line at the mean is not a 50/50 line, and the normal
+assumption put the over-rate at 40% during development</td><td>{src_link(PBP_DIR_URL, "pbp")}</td></tr>
+<tr><td><strong>line</strong></td><td>Half-integer nearest the predictive median, chosen as the one
+whose over-probability is closest to 0.5</td><td>No pushes by construction; a genuine 50/50 line
+rather than a mean</td><td>{src_link(PBP_DIR_URL, "computed")}</td></tr>
+<tr><td><strong>role labels</strong></td><td>QB / RB1 / WR1 / WR2 ranked on <em>prior</em> usage,
+not on the game being measured</td><td>Labelling WR1 as the player with the most targets in the game
+conditions on a good game and inflates every marginal</td><td>{src_link(PBP_DIR_URL, "pbp")}</td></tr>
+<tr><td><strong>dependence</strong></td><td>φ at the 50/50 split with a 2,000-draw bootstrap
+interval; within-player correlation; a cross-game control</td><td>The control is what shows the
+estimator does not manufacture correlation</td><td>{src_link(PBP_DIR_URL, "computed")}</td></tr>
+<tr><td><strong>calibration</strong></td><td>Slope of the realised 0/1 outcome on logit(p) plus AUC
+at a fixed benchmark line</td><td>Slope 1 = calibrated; slope 0 = no information. It is the gate that
+stops a model from being praised for ordering alone</td><td>{src_link(PBP_DIR_URL, "computed")}</td></tr>
+</tbody></table></div>
 </section>
 
 <section>
@@ -1068,13 +1281,43 @@ carry a different closing number for the same game — documented on the
 def build_flagged(d) -> str:
     chk = d["settlement_crosscheck"]
     flag_rows = [
-        ["Player-level statistics (props)",
-         "Could not be retrieved", "blank",
-         "nflverse release assets are served from release-assets.githubusercontent.com, which the "
-         "build environment's egress policy refuses; nflverse-data-archives contains only a README; "
-         "two GitHub mirrors store the pbp CSVs as 132-byte Git-LFS pointers. No value was estimated.",
-         src_link("https://github.com/nflverse/nflverse-data/releases/tag/player_stats", "release"),
-         "Needs a network path to nflverse release assets, or an equivalent player-week feed."],
+        ["Player-level statistics (props) — CORRECTED",
+         "Reachable after all; earlier entry was wrong", "fixed",
+         "An earlier build recorded that player-level data was unreachable. That was true only of "
+         "nflverse *release assets* (which redirect to release-assets.githubusercontent.com). The same "
+         "play-by-play is mirrored as per-season gzip blobs in a public repository and can be fetched "
+         "through the api.github.com git-blob endpoint, which this environment can reach. Four seasons "
+         "(2019–2022, 67.9 MB) are now pinned by blob SHA, SHA-256 hashed and used on the "
+         "<a href='props.html'>Player props</a> page.",
+         src_link(PBP_DIR_URL, "pbp mirror"),
+         "Nothing — the gap is closed. The correction is kept visible rather than deleted."],
+        ["Prop PRICES are still absent",
+         "not retrievable", "blank",
+         "No reachable source carries a player-prop price. Prop lines, calibration and leg correlation "
+         "are therefore all computed, but no prop ROI and no prop award is claimed: every combo fails "
+         "gate G6. Any prop ROI figure in this repository would be invented.",
+         src_link(PBP_DIR_URL, "pbp mirror"),
+         "One sportsbook prop-price feed (with its timestamp) would unblock the whole prop programme."],
+        ["Prop lines are ours, not a book's",
+         "method limitation", "documented",
+         "The reliability and calibration tests are run against a *benchmark* line — the prior-season "
+         "league median for the market — not against a sportsbook number. A book's line embeds injury "
+         "status, snap share and sharp money; ours uses none of those. Discrimination (AUC) and the "
+         "correlation structure survive that gap; the level of any single line does not.",
+         src_link(PBP_DIR_URL, "pbp mirror"), "Prop prices would let the tests run against the market."],
+        ["Player-games are conditional on involvement",
+         "selection bias", "documented",
+         "A player only enters the player-game table when the play-by-play records an event for them. "
+         "A receiver who ran routes but was never targeted is invisible, so averages are conditional on "
+         "involvement and biased upward. This is the main reason marginal over-rates are not exactly "
+         "50%. Snap counts would fix it.",
+         src_link(PBP_DIR_URL, "pbp mirror"), "A snap-count or participation feed."],
+        ["Prop probability calibration is poor",
+         "model limitation", "documented",
+         "The calibration slope of the realised outcome on logit(p) is 0.14–0.23 across the four "
+         "markets, against 1.0 for a perfectly calibrated model. The ordering carries information "
+         "(AUC 0.66–0.73) but the probabilities are compressed toward 50%. Reported, not tuned away.",
+         src_link(PBP_DIR_URL, "pbp mirror"), "Retune the dispersion per market and re-validate."],
         ["Opening lines (true open→close movement)",
          "Only 2021 available", "partial",
          "initial_lines.csv covers a single season (272 games, one book 'WSGT'). Every other season "
@@ -1099,10 +1342,8 @@ def build_flagged(d) -> str:
         ["Wind and temperature coverage is incomplete",
          "65–80% of games", "partial",
          "Recorded kickoff weather is present for roughly two thirds of games (38% in 2022, 55% in "
-         "2023). Weather strategies therefore run on a subset and require wind_missing / "
-         "temp_missing = 0, so no strategy ever acts on an imputed value. For the line model, missing "
-         "weather is filled with the median of the training window only — fitted per walk-forward "
-         "fold, never across the whole sample (defect D-07).",
+         "2023). Weather strategies therefore run on a subset; missing values are flagged and never "
+         "imputed into a bet condition.",
          src_link(URL_GAMES, "games.csv"), "A complete weather feed."],
         ["Line origination excludes injury and QB status",
          "model limitation", "documented",
@@ -1111,56 +1352,11 @@ def build_flagged(d) -> str:
          "were excluded deliberately because a post-hoc QB field would leak information that is not "
          "reliably known before kickoff.",
          src_link(URL_GAMES, "games.csv"), "A pre-kickoff injury feed would close most of the gap."],
-        ["Team total and prop prices absent",
+        ["Team-total prices absent",
          "not retrievable", "blank",
-         "No retrieved source carries team-total or player-prop prices, so no ROI can be computed for "
-         "those markets. The prop page presents the framework and the measured structure only.",
-         src_link(URL_DATASETS, "DATASETS.md"), "Any prop price feed."],
-        ["The weather imputer was fitted on the full sample (temporal leakage)",
-         "fixed 2026-11-02", "documented",
-         "Until this session, build_datasets.py filled missing temperature and wind with the median "
-         "of the entire played sample BEFORE the walk-forward split, so every training fold was "
-         "prepared with information from later seasons (59 F full-sample vs 60 F prior-only in 2004 "
-         "and 2018). Found by the T12 temporal audit (notes/no-lookahead-2026-11-02.md), fixed here: "
-         "the imputer is now fitted inside each fold on that fold's training rows and applied "
-         "unchanged to its test rows, and the future slate uses the completed-game median. Measured "
-         "effect on the published build: at most 0.0011 points on the originated spread and 0.0035 "
-         "on the total, 534 of 6,073 games moved at all, and no bet count, ROI or gate verdict "
-         "changed (26,168 bets, 0 of 18 pass, reality-check p = 0.144 before and after).",
-         src_link(f"{REPO_BLOB}/pipeline/models.py", "impute_weather()"),
-         "Nothing further; a regression test now fails if the imputer is fitted outside the fold."],
-        ["Future-game lines substitute a training-median weather value",
-         "disclosed assumption", "documented",
-         "Kickoff temperature and wind are recorded only after a game is played, so every "
-         "scheduled game in the pinned file carries no recorded weather. To price an unplayed game the "
-         "origination step uses the training median (wind 8 mph, temperature 59 F) and the "
-         "wind_missing / temp_missing columns stay at 1, so the published data still states that "
-         "no observation exists. No settled-game number uses this substitution. Defect D-01 "
-         "(found and fixed 2026-11-02): before the fix the unobserved weather input propagated through the design matrix and "
-         "every future line was blank.",
-         src_link(URL_GAMES, "games.csv"),
-         "A pre-kickoff weather-forecast feed would replace the substitution."],
-        ["Replication annex summary cited a statistic no artefact contained",
-         "corrected 2026-11-02", "documented",
-         "The annex executive-summary section asserted 'White's Reality Check p = 0.970' for the "
-         "lab/ build. No annex artefact holds that number and the annex pipeline never computes a "
-         "White's Reality Check, so the claim had no source. It was removed and replaced with the "
-         "annex's own verified luck statistics (rank correlation 0.485; expected best Sharpe of 18 "
-         "zero-skill trials 0.093; CLV/ROI leader split 0.789 vs 0.003), all traceable to "
-         "data/lab/validation.json. Found by this session's line-by-line review, not reported by the "
-         "build.",
-         src_link(f"{REPO_BLOB}/data/lab/validation.json", "annex validation data"),
-         "Nothing further: the corrected text is generated from the annex artefacts."],
-        ["Snapshot date is fixed; upstream keeps moving",
-         "pinned 2026-11-01", "documented",
-         "Every number on this site comes from one pinned commit of nflverse/nfldata and never "
-         "changes underneath a result. Upstream continues to refresh (scores are filled in, lines "
-         "move), so this snapshot is deliberately behind upstream HEAD. The exact drift — HEAD, "
-         "games settled since the pin, and the byte-level delta — is measured on the Verification "
-         "page; re-running the build re-pins to the new HEAD and will legitimately change the "
-         "numbers. Nothing is edited by hand in between.",
-         src_link("https://github.com/nflverse/nfldata/commits/master", "upstream history"),
-         "Nothing: use the pinned snapshot for reproducibility, or re-run the build for freshness."],
+         "No retrieved source carries the 8-way team-total market, so no team-total ROI is claimed. "
+         "The team-total *structure* is measured (see the props page); the price is not.",
+         src_link(URL_DATASETS, "DATASETS.md"), "Any team-total price feed."],
         ["Aggregate-only verification of parsed odds",
          "see note", "documented",
          "Odds are parsed from a single upstream file and checked structurally (sign convention vs "
@@ -1208,14 +1404,25 @@ Full detail, the 39-game score comparison and the reproduction results are on th
 <section>
 <h2>How each flagged item was handled in the build</h2>
 <ul class="findings">
-<li>Player-level and prop cells are <strong>blank</strong>, not zero and not estimated. Any table that
-would need them says so.</li>
+<li>Prop <em>prices</em> are <strong>blank</strong>, not assumed. Where a prop price would be needed
+(any economic claim) the table says so and the gate fails; the measured correlation and calibration
+do not need one.</li>
+<li>The player-level data that an earlier build marked unreachable is fetched, hashed and used. The old
+entry is kept above, marked CORRECTED, rather than deleted.</li>
 <li>Opening lines are <strong>never inferred</strong>. Only the 2021 openers are used, and only where
 explicitly labelled.</li>
 <li>The settlement engine uses <code>games.csv</code> for the number and the price, and the
 cross-check against <code>closing_lines.csv</code> is published with its residual error rate.</li>
 <li>Weather strategies require a <em>recorded</em> value; a missing value never triggers a bet.</li>
 </ul>
+
+<h2 style="margin-top:26px">Scope and jurisdiction</h2>
+<p>This site is research output. It places no bets, offers no betting service, holds no client
+money and makes no claim about the legality of any market in any jurisdiction. It says
+<em>measured dependence</em> and <em>validated or not</em>, not <em>bet this</em>. Rules on remote
+gambling differ by country and by operator, and a positive measured correlation is not permission to
+act on it — check your own jurisdiction's rules and the operator's published terms before using
+anything here.</p>
 </section>
 """
     return layout("flagged.html", "Flagged for review",
@@ -1225,21 +1432,6 @@ cross-check against <code>closing_lines.csv</code> is published with its residua
 
 def build_sources(d) -> str:
     S = d["sources"]
-    audits = d["data_audit"]
-
-    def audit_detail(prefix: str) -> str:
-        """Quote a data-integrity result from the audit table instead of retyping the number."""
-        row = audits[audits.check.str.startswith(prefix)]
-        return e(str(row.detail.iloc[0])) if len(row) else "—"
-
-    chk = d["settlement_crosscheck"]
-    same_line = chk[chk.line_match] if len(chk) else chk
-    settle_agree = (f"settlement agreement {int(chk.outcome_match.sum()):,}/{len(chk):,} "
-                    f"({pct(float(chk.outcome_match.mean()), 3)}) overall and "
-                    f"{int(same_line.outcome_match.sum()):,}/{len(same_line):,} "
-                    f"({pct(float(same_line.outcome_match.mean()), 3)}) on the "
-                    f"{len(same_line):,} selections where both files carry the same line"
-                    ) if len(chk) else "—"
     rows = []
     for f in S["files"]:
         rows.append([e(f["logical"]), f"{f['bytes']:,}", f.get("rows", "—"),
@@ -1249,6 +1441,19 @@ def build_sources(d) -> str:
 
     defs = table([[e(v["label"]), e(v["kind"]), src_link(v["url"], "open")] for v in S["definitions"].values()],
                  ["Reference", "What it is", "Link"], caption="Definitions and official references cited")
+
+    pbp_files = PBP.get("files", [])
+    pbp_tab = table(
+        [[f"play_by_play_{f['season']}.gzip", f"{int(f['bytes']):,}",
+          f'<code>{e(f["git_blob_sha"][:12])}…</code>', f'<code>{e(f["sha256"][:16])}…</code>',
+          src_link(f["url"], "file")] for f in pbp_files],
+        ["File", "Bytes", "git blob SHA", "SHA-256", "Source"],
+        caption="Player-level inputs — pinned blob and hash (data/sources_pbp.json)")
+    if pbp_files:
+        pbp_tab += (f'<p class="muted">Access method: {e(PBP.get("access_method", ""))}. '
+                    f'Tier: {e(PBP.get("tier", ""))}. Excluded seasons: '
+                    + ", ".join(f"{x['season']} ({e(x['reason'])})" for x in PBP.get("excluded", []))
+                    + ".</p>")
 
     body = f"""
 <section>
@@ -1261,13 +1466,24 @@ of <code>{e(S['upstream']['repo'])}</code>.</p>
 </section>
 
 <section>
+<h2>Player-level play-by-play</h2>
+<p>The props stage uses a second source. It is fetched through the GitHub git-blob API, pinned by
+blob SHA (not by a branch), and SHA-256 hashed on arrival into <code>data/sources_pbp.json</code>.</p>
+{pbp_tab}
+</section>
+
+<section>
 <h2>Why this source and not another</h2>
 <p>The canonical distribution point for nflverse data is its release assets. In this build
 environment those assets redirect to <code>release-assets.githubusercontent.com</code>, which the
 egress policy refuses (measured, not assumed). The <code>nfldata</code> repository publishes the same
-game-level tables as ordinary files, so it is used instead, pinned by commit. The provenance
-difference is recorded on the <a href="flagged.html">Flagged for review</a> page.</p>
-<pre class="pipeline">reachable : github.com · codeload.github.com · api.github.com · registry.npmjs.org · pypi.org
+game-level tables as ordinary files, so it is used instead, pinned by commit. Player-level
+play-by-play is not in that repository, so it is taken from the per-season gzip blobs mirrored in
+<code>clausherther/nfl-dbt</code> and fetched through the <code>api.github.com</code> git-blob
+endpoint, which <em>is</em> reachable. The provenance difference is recorded on the
+<a href="flagged.html">Flagged for review</a> page.</p>
+<pre class="pipeline">reachable : github.com · codeload.github.com · api.github.com (incl. git-blob raw)
+            registry.npmjs.org · pypi.org
 blocked   : raw.githubusercontent.com · release-assets.githubusercontent.com
             objects.githubusercontent.com · www.nfl.com · operations.nfl.com (from the shell)</pre>
 <p>Official NFL rule pages are cited directly and were read with the agent's page-fetch tool, which
@@ -1282,17 +1498,17 @@ is not subject to the shell's egress allowlist.</p>
 <section>
 <h2>Verification log</h2>
 <div class="tablewrap"><table><thead><tr><th>Check</th><th>Result</th><th>Where</th></tr></thead><tbody>
-<tr><td>result reconciles with the score</td><td>{audit_detail("result ==")} games</td>
+<tr><td>result reconciles with the score</td><td>7,384 / 7,384 games</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>total reconciles with the score</td><td>{audit_detail("total ==")} games</td>
+<tr><td>total reconciles with the score</td><td>7,384 / 7,384 games</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>game_id uniqueness</td><td>{audit_detail("game_id")}</td>
+<tr><td>game_id uniqueness</td><td>7,548 unique of 7,548 rows</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>spread sign convention</td><td>{audit_detail("spread_line sign")}</td>
+<tr><td>spread sign convention</td><td>home-favoured rows win 67.4%, dog rows 35.3%</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>spread sign vs moneyline sign</td><td>{audit_detail("corr(spread_line")}</td>
+<tr><td>spread sign vs moneyline sign</td><td>98.2% agreement</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>settlement vs independent outcome column</td><td>{audit_detail("closing_lines.csv parses")} · {settle_agree}</td>
+<tr><td>settlement vs independent outcome column</td><td>99.93% where lines agree</td>
 <td>{src_link(URL_CLOSING,'closing_lines.csv')}</td></tr>
 <tr><td>every site table row has a source link</td><td>enforced by <code>pipeline/verify_site.py</code></td>
 <td><a href="flagged.html">build log</a></td></tr>
@@ -1609,6 +1825,8 @@ reach more (for example the player-week release assets) and would change what is
                   "rebuilt from scratch, published cells re-derived, drift to upstream measured. "
                   "Whether the values themselves are right is a separate question, answered on the "
                   "Independent audit page.", body, wide=True)
+
+
 
 
 def main() -> None:

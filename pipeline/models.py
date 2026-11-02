@@ -70,6 +70,21 @@ def impute_weather(train: pd.DataFrame, apply_to: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def _ensure_complete(train: pd.DataFrame, test: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Weather completeness guard.
+
+    `build_datasets.fold_safe_weather_fill` already fills every outdoor row from games on
+    strictly earlier dates and encodes indoor rows as 0, so in a normal build this is a
+    no-op and the per-fold imputer below is never reached. It stays as a hard stop against
+    a *partially rebuilt* frame (which is what blanked all 164 scheduled lines in D-01):
+    if any gap survives, fill it from the training fold only — never from the test rows —
+    rather than handing NaN to the ridge fit.
+    """
+    if not (train[list(WEATHER)].isna().any().any() or test[list(WEATHER)].isna().any().any()):
+        return train, test
+    return impute_weather(train, train), impute_weather(train, test)
+
+
 def _weights(season_train: np.ndarray, season_test: int) -> np.ndarray:
     return 0.5 ** (np.abs(season_test - season_train) / DECAY_HALFLIFE_SEASONS)
 
@@ -179,9 +194,8 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
         if len(tr) < 400 or te.empty:
             continue
 
-        # imputer fitted on THIS fold's training rows only, then applied to train and test
-        tr_i = impute_weather(tr, tr)
-        te_i = impute_weather(tr, te)
+        # normally a no-op: build_datasets has already filled weather fold-safely
+        tr_i, te_i = _ensure_complete(tr, te)
         Xm = tr_i[FEATURES_MARGIN].to_numpy(float)
         Xt = tr_i[FEATURES_TOTAL].to_numpy(float)
         ym = tr["result"].to_numpy(float)
@@ -332,7 +346,7 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
         return future
     # training frames are imputed with their own medians (this *is* the training window for the
     # future slate), the future rows with the training medians — never with their own
-    df = impute_weather(df, df)
+    df, _ = _ensure_complete(df, df)
     future = impute_weather(df, future)
     S = int(df.season.max()) + 1
     Xm, Xt = df[FEATURES_MARGIN].to_numpy(float), df[FEATURES_TOTAL].to_numpy(float)
@@ -395,7 +409,18 @@ def main() -> None:
     print(f"originated_lines: {pred.shape}, seasons {pred.season.min()}–{pred.season.max()}")
     allrows = metrics[metrics.season == "ALL"]
     print(allrows.pivot(index="model", columns="market", values="mae").round(3).to_string())
-    print(f"\nupcoming priced: {len(fut_line)} games, {fut_line.market_spread.notna().sum()} with a market line")
+    # A scheduled game with a blank fair line is a published hole: the earlier build emitted
+    # 164 of them because the future frame had no weather fill. Refuse to write such a file.
+    priced_cols = ["fair_spread", "fair_total", "p_home_ml", "p_away_ml",
+                   "originated_home_ml", "originated_away_ml"]
+    blank = int(fut_line[priced_cols].isna().any(axis=1).sum())
+    if blank:
+        bad = fut_line[fut_line[priced_cols].isna().any(axis=1)]
+        raise SystemExit(
+            f"refusing to publish {blank} scheduled games with blank originated lines: "
+            + ", ".join(bad.game_id.head(5)))
+    print(f"\nupcoming priced: {len(fut_line)} games, {fut_line.market_spread.notna().sum()} with a market line, "
+          f"{blank} blank lines")
 
 
 if __name__ == "__main__":

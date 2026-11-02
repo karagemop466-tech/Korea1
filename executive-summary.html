@@ -25,7 +25,7 @@
 strategies that beat the market for reasons other than luck?</em> — and answered it with a
 reproducible pipeline rather than an opinion. The short version: the lines are good, the
 strategies are not validated, and the pipeline is able to say so.</p>
-<div class="cards"><div class="card "><div class="card-value">6,073</div><div class="card-label">out-of-sample games</div><div class=card-note>2004–2026</div></div><div class="card "><div class="card-value">26,168</div><div class="card-label">bets simulated</div><div class=card-note>every strategy, closing prices</div></div><div class="card bad"><div class="card-value">0</div><div class="card-label">strategies validated</div><div class=card-note>of 18 tested</div></div><div class="card "><div class="card-value">0.144</div><div class="card-label">reality-check p</div><div class=card-note>no rejection of luck</div></div></div>
+<div class="cards"><div class="card "><div class="card-value">6,073</div><div class="card-label">out-of-sample games</div><div class=card-note>2004–2026</div></div><div class="card "><div class="card-value">26,149</div><div class="card-label">bets simulated</div><div class=card-note>every strategy, closing prices</div></div><div class="card bad"><div class="card-value">0</div><div class="card-label">strategies validated</div><div class=card-note>of 18 tested</div></div><div class="card "><div class="card-value">0.186</div><div class="card-label">reality-check p</div><div class=card-note>no rejection of luck</div></div></div>
 </section>
 
 <section>
@@ -52,7 +52,7 @@ unverified or contradictory.</li>
 
 <section>
 <h2>2 · What the numbers say</h2>
-<div class="tablewrap"><table class=""><caption>Out-of-sample accuracy against the close</caption><thead><tr><th>Market</th><th>Closing-line MAE</th><th>Our MAE</th><th>Gap</th><th>Source</th></tr></thead><tbody><tr><td>Spread</td><td>10.215</td><td>10.527</td><td>+0.312</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>Total</td><td>10.527</td><td>10.727</td><td>+0.199</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr></tbody></table></div>
+<div class="tablewrap"><table class=""><caption>Out-of-sample accuracy against the close</caption><thead><tr><th>Market</th><th>Closing-line MAE</th><th>Our MAE</th><th>Gap</th><th>Source</th></tr></thead><tbody><tr><td>Spread</td><td>10.215</td><td>10.527</td><td>+0.311</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr><tr><td>Total</td><td>10.527</td><td>10.726</td><td>+0.199</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr></tbody></table></div>
 <p>The model is roughly <strong>a third of a point worse than the closing line</strong> on both
 markets. That gap is not a coding artefact: it is the value of injury reports, starting-quarterback
 news and sharp money, none of which the model is allowed to see. It is also, conveniently, about the
@@ -61,9 +61,9 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <div class="tablewrap"><table><thead><tr><th>Result</th><th>Value</th><th>Reading</th><th>Source</th></tr></thead><tbody>
 <tr><td>Strategies passing all eight gates</td><td><strong>0 of 18</strong></td>
 <td>nothing is validated as skill</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">gates</a></td></tr>
-<tr><td>Best raw ROI</td><td><strong>21.6%</strong> (PARLAY3_EDGE, 377 tickets)</td>
+<tr><td>Best raw ROI</td><td><strong>19.4%</strong> (PARLAY3_EDGE, 377 tickets)</td>
 <td>a high-variance long-shot ladder, not an edge</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">gates</a></td></tr>
-<tr><td>White's reality check</td><td><strong>p = 0.144</strong></td>
+<tr><td>White's reality check</td><td><strong>p = 0.186</strong></td>
 <td>best-of-library is consistent with luck</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
 <tr><td>Two-way hold in closing prices</td>
 <td><strong>2.72%</strong> spread / 2.93% total</td>
@@ -79,6 +79,17 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 </section>
 
 <section>
+<h2>2b · The prop module</h2>
+<p>Player-level play-by-play (2019–2022, 21,033 player-games) is fetched through the GitHub
+git-blob API and pinned by blob SHA. It produces 9,730 originated prop lines and a
+0.66–0.73 AUC on out-of-sample ranking. Leg dependence is measurable: QB passing yards with his own
+WR1's receiving yards lift the joint hit rate 1.136× over independence, a player's receptions
+with his own receiving yards lift it 1.446×, and the cross-game control sits at
+φ = -0.036 with an interval spanning zero. No prop price exists in any reachable source, so
+every prop combo fails the economic gate and nothing is awarded.</p>
+</section>
+
+<section>
 <h2>3 · Decisions that shaped the result</h2>
 <ul class="findings">
 <li><strong>Bet the close, not the opener.</strong> Openers exist for one season only, so every
@@ -89,9 +100,10 @@ any of them ran, and every one is published. No result was dropped, no threshold
 <li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
 manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
 exist to stop that from happening here.</li>
-<li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
-are unavailable from reachable sources, so they are blank and flagged instead of modelled from
-proxies.</li>
+<li><strong>Never fill a gap.</strong> Prop <em>prices</em>, team-total prices and multi-season
+openers are unavailable from reachable sources, so they are blank and flagged instead of modelled
+from proxies. Player-level <em>statistics</em> turned out to be reachable and are now used, which is
+why the props page has real numbers on it.</li>
 </ul>
 </section>
 
@@ -99,7 +111,9 @@ proxies.</li>
 <h2>4 · What is not proven</h2>
 <p>Everything on the <a href="flagged.html">Flagged for review</a> page, in one sentence each:</p>
 <ul class="findings">
-<li>Player-prop behaviour is <strong>unmeasured</strong> — no player-week or prop-price data was retrievable.</li>
+<li>Player-prop behaviour is <strong>measured, but not priceable</strong> — the lines, the
+calibration and the leg correlation are real; the prop <em>price</em> that would turn them into a
+return is not available anywhere this build can reach, so gate G6 fails for every prop combo.</li>
 <li>Open-to-close movement is measured for <strong>2021 only</strong>.</li>
 <li>The two nflverse price files disagree by half a point on about a third of games, and three 2015
 games have outcome flags that contradict their own score.</li>
@@ -118,13 +132,13 @@ mirror rather than an NFL site. See the <a href="audit.html">Independent audit</
 of the close, with no market input at all — but that gap is decisive. Once every strategy is forced
 through power, FDR, bootstrap and deflated-Sharpe gates, the apparent winners dissolve: the best
 result in the library is a 3-leg parlay ladder that a reality check cannot distinguish from luck
-(p = 0.144). The honest deliverable is therefore the
+(p = 0.186). The honest deliverable is therefore the
 <em>machinery that can tell the difference</em>, plus a documented list of exactly which data would
 be needed to go further.</p>
 </section>
 
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
+    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
     produced by <code>pipeline/</code> from the files listed on the
     <a href="sources.html">Sources</a> page.</p>
   </footer>

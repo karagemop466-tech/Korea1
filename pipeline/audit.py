@@ -193,7 +193,8 @@ def audit_rebuild(src: dict, digests: pd.DataFrame) -> pd.DataFrame:
             json.dumps(src, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
         stages = ["build_datasets.py", "models.py", "backtest.py", "validation.py",
-                  "correlations.py", "render_site.py"]
+                  "correlations.py", "props_model.py", "render_summary.py",
+                  "render_site.py", "render_requirements.py"]
         log = []
         for stage in stages:
             proc = subprocess.run([sys.executable, str(tmp / "pipeline" / stage)], cwd=tmp,
@@ -318,6 +319,23 @@ def _tables(page: str) -> list[list[list[str]]]:
     return out
 
 
+def _table_headers(page: str) -> list[list[str]]:
+    """Header row of every table on a page, so checks index by column *name*, not position."""
+    raw = (SITE / page).read_text(encoding="utf-8")
+    out = []
+    for tbl in TABLE.findall(raw):
+        head = tbl.split("</thead>")[0]
+        out.append([html.unescape(TAG.sub("", c)).strip() for c in TH.findall(head)])
+    return out
+
+
+def _col(headers: list[str], *names: str) -> int | None:
+    for i, h in enumerate(headers):
+        if any(n.lower() in h.lower() for n in names):
+            return i
+    return None
+
+
 def _text(cell: str) -> str:
     return html.unescape(TAG.sub("", cell)).strip()
 
@@ -355,7 +373,10 @@ def audit_claims(src: dict) -> pd.DataFrame:
 
     # E1 leaderboard: 18 rows, bets + ROI + win rate re-derived from strategy_summary.csv
     tabs = _tables("strategies.html")
+    heads = _table_headers("strategies.html")
     lead = tabs[1] if len(tabs) > 1 else []
+    h = heads[1] if len(heads) > 1 else []
+    c_bets, c_win, c_roi = _col(h, "Bets"), _col(h, "Win rate"), _col(h, "ROI")
     by_name = {str(r.strategy): r for r in summ.itertuples()}
     for cells in lead:
         name = _name(cells[1]) if len(cells) > 1 else ""
@@ -364,7 +385,7 @@ def audit_claims(src: dict) -> pd.DataFrame:
             add("strategies.html", f"leaderboard row {name!r} exists in data", name, "absent",
                 False, "data/processed/strategy_summary.csv")
             continue
-        bets, win, roi = _text(cells[3]), _text(cells[4]), _text(cells[5])
+        bets, win, roi = _text(cells[c_bets]), _text(cells[c_win]), _text(cells[c_roi])
         ok = (_num(bets) == r.n and
               abs((_num(win) or -999) - r.win_rate * 100) < 0.051 and
               abs((_num(roi) or -999) - r.roi * 100) < 0.0051)
@@ -376,9 +397,12 @@ def audit_claims(src: dict) -> pd.DataFrame:
     # E2 validation: verdict per strategy re-derived from strategy_gates.csv
     tabs = _tables("validation.html")
     ver = {str(r.strategy): r.verdict for r in gates.itertuples()}
+    vheads = _table_headers("validation.html")
+    vh = vheads[1] if len(vheads) > 1 else []
+    c_verdict = _col(vh, "Verdict")
     for cells in (tabs[1] if len(tabs) > 1 else []):
         name = _text(cells[0])
-        verdict = _text(cells[-2])
+        verdict = _text(cells[c_verdict if c_verdict is not None else len(cells) - 2])
         if name in ver:
             add("validation.html", f"verdict {name}", verdict, ver[name],
                 verdict.strip().lower() == str(ver[name]).strip().lower(),
@@ -388,11 +412,16 @@ def audit_claims(src: dict) -> pd.DataFrame:
     tabs = _tables("lines.html")
     allm = metrics[metrics.season == "ALL"]
     pivot = allm.pivot_table(index="model", columns="market", values="mae")
+    lheads = _table_headers("lines.html")
+    lh = lheads[0] if lheads else []
+    c_sp, c_tot = _col(lh, "Spread MAE"), _col(lh, "Total MAE")
     for cells in (tabs[0] if tabs else []):
         model = _text(cells[0])
         if model not in pivot.index:
             continue
-        for col, market in ((1, "spread"), (2, "total")):
+        for col, market in ((c_sp, "spread"), (c_tot, "total")):
+            if col is None:
+                continue
             expected = pivot.loc[model].get(market)
             published = _text(cells[col])
             if expected is None or pd.isna(expected):
@@ -445,8 +474,14 @@ def audit_claims(src: dict) -> pd.DataFrame:
 
     # E6 future-line completeness: every published open-board row must carry our own numbers
     tabs = _tables("lines.html")
-    open_board = tabs[2] if len(tabs) > 2 else []
-    blanks = [c for c in open_board if len(c) > 5 and _text(c[4]) in {"—", ""}]
+    open_idx, c_ours = None, None
+    for i, hh in enumerate(lheads):
+        if "Our spread" in hh and any("Market spread" in x for x in hh):
+            open_idx, c_ours = i, _col(hh, "Our spread")
+            break
+    open_board = tabs[open_idx] if open_idx is not None and open_idx < len(tabs) else []
+    blanks = [c for c in open_board
+              if c_ours is not None and len(c) > c_ours and _text(c[c_ours]) in {"—", ""}]
     add("lines.html", "open board: our spread is published for every row",
         f"{len(open_board) - len(blanks)}/{len(open_board)} rows", "all rows",
         bool(open_board) and not blanks, "data/processed/originated_upcoming.csv")

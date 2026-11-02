@@ -146,7 +146,48 @@ def adjusted_ratings(raw: pd.DataFrame, alpha: float = 12.0,
 
     return out
 
-def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
+WEATHER_COLS = ("temp", "wind")
+
+
+def fold_safe_weather_fill(played: pd.DataFrame) -> tuple[dict, dict]:
+    """Expanding weather fill: the median of games played on a *strictly earlier* date.
+
+    Why not ``frame[col].median()``: that statistic is computed on the whole history, so a
+    2004 row is imputed with a number that depends on games played in 2025 — and, for the
+    scheduled frame, with a median that includes the very games being priced. Session
+    ``arena/8eb93b26-korea1`` flagged this as a fold-preprocessing defect
+    (``notes/no-lookahead-2026-11-02.md``).
+
+    The rule here is chronological by construction: for a game on date ``d`` the fill is
+    the median of observed values at all dates ``< d``. Scheduled games take the final
+    expanding median (all games played up to the snapshot) — fold-safe, and never NaN.
+    """
+    played = played.copy()
+    played["_date"] = pd.to_datetime(played["gameday"])
+    fills: dict[str, pd.Series] = {}
+    record: dict = {"method": "median of games played on a strictly earlier date",
+                    "columns": {}, "as_of": str(played["_date"].max().date())}
+    for col in WEATHER_COLS:
+        obs = played.dropna(subset=[col]).sort_values(["_date", "game_id"])
+        obs_dates = obs["_date"].to_numpy()
+        obs_values = obs[col].to_numpy(float)
+        dates = np.sort(played["_date"].unique())
+        med = np.empty(len(dates), dtype=float)
+        for i, d in enumerate(dates):
+            j = int(np.searchsorted(obs_dates, d, side="left"))
+            med[i] = np.median(obs_values[:j]) if j else np.nan
+        fills[col] = pd.Series(med, index=pd.DatetimeIndex(dates))
+        record["columns"][col] = {
+            "observed_games": int(len(obs)),
+            "missing_in_played": int(played[col].isna().sum()),
+            "final_fill": round(float(np.median(obs_values)), 3) if len(obs_values) else None,
+            "fill_min": round(float(np.nanmin(med)), 3) if len(med) else None,
+            "fill_max": round(float(np.nanmax(med)), 3) if len(med) else None,
+        }
+    return fills, record
+
+
+def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict], dict]:
     raw = pd.read_csv(RAW / "games.csv")
     raw["gameday"] = pd.to_datetime(raw["gameday"], errors="coerce")
     raw = raw.sort_values(["gameday", "gametime", "game_id"], kind="mergesort").reset_index(drop=True)
@@ -300,16 +341,27 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
     df = pd.DataFrame(rows)
     up = pd.DataFrame(upcoming)
 
-    # Derived flags only. Weather is deliberately NOT imputed here.
-    #
-    # CHANGE (2026-11-02, session arena/fb363967-korea1 — defect D-07, raised by the T12 temporal
-    # audit and reproduced): temperature and wind used to be filled with the median of the whole
-    # played sample *before* the walk-forward split, so every training fold was prepared with
-    # information from later seasons (59 F full-sample vs 60 F prior-only in 2004 and 2018). The
-    # imputer now lives in `models.walk_forward`, where it is fitted on each fold's training rows
-    # only and applied to that fold's test rows. Missing weather is left missing here — the
-    # `wind_missing` / `temp_missing` flags record it, and the weather angle rules already require
-    # `*_missing == 0`, so no strategy picks up an imputed value.
+    # derived flags. Weather is missing for ~30% of played games (mostly domes, where it is
+    # irrelevant) and for *every* scheduled game. It is filled with an expanding,
+    # chronological median (see `fold_safe_weather_fill`), never with a whole-frame
+    # statistic: the frame-wide median leaks later games into earlier rows, and on the
+    # scheduled frame it is NaN for all rows and silently blanked every future line.
+    weather_fills, weather_record = fold_safe_weather_fill(df)
+    for col in WEATHER_COLS:
+        # Indoor games have no outdoor weather to record, so a median is the wrong kind of
+        # number for them. They are encoded 0 and stay flagged (`*_missing = 1`), with
+        # `roof_dome = 1` identifying the group: a fixed encoding, not an estimate.
+        indoor = df.roof.isin(["dome", "closed"])
+        df.loc[indoor & df[col].isna(), col] = 0.0
+        df[col] = df[col].fillna(pd.to_datetime(df.gameday).map(weather_fills[col]))
+        if not up.empty:
+            up.loc[up.roof.isin(["dome", "closed"]) & up[col].isna(), col] = 0.0
+            up[col] = up[col].fillna(weather_fills[col].iloc[-1])
+        if df[col].isna().any():
+            raise RuntimeError(f"{col}: {int(df[col].isna().sum())} played rows unfilled")
+        if not up.empty and up[col].isna().any().any():
+            raise RuntimeError(f"{col}: scheduled rows unfilled")
+
     for frame in (df, up):
         if frame.empty:
             continue
@@ -344,7 +396,15 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, list[dict]]:
 
     assert_no_leakage(df, "games_model")
 
-    return df, up, audit
+    audit.append({
+        "check": "weather fill uses only earlier dates",
+        "detail": (f"outdoor temp/wind filled with the median of games dated before each game "
+                   f"(final {weather_record['columns']['temp']['final_fill']}°F / "
+                   f"{weather_record['columns']['wind']['final_fill']} mph); indoor rows encoded 0 "
+                   f"with the missing flag kept; {len(up):,} scheduled rows filled from the same rule"),
+        "passed": True,
+    })
+    return df, up, audit, weather_record
 
 
 FEATURES_MARGIN = [
@@ -376,15 +436,16 @@ FEATURE_DICT = [
     ("season_idx", "season − 1999; lets the total model track league scoring drift", "total"),
     ("roof_dome", "Roof closed/dome", "margin,total"),
     ("roof_open", "Retractable roof, open", "margin,total"),
-    ("temp", "Kickoff temperature (°F); median-imputed with missing flag", "margin,total"),
-    ("wind", "Kickoff wind (mph); median-imputed with missing flag", "margin,total"),
+    ("temp", "Kickoff temperature (°F); outdoor median of earlier games, 0 indoors, missing flag kept", "margin,total"),
+    ("wind", "Kickoff wind (mph); outdoor median of earlier games, 0 indoors, missing flag kept", "margin,total"),
     ("temp_missing", "1 if temperature not recorded", "margin,total"),
     ("wind_missing", "1 if wind not recorded", "margin,total"),
 ]
 
 
 def main() -> None:
-    df, up, audit = build()
+    df, up, audit, weather = build()
+    write_json(PROC / "weather_fill.json", weather)
     df.to_csv(PROC / "games_model.csv", index=False)
     up.to_csv(PROC / "upcoming.csv", index=False)
     pd.DataFrame(audit).to_csv(PROC / "data_audit.csv", index=False)

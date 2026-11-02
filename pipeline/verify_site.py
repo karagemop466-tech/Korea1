@@ -137,10 +137,25 @@ def main() -> int:
 
     df = pd.DataFrame(results)
     df.to_csv(PROC / "verification_report.csv", index=False)
+    # Published mirror: `assets/data/` holds the downloadable copies of the processed
+    # tables. It is written here too, otherwise the mirror keeps whatever numbers the
+    # last session that touched it by hand saw and silently contradicts this report.
+    mirror = ROOT / "assets" / "data"
+    mirror.mkdir(parents=True, exist_ok=True)
+    df.to_csv(mirror / "verification_report.csv", index=False)
 
     # data-level checks that the site depends on
     extra = []
+
+    # Published win rates must be recomputable from the ledger with the definition the page states.
+    summ = pd.read_csv(PROC / "strategy_summary.csv")
+    wr_err = float((summ.win_rate - summ.wins / (summ.wins + summ.losses)).abs().max())
     for name, cond, detail in [
+        ("strategy win rate = wins / (wins + losses), pushes excluded",
+         bool(wr_err < 1e-9), f"{len(summ)} strategies, max |error| {wr_err:.2e}"),
+        ("strategy tickets = wins + losses + pushes",
+         bool((summ.n == summ.wins + summ.losses + summ.pushes).all()),
+         f"{len(summ)} strategies, {int(summ.n.sum()):,} tickets"),
         ("data_audit all passed",
          bool(pd.read_csv(PROC / "data_audit.csv").passed.all()),
          f"{int(pd.read_csv(PROC / 'data_audit.csv').passed.sum())}/"
@@ -153,14 +168,28 @@ def main() -> int:
                    ~(pd.read_csv(PROC / 'strategy_gates.csv')[['G1_data', 'G2_leakage', 'G3_power',
                     'G4_significance', 'G5_luck', 'G6_economic', 'G7_stability']].all(axis=1))).any()),
          "verdict logic consistent"),
-        ("prop page publishes no unverified value", True, "player-level cells left blank by design"),
         # regression guard for defect D-01 (2026-11-02): unplayed games carry no weather, and a
-        # missing design-matrix input silently blanked every originated future line
+        # missing design-matrix input once blanked every originated future line
         ("every scheduled game carries an originated line",
          bool(pd.read_csv(PROC / "originated_upcoming.csv")
               [["fair_spread", "fair_total", "originated_home_ml", "originated_away_ml"]]
               .notna().all().all()),
          f"{len(pd.read_csv(PROC / 'originated_upcoming.csv'))} scheduled games priced"),
+        ("prop definitions reproduce published season totals",
+         bool(pd.read_csv(PROC / "prop_definition_validation.csv").match.all()),
+         f"{int(pd.read_csv(PROC / 'prop_definition_validation.csv').match.sum())}/"
+         f"{len(pd.read_csv(PROC / 'prop_definition_validation.csv'))} player-seasons exact"),
+        ("no prop combo is awarded without the economic gate",
+         bool(not pd.read_csv(PROC / "prop_gates.csv").G6_economic.any()),
+         "G6 fails for every combo: no prop price feed exists"),
+        ("every prop combo has a verdict, and STRUCTURE needs G4",
+         bool(pd.read_csv(PROC / "prop_gates.csv").verdict.notna().all()
+              and not ((pd.read_csv(PROC / "prop_gates.csv").verdict.str.startswith("STRUCTURE"))
+                       & ~pd.read_csv(PROC / "prop_gates.csv").G4_significance).any()),
+         f"{len(pd.read_csv(PROC / 'prop_gates.csv'))} combos"),
+        ("originated prop lines are fair (mean p(over) within 0.02 of 0.5)",
+         bool(abs(pd.read_csv(PROC / "prop_lines.csv").p_over.mean() - 0.5) < 0.02),
+         f"mean p(over) = {pd.read_csv(PROC / 'prop_lines.csv').p_over.mean():.4f}"),
     ]:
         extra.append(dict(check=name, passed=cond, detail=detail))
         print(f"[{'PASS' if cond else 'FAIL'}] {name} — {detail}")

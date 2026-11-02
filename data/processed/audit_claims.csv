@@ -1,21 +1,21 @@
 page,claim,published,rederived,match,source
-strategies.html,leaderboard PARLAY3_EDGE: bets/win rate/ROI,377 / 17.5% / 21.64%,377 / 17.5% / 21.64%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard PARLAY2_EDGE: bets/win rate/ROI,400 / 31.0% / 14.15%,400 / 31.0% / 14.15%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard PARLAY3_EDGE: bets/win rate/ROI,377 / 17.2% / 19.44%,377 / 17.2% / 19.44%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard PARLAY2_EDGE: bets/win rate/ROI,400 / 31.2% / 14.60%,400 / 31.2% / 14.60%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard WIND_UNDER: bets/win rate/ROI,456 / 56.1% / 9.15%,456 / 56.1% / 9.15%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard FADE_BLOWOUT_ATS: bets/win rate/ROI,922 / 52.4% / 1.80%,922 / 52.4% / 1.80%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard SP_EDGE_3_0: bets/win rate/ROI,"1,686 / 52.3% / 1.57%",1686 / 52.3% / 1.57%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard TOT_EDGE_3_5: bets/win rate/ROI,"1,097 / 52.0% / 1.15%",1097 / 52.0% / 1.15%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard SP_EDGE_3_0: bets/win rate/ROI,"1,687 / 52.3% / 1.50%",1687 / 52.3% / 1.50%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard TOT_EDGE_3_5: bets/win rate/ROI,"1,094 / 52.0% / 1.17%",1094 / 52.0% / 1.17%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard DIV_UNDER: bets/win rate/ROI,"1,908 / 51.9% / 1.12%",1908 / 51.9% / 1.12%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard SP_EDGE_2_0: bets/win rate/ROI,"2,674 / 51.7% / 0.37%",2674 / 51.7% / 0.37%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard TOT_EDGE_2_0: bets/win rate/ROI,"2,450 / 51.2% / -0.42%",2450 / 51.2% / -0.42%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard SP_EDGE_2_0: bets/win rate/ROI,"2,672 / 51.7% / 0.44%",2672 / 51.7% / 0.44%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard TOT_EDGE_2_0: bets/win rate/ROI,"2,446 / 51.3% / -0.29%",2446 / 51.3% / -0.29%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard BUY_LOW_ATS: bets/win rate/ROI,"1,349 / 51.0% / -1.07%",1349 / 51.0% / -1.07%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard ML_EDGE_10: bets/win rate/ROI,"1,195 / 33.7% / -1.35%",1195 / 33.7% / -1.35%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard SP_EDGE_1_0: bets/win rate/ROI,"3,939 / 50.3% / -2.05%",3939 / 50.3% / -2.05%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard ML_EDGE_10: bets/win rate/ROI,"1,195 / 33.7% / -1.28%",1195 / 33.7% / -1.28%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard SP_EDGE_1_0: bets/win rate/ROI,"3,927 / 50.5% / -1.78%",3927 / 50.5% / -1.78%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard HOME_DOG_ATS: bets/win rate/ROI,"1,939 / 50.3% / -2.16%",1939 / 50.3% / -2.16%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard REST_ADV_ATS: bets/win rate/ROI,515 / 50.3% / -2.22%,515 / 50.3% / -2.22%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard ROAD_FAV_ATS: bets/win rate/ROI,"1,939 / 49.7% / -2.94%",1939 / 49.7% / -2.94%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard ML_EDGE_5: bets/win rate/ROI,"2,639 / 34.7% / -3.88%",2639 / 34.7% / -3.88%,True,data/processed/strategy_summary.csv
-strategies.html,leaderboard PARLAY2_ML: bets/win rate/ROI,405 / 10.4% / -6.58%,405 / 10.4% / -6.58%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard ML_EDGE_5: bets/win rate/ROI,"2,640 / 34.6% / -3.84%",2640 / 34.6% / -3.84%,True,data/processed/strategy_summary.csv
+strategies.html,leaderboard PARLAY2_ML: bets/win rate/ROI,405 / 10.4% / -5.39%,405 / 10.4% / -5.39%,True,data/processed/strategy_summary.csv
 strategies.html,leaderboard COLD_UNDER: bets/win rate/ROI,278 / 45.6% / -11.31%,278 / 45.6% / -11.31%,True,data/processed/strategy_summary.csv
 validation.html,verdict PARLAY3_EDGE,LUCK,LUCK,True,data/processed/strategy_gates.csv
 validation.html,verdict PARLAY2_EDGE,LUCK,LUCK,True,data/processed/strategy_gates.csv
