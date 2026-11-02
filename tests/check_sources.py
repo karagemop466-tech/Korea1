@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # The lab/ annex is governed by the same rule but enforced by scripts/99_verify.py, which requires every
 # numeric cell to carry a data-source id that resolves to an official URL in data/lab/sources.json
 # (a stronger form of this check, because it validates the identifier and not just the presence of a link).
-PAGES = ["index.html", "executive-summary.html", "lines.html", "strategies.html", "validation.html",
+PAGES = ["index.html", "executive-summary.html", "lines.html", "strategies.html", "validation.html", "audit.html",
          "correlations.html", "props.html", "methodology.html", "flagged.html", "sources.html"]
 
 TABLE = re.compile(r"<table\b[^>]*>.*?</table>", re.S)

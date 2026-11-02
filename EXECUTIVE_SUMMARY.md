@@ -149,3 +149,21 @@ Four findings replicate independently, which is the strongest evidence in this r
 
 Where the builds disagree, the archives disagree, and that is flagged rather than reconciled: the annex
 measures a mean 3.79% overround against 2.70% here (IR-09).
+
+---
+
+## Independent official-source audit (2026-11-02, session `arena/1642ee06-korea1`)
+
+Full detail: [`audit.html`](audit.html) · data in [`data/audit/`](data/audit/) · scripts `scripts/audit_*.py`.
+
+- **Scores.** 39 games read on NFL.com (2014, 2015, 2016, 2022 and 2026 week pages, plus the three 2015 games
+  whose nflverse outcome flag contradicts the score): **31 match the pinned data, 0 mismatch**, 8 are 2026
+  week-8 games that NFL.com lists as Final and the pinned snapshot predates (left blank, flagged).
+  This is a sample, not a census; games before 2010 (2,913) and playoff games (309) were not checked.
+- **Inputs.** All 7 pinned nfldata files re-downloaded from the pinned commit: SHA-256 and byte count match.
+  Rebuilding every table from them reproduces the published files byte for byte; `tests/test_no_lookahead.py` 4/4.
+- **Official sources.** Of 523 table rows on the ten root pages, 3 link to nfl.com and 516 link only to
+  nflverse (a community project). Historical closing lines, totals and prices have **no official NFL source**
+  and the upstream data dictionary does not name the sportsbook. These are flagged (IR-T10-01, -02), not blanked.
+- **Defect fixed.** `scripts/99_verify.py` V02 failed on every fresh checkout; it now passes (9/9).
+- **Does not change the conclusion.** 0 of 18 strategies pass all gates; no figure in this summary was altered.
