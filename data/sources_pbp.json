@@ -1,0 +1,56 @@
+{
+  "generated_utc": "2026-11-02T17:17:15Z",
+  "repository": "https://github.com/clausherther/nfl-dbt",
+  "path": "data_prep/data_files_load/pbp",
+  "access_method": "GitHub git-blob API (api.github.com/repos/{repo}/git/blobs/{sha}, Accept: application/vnd.github.raw). Release assets are NOT used: they redirect to release-assets.githubusercontent.com, which the sandbox egress allowlist refuses.",
+  "tier": "verified third party: nflverse play-by-play, itself built from NFL gamebooks, mirrored byte-for-byte inside a public Git repository",
+  "excluded": [
+    {
+      "season": 2023,
+      "reason": "partial season in this repository (2,034,432 bytes, 5,660 plays); would silently understate rates"
+    }
+  ],
+  "files": [
+    {
+      "season": 2019,
+      "local": "data/raw/pbp_2019.gzip",
+      "bytes": 16479104,
+      "sha256": "a49fe0c7c5a6424bfc1ff6a7df2d93e21d6c133ec0332aabe753215d16b092f5",
+      "git_blob_sha": "ca455dc08e8670efd7c4ccc4eadfa1077d6f39ec",
+      "url": "https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2019.gzip",
+      "api_url": "https://api.github.com/repos/clausherther/nfl-dbt/git/blobs/ca455dc08e8670efd7c4ccc4eadfa1077d6f39ec",
+      "rows": 0
+    },
+    {
+      "season": 2020,
+      "local": "data/raw/pbp_2020.gzip",
+      "bytes": 16664760,
+      "sha256": "d55fe0648b99077e0aac30f85ce38c312517470c780b5ece3054a90814e46549",
+      "git_blob_sha": "4daf7bdf2303e1a09b3a501466b2d631db27f92a",
+      "url": "https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2020.gzip",
+      "api_url": "https://api.github.com/repos/clausherther/nfl-dbt/git/blobs/4daf7bdf2303e1a09b3a501466b2d631db27f92a",
+      "rows": 0
+    },
+    {
+      "season": 2021,
+      "local": "data/raw/pbp_2021.gzip",
+      "bytes": 17546160,
+      "sha256": "26cf60bc202f9bd2e9a80871be083b6b8820b4f46459753a8ef8c9f6c24a41f8",
+      "git_blob_sha": "0dea4d024c1d0def95d0f718508e4e4035b094d3",
+      "url": "https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2021.gzip",
+      "api_url": "https://api.github.com/repos/clausherther/nfl-dbt/git/blobs/0dea4d024c1d0def95d0f718508e4e4035b094d3",
+      "rows": 0
+    },
+    {
+      "season": 2022,
+      "local": "data/raw/pbp_2022.gzip",
+      "bytes": 17257188,
+      "sha256": "f303a9d126745665da23fe2eac0e874feae89d397e52b9ac2f505cceb0f5732a",
+      "git_blob_sha": "97b78a439e9e25a215db6b1feeaec57e2818e94d",
+      "url": "https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2022.gzip",
+      "api_url": "https://api.github.com/repos/clausherther/nfl-dbt/git/blobs/97b78a439e9e25a215db6b1feeaec57e2818e94d",
+      "rows": 0
+    }
+  ],
+  "total_bytes": 67947212
+}
