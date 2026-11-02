@@ -40,6 +40,7 @@ URL_WINTOT = BASE + "win_totals.csv"
 URL_DATASETS = f"https://github.com/nflverse/nfldata/blob/{SHA}/DATASETS.md"
 URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
 URL_PBP = "https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp"
+REPO_URL = "https://github.com/karagemop466-tech/Korea1"
 GENERATED = SRC["generated_utc"]
 
 NAV = [
@@ -149,6 +150,13 @@ def load():
     return d
 
 
+def _annex_pair(d, a, b, field):
+    for p in (d.get("annex_props") or {}).get("pairs", []):
+        if p["leg_a"] == a and p["leg_b"] == b:
+            return p[field]
+    return float("nan")
+
+
 def build_executive(d) -> str:
     pred = d["originated_lines"]
     gates = d["strategy_gates"]
@@ -231,7 +239,7 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <td>best-of-library is consistent with luck</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
 <tr><td>Two-way hold in closing prices</td>
 <td><strong>{pct(float(vig.spread_hold.mean()), 2)}</strong> spread / {pct(float(vig.total_hold.mean()), 2)} total</td>
-<td>break-even ≈ 51.4% win rate, not 52.4%</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>
+<td>break-even ≈51.4% for 2006–2022 prices, ≈52.4% for 2023–2026</td><td>{src_link(URL_GAMES, "games.csv")}</td></tr>
 <tr><td>Same-game φ, cover ↔ moneyline</td><td><strong>{fmt(float(sg.phi.iloc[1]), 3)}</strong></td>
 <td>near-duplicate legs; independent pricing is wrong</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
 <tr><td>Same-game φ, cover ↔ total</td><td><strong>{fmt(float(sg.phi.iloc[0]), 3)}</strong></td>
@@ -239,6 +247,15 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <tr><td>Cross-game φ (margin, total)</td>
 <td><strong>{fmt(float(cg["corr"].iloc[0]), 3)}, {fmt(float(cg["corr"].iloc[1]), 3)}</strong></td>
 <td>intervals span zero → parlays can be multiplied</td><td>{src_link(URL_GAMES, "computed")}</td></tr>
+<tr><td>Prop-combo r, QB passing + WR1 receiving (within player)</td>
+<td><strong>{fmt(_annex_pair(d, "QB passing yards", "WR1 receiving yards", "rho_within_player"), 3)}</strong></td>
+<td>positive and large; multiplying the legs misprices the parlay</td><td>{src_link(URL_PBP, "play-by-play")}</td></tr>
+<tr><td>Prop-combo r, WR1 + WR2 receiving yards (within player)</td>
+<td><strong>{fmt(_annex_pair(d, "WR1 receiving yards", "WR2 receiving yards", "rho_within_player"), 3)}</strong></td>
+<td>near zero — this pair really is close to independent</td><td>{src_link(URL_PBP, "play-by-play")}</td></tr>
+<tr><td>Independent audit of this build</td>
+<td><strong>{(d.get("audit") or {}).get("summary", {}).get("passed", 0)}/{(d.get("audit") or {}).get("summary", {}).get("checked", 0)}</strong></td>
+<td>headline numbers re-derived by a second session; every citation opened — see <a href="audit.html">the audit page</a></td><td>{src_link(REPO_URL + "/blob/main/pipeline/audit.py", "audit.py")}</td></tr>
 </tbody></table></div>
 </section>
 
@@ -253,9 +270,11 @@ any of them ran, and every one is published. No result was dropped, no threshold
 <li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
 manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
 exist to stop that from happening here.</li>
-<li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
-are unavailable from reachable sources, so they are blank and flagged instead of modelled from
-proxies.</li>
+<li><strong>Never fill a gap.</strong> Prop prices, team-total prices and multi-season openers do not
+exist in any reached source, so they are blank and flagged instead of modelled from proxies.
+Player-level <em>statistics</em> do exist behind a hash-verified mirror, so the prop
+<strong>correlations</strong> are measured and published while prop <strong>prices</strong> stay
+blank.</li>
 </ul>
 </section>
 
@@ -366,9 +385,11 @@ honestly — including when the result is that nothing survives.</p>
   <li><strong>White's reality check does not reject.</strong> p = {fmt(rc.get('p_value', float('nan')), 3)}
       across {rc.get('n_strategies', '—')} strategies and {rc.get('n_weeks', '—')} weekly blocks — the
       library's best performance is consistent with luck.</li>
-  <li><strong>The pricing environment is sharp.</strong> Mean two-way hold in the closing prices is
-      {pct(float(d['vig_by_season'].spread_hold.mean()), 2)} on spreads — a low-margin book, so the
-      break-even win rate is about 51.4%, not 52.4%.</li>
+  <li><strong>The pricing environment is sharp, and it changes in 2023.</strong> Mean two-way hold in
+      the closing prices is {pct(float(d['vig_by_season'].spread_hold.mean()), 2)} on spreads over the
+      whole sample, but that is {pct(float(d['vig_by_season'][d['vig_by_season'].season<2023].spread_hold.mean()), 2)}
+      for 2006–2022 and {pct(float(d['vig_by_season'][d['vig_by_season'].season>=2023].spread_hold.mean()), 2)}
+      for 2023–2026; break-even is about 51.4% on the earlier era and about 52.4% on the later one.</li>
   <li><strong>Same-game correlation is structural, not cosmetic.</strong> Cover and moneyline on the
       same team correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[1]), 3)}; cover and total
       correlate at φ = {fmt(float(d['corr_same_game'].phi.iloc[0]), 3)}. Independent pricing of a

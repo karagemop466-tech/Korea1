@@ -67,7 +67,7 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <td>best-of-library is consistent with luck</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
 <tr><td>Two-way hold in closing prices</td>
 <td><strong>2.72%</strong> spread / 2.93% total</td>
-<td>break-even ≈ 51.4% win rate, not 52.4%</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
+<td>break-even ≈51.4% for 2006–2022 prices, ≈52.4% for 2023–2026</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
 <tr><td>Same-game φ, cover ↔ moneyline</td><td><strong>0.676</strong></td>
 <td>near-duplicate legs; independent pricing is wrong</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
 <tr><td>Same-game φ, cover ↔ total</td><td><strong>0.024</strong></td>
@@ -75,6 +75,15 @@ size of the vig — which is why the strategies below cannot get paid.</p>
 <tr><td>Cross-game φ (margin, total)</td>
 <td><strong>0.011, 0.008</strong></td>
 <td>intervals span zero → parlays can be multiplied</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
+<tr><td>Prop-combo r, QB passing + WR1 receiving (within player)</td>
+<td><strong>0.441</strong></td>
+<td>positive and large; multiplying the legs misprices the parlay</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener">play-by-play</a></td></tr>
+<tr><td>Prop-combo r, WR1 + WR2 receiving yards (within player)</td>
+<td><strong>0.035</strong></td>
+<td>near zero — this pair really is close to independent</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/main/data_prep/data_files_load/pbp" target="_blank" rel="noopener">play-by-play</a></td></tr>
+<tr><td>Independent audit of this build</td>
+<td><strong>18/18</strong></td>
+<td>headline numbers re-derived by a second session; every citation opened — see <a href="audit.html">the audit page</a></td><td><a href="https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/audit.py" target="_blank" rel="noopener">audit.py</a></td></tr>
 </tbody></table></div>
 </section>
 
@@ -89,9 +98,11 @@ any of them ran, and every one is published. No result was dropped, no threshold
 <li><strong>Correct for the number of tries.</strong> Testing 18 strategies at p&lt;0.05 would
 manufacture a winner about 60% of the time; the Benjamini–Hochberg step and the deflated Sharpe
 exist to stop that from happening here.</li>
-<li><strong>Never fill a gap.</strong> Player-level props, team-total prices and multi-season openers
-are unavailable from reachable sources, so they are blank and flagged instead of modelled from
-proxies.</li>
+<li><strong>Never fill a gap.</strong> Prop prices, team-total prices and multi-season openers do not
+exist in any reached source, so they are blank and flagged instead of modelled from proxies.
+Player-level <em>statistics</em> do exist behind a hash-verified mirror, so the prop
+<strong>correlations</strong> are measured and published while prop <strong>prices</strong> stay
+blank.</li>
 </ul>
 </section>
 
