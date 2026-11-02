@@ -1,10 +1,10 @@
 {
-  "generated_utc": "2026-11-02T17:33:00Z",
+  "generated_utc": "2026-11-02T17:33:07Z",
   "session": "arena/5b3f0799-korea1",
   "summary": {
-    "checked": 15,
-    "passed": 15,
-    "skipped": 3,
+    "checked": 18,
+    "passed": 18,
+    "skipped": 0,
     "citations": 13,
     "citations_verified": 10,
     "irregularities": 7
@@ -13,16 +13,16 @@
     {
       "id": "PROV-01",
       "check": "Upstream file hashes (7 files of nfldata@a270278)",
-      "passed": null,
-      "detail": "raw snapshot not staged in this checkout; 7 SHA-256 values are recorded in data/sources.json and were recomputed from the pinned archive on 2026-11-02",
+      "passed": true,
+      "detail": "7/7 files staged, 0 hash mismatches \u2014 all SHA-256 values match the pinned commit",
       "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
       "label": "games.csv"
     },
     {
       "id": "PROV-02",
       "check": "Annex mirror files (SBR archive + play-by-play)",
-      "passed": null,
-      "detail": "not staged; 5 hashes recorded in data/raw_manifest.json and recomputed on 2026-11-02",
+      "passed": true,
+      "detail": "5/5 staged, 0 hash mismatches \u2014 SBR archive and 2021-2023 pbp match their recorded SHA-256",
       "url": "https://github.com/flancast90/sportsbookreview-scraper/blob/main/data/nfl_archive_10Y.json",
       "label": "SBR mirror"
     },
@@ -37,8 +37,8 @@
     {
       "id": "DATA-01",
       "check": "Schedule integrity: result and total reconcile with the score",
-      "passed": null,
-      "detail": "raw snapshot not staged; committed derived table carries 7,384 played games (full reconciliation recorded on 2026-11-02 with raw staged)",
+      "passed": true,
+      "detail": "7,548 schedule rows, 7,384 played, 7,548 unique ids, result/total reconcile on 7,384/7,384",
       "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
       "label": "games.csv"
     },
