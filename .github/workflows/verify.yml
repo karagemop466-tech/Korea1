@@ -35,3 +35,10 @@ jobs:
         run: pip install pandas numpy scipy
       - name: Verify the published site
         run: python pipeline/verify_site.py
+      - name: Audit published claims against the data (offline)
+        run: python pipeline/audit.py --no-network
+      - name: Link and source checks
+        run: |
+          python tests/check_links.py
+          python tests/check_sources.py
+          python tests/test_future_lines.py

@@ -295,9 +295,25 @@ def walk_forward(df: pd.DataFrame, future: pd.DataFrame) -> tuple[pd.DataFrame, 
 
 
 def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd.DataFrame:
-    """Fit on every completed game and price the scheduled games."""
+    """Fit on every completed game and price the scheduled games.
+
+    FIX (2026-11-02, session arena/fb363967-korea1 — defect D-01): kickoff temperature and
+    wind are recorded only *after* a game is played, so `upcoming.csv` carries them as NULL
+    for every scheduled game. Both columns are design-matrix inputs, and NaN propagates
+    through the ridge product, so every originated future line came out NaN and the site's
+    "open board" and "pure origination" tables published only em dashes. The training median
+    (the same statistic `build_datasets.py` applies to played rows) is substituted here so the
+    matrix is finite; the `wind_missing` / `temp_missing` flags are already 1 on these rows,
+    so the published data still states that no observation exists. Nothing is imputed into a
+    settled game and no backtest number changes — this path only prices unplayed games.
+    """
     if future.empty:
         return future
+    future = future.copy()
+    for col in ("wind", "temp"):
+        if future[col].isna().any():
+            med = float(df[col].median())
+            future[col] = future[col].fillna(med)
     S = int(df.season.max()) + 1
     Xm, Xt = df[FEATURES_MARGIN].to_numpy(float), df[FEATURES_TOTAL].to_numpy(float)
     ym, yt = df["result"].to_numpy(float), df["total"].to_numpy(float)
@@ -312,6 +328,11 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     b3m = fit_ols(df["elo_diff"].to_numpy(float), ym, w)
 
     Fm, Ft = future[FEATURES_MARGIN].to_numpy(float), future[FEATURES_TOTAL].to_numpy(float)
+    # fail loudly rather than publishing a blank line: a non-finite design matrix would make
+    # every originated number NaN, which is exactly the defect this guard prevents recurring.
+    if not (np.isfinite(Fm).all() and np.isfinite(Ft).all()):
+        bad = sorted({c for c in FEATURES_MARGIN + FEATURES_TOTAL if future[c].isna().any()})
+        raise ValueError(f"future design matrix is not finite; unobserved inputs: {bad}")
     ens_m = (predict_ridge(b_m, mu_m, sd_m, Fm)
              + b2m[0] + b2m[1] * future["exp_margin"].to_numpy(float)
              + b3m[0] + b3m[1] * future["elo_diff"].to_numpy(float)) / 3.0
@@ -323,7 +344,6 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     rt = yt - ((predict_ridge(b_t, mu_t, sd_t, Xt) + b2t[0] + b2t[1] * df["exp_total"].to_numpy(float)) / 2.0)
     sm, st = float(np.std(rm, ddof=1)), float(np.std(rt, ddof=1))
 
-    future = future.copy()
     future["fair_spread"] = ens_m
     future["fair_total"] = ens_t
     future["sigma_margin"] = sm

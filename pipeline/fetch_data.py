@@ -21,6 +21,7 @@ from __future__ import annotations
 import datetime as dt
 import io
 import json
+import os
 import subprocess
 import sys
 import tarfile
@@ -45,7 +46,15 @@ FILES = [
 
 
 def resolve_sha() -> str:
-    """Pin the exact upstream commit with git (github.com is reachable)."""
+    """Pin the exact upstream commit.
+
+    `NFDATA_SHA=<commit> make build` reproduces a *published* build byte-for-byte; without it the
+    build pins whatever master is at run time (which is why the published snapshot is dated).
+    """
+    pinned = os.environ.get("NFDATA_SHA", "").strip()
+    if pinned:
+        print(f"using NFDATA_SHA={pinned} (explicit pin, not resolved from master)")
+        return pinned
     out = subprocess.run(
         ["git", "ls-remote", f"https://github.com/{REPO}", f"refs/heads/{BRANCH}"],
         capture_output=True, text=True, timeout=120, check=True,

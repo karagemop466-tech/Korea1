@@ -28,6 +28,8 @@ def main() -> None:
     cg = pd.read_csv(PROC / "corr_cross_game.csv")
     audit = pd.read_csv(PROC / "data_audit.csv")
     chk = pd.read_csv(PROC / "settlement_crosscheck.csv")
+    n_played = int(len(pd.read_csv(PROC / "games_model.csv")))
+    sched_rows = int(next(f["rows"] for f in SRC["files"] if f["logical"] == "data/games.csv"))
 
     def mae(model, market):
         r = allm[(allm.model == model) & (allm.market == market) & (allm.season == "ALL")]
@@ -63,7 +65,7 @@ further.
 
 | Quantity | Value | Source |
 |---|---|---|
-| Games with an out-of-sample line | {len(pred):,} ({int(pred.season.min())}–{int(pred.season.max())}, of 7,384 played) | `games.csv` |
+| Games with an out-of-sample line | {len(pred):,} ({int(pred.season.min())}–{int(pred.season.max())}, of {n_played:,} played) | `games.csv` |
 | Closing-line spread MAE | {fmt(mae('market','spread'), 4)} | `games.csv` |
 | Our spread MAE | {fmt(mae('ensemble','spread'), 4)} | `pipeline/models.py` |
 | Closing-line total MAE | {fmt(mae('market','total'), 4)} | `games.csv` |
@@ -81,7 +83,7 @@ further.
 ## What was built
 
 1. **Data layer.** One pinned commit of `nflverse/nfldata`, archived from `codeload.github.com`
-   and SHA-256 hashed on arrival into `data/sources.json`. 7,548 schedule rows, 7,384 played games
+   and SHA-256 hashed on arrival into `data/sources.json`. {sched_rows:,} schedule rows, {n_played:,} played games
    1999–2026, plus an independent per-side price file used to cross-check settlement.
 2. **Line origination.** Three model families — weighted ridge on pre-game structure, matchup
    expected points, Elo — fitted walk-forward and averaged with fixed weights. No model sees a
@@ -166,6 +168,12 @@ detail, with sources: `flagged.html`.
 3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
 
 """
+    addendum = ROOT / "pipeline" / "executive_summary_addendum.md"
+    if addendum.exists():
+        text = addendum.read_text(encoding="utf-8")
+        # the canonical two-way hold is quoted from the data, never typed into the addendum
+        text = text.replace("{{spread_hold}}", pct(float(vig.spread_hold.mean()), 2))
+        lines = lines + "\n" + text
     (ROOT / "EXECUTIVE_SUMMARY.md").write_text(lines, encoding="utf-8")
     print(f"wrote EXECUTIVE_SUMMARY.md ({len(lines):,} bytes)")
 

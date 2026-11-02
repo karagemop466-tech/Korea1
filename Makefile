@@ -5,7 +5,11 @@ else
 PY := .venv/bin/python
 endif
 
-.PHONY: build data model backtest strategies corr site verify serve clean all
+# `make build` pins and fetches whatever nflverse/nfldata master is at run time, then rebuilds
+# everything. To reproduce a *published* build instead (the numbers on the live site), pin the
+# snapshot recorded in data/sources.json:
+#     NFDATA_SHA=a270278f3ac4e937295fe6a27814b3c4a2b62645 make build
+.PHONY: build data model backtest requirements summary site audit audit-full verify serve clean all
 
 all: build
 
@@ -21,14 +25,29 @@ backtest:
 	$(PY) pipeline/validation.py
 	$(PY) pipeline/correlations.py
 
+requirements:
+	$(PY) pipeline/render_requirements.py
+
+summary:
+	$(PY) pipeline/render_summary.py
+
 site:
 	$(PY) pipeline/render_site.py
+
+# the audit re-fetches the pinned archive, rebuilds every artefact in a throwaway tree and
+# re-derives published table cells; it exits non-zero on any mismatch. `audit-full` is the same
+# with the clean-room rebuild included.
+audit:
+	$(PY) pipeline/audit.py
+
+audit-full:
+	$(PY) pipeline/audit.py --rebuild
 
 verify:
 	$(PY) pipeline/verify_site.py
 
-build: data model backtest site verify
-	@echo "build complete — site in docs/, verification passed"
+build: data model backtest requirements site summary audit verify
+	@echo "build complete — site at the repository root, audit and site verification passed"
 
 serve: build
 	$(PY) -m http.server 8000 --bind 0.0.0.0 --directory .

@@ -39,11 +39,14 @@ URL_SCLINES = BASE + "sc_lines.csv"
 URL_WINTOT = BASE + "win_totals.csv"
 URL_DATASETS = f"https://github.com/nflverse/nfldata/blob/{SHA}/DATASETS.md"
 URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
+# the repository is itself a citable artefact: derived tables and code are linked by path
+REPO_BLOB = "https://github.com/karagemop466-tech/Korea1/blob/main"
 GENERATED = SRC["generated_utc"]
 
 NAV = [
     ("index.html", "Dashboard"),
     ("executive-summary.html", "Executive summary"),
+    ("requirements.html", "Requirements"),
     ("lines.html", "Originated lines"),
     ("strategies.html", "Leaderboard"),
     ("validation.html", "Validation gates"),
@@ -51,6 +54,7 @@ NAV = [
     ("props.html", "Player props"),
     ("methodology.html", "Methodology"),
     ("flagged.html", "Flagged for review"),
+    ("verification.html", "Verification"),
     ("sources.html", "Sources"),
     # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
     # same questions from a different odds archive. Served from lab/ and not part of this render.
@@ -140,6 +144,18 @@ def load():
     d["model_config"] = read_json(P / "model_config.json")
     d["reality_check"] = read_json(P / "reality_check.json")
     d["sources"] = SRC
+
+    # audit artefacts (pipeline/audit.py) — absent until the audit has run at least once
+    for name in ["audit_snapshot", "audit_rebuild", "audit_claims", "audit_drift",
+                 "audit_digests", "verification_report"]:
+        f = P / f"{name}.csv"
+        d[name] = pd.read_csv(f) if f.exists() else pd.DataFrame()
+
+    req_path = ROOT / "requirements" / "requirements.csv"
+    d["requirements"] = (pd.read_csv(req_path) if req_path.exists()
+                         else pd.DataFrame(columns=["id", "area", "requirement", "status",
+                                                    "how_met", "evidence", "evidence_href",
+                                                    "source_url"]))
     return d
 
 
@@ -295,7 +311,9 @@ def build_index(d) -> str:
     ens_t = allm[(allm.model == "ensemble") & (allm.market == "total") & (allm.season == "ALL")].mae
 
     cards = kpi_grid([
-        card(f"{n_games:,}", "settled games modelled", "1999–2026, 7,384 with a final score"),
+        card(f"{n_games:,}", "settled games modelled",
+             f"{int(d['games_model'].season.min())}–{int(d['games_model'].season.max())}, "
+             f"{n_games:,} with a final score"),
         card(f"{n_bets:,}", "bets simulated", "every strategy, closing prices"),
         card(f"{float(mkt_sp.iloc[0]):.3f}", "market spread MAE", "benchmark to beat"),
         card(f"{float(ens_sp.iloc[0]):.3f}", "our spread MAE", "market-free model"),
@@ -314,7 +332,7 @@ def build_index(d) -> str:
         caption="Top of the leaderboard (full table on the Leaderboard page)")
 
     body = f"""
-{kpi_grid([card("0", "strategies that survive every gate",
+{kpi_grid([card(f"{n_skill}", "strategies that survive every gate",
                 "reality-check p = " + fmt(rc.get('p_value', float('nan')), 3), "bad")])}
 
 <section>
@@ -389,6 +407,8 @@ honestly — including when the result is that nothing survives.</p>
   <a class="minicard" href="validation.html"><strong>Validation</strong><span>the eight gates and how each was applied</span></a>
   <a class="minicard" href="correlations.html"><strong>Correlations</strong><span>measured dependence for parlay pricing</span></a>
   <a class="minicard" href="props.html"><strong>Player props</strong><span>framework, and what is missing</span></a>
+  <a class="minicard" href="requirements.html"><strong>Requirements</strong><span>every requirement in the brief, traced to evidence</span></a>
+  <a class="minicard" href="verification.html"><strong>Verification</strong><span>independent audit: re-hash, rebuild, re-derive</span></a>
   <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>irregularities and unverified items</span></a>
 </div>
 </section>
@@ -459,7 +479,8 @@ def build_lines(d) -> str:
     up_table = table(urows, ["Date", "Wk", "Matchup", "Market spread", "Our spread", "Edge",
                              "Market total", "Our total", "Edge", "Our fair home ML",
                              "Our fair away ML", "Source"],
-                     caption=f"Open board: {len(up)} scheduled games that already carry a market line")
+                     caption=f"Open board at the pinned snapshot ({GENERATED[:10]}): {len(up)} "
+                             f"scheduled games that already carried a market line")
 
     unpriced = fut[fut.market_spread.isna()].sort_values(["week", "gameday"])
     np_rows = []
@@ -470,8 +491,9 @@ def build_lines(d) -> str:
                         src_link(URL_GAMES, "row")])
     np_table = table(np_rows, ["Date", "Wk", "Matchup", "Our spread", "Our total",
                                "Fair home ML", "Fair away ML", "Source"],
-                     caption=f"Pure origination: {len(unpriced)} games with no market line yet — "
-                             "these are our numbers only")
+                     caption=f"Pure origination at the pinned snapshot ({GENERATED[:10]}): "
+                             f"{len(unpriced)} games that carried no market line yet — these are our "
+                             "numbers only")
 
     body = f"""
 <section>
@@ -495,7 +517,10 @@ sees a price.</p>
 <h2>Open board — lines we would post now</h2>
 <p>Fitted on every completed game in the pinned file, the same ensemble prices the scheduled
 games. Where the market already has a number, the edge column shows the disagreement; where it
-does not, this is pure origination.</p>
+does not, this is pure origination. Unplayed games have no recorded kickoff weather, so the model
+uses the training median for temperature and wind and keeps the <code>temp_missing</code> /
+<code>wind_missing</code> flags at 1 — the assumption is listed on the
+<a href="flagged.html">Flagged for review</a> page.</p>
 {up_table}
 </section>
 
@@ -1060,6 +1085,38 @@ def build_flagged(d) -> str:
          "No retrieved source carries team-total or player-prop prices, so no ROI can be computed for "
          "those markets. The prop page presents the framework and the measured structure only.",
          src_link(URL_DATASETS, "DATASETS.md"), "Any prop price feed."],
+        ["Future-game lines substitute a training-median weather value",
+         "disclosed assumption", "documented",
+         "Kickoff temperature and wind are recorded only after a game is played, so every "
+         "scheduled game in the pinned file carries no recorded weather. To price an unplayed game the "
+         "origination step uses the training median (wind 8 mph, temperature 59 F) and the "
+         "wind_missing / temp_missing columns stay at 1, so the published data still states that "
+         "no observation exists. No settled-game number uses this substitution. Defect D-01 "
+         "(found and fixed 2026-11-02): before the fix the unobserved weather input propagated through the design matrix and "
+         "every future line was blank.",
+         src_link(URL_GAMES, "games.csv"),
+         "A pre-kickoff weather-forecast feed would replace the substitution."],
+        ["Replication annex summary cited a statistic no artefact contained",
+         "corrected 2026-11-02", "documented",
+         "The annex executive-summary section asserted 'White's Reality Check p = 0.970' for the "
+         "lab/ build. No annex artefact holds that number and the annex pipeline never computes a "
+         "White's Reality Check, so the claim had no source. It was removed and replaced with the "
+         "annex's own verified luck statistics (rank correlation 0.485; expected best Sharpe of 18 "
+         "zero-skill trials 0.093; CLV/ROI leader split 0.789 vs 0.003), all traceable to "
+         "data/lab/validation.json. Found by this session's line-by-line review, not reported by the "
+         "build.",
+         src_link(f"{REPO_BLOB}/data/lab/validation.json", "annex validation data"),
+         "Nothing further: the corrected text is generated from the annex artefacts."],
+        ["Snapshot date is fixed; upstream keeps moving",
+         "pinned 2026-11-01", "documented",
+         "Every number on this site comes from one pinned commit of nflverse/nfldata and never "
+         "changes underneath a result. Upstream continues to refresh (scores are filled in, lines "
+         "move), so this snapshot is deliberately behind upstream HEAD. The exact drift — HEAD, "
+         "games settled since the pin, and the byte-level delta — is measured on the Verification "
+         "page; re-running the build re-pins to the new HEAD and will legitimately change the "
+         "numbers. Nothing is edited by hand in between.",
+         src_link("https://github.com/nflverse/nfldata/commits/master", "upstream history"),
+         "Nothing: use the pinned snapshot for reproducibility, or re-run the build for freshness."],
         ["Aggregate-only verification of parsed odds",
          "see note", "documented",
          "Odds are parsed from a single upstream file and checked structurally (sign convention vs "
@@ -1264,6 +1321,220 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:v
 """
 
 
+STATUS_PILL = {"MET": "skill", "PARTIAL": "partial", "FLAGGED": "luck", "NOT MET": "no"}
+
+
+def build_requirements(d) -> str:
+    """Traceability: every requirement in the brief -> status -> the artefact that proves it."""
+    req = d["requirements"]
+    if req.empty:
+        return layout("requirements.html", "Requirements",
+                      "Traceability of the brief.", flag("<code>requirements/requirements.csv</code> "
+                      "is missing, so no requirement can be traced. Nothing is shown rather than "
+                      "showing an unverified claim.", "bad"))
+    counts = req.status.value_counts().to_dict()
+    n_flag = int(counts.get("FLAGGED", 0) + counts.get("NOT MET", 0))
+    kpis = kpi_grid([
+        card(str(len(req)), "requirements traced", "extracted from the brief"),
+        card(str(int(counts.get("MET", 0))), "met", "each with linked evidence", "bad"),
+        card(str(int(counts.get("PARTIAL", 0))), "partial", "limit stated on the row", "bad"),
+        card(str(n_flag), "flagged / not met", "published, not hidden", "bad"),
+    ])
+
+    roll_rows = []
+    for area in req.area.drop_duplicates():
+        sub = req[req.area == area]
+        roll_rows.append([e(area), str(len(sub)), str(int((sub.status == "MET").sum())),
+                          str(int((sub.status == "PARTIAL").sum())),
+                          str(int(sub.status.isin(["FLAGGED", "NOT MET"]).sum())),
+                          src_link(f"{REPO_BLOB}/requirements/requirements.csv", "requirements.csv")])
+    roll = table(roll_rows, ["Area", "Requirements", "Met", "Partial", "Flagged / not met", "Source"],
+                 caption="Coverage by area — the full list, rolled up")
+
+    detail_rows = []
+    for r in req.itertuples():
+        href = str(r.evidence_href)
+        link = (f'<a href="{e(href)}" target="_blank" rel="noopener">{e(r.evidence)}</a>'
+                if href.startswith("http") else f'<a href="{e(href)}">{e(r.evidence)}</a>')
+        detail_rows.append([
+            f"<strong>{e(r.id)}</strong>", e(r.area), e(r.requirement),
+            f'<span class="pill {STATUS_PILL.get(str(r.status), "partial")}">{e(r.status)}</span>',
+            e(r.how_met), link, src_link(str(r.source_url), "source")])
+    det = table(detail_rows, ["#", "Area", "Requirement", "Status", "How it is met", "Evidence", "Source"],
+                caption="Every requirement in the brief, its status, the artefact that satisfies it "
+                        "and an official source")
+
+    body = f"""
+<section>
+<h2>Requirements traceability</h2>
+<p>This page is the full list of requirements extracted from the brief, one row per requirement, with
+the artefact that satisfies it and a source link. A requirement is marked <span class="pill skill">MET</span>
+only when a published artefact proves it; <span class="pill partial">PARTIAL</span> means the work exists
+but a stated limitation applies; <span class="pill luck">FLAGGED</span> means the item is blocked or
+unverified and is published on the <a href="flagged.html">Flagged for review</a> page;
+<span class="pill no">NOT MET</span> means nothing was delivered and nothing was invented.
+The same table, as markdown, is <a href="{REPO_BLOB}/REQUIREMENTS.md" target="_blank" rel="noopener">REQUIREMENTS.md</a>;
+it is generated from <a href="{REPO_BLOB}/requirements/requirements.csv" target="_blank" rel="noopener">requirements/requirements.csv</a>,
+so the page and the file cannot disagree.</p>
+{kpis}
+{roll}
+</section>
+
+<section>
+<h2>The list</h2>
+{det}
+</section>
+
+<section>
+<h2>What is not satisfied, and why</h2>
+<p>Two items are not met and one is partial, and none of them is papered over: player-level statistics
+and prop prices are unreachable from this environment, so no prop-combination ROI is claimed
+(<a href="props.html">Player props</a>); team-total prices are absent for the same reason; and the data
+snapshot is pinned rather than current, with the drift to upstream HEAD measured on the
+<a href="verification.html">Verification</a> page. Each is listed with what would unblock it on the
+<a href="flagged.html">Flagged for review</a> page.</p>
+</section>
+"""
+    return layout("requirements.html", "Requirements",
+                  "Every requirement in the brief, traced to the artefact that satisfies it and an "
+                  "official source.", body, wide=True)
+
+
+def build_verification(d) -> str:
+    """The audit: provenance re-hash, clean-room rebuild, published-cell re-derivation, drift."""
+    snap, rb, cl, dr = d["audit_snapshot"], d["audit_rebuild"], d["audit_claims"], d["audit_drift"]
+    if snap.empty and cl.empty:
+        return layout("verification.html", "Verification", "Independent audit of this build.",
+                      flag("The audit has not been run against this build, so nothing is claimed "
+                           "here. Run <code>python pipeline/audit.py --rebuild</code>.", "warn"))
+
+    n_hash = int((snap.verdict == "match").sum()) if not snap.empty else 0
+    n_rb = int(rb.identical.sum()) if not rb.empty else 0
+    n_claim = int(cl.match.sum()) if not cl.empty else 0
+    kpis = kpi_grid([
+        card(f"{n_hash}/{len(snap)}" if len(snap) else "—", "pinned files re-hash",
+             "re-fetched from the pinned commit", "" if n_hash == len(snap) else "bad"),
+        card(f"{n_rb}/{len(rb)}" if len(rb) else "—", "artefacts reproduced",
+             "clean-room rebuild, byte-for-byte", "" if len(rb) and n_rb == len(rb) else "bad"),
+        card(f"{n_claim}/{len(cl)}" if len(cl) else "—", "published cells re-derived",
+             "every table cell against its CSV", "" if len(cl) and n_claim == len(cl) else "bad"),
+        card(str(len(d["audit_digests"])), "artefacts digested",
+             "data/processed + rendered pages"),
+    ])
+
+    prov_rows = []
+    for r in snap.itertuples():
+        ok = r.verdict == "match"
+        prov_rows.append([e(r.file), f"{int(r.bytes_recorded):,}",
+                          "—" if pd.isna(r.rows) else f"{int(r.rows):,}",
+                          f"<code>{e(str(r.sha256_recorded)[:16])}…</code>",
+                          f'<span class="pill {"skill" if ok else "no"}">{e(r.verdict)}</span>',
+                          src_link(str(r.source_url), "pinned file")])
+    prov = table(prov_rows, ["File", "Bytes", "Rows", "SHA-256 recorded", "Re-fetch verdict", "Source"],
+                 caption="A · Provenance — every pinned file re-downloaded from the recorded commit "
+                         "and re-hashed", cls="tight")
+
+    rb_rows = []
+    for r in rb.itertuples():
+        name = str(r.file)
+        path = name if name.endswith(".html") else f"data/processed/{name}"
+        link = src_link(f"{REPO_BLOB}/{path}", name)
+        rb_rows.append([e(name), f"<code>{e(str(r.sha256_committed)[:12])}…</code>",
+                        f"<code>{e(str(r.sha256_rebuilt)[:12])}…</code>",
+                        f'<span class="pill {"skill" if r.identical else "no"}">'
+                        f'{"identical" if r.identical else "DIFFERS"}</span>', link])
+    rb_tab = table(rb_rows, ["Artefact", "Committed", "Rebuilt", "Comparison", "Source"],
+                   caption="B · Rebuild — a throwaway tree built from the pinned archive, compared "
+                           "with what is published", cls="tight") if len(rb) else flag(
+        "No rebuild was recorded for this build (the audit ran without <code>--rebuild</code>).",
+        "warn")
+
+    claim_rows = []
+    for r in cl.itertuples():
+        src = str(r.source)
+        link = src_link(src, "source") if src.startswith("http") else \
+            src_link(f"{REPO_BLOB}/{src}", src.split("/")[-1])
+        claim_rows.append([e(r.page), e(r.claim), e(r.published), e(r.rederived),
+                           f'<span class="dot {"ok" if r.match else "no"}">{"✓" if r.match else "✕"}</span>',
+                           link])
+    claim_tab = table(claim_rows, ["Page", "Claim", "Published", "Re-derived from the data", "", "Source"],
+                      caption="C · Claims — every published figure re-derived from the CSV it names",
+                      cls="tight")
+
+    drift_rows = []
+    for r in dr.itertuples():
+        drift_rows.append([e(r.item),
+                           e(str(r.pinned)[:12]) if not pd.isna(r.pinned) else "—",
+                           e(str(r.upstream)[:12]) if not pd.isna(r.upstream) else "—",
+                           e(r.difference), e(r.checked_utc), src_link(str(r.source_url), "source")])
+    drift = table(drift_rows, ["Item", "Pinned", "Upstream", "Difference", "Checked (UTC)", "Source"],
+                  caption="D · Drift — how far upstream has moved past the snapshot every number is "
+                          "tied to") if len(dr) else flag("Drift was not measured for this build.", "warn")
+
+    body = f"""
+<section>
+<h2>Independent audit</h2>
+<p>Nothing on this page is a claim made by the build about itself. Each table is produced by
+<code>pipeline/audit.py</code>, which re-downloads the pinned upstream archive, re-hashes it,
+rebuilds every artefact from that archive in a throwaway directory, and re-derives published table
+cells from the CSVs they name. A mismatch is a hard failure — the audit exits non-zero.</p>
+{kpis}
+{flag("<strong>Do not take the site's word for a number.</strong> The claims table below re-derives "
+      "the leaderboard, the gate verdicts, the model accuracy, the provenance hashes, the dashboard "
+      "KPIs and the open board from the underlying data. If any of them disagreed, it would be shown "
+      "here as a failure rather than hidden.", "info")}
+</section>
+
+<section>
+<h2>A · Provenance</h2>
+{prov}
+</section>
+
+<section>
+<h2>B · Clean-room rebuild</h2>
+<p>The rebuild copies the code into a temporary tree, stages only the pinned archive, runs the whole
+pipeline there, and compares digests. The only field normalised is the <code>generated …</code>
+timestamp in the footer, which must change; every number and every row must not.</p>
+{rb_tab}
+</section>
+
+<section>
+<h2>C · Published cells re-derived</h2>
+{claim_tab}
+</section>
+
+<section>
+<h2>D · Upstream drift</h2>
+{drift}
+<p>Drift is published, not corrected. Re-running the build re-pins to upstream HEAD and legitimately
+changes the numbers — that is a new snapshot, not a fix to this one. The
+<a href="flagged.html">Flagged for review</a> page says the same thing in one line.</p>
+</section>
+
+<section>
+<h2>E · What this audit does not prove</h2>
+<p>Four honest limits, stated so the page cannot be read as more than it is.</p>
+<ul class="findings">
+<li><strong>It does not prove the upstream data is correct.</strong> It proves the bytes match the
+pinned commit. Where nflverse appears to contradict itself — three 2015 games whose outcome flags
+disagree with their score, two price files that disagree on thousands of selections — the conflict is
+recorded on <a href="flagged.html">Flagged for review</a>, not resolved by assumption.</li>
+<li><strong>It does not prove the model is good.</strong> It proves the published accuracy is the
+accuracy the code produced. The model is behind the closing line on both markets, and that is the
+finding, not a defect in the audit.</li>
+<li><strong>It does not make a losing strategy win.</strong> Zero of eighteen strategies clear every
+gate; the audit confirms that verdict is computed from the gates and not hand-set.</li>
+<li><strong>It does not re-verify the network policy.</strong> Which hosts this environment can reach
+is measured at ingest and recorded in <code>data/sources.json</code>; a different environment could
+reach more (for example the player-week release assets) and would change what is retrievable.</li>
+</ul>
+</section>
+"""
+    return layout("verification.html", "Verification",
+                  "An independent audit of this build: provenance re-hashed, artefacts rebuilt, "
+                  "published cells re-derived, drift to upstream measured.", body, wide=True)
+
+
 def main() -> None:
     d = load()
     (SITE / "assets").mkdir(parents=True, exist_ok=True)
@@ -1283,6 +1554,8 @@ def main() -> None:
         "props.html": build_props(d),
         "methodology.html": build_methodology(d),
         "flagged.html": build_flagged(d),
+        "requirements.html": build_requirements(d),
+        "verification.html": build_verification(d),
         "sources.html": build_sources(d),
     }
     for name, html_text in pages.items():

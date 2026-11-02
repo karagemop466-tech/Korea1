@@ -47,7 +47,7 @@ jobs:
         run: |
           mkdir -p site-build
           # the root site (Pages serves main:/) plus the annex it links to
-          cp -R *.html *.md .nojekyll assets lab site-build/
+          cp -R *.html *.md .nojekyll assets lab requirements site-build/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

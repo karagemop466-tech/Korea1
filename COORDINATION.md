@@ -334,3 +334,108 @@ produced — a requirements traceability document — and performs the final pub
 `data/processed/**` (analysis tables — this session only *reads* them and adds `audit_*` files),
 `data/lab/**`, `lab/**`, `scripts/**`, `analysis/**`, `research/**`, `archive/**`. No file in those
 scopes is edited by this session; defects found there are logged, not patched.
+
+---
+
+## Session `arena/fb363967-korea1` — log (F1–F5)
+
+### 2026-11-02T17:20Z — board claim (commit `27f4d72`, pushed immediately)
+Read the board, the README, all ten published pages and every verifier. `main` was `3453d41`;
+the Pages build for that commit reported `built`; no remote `arena/*` branch carried unmerged work.
+Claimed F1–F5 and pushed before editing anything.
+
+### F1 — independent audit (`pipeline/audit.py`, new; `AUDIT` tables in `data/processed/`)
+The point of this task was to stop taking the build's word for its own numbers. Four machine
+checks, each able to fail the audit:
+
+| Stage | What it does | Result |
+|---|---|---|
+| A · provenance | re-downloads the **pinned** commit `a270278f3ac4` from `codeload.github.com`, recomputes SHA-256 of all seven files | **7/7 match** `data/sources.json` |
+| B · digests | hashes every derived table and every rendered page | 38 artefacts |
+| C · rebuild | copies the code to a throwaway tree, stages only the pinned archive, runs the whole pipeline there, compares digests | **38/38 byte-identical** (only the `generated …` footer timestamp normalised) |
+| D · drift | `git ls-remote` for upstream HEAD, then diffs `games.csv` between pin and HEAD | HEAD `762dc4f`, **12 games settled upstream after the pin** |
+| E · claims | parses the published tables and re-derives every numeric cell from the CSV it names | **60/60 exact** |
+
+`python pipeline/audit.py --rebuild` reproduces all of the above in ~75 s and exits non-zero on any
+mismatch. The page `verification.html` renders these tables; `pipeline/audit.py` re-renders it after
+each run so the published audit is never one run behind. CI runs the offline form
+(`--no-network`), which still performs the digest and claims checks.
+
+### Defects found by the audit (and fixed)
+
+**D-01 (high) — every originated *future* line was blank.** `upcoming.csv` carries temperature and
+wind as NULL for all 164 scheduled games, because kickoff weather is recorded only after a game is
+played. Both columns are design-matrix inputs, so the NaN propagated through the ridge product and
+`originated_upcoming.csv` shipped with `fair_spread`, `fair_total`, `originated_home_ml` and
+`originated_away_ml` **empty for 164 of 164 rows**. The live site's "Open board" and "Pure
+origination" tables therefore showed only em dashes — the one thing the project exists to do
+(originate its own lines for the coming slate) was not actually being shown. Fixed in
+`pipeline/models.py::originate_future` by substituting the training median (the same statistic
+`build_datasets.py` already applies to played rows) while leaving `wind_missing`/`temp_missing` at 1,
+plus a hard `ValueError` if the design matrix is ever non-finite again. Regression guards added in
+`pipeline/verify_site.py` (build-blocking) and `tests/test_future_lines.py` (CI). No settled-game
+number changes: the backtest, gate and correlation tables rebuild byte-identically.
+
+**D-02 (low) — the dashboard headline was a string literal.** `index.html`'s "0 strategies that
+survive every gate" was written as `card("0", …)` instead of the computed count; correct today and
+wrong the moment a strategy passes. Now `n_skill`.
+
+**D-03 (low) — a card note hard-coded the settled-game count** ("1999–2026, 7,384 with a final
+score"). Now derived from `games_model.csv`; same value, no drift.
+
+**D-04 (medium) — `make build` destroyed published content.** `pipeline/render_summary.py`
+regenerated `EXECUTIVE_SUMMARY.md` from scratch, so the annex section a previous session appended by
+hand was silently deleted on every rebuild (confirmed by doing exactly that in a scratch clone). The
+annex text now lives in `pipeline/executive_summary_addendum.md`, which the generator appends, with
+the canonical two-way hold quoted from the data rather than typed.
+
+**D-05 (medium) — the annex summary cited a statistic that does not exist.** The annex section
+asserted *"White's Reality Check (p = 0.970)"* for the `lab/` build. No annex artefact contains that
+number and the annex pipeline never computes a White's Reality Check (`grep -ri reality
+scripts/ data/lab/` → no hits; the annex gates on its own eight criteria and a max-Sharpe luck
+simulation). The claim was removed and replaced with the annex's verified figures — rank correlation
+0.485, expected best Sharpe of 18 zero-skill trials 0.093, mixed-field CLV/ROI finish rates 0.789 /
+0.003 — all in `data/lab/validation.json`. Published as an item on `flagged.html`, not quietly
+edited.
+
+**D-06 (low) — stale build messages.** `Makefile` printed "site in docs/" although Pages serves the
+repository root (there is no `docs/`), and the "open board" caption called games "scheduled" without
+saying *as of which snapshot*. Both corrected; the captions now carry the snapshot date because games
+settle after the pin.
+
+### F2 — requirements traceability (`requirements/requirements.csv`, `pipeline/render_requirements.py`, `REQUIREMENTS.md`, `requirements.html`)
+42 requirements extracted line by line from the brief, each with a status, the artefact that proves
+it and an official source link: **38 MET, 2 PARTIAL, 1 FLAGGED, 1 NOT MET**. One CSV feeds both the
+markdown file and the site page, so they cannot drift. Nothing is marked MET without a published
+artefact behind it; the four that are not fully met are the prop/team-total price gap (unreachable
+source), the reward tiers (defined, unawarded because nothing qualified) and snapshot freshness
+(pinned by design, drift measured).
+
+### F3/F4 — site changes and presences
+Two new pages (`requirements.html`, `verification.html`) in the navigation; dashboard cards for
+both; the flagged page grows two items (the weather assumption, the corrected annex claim, plus the
+snapshot-drift note); `pipeline/render_summary.py` keeps its addendum; `pipeline/fetch_data.py`
+accepts `NFDATA_SHA=<commit>` so `make build` can reproduce a published snapshot instead of silently
+re-pinning to HEAD; `Makefile` gains `requirements`, `summary`, `audit`, `audit-full` targets;
+`tests/check_links.py` and `tests/check_sources.py` cover the two new pages; CI additionally runs the
+offline audit and `tests/test_future_lines.py`.
+
+### Cross-scope edits (logged, per the protocol)
+1. `pipeline/models.py` — the D-01 repair. Owner T2 finished and merged (commit `3453d41`) before this
+   session began; there is no live claimant to hand it to. Change is additive, guarded and covered by
+   three tests.
+2. `pipeline/fetch_data.py` — 9 lines: honour `NFDATA_SHA`. Needed for F1's reproducibility claim to
+   be reproducible by a reader (`make build` alone re-pins to HEAD).
+3. `.github/workflows/pages.yml` — one `cp` line, so the manual deploy artifact also carries
+   `requirements/`.
+No analysis table, no `data/lab/**`, no `lab/**`, no `scripts/**`, `analysis/**`, `research/**` or
+`archive/**` file was modified.
+
+### Verification recorded before the pull request
+| Command | Result |
+|---|---|
+| `python pipeline/audit.py --rebuild` | 7/7 provenance · 38/38 rebuild · 60/60 claims · 0 failures |
+| `python pipeline/verify_site.py` | **0 failing checks** across 12 pages (6 checks each + 5 data guards) |
+| `python tests/check_links.py` | pass — 21 pages (root + `lab/`), every href, anchor and asset resolves |
+| `python tests/check_sources.py` | pass — 12 pages, 693 table rows, every row sourced or flagged |
+| `python tests/test_future_lines.py` | pass — 3 tests (D-01 regression) |

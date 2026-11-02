@@ -154,6 +154,13 @@ def main() -> int:
                     'G4_significance', 'G5_luck', 'G6_economic', 'G7_stability']].all(axis=1))).any()),
          "verdict logic consistent"),
         ("prop page publishes no unverified value", True, "player-level cells left blank by design"),
+        # regression guard for defect D-01 (2026-11-02): unplayed games carry no weather, and a
+        # missing design-matrix input silently blanked every originated future line
+        ("every scheduled game carries an originated line",
+         bool(pd.read_csv(PROC / "originated_upcoming.csv")
+              [["fair_spread", "fair_total", "originated_home_ml", "originated_away_ml"]]
+              .notna().all().all()),
+         f"{len(pd.read_csv(PROC / 'originated_upcoming.csv'))} scheduled games priced"),
     ]:
         extra.append(dict(check=name, passed=cond, detail=detail))
         print(f"[{'PASS' if cond else 'FAIL'}] {name} — {detail}")
