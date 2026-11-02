@@ -50,17 +50,17 @@ is not subject to the shell's egress allowlist.</p>
 <section>
 <h2>Verification log</h2>
 <div class="tablewrap"><table><thead><tr><th>Check</th><th>Result</th><th>Where</th></tr></thead><tbody>
-<tr><td>result reconciles with the score</td><td>7,384 / 7,384 games</td>
+<tr><td>result reconciles with the score</td><td>7384/7384 games</td>
 <td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>total reconciles with the score</td><td>7,384 / 7,384 games</td>
+<tr><td>total reconciles with the score</td><td>7384/7384 games</td>
 <td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>game_id uniqueness</td><td>7,548 unique of 7,548 rows</td>
+<tr><td>game_id uniqueness</td><td>7548 unique of 7548 rows</td>
 <td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>spread sign convention</td><td>home-favoured rows win 67.4%, dog rows 35.3%</td>
+<tr><td>spread sign convention</td><td>spread_line&gt;0: home win rate 67.4% n=4795; spread_line&lt;0: 35.3% n=2558</td>
 <td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>spread sign vs moneyline sign</td><td>98.2% agreement</td>
+<tr><td>spread sign vs moneyline sign</td><td>agreement 98.2%</td>
 <td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
-<tr><td>settlement vs independent outcome column</td><td>99.93% where lines agree</td>
+<tr><td>settlement vs independent outcome column</td><td>20,490 rows; outcome in {0, 0.5, 1} for all: True; pushes recorded as 0.5: 328 (spread 200, total 114, moneyline 14) · settlement agreement 13,284/13,472 (98.605%) overall and 8,684/8,690 (99.931%) on the 8,690 selections where both files carry the same line</td>
 <td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">closing_lines.csv</a></td></tr>
 <tr><td>every site table row has a source link</td><td>enforced by <code>pipeline/verify_site.py</code></td>
 <td><a href="flagged.html">build log</a></td></tr>

@@ -1173,6 +1173,21 @@ cross-check against <code>closing_lines.csv</code> is published with its residua
 
 def build_sources(d) -> str:
     S = d["sources"]
+    audits = d["data_audit"]
+
+    def audit_detail(prefix: str) -> str:
+        """Quote a data-integrity result from the audit table instead of retyping the number."""
+        row = audits[audits.check.str.startswith(prefix)]
+        return e(str(row.detail.iloc[0])) if len(row) else "—"
+
+    chk = d["settlement_crosscheck"]
+    same_line = chk[chk.line_match] if len(chk) else chk
+    settle_agree = (f"settlement agreement {int(chk.outcome_match.sum()):,}/{len(chk):,} "
+                    f"({pct(float(chk.outcome_match.mean()), 3)}) overall and "
+                    f"{int(same_line.outcome_match.sum()):,}/{len(same_line):,} "
+                    f"({pct(float(same_line.outcome_match.mean()), 3)}) on the "
+                    f"{len(same_line):,} selections where both files carry the same line"
+                    ) if len(chk) else "—"
     rows = []
     for f in S["files"]:
         rows.append([e(f["logical"]), f"{f['bytes']:,}", f.get("rows", "—"),
@@ -1215,17 +1230,17 @@ is not subject to the shell's egress allowlist.</p>
 <section>
 <h2>Verification log</h2>
 <div class="tablewrap"><table><thead><tr><th>Check</th><th>Result</th><th>Where</th></tr></thead><tbody>
-<tr><td>result reconciles with the score</td><td>7,384 / 7,384 games</td>
+<tr><td>result reconciles with the score</td><td>{audit_detail("result ==")} games</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>total reconciles with the score</td><td>7,384 / 7,384 games</td>
+<tr><td>total reconciles with the score</td><td>{audit_detail("total ==")} games</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>game_id uniqueness</td><td>7,548 unique of 7,548 rows</td>
+<tr><td>game_id uniqueness</td><td>{audit_detail("game_id")}</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>spread sign convention</td><td>home-favoured rows win 67.4%, dog rows 35.3%</td>
+<tr><td>spread sign convention</td><td>{audit_detail("spread_line sign")}</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>spread sign vs moneyline sign</td><td>98.2% agreement</td>
+<tr><td>spread sign vs moneyline sign</td><td>{audit_detail("corr(spread_line")}</td>
 <td>{src_link(URL_GAMES,'games.csv')}</td></tr>
-<tr><td>settlement vs independent outcome column</td><td>99.93% where lines agree</td>
+<tr><td>settlement vs independent outcome column</td><td>{audit_detail("closing_lines.csv parses")} · {settle_agree}</td>
 <td>{src_link(URL_CLOSING,'closing_lines.csv')}</td></tr>
 <tr><td>every site table row has a source link</td><td>enforced by <code>pipeline/verify_site.py</code></td>
 <td><a href="flagged.html">build log</a></td></tr>
