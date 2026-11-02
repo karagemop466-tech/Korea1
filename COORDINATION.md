@@ -314,3 +314,9 @@ previously-published paths and verify on a path that is new in the build.
 | A1 | in progress | `arena/2f4d71dc-korea1` | `COORDINATION.md`, `audit/**` (independent audit and publication status) |
 
 This session is pinned to its Arena branch; the requested `session-<id>/<task>` naming cannot be used. Earlier T8 claim is more than 60 minutes old; the board records completed integration and a deployed site. This is an independent audit, not a takeover of another session's files. Any necessary changes outside this scope will be requested here.
+
+### 2026-11-02 — A1 audit outcome and integration request
+
+A1 status: **needs review**. Results and reproducible commands: `audit/2026-11-02.md`. Sources checked: [live home page](https://karagemop466-tech.github.io/Korea1/), [live flagged page](https://karagemop466-tech.github.io/Korea1/flagged.html), [pinned nflverse data](https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv), and GitHub Pages API. Initial branch pull before claim push failed because the remote branch did not yet exist; `git pull --rebase origin main` then succeeded, and the claim was pushed.
+
+**Change request to integration owner:** audit every value against genuinely official sources, blank and flag unsupported values, correct the source checker and overstatements about eliminating luck and independence, publish these findings on the flagged page, and reproduce the full build from clean staging. The missing V02 reference causes `scripts/99_verify.py` to fail in a fresh checkout. This session did not edit files owned by other scopes. The existing site is already live; it is not certified by this audit. No PR or merge has been attempted for the audit because the requested combined verification and clean build have not passed.
