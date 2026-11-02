@@ -31,7 +31,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T7 | Verification pass + link check | **done** | `arena/592a2d62-korea1` | `pipeline/verify_site.py`, `data/processed/verification_*.csv` |
 | T8 | **Final integration + publish** (merge, Pages deploy, PR record) | **in progress** | `arena/592a2d62-korea1` | `COORDINATION.md`, `README.md`, branch `arena/592a2d62-korea1` → `main` |
 | T9 | Player-prop modelling | **needs review** | unowned | blocked: no reachable player-week or prop-price source (see log) |
-| T10 | Independent official-source audit: re-check published table rows against nfl.com / official sources, repair failing verifier(s), publish `audit.html` + nav entry | **in progress** | `arena/1642ee06-korea1` | `audit/**`, `data/audit/**`, `scripts/audit_*.py`, `audit.html`, `pipeline/render_site.py` (NAV line + audit page only), `scripts/99_verify.py` (repair only), `COORDINATION.md` (own section), `README.md` (one link) |
+| T10 | Independent official-source audit: re-check published table rows against nfl.com / official sources, repair failing verifier(s), publish `audit.html` + nav entry | **done** | `arena/1642ee06-korea1` | `audit/**`, `data/audit/**`, `scripts/audit_*.py`, `audit.html`, `pipeline/render_site.py` (NAV line + audit page only), `scripts/99_verify.py` (repair only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (audit section), `tests/check_*.py` (page list) |
 
 ---
 
@@ -307,3 +307,56 @@ exist in any earlier deployment — returned the new content. Appending a cache-
 the correct page. Diagnosis: GitHub's CDN edge cache, not a stale build (`builds/latest` already reported
 `built` for `9dfdd77`). Anyone re-checking a deploy should assume a few minutes of cache lag on
 previously-published paths and verify on a path that is new in the build.
+
+
+---
+
+## Session `arena/1642ee06-korea1` — T10 independent official-source audit (2026-11-02)
+
+**Claim:** committed first (`COORDINATION: claim T10 ...`). The board showed T1–T8 done and T9 blocked, so the
+only unclaimed work was verification. Scope and cross-scope edits are listed below; no sibling branch was touched.
+The brief's `session-<id>/<task>` branch name is not available (the platform pins this session to its branch).
+
+### What was verified, and against what
+
+| Check | Result | Official / primary source |
+|---|---|---|
+| 39 final scores (2026 wk 8; 2022 wk 10; 2016 wk 8; 2014 wk 15; ARI@PIT, PHI@DAL, KC@BAL 2015) vs NFL.com | 31 match, 0 mismatch, 8 blank in the pinned data (2026 wk-8 games NFL.com lists as Final; snapshot predates them) | <https://www.nfl.com/scores/2026/REG8>, <https://www.nfl.com/scores/2022/REG10>, <https://www.nfl.com/scores/2016/REG8>, <https://www.nfl.com/scores/2014/REG15>, Game Center pages linked per row on `audit.html` |
+| 7 pinned `nflverse/nfldata@a270278` files, re-downloaded | SHA-256 and byte count equal `data/sources.json` for 7/7 | <https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645> |
+| Full rebuild from the verified files (`build_datasets`, `models`, `backtest`, `validation`, `correlations`, `render_site`) | zero tracked files changed other than the new nav entry / audit rows | `pipeline/` |
+| `tests/test_no_lookahead.py` | 4 passed | `tests/` |
+| Annex `00_ingest.py` re-run then `99_verify.py` | annex tables reproduce byte for byte; 9/9 after V02 repair | `scripts/` |
+| `operations.nfl.com/the-rules/nfl-rulebook/` | redirects to the 2026 NFL Rulebook page; "Rule 16" label not located in the part read, so **not** marked verified | <https://operations.nfl.com/the-rules/nfl-rulebook/> |
+
+### Not verified (and why)
+
+Pre-2010 scores (2,913 games; NFL.com's scores page offers 2010–2026), playoff games (309; one attempt at
+`/scores/2011/POST19` returned "SCORES DATA UNAVAILABLE"), every historical closing line / total / moneyline / price
+(no official NFL source; the upstream `DATASETS.md` does not name the sportsbook), weather/roof/referee fields, and the
+two sampled weeks that were drawn but not read (2022 wk 9, 2011 wk 17). NFL.com page volume made a full 7,384-game
+check impractical in one session; the 39-game sample is stated as a sample everywhere it appears.
+
+### Irregularities (also on `flagged.html` and `audit.html`)
+
+IR-T10-01 (high) 516 of 523 root-page table rows link only to a community mirror, not an official site, so the brief's
+"every row links to an official site" is not met; earlier checkers accepted any external URL. IR-T10-02 (high) closing
+lines have no official source. IR-T10-03 (medium) pinned snapshot is stale (`nflverse/nfldata` master is 108 commits ahead;
+8 final games blank). IR-T10-04 (low) Sources page cites the nfl.com home page for GSIS and calls games.csv a "mirror of NFL
+GSIS results"; `DATASETS.md` supports only the `gsis` id field. IR-T10-05 (low) sample design. IR-T10-06 (medium) annex check
+V02 failed on every fresh checkout — **fixed** (reference file now fetched via `api.github.com`). IR-T10-07 (info) the three 2015
+games with contradictory outcome flags: NFL.com confirms `games.csv` is right and `closing_lines.csv` is wrong.
+
+**Decision left for review (IR-T10-02):** values with no official source are published with their community link rather than
+blanked. Blanking every line would empty the analysis; the page says so plainly and the call is the owner's.
+
+### Cross-scope edits (logged as required)
+
+`pipeline/render_site.py` (import, one NAV entry, one `audit.html` page, one section on Flagged, one bullet in the executive
+summary — all re-rendered, diff on every other page is exactly the one nav line), `scripts/99_verify.py` (V02 repair),
+`tests/check_links.py` and `tests/check_sources.py` (add `audit.html` to the page list), `EXECUTIVE_SUMMARY.md` (appended section).
+New files: `pipeline/render_audit.py`, `scripts/audit_nfl_scores.py`, `scripts/audit_sources.py`, `data/audit/*.csv`, `audit.html`.
+
+### Verifiers after the final render
+
+`pipeline/verify_site.py` 0 failing checks · `tests/check_links.py` pass (20 pages) · `tests/check_sources.py` pass (11 pages, 606 rows) ·
+`scripts/99_verify.py` 9/9 · `scripts/98_linkcheck.py` pass.
