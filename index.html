@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NFL Line Lab · line origination, strategy competition and luck removal</title>
-<meta name="description" content="Line origination, strategy competition and luck removal for NFL markets — every number traceable to a pinned source file.">
+<title>NFL Line Lab · line origination, strategy competition and luck control</title>
+<meta name="description" content="Line origination, strategy competition and luck control for NFL markets — every number traceable to a pinned source file.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -17,7 +17,7 @@
 </header>
 <main class="wrap">
   <h1>NFL Line Lab</h1>
-  <p class="lede">Line origination, strategy competition and luck removal for NFL markets — every number traceable to a pinned source file.</p>
+  <p class="lede">Line origination, strategy competition and luck control for NFL markets — every number traceable to a pinned source file.</p>
   
 <div class="cards"><div class="card bad"><div class="card-value">0</div><div class="card-label">strategies that survive every gate</div><div class=card-note>reality-check p = 0.144</div></div></div>
 
@@ -71,9 +71,12 @@ honestly — including when the result is that nothing survives.</p>
       same team correlate at φ = 0.676; cover and total
       correlate at φ = 0.024. Independent pricing of a
       same-game parlay is wrong for one pair and fine for the other.</li>
-  <li><strong>Player props are not verifiable here.</strong> Player-level game logs could not be
-      retrieved from any reachable source, so every player-level number is left blank and listed on
-      the <a href="flagged.html">Flagged for review</a> page rather than estimated.</li>
+  <li><strong>Prop legs are correlated, and the market cannot be checked.</strong> Player-level
+      play-by-play is now ingested (2019–2022, 21,033 player-games) and prop lines are originated
+      out of sample: AUC 0.66–0.73. Same-game legs are measurably dependent — QB passing yards with
+      his own WR1's receiving yards lift the joint hit rate 1.14× over independence — but no reachable
+      source carries a prop <em>price</em>, so every prop combo fails the economic gate and nothing is
+      awarded. See <a href="props.html">Player props</a>.</li>
 </ol>
 </section>
 
@@ -98,7 +101,7 @@ honestly — including when the result is that nothing survives.</p>
 </section>
 
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
+    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
     produced by <code>pipeline/</code> from the files listed on the
     <a href="sources.html">Sources</a> page.</p>
   </footer>

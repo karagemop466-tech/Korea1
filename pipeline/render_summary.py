@@ -17,6 +17,34 @@ SRC = read_json(ROOT / "data" / "sources.json")
 SHA = SRC["upstream"]["commit_sha"]
 
 
+# Appended verbatim at the end of the generated summary. It is written by the annex session
+# (`arena/ea02c4fb-korea1`) and must survive regeneration — a naive rewrite of this file silently
+# deleted it once, which is exactly the kind of cross-session loss the task board exists to prevent.
+ANNEX_SECTION = """## Annex: independent replication on a second odds archive
+
+A fourth session (`arena/ea02c4fb-korea1`) built the same four questions from a **different** source — the
+Sportsbook Review 10-year archive, 2011–2021, 2,945 games, 2,280 priced bets — with separate code
+(`scripts/`), published at [`lab/`](lab/index.html) and narrated in
+[`research/05-annex-executive-summary.md`](research/05-annex-executive-summary.md).
+
+Four findings replicate independently, which is the strongest evidence in this repository:
+
+1. **No strategy passes every gate** in any build (annex 0 of 18; first build 0 of 24; this build's best
+   candidate fails its false-discovery-rate gate).
+2. **The originated line does not beat the market** — annex spread MAE 10.473 vs market 10.151, and it also
+   loses on totals and straight-up; this build 10.527 vs 10.216.
+3. **Most apparent edge is luck.** Annex in-sample → out-of-sample ROI rank correlation is 0.485 while the
+   best of 18 zero-skill trials has an expected Sharpe of 0.093 — reached from the other direction here by
+   White's Reality Check (p = 0.970).
+4. **Closing-line value is the skill-bearing statistic; ROI is not.** In a 20,000-trial mixed field of 999
+   zero-skill bettors plus one genuinely skilled bettor, the skilled bettor ranks first 78.9% of the time on
+   CLV and 0.32% of the time on ROI.
+
+Where the builds disagree, the archives disagree, and that is flagged rather than reconciled: the annex
+measures a mean 3.79% overround against 2.70% here (IR-09).
+"""
+
+
 def main() -> None:
     pred = pd.read_csv(PROC / "originated_lines.csv")
     gates = pd.read_csv(PROC / "strategy_gates.csv")
@@ -28,6 +56,15 @@ def main() -> None:
     cg = pd.read_csv(PROC / "corr_cross_game.csv")
     audit = pd.read_csv(PROC / "data_audit.csv")
     chk = pd.read_csv(PROC / "settlement_crosscheck.csv")
+    prop_gates = pd.read_csv(PROC / "prop_gates.csv")
+    prop_combo = pd.read_csv(PROC / "prop_combos.csv")
+    prop_skill = pd.read_csv(PROC / "prop_skill.csv")
+    prop_defs = pd.read_csv(PROC / "prop_definition_validation.csv")
+    prop_rep = read_json(PROC / "prop_report.json")
+    corr_col = "combo" if "combo" in prop_combo else "pair"
+    big = prop_combo.sort_values("gap", ascending=False).iloc[0]
+    qbwr = prop_combo[prop_combo[corr_col].str.startswith("QB pass yds ↔ own WR1")].iloc[0]
+    ctrl = prop_combo[prop_combo[corr_col].str.contains("control")].iloc[0]
 
     def mae(model, market):
         r = allm[(allm.model == model) & (allm.market == market) & (allm.season == "ALL")]
@@ -77,6 +114,12 @@ further.
 | Same-game φ, cover ↔ moneyline | {fmt(float(sg.phi.iloc[1]), 3)} | `corr_same_game.csv` |
 | Same-game φ, cover ↔ total | {fmt(float(sg.phi.iloc[0]), 3)} | `corr_same_game.csv` |
 | Cross-game r, margin / total | {fmt(float(cg['corr'].iloc[0]), 3)} / {fmt(float(cg['corr'].iloc[1]), 3)} | `corr_cross_game.csv` |
+| Player-games aggregated (props) | {prop_rep['player_games']:,} (2019–2022) | `prop_player_games.csv` |
+| Prop definitions verified | {prop_rep['definition_checks_passed']}/{prop_rep['definition_checks']} player-seasons exact | `prop_definition_validation.csv` |
+| Prop forecast AUC, 4 markets | {min(prop_skill.auc):.2f}–{max(prop_skill.auc):.2f} | `prop_skill.csv` |
+| Prop leg correlation, φ range | {prop_combo.phi.min():.3f} to {prop_combo.phi.max():.3f} | `prop_combos.csv` |
+| Largest same-game lift | {big['lift']:.3f}× ({big[corr_col]}) | `prop_combos.csv` |
+| Prop combos awarded | 0 — G6 cannot pass without prop prices | `prop_gates.csv` |
 
 ## What was built
 
@@ -126,6 +169,30 @@ be priced by multiplication but a same-game parlay cannot.
 {pct(float(vig.spread_hold.mean()), 2)} on spreads and {pct(float(vig.total_hold.mean()), 2)} on
 totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 
+## Player props: what the extra data bought
+
+Player-level play-by-play was fetched for 2019–2022 (67.9 MB, four pinned blobs) after an earlier
+build wrongly recorded it as unreachable. That unlocks the prop module:
+
+- **{prop_rep['player_games']:,} player-games** aggregated into passing, rushing and receiving yards
+  and receptions. Seven published season totals — Brady {prop_defs[prop_defs.player=='T.Brady'].published.iloc[0]:.0f}
+  passing yards, Kupp {prop_defs[(prop_defs.player=='C.Kupp')&(prop_defs.stat=='rec')].published.iloc[0]:.0f}
+  receptions, Taylor {prop_defs[prop_defs.player=='J.Taylor'].published.iloc[0]:.0f} rushing yards —
+  are reproduced exactly, keyed on player id (a name key silently merged J.Taylor of New England
+  into J.Taylor of Indianapolis).
+- **{prop_rep['lines']:,} originated prop lines**, walk-forward, no market input. Out of sample the
+  AUC is {min(prop_skill.auc):.2f}–{max(prop_skill.auc):.2f}, so the lines rank players well above
+  chance; the calibration slope is only {min(prop_skill.slope):.2f}–{max(prop_skill.slope):.2f}
+  against 1.0, so the probabilities are compressed and should not be used as prices.
+- **Prop legs are measurably dependent.** QB passing yards with his own WR1's receiving yards lift
+  the joint hit rate {qbwr['lift']:.3f}× over independence, and receptions with the same player's
+  receiving yards lift it {big['lift']:.3f}×. Two WR1 legs from unrelated games give
+  φ = {ctrl['phi']:.3f} with an interval spanning zero, so the estimator does not manufacture
+  dependence.
+- **Nothing is awarded.** No reachable source carries a player-prop price, so gate G6 cannot be
+  assessed and all {len(prop_gates)} combos are withheld. The correlation is the finding; the ROI
+  would be an invention.
+
 ## Decisions that shaped the result
 
 - **Bet the close, not the opener.** Multi-season openers do not exist in the pinned data, so every
@@ -153,7 +220,8 @@ totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 
 ## Flagged for review
 
-Player-week statistics and prop prices were **not retrievable** in this build (nflverse release
+Player-level **statistics** are now retrieved and used (2019–2022 play-by-play, see the props
+section above); prop **prices** were not retrievable in this build (nflverse release
 assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
 exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
 third of games, and three 2015 games carry outcome flags that contradict their own score. Full
@@ -162,10 +230,12 @@ detail, with sources: `flagged.html`.
 ## What would change the answer
 
 1. A pre-kickoff injury and starting-quarterback feed — the largest known component of the MAE gap.
-2. Player-week statistics and prop prices — unlocks the entire prop and SGP programme.
+2. Prop **prices** (the statistics are now in hand) — turns the measured prop dependence into a
+   testable return; without a price, gate G6 stays unanswerable.
 3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
 
 """
+    lines = lines.rstrip() + "\n\n---\n\n" + ANNEX_SECTION.strip() + "\n"
     (ROOT / "EXECUTIVE_SUMMARY.md").write_text(lines, encoding="utf-8")
     print(f"wrote EXECUTIVE_SUMMARY.md ({len(lines):,} bytes)")
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Player props</title>
-<meta name="description" content="The prop-pricing framework, the measured structural inputs, and an explicit list of what could not be verified.">
+<meta name="description" content="Originated prop lines, measured leg dependence and same-game combo pricing — with the one input that is still missing named explicitly.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -17,74 +17,96 @@
 </header>
 <main class="wrap wide">
   <h1>Player props</h1>
-  <p class="lede">The prop-pricing framework, the measured structural inputs, and an explicit list of what could not be verified.</p>
+  <p class="lede">Originated prop lines, measured leg dependence and same-game combo pricing — with the one input that is still missing named explicitly.</p>
   
 <section>
-<h2>Status: framework built, player-level numbers deliberately blank</h2>
-<p class="flag bad"><strong>No player-level value is published on this page.</strong> Player game logs (passing, rushing and receiving yards, receptions, touchdowns) could not be retrieved from any source reachable in this build. Rather than estimate them, every player-level cell is left blank and the gap is recorded on the <a href='flagged.html'>Flagged for review</a> page.</p>
-<div class="tablewrap"><table class=""><caption>Component audit for the player-prop project</caption><thead><tr><th>Input a prop model needs</th><th>Available</th><th>Status</th><th>Note</th><th>Source</th></tr></thead><tbody><tr><td>Player game logs (passing/rushing/receiving yards, receptions, TDs)</td><td><span class="pill no">NO</span></td><td>UNVERIFIED — source not reachable in this build</td><td>nflverse release assets (`player_stats`, `stats_player`) are served from release-assets.githubusercontent.com, which this environment&#x27;s egress blocklist refuses; every GitHub mirror checked stores these files as 132-byte Git-LFS pointers. No value was estimated to fill the gap.</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">source</a></td></tr><tr><td>Team scoring totals</td><td><span class="pill skill">YES</span></td><td>VERIFIED</td><td>games.csv home_score/away_score, reconciled 7,384/7,384</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>Game total lines</td><td><span class="pill skill">YES</span></td><td>VERIFIED</td><td>games.csv total_line, 100% present 1999–2025</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr><tr><td>Team total lines</td><td><span class="pill no">NO</span></td><td>UNVERIFIED — not present in any retrieved source</td><td>nflverse game-level files carry only the full-game total, not the 8-way team total market.</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">source</a></td></tr><tr><td>Player prop prices</td><td><span class="pill no">NO</span></td><td>UNVERIFIED — not present in any retrieved source</td><td>No retrieved source carries prop prices, so no prop ROI can be computed.</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/DATASETS.md" target="_blank" rel="noopener">source</a></td></tr><tr><td>Correlation of team scoring</td><td><span class="pill skill">YES</span></td><td>VERIFIED</td><td>computed in corr_team_totals.csv</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">source</a></td></tr></tbody></table></div>
+<h2>Status: player-level data is real, prop prices are not</h2>
+<p class="flag warn"><strong>Corrected in this build.</strong> An earlier version of this page said player-level data could not be retrieved from any reachable source. That was wrong: nflverse play-by-play is mirrored as gzip blobs inside a public GitHub repository and is reachable through the GitHub git-blob API, which this environment can call. Four seasons (2019–2022) are now downloaded, SHA-256 hashed and used below.</p>
+<p class="flag bad"><strong>What is still missing is prop prices.</strong> No reachable source carries a player-prop price, so no prop ROI can be computed. Every combo therefore fails gate G6 (economic significance) and <strong>nothing on this page is awarded</strong>. The dependence numbers below are still real: they say how much a book that multiplies legs would misprice a same-game combo.</p>
+<div class="cards"><div class="card "><div class="card-value">21,033</div><div class="card-label">player-games aggregated</div><div class=card-note>play-by-play, 2019–2022</div></div><div class="card "><div class="card-value">9,730</div><div class="card-label">originated prop lines</div><div class=card-note>4 markets, 2021–2022</div></div><div class="card "><div class="card-value">3</div><div class="card-label">combos with verified dependence</div><div class=card-note>of 7 tested</div></div><div class="card bad"><div class="card-value">0</div><div class="card-label">combo awards</div><div class=card-note>G6 blocks every one</div></div></div>
 </section>
 
 <section>
-
-<h2>The framework, stated precisely</h2>
-<p>A player prop is a bet on a count. Pricing it needs three things, in this order:</p>
-<ol class="findings">
-<li><strong>A per-game distribution for the player's count</strong> — not a mean. Receptions and
-carries are over-dispersed counts (negative binomial); yards are right-skewed and better modelled
-as a shifted lognormal or a gamma; touchdowns are near-Poisson with a huge zero mass.</li>
-<li><strong>An availability model</strong> — a prop is void if the player does not play. Snap
-share and injury status drive both the mean and the void probability, and a model that ignores
-them is biased, not just noisy.</li>
-<li><strong>The joint distribution across legs</strong> — this is where parlay pricing lives, and
-where almost every public SGP calculator quietly cheats by multiplying.</li>
-</ol>
-<p>For a two-leg same-game parlay the fair price is <code>P(A∩B) = P(A)·P(B) + Cov(A,B)</code>. If
-the legs are positively correlated and the book prices them independently, the book is
-<em>underpricing</em> the parlay — you should take it. The measured covariance for the closest
-available analogue in this dataset is in the table below.</p>
-
-<div class="tablewrap"><table class=""><caption>Measured dependence on the closest available legs</caption><thead><tr><th>Pair</th><th>n</th><th>φ</th><th>Lift</th><th>Source</th></tr></thead><tbody><tr><td>Home −line &amp; Over</td><td>5,830</td><td>0.0241</td><td>1.025</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr><tr><td>Home −line &amp; Home ML</td><td>5,900</td><td>0.6756</td><td>1.619</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr><tr><td>Over &amp; Home ML</td><td>5,971</td><td>0.0076</td><td>1.007</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr></tbody></table></div>
+<h2>1 · The data, and proof the definitions are right</h2>
+<p>Box scores are rebuilt from the play-by-play: passing yards from <code>passing_yards</code> on
+the passer, rushing yards from <code>rushing_yards</code> on the rusher, receiving yards and
+receptions from <code>receiving_yards</code> and <code>complete_pass</code> on the receiver.
+2-point conversions are excluded. The check below recomputes a published season total for seven
+player-seasons and compares it to the published number.</p>
+<div class="tablewrap"><table class=""><caption>Definition validation — our aggregation vs a published season total</caption><thead><tr><th>Season</th><th>Player</th><th>Stat</th><th>Ours</th><th>Published</th><th>Match</th><th>Source</th></tr></thead><tbody><tr><td>2021</td><td>T.Brady</td><td>pass yds</td><td>5,316</td><td>5,316</td><td><span class="pill skill">exact</span></td><td><a href="https://www.pro-football-reference.com/years/2021/passing.htm" target="_blank" rel="noopener">PFR 2021 passing</a></td></tr><tr><td>2021</td><td>M.Stafford</td><td>pass yds</td><td>4,886</td><td>4,886</td><td><span class="pill skill">exact</span></td><td><a href="https://www.pro-football-reference.com/years/2021/passing.htm" target="_blank" rel="noopener">PFR 2021 passing</a></td></tr><tr><td>2021</td><td>P.Mahomes</td><td>pass yds</td><td>4,839</td><td>4,839</td><td><span class="pill skill">exact</span></td><td><a href="https://www.pro-football-reference.com/years/2021/passing.htm" target="_blank" rel="noopener">PFR 2021 passing</a></td></tr><tr><td>2021</td><td>D.Carr</td><td>pass yds</td><td>4,804</td><td>4,804</td><td><span class="pill skill">exact</span></td><td><a href="https://www.pro-football-reference.com/years/2021/passing.htm" target="_blank" rel="noopener">PFR 2021 passing</a></td></tr><tr><td>2021</td><td>C.Kupp</td><td>rec</td><td>145</td><td>145</td><td><span class="pill skill">exact</span></td><td><a href="https://www.pro-football-reference.com/years/2021/receiving.htm" target="_blank" rel="noopener">PFR 2021 receiving</a></td></tr><tr><td>2021</td><td>C.Kupp</td><td>rec yds</td><td>1,947</td><td>1,947</td><td><span class="pill skill">exact</span></td><td><a href="https://www.pro-football-reference.com/years/2021/receiving.htm" target="_blank" rel="noopener">PFR 2021 receiving</a></td></tr><tr><td>2021</td><td>J.Taylor</td><td>rush yds</td><td>1,811</td><td>1,811</td><td><span class="pill skill">exact</span></td><td><a href="https://www.pro-football-reference.com/years/2021/rushing.htm" target="_blank" rel="noopener">PFR 2021 rushing</a></td></tr></tbody></table></div>
+<p class="flag warn"><strong>Why this table exists.</strong> The first version of the aggregation grouped on the player <em>name</em> and produced 1,848 rushing yards for “J.Taylor” against a published 1,811. The difference is J.J. Taylor (New England, 37 yards) being added to Jonathan Taylor (Indianapolis). Grouping on the GSIS player id fixes it; the validation is keyed on the id so the same mistake cannot pass silently.</p>
+<div class="tablewrap"><table class=""><caption>Play-by-play provenance — pinned blob, hashed on arrival (data/sources_pbp.json)</caption><thead><tr><th>Season</th><th>Bytes</th><th>git blob SHA</th><th>SHA-256 (truncated)</th><th>Source</th></tr></thead><tbody><tr><td>2019</td><td>16,479,104</td><td><code>ca455dc08e86…</code></td><td><code>a49fe0c7c5a6424b…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2019.gzip" target="_blank" rel="noopener">play_by_play_2019.gzip</a></td></tr><tr><td>2020</td><td>16,664,760</td><td><code>4daf7bdf2303…</code></td><td><code>d55fe0648b99077e…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2020.gzip" target="_blank" rel="noopener">play_by_play_2020.gzip</a></td></tr><tr><td>2021</td><td>17,546,160</td><td><code>0dea4d024c1d…</code></td><td><code>26cf60bc202f9bd2…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2021.gzip" target="_blank" rel="noopener">play_by_play_2021.gzip</a></td></tr><tr><td>2022</td><td>17,257,188</td><td><code>97b78a439e9e…</code></td><td><code>f303a9d126745665…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2022.gzip" target="_blank" rel="noopener">play_by_play_2022.gzip</a></td></tr></tbody></table></div>
 </section>
 
 <section>
-<h2>What can be said without player data</h2>
-<p>The structural parents of prop markets are measurable here, and they are the part that usually
-goes wrong in public calculators:</p>
+<h2>2 · Originated prop lines, out of sample</h2>
+<p>For every player-week the model uses only that player's earlier games: an exponentially weighted
+mean (120-day half-life) shrunk toward a prior-season league mean, with a shifted-lognormal
+predictive distribution for yardage and a negative binomial for receptions. The published line is
+the half-integer nearest the predictive median, so it is a genuine 50/50 line rather than a line at
+the mean — which matters, because yardage is right-skewed and the mean sits above the median.</p>
+<div class="tablewrap"><table class=""><caption>Out-of-sample point-forecast accuracy (2021–2022, walk-forward)</caption><thead><tr><th>Market</th><th>Player-weeks</th><th>Ours MAE</th><th>Expanding-mean MAE</th><th>Prior-season MAE</th><th>vs expanding mean</th><th>Source</th></tr></thead><tbody><tr><td>passing yards</td><td>693</td><td>57.90</td><td>59.33</td><td>60.83</td><td>-1.43</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>rushing yards</td><td>1,523</td><td>24.00</td><td>24.46</td><td>27.48</td><td>-0.46</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>receiving yards</td><td>3,757</td><td>22.47</td><td>22.75</td><td>25.55</td><td>-0.28</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>receptions</td><td>3,757</td><td>1.58</td><td>1.61</td><td>1.80</td><td>-0.03</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr></tbody></table></div>
+<p class="flag warn">The model beats both baselines on every market, but the margin is small — 2% on passing yards, 1% on receptions. A prop line is mostly a recency-weighted average of the player's own games; the modelling gain over that is real but modest, and claiming more would be dishonest.</p>
+<div class="tablewrap"><table class=""><caption>Discrimination and calibration at a fixed benchmark line</caption><thead><tr><th>Market</th><th>n</th><th>Benchmark line</th><th>AUC</th><th>AUC s.e.</th><th>Brier skill</th><th>Calibration slope</th><th>Slope p</th><th>Over-rate at our line</th><th>Source</th></tr></thead><tbody><tr><td>passing yards</td><td>693</td><td>238.0</td><td>0.657</td><td>± 0.021</td><td>+0.070</td><td>0.154 ± 0.022</td><td>&lt; 0.001</td><td>46.5%</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>rushing yards</td><td>1,523</td><td>32.0</td><td>0.734</td><td>± 0.013</td><td>+0.206</td><td>0.154 ± 0.010</td><td>&lt; 0.001</td><td>53.3%</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>receiving yards</td><td>3,757</td><td>29.0</td><td>0.725</td><td>± 0.008</td><td>+0.140</td><td>0.135 ± 0.005</td><td>&lt; 0.001</td><td>49.7%</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>receptions</td><td>3,757</td><td>3.0</td><td>0.721</td><td>± 0.008</td><td>+0.157</td><td>0.231 ± 0.009</td><td>&lt; 0.001</td><td>48.8%</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr></tbody></table></div>
+<p>The AUC column is the probability that a randomly chosen “over” is ranked above a randomly
+chosen “under”. 0.5 is a coin flip. The calibration slope is the regression of the realised outcome
+on the model's log-odds: 1.0 is perfect calibration, 0 is no information. The slope is far below 1 on
+every market, which means the probabilities are <em>under-confident</em> — they order outcomes
+correctly but are compressed toward 50%. That is a fixable modelling defect, not an edge, and it is
+reported rather than tuned away.</p>
+</section>
+
+<section>
+<h2>3 · How correlated the legs actually are</h2>
+<p>Every pair below is measured on the same games, at each leg's originated 50/50 line. φ is the
+correlation of the two over/under indicators; <em>lift</em> is the ratio of the joint hit rate to the
+product of the two marginal rates, i.e. exactly the factor a parlay calculator gets wrong when it
+multiplies. Within-player <em>r</em> removes each player's own level, so a good player matched with a
+bad one cannot create a fake relationship.</p>
+<div class="tablewrap"><table class=""><caption>Measured dependence between prop legs, pooled over 2021–2022</caption><thead><tr><th>Leg pair</th><th>n</th><th>r (raw)</th><th>r (within-player)</th><th>φ at 50/50</th><th>Lift</th><th>Joint − independent [95% CI]</th><th>Dependence</th><th>Source</th></tr></thead><tbody><tr><td>QB pass yds ↔ own WR1 rec yds</td><td>1,278</td><td>0.258</td><td>0.222</td><td>0.152</td><td>1.136</td><td>+0.0373 [+0.0123, +0.0640]</td><td><span class="pill skill">yes</span></td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>QB pass yds ↔ own WR2 rec yds</td><td>1,165</td><td>0.298</td><td>0.239</td><td>0.145</td><td>1.150</td><td>+0.0360 [+0.0103, +0.0635]</td><td><span class="pill skill">yes</span></td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>QB pass yds ↔ own RB1 rush yds</td><td>1,222</td><td>-0.077</td><td>-0.061</td><td>-0.066</td><td>0.941</td><td>-0.0163 [-0.0400, +0.0091]</td><td><span class="pill no">no</span></td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>WR1 rec yds ↔ WR2 rec yds (same team)</td><td>1,322</td><td>0.103</td><td>0.059</td><td>0.034</td><td>1.028</td><td>+0.0084 [-0.0158, +0.0341]</td><td><span class="pill no">no</span></td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>Receptions ↔ rec yds (same player)</td><td>778</td><td>0.780</td><td>0.752</td><td>0.580</td><td>1.446</td><td>+0.1424 [+0.1090, +0.1759]</td><td><span class="pill skill">yes</span></td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>QB (home) pass yds ↔ QB (away) pass yds</td><td>281</td><td>0.067</td><td>-0.006</td><td>0.045</td><td>1.049</td><td>+0.0113 [-0.0385, +0.0611]</td><td><span class="pill no">no</span></td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>WR1 ↔ WR1 from an unrelated game (control)</td><td>550</td><td>-0.062</td><td>-0.033</td><td>-0.036</td><td>0.974</td><td>-0.0087 [-0.0469, +0.0313]</td><td><span class="pill no">no</span></td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr></tbody></table></div>
+<p class="flag ok"><strong>Read the control row first.</strong> Two WR1 legs drawn from unrelated games show φ = -0.036 with an interval spanning zero — the estimator does not manufacture dependence. The QB↔WR1, QB↔WR2 and receptions↔yards rows are then the ones to trust.</p>
+</section>
+
+<section>
+<h2>4 · What independent pricing would cost on a prop combo</h2>
+<div class="tablewrap"><table class=""><caption>Same-game combo pricing: multiplying legs vs the measured joint</caption><thead><tr><th>Combo</th><th>n</th><th>Independent price</th><th>Measured joint</th><th>Lift</th><th>Fair odds (joint)</th><th>Odds if multiplied</th><th>Gap</th><th>Reading</th><th>Source</th></tr></thead><tbody><tr><td>QB pass yds ↔ own WR1 rec yds</td><td>1,278</td><td>27.49%</td><td>31.22%</td><td>1.136</td><td>+220</td><td>+264</td><td>+0.0373</td><td>correlated legs — independence pricing is wrong</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>QB pass yds ↔ own WR2 rec yds</td><td>1,165</td><td>23.95%</td><td>27.55%</td><td>1.150</td><td>+263</td><td>+318</td><td>+0.0360</td><td>correlated legs — independence pricing is wrong</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>QB pass yds ↔ own RB1 rush yds</td><td>1,222</td><td>27.73%</td><td>26.10%</td><td>0.941</td><td>+283</td><td>+261</td><td>-0.0163</td><td>independent — no correlation edge</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>WR1 rec yds ↔ WR2 rec yds (same team)</td><td>1,322</td><td>30.02%</td><td>30.86%</td><td>1.028</td><td>+224</td><td>+233</td><td>+0.0084</td><td>independent — no correlation edge</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>Receptions ↔ rec yds (same player)</td><td>778</td><td>31.90%</td><td>46.14%</td><td>1.446</td><td>+117</td><td>+213</td><td>+0.1424</td><td>correlated legs — independence pricing is wrong</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>QB (home) pass yds ↔ QB (away) pass yds</td><td>281</td><td>23.07%</td><td>24.20%</td><td>1.049</td><td>+313</td><td>+333</td><td>+0.0113</td><td>independent — no correlation edge</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr><tr><td>WR1 ↔ WR1 from an unrelated game (control)</td><td>550</td><td>33.41%</td><td>32.55%</td><td>0.974</td><td>+207</td><td>+199</td><td>-0.0087</td><td>independent — no correlation edge</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp 2019–22</a></td></tr></tbody></table></div>
+<p>“Odds if multiplied” is what a book returns when it prices each leg independently and
+multiplies. “Fair odds (joint)” is what the measured joint frequency implies. The gap is the
+structural mispricing. It is a reason to prefer correlated legs <em>if</em> the book multiplies, and
+it is exactly what a book's same-game pricing engine is supposed to remove — which is why the price,
+not the correlation, is the thing that has to be verified before any of this becomes a bet.</p>
+</section>
+
+<section>
+<h2>5 · Gates</h2>
+<div class="tablewrap"><table class=""><caption>Eight gates per prop combo — G6 cannot pass without a prop price feed</caption><thead><tr><th>Combo</th><th>n</th><th>G1 data</th><th>G2 leakage</th><th>G3 power</th><th>G4 significance</th><th>G5 stability</th><th>G6 economic</th><th>G7 not redundant</th><th>G8 joint</th><th>Verdict</th><th>Source</th></tr></thead><tbody><tr><td>QB pass yds ↔ own WR1 rec yds</td><td>1,278</td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td>STRUCTURE VERIFIED — NOT PRICEABLE</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr><tr><td>QB pass yds ↔ own WR2 rec yds</td><td>1,165</td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td>STRUCTURE VERIFIED — NOT PRICEABLE</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr><tr><td>QB pass yds ↔ own RB1 rush yds</td><td>1,222</td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill no">fail</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td>NO MEASURED DEPENDENCE</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr><tr><td>WR1 rec yds ↔ WR2 rec yds (same team)</td><td>1,322</td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td>NO MEASURED DEPENDENCE</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr><tr><td>Receptions ↔ rec yds (same player)</td><td>778</td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td>STRUCTURE VERIFIED — NOT PRICEABLE</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr><tr><td>QB (home) pass yds ↔ QB (away) pass yds</td><td>281</td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td>NO MEASURED DEPENDENCE</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr><tr><td>WR1 ↔ WR1 from an unrelated game (control)</td><td>550</td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill no">fail</span></td><td><span class="pill skill">pass</span></td><td><span class="pill skill">pass</span></td><td>NO MEASURED DEPENDENCE</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr></tbody></table></div>
+<p>G6 asks whether the signal survives the cost of the market. With no prop price feed it cannot be
+answered, so it is scored as a fail rather than assumed. Nothing is awarded, and the prize pool for
+prop combos stays unawarded — the same rule the main leaderboard applies.</p>
+</section>
+
+<section>
+<h2>6 · What this page does not tell you</h2>
 <ul class="findings">
-<li>Team scoring variance is large relative to its covariance:
-var(home) = 104.57,
-var(away) = 99.96,
-cov(home, away) = -3.98.</li>
-<li>The home share of total variance is
-0.532 — a team-total over
-is not simply "half a game-total over".</li>
-<li>Game total sd is 14.02 points against a
-mean of 44.83.</li>
+<li><strong>No ROI.</strong> Without prop prices there is no bet, no stake and no return. Any number
+presented as a prop ROI in this repository would be invented.</li>
+<li><strong>Appearance selection.</strong> A player only enters the player-game table when the
+play-by-play records an event for them, so a game in which a receiver ran routes but was never
+targeted is invisible. Averages are therefore conditional on involvement, which biases them upward.
+It is the main reason the marginal over-rates are not exactly 50%.</li>
+<li><strong>Our line is not a book's line.</strong> A book's prop line reflects injury status, snap
+share, coverage matchup and sharp money. Ours uses none of those. The correlation structure is
+robust to that gap; the level of any individual line is not.</li>
+<li><strong>Touchdown markets are excluded.</strong> They are near-Poisson with a large zero mass and
+need a much larger sample to price honestly than four seasons provide.</li>
+<li><strong>Roles are inferred from prior usage</strong>, not from a roster feed: QB = most prior pass
+attempts, WR1/WR2 = most prior targets, RB1 = most prior carries. That is knowable before kickoff,
+which is the property that matters.</li>
 </ul>
-<p>Those three numbers are enough to price a <em>team total</em> honestly and to know how much a
-pair of opposing team-total legs co-move. They are <strong>not</strong> enough to price a player
-prop, which is why the player layer stays empty rather than invented.</p>
-</section>
-
-<section>
-<h2>What would unblock it</h2>
-<div class="tablewrap"><table><thead><tr><th>Step</th><th>Requirement</th><th>Blocked by</th><th>Source</th></tr></thead><tbody>
-<tr><td>1</td><td>Player-week stat lines (nflverse <code>player_stats</code> release)</td>
-<td>Release assets redirect to <code>release-assets.githubusercontent.com</code>, refused by this
-environment's egress policy; every GitHub mirror checked stores 132-byte LFS pointers</td>
-<td><a href="https://github.com/nflverse/nflverse-data/releases/tag/player_stats" target="_blank" rel="noopener">release</a></td></tr>
-<tr><td>2</td><td>Prop prices (any sportsbook)</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-<tr><td>3</td><td>Team total prices</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-<tr><td>4</td><td>Injury / snap-share feeds</td><td>UNVERIFIED — not present in any retrieved dataset</td>
-<td><a href="sources.html">sources</a></td></tr>
-</tbody></table></div>
 </section>
 
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
+    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
     produced by <code>pipeline/</code> from the files listed on the
     <a href="sources.html">Sources</a> page.</p>
   </footer>

@@ -153,7 +153,21 @@ def main() -> int:
                    ~(pd.read_csv(PROC / 'strategy_gates.csv')[['G1_data', 'G2_leakage', 'G3_power',
                     'G4_significance', 'G5_luck', 'G6_economic', 'G7_stability']].all(axis=1))).any()),
          "verdict logic consistent"),
-        ("prop page publishes no unverified value", True, "player-level cells left blank by design"),
+        ("prop definitions reproduce published season totals",
+         bool(pd.read_csv(PROC / "prop_definition_validation.csv").match.all()),
+         f"{int(pd.read_csv(PROC / 'prop_definition_validation.csv').match.sum())}/"
+         f"{len(pd.read_csv(PROC / 'prop_definition_validation.csv'))} player-seasons exact"),
+        ("no prop combo is awarded without the economic gate",
+         bool(not pd.read_csv(PROC / "prop_gates.csv").G6_economic.any()),
+         "G6 fails for every combo: no prop price feed exists"),
+        ("every prop combo has a verdict, and STRUCTURE needs G4",
+         bool(pd.read_csv(PROC / "prop_gates.csv").verdict.notna().all()
+              and not ((pd.read_csv(PROC / "prop_gates.csv").verdict.str.startswith("STRUCTURE"))
+                       & ~pd.read_csv(PROC / "prop_gates.csv").G4_significance).any()),
+         f"{len(pd.read_csv(PROC / 'prop_gates.csv'))} combos"),
+        ("originated prop lines are fair (mean p(over) within 0.02 of 0.5)",
+         bool(abs(pd.read_csv(PROC / "prop_lines.csv").p_over.mean() - 0.5) < 0.02),
+         f"mean p(over) = {pd.read_csv(PROC / 'prop_lines.csv').p_over.mean():.4f}"),
     ]:
         extra.append(dict(check=name, passed=cond, detail=detail))
         print(f"[{'PASS' if cond else 'FAIL'}] {name} — {detail}")

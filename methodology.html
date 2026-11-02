@@ -29,10 +29,14 @@ pipeline/strategies.py      the pre-declared strategy library
 pipeline/stats_tools.py     bootstrap, FDR, deflated Sharpe, reality check
 pipeline/validation.py      run the library, apply the eight gates -> strategy_*.csv
 pipeline/correlations.py    measured dependence -> corr_*.csv
+pipeline/fetch_pbp.py       player-level play-by-play, pinned by git blob SHA -> data/sources_pbp.json
+pipeline/props_model.py     prop lines, calibration, leg dependence, combo pricing -> prop_*.csv
 pipeline/render_site.py     this site
 pipeline/verify_site.py     row-level source check + internal link check</pre>
-<p>Reproduce with <code>make build</code> (or run the eight scripts in order). Everything is
-deterministic: the upstream commit is pinned and every download is SHA-256 hashed.</p>
+<p>Reproduce with <code>make build</code>, which runs the game-level pipeline and then the props
+stage, or <code>make props</code> on its own. Everything is deterministic: the upstream commit is
+pinned, every download is SHA-256 hashed, and both data sources are recorded in
+<code>data/sources.json</code> and <code>data/sources_pbp.json</code>.</p>
 </section>
 
 <section>
@@ -49,6 +53,39 @@ team offence and defence ratings</td><td>One intercept + scale pair fitted on th
 retention)</td><td>Linear calibration on the training window</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a></td></tr>
 <tr><td><strong>ensemble</strong></td><td>Equal weights 1/3 · 1/3 · 1/3 (never fitted)</td>
 <td>—</td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">computed</a></td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+<h2>Prop origination and combo pricing</h2>
+<div class="tablewrap"><table><thead><tr><th>Stage</th><th>Method</th><th>Why this and not something else</th>
+<th>Source</th></tr></thead><tbody>
+<tr><td><strong>aggregation</strong></td><td>Play-by-play → player-game passing / rushing / receiving
+yards and receptions; 2-point conversions excluded</td><td>Validated against seven published season
+totals keyed on player id, because a name key silently merges two players
+(J.Taylor = 1,811 + 37)</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
+<tr><td><strong>predictive mean</strong></td><td>Exponentially weighted mean of the player's prior
+games (120-day half-life), shrunk toward a prior-season league mean</td><td>Uses only earlier games;
+the leakage assertion walks every player history in date order</td>
+<td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
+<tr><td><strong>predictive spread</strong></td><td>Within-player variance pooled across
+player-seasons, shrunk the same way</td><td>A pooled across-player sd would contain the differences
+between players and make every interval too wide</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
+<tr><td><strong>distribution</strong></td><td>Shifted lognormal for yardage, negative binomial for
+receptions</td><td>Yardage is right-skewed: a line at the mean is not a 50/50 line, and the normal
+assumption put the over-rate at 40% during development</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
+<tr><td><strong>line</strong></td><td>Half-integer nearest the predictive median, chosen as the one
+whose over-probability is closest to 0.5</td><td>No pushes by construction; a genuine 50/50 line
+rather than a mean</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">computed</a></td></tr>
+<tr><td><strong>role labels</strong></td><td>QB / RB1 / WR1 / WR2 ranked on <em>prior</em> usage,
+not on the game being measured</td><td>Labelling WR1 as the player with the most targets in the game
+conditions on a good game and inflates every marginal</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">pbp</a></td></tr>
+<tr><td><strong>dependence</strong></td><td>φ at the 50/50 split with a 2,000-draw bootstrap
+interval; within-player correlation; a cross-game control</td><td>The control is what shows the
+estimator does not manufacture correlation</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">computed</a></td></tr>
+<tr><td><strong>calibration</strong></td><td>Slope of the realised 0/1 outcome on logit(p) plus AUC
+at a fixed benchmark line</td><td>Slope 1 = calibrated; slope 0 = no information. It is the gate that
+stops a model from being praised for ordering alone</td><td><a href="https://github.com/clausherther/nfl-dbt/tree/master/data_prep/data_files_load/pbp" target="_blank" rel="noopener">computed</a></td></tr>
 </tbody></table></div>
 </section>
 
@@ -91,7 +128,7 @@ carry a different closing number for the same game — documented on the
 </section>
 
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
+    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
     produced by <code>pipeline/</code> from the files listed on the
     <a href="sources.html">Sources</a> page.</p>
   </footer>

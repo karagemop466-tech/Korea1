@@ -1,6 +1,6 @@
 # NFL Line Lab
 
-Line origination, strategy competition and luck removal for NFL markets.
+Line origination, strategy competition and luck control for NFL markets.
 
 **Live site:** https://karagemop466-tech.github.io/Korea1/
 
@@ -19,6 +19,7 @@ fill a gap — where a value could not be verified it is left blank and listed o
 | Do any betting strategies beat the closing market after the vig? | `pipeline/strategies.py` → `strategies.html` |
 | Which of those results are skill, and which are luck? | `pipeline/validation.py` → `validation.html` |
 | How correlated are the legs of a parlay or same-game parlay? | `pipeline/correlations.py` → `correlations.html` |
+| Can player props be originated, and how correlated are the legs? | `pipeline/props_model.py` → `props.html` |
 | What would a player-prop model need, and what is missing? | `props.html` |
 | What is unverified, contradictory or incomplete? | `flagged.html` |
 
@@ -33,6 +34,11 @@ fill a gap — where a value could not be verified it is left blank and listed o
 * The closing prices used carry a **2.7% two-way hold**, so break-even is ≈51.4%, not 52.4%.
 * Same-game legs are **not** independent: cover↔moneyline φ ≈ 0.68, cover↔total φ ≈ 0.024,
   cross-game legs φ ≈ 0.01 (interval spans zero).
+* **Player props are now modelled, not blank.** 21,033 player-games (2019–2022 play-by-play) produce
+  9,730 walk-forward prop lines with out-of-sample AUC 0.66–0.73; QB passing yards and his own WR1's
+  receiving yards lift the joint hit rate 1.14× over independence (φ = 0.152, CI excludes zero), and
+  a cross-game control sits at φ = −0.036 with an interval spanning zero. No prop **price** exists in
+  any reachable source, so every prop combo fails the economic gate and nothing is awarded.
 
 ## Data
 
@@ -48,12 +54,21 @@ hashed on arrival. The exact commit and per-file hashes are in
 | `sc_lines.csv` | 4,092 | SuperContest consensus lines 2013–2020 |
 | `win_totals.csv` | 576 | season win totals with prices |
 
+A second source carries player-level play-by-play: 2019–2022 gzip blobs from
+`clausherther/nfl-dbt`, fetched through the GitHub git-blob API (release assets are blocked at the
+network level, git blobs are not), pinned by blob SHA and SHA-256 hashed into
+[`data/sources_pbp.json`](data/sources_pbp.json). The aggregation is validated against seven
+published season totals, keyed on player id — a name key silently merges J.J. Taylor into
+Jonathan Taylor.
+
 ## Reproduce
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
 pip install pandas numpy scipy
-make build        # fetch → build → models → backtest → strategies → correlations → site → verify
+make build        # fetch → datasets → models → backtest → strategies → props → site → verify
+make props        # player-level play-by-play → prop lines, calibration, correlations, combos
+make test         # prop leakage/integrity tests + link check + per-row source check
 ```
 
 `make build` ends with `pipeline/verify_site.py`, which fails the build if any table row lacks a
@@ -63,6 +78,8 @@ source link, any internal link is broken, or any unformatted missing value reach
 
 ```
 pipeline/            all analysis code (see methodology.html for the dataflow)
+pipeline/fetch_pbp.py  pinned per-season play-by-play (git-blob API) → data/sources_pbp.json
+pipeline/props_model.py prop lines, calibration, leg correlations, combo pricing → prop_*.csv
 data/processed/      generated tables (committed; the site reads them)
 data/sources.json    pinned commit SHA + per-file SHA-256
 *.html + assets/     the GitHub Pages site (static HTML/CSS, no CDN, no framework) — served from
@@ -81,6 +98,12 @@ COORDINATION.md      multi-session task board and work log
 4. All strategies are declared before they are run; every result is published, including failures.
 5. The settlement engine is cross-checked against nflverse's own outcome column (99.93% exact
    agreement where the two files carry the same line).
+6. Prop lines carry no market input, are built only from earlier games, and are re-tested for
+   prefix stability in `tests/test_props_integrity.py`: deleting every game after a cut-off must
+   not move a single prediction at or before it.
+7. A build re-pins nothing: `pipeline/fetch_data.py` reuses the commit recorded in
+   `data/sources.json`, so `make build` reproduces the published numbers instead of drifting to
+   today's upstream head.
 
 ## Licence and attribution
 

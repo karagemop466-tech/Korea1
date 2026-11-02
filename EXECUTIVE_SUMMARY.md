@@ -1,6 +1,6 @@
 # Executive summary — NFL Line Lab
 
-*Generated from the pipeline output on 2026-11-01T13:24:09Z · upstream commit `a270278f3ac4` ·
+*Generated from the pipeline output on 2026-11-02T17:26:06Z · upstream commit `a270278f3ac4` ·
 reproduce with `make build`.*
 
 ## The question
@@ -37,6 +37,12 @@ further.
 | Same-game φ, cover ↔ moneyline | 0.676 | `corr_same_game.csv` |
 | Same-game φ, cover ↔ total | 0.024 | `corr_same_game.csv` |
 | Cross-game r, margin / total | 0.011 / 0.008 | `corr_cross_game.csv` |
+| Player-games aggregated (props) | 21,033 (2019–2022) | `prop_player_games.csv` |
+| Prop definitions verified | 7/7 player-seasons exact | `prop_definition_validation.csv` |
+| Prop forecast AUC, 4 markets | 0.66–0.73 | `prop_skill.csv` |
+| Prop leg correlation, φ range | -0.066 to 0.580 | `prop_combos.csv` |
+| Largest same-game lift | 1.446× (Receptions ↔ rec yds (same player)) | `prop_combos.csv` |
+| Prop combos awarded | 0 — G6 cannot pass without prop prices | `prop_gates.csv` |
 
 ## What was built
 
@@ -86,6 +92,30 @@ be priced by multiplication but a same-game parlay cannot.
 2.72% on spreads and 2.93% on
 totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 
+## Player props: what the extra data bought
+
+Player-level play-by-play was fetched for 2019–2022 (67.9 MB, four pinned blobs) after an earlier
+build wrongly recorded it as unreachable. That unlocks the prop module:
+
+- **21,033 player-games** aggregated into passing, rushing and receiving yards
+  and receptions. Seven published season totals — Brady 5316
+  passing yards, Kupp 145
+  receptions, Taylor 1811 rushing yards —
+  are reproduced exactly, keyed on player id (a name key silently merged J.Taylor of New England
+  into J.Taylor of Indianapolis).
+- **9,730 originated prop lines**, walk-forward, no market input. Out of sample the
+  AUC is 0.66–0.73, so the lines rank players well above
+  chance; the calibration slope is only 0.14–0.23
+  against 1.0, so the probabilities are compressed and should not be used as prices.
+- **Prop legs are measurably dependent.** QB passing yards with his own WR1's receiving yards lift
+  the joint hit rate 1.136× over independence, and receptions with the same player's
+  receiving yards lift it 1.446×. Two WR1 legs from unrelated games give
+  φ = -0.036 with an interval spanning zero, so the estimator does not manufacture
+  dependence.
+- **Nothing is awarded.** No reachable source carries a player-prop price, so gate G6 cannot be
+  assessed and all 7 combos are withheld. The correlation is the finding; the ROI
+  would be an invention.
+
 ## Decisions that shaped the result
 
 - **Bet the close, not the opener.** Multi-season openers do not exist in the pinned data, so every
@@ -113,7 +143,8 @@ totals — a low-margin book, so break-even is about 51.4%, not 52.4%.
 
 ## Flagged for review
 
-Player-week statistics and prop prices were **not retrievable** in this build (nflverse release
+Player-level **statistics** are now retrieved and used (2019–2022 play-by-play, see the props
+section above); prop **prices** were not retrievable in this build (nflverse release
 assets sit behind a blocked host; mirrors store 132-byte LFS pointers). Multi-season openers do not
 exist in the pinned data. The two nflverse price files disagree by a median 0.5 points on about a
 third of games, and three 2015 games carry outcome flags that contradict their own score. Full
@@ -122,7 +153,8 @@ detail, with sources: `flagged.html`.
 ## What would change the answer
 
 1. A pre-kickoff injury and starting-quarterback feed — the largest known component of the MAE gap.
-2. Player-week statistics and prop prices — unlocks the entire prop and SGP programme.
+2. Prop **prices** (the statistics are now in hand) — turns the measured prop dependence into a
+   testable return; without a price, gate G6 stays unanswerable.
 3. A multi-season opener feed — unlocks genuine open-to-close CLV analysis instead of close-only.
 
 ---

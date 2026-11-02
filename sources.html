@@ -29,13 +29,24 @@ of <code>nflverse/nfldata</code>.</p>
 </section>
 
 <section>
+<h2>Player-level play-by-play</h2>
+<p>The props stage uses a second source. It is fetched through the GitHub git-blob API, pinned by
+blob SHA (not by a branch), and SHA-256 hashed on arrival into <code>data/sources_pbp.json</code>.</p>
+<div class="tablewrap"><table class=""><caption>Player-level inputs — pinned blob and hash (data/sources_pbp.json)</caption><thead><tr><th>File</th><th>Bytes</th><th>git blob SHA</th><th>SHA-256</th><th>Source</th></tr></thead><tbody><tr><td>play_by_play_2019.gzip</td><td>16,479,104</td><td><code>ca455dc08e86…</code></td><td><code>a49fe0c7c5a6424b…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2019.gzip" target="_blank" rel="noopener">file</a></td></tr><tr><td>play_by_play_2020.gzip</td><td>16,664,760</td><td><code>4daf7bdf2303…</code></td><td><code>d55fe0648b99077e…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2020.gzip" target="_blank" rel="noopener">file</a></td></tr><tr><td>play_by_play_2021.gzip</td><td>17,546,160</td><td><code>0dea4d024c1d…</code></td><td><code>26cf60bc202f9bd2…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2021.gzip" target="_blank" rel="noopener">file</a></td></tr><tr><td>play_by_play_2022.gzip</td><td>17,257,188</td><td><code>97b78a439e9e…</code></td><td><code>f303a9d126745665…</code></td><td><a href="https://github.com/clausherther/nfl-dbt/blob/master/data_prep/data_files_load/pbp/play_by_play_2022.gzip" target="_blank" rel="noopener">file</a></td></tr></tbody></table></div><p class="muted">Access method: GitHub git-blob API (api.github.com/repos/{repo}/git/blobs/{sha}, Accept: application/vnd.github.raw). Release assets are NOT used: they redirect to release-assets.githubusercontent.com, which the sandbox egress allowlist refuses.. Tier: verified third party: nflverse play-by-play, itself built from NFL gamebooks, mirrored byte-for-byte inside a public Git repository. Excluded seasons: 2023 (partial season in this repository (2,034,432 bytes, 5,660 plays); would silently understate rates).</p>
+</section>
+
+<section>
 <h2>Why this source and not another</h2>
 <p>The canonical distribution point for nflverse data is its release assets. In this build
 environment those assets redirect to <code>release-assets.githubusercontent.com</code>, which the
 egress policy refuses (measured, not assumed). The <code>nfldata</code> repository publishes the same
-game-level tables as ordinary files, so it is used instead, pinned by commit. The provenance
-difference is recorded on the <a href="flagged.html">Flagged for review</a> page.</p>
-<pre class="pipeline">reachable : github.com · codeload.github.com · api.github.com · registry.npmjs.org · pypi.org
+game-level tables as ordinary files, so it is used instead, pinned by commit. Player-level
+play-by-play is not in that repository, so it is taken from the per-season gzip blobs mirrored in
+<code>clausherther/nfl-dbt</code> and fetched through the <code>api.github.com</code> git-blob
+endpoint, which <em>is</em> reachable. The provenance difference is recorded on the
+<a href="flagged.html">Flagged for review</a> page.</p>
+<pre class="pipeline">reachable : github.com · codeload.github.com · api.github.com (incl. git-blob raw)
+            registry.npmjs.org · pypi.org
 blocked   : raw.githubusercontent.com · release-assets.githubusercontent.com
             objects.githubusercontent.com · www.nfl.com · operations.nfl.com (from the shell)</pre>
 <p>Official NFL rule pages are cited directly and were read with the agent's page-fetch tool, which
@@ -68,7 +79,7 @@ is not subject to the shell's egress allowlist.</p>
 </section>
 
   <footer>
-    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-01T13:24:09Z · every number on this site is
+    <p>Data pinned at <code>a270278f3ac4</code> · generated 2026-11-02T17:26:06Z · every number on this site is
     produced by <code>pipeline/</code> from the files listed on the
     <a href="sources.html">Sources</a> page.</p>
   </footer>
