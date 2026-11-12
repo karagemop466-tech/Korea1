@@ -6,13 +6,10 @@ name: Availability tracker (injuries + depth charts)
 # snapshot to the branch it ran on. See pipeline/fetch_availability.py for the rules.
 on:
   schedule:
-    # 11:17 and 23:17 UTC daily, plus 21:17 UTC Wed-Sat when practice/game statuses post.
+    # 11:17 and 23:17 UTC daily, plus 21:17 UTC Wed-Sat when practice and game statuses post.
     - cron: "17 11,23 * * *"
     - cron: "17 21 * * 3-6"
   workflow_dispatch:
-  push:
-    branches: ["arena/c0528572-korea1"]
-    paths: ["pipeline/fetch_availability.py", ".github/workflows/availability.yml"]
 
 permissions:
   contents: write
@@ -29,16 +26,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
       - name: Fetch official injury report and club depth charts
+        run: python pipeline/fetch_availability.py
+      - name: Rebuild the availability tables and page
         run: |
-          mkdir -p data/availability
-          python pipeline/fetch_availability.py --debug 2>&1 | tee data/availability/fetch_log.txt
+          python pipeline/depth_status.py
+          python pipeline/render_review.py
+      - name: Verify (row sources, links, captions) before publishing
+        run: |
+          python pipeline/verify_site.py
+          python tests/check_sources.py
+          python tests/check_links.py
+          python -m pytest -q tests/test_availability_tracker.py
       - name: Commit snapshot
-        if: always()
         run: |
           git config user.name "availability-bot"
           git config user.email "availability-bot@users.noreply.github.com"
-          git add -A data/availability
+          git add -A data/availability availability.html data/processed/verification_report.csv assets/data/verification_report.csv
           git diff --cached --quiet && { echo "no change"; exit 0; }
           git commit -m "availability: official snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase origin "${GITHUB_REF_NAME}"

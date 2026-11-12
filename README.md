@@ -9,6 +9,9 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 ## Explore
 
 - `index.html` — clean landing page and searchable leaderboard
+- `decision-board.html` — suggestions with options, to review and choose before any change is made
+- `open-questions.html` — what is known, what is missing, how to find it
+- `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
 - `strategies.html` — complete candidate library and competition rules
@@ -38,6 +41,14 @@ An upstream refresh requires `python pipeline/fetch_data.py --refresh-pin` follo
 The independent annex can be rebuilt with `PYTHON=.venv/bin/python make annex`.
 Historical calculations remain in `data/lab/`; public annex tables do not present them as official facts.
 
+## Availability tracker
+
+`.github/workflows/availability.yml` runs on a schedule on a GitHub-hosted runner (the build sandbox
+cannot reach nfl.com). It reads <https://www.nfl.com/injuries/> and each club's `/team/depth-chart`
+page, writes `data/availability/` (with a dated copy under `history/`), rebuilds `availability.html`,
+runs the site checks and commits. `make build` only reads the committed snapshot. Nothing is inferred:
+empty official cells stay empty, failed pages are blank and flagged.
+
 ## Evidence policy
 
 Official NFL observations, primary method references, operator terms and community research inputs
@@ -53,7 +64,7 @@ key-number pricing claims, and permissive source checking. See `audit/REPORT.md`
 
 ## Coordination and deployment
 
-Read `COORDINATION.md` before editing. This Arena session is pinned to
-`arena/ed58af62-korea1`; the final PR, merge and deployment record are appended there.
+Read `COORDINATION.md` before editing. Each Arena session is pinned to its own `arena/<id>-korea1`
+branch; PR, merge and deployment records are appended to `COORDINATION.md`.
 
 Research and education only. No guaranteed returns, betting recommendations or funded prize pool.

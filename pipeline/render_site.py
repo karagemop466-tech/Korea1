@@ -42,24 +42,38 @@ URL_DATASETS = f"https://github.com/nflverse/nfldata/blob/{SHA}/DATASETS.md"
 URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
 GENERATED = SRC["generated_utc"]
 
-NAV = [
-    ("index.html", "Dashboard"),
-    ("executive-summary.html", "Executive summary"),
-    ("lines.html", "Originated lines"),
-    ("strategies.html", "Leaderboard"),
-    ("validation.html", "Validation gates"),
-    ("correlations.html", "Correlations"),
-    ("props.html", "Player props"),
-    ("methodology.html", "Methodology"),
-    ("requirements.html", "Requirements"),
-    ("flagged.html", "Flagged for review"),
-    ("sources.html", "Sources"),
-    ("audit.html", "Independent audit"),
-    ("verification.html", "Reproducibility"),
-    # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
-    # same questions from a different odds archive. Served from lab/ and not part of this render.
-    ("lab/index.html", "Replication annex"),
+# Grouped by category (T17, arena/c0528572-korea1): the flat list had grown to 14 links.
+NAV_GROUPS = [
+    ("Overview", [
+        ("index.html", "Dashboard"),
+        ("executive-summary.html", "Executive summary"),
+    ]),
+    ("Decide", [
+        ("decision-board.html", "Decision board"),
+        ("open-questions.html", "Open questions"),
+        ("flagged.html", "Flagged for review"),
+    ]),
+    ("Lines & strategies", [
+        ("lines.html", "Originated lines"),
+        ("strategies.html", "Leaderboard"),
+        ("validation.html", "Validation gates"),
+        ("correlations.html", "Correlations"),
+        ("props.html", "Player props"),
+    ]),
+    ("Availability", [
+        ("availability.html", "Injuries & depth"),
+    ]),
+    ("Evidence", [
+        ("methodology.html", "Methodology"),
+        ("requirements.html", "Requirements"),
+        ("sources.html", "Sources"),
+        ("audit.html", "Independent audit"),
+        ("verification.html", "Reproducibility"),
+        # Integration session arena/ea02c4fb-korea1: independent build served from lab/.
+        ("lab/index.html", "Replication annex"),
+    ]),
 ]
+NAV = [item for _, items in NAV_GROUPS for item in items]
 
 
 def e(x) -> str:
@@ -72,8 +86,10 @@ def src_link(url: str, label: str = "source") -> str:
 
 def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = False) -> str:
     nav = "".join(
-        f'<a class="navlink{" active" if s == slug else ""}" href="{s}">{e(t)}</a>'
-        for s, t in NAV)
+        f'<div class="navgroup"><span class="navhead">{e(g)}</span>' + "".join(
+            f'<a class="navlink{" active" if s == slug else ""}" href="{s}"'
+            f'{" aria-current=page" if s == slug else ""}>{e(t)}</a>' for s, t in items) + "</div>"
+        for g, items in NAV_GROUPS)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -86,13 +102,12 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
 <script src="assets/app.js" defer></script>
 </head>
 <body>
-<header class="topbar">
-  <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
-    <nav aria-label="Main navigation">{nav}</nav>
-  </div>
-</header>
 <a class="skip-link" href="#main-content">Skip to content</a>
+<div class="shell">
+<header class="side">
+  <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+  <nav aria-label="Main navigation">{nav}</nav>
+</header>
 <main id="main-content" class="wrap{' wide' if wide else ''}">
   <h1>{e(title)}</h1>
   <p class="lede">{subtitle}</p>
@@ -104,6 +119,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
     <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
+</div>
 </body>
 </html>
 """
@@ -212,6 +228,11 @@ def build_index(d):
            card(str(matched), "official score matches", "NFL.com sample; not a full-history census", "good"),
            card("0", "verified prop-price tickets", "No prop ROI is claimed", ""),
            card("8", "fail-closed gates", "All must pass before recognition", "")])}
+<section><h2>Before you decide</h2><div class="cards smallcards">
+<a class="minicard" href="decision-board.html"><strong>Decision board</strong><span>Suggestions with options to review and choose before anything is changed.</span></a>
+<a class="minicard" href="open-questions.html"><strong>Open questions</strong><span>What is known, what is missing, and how to find it.</span></a>
+<a class="minicard" href="availability.html"><strong>Injuries &amp; depth</strong><span>Official injury report joined to club depth charts: who is out, who is listed next.</span></a>
+</div></section>
 <section><div class="section-head"><h2>Strategy leaderboard</h2><a href="strategies.html">Full competition rules →</a></div>
 <p>Unverified performance cells are intentionally blank. “Unverified” is not a finding of zero edge;
 it means the evidence is insufficient. Search or sort the table without changing its evidence status.</p>
@@ -247,6 +268,15 @@ def build_executive(d):
 correlation diagnostics and a fail-closed competition. It does not contain the verified, timestamped
 sportsbook quotes needed to establish an executable edge. No single bet, parlay or player-prop combo
 has passed every gate. This is an evidence gap, not proof that every strategy has zero expected value.</p></section>
+<section><h2>Update of 2026-11-12</h2>
+{table([
+["Injuries and lineups", "Tracking live · effect not priced", "A scheduled workflow reads the official NFL.com injury report and each club's depth-chart page, then shows for offense and defense which first-listed players are Out or Doubtful and which 2nd, 3rd or 4th-string player the club lists next. It does not yet move the originated line: the point value of an absence has not been measured. See <a href='availability.html'>Injuries &amp; depth</a>.", official("NFL injuries")],
+["Suggestions", "Awaiting your decision", "Every proposed change is on the <a href='decision-board.html'>decision board</a> with options, a recommendation and the evidence behind it. Nothing has been implemented. Decide S-02 (real prices) and S-03 (forward paper ledger) first: they unblock every verdict.", official("White (2000), Econometric Society")],
+["Open questions", "Unanswered", "The <a href='open-questions.html'>open-questions register</a> separates what is known from what is missing and names how to find it. Some questions only you can answer: sportsbooks and jurisdiction, bankroll, success threshold, refresh cadence, reward.", official("White (2000), Econometric Society")],
+["Line board freshness", "Stale", "The open line board still starts at Week 8 because the data snapshot is pinned at 2026-11-02; the injury capture is for the current week. Refreshing is suggestion S-04.", official("NFL schedule")],
+["Site", "Repaired", "Navigation is grouped by category and the stylesheet now defines the classes the pages use. Findings from this review are on <a href='flagged.html'>Flagged for review</a> (N-01 to N-11).", official("GitHub Pages documentation")],
+], ["Area", "Status", "What changed and what it means", "Official reference"], caption="What is new since the 2026-11-02 report")}
+</section>
 <section><h2>Important details</h2>
 {table([
 ["Line origination", "Implemented", "Elo, rolling matchup points and ridge; season-by-season walk-forward fitting. Model outputs are estimates, not official lines.", official("NFL scores")],
@@ -494,7 +524,13 @@ def build_flagged(d):
         ["F-11", "Medium · open", "Historical annex estimates use different archives and older code. They are retained for replication, not promoted to current verified findings.", official("NFL scores")],
         ["F-12", "Medium · repaired", "The old road-favourite comment contradicted its selection. The documented sign convention and selected side are now covered by a regression test.", official("NFL scores")],
     ]
-    body = f"""{notice()}<section><h2>Open evidence gaps and repaired irregularities</h2>
+    from render_review import flagged_rows
+    review = flagged_rows()
+    body = f"""{notice()}<section><h2>Review of 2026-11-12</h2>
+<p>Findings from the latest repository review and the first official availability capture. Proposed responses are on the
+<a href="decision-board.html">decision board</a>; none has been applied.</p>
+{table(review, ["ID", "Severity / state", "Finding", "Source"], caption="2026-11-12 review register")}</section>
+<section><h2>Open evidence gaps and repaired irregularities</h2>
 <p>Open items do not block publication of a clearly labelled research site. They do block betting validation and rewards.
 Earlier audit findings are preserved below, including their original scope.</p>
 <div class="table-tools"><label>Search findings <input class="filter" type="search" placeholder="Search source, prop, leakage…"></label></div>
@@ -548,6 +584,9 @@ def build_requirements(d):
         ("R16", "Blank unverified values", "Enforced in strict public view", "Research estimates segregated and labelled, never called official.", "NFL scores"),
         ("R17", "Coordinate parallel work", "Implemented", "Claims, pinned-branch constraint, append-only conflict resolution and integration log.", "GitHub Pages documentation"),
         ("R18", "PR, merge and live deployment", "Recorded after execution", "See COORDINATION.md and the final PR; never infer a successful deployment.", "GitHub Pages documentation"),
+        ("R19", "Suggestions section to review before changes", "Implemented", "decision-board.html: options, recommendation and evidence per row; nothing implemented until chosen.", "GitHub Pages documentation"),
+        ("R20", "Questions, known and missing information", "Implemented", "open-questions.html: known / unknown / how to find out, linked to suggestions.", "GitHub Pages documentation"),
+        ("R21", "Track injuries and starter/backup deficiencies", "Implemented · effect not priced", "availability.html: scheduled capture of the official injury report and club depth charts; point value of an absence is an open question.", "NFL injuries"),
     ]
     rows = [[i,title,status,detail,official(ref)] for i,title,status,detail,ref in requirements]
     body = f"""{notice()}<section><h2>Complete requirements matrix</h2><p>“Implemented” describes software,
@@ -649,6 +688,66 @@ pre.pipeline,pre.math{background:#0a1526;border:1px solid var(--line);border-rad
  padding:14px;overflow-x:auto;font-size:12.5px;color:#b9cdf0}
 footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 @media(max-width:640px){h1{font-size:26px} .card-value{font-size:22px}}
+
+/* --- 2026-11-12 (T17): sidebar shell, grouped navigation and the classes the pages already used --- */
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--accent);color:#04101f;padding:8px 12px;z-index:50;border-radius:0 0 8px 0}
+.skip-link:focus{left:0}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:18px 14px;
+ background:#090e1a;border-right:1px solid var(--line)}
+.side .brand{display:block;margin:0 6px 14px}
+.brand .mark{background:var(--accent);color:#04101f;border-radius:6px;padding:2px 6px;font-size:12px;font-weight:800}
+.side nav{display:block}
+.navgroup{margin-bottom:14px}
+.navhead{display:block;padding:0 10px 4px;color:#6f84ab;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.side .navlink{display:block;padding:6px 10px}
+.shell>.wrap,.shell>.wrap.wide{max-width:1280px;width:100%;margin:0;padding:0 28px 64px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;background:var(--panel);
+ border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:8px 0 16px}
+.hero h2{margin:6px 0 8px;font-size:26px;line-height:1.2}
+.hero p{color:var(--muted);margin:0;max-width:64ch}
+.eyebrow{color:var(--accent);font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600}
+.hero-status{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13px;min-width:200px}
+.hero-status strong{display:block;font-size:17px;margin:2px 0}
+.hero-status small{color:var(--muted)}
+.status-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--warn);margin-right:6px}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.table-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 0;color:var(--muted);font-size:13px}
+.filter{background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:7px 10px;
+ font:inherit;font-size:13px;min-width:240px;margin-left:6px}
+.filter:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tablewrap{max-height:72vh;overflow:auto}
+th{cursor:pointer;z-index:1}
+th[aria-sort=ascending]::after{content:" \\25B2";font-size:9px}
+th[aria-sort=descending]::after{content:" \\25BC";font-size:9px}
+td{overflow-wrap:anywhere}
+td a{overflow-wrap:normal}
+.blank::after{content:"\\2014";color:#56688c}
+.unverified{color:var(--warn)}
+.pill.unverified{background:rgba(255,176,32,.12);color:var(--warn);border:1px solid rgba(255,176,32,.35)}
+.pill.good{background:rgba(55,214,122,.15);color:var(--good);border:1px solid rgba(55,214,122,.4)}
+.pill.bad{background:rgba(255,93,93,.13);color:var(--bad);border:1px solid rgba(255,93,93,.35)}
+.pill{white-space:nowrap}
+.card.good{border-color:#1f5a3a}
+.card.next{border-color:var(--accent)}
+td .sub{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+table.register td{min-width:150px}
+table.register td:first-child{min-width:70px;white-space:nowrap}
+[id]{scroll-margin-top:16px}
+@media(max-width:900px){
+ .shell{display:block}
+ .side{position:static;height:auto;display:flex;align-items:center;gap:10px;padding:8px 12px;border-right:0;
+  border-bottom:1px solid var(--line);overflow:visible}
+ .side .brand{margin:0;white-space:nowrap}
+ .side nav{display:flex;gap:2px;overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;min-width:0;flex:1}
+ .navgroup{display:flex;margin:0}
+ .navhead{display:none}
+ .shell>.wrap,.shell>.wrap.wide{padding:0 14px 48px}
+ .hero{grid-template-columns:1fr}
+ .filter{min-width:0;width:100%;margin:4px 0 0}
+}
 """
 
 
