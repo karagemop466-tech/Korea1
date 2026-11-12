@@ -1011,3 +1011,49 @@ F1 (audit), F2 (repairs/dashboard) and F3 (integration/deploy) are complete for 
 Open sibling PR #19 was not closed or force-pushed. All merged sibling work through PRs #15–#18
 was preserved and re-verified. The final public dashboard is live at
 <https://karagemop466-tech.github.io/Korea1/>.
+
+---
+
+## 2026-11-12 — Session `arena/9e3e144b-korea1` (FW1–FW5: forward-test ledger)
+
+**Board state read before claiming (2026-11-12T13:05Z).** `main` = `645ef0c`. `git ls-remote --heads origin` was run twice,
+five minutes apart, and every new branch was fetched and its claim read. Six sibling sessions pushed claims between
+12:57Z and 13:01Z, each on its own pinned branch, most without sight of the others:
+
+| Sibling branch | Claim commit | Time (UTC) | What it claims |
+|---|---|---|---|
+| `arena/3e57f750-korea1` | `39a872b` | 12:57:19 | T14 injury + depth-chart register, T15 questions, T16 suggestions, T17 repo review + integration |
+| `arena/03f66e17-korea1` | `2b6fed2` | 12:57:30 | N1 decision-readiness, suggestions queue, lineup evidence contract, integration |
+| `arena/425336fc-korea1` | `a80c026` | 12:58:58 | T14–T23 repo review, suggestions, decisions, signal + leaderboard research notes, injuries, summary, site reorganisation, integration |
+| `arena/c0528572-korea1` | `4df6a4a` | 13:00:08 | T14 availability tracker + scheduled workflow, T15 suggestions, T16 questions, T17 integration |
+| `arena/d6b3fd34-korea1` | `072c72d` | 13:00:16 | G1–G6 repo review, suggestions hub, Q&A register, lineup-deficiency tracker (`data/lineups/**`), summary, integration |
+| `arena/25460478-korea1` | `8d4d076` | 13:01:16 | T14 suggestions + questions, T15 availability monitor, T16 integration |
+
+**Consequence.** Every *new* item in the 2026-11-12 brief — suggestions register, questions register, injury /
+depth-chart tracking, repo review, executive summary, final integration — is already claimed by three to six live
+sessions. Under "never start a task another session has claimed" this session starts **none** of them. It claims
+the one decision-critical piece that no session claimed and that the shipped executive summary itself lists as a
+blocker ("Complete trial registry and untouched prospective replication — no reward eligibility").
+
+### Claim (committed and pushed before any file in scope was touched)
+
+| # | Task | Status | Owner (session ID) | File scope (all new paths) |
+|---|------|--------|--------------------|-----------|
+| FW1 | Pre-registration evidence audit: which originated lines were published on `main` before which kickoffs, proven from GitHub server-side merge records and official NFL kickoff times | **in progress** | `arena/9e3e144b-korea1` | `pipeline/forward_ledger.py`, `data/forward/**` |
+| FW2 | Forward ledger engine: append-only hash-chained freeze of originated lines + pre-declared picks before kickoff; grading only against official finals; forward (prospective) gate for the leaderboard | **in progress** | `arena/9e3e144b-korea1` | `pipeline/forward_ledger.py`, `pipeline/forward_grade.py`, `data/forward/**`, `tests/test_forward_ledger.py` |
+| FW3 | Automation with no manual input: scheduled workflow that grades settled games and freezes the next slate | **in progress** | `arena/9e3e144b-korea1` | `.github/workflows/forward-ledger.yml` (new file; `verify.yml` and `availability.yml` are not touched) |
+| FW4 | Starting-QB continuity as a candidate signal for the ledger: points value of a QB change and whether the close already prices it, from the starter ids in the pinned `games.csv` (1999–2026). **Bounded:** no injury report, no depth chart, no play-by-play — those belong to T14/T15/T19/G4 above | **in progress** | `arena/9e3e144b-korea1` | `pipeline/qb_continuity.py`, `data/forward/qb_continuity/**`, `tests/test_qb_continuity.py` |
+| FW5 | Publish as a self-contained sub-site with its own generator, verifier and flagged list; PR limited to this scope → `main`; merge; Pages check; record | **in progress** | `arena/9e3e144b-korea1` | `forward/**`, `pipeline/forward_render.py`, `pipeline/forward_verify.py`, `research/07-forward-ledger.md`, `COORDINATION.md` (this section only) |
+
+**Not claimed, and not edited by this session:** `pipeline/render_site.py`, `pipeline/render_summary.py`,
+`pipeline/verify_site.py`, `tests/check_*.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`,
+`.github/workflows/verify.yml`, `.github/workflows/pages.yml`, `assets/**`, `data/processed/**`, every root
+`*.html`, and every path in the six claims above. Existing code and tables are **read**, never written.
+
+**Protocol deviation, recorded.** The platform pins this session to `arena/9e3e144b-korea1`; it cannot create
+`session-<id>/<task>` branches (same limitation every earlier session recorded).
+
+**Irregularity for the integration owner (IR-FW-00).** Six sessions each claim final integration of the same shared
+outputs (`pipeline/render_site.py` NAV, root `*.html`, `README.md`, `EXECUTIVE_SUMMARY.md`, `Makefile`), three
+claim the file name `suggestions.html`, three claim `injuries.html`, two claim `questions.html` and three claim
+`pipeline/render_decisions.py`. This session cannot resolve that and does not try to; it keeps out of all of it.
