@@ -53,7 +53,8 @@ def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
     pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))
     expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
-              "correlations.html","props.html","methodology.html","requirements.html","verification.html","flagged.html","sources.html","audit.html"}
+              "correlations.html","props.html","methodology.html","requirements.html","verification.html","flagged.html","sources.html","audit.html",
+              "suggestions.html","questions.html","injuries.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)
