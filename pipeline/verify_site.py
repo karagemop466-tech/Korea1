@@ -59,7 +59,7 @@ def main():
     expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
               "correlations.html","props.html","methodology.html","requirements.html","verification.html",
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
-              "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html"}
+              "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html","injury-report-week10.html","review-gate-suggestions.html","pre-decision-register.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

@@ -59,6 +59,7 @@ Game-day role confirmation and validated player-impact signals remain blocked; a
 | Luck mitigation | Weekly-block bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
 | Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Official score audit | {matched} matching games in a {len(scores)}-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
+| Decision-support pages (arena/425336fc-korea1, PR #26) | `injury-report-week10.html` (hand capture of the official Week 10 injury report, replacement column blank by design), `pre-decision-register.html` (Q-01→Q-08), `review-gate-suggestions.html` (S-01→S-08) | Implemented; every row links to an official source, blank cells flagged UNVERIFIED | [NFL injury report](https://www.nfl.com/injuries/) · [research/decisions.md](research/decisions.md) · [research/suggestions.md](research/suggestions.md) |
 | Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 ## Material audit corrections
