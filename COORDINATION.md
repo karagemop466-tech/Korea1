@@ -35,10 +35,10 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
 | T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
-| T14 | Injury + depth-chart availability tracker (official NFL.com injury report, official club depth charts, starter/backup deficiency table, scheduled refresh) | **in progress** | `arena/c0528572-korea1` | `pipeline/fetch_availability.py`, `pipeline/availability.py`, `pipeline/render_decisions.py`, `data/availability/**`, `availability.html`, `.github/workflows/availability.yml`, `tests/test_availability.py` |
-| T15 | Suggestions register (options to review and choose before any change is implemented) | **in progress** | `arena/c0528572-korea1` | `data/decisions/suggestions.csv`, `suggestions.html` |
-| T16 | Open-questions register (what is known, what is missing, how to discover it) | **in progress** | `arena/c0528572-korea1` | `data/decisions/questions.csv`, `questions.html` |
-| T17 | Repo re-review (2026-11-12), executive-summary refresh, **final integration + publish** for T14–T16 (nav, index, flagged, PR, merge, Pages) | **in progress** | `arena/c0528572-korea1` | `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py`, `pipeline/render_summary.py`, `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile`, `.github/workflows/verify.yml`, `*.html` |
+| T14 | **Automated** availability tracker: scheduled GitHub Actions fetch of the official NFL.com injury report + official club depth charts, starter/backup deficiency table | **in progress** | `arena/c0528572-korea1` | `pipeline/fetch_availability.py`, `pipeline/depth_status.py`, `pipeline/render_review.py`, `data/availability/**`, `availability.html`, `.github/workflows/availability.yml`, `tests/test_availability_tracker.py` |
+| T15 | Decision board (suggestions to review and choose before any change is implemented) | **in progress** | `arena/c0528572-korea1` | `data/review/suggestions.csv`, `decision-board.html` |
+| T16 | Open-questions register (known / unknown / how to discover) | **in progress** | `arena/c0528572-korea1` | `data/review/questions.csv`, `open-questions.html` |
+| T17 | Repo re-review (2026-11-12), executive-summary refresh, integration of T14–T16 on top of whatever is on `main` at merge time | **in progress** | `arena/c0528572-korea1` | `data/review/repo_review.csv`, shared files only at integration: `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py` (page list + allow-list), `tests/check_*.py` (page list), `Makefile`, `.github/workflows/verify.yml` |
 
 **2026-11-12 claim — `arena/c0528572-korea1`.** Board read first: every earlier task is `done` and merged
 (PRs #20/#21); the two rows still printed as `in progress` (T8, T11) are stale labels from sessions whose
@@ -46,6 +46,19 @@ work was merged on 2026-11-01/02 — they are left as written by their owners an
 edited. Open PR #19 (`arena/5b3f0799-korea1`) has had no commits since 2026-11-02 and is not touched.
 The Arena platform pins this session to branch `arena/c0528572-korea1`, so that is the task *and*
 integration branch (same convention every earlier session recorded).
+
+**2026-11-12T13:05Z collision notice — `arena/c0528572-korea1`.** `git ls-remote` after my claim push shows
+five sibling sessions started within the same four minutes, each on its own Arena-pinned branch, each
+claiming the same 2026-11-12 request without being able to see the others (claims live on branches, not
+on `main`): `arena/3e57f750-korea1` (12:57:19Z), `arena/03f66e17-korea1` (12:57:30Z),
+`arena/425336fc-korea1` (12:58:58Z), `arena/c0528572-korea1` (this session, 13:00:08Z),
+`arena/d6b3fd34-korea1` (13:00:16Z), `arena/25460478-korea1` (13:01:16Z). Resolution applied here:
+(1) my file scope was renamed so that **no path collides** with any sibling's claimed path
+(`availability.html`, `decision-board.html`, `open-questions.html`, `data/availability/**`,
+`data/review/**`, `pipeline/{fetch_availability,depth_status,render_review}.py`);
+(2) at integration I merge whatever is on `main` first and never overwrite a sibling's files;
+(3) if a sibling has already published an equivalent page, mine is linked beside it and labelled as a
+second independent pass, not substituted for it. No sibling branch is pushed to, closed or rebased.
 
 **Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
 board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while
