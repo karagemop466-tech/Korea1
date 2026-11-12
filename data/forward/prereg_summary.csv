@@ -1,0 +1,4 @@
+set,model,pr,published_utc,path,commit,games_priced_unplayed,published_before_kickoff,time_not_verified,published_after_kickoff,before_kickoff_with_current_inputs,mae_spread,mae_total,mae_spread_current_inputs,mae_total_current_inputs,mirror_mae_spread_at_pin,mirror_mae_total_at_pin,mirror_mae_spread_close,mirror_mae_total_close
+A,"Legacy model (analysis/ pipeline, no longer built)",7,2026-11-01T13:44:15Z,data/derived/model_lines.csv,b5f9c45ab2c4cf30dfd5744930ea51f4957bce7d,28,16,12,0,1,10.629,11.098,16.935,7.661,10.031,10.5,9.5,9.75
+C,"Canonical model, first priced board",15,2026-11-02T17:42:03Z,data/processed/originated_upcoming.csv,e3d03596ed31f4c839c12f5aadaed26b251ea22f,28,16,0,12,1,10.472,11.147,23.479,4.322,10.031,10.5,9.5,9.75
+D,"Canonical model, board currently on the site",20,2026-11-02T20:52:18Z,data/processed/originated_upcoming.csv,4d8d0ff9d09e30b0e030b1acda54102e667f0919,28,16,0,12,1,10.603,11.398,23.345,5.693,10.031,10.5,9.5,9.75
