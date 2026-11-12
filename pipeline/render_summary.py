@@ -35,6 +35,17 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 | Line board freshness | Stale | The open line board still starts at Week 8 (snapshot pinned 2026-11-02); the injury capture is for the current week. Refreshing is suggestion S-04. | [NFL schedule](https://www.nfl.com/schedules/) |
 | Site | Repaired | Navigation grouped by category; stylesheet now defines the classes the pages use. Review findings N-01 to N-11 are on `flagged.html`. | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
+## Decision readiness follow-up — 2026-11-12
+
+The dedicated `decisions.html` register supplies twelve questions with current answers, missing inputs,
+discovery steps and acceptance gates. `suggestions.html` compares eight proposed paths and alternatives;
+none is approved. `lineups.html` contains seven selected official Week 10 injury-report observations
+and quoted cells from two club depth charts, retrieved 2026-11-12. Unknown injury/status fields,
+confirmed starter/replacement roles, replacement depth ranks and point impacts stay blank.
+That sample page is not league-wide or live tracking; the league-wide scheduled capture is `availability.html` (table above). A daily read-only Actions monitor archives three official
+source pages without promoting collection into verified extraction or changing model inputs.
+Game-day role confirmation and validated player-impact signals remain blocked; all-club coverage is supplied by `availability.html`.
+
 ## What was delivered
 
 | Requirement | Delivery | Evidence status | Official / primary reference |

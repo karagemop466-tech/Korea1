@@ -63,6 +63,12 @@ NAV_GROUPS = [
     ("Availability", [
         ("availability.html", "Injuries & depth"),
     ]),
+    # First-pass pages merged from sibling session arena/03f66e17-korea1 (PRs #22/#23); kept as published.
+    ("First pass · 12 Nov", [
+        ("decisions.html", "Decision readiness"),
+        ("suggestions.html", "Suggestions (8 paths)"),
+        ("lineups.html", "Lineup sample"),
+    ]),
     ("Evidence", [
         ("methodology.html", "Methodology"),
         ("requirements.html", "Requirements"),
@@ -240,6 +246,9 @@ it means the evidence is insufficient. Search or sort the table without changing
 {table(rows, ["Strategy", "Market", "ROI", "Adjusted p", "Correlation", "Status", "Reward", "Official reference"], caption="Strict evidence view · research estimates are not represented as official observations")}
 </section>
 <section><h2>Explore the research</h2><div class="cards smallcards">
+<a class="minicard" href="decisions.html"><strong>Decision readiness</strong><span>Questions, known answers and missing evidence.</span></a>
+<a class="minicard" href="suggestions.html"><strong>Suggestions for review</strong><span>Compare proposed paths before approving implementation.</span></a>
+<a class="minicard" href="lineups.html"><strong>Injuries & lineup evidence</strong><span>Dated official observations; unconfirmed replacement roles stay blank.</span></a>
 <a class="minicard" href="lines.html"><strong>Originated lines</strong><span>Market-free models, paired benchmarks and upcoming research lines.</span></a>
 <a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, multiplicity, costs and replication.</span></a>
 <a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
@@ -267,7 +276,11 @@ def build_executive(d):
 <p>The repository contains a working line-origination pipeline, a strategy library, settlement tests,
 correlation diagnostics and a fail-closed competition. It does not contain the verified, timestamped
 sportsbook quotes needed to establish an executable edge. No single bet, parlay or player-prop combo
-has passed every gate. This is an evidence gap, not proof that every strategy has zero expected value.</p></section>
+has passed every gate. This is an evidence gap, not proof that every strategy has zero expected value.</p>
+<p><strong>Readiness follow-up · 2026-11-12:</strong> a dedicated <a href="decisions.html">12-question decision register</a>,
+<a href="suggestions.html">eight proposed paths</a> and <a href="lineups.html">seven-player official injury sample</a>
+now make the remaining work explicit. That sample page is not a live league-wide service; the league-wide scheduled capture is <a href="availability.html">Injuries &amp; depth</a>. Confirmed starter/replacement roles,
+depth ranks and quantitative impacts remain blank until verified. No strategy or proposal is newly approved.</p></section>
 <section><h2>Update of 2026-11-12</h2>
 {table([
 ["Injuries and lineups", "Tracking live · effect not priced", "A scheduled workflow reads the official NFL.com injury report and each club's depth-chart page, then shows for offense and defense which first-listed players are Out or Doubtful and which 2nd, 3rd or 4th-string player the club lists next. It does not yet move the originated line: the point value of an absence has not been measured. See <a href='availability.html'>Injuries &amp; depth</a>.", official("NFL injuries")],
@@ -510,6 +523,11 @@ This is a targeted code and claim audit with executable tests—not a claim that
 def build_flagged(d):
     from render_audit import irregularity_rows
     rows = irregularity_rows(SHA, src_link)
+    decisions = read_json(ROOT / "research/decision-register.json")
+    gap_rows = [[e(r["id"]), "Needs review", e(r["finding"]), e(r["next"]),
+                 src_link(decisions["sources"][r["source"]]["url"], "Official context (not verification)") +
+                 "".join("<br>" + src_link(decisions["sources"][key]["url"], "Attempted URL — 404") for key in r.get("attempted_sources", []))]
+                for r in decisions["flags"]]
     new = [
         ["F-01", "High · repaired", "Normal builds resolved upstream master despite claiming a pinned reproduction. Default now reads the committed SHA; refresh requires an explicit flag.", official("GitHub Pages documentation")],
         ["F-02", "High · repaired", "Full-history median weather filled missing observations and leaked future distribution information. Observed fields now stay blank; weather/roof excluded from default features.", official("NFL scores")],
@@ -536,6 +554,9 @@ Earlier audit findings are preserved below, including their original scope.</p>
 <div class="table-tools"><label>Search findings <input class="filter" type="search" placeholder="Search source, prop, leakage…"></label></div>
 {table(new, ["ID", "Severity / state", "Finding and disposition", "Source"], caption="Final integration audit register")}
 </section><section><h2>Earlier official-source audit</h2>{table(rows, ["ID", "Severity", "Finding", "Source"], caption="Preserved findings from the independent T10 audit")}</section>
+<section id="decision-gaps"><h2>Decision-readiness findings · 2026-11-12</h2>
+<p>These are unresolved limitations, not approval to implement a proposal. See <a href="suggestions.html">suggestions</a> and <a href="lineups.html">dated lineup evidence</a>.</p>
+{table(gap_rows, ["ID", "State", "Finding", "Next evidence", "Official context"], caption="Follow-up gaps requiring review, not blocking publication")}</section>
 <section><h2>How to request a correction</h2><p>Use the repository issue tracker with the row ID, the authoritative source and the exact field.
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
@@ -583,10 +604,10 @@ def build_requirements(d):
         ("R15", "Official link on every table row", "Enforced in canonical site", "Automated allowlist and row-level checks; annex explicitly historical.", "GitHub Pages documentation"),
         ("R16", "Blank unverified values", "Enforced in strict public view", "Research estimates segregated and labelled, never called official.", "NFL scores"),
         ("R17", "Coordinate parallel work", "Implemented", "Claims, pinned-branch constraint, append-only conflict resolution and integration log.", "GitHub Pages documentation"),
+        ("R19", "Suggestions section to review before changes", "Implemented · proposals unapproved", "decision-board.html: 17 suggestions with options, recommendation and evidence. suggestions.html (first pass): eight paths with alternatives. Nothing implemented until chosen.", "GitHub Pages documentation"),
+        ("R20", "Questions, known and missing information", "Implemented", "open-questions.html: 20 questions with known / unknown / how to find out. decisions.html (first pass): twelve questions with acceptance gates.", "NFL injuries"),
+        ("R21", "Track injuries and starter/backup deficiencies", "Implemented · effect not priced", "availability.html: scheduled league-wide capture of the official injury report and club depth charts, with 2nd/3rd/4th-string listing. lineups.html (first pass): seven-player sample. Point value of an absence is an open question.", "NFL injuries"),
         ("R18", "PR, merge and live deployment", "Recorded after execution", "See COORDINATION.md and the final PR; never infer a successful deployment.", "GitHub Pages documentation"),
-        ("R19", "Suggestions section to review before changes", "Implemented", "decision-board.html: options, recommendation and evidence per row; nothing implemented until chosen.", "GitHub Pages documentation"),
-        ("R20", "Questions, known and missing information", "Implemented", "open-questions.html: known / unknown / how to find out, linked to suggestions.", "GitHub Pages documentation"),
-        ("R21", "Track injuries and starter/backup deficiencies", "Implemented · effect not priced", "availability.html: scheduled capture of the official injury report and club depth charts; point value of an absence is an open question.", "NFL injuries"),
     ]
     rows = [[i,title,status,detail,official(ref)] for i,title,status,detail,ref in requirements]
     body = f"""{notice()}<section><h2>Complete requirements matrix</h2><p>“Implemented” describes software,

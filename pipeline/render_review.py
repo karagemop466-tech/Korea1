@@ -129,7 +129,8 @@ def build_availability() -> str:
 <li><strong>First-listed</strong> is the player the club prints first in a depth-chart slot. <strong>2nd / 3rd / 4th string</strong> is the club&rsquo;s printed order for the same slot. Clubs describe these charts as unofficial; the order is not a confirmed game-day lineup.</li>
 <li><strong>Next listed</strong> appears only when the first-listed player is designated Out or Doubtful. It is the next player in the slot who is not himself Out or Doubtful.</li>
 <li>The page does <strong>not</strong> estimate how many points an absence is worth. That is open question <a href="open-questions.html">Q-07</a>; the options are on the <a href="decision-board.html">decision board</a> (S-05, S-06).</li>
-<li>Players on the injury report are matched to depth charts by name within the same club. Unmatched names are listed in their own table, never guessed.</li></ul></section>
+<li>Players on the injury report are matched to depth charts by name within the same club. Unmatched names are listed in their own table, never guessed.</li>
+<li>A hand-checked seven-player sample from a parallel session is kept as published at <a href="lineups.html">Lineup sample</a>.</li></ul></section>
 <section><h2>Offense and defense: first-listed players affected, by club</h2>
 <p>One row per club and unit for clubs that appear on the injury report. Counts are of depth-chart slots.</p>
 {tools("Try a club code such as NE, or Defense")}
@@ -178,7 +179,8 @@ def build_board() -> str:
 <li><strong><a href="#S-01">S-01</a> and <a href="#S-04">S-04</a></strong> — make the dashboard readable and current.</li>
 <li><strong><a href="#S-06">S-06</a>, <a href="#S-07">S-07</a>, then <a href="#S-05">S-05</a></strong> — build injury history and game-day lineups before letting injuries move a line.</li>
 <li>Everything else in any order.</li></ol>
-<p>Several rows depend on an answer only you can give. Those are listed on <a href="open-questions.html">Open questions</a>.</p></section>
+<p>Several rows depend on an answer only you can give. Those are listed on <a href="open-questions.html">Open questions</a>.
+A separate first pass by a parallel session (eight proposed paths) is kept as published at <a href="suggestions.html">Suggestions (8 paths)</a>; the two lists were written independently and overlap.</p></section>
 <section><h2>Decision board</h2>
 {tools("Try prices, injuries, Small…")}
 {table(t, ["ID", "Suggestion", "Options", "Recommended", "What it unblocks", "Status · reference"], cls="register", caption="Suggestions for review · no row is implemented until an option is chosen")}</section>
@@ -215,7 +217,8 @@ def build_questions() -> str:
 {table(t, ["ID", "Question", "What we know", "What we do not know", "How to find out", "Status · reference"], cls="register", caption="Questions, known and missing information · suggestions (S-nn) are on the decision board")}</section>
 <section><h2>Answering</h2><p>Reply in the next session or open an issue naming the question (for example &ldquo;Q-01&rdquo;).
 <a class="btn" href="{REPO}/issues/new?title=Answer%3A%20Q-">Answer a question</a>
-· <a href="decision-board.html">Go to the decision board</a> · <a href="data/review/questions.csv">Download the register (CSV)</a></p></section>"""
+· <a href="decision-board.html">Go to the decision board</a> · <a href="data/review/questions.csv">Download the register (CSV)</a></p>
+<p>A separate first pass by a parallel session (twelve questions with acceptance gates) is kept as published at <a href="decisions.html">Decision readiness</a>.</p></section>"""
     return layout("open-questions.html", "Open questions",
                   "What must be answered before a decision, what is already known, and how to find what is missing.", body, wide=True)
 

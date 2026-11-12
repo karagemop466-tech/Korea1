@@ -13,7 +13,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PROC, ROOT, read_json
 
-ALLOW = {"www.nfl.com", "nfl.com", "operations.nfl.com", "www.econometricsociety.org",
+ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com", "operations.nfl.com", "www.econometricsociety.org",
          "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
          "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov"}
 # Official club sites (depth-chart pages read by pipeline/fetch_availability.py).
@@ -56,7 +56,7 @@ def official_refs(hrefs):
 def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
     pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))
-    expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
+    expected={"decisions.html","suggestions.html","lineups.html","index.html","executive-summary.html","lines.html","strategies.html","validation.html",
               "correlations.html","props.html","methodology.html","requirements.html","verification.html","flagged.html","sources.html","audit.html","availability.html","decision-board.html","open-questions.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
