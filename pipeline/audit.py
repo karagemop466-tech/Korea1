@@ -194,13 +194,27 @@ def audit_rebuild(src: dict, digests: pd.DataFrame) -> pd.DataFrame:
         (tmp / "data" / "sources.json").write_text(
             json.dumps(src, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-        stages = ["build_datasets.py", "models.py", "backtest.py", "validation.py",
-                  "correlations.py", "props_model.py", "injuries.py",
-                  "render_summary.py", "render_requirements.py", "render_site.py",
-                  "render_readiness.py", "render_annex.py", "verify_site.py"]
+        stages = [
+            "data/review/_author.py",
+            "pipeline/depth_status.py",
+            "pipeline/build_datasets.py",
+            "pipeline/models.py",
+            "pipeline/backtest.py",
+            "pipeline/validation.py",
+            "pipeline/correlations.py",
+            "pipeline/props_model.py",
+            "pipeline/injuries.py",
+            "pipeline/render_summary.py",
+            "pipeline/render_requirements.py",
+            "pipeline/render_site.py",
+            "pipeline/render_review.py",
+            "pipeline/render_readiness.py",
+            "pipeline/render_annex.py",
+            "pipeline/verify_site.py",
+        ]
         log = []
         for stage in stages:
-            proc = subprocess.run([sys.executable, str(tmp / "pipeline" / stage)], cwd=tmp,
+            proc = subprocess.run([sys.executable, str(tmp / stage)], cwd=tmp,
                                   capture_output=True, text=True, timeout=1800)
             log.append(f"{stage}: exit {proc.returncode}")
             if proc.returncode != 0:

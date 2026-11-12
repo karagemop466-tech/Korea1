@@ -82,7 +82,8 @@ and `audit_*.csv`.
   completed missing CSS rules in `assets/style.css`, unified 46-row `requirements/requirements.csv` across
   `REQUIREMENTS.md` and `requirements.html`, repaired `FEATURE_DICT`/`models.py` docstrings and
   `correlations.py` `prop_inputs.csv`, expanded `tests/check_sources.py` to include `verification.html`,
-  and re-aligned `pipeline/audit.py` clean-room rebuild (`69/69`) and claim checks (`73/73`) after merging
-  `origin/main` (`bc1c411`: `decisions.html`, `lineups.html`, `DECISIONS.md`, `official-monitor.yml`,
-  18 root + 9 annex pages, `52` pytest tests passing).
+  and re-aligned `pipeline/audit.py` clean-room rebuild and claim checks after merging
+  `origin/main` (`f7b17eb`, PRs #22/#23/#25/#26/#27/#28/#29/#31: `decisions.html`, `lineups.html`,
+  `availability.html`, `decision-board.html`, `open-questions.html`, `DECISIONS.md`,
+  `official-monitor.yml`, `availability.yml`, 21 root + 9 annex pages, `57` pytest tests passing).
 

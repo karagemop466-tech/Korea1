@@ -16,10 +16,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
-    "index.html", "executive-summary.html", "lines.html", "injuries.html", "lineups.html",
+    "index.html", "executive-summary.html", "lines.html",
+    "injuries.html", "availability.html", "lineups.html",
     "strategies.html", "validation.html", "correlations.html", "props.html",
-    "questions.html", "suggestions.html", "decisions.html", "methodology.html",
-    "requirements.html", "verification.html", "flagged.html", "sources.html", "audit.html",
+    "questions.html", "open-questions.html", "suggestions.html",
+    "decisions.html", "decision-board.html",
+    "methodology.html", "requirements.html", "verification.html",
+    "flagged.html", "sources.html", "audit.html",
     "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
     "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
     "lab/flagged.html",

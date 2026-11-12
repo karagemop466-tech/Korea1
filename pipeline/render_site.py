@@ -32,32 +32,43 @@ BASE = "https://github.com/nflverse/nfldata/blob/" + SHA + "/data/"
 URL_GAMES = BASE + "games.csv"
 GENERATED = SRC["generated_utc"]
 
-NAV = [
-    ("__group__", "Dashboard & decisions"),
-    ("index.html", "Dashboard"),
-    ("executive-summary.html", "Executive summary"),
-    ("questions.html", "Q&A & gaps"),
-    ("decisions.html", "Decision register"),
-    ("suggestions.html", "Suggestions"),
-    ("__group__", "Lines & availability"),
-    ("lines.html", "Originated lines"),
-    ("injuries.html", "Injuries & depth"),
-    ("lineups.html", "Lineup evidence"),
-    ("__group__", "Strategy competition"),
-    ("strategies.html", "Leaderboard"),
-    ("validation.html", "Validation gates"),
-    ("correlations.html", "Correlations & parlays"),
-    ("props.html", "Player props"),
-    ("__group__", "Evidence"),
-    ("methodology.html", "Methodology"),
-    ("requirements.html", "Requirements"),
-    ("sources.html", "Sources & downloads"),
-    ("audit.html", "Independent audit"),
-    ("verification.html", "Reproducibility"),
-    ("flagged.html", "Flagged for review"),
-    ("__group__", "Replication annex"),
-    ("lab/index.html", "Replication annex"),
+NAV_GROUPS = [
+    ("Overview", [
+        ("index.html", "Dashboard"),
+        ("executive-summary.html", "Executive summary"),
+    ]),
+    ("Decide", [
+        ("questions.html", "Q&A & gaps"),
+        ("decisions.html", "Decision register"),
+        ("suggestions.html", "Suggestions & options"),
+        ("flagged.html", "Flagged for review"),
+    ]),
+    ("Lines & availability", [
+        ("lines.html", "Originated lines"),
+        ("injuries.html", "Injuries & 1st–4th depth"),
+        ("availability.html", "All-club depth join"),
+        ("lineups.html", "Lineup evidence"),
+    ]),
+    ("Strategy competition", [
+        ("strategies.html", "Leaderboard"),
+        ("validation.html", "Validation gates"),
+        ("correlations.html", "Correlations & parlays"),
+        ("props.html", "Player props"),
+    ]),
+    ("Parallel registers", [
+        ("decision-board.html", "Decision board (2nd)"),
+        ("open-questions.html", "Open questions (2nd)"),
+    ]),
+    ("Evidence", [
+        ("methodology.html", "Methodology"),
+        ("requirements.html", "Requirements"),
+        ("sources.html", "Sources & downloads"),
+        ("audit.html", "Independent audit"),
+        ("verification.html", "Reproducibility"),
+        ("lab/index.html", "Replication annex"),
+    ]),
 ]
+NAV = [item for _, items in NAV_GROUPS for item in items]
 
 OFFICIAL = {
     "NFL scores": "https://www.nfl.com/scores/",
@@ -122,9 +133,10 @@ def research_source(context: str = "NFL scores") -> str:
 
 def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = False) -> str:
     nav = "".join(
-        f'<span class="navgroup">{e(t)}</span>' if s.startswith("__") else
-        f'<a class="navlink{" active" if s == slug else ""}" href="{s}">{e(t)}</a>'
-        for s, t in NAV
+        f'<div class="navgroup"><span class="navhead">{e(g)}</span>' + "".join(
+            f'<a class="navlink{" active" if s == slug else ""}" href="{s}"'
+            f'{" aria-current=page" if s == slug else ""}>{e(t)}</a>' for s, t in items) + "</div>"
+        for g, items in NAV_GROUPS
     )
     page_title = (
         "NFL Line Lab · line origination, strategy competition and luck removal"
@@ -144,11 +156,10 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
-<header class="topbar">
-  <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
-    <nav aria-label="Main navigation">{nav}</nav>
-  </div>
+<div class="shell">
+<header class="side">
+  <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+  <nav aria-label="Main navigation">{nav}</nav>
 </header>
 <main id="main-content" class="wrap{' wide' if wide else ''}">
   <h1>{e(title)}</h1>
@@ -161,6 +172,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
     <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
+</div>
 </body>
 </html>
 """
@@ -217,6 +229,9 @@ def load() -> dict:
     d["official_scores"] = pd.read_csv(ROOT / "data/audit/nfl_com_score_audit.csv")
     d["official_clubs"] = pd.read_csv(ROOT / "data/official/week10_2026_clubs.csv")
     d["requirements"] = pd.read_csv(ROOT / "requirements/requirements.csv")
+    pr26_inj = ROOT / "data/official/injuries_week10_pr26.csv"
+    if pr26_inj.exists():
+        d["injuries"] = pd.read_csv(pr26_inj)
     return d
 
 
@@ -275,10 +290,13 @@ it reflects missing executable sportsbook timestamps and failed multiplicity/pro
 </section>
 <section><h2>Explore the workspace</h2><div class="cards smallcards">
 <a class="minicard" href="injuries.html"><strong>Injuries &amp; 1st–4th depth</strong><span>Week 10 O/D deficiency matrix, 5 stale nfldata QBs caught, plus historical QB &amp; PBP absence research.</span></a>
+<a class="minicard" href="availability.html"><strong>All-club depth join</strong><span>Automated club-by-club injury/depth join snapshot (`availability.html`).</span></a>
 <a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Verbatim official club chart cells and Week 10 starter/replacement register.</span></a>
 <a class="minicard" href="lines.html"><strong>Originated lines</strong><span>Market-blind Elo, rolling matchup &amp; ridge models plus all 136 scheduled 2026 games.</span></a>
 <a class="minicard" href="questions.html"><strong>Pre-decision Q&amp;A &amp; gaps</strong><span>Known vs. unknown inventory, grounded Q&amp;As and missing-data discovery plan.</span></a>
+<a class="minicard" href="open-questions.html"><strong>Open questions (2nd)</strong><span>Parallel open-questions register with GitHub issue closure templates.</span></a>
 <a class="minicard" href="decisions.html"><strong>Decision register</strong><span>Readiness Q&amp;A gate with recorded DECISIONS.md status and reversal conditions.</span></a>
+<a class="minicard" href="decision-board.html"><strong>Decision board (2nd)</strong><span>Parallel decision-board register covering DB-01 through DB-07.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Improvement suggestions</strong><span>Concrete Option A/B/C tracks marked Proposed — awaiting selection before changing models.</span></a>
 <a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, Holm FWER, provisional DSR, cost stress and redundancy checks.</span></a>
 <a class="minicard" href="correlations.html"><strong>Correlations &amp; parlays</strong><span>Same-game dependence, slate intervals, push rules and joint probability limits.</span></a>
@@ -992,22 +1010,25 @@ body{margin:0;background:linear-gradient(180deg,#0a1020 0%,#0b1220 100%);color:v
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 code{background:#0a1526;border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.88em}
-.skip-link{position:absolute;left:-9999px;top:8px;background:var(--accent);color:#04101f;
- padding:8px 14px;border-radius:8px;font-weight:700;z-index:100}
-.skip-link:focus{left:12px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px 64px}
-.wrap.wide{max-width:1360px}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(9,14,26,.94);backdrop-filter:blur(10px);
- border-bottom:1px solid var(--line)}
-.topbar .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 20px;max-width:1360px}
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--accent);color:#04101f;
+ padding:8px 12px;border-radius:0 0 8px 0;font-weight:700;z-index:100}
+.skip-link:focus{left:0}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:18px 14px;
+ background:#090e1a;border-right:1px solid var(--line)}
+.side .brand{display:block;margin:0 6px 14px}
 .brand{font-weight:700;letter-spacing:.2px;color:var(--text);font-size:16px;white-space:nowrap}
-.brand .mark{display:inline-block;background:var(--accent);color:#04101f;padding:1px 6px;border-radius:6px;
+.brand .mark{display:inline-block;background:var(--accent);color:#04101f;padding:2px 6px;border-radius:6px;
  font-size:12px;font-weight:800;margin-right:6px}
-nav{display:flex;gap:4px;flex-wrap:wrap}
-.navlink{padding:5px 9px;border-radius:8px;color:var(--muted);font-size:13px;white-space:nowrap}
+.side nav{display:block}
+.navgroup{margin-bottom:14px}
+.navhead{display:block;padding:0 10px 4px;color:#6f84ab;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.navlink{display:block;padding:6px 10px;border-radius:8px;color:var(--muted);font-size:13px;white-space:nowrap}
 .navlink:hover{background:var(--chip);text-decoration:none;color:var(--text)}
 .navlink.active{background:var(--accent);color:#04101f;font-weight:600}
-.navgroup{padding:7px 10px 4px;color:#5b709a;font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;opacity:.9}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 64px}
+.wrap.wide{max-width:1360px}
+.shell>.wrap,.shell>.wrap.wide{max-width:1280px;width:100%;margin:0;padding:0 28px 64px}
 h1{font-size:34px;line-height:1.2;margin:30px 0 6px;letter-spacing:-.5px}
 h2{font-size:21px;margin:34px 0 10px;letter-spacing:-.2px}
 h3{font-size:15.5px;margin:0 0 6px;color:var(--text)}
@@ -1043,6 +1064,7 @@ section{margin-bottom:14px}
 .card.bad{border-color:#5a2530;background:linear-gradient(180deg,#1a1220,#121b2e)}
 .card.good{border-color:#1f583f;background:linear-gradient(180deg,#0f1e1b,#121b2e)}
 .card.warn{border-color:#5b4214;background:linear-gradient(180deg,#1d170f,#121b2e)}
+.card.next{border-color:var(--accent)}
 .card-value{font-size:26px;font-weight:700;letter-spacing:-.5px}
 .card-label{color:var(--muted);font-size:12.5px;margin-top:2px}
 .card-note{color:var(--muted);font-size:11.5px;margin-top:6px;opacity:.88}
@@ -1057,14 +1079,21 @@ section{margin-bottom:14px}
  padding:7px 13px;border-radius:8px;font-size:13px;color:var(--text);font-weight:500}
 .btn.primary{background:var(--accent);color:#04101f;border-color:var(--accent);font-weight:700}
 .btn:hover{border-color:var(--accent);text-decoration:none}
-.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel2);
+.tablewrap{overflow:auto;max-height:72vh;border:1px solid var(--line);border-radius:12px;background:var(--panel2);
  margin:12px 0}
 table{border-collapse:collapse;width:100%;font-size:13px}
 caption{caption-side:top;text-align:left;color:var(--muted);font-size:12.5px;padding:10px 12px}
-th{position:sticky;top:0;background:#101b30;text-align:left;font-weight:600;color:#c9d8f5;
+th{position:sticky;top:0;z-index:1;cursor:pointer;background:#101b30;text-align:left;font-weight:600;color:#c9d8f5;
  padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:11.5px;
  text-transform:uppercase;letter-spacing:.4px}
-td{padding:8px 10px;border-bottom:1px solid rgba(34,48,77,.55);vertical-align:top}
+th[aria-sort=ascending]::after{content:" \25B2";font-size:9px}
+th[aria-sort=descending]::after{content:" \25BC";font-size:9px}
+td{padding:8px 10px;border-bottom:1px solid rgba(34,48,77,.55);vertical-align:top;overflow-wrap:anywhere}
+td a{overflow-wrap:normal}
+td .sub{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+table.register td{min-width:150px}
+table.register td:first-child{min-width:70px;white-space:nowrap}
+[id]{scroll-margin-top:16px}
 tr:last-child td{border-bottom:none}
 tbody tr:hover{background:rgba(77,163,255,.06)}
 .blank::before{content:"—";color:var(--muted)}
@@ -1077,9 +1106,9 @@ tbody tr:hover{background:rgba(77,163,255,.06)}
 .rank{color:var(--muted);font-variant-numeric:tabular-nums}
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:700;
  letter-spacing:.3px;text-transform:uppercase;white-space:nowrap}
-.pill.skill{background:rgba(55,214,122,.15);color:var(--good);border:1px solid rgba(55,214,122,.4)}
+.pill.skill,.pill.good{background:rgba(55,214,122,.15);color:var(--good);border:1px solid rgba(55,214,122,.4)}
 .pill.luck,.pill.warn{background:rgba(255,176,32,.15);color:var(--warn);border:1px solid rgba(255,176,32,.4)}
-.pill.no{background:rgba(255,93,93,.13);color:var(--bad);border:1px solid rgba(255,93,93,.35)}
+.pill.no,.pill.bad{background:rgba(255,93,93,.13);color:var(--bad);border:1px solid rgba(255,93,93,.35)}
 .pill.unverified{background:rgba(255,176,32,.12);color:var(--warn);border:1px solid rgba(255,176,32,.35)}
 .pill.proposed{background:rgba(77,163,255,.15);color:var(--accent);border:1px solid rgba(77,163,255,.4)}
 .pill.underpowered,.pill.partial{background:var(--chip);color:var(--muted);border:1px solid var(--line)}
@@ -1096,8 +1125,19 @@ tbody tr:hover{background:rgba(77,163,255,.06)}
 pre.pipeline,pre.math{background:#0a1526;border:1px solid var(--line);border-radius:10px;
  padding:14px;overflow-x:auto;font-size:12.5px;color:#b9cdf0}
 footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
-@media(max-width:860px){.hero{grid-template-columns:1fr}}
-@media(max-width:640px){h1{font-size:26px} .card-value{font-size:22px} .filter{min-width:100%}}
+@media(max-width:900px){
+ .shell{display:block}
+ .side{position:static;height:auto;display:flex;align-items:center;gap:10px;padding:8px 12px;border-right:0;
+  border-bottom:1px solid var(--line);overflow:visible}
+ .side .brand{margin:0;white-space:nowrap}
+ .side nav{display:flex;gap:2px;overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;min-width:0;flex:1}
+ .navgroup{display:flex;margin:0}
+ .navhead{display:none}
+ .shell>.wrap,.shell>.wrap.wide{padding:0 14px 48px}
+ .hero{grid-template-columns:1fr}
+ .filter{min-width:0;width:100%;margin:4px 0 0}
+}
+@media(max-width:640px){h1{font-size:26px} .card-value{font-size:22px}}
 """
 
 

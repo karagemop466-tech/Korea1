@@ -41,7 +41,7 @@ All-club coverage, game-day role confirmation and validated player-impact signal
 | Correlations | Reproducible research estimates; strict public values blank where inputs unverified | Partial evidence | [NFL official scores](https://www.nfl.com/scores/) |
 | Luck mitigation | Weekly stationary bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
 | Official score audit | 59/59 matching games across 2026 Weeks 8–9 (29/29) and historical NFL.com samples | Verified sample | [NFL official scores](https://www.nfl.com/scores/) |
-| Dashboard & Hygiene | 18 categorized pages, completed stylesheet, strict source checks and repaired audit claims | Ready for verification | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Dashboard & Hygiene | 21 categorized pages (`18` + `availability.html`, `decision-board.html`, `open-questions.html`), grouped sidebar layout, strict source checks and repaired audit claims | Ready for verification | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 ## Material audit & T14 findings
 

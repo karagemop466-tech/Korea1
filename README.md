@@ -9,6 +9,9 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 ## Explore
 
 - `index.html` — clean landing page, Week 10 status banner and searchable leaderboard
+- `decision-board.html` — parallel decision-board register covering DB-01 through DB-07
+- `open-questions.html` — parallel open-questions register with GitHub issue closure templates
+- `availability.html` — scheduled all-club official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board (136 scheduled 2026 games)
 - `injuries.html` — Week 10 2026 official injuries & Offense/Defense 1st–4th string club depth deficiencies, 5 stale `nfldata` QB catches, historical QB/PBP absence research, and preserved 2019 pilot & availability register
@@ -47,6 +50,14 @@ An upstream refresh requires `python pipeline/fetch_data.py --refresh-pin` follo
 The independent annex can be rebuilt with `make annex`.
 Historical calculations remain in `data/lab/`; public annex tables do not present them as official facts.
 
+## Availability tracker
+
+`.github/workflows/availability.yml` runs on a schedule on a GitHub-hosted runner (the build sandbox
+cannot reach nfl.com). It reads <https://www.nfl.com/injuries/> and each club's `/team/depth-chart`
+page, writes `data/availability/` (with a dated copy under `history/`), rebuilds `availability.html`,
+runs the site checks and commits. `make build` only reads the committed snapshot. Nothing is inferred:
+empty official cells stay empty, failed pages are blank and flagged.
+
 ## Evidence policy
 
 Official NFL/club observations, primary method references, operator terms and community research inputs
@@ -68,8 +79,18 @@ See `audit/REPORT.md` and `flagged.html`.
 
 ## Coordination and deployment
 
-Read `COORDINATION.md` before editing. Previously merged sessions (`arena/25460478-korea1`, `arena/03f66e17-korea1`)
-added `decisions.html`, `lineups.html`, `DECISIONS.md`, `research/decision-register.json`, and the read-only
-`official-monitor.yml` snapshot archiver. Current active integration branch: `arena/f115e6a2-korea1`.
+Read `COORDINATION.md` before editing. Previously merged sessions (`arena/25460478-korea1`,
+`arena/03f66e17-korea1`, `arena/c0528572-korea1`) added `decisions.html`, `lineups.html`, `availability.html`,
+`decision-board.html`, `open-questions.html`, `DECISIONS.md`, `research/decision-register.json`, and the
+`official-monitor.yml` / `availability.yml` scheduled collectors. Current active integration branch:
+`arena/f115e6a2-korea1`.
+
+## Injury and decision-readiness boundaries
+
+Two complementary Week 10 availability tracks exist cleanly side by side:
+`injuries.html` (`pipeline/injuries.py`, 27/28 Week 10 club HTML depth charts, 5 stale `nfldata` QBs caught,
+`HOU` blank image-only) plus `availability.html` (`pipeline/fetch_availability.py` / `depth_status.py`
+scheduled GitHub Actions collector) and `lineups.html` (seven WAS/NYG observations + two club depth charts).
+All unverified cells stay blank; no availability adjustment enters automated lines or betting signals.
 
 Research and education only. No guaranteed returns, betting recommendations or funded prize pool.

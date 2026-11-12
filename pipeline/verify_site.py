@@ -12,12 +12,13 @@ from urllib.parse import urlsplit, unquote
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PROC, ROOT, read_json
+from fetch_availability import TEAMS as _CLUBS
 
 ALLOW = {
     "www.nfl.com", "nfl.com", "operations.nfl.com", "www.econometricsociety.org",
     "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
     "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov",
-    # 28 active Week 10 2026 official NFL club sites (all verified against NFL.com club links)
+    # 28 active Week 10 2026 official NFL club sites + all 32 club sites from fetch_availability
     "www.commanders.com", "www.giants.com", "www.patriots.com", "www.detroitlions.com",
     "www.chiefs.com", "www.atlantafalcons.com", "www.vikings.com", "www.packers.com",
     "www.jaguars.com", "www.tennesseetitans.com", "www.buffalobills.com", "www.newyorkjets.com",
@@ -25,7 +26,7 @@ ALLOW = {
     "www.houstontexans.com", "www.clevelandbrowns.com", "www.therams.com", "www.azcardinals.com",
     "www.seahawks.com", "www.raiders.com", "www.49ers.com", "www.dallascowboys.com",
     "www.steelers.com", "www.bengals.com", "www.chargers.com", "www.baltimoreravens.com",
-}
+} | {t[3] for t in _CLUBS}
 BAD = re.compile(r"(?<![\w/])(nan|NaN|None|inf|-inf)(?![\w/-])")
 
 
@@ -66,9 +67,11 @@ def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
     pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))
     expected={
-        "index.html", "executive-summary.html", "lines.html", "injuries.html", "lineups.html",
+        "index.html", "executive-summary.html", "lines.html",
+        "injuries.html", "availability.html", "lineups.html",
         "strategies.html", "validation.html", "correlations.html", "props.html",
-        "questions.html", "suggestions.html", "decisions.html",
+        "questions.html", "open-questions.html", "suggestions.html",
+        "decisions.html", "decision-board.html",
         "methodology.html", "requirements.html", "verification.html",
         "flagged.html", "sources.html", "audit.html",
     }

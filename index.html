@@ -11,11 +11,10 @@
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
-<header class="topbar">
-  <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
-    <nav aria-label="Main navigation"><span class="navgroup">Dashboard &amp; decisions</span><a class="navlink active" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="questions.html">Q&amp;A &amp; gaps</a><a class="navlink" href="decisions.html">Decision register</a><a class="navlink" href="suggestions.html">Suggestions</a><span class="navgroup">Lines &amp; availability</span><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="injuries.html">Injuries &amp; depth</a><a class="navlink" href="lineups.html">Lineup evidence</a><span class="navgroup">Strategy competition</span><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations &amp; parlays</a><a class="navlink" href="props.html">Player props</a><span class="navgroup">Evidence</span><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="sources.html">Sources &amp; downloads</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="flagged.html">Flagged for review</a><span class="navgroup">Replication annex</span><a class="navlink" href="lab/index.html">Replication annex</a></nav>
-  </div>
+<div class="shell">
+<header class="side">
+  <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+  <nav aria-label="Main navigation"><div class="navgroup"><span class="navhead">Overview</span><a class="navlink active" href="index.html" aria-current=page>Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a></div><div class="navgroup"><span class="navhead">Decide</span><a class="navlink" href="questions.html">Q&amp;A &amp; gaps</a><a class="navlink" href="decisions.html">Decision register</a><a class="navlink" href="suggestions.html">Suggestions &amp; options</a><a class="navlink" href="flagged.html">Flagged for review</a></div><div class="navgroup"><span class="navhead">Lines &amp; availability</span><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="injuries.html">Injuries &amp; 1st–4th depth</a><a class="navlink" href="availability.html">All-club depth join</a><a class="navlink" href="lineups.html">Lineup evidence</a></div><div class="navgroup"><span class="navhead">Strategy competition</span><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations &amp; parlays</a><a class="navlink" href="props.html">Player props</a></div><div class="navgroup"><span class="navhead">Parallel registers</span><a class="navlink" href="decision-board.html">Decision board (2nd)</a><a class="navlink" href="open-questions.html">Open questions (2nd)</a></div><div class="navgroup"><span class="navhead">Evidence</span><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="sources.html">Sources &amp; downloads</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="lab/index.html">Replication annex</a></div></nav>
 </header>
 <main id="main-content" class="wrap wide">
   <h1>NFL Line Lab</h1>
@@ -47,10 +46,13 @@ it reflects missing executable sportsbook timestamps and failed multiplicity/pro
 </section>
 <section><h2>Explore the workspace</h2><div class="cards smallcards">
 <a class="minicard" href="injuries.html"><strong>Injuries &amp; 1st–4th depth</strong><span>Week 10 O/D deficiency matrix, 5 stale nfldata QBs caught, plus historical QB &amp; PBP absence research.</span></a>
+<a class="minicard" href="availability.html"><strong>All-club depth join</strong><span>Automated club-by-club injury/depth join snapshot (`availability.html`).</span></a>
 <a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Verbatim official club chart cells and Week 10 starter/replacement register.</span></a>
 <a class="minicard" href="lines.html"><strong>Originated lines</strong><span>Market-blind Elo, rolling matchup &amp; ridge models plus all 136 scheduled 2026 games.</span></a>
 <a class="minicard" href="questions.html"><strong>Pre-decision Q&amp;A &amp; gaps</strong><span>Known vs. unknown inventory, grounded Q&amp;As and missing-data discovery plan.</span></a>
+<a class="minicard" href="open-questions.html"><strong>Open questions (2nd)</strong><span>Parallel open-questions register with GitHub issue closure templates.</span></a>
 <a class="minicard" href="decisions.html"><strong>Decision register</strong><span>Readiness Q&amp;A gate with recorded DECISIONS.md status and reversal conditions.</span></a>
+<a class="minicard" href="decision-board.html"><strong>Decision board (2nd)</strong><span>Parallel decision-board register covering DB-01 through DB-07.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Improvement suggestions</strong><span>Concrete Option A/B/C tracks marked Proposed — awaiting selection before changing models.</span></a>
 <a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, Holm FWER, provisional DSR, cost stress and redundancy checks.</span></a>
 <a class="minicard" href="correlations.html"><strong>Correlations &amp; parlays</strong><span>Same-game dependence, slate intervals, push rules and joint probability limits.</span></a>
@@ -71,5 +73,6 @@ it reflects missing executable sportsbook timestamps and failed multiplicity/pro
     <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
+</div>
 </body>
 </html>
