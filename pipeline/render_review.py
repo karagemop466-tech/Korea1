@@ -130,7 +130,7 @@ def build_availability() -> str:
 <li><strong>Next listed</strong> appears only when the first-listed player is designated Out or Doubtful. It is the next player in the slot who is not himself Out or Doubtful.</li>
 <li>The page does <strong>not</strong> estimate how many points an absence is worth. That is open question <a href="open-questions.html">OQ-07</a>; the options are on the <a href="decision-board.html">decision board</a> (DB-05, DB-06).</li>
 <li>Players on the injury report are matched to depth charts by name within the same club. Unmatched names are listed in their own table, never guessed.</li>
-<li>A hand-checked seven-player sample from a parallel session is kept as published at <a href="lineups.html">Lineup sample</a>.</li></ul></section>
+<li>Parallel sessions published a source-by-source audit of the official injury pages at <a href="injuries.html">Injury source audit</a> and a hand-checked sample at <a href="lineups.html">Lineup sample</a>. Those pages describe two clubs; this page is the all-club capture.</li></ul></section>
 <section><h2>Offense and defense: first-listed players affected, by club</h2>
 <p>One row per club and unit for clubs that appear on the injury report. Counts are of depth-chart slots.</p>
 {tools("Try a club code such as NE, or Defense")}
@@ -180,7 +180,7 @@ def build_board() -> str:
 <li><strong><a href="#DB-06">DB-06</a>, <a href="#DB-07">DB-07</a>, then <a href="#DB-05">DB-05</a></strong> — build injury history and game-day lineups before letting injuries move a line.</li>
 <li>Everything else in any order.</li></ol>
 <p>Several rows depend on an answer only you can give. Those are listed on <a href="open-questions.html">Open questions</a>.
-A separate first pass by a parallel session (eight proposed paths) is kept as published at <a href="suggestions.html">Suggestions (8 paths)</a>; the two lists were written independently and overlap.</p></section>
+This is a second register. Parallel sessions published the main <a href="suggestions.html">Suggestions &amp; paths</a> register and the <a href="decisions.html">decision-readiness</a> register first; the lists were written independently and overlap. Consolidating them is item DB-14.</p></section>
 <section><h2>Decision board</h2>
 {tools("Try prices, injuries, Small…")}
 {table(t, ["ID", "Suggestion", "Options", "Recommended", "What it unblocks", "Status · reference"], cls="register", caption="Suggestions for review · no row is implemented until an option is chosen")}</section>
@@ -218,7 +218,7 @@ def build_questions() -> str:
 <section><h2>Answering</h2><p>Reply in the next session or open an issue naming the question (for example &ldquo;OQ-01&rdquo;).
 <a class="btn" href="{REPO}/issues/new?title=Answer%3A%20OQ-">Answer a question</a>
 · <a href="decision-board.html">Go to the decision board</a> · <a href="data/review/questions.csv">Download the register (CSV)</a></p>
-<p>A separate first pass by a parallel session (twelve questions with acceptance gates) is kept as published at <a href="decisions.html">Decision readiness</a>.</p></section>"""
+<p>This is a second register. Parallel sessions published the main <a href="questions.html">Open questions</a> register and the <a href="decisions.html">decision-readiness</a> register first; the lists were written independently and overlap.</p></section>"""
     return layout("open-questions.html", "Open questions",
                   "What must be answered before a decision, what is already known, and how to find what is missing.", body, wide=True)
 
