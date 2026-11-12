@@ -9,7 +9,7 @@
 | Component | Source | Status |
 |---|---|---|
 | Weekly injury report (player, position, injury, practice status, game status) | https://www.nfl.com/injuries/ (official) | Captured for Week 10 on `injuries.html` |
-| Starter / backup depth position | No official depth-chart feed integrated | Blank — UNVERIFIED; do not infer 2nd/3rd/4th-string replacements |
+| Starter / backup depth position | Published club charts only: 2 of 32 clubs verified 2026-11-12 (WAS, NYG), no capture time, no league-wide feed | Blank — UNVERIFIED; chart cells are quoted on `lineups.html`, no 2nd/3rd/4th-string replacement is inferred |
 | Same deficiency for offense | Same as above | Blank — UNVERIFIED |
 | Same deficiency for defense | Same as above | Blank — UNVERIFIED |
 | Pre-kickoff availability timestamp | Practice status is a proxy, not a timestamp | Blank — UNVERIFIED |
@@ -17,6 +17,10 @@
 ## How it feeds decisions
 
 When a starter carries "Out" or "Did Not Participate" the team is flagged as having a potential deficiency at that position. The replacement's identity (2nd/3rd/4th string) cannot be established from the injury report alone, so the public tables show **who is out and their position only** — no depth order, no quality adjustment, no originated-line impact. This is deliberate: an unverified replacement guess is worse than a blank cell.
+
+**Update, 2026-11-12:** two club charts (Commanders, Giants) were read and their ordered cells are on
+`lineups.html`. That gives a starter/backup order for those clubs only; it does not confirm a game-day
+role and does not change this table.
 
 ## Official capture — 2026 Week 10 injury report (nfl.com/injuries)
 

@@ -1232,3 +1232,53 @@ on the site; they are not silently reclassified as completed verification. The l
 dispatch-permission denial remain accurately logged even though the push-triggered runner collection
 succeeded. No credentials were requested, no other branch was edited or pushed, no sibling PR was
 closed/merged, and no source/model approval was inferred from successful site publication.
+
+## 2026-11-12 — T16b third integration merge — `arena/25460478-korea1` at `bc1c411`
+
+**Claim:** merge `origin/main` `bc1c411` (PR #26, session `arena/425336fc-korea1`, "T14–T23 integration")
+into the T16 branch and reconcile a third review surface. Files: `pipeline/render_site.py`,
+`pipeline/render_decisions.py`, `pipeline/parallel_pages.py` (new), `tests/*`, `research/injuries.md`,
+`EXECUTIVE_SUMMARY.md` (generated), `COORDINATION.md`. No model, gate, odds or reward change.
+
+### What the third branch had done
+
+It merged my T16 merge, then rebuilt `decisions.html`, `suggestions.html` and `injuries.html` *inside*
+`render_site.py` with its own registers (8 questions, 8 suggestions, a 259-row full-league week-10
+injury capture), and dropped `questions.html`/`lineups.html` from the rendered set. Because the
+Makefile still runs `render_readiness.py` after `render_site.py`, its `decisions.html` was then
+overwritten — so its eight pre-decision questions were not actually on the live site, and `questions.html`
+404'd.
+
+### Resolution
+
+| Content | Where it now lives |
+|---|---|
+| My 40-question register | `questions.html` (restored) |
+| Its 8 pre-decision questions | same page, section "Pre-decision questions" — verbatim, with a correction note |
+| My 22-proposal register + four paths + worksheet | `suggestions.html` (restored) |
+| Its 8-item suggestion log incl. the two **Adopted** items | same page, section "Suggestions for review" — verbatim |
+| My 12-source availability page + signals + 2 club charts | `injuries.html` (restored) |
+| Its full 259-row league week-10 injury capture | same page, section "Injuries & availability" — verbatim, with capture notes |
+| 12 readiness questions + parallel 8-proposal register | `decisions.html` (unchanged from my merge) |
+| 7 observed players + chart cells | `lineups.html` (restored) |
+
+Implementation detail: `pipeline/parallel_pages.py` is that session's renderer copied verbatim with
+three mechanical edits (renamed builders, `return body` instead of `layout(...)`, leading `notice()`
+dropped) so its HTML is embedded unchanged. Nothing was retyped, so no figure could be altered.
+
+Corrections published (not deletions): both embedded blocks say "no official depth chart", which was
+true for the league site but not for the clubs; each block now carries a dated correction pointing at
+`lineups.html`, and `research/injuries.md` carries the same update.
+
+### Verification
+
+- `make build`: exit 0.
+- `verify_site.py`: **0 failing checks**; `injuries.html` 316 rows, `questions.html` 48 rows,
+  `suggestions.html` 34 rows, `decisions.html` 28 rows, `lineups.html` 7 rows.
+- `check_sources.py`: 17 canonical pages / **895 rows**, strict pass.
+- `check_links.py`: 28 pages, no external dependencies.
+- `pytest`: **46 passed**.
+- `tests/check_rebuild.py`: run after the merge commit.
+
+Deployment record appended after the PR merges; nothing is inferred here.
+
