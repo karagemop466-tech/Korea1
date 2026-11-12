@@ -1026,3 +1026,64 @@ Scope: audit existing strict evidence boundaries, add the missing dedicated sugg
 question/answer register and lineup monitoring readiness, test the combined site, PR and deploy.
 Network access to NFL/operator domains may be restricted; any such verification failures will be
 recorded, not represented as fresh official-source confirmation.
+
+N1 scope clarification before edits: also claim `pipeline/monitor_official.py`,
+`.github/workflows/official-monitor.yml`, `tests/check_links.py` (page registration only),
+`EXECUTIVE_SUMMARY.md` (generated), and generated `data/processed/verification_report.csv`.
+The read-only official monitor archives source responses as Actions artifacts; it does not silently
+promote newly downloaded text into verified lineup facts or mutate the research pin.
+Initial pull of the new branch failed because it had no remote ref yet; pulled/rebased against main
+instead, then pushed the claim successfully. No merge conflict occurred.
+N1 final scope extension: `pipeline/render_site.py` also receives generated readiness-summary,
+requirements and Flagged-for-Review integration sections; `.gitignore` excludes monitor artifacts.
+No unrelated model, strategy or statistical code is changed.
+
+### N1 implementation and verification checkpoint — 2026-11-12
+
+Delivered: `decisions.html` (12 questions + eight-source check register), `suggestions.html` (eight
+unapproved proposals, alternatives, benefits, risks, question IDs and acceptance evidence),
+`lineups.html` (seven selected official injury observations; quoted chart cells; unknown roles,
+rank, timestamps and impacts blank), navigation/landing/requirements/executive-summary integration,
+and six follow-up findings on `flagged.html#decision-gaps`.
+
+Official pages actually read with the page-fetch tool on 2026-11-12:
+- <https://www.nfl.com/injuries/> — Week 10 WAS/NYG rows checked field by field for Lucas Patrick,
+  Colson Yankoff, Jayden Daniels, Amik Robertson, Malik Harrison, Colton Hood and Theo Johnson.
+  Exact transcribed report-row excerpts are in `research/decision-register.json`.
+- <https://www.commanders.com/team/depth-chart> — quoted TE/QB/CB row cells, not inferred promotions.
+- <https://www.giants.com/team/depth-chart> — quoted CB/TE cells including fourth TE column; no
+  assertion that chart order establishes a confirmed game-day role.
+- <https://operations.nfl.com/updates/football-ops/2017-nfl-injury-report-policy/> and
+  <https://operations.nfl.com/inside-football-ops/players-legends/player-protections/> — both returned
+  official 404 / FLAG ON THE PLAY text. Failed verification, not policy evidence (N-05).
+
+Other official/primary references are **context only**, with blank fresh-check dates. This follow-up
+is not a full re-audit of the inherited historical observations, score sample or methods (N-04).
+A source-domain allowlist proves reference presence, not truth of a claim; the pages explicitly say so.
+No upstream pin, model, betting rule, statistical threshold or validated-strategy count changed.
+
+Executed verification:
+- `make build`: passed with pinned/hash-checked inputs; canonical, props and annex regenerated.
+- `make site && make verify`: passed after the final evidence additions. 25 pages / 580 table rows
+  checked by the canonical verifier; 15 selected canonical pages / 479 rows by the dedicated source
+  checker; no missing official/primary reference; zero broken internal links/anchors/assets.
+- `make test`: **40 passed** (29 inherited + 11 new cases covering null preservation, proposal status,
+  source allowlists, output escaping, response rejection and stale-archive removal).
+- Annex `scripts/98_linkcheck.py`: passed; `scripts/99_verify.py`: **9/9**. These are implementation/
+  consistency checks, not a new official historical census.
+- `python -m compileall -q pipeline tests`: passed.
+- Local `monitor_official.py`: **failed all three HTTP fetches with TLS EOF**, manifest recorded in
+  ignored `.cache/official-monitor/`; no fallback and no false success. Official observations above
+  came from the successful page-fetch tool, not this failed shell collector. N-06 is published.
+
+Read-only monitor: daily Actions schedule + manual dispatch; raw response gzip/hash/time manifests
+are 30-day artifacts, never automatically promoted to verified facts or model features. A successful
+collection is not verified extraction. Website sample remains explicitly dated even after later runs.
+
+| Follow-up | Status | Owner | Published evidence |
+|---|---|---|---|
+| All-club live availability, explicit replacement confirmation and quantified offensive/defensive impact | needs review | future authorized work | `flagged.html#decision-gaps` N-01/N-02/N-03; suggestions S02/S03 |
+| Complete official historical outcome/quote census and prospective skill validation | needs review | future authorized work | existing F-06/F-07/F-08/F-09; Q01–Q10; S01/S05/S07 |
+| Failed policy URLs and restricted shell collection | needs review | `arena/03f66e17-korea1` | N-05/N-06; exact attempted official URLs published |
+
+Remaining: committed-output drift check, GitHub CI/PR/merge, Pages API/deployed-site checks and final record.
