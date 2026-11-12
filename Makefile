@@ -5,7 +5,7 @@ else
 PY := .venv/bin/python
 endif
 
-.PHONY: build data model backtest props strategies corr site verify test annex serve clean all
+.PHONY: build data model backtest props injuries review site verify test annex serve clean all
 
 all: build
 
@@ -25,7 +25,20 @@ backtest:
 	$(PY) pipeline/validation.py
 	$(PY) pipeline/correlations.py
 
-site:
+# Injury / availability tracking (session arena/774867ed-korea1, T14/T15).
+# The official NFL injury snapshot is committed verbatim under data/evidence/
+# (data/raw/ is gitignored); fetch_injuries.py parses it, injuries.py builds the
+# availability / lineup-deficiency tables, build_review.py validates the
+# suggestion and open-question registers.  Additive: these tables do not collide
+# with the availability tracker already published by the merged sessions.
+injuries: data
+	$(PY) pipeline/fetch_injuries.py
+	$(PY) pipeline/injuries.py
+
+review: injuries
+	$(PY) pipeline/build_review.py
+
+site: injuries review
 	$(PY) data/review/_author.py
 	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/lineup_deficiencies.py
@@ -48,7 +61,7 @@ annex:
 	bash scripts/run_all.sh
 	$(PY) pipeline/render_annex.py
 
-build: data model backtest props site verify
+build: data model backtest props injuries site verify
 	@echo "build complete — site in repository root/, verification passed"
 
 serve: build

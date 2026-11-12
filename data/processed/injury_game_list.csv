@@ -1,0 +1,15 @@
+game_id,away_team,home_team,day,kickoff,away_entries,home_entries,source_url,snapshot_id
+WAS_NYG,WAS,NYG,"THURSDAY, NOVEMBER 12TH",8:15 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+NE_DET,NE,DET,"SUNDAY, NOVEMBER 15TH",9:30 AMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+KC_ATL,KC,ATL,"SUNDAY, NOVEMBER 15TH",1:00 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+MIN_GB,MIN,GB,"SUNDAY, NOVEMBER 15TH",1:00 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+JAX_TEN,JAX,TEN,"SUNDAY, NOVEMBER 15TH",1:00 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+BUF_NYJ,BUF,NYJ,"SUNDAY, NOVEMBER 15TH",1:00 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+MIA_IND,MIA,IND,"SUNDAY, NOVEMBER 15TH",1:00 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+CAR_NO,CAR,NO,"SUNDAY, NOVEMBER 15TH",1:00 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+HOU_CLE,HOU,CLE,"SUNDAY, NOVEMBER 15TH",1:00 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+LAR_ARI,LAR,ARI,"SUNDAY, NOVEMBER 15TH",4:05 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+SEA_LV,SEA,LV,"SUNDAY, NOVEMBER 15TH",4:05 PMEST,0,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+SF_DAL,SF,DAL,"SUNDAY, NOVEMBER 15TH",4:25 PMEST,1,1,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+PIT_CIN,PIT,CIN,"SUNDAY, NOVEMBER 15TH",8:20 PMEST,1,0,https://www.nfl.com/injuries/,nfl_injuries_2026_w10
+LAC_BAL,LAC,BAL,"MONDAY, NOVEMBER 16TH",8:15 PMEST,0,0,https://www.nfl.com/injuries/,nfl_injuries_2026_w10

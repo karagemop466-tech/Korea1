@@ -1,0 +1,35 @@
+{
+  "snapshot_id": "nfl_injuries_2026_w10",
+  "title": "Official Latest NFL Injury Report for Players - Week 10 of the 2026 Season | NFL.com",
+  "source_url": "https://www.nfl.com/injuries/",
+  "retrieved_utc": "2026-11-12T13:06:29Z",
+  "season": 2026,
+  "week": 10,
+  "retrieval_method": {
+    "tool": "agent page-fetch tool",
+    "note": "The sandbox shell egress allowlist refuses the TLS handshake to www.nfl.com (curl error 35 SSL_ERROR_SYSCALL), so the official page is read with the agent's page-fetch tool and the fetched body is written to disk verbatim. A hash proves the bytes were not altered after retrieval; it does not prove the page content is a complete census of the week."
+  },
+  "files": [
+    {
+      "logical": "injury_report.md",
+      "local": "data/evidence/nfl_injuries/week10_2026/injury_report.md",
+      "role": "verbatim body of the official injury report at retrieval time",
+      "bytes": 31707,
+      "sha256": "d7c832ec7b32d04563a81584cc978e33f26808a3a427b45697540cb11e5455b4"
+    },
+    {
+      "logical": "news_register.md",
+      "local": "data/evidence/nfl_injuries/week10_2026/news_register.md",
+      "role": "verbatim official NFL.com news items displayed on the injury page at retrieval time",
+      "bytes": 4663
+    }
+  ],
+  "scope_observed": {
+    "games_listed": 14,
+    "teams_listed": 28,
+    "note": "The official page listed 14 games / 28 teams at retrieval time. A full NFL week has 16 games / 32 teams, so 4 teams were absent from the page. This is recorded as an observation, not inferred as 'no injuries'."
+  },
+  "tier": "official NFL source (nfl.com injury report)",
+  "verification": "official; row-level statuses are transcribed verbatim from the cited page",
+  "committed_evidence": true
+}

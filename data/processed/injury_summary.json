@@ -1,0 +1,17 @@
+{
+  "snapshot_id": "nfl_injuries_2026_w10",
+  "retrieved_utc": "2026-11-12T13:06:29Z",
+  "source_url": "https://www.nfl.com/injuries/",
+  "teams_listed": 24,
+  "games_listed": 14,
+  "player_rows": 254,
+  "ruled_out_rows": 5,
+  "did_not_practice_rows": 93,
+  "teams_backup_qb_expected": 0,
+  "teams_third_string_expected": 0,
+  "groups_high_severity": 4,
+  "official_news_headlines": 25,
+  "teams_qb_named_in_official_news": 6,
+  "teams_news_report_gap": 6,
+  "severity_rule": "High = 3+ unavailable entries in the group on the cited report; Medium = 2; Low = 1; blank = 0 unavailable entries"
+}
