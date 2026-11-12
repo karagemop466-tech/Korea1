@@ -748,21 +748,36 @@ branches remain untouched; nothing already merged is reverted, rebased or discar
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| T14 | Repo line-by-line review + official-source verification + irregularity register | in progress | `arena/425336fc-korea1` | `research/repo_review.md`, `data/audit/official_review.json` (append only) |
-| T15 | Site improvement suggestions + dedicated "Suggestions for review" section (review-before-implement) | in progress | `arena/425336fc-korea1` | `research/suggestions.md`, `suggestions.html`, nav entries |
-| T16 | Pre-decision questions / information / answers register + missing-information discovery plan | in progress | `arena/425336fc-korea1` | `research/decisions.md`, `decisions.html`, nav entries |
-| T17 | NFL line-origination signal research (single bets, parlays, player-prop combos) | in progress | `arena/425336fc-korea1` | `research/signals.md` |
-| T18 | Strategy leaderboard + rewards design (currently unawarded) | in progress | `arena/425336fc-korea1` | `research/leaderboard.md` |
-| T19 | Injury & backup-deficiency tracking (defense 2nd/3rd/4th string, offense starters/backups) | in progress | `arena/425336fc-korea1` | `research/injuries.md`, `injuries.html`, verified against nfl.com/injuries |
-| T20 | Executive summary update (important details) | in progress | `arena/425336fc-korea1` | `EXECUTIVE_SUMMARY.md`, `executive-summary.html` |
-| T21 | Site reorganization: category subpages, clean landing page, all-new pages rendered + verified | in progress | `arena/425336fc-korea1` | `pipeline/render_site.py` (new builders + nav), root `*.html`, `assets/` |
-| T22 | Final verification pass (verify_site, check_links, check_sources) | unclaimed | `arena/425336fc-korea1` | `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py` |
-| T23 | PR → main, merge without waiting, confirm Pages deploy, record PR link + result | unclaimed | `arena/425336fc-korea1` | `COORDINATION.md`, PR record, live site confirmation |
+| T14 | Repo line-by-line review + official-source verification + irregularity register | **done** | `arena/425336fc-korea1` | `research/repo_review.md`, `data/audit/official_review.json` (append only) |
+| T15 | Site improvement suggestions + dedicated "Suggestions for review" section (review-before-implement) | **done** | `arena/425336fc-korea1` | `research/suggestions.md`, `suggestions.html`, nav entries |
+| T16 | Pre-decision questions / information / answers register + missing-information discovery plan | **done** | `arena/425336fc-korea1` | `research/decisions.md`, `decisions.html`, nav entries |
+| T17 | NFL line-origination signal research (single bets, parlays, player-prop combos) | **done** | `arena/425336fc-korea1` | `research/signals.md` |
+| T18 | Strategy leaderboard + rewards design (currently unawarded) | **done** | `arena/425336fc-korea1` | `research/leaderboard.md` |
+| T19 | Injury & backup-deficiency tracking (defense 2nd/3rd/4th string, offense starters/backups) | **done** | `arena/425336fc-korea1` | `research/injuries.md`, `injuries.html`, verified against nfl.com/injuries |
+| T20 | Executive summary update (important details) | **done** | `arena/425336fc-korea1` | `EXECUTIVE_SUMMARY.md`, `executive-summary.html` |
+| T21 | Site reorganization: category subpages, clean landing page, all-new pages rendered + verified | **done** | `arena/425336fc-korea1` | `pipeline/render_site.py` (new builders + nav), root `*.html`, `assets/` |
+| T22 | Final verification pass (verify_site, check_links, check_sources) | **done** | `arena/425336fc-korea1` | `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py` |
+| T23 | PR → main, merge without waiting, confirm Pages deploy, record PR link + result | **done** | `arena/425336fc-korea1` | `COORDINATION.md`, PR record, live site confirmation |
 
-### 2026-11-12 — claims committed — `arena/425336fc-korea1`
+### 2026-11-12 — claims committed and completed — `arena/425336fc-korea1`
 
-Tasks T14–T23 claimed for this session; claim commit pushed immediately before any task work.
-T22/T22 verification runs only after T14–T21 artifacts exist. T23 runs only after T22 passes.
+Tasks T14–T23 claimed (commit `a80c026`, pushed immediately before task work) and all completed.
+
+## Session `arena/425336fc-korea1` — T21–T23 deploy record
+
+| Step | Result |
+|------|--------|
+| Site reorganization + decision-support pages | T21 done: category-grouped nav (`pipeline/render_site.py`), new `injuries.html` (official Week 10 2026 injury capture from nfl.com/injuries/, ~170 verified player rows; starter/backup depth blank + flagged UNVERIFIED), `decisions.html` (pre-decision register Q-01→Q-08), `suggestions.html` (review-before-implement register S-01→S-08), landing cards; research registers `research/{decisions,injuries,leaderboard,repo_review,signals,suggestions}.md`; `data/processed/injuries_week10.csv` |
+| Exec summary | T20 done: decision-support pages row added to `EXECUTIVE_SUMMARY.md` |
+| Final verification | T22 done: `pipeline/verify_site.py` **0 failing checks** across all pages (every data row carries an official source link; blank unverified values never inferred) |
+| Pull request | #26 `arena/425336fc-korea1` → `main`: https://github.com/karagemop466-tech/Korea1/pull/26 |
+| CI before merge | `verify` passed; pinned rebuild clean |
+| Merge to `main` | **MERGED** without waiting for approval; merge commit `bc1c411a871f81ec7564d48052db61bde7378857` |
+| GitHub Pages | source `main` / repository root; `pages/builds/latest` → `built`, commit `bc1c411`, error null, build `1363235427` (2026-11-12T13:19:02Z) |
+| Live check | `https://karagemop466-tech.github.io/Korea1/injuries.html?v=26` fetched: new Week 10 injury capture renders with blank depth cells flagged UNVERIFIED and official row links; `decisions.html` and `suggestions.html` also live |
+| Final decision | 0 canonical strategies validated; no reward award; missing authenticated executable quotes and verified prop prices remain flagged |
+
+T21 (site reorganization), T22 (verification) and T23 (PR/merge/deploy) are complete for this session. The final public dashboard is live at <https://karagemop466-tech.github.io/Korea1/>.
 
 ---
 
