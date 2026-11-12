@@ -1,0 +1,43 @@
+name: Availability tracker (injuries + depth charts)
+
+# Reads the two official availability sources with no manual input:
+#   https://www.nfl.com/injuries/  and each club's /team/depth-chart page,
+# rebuilds the starter/backup deficiency table and availability.html, and commits the
+# snapshot to the branch it ran on. See pipeline/fetch_availability.py for the rules.
+on:
+  schedule:
+    # 11:17 and 23:17 UTC daily, plus 21:17 UTC Wed-Sat when practice/game statuses post.
+    - cron: "17 11,23 * * *"
+    - cron: "17 21 * * 3-6"
+  workflow_dispatch:
+  push:
+    branches: ["arena/c0528572-korea1"]
+    paths: ["pipeline/fetch_availability.py", ".github/workflows/availability.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: availability-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fetch official injury report and club depth charts
+        run: python pipeline/fetch_availability.py --debug
+      - name: Commit snapshot
+        if: always()
+        run: |
+          git config user.name "availability-bot"
+          git config user.email "availability-bot@users.noreply.github.com"
+          git add -A data/availability
+          git diff --cached --quiet && { echo "no change"; exit 0; }
+          git commit -m "availability: official snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
