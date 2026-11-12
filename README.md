@@ -8,14 +8,17 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
-- `index.html` — clean landing page and searchable leaderboard
+- `index.html` — clean landing page, Week 10 status banner and searchable leaderboard
 - `executive-summary.html` — decision and limitations
-- `lines.html` — model design and research line board
-- `strategies.html` — complete candidate library and competition rules
-- `validation.html` — eight fail-closed gates
-- `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
-- `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
-- `requirements.html` — requirement-by-requirement delivery register
+- `lines.html` — model design and research line board (136 scheduled 2026 games)
+- `injuries.html` — Week 10 2026 official injuries & Offense/Defense 1st–4th string club depth deficiencies, 5 stale `nfldata` QB catches, and historical no-lookahead QB/PBP absence research
+- `strategies.html` — complete candidate library (18 strategies) and competition rules
+- `validation.html` — eight fail-closed validation gates
+- `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries (2019–2022 PBP logs)
+- `questions.html` — Known vs. Unknown inventory, 14 pre-decision Q&As and missing-data discovery plan
+- `suggestions.html` — concrete Option A/B/C improvement tracks marked `Proposed — awaiting selection`
+- `audit.html`, `flagged.html`, `sources.html`, `verification.html` — 59/59 NFL.com score comparisons, 28 club depth URLs, irregularities, pinned hashes and reproducibility
+- `requirements.html` — 46-requirement traceability matrix rendered directly from `requirements/requirements.csv`
 - `lab/` — independent historical replication annex, strict public view
 
 The publication source is **`main` / repository root**, not `docs/`.
@@ -28,32 +31,39 @@ python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 make build
 make test
+make audit
+.venv/bin/python tests/check_rebuild.py
 ```
 
 `make build` stages and hash-checks the pinned community archive, builds the canonical tables,
-renders the root site and strict annex, and checks official/primary row references, blank unverified
-metric cells, internal links, local assets and verdict logic. Normal builds do not move the pin.
+runs Week 10 injury/depth and historical absence pipelines (`pipeline/injuries.py`), renders all
+16 root pages and the 9-page strict annex, and checks official/primary row references, blank
+unverified metric cells, internal links, local assets and verdict logic. Normal builds do not move the pin.
 An upstream refresh requires `python pipeline/fetch_data.py --refresh-pin` followed by a new audit.
 
-The independent annex can be rebuilt with `PYTHON=.venv/bin/python make annex`.
+The independent annex can be rebuilt with `make annex`.
 Historical calculations remain in `data/lab/`; public annex tables do not present them as official facts.
 
 ## Evidence policy
 
-Official NFL observations, primary method references, operator terms and community research inputs
+Official NFL/club observations, primary method references, operator terms and community research inputs
 are different evidence classes. Every public table row has an official/primary reference. Unverified
-metric cells are blank and flagged. A hash proves file integrity, not that a community price was an
-executable bookmaker offer. Model estimates are not official observations.
+metric cells and image-only club depth strings (`HOU`) remain blank and flagged. A hash proves file integrity,
+not that a community price was an executable bookmaker offer. Model estimates are not official observations.
 
 ## Important repairs
 
-The final audit fixed moving-pin builds, full-history weather fill, mismatched benchmark samples,
-whole-week parlay lookahead, hard-coded/weak validation gates, iid bet-level inference, misleading
-key-number pricing claims, and permissive source checking. See `audit/REPORT.md` and `flagged.html`.
+Prior integration (`arena/ed58af62-korea1`) fixed moving-pin builds, full-history weather fill, mismatched
+benchmark samples, whole-week parlay lookahead, weak validation gates, and permissive source checking.
+Follow-up work (`arena/f115e6a2-korea1`, `T14`) refreshed `nfldata` to `9654533e` (59/59 NFL.com score matches),
+added Week 10 injuries/depth + Q&A + Option A/B/C suggestions, removed orphaned `weather_fill.json`, repaired
+missing CSS classes, fixed `audit.py` claim checks and `FEATURE_DICT` / `models.py` / `prop_inputs.csv`
+contradictions, unified `requirements/requirements.csv` across MD/HTML, and added `verification.html` to
+`tests/check_sources.py`. See `audit/REPORT.md` and `flagged.html`.
 
 ## Coordination and deployment
 
-Read `COORDINATION.md` before editing. This Arena session is pinned to
-`arena/ed58af62-korea1`; the final PR, merge and deployment record are appended there.
+Read `COORDINATION.md` before editing. Current active branch: `arena/f115e6a2-korea1`; task `T14`
+execution, PR, CI/rebuild results, merge commit and Pages deployment verification are recorded there.
 
 Research and education only. No guaranteed returns, betting recommendations or funded prize pool.

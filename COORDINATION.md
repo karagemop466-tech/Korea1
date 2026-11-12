@@ -35,7 +35,28 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
 | T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
-| T14 | **Decision Readiness, Injury & O/D Depth-Chart Deficiency Tracker (`injuries.html`), Suggestions (`suggestions.html`), Pre-Decision Q&A (`questions.html`), Refreshed 2026-11-12 Snapshot Audit, & Repo/UI Irregularity Fixes** | **in progress** | `arena/f115e6a2-korea1` | `COORDINATION.md`, `data/**`, `pipeline/**`, `tests/**`, `requirements/**`, `Makefile`, `assets/style.css`, `*.html`, `*.md`, `audit/REPORT.md` |
+| T14 | **Decision Readiness, Injury & O/D Depth-Chart Deficiency Tracker (`injuries.html`), Suggestions (`suggestions.html`), Pre-Decision Q&A (`questions.html`), Refreshed 2026-11-12 Snapshot Audit, & Repo/UI Irregularity Fixes** | **done** | `arena/f115e6a2-korea1` | `COORDINATION.md`, `data/**`, `pipeline/**`, `tests/**`, `requirements/**`, `Makefile`, `assets/style.css`, `*.html`, `*.md`, `audit/REPORT.md` |
+
+### 2026-11-12 — T14 Decision Readiness, Week 10 Injury & O/D Depth Tracking, Suggestions & Hygiene — `arena/f115e6a2-korea1`
+
+1. **Snapshot Refresh & Official Score Audit (`nflverse/nfldata@9654533e5a0958726afcc076860f2c828ea0bf61`):**
+   - Refreshed `data/sources.json` (7 pinned files SHA-256 verified) and `data/audit/nfl_com_score_audit.csv`.
+   - Verified all 14 Week 8 and all 15 Week 9 2026 final scores against `nfl.com/scores/2026/week-8` and `week-9` (`59/59 MATCH` total including 30 historical rows, 0 blanks/mismatches).
+   - Settled backtest snapshot: `games_model` = 7,412 played games (1999–2026), `upcoming` = 136 scheduled games (2026 W10–18), `originated_lines` = 6,101 OOS games; 0/18 strategies validated (White reality check `p = 0.463` across 476 weekly blocks).
+2. **2026 Week 10 Injury & Offense/Defense 1st–4th String Depth Pipeline (`pipeline/injuries.py`, `injuries.html`):**
+   - Audited `https://www.nfl.com/injuries/`, official NFL.com IR/trade transactions (Nov 9–11), and all 28 active Week 10 club `/team/depth-chart` pages (`data/official/week10_2026_clubs.csv`, `data/official/week10_2026_injuries_depth.csv`, 194 player-depth rows).
+   - `27/28` clubs verified via club HTML depth charts; `houstontexans.com/team/depth-chart` renders an image-only chart so `HOU` stays flagged `UNVERIFIED_IMAGE_ONLY` with all depth cells strictly blank.
+   - Caught **5 stale `nfldata` Week 10 QB fields** (`MIN`, `MIA`, `ARI`, `SEA`, `BAL`) vs official club depth charts & IR/trade reports.
+   - Added strictly no-lookahead historical QB-continuity research (`5,704` games: QB-change games suffer `+0.678` spread MAE penalty vs market, `+1.036` on home QB changes) and 2019–2022 PBP O/D starter-absence diagnostics (`1,726` team-games; labelled `RESEARCH ESTIMATE — weekly inactive/depth archives missing`).
+3. **Decision Readiness Pages (`questions.html`, `suggestions.html`):**
+   - `questions.html`: Known vs. Unknown evidence inventory, 14 grounded pre-decision Q&As, and actionable Missing-Information Discovery Plans.
+   - `suggestions.html`: 6 concrete Option A/B/C improvement tracks (QB/injury overlays, live/licensed quotes, 2023–2026 PBP & props, HOU/T-90m cadence, weather/roof scope, strategy governance), all explicitly labelled `Proposed — awaiting selection` before altering production rules.
+4. **Repo Code, CSS, Audit & Traceability Repairs:**
+   - Removed orphaned `data/processed/weather_fill.json` (retaining `fold_safe_weather_fill` for `tests/test_weather_fold.py`), fixed `FEATURE_DICT` (`temp_missing`/`wind_missing` -> `research-only`), aligned `pipeline/models.py` docstrings (`empirical_probs`, weather exclusion), and fixed `pipeline/correlations.py` `prop_inputs.csv` (`Player game logs` -> `PARTIAL` + injuries/depth row).
+   - Completed missing CSS styles in `assets/style.css` (`.skip-link`, `.hero`, `.table-tools`, `.filter`, `.blank`, `.unverified`, `.pill.*`, `.tabs`, responsive nav wrapping).
+   - Unified `requirements/requirements.csv` (46 rows: `R01`–`R46`) as the single shared source for `REQUIREMENTS.md` and `requirements.html`.
+   - Fixed `pipeline/audit.py` (`injuries.py` in rebuild stages, circular `verification_data.csv` ordering removed from `build_reproducibility`, strict-view `audit_claims` aligned -> 60/60 clean-room byte-for-byte rebuild & 71/71 claim match).
+   - Updated `pipeline/verify_site.py` (28 club hostnames in `ALLOW` + 16 expected pages), `tests/check_sources.py` (added `verification.html` + new pages), `tests/check_links.py`, `tests/test_injuries.py` (6 new regression tests), `Makefile`, `README.md`, and `audit/REPORT.md`.
 
 **Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
 board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while

@@ -175,7 +175,7 @@ def audit_rebuild(src: dict, digests: pd.DataFrame) -> pd.DataFrame:
     sha = src["upstream"]["commit_sha"]
     tmp = Path(tempfile.mkdtemp(prefix="nfl-rebuild-"))
     try:
-        ignore = shutil.ignore_patterns(".git", ".venv", "__pycache__", "data")
+        ignore = shutil.ignore_patterns(".git", ".venv", "__pycache__", "raw", "processed")
         for item in ROOT.iterdir():
             if item.name in {".git", ".venv", "__pycache__"}:
                 continue
@@ -188,13 +188,16 @@ def audit_rebuild(src: dict, digests: pd.DataFrame) -> pd.DataFrame:
         (tmp / "data").mkdir(exist_ok=True)
         (tmp / "data" / "processed").mkdir(exist_ok=True)
         _extract_archive(sha, tmp)
+        for pbp in (ROOT / "data" / "raw").glob("pbp_*.gzip"):
+            shutil.copy2(pbp, tmp / "data" / "raw" / pbp.name)
         # the rebuild must use the *recorded* provenance, not today's upstream HEAD
         (tmp / "data" / "sources.json").write_text(
             json.dumps(src, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
         stages = ["build_datasets.py", "models.py", "backtest.py", "validation.py",
-                  "correlations.py", "props_model.py", "render_summary.py",
-                  "render_site.py", "render_requirements.py"]
+                  "correlations.py", "props_model.py", "injuries.py",
+                  "render_summary.py", "render_requirements.py", "render_site.py",
+                  "render_annex.py", "verify_site.py"]
         log = []
         for stage in stages:
             proc = subprocess.run([sys.executable, str(tmp / "pipeline" / stage)], cwd=tmp,
@@ -356,11 +359,17 @@ def _num(text: str) -> float | None:
 
 
 def audit_claims(src: dict) -> pd.DataFrame:
-    """Re-derive published cells from the CSV each page says it came from."""
-    summ = pd.read_csv(PROC / "strategy_summary.csv")
+    """Re-derive published strict-dashboard cells against pipeline CSV/JSON outputs."""
     gates = pd.read_csv(PROC / "strategy_gates.csv")
-    metrics = pd.read_csv(PROC / "model_metrics.csv")
-    games = pd.read_csv(PROC / "games_model.csv")
+    fut = pd.read_csv(PROC / "originated_upcoming.csv")
+    fdict = pd.read_csv(PROC / "feature_dict.csv")
+    scores = pd.read_csv(ROOT / "data" / "audit" / "nfl_com_score_audit.csv")
+    qb_w10 = pd.read_csv(PROC / "injury_qb_audit_w10.csv")
+    inj_sum = pd.read_csv(PROC / "injury_deficiency_summary.csv")
+    inj_rep = pd.read_csv(PROC / "injury_week10_report.csv")
+    hqb = pd.read_csv(PROC / "injury_historical_qb.csv")
+    hpbp = pd.read_csv(PROC / "injury_historical_pbp.csv")
+    req_df = pd.read_csv(ROOT / "requirements" / "requirements.csv")
     rc = read_json(PROC / "reality_check.json")
     rows: list[dict] = []
 
@@ -369,124 +378,116 @@ def audit_claims(src: dict) -> pd.DataFrame:
                      "rederived": data, "match": bool(ok), "source": source})
 
     sha = src["upstream"]["commit_sha"]
-    url_games = f"https://github.com/{REPO}/blob/{sha}/data/games.csv"
 
-    # E1 leaderboard: 18 rows, bets + ROI + win rate re-derived from strategy_summary.csv
+    # E1 leaderboard (strategies.html): 18 rows in tabs[0], strict evidence stays UNVERIFIED/Unawarded
     tabs = _tables("strategies.html")
     heads = _table_headers("strategies.html")
-    lead = tabs[1] if len(tabs) > 1 else []
-    h = heads[1] if len(heads) > 1 else []
-    c_bets, c_win, c_roi = _col(h, "Bets"), _col(h, "Win rate"), _col(h, "ROI")
-    by_name = {str(r.strategy): r for r in summ.itertuples()}
+    lead = tabs[0] if tabs else []
+    h = heads[0] if heads else []
+    c_id, c_ev, c_rew = _col(h, "ID"), _col(h, "Evidence"), _col(h, "Reward")
+    by_id = {str(r.strategy): r for r in gates.itertuples()}
     for cells in lead:
-        name = _name(cells[1]) if len(cells) > 1 else ""
-        r = by_name.get(name)
+        sid = _text(cells[c_id]) if c_id is not None and c_id < len(cells) else ""
+        r = by_id.get(sid)
         if r is None:
-            add("strategies.html", f"leaderboard row {name!r} exists in data", name, "absent",
-                False, "data/processed/strategy_summary.csv")
+            add("strategies.html", f"leaderboard row {sid!r} exists in strategy_gates", sid, "absent",
+                False, "data/processed/strategy_gates.csv")
             continue
-        bets, win, roi = _text(cells[c_bets]), _text(cells[c_win]), _text(cells[c_roi])
-        ok = (_num(bets) == r.n and
-              abs((_num(win) or -999) - r.win_rate * 100) < 0.051 and
-              abs((_num(roi) or -999) - r.roi * 100) < 0.0051)
-        add("strategies.html", f"leaderboard {name}: bets/win rate/ROI",
-            f"{bets} / {win} / {roi}",
-            f"{int(r.n)} / {r.win_rate*100:.1f}% / {r.roi*100:.2f}%", ok,
-            "data/processed/strategy_summary.csv")
+        ev = _text(cells[c_ev]) if c_ev is not None else ""
+        rew = _text(cells[c_rew]) if c_rew is not None else ""
+        expected_ev = "VALIDATED" if r.verdict == "VALIDATED" else "UNVERIFIED"
+        expected_rew = "Eligible" if r.verdict == "VALIDATED" else "Unawarded"
+        add("strategies.html", f"leaderboard {sid}: verdict & reward",
+            f"{ev} / {rew}", f"{expected_ev} / {expected_rew}",
+            ev == expected_ev and rew == expected_rew, "data/processed/strategy_gates.csv")
 
-    # E2 validation: verdict per strategy re-derived from strategy_gates.csv
+    # E2 validation.html: candidate verdict table (tabs[1]) matches strategy_gates.csv
     tabs = _tables("validation.html")
-    ver = {str(r.strategy): r.verdict for r in gates.itertuples()}
     vheads = _table_headers("validation.html")
     vh = vheads[1] if len(vheads) > 1 else []
     c_verdict = _col(vh, "Verdict")
     for cells in (tabs[1] if len(tabs) > 1 else []):
-        name = _text(cells[0])
-        verdict = _text(cells[c_verdict if c_verdict is not None else len(cells) - 2])
-        if name in ver:
-            add("validation.html", f"verdict {name}", verdict, ver[name],
-                verdict.strip().lower() == str(ver[name]).strip().lower(),
-                "data/processed/strategy_gates.csv")
+        sid = _text(cells[0])
+        verdict = _text(cells[c_verdict if c_verdict is not None else 4])
+        if sid in by_id:
+            want = "VALIDATED" if by_id[sid].verdict == "VALIDATED" else "UNVERIFIED"
+            add("validation.html", f"verdict {sid}", verdict, want,
+                verdict.strip().upper() == want, "data/processed/strategy_gates.csv")
 
-    # E3 model accuracy: 5 rows, spread/total MAE re-derived from model_metrics.csv
+    # E3 lines.html: upcoming row count matches originated_upcoming.csv & weather features stay research-only
     tabs = _tables("lines.html")
-    allm = metrics[metrics.season == "ALL"]
-    pivot = allm.pivot_table(index="model", columns="market", values="mae")
     lheads = _table_headers("lines.html")
-    lh = lheads[0] if lheads else []
-    c_sp, c_tot = _col(lh, "Spread MAE"), _col(lh, "Total MAE")
-    for cells in (tabs[0] if tabs else []):
-        model = _text(cells[0])
-        if model not in pivot.index:
-            continue
-        for col, market in ((c_sp, "spread"), (c_tot, "total")):
-            if col is None:
-                continue
-            expected = pivot.loc[model].get(market)
-            published = _text(cells[col])
-            if expected is None or pd.isna(expected):
-                ok = published in {"—", "-", ""}
-                shown = published
-            else:
-                ok = published != "—" and abs((_num(published) or -999) - expected) < 0.0051
-                shown = f"{expected:.2f}"
-            add("lines.html", f"MAE {model}/{market}", published, shown, ok,
-                "data/processed/model_metrics.csv")
+    up_idx = next((i for i, hh in enumerate(lheads) if "Matchup" in hh), None)
+    up_rows = tabs[up_idx] if up_idx is not None else []
+    add("lines.html", "upcoming schedule row count", str(len(up_rows)), str(len(fut)),
+        len(up_rows) == len(fut), "data/processed/originated_upcoming.csv")
+    fd_idx = next((i for i, hh in enumerate(lheads) if "Feature" in hh), None)
+    fd_rows = tabs[fd_idx] if fd_idx is not None else []
+    add("lines.html", "feature dictionary row count", str(len(fd_rows)), str(len(fdict)),
+        len(fd_rows) == len(fdict), "data/processed/feature_dict.csv")
 
-    # E4 provenance table: bytes + SHA-256 prefix re-derived from data/sources.json
-    tabs = _tables("sources.html")
-    src_by_name = {f["logical"].replace("data/", ""): f for f in src["files"]}
-    for cells in (tabs[0] if tabs else []):
+    # E4 injuries.html: W10 QB audit, unit summary, report rows, historical QB & PBP counts
+    itabs = _tables("injuries.html")
+    add("injuries.html", "W10 QB audit row count", str(len(itabs[0]) if len(itabs) > 0 else 0),
+        str(len(qb_w10)), len(itabs) > 0 and len(itabs[0]) == len(qb_w10),
+        "data/processed/injury_qb_audit_w10.csv")
+    add("injuries.html", "W10 unit deficiency row count", str(len(itabs[1]) if len(itabs) > 1 else 0),
+        str(len(inj_sum)), len(itabs) > 1 and len(itabs[1]) == len(inj_sum),
+        "data/processed/injury_deficiency_summary.csv")
+    add("injuries.html", "W10 player depth cascade row count", str(len(itabs[2]) if len(itabs) > 2 else 0),
+        str(len(inj_rep)), len(itabs) > 2 and len(itabs[2]) == len(inj_rep),
+        "data/processed/injury_week10_report.csv")
+    add("injuries.html", "historical QB cohorts", str(len(itabs[3]) if len(itabs) > 3 else 0),
+        str(len(hqb)), len(itabs) > 3 and len(itabs[3]) == len(hqb),
+        "data/processed/injury_historical_qb.csv")
+    add("injuries.html", "historical PBP cohorts", str(len(itabs[4]) if len(itabs) > 4 else 0),
+        str(len(hpbp)), len(itabs) > 4 and len(itabs[4]) == len(hpbp),
+        "data/processed/injury_historical_pbp.csv")
+
+    # E5 sources.html: pinned research inputs bytes + SHA-256 prefix match data/sources.json
+    stabs = _tables("sources.html")
+    sheads = _table_headers("sources.html")
+    pin_idx = next((i for i, hh in enumerate(sheads) if any("SHA-256" in x for x in hh)), None)
+    src_by_name = {f["logical"]: f for f in src["files"]}
+    for cells in (stabs[pin_idx] if pin_idx is not None else []):
         name = _text(cells[0])
         f = src_by_name.get(name)
         if f is None:
             continue
-        published = _text(cells[3])
+        published = _text(cells[2])
         ok = (_num(_text(cells[1])) == f["bytes"]) and (f["sha256"][:16] in published)
         add("sources.html", f"provenance {name}: bytes + SHA-256 prefix",
             f"{_text(cells[1])} / {published}", f"{f['bytes']:,} / {f['sha256'][:16]}", ok,
             f["url"])
 
-    # E5 KPI cards on the dashboard
+    # E6 requirements.html: single-source row count matches requirements/requirements.csv
+    rtabs = _tables("requirements.html")
+    add("requirements.html", "requirements matrix row count",
+        str(len(rtabs[0]) if rtabs else 0), str(len(req_df)),
+        bool(rtabs) and len(rtabs[0]) == len(req_df), "requirements/requirements.csv")
+
+    # E7 index.html KPI cards match pipeline outputs
     raw = (SITE / "index.html").read_text(encoding="utf-8")
     cards = re.findall(r'card-value">(.*?)</div><div class="card-label">(.*?)</div>', raw)
-    expect = {
-        "settled games modelled": (len(games), "data/processed/games_model.csv"),
-        "bets simulated": (int(summ.n.sum()), "data/processed/strategy_summary.csv"),
-        "strategies passing all gates": (int((gates.verdict == "SKILL").sum()),
-                                         "data/processed/strategy_gates.csv"),
+    matched_scores = int(scores.status.eq("MATCH").sum())
+    verified_clubs = int(inj_sum[inj_sum.unit == "Offense"].depth_coverage.eq("VERIFIED").sum())
+    expect_text = {
+        "validated strategies": (str(int((gates.verdict == "VALIDATED").sum())), "data/processed/strategy_gates.csv"),
+        "official NFL.com score matches": (f"{matched_scores} / {len(scores)}", "data/audit/nfl_com_score_audit.csv"),
+        "official W10 club depth charts": (f"{verified_clubs} / 28", "data/processed/injury_deficiency_summary.csv"),
     }
     for value, label in cards:
         label = html.unescape(TAG.sub("", label)).strip()
-        if label in expect:
-            want, source = expect[label]
-            add("index.html", f"KPI card {label}", value, str(want),
-                _num(value) == want, source)
-    p_card = re.search(r"reality-check p-value</div>", raw) is not None
-    if p_card:
-        shown = re.search(r'card-note>reality-check p = ([\d.]+)', raw) or \
-            re.search(r"reality-check p = ([\d.]+)", raw)
-        add("index.html", "KPI note reality-check p",
-            shown.group(1) if shown else "absent",
-            f"{rc.get('p_value'):.3f}", bool(shown) and
-            shown.group(1) == f"{rc.get('p_value'):.3f}",
-            "data/processed/reality_check.json")
+        if label in expect_text:
+            want, source = expect_text[label]
+            add("index.html", f"KPI card {label}", _text(value), want, _text(value) == want, source)
+    shown_rc = re.search(r"White reality check p = ([\d.]+)", raw)
+    add("index.html", "KPI note White reality check p",
+        shown_rc.group(1) if shown_rc else "absent", f"{rc.get('p_value'):.3f}",
+        bool(shown_rc) and shown_rc.group(1) == f"{rc.get('p_value'):.3f}",
+        "data/processed/reality_check.json")
 
-    # E6 future-line completeness: every published open-board row must carry our own numbers
-    tabs = _tables("lines.html")
-    open_idx, c_ours = None, None
-    for i, hh in enumerate(lheads):
-        if "Our spread" in hh and any("Market spread" in x for x in hh):
-            open_idx, c_ours = i, _col(hh, "Our spread")
-            break
-    open_board = tabs[open_idx] if open_idx is not None and open_idx < len(tabs) else []
-    blanks = [c for c in open_board
-              if c_ours is not None and len(c) > c_ours and _text(c[c_ours]) in {"—", ""}]
-    add("lines.html", "open board: our spread is published for every row",
-        f"{len(open_board) - len(blanks)}/{len(open_board)} rows", "all rows",
-        bool(open_board) and not blanks, "data/processed/originated_upcoming.csv")
-
-    # E7 footer carries the full pinned commit on every published page
+    # E8 footer carries the pinned commit on every published root HTML page
     for page in sorted(SITE.glob("*.html")):
         text = page.read_text(encoding="utf-8")
         add(page.name, "footer carries the pinned commit", sha[:12] in text, sha[:12],

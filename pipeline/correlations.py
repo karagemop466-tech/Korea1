@@ -209,14 +209,13 @@ def main() -> None:
 
     # ------------------------------------------------------- prop inputs
     prop = pd.DataFrame([
-        dict(component="Player game logs (passing/rushing/receiving yards, receptions, TDs)",
-             available="NO", status="UNVERIFIED — source not reachable in this build",
-             note=("nflverse release assets (`player_stats`, `stats_player`) are served from "
-                   "release-assets.githubusercontent.com, which this environment's egress "
-                   "blocklist refuses; every GitHub mirror checked stores these files as "
-                   "132-byte Git-LFS pointers. No value was estimated to fill the gap.")),
+        dict(component="Player game logs (2019-2022 PBP passing/rushing/receiving/receptions)",
+             available="PARTIAL", status="RESEARCH ESTIMATE — 21,033 PBP player-games (props_model.py); 2023-2026 omitted",
+             note=("2019-2022 regular-season play-by-play logs (4 hash-pinned git blobs from "
+                   "clausherther/nfl-dbt in data/sources_pbp.json) feed props_model.py. 2023-2026 "
+                   "release-asset player_stats remain blocked by egress allowlist.")),
         dict(component="Team scoring totals", available="YES",
-             status="INTERNALLY CONSISTENT; official verification partial", note="games.csv score arithmetic reconciles; only the sampled NFL.com rows are officially checked"),
+             status="INTERNALLY CONSISTENT; official verification partial", note="games.csv score arithmetic reconciles; 59 NFL.com rows officially checked"),
         dict(component="Game total lines", available="YES", status="UNVERIFIED — community market observations",
              note="games.csv total_line is present but has no authenticated bookmaker quote provenance"),
         dict(component="Team total lines", available="NO",
@@ -225,6 +224,10 @@ def main() -> None:
         dict(component="Player prop prices", available="NO",
              status="UNVERIFIED — not present in any retrieved source",
              note="No retrieved source carries prop prices, so no prop ROI can be computed."),
+        dict(component="Injuries & 1st-4th string depth charts", available="PARTIAL",
+             status="2026 WEEK 10 OFFICIAL SNAPSHOT VERIFIED (27/28 clubs); historical weekly archive missing",
+             note=("Week 10 2026 NFL.com injuries + 27 club HTML depth charts ingested (HOU image-only blank); "
+                   "historical timestamped weekly inactive/depth feeds remain missing.")),
         dict(component="Correlation of team scoring", available="YES", status="RESEARCH ESTIMATE; official verification partial",
              note="computed in corr_team_totals.csv from the pinned community archive"),
     ])

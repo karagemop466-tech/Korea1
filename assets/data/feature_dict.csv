@@ -20,5 +20,5 @@ roof_dome,Roof closed/dome; availability timestamp not verified,research-only
 roof_open,"Retractable roof, open; availability timestamp not verified",research-only
 temp,Recorded stadium temperature (°F); missing stays blank; excluded from default model,research-only
 wind,Recorded stadium wind (mph); missing stays blank; excluded from default model,research-only
-temp_missing,1 if temperature not recorded,"margin,total"
-wind_missing,1 if wind not recorded,"margin,total"
+temp_missing,1 if temperature not recorded; excluded from default model until pre-kickoff feed verified,research-only
+wind_missing,1 if wind not recorded; excluded from default model until pre-kickoff feed verified,research-only

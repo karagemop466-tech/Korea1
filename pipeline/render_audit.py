@@ -36,8 +36,8 @@ def irregularity_rows(sha: str, src_link) -> list[list[str]]:
          src_link("https://www.nfl.com/scores/", "NFL official scores") + " · " + src_link(REPO + "data/audit/source_tier_inventory.csv", "historical inventory")],
         ["IR-T10-02", "high", "Historical closing lines, totals, moneylines and prices cannot be confirmed from an official NFL source, and the upstream data dictionary does not name the book. Strict public tables now blank these observations; unverified community estimates are retained only in the labelled research annex and data downloads.",
          src_link("https://www.nfl.com/scores/", "NFL official scores") + " · " + src_link(f"https://github.com/nflverse/nfldata/blob/{sha}/DATASETS.md", "community dictionary")],
-        ["IR-T10-03", "medium", f"The pinned snapshot is stale. On 2026-11-02 NFL.com lists {blank} week-8 games as Final that are blank in the pinned data, and nflverse/nfldata master is 108 commits ahead of the pin. Nothing was refreshed: a refresh moves every published number. To refresh, update the pin and run make build.",
-         src_link("https://www.nfl.com/scores/2026/REG8", "NFL.com 2026 week 8")],
+        ["IR-T10-03", "medium · refreshed", f"On 2026-11-02 the original snapshot was stale with missing Week 8 games. Re-pinned on 2026-11-12 to {sha[:12]}; {blank} audited Week 8-9 rows remain blank (all 29 match NFL.com). Remaining gap: 5 Week 10 scheduled QBs in nfldata conflict with official club charts (see injuries.html).",
+         src_link("https://www.nfl.com/scores/2026/REG9", "NFL.com 2026 week 9")],
         ["IR-T10-04", "low", "Sources page cites https://www.nfl.com/ (the home page) for “GSIS — source of the game IDs” and describes games.csv as a “mirror of NFL GSIS game results”. DATASETS.md supports only that the gsis column is a GSIS id. The 39-game score check supports the scores; it does not support the claim for lines.",
          src_link("https://www.nfl.com/scores/", "NFL official scores")],
         ["IR-T10-05", "low", f"The {n} compared games are a small sample, not a census. Five regular-season weeks were drawn with random.seed(1642) over 2010–2025; three were read (2022 wk 10, 2016 wk 8, 2014 wk 15) and two were not (2022 wk 9, 2011 wk 17) to keep the page-fetch volume down. Added: the 2026 week 8 page and three targeted 2015 games. Only the games visible in the first fetch chunk of each week page were compared. NFL.com uses older team codes for three clubs (STL, OAK, JAC); the script maps them with an explicit alias table.",
@@ -97,8 +97,10 @@ def build_audit(layout, table, card, kpi_grid, flag, src_link, sha: str, sources
                  src_link("https://www.nfl.com/scores/", "NFL official scores") + " · " + src_link(REPO + "data/audit/source_tier_inventory.csv", "historical inventory CSV")] for r in inv]
 
     status_rows = [
-        ["Final scores (7,384 played games)", f"{n} games read on NFL.com and compared: {match} match, {mism} mismatch, {blank} blank in the pinned data",
-         "partially verified — the rest are not individually checked", src_link("https://www.nfl.com/scores/", "NFL.com scores")],
+        ["Final scores (7,412 played games)", f"{n} games read on NFL.com and compared: {match} match, {mism} mismatch, {blank} blank in the pinned data (including 29/29 2026 W8-W9 games)",
+         "2026 W8-W9 census + earlier sample verified — full 2000-2025 history not census-checked", src_link("https://www.nfl.com/scores/", "NFL.com scores")],
+        ["2026 Week 10 injuries & club depth charts", "28 active teams read on NFL.com injuries + 27/28 official club HTML depth charts; HOU depth image-only (blank)",
+         "Week 10 2026 verified (5 stale nfldata QBs caught); historical weekly archive missing", src_link("https://www.nfl.com/injuries/", "NFL.com injuries")],
         ["Scores before 2010 (2,913 games)", "NFL.com's scores page offers 2010–2026 only (year selector)",
          "unverified against NFL.com", src_link("https://www.nfl.com/scores/", "NFL.com scores")],
         ["Playoff games (309)", "none sampled; one attempt (2011 'POST19') returned “SCORES DATA UNAVAILABLE”",
@@ -110,7 +112,7 @@ def build_audit(layout, table, card, kpi_grid, flag, src_link, sha: str, sources
          "field definition confirmed; id values not checked against GSIS", src_link("https://www.nfl.com/scores/", "NFL official scores") + " · " + src_link(f"https://github.com/nflverse/nfldata/blob/{sha}/DATASETS.md", "community dictionary")],
         ["Scoring / overtime rules assumed by the models", "operations.nfl.com/the-rules/nfl-rulebook/ redirects to the 2026 NFL Rulebook page (read 2026-11-02); the “Rule 16” label on Sources was not located in the part of the page read",
          "page confirmed, rule number unverified", src_link("https://operations.nfl.com/the-rules/nfl-rulebook/", "NFL Rulebook")],
-        ["Weather, roof, surface, referee, coach fields", "not checked", "unverified", src_link("https://www.nfl.com/", "NFL.com")],
+        ["Weather, roof, surface, referee, coach fields", "excluded from default models; raw pre-kickoff availability timestamps unverified", "unverified", src_link("https://www.nfl.com/", "NFL.com")],
     ]
 
     irr_rows = irregularity_rows(sha, src_link)
@@ -118,10 +120,11 @@ def build_audit(layout, table, card, kpi_grid, flag, src_link, sha: str, sources
     body = f"""
 {cards}
 <h2>Scope</h2>
-<p>An independent re-check of the published tables against official sources, run by session
-<code>arena/1642ee06-korea1</code> on 2026-11-02. Nothing was inferred: a value is called verified only
-if it was read on an NFL page, and everything else is listed as unverified below. The NFL.com pages were
-read with the agent's page-fetch tool; the build shell cannot reach nfl.com.</p>
+<p>Independent re-checks of the published tables against official NFL.com and club pages, originally run by session
+<code>arena/1642ee06-korea1</code> on 2026-11-02 and refreshed on 2026-11-12 (T14) across all 29 settled Week 8–9
+games plus Week 10 injuries and 27/28 official club depth charts. Nothing is inferred: a value is called verified
+only if it was read on an official NFL or club page, and everything else is listed as unverified below.
+The NFL.com and club pages were read with the agent's page-fetch tool; the build shell cannot reach them.</p>
 <h2>Official-source status by field</h2>
 {table(status_rows, ["Field", "What was checked", "Status", "Source"], caption="Official-source status by data field")}
 <h2>Irregularities for review</h2>

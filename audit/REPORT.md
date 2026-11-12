@@ -62,7 +62,25 @@ of a transparent research dashboard.
 
 ## Verification record
 
-Commands: `make build`, `make test`, `scripts/99_verify.py`, `scripts/98_linkcheck.py`,
-`scripts/tests/test_math.py`, and the preserved `tests/test_no_lookahead.py` after staging its pinned input.
-Machine-readable canonical results: `data/processed/verification_report.csv` and `verification_data.csv`.
-The final PR and `COORDINATION.md` record the executed results, merge commit and Pages deployment check.
+Commands: `make build`, `make test`, `make audit`, `tests/check_rebuild.py`, `scripts/99_verify.py`,
+`scripts/98_linkcheck.py`, `scripts/tests/test_math.py`, and the preserved `tests/test_no_lookahead.py`.
+Machine-readable canonical results: `data/processed/verification_report.csv`, `verification_data.csv`,
+and `audit_*.csv`.
+
+## 2026-11-12 follow-up (`T14`, session `arena/f115e6a2-korea1`)
+
+- Refreshed `nflverse/nfldata` pin to `9654533e5a0958726afcc076860f2c828ea0bf61`; verified all 29 settled
+  Week 8–9 games against NFL.com (`59/59 MATCH`, 0 blanks/mismatches in `data/audit/nfl_com_score_audit.csv`).
+- Audited Week 10 2026 official NFL.com injuries/IR/trades and 27/28 official club HTML depth charts
+  (`houstontexans.com/team/depth-chart` flagged `UNVERIFIED_IMAGE_ONLY`, depth cells strictly blank), catching
+  5 stale `nfldata` Week 10 QB fields (`MIN`, `MIA`, `ARI`, `SEA`, `BAL`).
+- Added `pipeline/injuries.py` & `injuries.html` covering 2026 Week 10 O/D 1st–4th string cascades plus
+  no-lookahead 2006–2026 QB-continuity and 2019–2022 PBP starter-absence diagnostics (research estimate only).
+- Added `questions.html` (Known vs. Unknown, 14 pre-decision Q&As, Missing-Data Discovery Plan) and
+  `suggestions.html` (Option A/B/C improvement tracks strictly labelled `Proposed — awaiting selection`).
+- Fixed repo hygiene & code/audit irregularities: removed orphaned `data/processed/weather_fill.json`,
+  completed missing CSS rules in `assets/style.css`, unified 46-row `requirements/requirements.csv` across
+  `REQUIREMENTS.md` and `requirements.html`, repaired `FEATURE_DICT`/`models.py` docstrings and
+  `correlations.py` `prop_inputs.csv`, expanded `tests/check_sources.py` to include `verification.html`,
+  and re-aligned `pipeline/audit.py` clean-room rebuild (`60/60`) and claim checks (`71/71`).
+

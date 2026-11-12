@@ -1,13 +1,16 @@
 # Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02. Research snapshot: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
+Snapshot date: 2026-11-12. Research snapshot: `9654533e5a0958726afcc076860f2c828ea0bf61`.
 
 ## Decision
 
 **Keep the research engine; do not fund or reward a betting strategy yet.** The repository originates
-NFL lines and evaluates single-bet, situational and parlay candidates. It does not contain authenticated,
-timestamped executable bookmaker quotes or verified player-prop ticket prices. **0 of 18 canonical
-strategies pass all eight final gates.** No prize, capital allocation or profitable recommendation is authorized.
+NFL lines, audits 2026 Week 10 injury and Offense/Defense depth-chart deficiencies, and evaluates
+single-bet, situational and parlay candidates. It still lacks authenticated, timestamped executable
+bookmaker quotes, verified player-prop ticket prices, and historical timestamped pregame inactive/depth
+archives. **0 of 18 canonical strategies pass all eight final gates** (White reality-check
+*p* = 0.463 over 476 weekly blocks). No prize, capital allocation or profitable
+betting recommendation is authorized.
 
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
@@ -16,29 +19,26 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 
 | Requirement | Delivery | Evidence status | Official / primary reference |
 |---|---|---|---|
-| Requirements register | `research/requirements.md` and `requirements.html` | Implemented | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
-| Own NFL lines | Walk-forward Elo, rolling matchup and ridge models; margin, total and moneyline estimates | Implemented; benchmark inputs unverified | [NFL official scores](https://www.nfl.com/scores/) |
+| Requirements register | `REQUIREMENTS.md` and `requirements.html` (46 requirements from `requirements/requirements.csv`) | Implemented | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Own NFL lines | Walk-forward Elo, rolling matchup and ridge models; margin, total and discrete empirical ML estimates | Implemented; benchmark inputs unverified | [NFL official scores](https://www.nfl.com/scores/) |
+| Injuries & O/D depth | `injuries.html` & `pipeline/injuries.py`: 2026 Wk 10 NFL.com injuries/IR + 27/28 club depth charts; 5 stale nfldata QBs flagged | Current week tracked; historical archive missing | [NFL injury report](https://www.nfl.com/injuries/) |
+| Pre-decision Q&A & Gaps | `questions.html`: Known vs. Unknown inventory, 14 decision Q&A entries and missing-data discovery plan | Implemented | [NFL official scores](https://www.nfl.com/scores/) |
+| Suggestions (Review) | `suggestions.html`: Option A/B/C proposals with pros, cons and prerequisites (`Proposed — awaiting selection`) | Awaiting review before implementation | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
 | Signal strategies | 18 canonical candidates plus preserved historical annex | No validated edge | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Parlays | Simultaneous-slate selection, push-aware research settlement and adverse-price stress | Executable ticket quotes unavailable | [FanDuel push rules](https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push) |
-| Player-prop combos | Input inventory, joint-distribution protocol and combo hypotheses | Blocked by missing verified prices and joint quotes | [NFL injury report](https://www.nfl.com/injuries/) |
+| Player-prop combos | 2019–2022 PBP framework (21,033 player-games), calibration and 7 joint-pricing gaps | Blocked by missing prop prices (fails G6) | [NFL injury report](https://www.nfl.com/injuries/) |
 | Correlations | Reproducible research estimates; strict public values blank where inputs unverified | Partial evidence | [NFL official scores](https://www.nfl.com/scores/) |
-| Luck mitigation | Weekly-block bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
-| Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
-| Official score audit | 31 matching games in a 39-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
-| Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Luck mitigation | Weekly stationary bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
+| Official score audit | 59/59 matching games across 2026 Weeks 8–9 (29/29) and historical NFL.com samples | Verified sample | [NFL official scores](https://www.nfl.com/scores/) |
+| Dashboard & Hygiene | 16 categorized pages, completed stylesheet, strict source checks and repaired audit claims | Ready for verification | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
-## Material audit corrections
+## Material audit & T14 findings
 
-1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.
-2. **No future weather fill:** missing observations stay blank. Weather and roof fields are excluded from the default model until pre-kickoff availability is verified.
-3. **Fair benchmark comparison:** each model and market metric uses identical available games for that market.
-4. **No whole-week parlay hindsight:** tickets use an earliest eligible simultaneous kickoff slate. They remain research simulations, not confirmed ticket offers.
-5. **Discrete predictive probabilities:** prior out-of-fold empirical errors replace the claim that a normal continuity correction correctly prices key numbers.
-6. **Dependence-aware inference:** weekly returns, shared stationary-bootstrap resampling and Holm correction replace bet-level independence and an unsupported FDR claim.
-7. **Fail-closed verdicts:** all eight gates, including redundancy and official quote provenance, are required. A profitable backtest is not labelled skill.
-8. **Trial-count uncertainty:** the complete exploratory search history is unknown. Deflated Sharpe is provisional and cannot certify a strategy.
-9. **Source policy:** community hashes are not official NFL verification. Strict public tables blank unverified observations; historical calculations remain in labelled data downloads.
-10. **Settlement conflicts:** three 2015 closing-file outcome flags conflict with NFL.com Game Center scores. The score file agrees with NFL.com; the conflicting price-file flags remain flagged.
+1. **Refreshed official 2026 snapshot:** Re-pinned `nfldata` to `9654533e5a09` and verified all 29 Week 8–9 games against NFL.com (`59/59` total audited scores match; `0` blank or mismatched).
+2. **Stale Week 10 QBs exposed in `nfldata`:** 5 of 28 Week 10 team-QB fields (`MIN`, `MIA`, `ARI`, `SEA`, `BAL`) conflict with official NFL.com IR/starter reports and club depth charts.
+3. **Offense & Defense 1st–4th string tracking:** `injuries.html` maps confirmed Out/IR cascades (`BAL` down to trade acquisition Brissett past QB3; `GB` RB1/2/3 injury cascade to RB3/4; `NE` LG1 Out + LG2 DNP and RB1 DNP + RB2 Out; `LAC` traded LB1 slot blank + Derwin James IR; `SF` LCB1/RCB1/NB1 thin secondary; `TEN`/`PIT`/`CLE` zero-backup slots) while leaving `HOU` image-only depth strings strictly blank.
+4. **Historical QB & PBP absence evidence:** Across 2006–2026 `games.csv`, games with a prior-game QB change (`18.7%`) suffer `+0.678` MAE penalty vs market (`+1.036` when home QB changes), proving market-blind team Elo misses starter absences; PBP 2019–2022 shows similar drops when RB1/WR1 or 2+ top-3 defenders record zero events.
+5. **No-lookahead & strict-source discipline retained:** Weather/roof fields remain excluded from default models; unverified market metrics stay blank; `temp_missing`/`wind_missing` documentation, `models.py` docstring, `prop_inputs.csv`, `assets/style.css`, and `pipeline/audit.py` strict-claim checks were repaired.
 
 ## What remains blocked
 
@@ -46,17 +46,12 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 |---|---|---|
 | Authenticated historical entry/closing quotes with timestamps and limits | No executable ROI or CLV validation | [NFL official scores](https://www.nfl.com/scores/) |
 | Verified player-prop prices and joint SGP quotes | No prop-combo ROI or validated correlation | [NFL injury report](https://www.nfl.com/injuries/) |
+| Historical timestamped weekly NFL inactive reports & 1st–4th string depth archive | Cannot fold pregame backup adjustments cleanly into walk-forward backtests | [NFL injury report](https://www.nfl.com/injuries/) |
 | Complete trial registry and untouched prospective replication | No reward eligibility | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
-| Full official census of historical scores and pregame fields | Research inputs remain only partially officially verified | [NFL official scores](https://www.nfl.com/scores/) |
+| Houston Texans HTML/machine-readable depth chart (`houstontexans.com` image-only) | HOU depth slots remain blank (`UNVERIFIED`) | [NFL injury report](https://www.nfl.com/injuries/) |
 
 ## Reproduce and inspect
 
-Run `make build` and `make test`. The canonical pipeline writes `data/processed/`; the independent
-replication annex is preserved under `scripts/`, `data/lab/` and `lab/`. Public annex tables use the same
-strict-source policy. Historical JSON/CSV calculations are explicitly unverified research data.
-
-See `audit/REPORT.md`, `data/audit/`, `flagged.html` and `COORDINATION.md` for the audit scope,
-conflicts, verification commands and final PR/deployment record. A code/data audit is not a claim that
-every third-party historical observation has been individually authenticated.
+Run `make build`, `make test`, and `make audit`. See `questions.html`, `suggestions.html`, `injuries.html`, `flagged.html`, `audit/REPORT.md`, and `COORDINATION.md`.
 
 **Research and education only. No guaranteed returns.**

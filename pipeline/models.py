@@ -5,8 +5,9 @@ season S only seasons < S are used, so every published prediction is genuinely
 out-of-sample.
 
   M1 `ridge`      weighted ridge on pre-game structure (Elo, matchup points, rest,
-                  weather, venue). Hyper-parameter chosen by inner time-series CV
-                  inside each training window.
+                  divisional/neutral/playoff flags, week; weather/roof excluded by
+                  default until pre-kickoff timestamps verified). Hyper-parameter
+                  chosen by inner time-series CV inside each training window.
   M2 `matchup`    no fitted structure: the matchup expected-points identity
                   exp = off(team) + def(opponent) − league_avg, with a single
                   scale/intercept pair fitted on the training window.
@@ -106,10 +107,10 @@ def inner_cv_alpha(X, y, season, test_season):
 # probability mapping
 # ---------------------------------------------------------------------------
 def outcome_probs(m: float, sigma: float, line: float) -> tuple[float, float, float]:
-    """(win, push, loss) for the *home/over* side of a line, continuity-corrected.
+    """Deprecated legacy normal continuity helper (retained only for reference).
 
-    For a spread we pass `line = spread_line` and cover means `result > line`.
-    For a total we pass `line = total_line` and over means `total > line`.
+    Production origination uses `empirical_probs()` over prior out-of-fold
+    discrete score residuals rather than a normal approximation.
     """
     z_hi = (line + 0.5 - m) / sigma
     z_lo = (line - 0.5 - m) / sigma
@@ -120,6 +121,7 @@ def outcome_probs(m: float, sigma: float, line: float) -> tuple[float, float, fl
 
 
 def moneyline_probs(m: float, sigma: float) -> tuple[float, float, float]:
+    """Deprecated legacy normal moneyline helper; production uses `empirical_probs()`."""
     p_home = float(1.0 - stats.norm.cdf((0.5 - m) / sigma))
     p_away = float(stats.norm.cdf((-0.5 - m) / sigma))
     p_tie = float(max(0.0, 1.0 - p_home - p_away))

@@ -150,17 +150,12 @@ WEATHER_COLS = ("temp", "wind")
 
 
 def fold_safe_weather_fill(played: pd.DataFrame) -> tuple[dict, dict]:
-    """Expanding weather fill: the median of games played on a *strictly earlier* date.
+    """Deprecated test-only utility retained for `tests/test_weather_fold.py`.
 
-    Why not ``frame[col].median()``: that statistic is computed on the whole history, so a
-    2004 row is imputed with a number that depends on games played in 2025 — and, for the
-    scheduled frame, with a median that includes the very games being priced. Session
-    ``arena/8eb93b26-korea1`` flagged this as a fold-preprocessing defect
-    (``notes/no-lookahead-2026-11-02.md``).
-
-    The rule here is chronological by construction: for a game on date ``d`` the fill is
-    the median of observed values at all dates ``< d``. Scheduled games take the final
-    expanding median (all games played up to the snapshot) — fold-safe, and never NaN.
+    Default production feature sets (`FEATURES_MARGIN`, `FEATURES_TOTAL`) exclude
+    weather and roof fields completely until pre-kickoff timestamps are verified.
+    This expanding-median helper is kept only to verify prefix stability on test
+    fixtures and is not written into `games_model.csv` or `upcoming.csv`.
     """
     played = played.copy()
     played["_date"] = pd.to_datetime(played["gameday"])
@@ -421,8 +416,8 @@ FEATURE_DICT = [
     ("roof_open", "Retractable roof, open; availability timestamp not verified", "research-only"),
     ("temp", "Recorded stadium temperature (°F); missing stays blank; excluded from default model", "research-only"),
     ("wind", "Recorded stadium wind (mph); missing stays blank; excluded from default model", "research-only"),
-    ("temp_missing", "1 if temperature not recorded", "margin,total"),
-    ("wind_missing", "1 if wind not recorded", "margin,total"),
+    ("temp_missing", "1 if temperature not recorded; excluded from default model until pre-kickoff feed verified", "research-only"),
+    ("wind_missing", "1 if wind not recorded; excluded from default model until pre-kickoff feed verified", "research-only"),
 ]
 
 

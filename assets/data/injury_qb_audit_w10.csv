@@ -1,0 +1,29 @@
+game_id,gameday,side,team,nfldata_qb,official_qb,status,detail,source_url
+2026_10_WAS_NYG,2026-11-12,away,WAS,Jayden Daniels,Jayden Daniels,MATCH,Active / Full practice,https://www.commanders.com/team/depth-chart
+2026_10_WAS_NYG,2026-11-12,home,NYG,J.J. McCarthy,J.J. McCarthy,MATCH,Active / Full practice,https://www.giants.com/team/depth-chart
+2026_10_NE_DET,2026-11-15,away,NE,Drake Maye,Drake Maye,MATCH,Active / Full practice,https://www.patriots.com/team/depth-chart
+2026_10_NE_DET,2026-11-15,home,DET,Jared Goff,Jared Goff,MATCH,Limited Wed; QB2 Joshua Dobbs,https://www.detroitlions.com/team/depth-chart
+2026_10_KC_ATL,2026-11-15,away,KC,Patrick Mahomes,Patrick Mahomes,MATCH,Active / Full practice,https://www.chiefs.com/team/depth-chart
+2026_10_KC_ATL,2026-11-15,home,ATL,Michael Penix Jr.,Michael Penix Jr.,MATCH,Listed QB1 on Falcons depth chart,https://www.atlantafalcons.com/team/depth-chart
+2026_10_HOU_CLE,2026-11-15,away,HOU,C.J. Stroud,C.J. Stroud,UNVERIFIED DEPTH,HOU depth chart is image-only; not on Wed injury report,https://www.houstontexans.com/team/depth-chart
+2026_10_HOU_CLE,2026-11-15,home,CLE,Deshaun Watson,Deshaun Watson,MATCH,Confirmed Week 10 starter per NFL.com Nov 11 roundup,https://www.nfl.com/news/nfl-news-roundup-latest-league-updates-from-wednesday-nov-11
+2026_10_MIN_GB,2026-11-15,away,MIN,Kirk Cousins,Kyler Murray (DNP) / Carson Wentz (Lim) / Kirk Cousins (unconfirmed),STALE / DISPUTED,"nfldata lists Kirk Cousins; MIN chart has Murray QB1 (DNP), Wentz QB2 (Lim) and coach declined to commit to Cousins",https://www.vikings.com/team/depth-chart
+2026_10_MIN_GB,2026-11-15,home,GB,Jordan Love,Jordan Love,MATCH,Listed QB1 on Nov 10 Packers depth chart,https://www.packers.com/team/depth-chart
+2026_10_MIA_IND,2026-11-15,away,MIA,Malik Willis,Kyle McCord,STALE IN NFLDATA,"nfldata lists Malik Willis, who was placed on IR (groin); Kyle McCord elevated to sole QB on Dolphins chart",https://www.nfl.com/news/dolphins-place-qb-malik-willis-groin-on-injured-reserve-kyle-mccord-in-line-for-first-start
+2026_10_MIA_IND,2026-11-15,home,IND,Daniel Jones,Daniel Jones,MATCH,Listed QB1 on Colts Week 10 depth chart,https://www.colts.com/team/depth-chart
+2026_10_CAR_NO,2026-11-15,away,CAR,Bryce Young,Bryce Young,MATCH,Listed QB1 on Panthers depth chart,https://www.panthers.com/team/depth-chart
+2026_10_CAR_NO,2026-11-15,home,NO,Tyler Shough,Tyler Shough,MATCH,Listed QB1 on Saints depth chart,https://www.neworleanssaints.com/team/depth-chart
+2026_10_BUF_NYJ,2026-11-15,away,BUF,Josh Allen,Josh Allen,MATCH,Listed QB1 on Bills depth chart,https://www.buffalobills.com/team/depth-chart
+2026_10_BUF_NYJ,2026-11-15,home,NYJ,Geno Smith,Geno Smith,MATCH,Listed QB1 on Jets depth chart,https://www.newyorkjets.com/team/depth-chart
+2026_10_JAX_TEN,2026-11-15,away,JAX,Trevor Lawrence,Trevor Lawrence,MATCH,Listed QB1 on Jaguars depth chart,https://www.jaguars.com/team/depth-chart
+2026_10_JAX_TEN,2026-11-15,home,TEN,Cam Ward,Cam Ward,MATCH,Listed QB1 on Titans depth chart,https://www.tennesseetitans.com/team/depth-chart
+2026_10_LA_ARI,2026-11-15,away,LA,Matthew Stafford,Matthew Stafford,MATCH,Active / Full practice,https://www.therams.com/team/depth-chart
+2026_10_LA_ARI,2026-11-15,home,ARI,Gardner Minshew,Carson Beck,STALE IN NFLDATA,"nfldata lists Gardner Minshew, who is on IR (elbow surgery); Cardinals depth chart + NFL.com Nov 11 confirm Carson Beck",https://www.nfl.com/news/nfl-news-roundup-latest-league-updates-from-wednesday-nov-11
+2026_10_SEA_LV,2026-11-15,away,SEA,Sam Darnold,Drew Lock,STALE IN NFLDATA,"nfldata lists Sam Darnold, who NFL.com ruled OUT; Drew Lock expected to start (Jalen Milroe QB3)",https://www.nfl.com/news/sam-darnold-ruled-out-for-seahawks-week-10-game-vs-raiders-drew-lock-expected-to-start-again
+2026_10_SEA_LV,2026-11-15,home,LV,Fernando Mendoza,Fernando Mendoza,MATCH,Listed QB1 on Nov 10 Raiders depth chart post-Cousins trade,https://www.raiders.com/team/depth-chart
+2026_10_SF_DAL,2026-11-15,away,SF,Brock Purdy,Brock Purdy,MATCH,Listed QB1 on Nov 10 49ers depth chart,https://www.49ers.com/team/depth-chart
+2026_10_SF_DAL,2026-11-15,home,DAL,Dak Prescott,Dak Prescott,MATCH,Listed QB1 on Cowboys depth chart,https://www.dallascowboys.com/team/depth-chart
+2026_10_PIT_CIN,2026-11-15,away,PIT,Aaron Rodgers,Aaron Rodgers,MATCH,Listed QB1 on Steelers depth chart,https://www.steelers.com/team/depth-chart
+2026_10_PIT_CIN,2026-11-15,home,CIN,Joe Burrow,Joe Burrow,MATCH,Listed QB1 on Bengals depth chart,https://www.bengals.com/team/depth-chart
+2026_10_LAC_BAL,2026-11-16,away,LAC,Justin Herbert,Justin Herbert,MATCH,Avoided finger fracture per Nov 9 NFL.com roundup; listed QB1,https://www.nfl.com/news/nfl-news-roundup-latest-league-updates-from-monday-nov-9
+2026_10_LAC_BAL,2026-11-16,home,BAL,Tyler Huntley,Jacoby Brissett (expected trade starter) / Joe Fagnano,STALE IN NFLDATA,"nfldata lists Tyler Huntley (Out for season, turf toe) while Lamar Jackson is on IR; BAL acquired Jacoby Brissett",https://www.nfl.com/news/nfl-news-roundup-latest-league-updates-from-wednesday-nov-11

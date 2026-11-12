@@ -3,29 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Correlations &amp; parlays</title>
+<title>Correlations &amp; parlays · NFL Line Lab</title>
 <meta name="description" content="Joint probabilities, settlement terms and the limits of independence.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
-    <nav aria-label="Main navigation"><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink active" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
+    <nav aria-label="Main navigation"><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="injuries.html">Injuries &amp; depth</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink active" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a><a class="navlink" href="questions.html">Q&amp;A &amp; gaps</a><a class="navlink" href="suggestions.html">Suggestions</a><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="flagged.html">Flagged for review</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="lab/index.html">Replication annex</a></nav>
   </div>
 </header>
-<a class="skip-link" href="#main-content">Skip to content</a>
 <main id="main-content" class="wrap wide">
   <h1>Correlations &amp; parlays</h1>
   <p class="lede">Joint probabilities, settlement terms and the limits of independence.</p>
-  <p class="flag info"><strong>Evidence boundary.</strong> Official observations, model estimates and community-market research are separate. Unverified observations are blank in the public tables, not filled in. Reproducible estimates remain in the <a href="lab/index.html">clearly labelled research annex</a> and downloadable CSVs; they are not betting recommendations.</p>
+  <p class="flag info"><strong>Evidence boundary.</strong> Official NFL/club observations, model estimates and community-market research are separated. Unverified market values and missing club HTML depth charts (<code>HOU</code>) remain blank in the public tables. Reproducible research estimates remain in the <a href="lab/index.html">labelled research annex</a> and downloadable CSVs; they are not betting recommendations.</p>
 <section><h2>Correlation is a pricing input, not a decoration</h2>
 <p>For binary legs A and B, compare the observed joint probability with P(A)P(B).
 For a parlay, the relevant object is the joint win/push/loss distribution and the actual ticket price.
-Correlation estimates below are blank in the strict view because the required market lines or player-prop histories
-have not been officially verified row by row. Earlier community-data estimates are preserved in the research annex.</p>
+Correlation estimates stay blank in the strict view where underlying market lines or prop quotes lack official provenance.
+Downloadable research tables (<code>corr_market.csv</code>, <code>corr_same_game.csv</code>, <code>prop_inputs.csv</code>) preserve exact community measurements.</p>
 <pre class="math">Lift = P(A ∩ B) / [P(A) P(B)]
 Phi = [P(A ∩ B) − P(A)P(B)] / √[P(A)(1−P(A))P(B)(1−P(B))]
 Fair parlay EV = Σ joint-outcome probability × net payout</pre>
@@ -38,9 +38,9 @@ Fair parlay EV = Σ joint-outcome probability × net payout</pre>
 <li>Use the actual correlated ticket quote, not a product of standalone prices.</li><li>Apply the exact push, void, injury and dead-heat rules.</li>
 <li>Stress correlation and tails; pass the same selection-bias gates as single bets.</li></ol></section>
   <footer>
-    <p>Research snapshot <code>a270278f3ac4</code> · source register generated 2026-11-02T17:26:06Z.
+    <p>Research snapshot <code>9654533e5a09</code> · source register generated 2026-11-12T13:04:03Z.
     Official observations and unverified research estimates are distinguished on every page.
-    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a>.</p>
+    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a> · <a href="questions.html">Pre-decision Q&amp;A</a>.</p>
     <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>

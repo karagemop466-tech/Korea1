@@ -1,0 +1,6 @@
+cohort,n_games,share_pct,mean_home_margin,mean_total,market_spread_mae,model_spread_mae,model_mae_penalty,status,source_url
+Both teams same QB as prior game,4656,81.23,2.236,45.541,10.19,10.418,0.228,RESEARCH ESTIMATE — games.csv QB fields lack pregame timestamps,https://www.nfl.com/injuries/
+Either team changed QB vs prior game,1076,18.77,2.212,42.271,10.38,11.064,0.684,RESEARCH ESTIMATE — games.csv QB fields lack pregame timestamps,https://www.nfl.com/injuries/
+Home team QB changed (away unchanged),524,9.14,-2.036,41.151,10.523,11.577,1.054,RESEARCH ESTIMATE — games.csv QB fields lack pregame timestamps,https://www.nfl.com/injuries/
+Away team QB changed (home unchanged),478,8.34,6.416,43.864,10.177,10.555,0.379,RESEARCH ESTIMATE — games.csv QB fields lack pregame timestamps,https://www.nfl.com/injuries/
+Both teams changed QB,74,1.29,5.135,39.919,10.676,10.72,0.044,RESEARCH ESTIMATE — games.csv QB fields lack pregame timestamps,https://www.nfl.com/injuries/

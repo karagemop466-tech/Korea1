@@ -1,0 +1,29 @@
+team,game_id,depth_chart_url,depth_status,note
+WAS,2026_10_WAS_NYG,https://www.commanders.com/team/depth-chart,VERIFIED,Official Commanders HTML depth chart
+NYG,2026_10_WAS_NYG,https://www.giants.com/team/depth-chart,VERIFIED,Official Giants HTML depth chart
+NE,2026_10_NE_DET,https://www.patriots.com/team/depth-chart,VERIFIED,Patriots.com unofficial HTML depth chart
+DET,2026_10_NE_DET,https://www.detroitlions.com/team/depth-chart,VERIFIED,Lions Football Communications HTML depth chart
+KC,2026_10_KC_ATL,https://www.chiefs.com/team/depth-chart,VERIFIED,Chiefs.com unofficial HTML depth chart
+ATL,2026_10_KC_ATL,https://www.atlantafalcons.com/team/depth-chart,VERIFIED,Falcons Week 10 HTML depth chart
+MIN,2026_10_MIN_GB,https://www.vikings.com/team/depth-chart,VERIFIED,Vikings 2026 HTML depth chart
+GB,2026_10_MIN_GB,https://www.packers.com/team/depth-chart,VERIFIED,"Packers Nov 10, 2026 HTML depth chart"
+JAX,2026_10_JAX_TEN,https://www.jaguars.com/team/depth-chart,VERIFIED,Jaguars HTML depth chart
+TEN,2026_10_JAX_TEN,https://www.tennesseetitans.com/team/depth-chart,VERIFIED,"Titans Nov 10, 2026 HTML depth chart"
+BUF,2026_10_BUF_NYJ,https://www.buffalobills.com/team/depth-chart,VERIFIED,Bills HTML depth chart
+NYJ,2026_10_BUF_NYJ,https://www.newyorkjets.com/team/depth-chart,VERIFIED,Jets HTML depth chart
+MIA,2026_10_MIA_IND,https://www.miamidolphins.com/team/depth-chart,VERIFIED,Dolphins HTML depth chart
+IND,2026_10_MIA_IND,https://www.colts.com/team/depth-chart,VERIFIED,Colts Week 10 HTML depth chart
+CAR,2026_10_CAR_NO,https://www.panthers.com/team/depth-chart,VERIFIED,Panthers HTML depth chart
+NO,2026_10_CAR_NO,https://www.neworleanssaints.com/team/depth-chart,VERIFIED,Saints HTML depth chart
+HOU,2026_10_HOU_CLE,https://www.houstontexans.com/team/depth-chart,UNVERIFIED_IMAGE_ONLY,Texans page renders static graphic without HTML depth text; depth strings blank
+CLE,2026_10_HOU_CLE,https://www.clevelandbrowns.com/team/depth-chart,VERIFIED,Browns HTML depth chart
+LA,2026_10_LA_ARI,https://www.therams.com/team/depth-chart,VERIFIED,Rams HTML depth chart
+ARI,2026_10_LA_ARI,https://www.azcardinals.com/team/depth-chart,VERIFIED,Cardinals HTML depth chart
+SEA,2026_10_SEA_LV,https://www.seahawks.com/team/depth-chart,VERIFIED,Seahawks HTML depth chart
+LV,2026_10_SEA_LV,https://www.raiders.com/team/depth-chart,VERIFIED,"Raiders Nov 10, 2026 Week 10 HTML depth chart"
+SF,2026_10_SF_DAL,https://www.49ers.com/team/depth-chart,VERIFIED,"49ers Nov 10, 2026 HTML depth chart"
+DAL,2026_10_SF_DAL,https://www.dallascowboys.com/team/depth-chart,VERIFIED,Cowboys HTML depth chart
+PIT,2026_10_PIT_CIN,https://www.steelers.com/team/depth-chart,VERIFIED,Steelers HTML depth chart
+CIN,2026_10_PIT_CIN,https://www.bengals.com/team/depth-chart,VERIFIED,Bengals HTML depth chart
+LAC,2026_10_LAC_BAL,https://www.chargers.com/team/depth-chart,VERIFIED,Chargers HTML depth chart + IR transactions (LB1 empty post-Henley trade)
+BAL,2026_10_LAC_BAL,https://www.baltimoreravens.com/team/depth-chart,VERIFIED,Ravens HTML depth chart (pre-Brissett trade QB slot)

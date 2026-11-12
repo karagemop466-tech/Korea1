@@ -1,0 +1,8 @@
+unit,cohort,n_team_games,share_pct,delta_pts_vs_prior3,delta_yds_vs_prior3,status,source_url
+Offense,Offense RB1 active (>=1 touch),1545,89.51,0.205,-0.26,RESEARCH ESTIMATE (2019-2022 PBP; inactive feeds absent),https://github.com/clausherther/nfl-dbt
+Offense,Offense RB1 zero touches (backup/injury proxy),181,10.49,-1.101,-9.64,RESEARCH ESTIMATE (2019-2022 PBP; inactive feeds absent),https://github.com/clausherther/nfl-dbt
+Offense,Offense WR/TE1 active (>=1 target),1608,93.16,0.088,-0.34,RESEARCH ESTIMATE (2019-2022 PBP; inactive feeds absent),https://github.com/clausherther/nfl-dbt
+Offense,Offense WR/TE1 zero targets (backup/injury proxy),118,6.84,-0.195,-13.45,RESEARCH ESTIMATE (2019-2022 PBP; inactive feeds absent),https://github.com/clausherther/nfl-dbt
+Defense,Defense top-3 contributors all recorded plays,1338,77.52,0.135,-1.48,RESEARCH ESTIMATE (2019-2022 PBP; inactive feeds absent),https://github.com/clausherther/nfl-dbt
+Defense,Defense missing 1 of top-3 prior contributors,349,20.22,-0.42,-2.33,RESEARCH ESTIMATE (2019-2022 PBP; inactive feeds absent),https://github.com/clausherther/nfl-dbt
+Defense,Defense missing 2+ of top-3 prior contributors,39,2.26,1.812,14.37,RESEARCH ESTIMATE (2019-2022 PBP; inactive feeds absent),https://github.com/clausherther/nfl-dbt
