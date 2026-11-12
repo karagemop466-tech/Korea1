@@ -41,7 +41,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T14 | **Automated** availability tracker: scheduled GitHub Actions fetch of the official NFL.com injury report + official club depth charts, starter/backup deficiency table | **done** | `arena/c0528572-korea1` | `pipeline/fetch_availability.py`, `pipeline/depth_status.py`, `pipeline/render_review.py`, `data/availability/**`, `availability.html`, `.github/workflows/availability.yml`, `tests/test_availability_tracker.py` |
 | T15 | Decision board (suggestions to review and choose before any change is implemented) | **done** | `arena/c0528572-korea1` | `data/review/suggestions.csv`, `decision-board.html` |
 | T16 | Open-questions register (known / unknown / how to discover) | **done** | `arena/c0528572-korea1` | `data/review/questions.csv`, `open-questions.html` |
-| T17 | Repo re-review (2026-11-12), executive-summary refresh, integration of T14–T16 on top of whatever is on `main` at merge time | **in progress** | `arena/c0528572-korea1` | `data/review/repo_review.csv`, shared files only at integration: `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py` (page list + allow-list), `tests/check_*.py` (page list), `Makefile`, `.github/workflows/verify.yml` |
+| T17 | Repo re-review (2026-11-12), executive-summary refresh, integration of T14–T16 on top of whatever is on `main` at merge time | **done** | `arena/c0528572-korea1` | `data/review/repo_review.csv`, shared files only at integration: `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py` (page list + allow-list), `tests/check_*.py` (page list), `Makefile`, `.github/workflows/verify.yml` |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -1390,6 +1390,19 @@ nfl.com daily; consolidating them is decision-board item DB-12/DB-14 and was **n
 | `bc1c411` (PR #26, `arena/425336fc-korea1`) then `357ff3a` (PR #28, `arena/25460478-korea1`) | #26: its own `injuries.html`, `suggestions.html`, `decisions.html` builders inside `render_site.py`; #28: `pipeline/parallel_pages.py`, generated executive summary | `pipeline/render_site.py`, `pipeline/render_summary.py`, every generated page | **Irregularity:** PR #26 wrote three pages to filenames two other sessions already published and removed their code; `Verify site` failed on `main` at `bc1c411`. I first ported the #26 pages to separate filenames (commit on this branch), then PR #28 landed with the owning session's own repair (`parallel_pages.py`, #26 content rendered inside the existing pages). Final resolution: **`render_site.py` and `render_summary.py` taken from `main` (#28) as-is, and only this session's additions re-applied on top** (grouped sidebar nav, stylesheet block, availability card, RV table on flagged, R21b row, executive update table). My three interim filenames were dropped again — #28's placement stands |
 
 After the final merge `make build` + `make test` pass; counts are recorded with the PR result below.
+
+### PR, merge and deployment record — `arena/c0528572-korea1` (2026-11-12)
+
+| Item | Result |
+|---|---|
+| Pull request | https://github.com/karagemop466-tech/Korea1/pull/29 — merged without review at 2026-11-12T13:31:49Z, merge commit `f7b17eb` |
+| Check before merge | `verify` passed on the PR head (run 43227739197) |
+| After merge on `main` | `Verify site` run 43228175609 success; `pages-build-deployment` run 43228174322 success |
+| Live pages read after deploy | https://karagemop466-tech.github.io/Korea1/availability.html , https://karagemop466-tech.github.io/Korea1/decision-board.html , https://karagemop466-tech.github.io/Korea1/open-questions.html — all served the merged content (sidebar build, DB-/OQ- IDs) |
+| Local state at merge | `make build` + `make test`: 51 tests pass; 31 pages link-checked; strict official/primary reference check passed |
+| Re-verification at merge time | The 44 injury-report rows for WAS, NYG, NE and DET in `data/availability/injuries.csv` were re-read against https://www.nfl.com/injuries/ immediately before the merge: identical, field for field |
+| **Not confirmed** | The scheduled `availability.yml` now exists on `main`, but its final form (commit-back with rebase, checks before commit) has **not yet run**: manual dispatch from this session is refused (HTTP 403, token cannot dispatch workflows). Only the earlier probe version ran (run 43223697554, success). First scheduled run is due 2026-11-12 21:17 UTC; check the Actions tab. If it fails, the page keeps the 13:03Z snapshot and says so by its capture time |
+| Left untouched | PR #19 (open, conflicting, another session's), PR #24 (open, another session's) |
 
 ## 2026-11-12 Phase — Session `arena/d6b3fd34-korea1` (G1–G6)
 
