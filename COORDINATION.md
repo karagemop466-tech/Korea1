@@ -1566,3 +1566,14 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+### PR, merge and Pages deploy record — PR #36
+
+| Step | Result |
+|---|---|
+| Final integration PR | [#36](https://github.com/karagemop466-tech/Korea1/pull/36), `arena/774867ed-korea1` → `main` |
+| Merge | **MERGED** 2026-11-12T14:19:46Z without waiting for approval; merge commit `bb1e749923a960b0d0a3fd8050d464e34fc09c94` |
+| GitHub Pages | source unchanged: `main` / repository root; `pages/builds/latest` returned `built`, commit `bb1e749923a960b0d0a3fd8050d464e34fc09c94`, error message null |
+| Live landing page | <https://karagemop466-tech.github.io/Korea1/?v=36> fetched successfully: strict evidence view, 0 validated strategies, blank unverified metrics, review-before-change section with the merged path selector, suggestions, Q&A, open questions, 8-club 1st–4th string tracker, lineup evidence and all-clubs availability pages |
+| Post-merge verification | `make build` passed end to end; `verify_site.py` 0 failing checks across 23 pages; `check_sources.py` 1,575 rows on 24 canonical pages, all official/primary; `check_links.py` 33 pages, no broken links/anchors/assets; `make test` 58 passed; `check_rebuild.py` rebuild matches committed outputs |
+| Flagged items | IR-774867-01 through IR-774867-04 published in this record and in the PR body; none blocks the merge |
