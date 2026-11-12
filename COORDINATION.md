@@ -1108,3 +1108,105 @@ authoritative, the others are labelled. All nine are on `flagged.html` with a so
 pins live in `data/official/provenance_2026_w10.json` and `pipeline/injuries.py` fails closed if a hash,
 a host or a slot rank disagrees. Extending to the other 26 clubs means appending rows and adding the club
 host to `OFFICIAL_HOSTS` in `pipeline/injuries.py` and `ALLOW` in `pipeline/verify_site.py`.
+
+---
+
+## Merge note — two 2026-11-12 sessions converged (`arena/03f66e17-korea1` + `arena/3e57f750-korea1`)
+
+`main` advanced to `9c9caf9` (PR #22, session `arena/03f66e17-korea1`) while this session was building
+T14–T17. Both sessions had claimed decision-readiness work at 12:57Z, so the merge overlapped:
+
+| Overlap | Resolution |
+|---|---|
+| `suggestions.html`, `pipeline/render_decisions.py` | **Theirs kept as-is.** Their register (12 questions, 8 suggestions, 7 lineup rows, `research/decision-register.json`) and its tests (`tests/test_decisions.py`) stay untouched and keep passing. This session's wider material moved to new, non-colliding pages: `questions.html` (open questions + information inventory), `decision-paths.html` (13 proposals + three paths + decision log) and `injuries.html` (the 61-row official register). Their renderer was not modified. |
+| `lineups.html` (theirs, 7 players, review-only) vs `injuries.html` (this session, 61 rows, 6 clubs) | **Both kept.** Their page is the review snapshot with per-source `checked_date`; the new page is the full data register with depth ranks and coverage. Each links the other. |
+| Generated HTML and `verification_report.csv` | Taken from `main`, then **regenerated** from the merged code — never hand-merged. |
+| `README.md`, `Makefile`, `verify_site.py`, `tests/check_sources.py` | Both test files run, and both page sets are in the expected-page lists. |
+| Their claim that the verifier totals 570 rows | Re-measured on the merged tree after the rebuild: see the record below. The count moved because both page sets now ship. |
+
+No sibling commit was reverted, rebased away or force-pushed. Nothing of theirs was edited except the
+expected-page lists (required for the merged site to verify).
+
+---
+
+## 2026-11-12 — session arena/03f66e17-korea1
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| N1 Decision-readiness audit, suggestions review queue, lineup evidence contract, final integration and publish | in progress | `arena/03f66e17-korea1` | `COORDINATION.md`, `README.md`, `research/decision-register.json`, `pipeline/render_decisions.py`, `pipeline/render_site.py` (navigation and landing links only), `pipeline/render_summary.py` (readiness note only), `pipeline/verify_site.py` (page registration only), `tests/check_sources.py` (page registration only), `tests/test_decisions.py`, `Makefile`, `.github/workflows/verify.yml`, generated root HTML and `assets/data/decision-register.json` |
+
+Earlier in-progress integration claims are over ten days old, and their completion records above
+show publication. N1 is a new, non-overlapping follow-up, not a takeover of open PR #19.
+The platform fixes this session to its assigned branch; the requested `session-<id>/...` naming
+cannot be used. All work stays on `arena/03f66e17-korea1`. No other session's branch will be edited.
+Scope: audit existing strict evidence boundaries, add the missing dedicated suggestions and
+question/answer register and lineup monitoring readiness, test the combined site, PR and deploy.
+Network access to NFL/operator domains may be restricted; any such verification failures will be
+recorded, not represented as fresh official-source confirmation.
+
+N1 scope clarification before edits: also claim `pipeline/monitor_official.py`,
+`.github/workflows/official-monitor.yml`, `tests/check_links.py` (page registration only),
+`EXECUTIVE_SUMMARY.md` (generated), and generated `data/processed/verification_report.csv`.
+The read-only official monitor archives source responses as Actions artifacts; it does not silently
+promote newly downloaded text into verified lineup facts or mutate the research pin.
+Initial pull of the new branch failed because it had no remote ref yet; pulled/rebased against main
+instead, then pushed the claim successfully. No merge conflict occurred.
+N1 final scope extension: `pipeline/render_site.py` also receives generated readiness-summary,
+requirements and Flagged-for-Review integration sections; `.gitignore` excludes monitor artifacts.
+No unrelated model, strategy or statistical code is changed.
+
+### N1 implementation and verification checkpoint — 2026-11-12
+
+Delivered: `decisions.html` (12 questions + eight-source check register), `suggestions.html` (eight
+unapproved proposals, alternatives, benefits, risks, question IDs and acceptance evidence),
+`lineups.html` (seven selected official injury observations; quoted chart cells; unknown roles,
+rank, timestamps and impacts blank), navigation/landing/requirements/executive-summary integration,
+and six follow-up findings on `flagged.html#decision-gaps`.
+
+Official pages actually read with the page-fetch tool on 2026-11-12:
+- <https://www.nfl.com/injuries/> — Week 10 WAS/NYG rows checked field by field for Lucas Patrick,
+  Colson Yankoff, Jayden Daniels, Amik Robertson, Malik Harrison, Colton Hood and Theo Johnson.
+  Exact transcribed report-row excerpts are in `research/decision-register.json`.
+- <https://www.commanders.com/team/depth-chart> — quoted TE/QB/CB row cells, not inferred promotions.
+- <https://www.giants.com/team/depth-chart> — quoted CB/TE cells including fourth TE column; no
+  assertion that chart order establishes a confirmed game-day role.
+- <https://operations.nfl.com/updates/football-ops/2017-nfl-injury-report-policy/> and
+  <https://operations.nfl.com/inside-football-ops/players-legends/player-protections/> — both returned
+  official 404 / FLAG ON THE PLAY text. Failed verification, not policy evidence (N-05).
+
+Other official/primary references are **context only**, with blank fresh-check dates. This follow-up
+is not a full re-audit of the inherited historical observations, score sample or methods (N-04).
+A source-domain allowlist proves reference presence, not truth of a claim; the pages explicitly say so.
+No upstream pin, model, betting rule, statistical threshold or validated-strategy count changed.
+
+Executed verification:
+- `make build`: passed with pinned/hash-checked inputs; canonical, props and annex regenerated.
+- `make site && make verify`: passed after the final evidence additions. 25 pages / 580 table rows
+  checked by the canonical verifier; 15 selected canonical pages / 479 rows by the dedicated source
+  checker; no missing official/primary reference; zero broken internal links/anchors/assets.
+- `make test`: **40 passed** (29 inherited + 11 new cases covering null preservation, proposal status,
+  source allowlists, output escaping, response rejection and stale-archive removal).
+- Annex `scripts/98_linkcheck.py`: passed; `scripts/99_verify.py`: **9/9**. These are implementation/
+  consistency checks, not a new official historical census.
+- `python -m compileall -q pipeline tests`: passed.
+- Local `monitor_official.py`: **failed all three HTTP fetches with TLS EOF**, manifest recorded in
+  ignored `.cache/official-monitor/`; no fallback and no false success. Official observations above
+  came from the successful page-fetch tool, not this failed shell collector. N-06 is published.
+
+Read-only monitor: daily Actions schedule + manual dispatch; raw response gzip/hash/time manifests
+are 30-day artifacts, never automatically promoted to verified facts or model features. A successful
+collection is not verified extraction. Website sample remains explicitly dated even after later runs.
+
+| Follow-up | Status | Owner | Published evidence |
+|---|---|---|---|
+| All-club live availability, explicit replacement confirmation and quantified offensive/defensive impact | needs review | future authorized work | `flagged.html#decision-gaps` N-01/N-02/N-03; suggestions S02/S03 |
+| Complete official historical outcome/quote census and prospective skill validation | needs review | future authorized work | existing F-06/F-07/F-08/F-09; Q01–Q10; S01/S05/S07 |
+| Failed policy URLs and restricted shell collection | needs review | `arena/03f66e17-korea1` | N-05/N-06; exact attempted official URLs published |
+
+Remaining: committed-output drift check, GitHub CI/PR/merge, Pages API/deployed-site checks and final record.
+
+N1 checkpoint correction: the canonical verifier totals **570** table rows, not 580 (the dedicated
+15-page source check remains 479 rows). A second clean `make build` after committing produced no
+changed outputs; `tests/check_rebuild.py` passed with zero drift. PR opened:
+<https://github.com/karagemop466-tech/Korea1/pull/22>. Archive upload explicitly includes hidden
+paths because its output root is `.cache/`; this avoids losing the failure manifest in Actions.

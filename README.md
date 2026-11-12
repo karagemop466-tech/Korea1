@@ -18,6 +18,9 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `suggestions.html` — proposals, three decision paths and a decision log (review before implementing)
 - `questions.html` — what is known, what is missing and how to find out
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
+- `decisions.html` — questions, known answers, missing evidence and discovery steps
+- `suggestions.html` — proposed improvements, alternatives and acceptance evidence; none approved
+- `lineups.html` — dated official injury/chart evidence; unconfirmed roles and impacts blank
 - `requirements.html` — requirement-by-requirement delivery register
 - `lab/` — independent historical replication annex, strict public view
 
@@ -74,7 +77,22 @@ and a README that named the previous session. See `audit/REPORT.md` and `flagged
 
 ## Coordination and deployment
 
-Read `COORDINATION.md` before editing. This Arena session is `arena/3e57f750-korea1`; its claim, task
-scope, verification record and final PR/merge/deployment record are appended there.
+Read `COORDINATION.md` before editing. Two sessions worked on this branch's merge: the review-register
+session `arena/03f66e17-korea1` (decision readiness, suggestions, seven-player lineup sample) and the
+integration session `arena/3e57f750-korea1` (injury register, open questions, decision paths, refreshed
+pin). Both claim, verification and deployment records are appended there.
 
 Research and education only. No guaranteed returns, betting recommendations or funded prize pool.
+
+## Injury and decision-readiness boundaries
+
+The follow-up dated **2026-11-12** adds a seven-player WAS/NYG official injury-report sample
+and selected chart rows from the two clubs. This is not a live all-club service. Published chart
+order does not prove a game-time role, promotion or performance deficiency. Unknown fields stay
+blank; proposed model changes remain unapproved in the suggestions queue.
+
+`pipeline/monitor_official.py` runs daily via `official-monitor.yml` and stores official response
+archives and success/failure manifests as 30-day Actions artifacts. It does not silently update
+the dated site sample, historical research pin or model inputs. Local restricted-network failures
+are recorded, not replaced by cached success. Run `python pipeline/monitor_official.py` to inspect
+collection; normal `make build` is deterministic and does not fetch changing official pages.

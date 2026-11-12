@@ -4,3 +4,6 @@ data/raw/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Read-only official response archives are Actions artifacts, not versioned datasets
+.cache/
