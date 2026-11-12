@@ -148,7 +148,7 @@ def build_injuries(layout, table, card, kpi_grid, flag, src_link, sha: str):
 {flag('<strong>What is official on this page.</strong> Every row is transcribed from the NFL.com official injury report or from a club-owned depth chart, and links to the page it came from. '
       'Nothing here is modelled. A blank game status means the league had not published a designation at capture time — it does <em>not</em> mean the player is healthy. '
       'A player missing from a club chart is shown as UNRANKED, never guessed into a role.', 'info')}
-{flag('Companion page: <a href="lineups.html">Injuries &amp; lineup evidence</a> is the sibling session review page: a seven-player snapshot with a per-source checked date. This page is the wider data register.', 'info')}
+{flag('Companion page: <a href="injuries.html">Injuries &amp; availability</a> is the site deficit register; <a href="lineups.html">Injury &amp; lineup evidence</a> is the seven-player review snapshot. This page is the full source-linked data register with the depth join.', 'info')}
 {kpi_grid([
     card(f"{len(rep)}", "official injury rows", "3 Week 10 games · 6 clubs", ""),
     card(f"{snap['clubs_covered']}/32", "clubs depth-verified", "26 clubs flagged, not assumed", "bad"),
@@ -197,7 +197,7 @@ It is blank when no starter is ruled out, and it is a projection from a club cha
 <p class="small">Snapshot captured {e(snap['fetched_utc'])}. The injury page is {lnk('https://www.nfl.com/injuries/', 'NFL.com/injuries')}; the club charts are linked per row.
 The register is a transcription of those pages, not a byte-exact crawl — see {lnk('questions.html', 'Questions')} Q15.</p></section>
 """
-    return layout("injuries.html", "Injuries & depth chart impact",
+    return layout("depth-register.html", "Injuries & depth chart impact",
                   "Official Week 10, 2026 injury designations joined to club depth charts — starters, backups and the next man up.",
                   body, wide=True)
 
@@ -236,7 +236,7 @@ def build_questions(layout, table, card, kpi_grid, flag, src_link):
     body = f"""
 {flag('<strong>Read this first.</strong> A decision is only as good as the evidence behind it. Each question below states what is <em>known</em> with the official or primary source, '
       'what is <em>missing</em>, and the concrete action that would settle it. Nothing is answered by opinion, and no missing value is estimated.', 'info')}
-{flag('Companion page: <a href="decisions.html">Decision readiness</a> is the sibling session review page: a 12-question register with a per-source checked date. This page adds the information inventory, the answer sequence and the decisions supported today.', 'info')}
+{flag('Companion page: <a href="decisions.html">Pre-decision questions</a> is the site register; <a href="questions.html">Questions</a> is the review snapshot. This page adds the information inventory, the answer sequence and the decisions supported today.', 'info')}
 {kpi_grid([
     card(f"{len(q)}", "questions", f"{len(blocking)} block any funded decision", ""),
     card(f"{missing}", "missing inputs", f"{partial} partially available", "bad"),
@@ -281,7 +281,7 @@ def build_questions(layout, table, card, kpi_grid, flag, src_link):
 ], ["Step", "Questions", "What it unlocks", "Owner", "Official / primary source"], caption="A sequence that avoids buying data a decision would not use")}
 </section>
 """
-    return layout("questions.html", "Questions before any decision",
+    return layout("information-gaps.html", "Questions before any decision",
                   "What is known, what is missing, and exactly how to find out — before a strategy is funded or a change is made.",
                   body, wide=True)
 
@@ -308,7 +308,7 @@ def build_suggestions(layout, table, card, kpi_grid, flag, src_link):
     body = f"""
 {flag('<strong>Nothing on this page has been implemented unless its evidence column says so.</strong> This page is a decision queue: review the proposal, '
       'check the evidence it would need, compare the paths below, and record a choice. Implementing first and reviewing later is exactly what this page exists to prevent.', 'warn')}
-{flag('Companion page: <a href="suggestions.html">Suggestions for review</a> is the sibling session review page: eight proposed paths with acceptance evidence. This page adds cost, risk, dependencies, three funding paths and a decision log.', 'info')}
+{flag('Companion page: <a href="suggestions.html">Suggestions for review</a> holds the review queue. This page adds cost, risk, dependencies, three funding paths and a decision log.', 'info')}
 {kpi_grid([
     card(f"{len(s)}", "suggestions", "all PROPOSED, none accepted", ""),
     card(f"{high}", "high priority", "they unblock a decision rather than add a feature", "bad"),

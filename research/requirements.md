@@ -1,10 +1,6 @@
 # NFL Line Lab — requirements and acceptance register
 
-Final integration owner: `arena/3e57f750-korea1`. Updated 2026-11-12.
-
-> **Note (2026-11-12).** This register, `requirements.html` and the earlier `requirements/requirements.csv`
-> are three copies of the same register with different wording. The HTML page is authoritative for the
-> published status; keeping three copies is flagged as irregularity F-21 rather than silently reconciled.
+Final integration owner: `arena/ed58af62-korea1`. Updated 2026-11-02.
 
 | ID | Requirement | Acceptance evidence | Status |
 |---|---|---|---|
@@ -26,9 +22,13 @@ Final integration owner: `arena/3e57f750-korea1`. Updated 2026-11-12.
 | R16 | Unconfirmable values blank and flagged | Strict public metric cells blank; explicit UNVERIFIED labels; research downloads segregated | Enforced |
 | R17 | Coordinate parallel work | Claims, scopes, conflict log, pinned session branch, final integration ownership | Implemented |
 | R18 | PR, merge, deploy and verify live site | Final PR and Pages API/live-page record in `COORDINATION.md` | Recorded after execution, never inferred |
-| R19 | Track injuries and lineup deficiencies | `pipeline/injuries.py`; official Week 10 report joined to 6 club depth charts; `injuries.html` | Pilot: 6 of 32 clubs; 26 flagged, never assumed healthy |
-| R20 | Review suggestions before implementing | `research/suggestions.csv`; `suggestions.html`; decision log D01-D03 | Implemented; no suggestion accepted |
-| R21 | Questions, information and answers register | `research/decision_questions.csv`; `research/information_inventory.csv`; `questions.html` | Implemented; 3 questions block a funded decision |
+| R19 | Dedicated suggestions section, reviewed before changes | `suggestions.html`: 22 proposals with cost, risk, dependencies, four paths and a change-control workflow; `decisions.html` adds the parallel 8-proposal register; CSVs published | Implemented, nothing approved |
+| R20 | Questions, information and answers needed before a decision | `questions.html`: 40 questions (28 answered, 2 open, 8 blocked, 2 for decision); answered rows cite a source, blocked rows are blank with a closure test; `decisions.html`: 12 readiness questions | Implemented |
+| R21 | Injuries and lineup deficiencies (starters vs backups) | `injuries.html`: 12 official sources checked, two games captured exactly (2026 wk10: 20 rows; 2019 wk5: 11), ten-signal register; `lineups.html`: 7 observed players + ordered cells from 2 club charts | PARTIAL — order only: 2 of 32 clubs, no chart publication time, no confirmed game-day role |
+| R22 | Dated decision log | `DECISIONS.md`, linked from the suggestions page | Implemented |
+| R23 | Row-by-row official injury capture and depth join | `availability-capture.html`: 258 transcribed rows, every row linking the official report; `depth-register.html`: 61 rows across 6 clubs joined by exact name to 354 ranked depth rows, 9/9 integrity checks, 6 players reported UNRANKED rather than guessed | PARTIAL — 6 of 32 clubs, 4 charts self-labelled UNOFFICIAL, no chart timestamp |
+| R24 | Information inventory: what exists, what does not, how to close it | `information-gaps.html`: 40 questions (site register) plus the 15-question inventory of this build (3 BLOCKING, 6 HIGH) with 3 HAVE / 3 PARTIAL / 6 MISSING and a named closure method per gap | Implemented |
+| R25 | Choose a path before implementation | `decision-paths.html`: 22 proposals (site register) plus 13 of this build grouped into paths A evidence-first, B availability-first, C competition-first, each with cost, risk, dependencies and a recorded decision log | Implemented, nothing chosen |
 
 ## Evidence policy
 

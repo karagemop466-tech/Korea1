@@ -18,10 +18,13 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `suggestions.html` — proposals, three decision paths and a decision log (review before implementing)
 - `questions.html` — what is known, what is missing and how to find out
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
-- `decisions.html` — questions, known answers, missing evidence and discovery steps
-- `suggestions.html` — proposed improvements, alternatives and acceptance evidence; none approved
-- `lineups.html` — dated official injury/chart evidence; unconfirmed roles and impacts blank
+- `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
+- `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
+- `questions.html` — what must be known before a decision, what is answered and what is blocked
+- `lineups.html` — seven observed players plus two club depth charts; roles and impacts blank
+- `injuries.html` — verified official captures, the coverage gap and the availability signal register
 - `requirements.html` — requirement-by-requirement delivery register
+- `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
 
 The publication source is **`main` / repository root**, not `docs/`.
@@ -77,22 +80,20 @@ and a README that named the previous session. See `audit/REPORT.md` and `flagged
 
 ## Coordination and deployment
 
-Read `COORDINATION.md` before editing. Two sessions worked on this branch's merge: the review-register
-session `arena/03f66e17-korea1` (decision readiness, suggestions, seven-player lineup sample) and the
-integration session `arena/3e57f750-korea1` (injury register, open questions, decision paths, refreshed
-pin). Both claim, verification and deployment records are appended there.
-
-Research and education only. No guaranteed returns, betting recommendations or funded prize pool.
+Read `COORDINATION.md` before editing. Three sessions' work is merged on this branch:
+`arena/25460478-korea1` (suggestion/question/injury registers and the grouped site navigation),
+`arena/03f66e17-korea1` (readiness register, lineup-evidence page, read-only source monitor) and
+`arena/3e57f750-korea1` (full depth-joined injury register, information-gap register, decision paths,
+refreshed upstream pin). All claims, sources, verification runs and the PR/merge/deploy record are appended there.
 
 ## Injury and decision-readiness boundaries
 
-The follow-up dated **2026-11-12** adds a seven-player WAS/NYG official injury-report sample
-and selected chart rows from the two clubs. This is not a live all-club service. Published chart
-order does not prove a game-time role, promotion or performance deficiency. Unknown fields stay
-blank; proposed model changes remain unapproved in the suggestions queue.
+The follow-up dated **2026-11-12** has two availability layers. `injuries.html` is the site's deficit
+register over a seven-player WAS/NYG sample; `depth-register.html` is the wider data register: 61 official
+rows across 6 clubs, joined by exact name to 354 ranked rows from six club depth charts. Neither is a live
+all-club service: coverage is 6 of 32 clubs, several clubs label their chart UNOFFICIAL, no chart carries a
+publication timestamp, and chart order does not prove a game-time role, a promotion or a performance
+deficiency. Players absent from a chart are reported as `UNRANKED`, never guessed. The scheduled monitor
+only archives sources.
 
-`pipeline/monitor_official.py` runs daily via `official-monitor.yml` and stores official response
-archives and success/failure manifests as 30-day Actions artifacts. It does not silently update
-the dated site sample, historical research pin or model inputs. Local restricted-network failures
-are recorded, not replaced by cached success. Run `python pipeline/monitor_official.py` to inspect
-collection; normal `make build` is deterministic and does not fetch changing official pages.
+Research and education only. No guaranteed returns, betting recommendations or funded prize pool.
