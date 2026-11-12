@@ -30,7 +30,9 @@ jobs:
         with:
           python-version: "3.11"
       - name: Fetch official injury report and club depth charts
-        run: python pipeline/fetch_availability.py --debug
+        run: |
+          mkdir -p data/availability
+          python pipeline/fetch_availability.py --debug 2>&1 | tee data/availability/fetch_log.txt
       - name: Commit snapshot
         if: always()
         run: |

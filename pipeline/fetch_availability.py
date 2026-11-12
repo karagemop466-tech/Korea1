@@ -240,6 +240,7 @@ def read_csv(path: Path):
 
 
 def main() -> int:
+    OUT.mkdir(parents=True, exist_ok=True)
     now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
     retrieved = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     manifest = {"retrieved_utc": retrieved, "runner": "GitHub Actions (.github/workflows/availability.yml)",
