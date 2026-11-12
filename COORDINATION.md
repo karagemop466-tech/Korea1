@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-02T19:25Z
+Last updated: 2026-11-12 (T14–T17 claimed by `arena/c0528572-korea1`)
 
 ## How to use this board
 
@@ -35,6 +35,17 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
 | T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
+| T14 | Injury + depth-chart availability tracker (official NFL.com injury report, official club depth charts, starter/backup deficiency table, scheduled refresh) | **in progress** | `arena/c0528572-korea1` | `pipeline/fetch_availability.py`, `pipeline/availability.py`, `pipeline/render_decisions.py`, `data/availability/**`, `availability.html`, `.github/workflows/availability.yml`, `tests/test_availability.py` |
+| T15 | Suggestions register (options to review and choose before any change is implemented) | **in progress** | `arena/c0528572-korea1` | `data/decisions/suggestions.csv`, `suggestions.html` |
+| T16 | Open-questions register (what is known, what is missing, how to discover it) | **in progress** | `arena/c0528572-korea1` | `data/decisions/questions.csv`, `questions.html` |
+| T17 | Repo re-review (2026-11-12), executive-summary refresh, **final integration + publish** for T14–T16 (nav, index, flagged, PR, merge, Pages) | **in progress** | `arena/c0528572-korea1` | `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py`, `pipeline/render_summary.py`, `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile`, `.github/workflows/verify.yml`, `*.html` |
+
+**2026-11-12 claim — `arena/c0528572-korea1`.** Board read first: every earlier task is `done` and merged
+(PRs #20/#21); the two rows still printed as `in progress` (T8, T11) are stale labels from sessions whose
+work was merged on 2026-11-01/02 — they are left as written by their owners and noted here rather than
+edited. Open PR #19 (`arena/5b3f0799-korea1`) has had no commits since 2026-11-02 and is not touched.
+The Arena platform pins this session to branch `arena/c0528572-korea1`, so that is the task *and*
+integration branch (same convention every earlier session recorded).
 
 **Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
 board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while
