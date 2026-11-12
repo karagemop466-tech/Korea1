@@ -1,0 +1,34 @@
+name: Official source monitor
+
+on:
+  schedule:
+    - cron: '17 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: official-source-monitor
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect official responses without promoting lineup facts
+        run: python pipeline/monitor_official.py
+      - name: Retain source responses and explicit failure manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-source-snapshots-${{ github.run_id }}
+          path: .cache/official-monitor/
+          retention-days: 30
+          include-hidden-files: true
+          if-no-files-found: error
