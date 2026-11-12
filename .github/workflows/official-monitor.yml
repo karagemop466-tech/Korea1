@@ -1,6 +1,12 @@
 name: Official source monitor
 
 on:
+  push:
+    branches: [main, 'arena/**']
+    paths:
+      - '.github/workflows/official-monitor.yml'
+      - 'pipeline/monitor_official.py'
+      - 'research/decision-register.json'
   schedule:
     - cron: '17 11 * * *'
   workflow_dispatch:

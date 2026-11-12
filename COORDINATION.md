@@ -1093,3 +1093,17 @@ N1 checkpoint correction: the canonical verifier totals **570** table rows, not 
 changed outputs; `tests/check_rebuild.py` passed with zero drift. PR opened:
 <https://github.com/karagemop466-tech/Korea1/pull/22>. Archive upload explicitly includes hidden
 paths because its output root is `.cache/`; this avoids losing the failure manifest in Actions.
+
+### N1 PR merge and collection-trigger repair
+
+PR [#22](https://github.com/karagemop466-tech/Korea1/pull/22) **MERGED** at
+2026-11-12T13:08:55Z, commit `9c9caf90f386cea0466b2a2afa4d4d7132c110e4`.
+Both push and PR `verify` checks passed (runs 43224110910 / 43224120272; current PR check 2m8s).
+Pages build 1363212449 started for that exact merge SHA; final built status is checked below.
+
+An immediate `gh workflow run official-monitor.yml --ref main` was denied with HTTP 403
+`Resource not accessible by integration` (dispatch permission, not a missing credential).
+No secret was requested or changed. Added a path-limited **push** trigger for monitor code,
+workflow and source-register changes, so collection can test automatically on the assigned branch
+without dispatch permission. Daily schedule remains; documentation-only updates do not re-collect.
+This is an operational trigger repair, not an approval of the proposed model/data expansions.
