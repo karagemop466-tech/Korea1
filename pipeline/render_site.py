@@ -33,22 +33,29 @@ URL_GAMES = BASE + "games.csv"
 GENERATED = SRC["generated_utc"]
 
 NAV = [
+    ("__group__", "Dashboard & decisions"),
     ("index.html", "Dashboard"),
     ("executive-summary.html", "Executive summary"),
+    ("questions.html", "Q&A & gaps"),
+    ("decisions.html", "Decision register"),
+    ("suggestions.html", "Suggestions"),
+    ("__group__", "Lines & availability"),
     ("lines.html", "Originated lines"),
     ("injuries.html", "Injuries & depth"),
+    ("lineups.html", "Lineup evidence"),
+    ("__group__", "Strategy competition"),
     ("strategies.html", "Leaderboard"),
     ("validation.html", "Validation gates"),
-    ("correlations.html", "Correlations"),
+    ("correlations.html", "Correlations & parlays"),
     ("props.html", "Player props"),
-    ("questions.html", "Q&A & gaps"),
-    ("suggestions.html", "Suggestions"),
+    ("__group__", "Evidence"),
     ("methodology.html", "Methodology"),
     ("requirements.html", "Requirements"),
-    ("flagged.html", "Flagged for review"),
-    ("sources.html", "Sources"),
+    ("sources.html", "Sources & downloads"),
     ("audit.html", "Independent audit"),
     ("verification.html", "Reproducibility"),
+    ("flagged.html", "Flagged for review"),
+    ("__group__", "Replication annex"),
     ("lab/index.html", "Replication annex"),
 ]
 
@@ -56,13 +63,30 @@ OFFICIAL = {
     "NFL scores": "https://www.nfl.com/scores/",
     "NFL rules": "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook",
     "NFL injuries": "https://www.nfl.com/injuries/",
+    "NFL injury report (2026 week 10)": "https://www.nfl.com/injuries/league/2026/reg10",
     "NFL schedule": "https://www.nfl.com/schedules/",
+    "NFL team roster (Arizona Cardinals)": "https://www.nfl.com/teams/arizona-cardinals/roster",
     "White (2000), Econometric Society": "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping",
     "Bailey & López de Prado (2014), publisher": "https://www.pm-research.com/content/iijpormgmt/40/5/94",
     "Benjamini & Hochberg (1995), university record": "https://cris.tau.ac.il/en/publications/controlling-the-false-discovery-rate-a-practical-and-powerful-app-2/",
     "Politis & Romano (1994), publisher": "https://www.tandfonline.com/doi/abs/10.1080/01621459.1994.10476870",
     "FanDuel push settlement rules": "https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push",
     "GitHub Pages documentation": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages",
+}
+
+OFFICIAL_TYPES = {
+    "NFL scores": "NFL",
+    "NFL rules": "NFL",
+    "NFL injuries": "NFL",
+    "NFL injury report (2026 week 10)": "NFL",
+    "NFL schedule": "NFL",
+    "NFL team roster (Arizona Cardinals)": "NFL",
+    "White (2000), Econometric Society": "Primary paper",
+    "Bailey & López de Prado (2014), publisher": "Primary paper",
+    "Benjamini & Hochberg (1995), university record": "University paper record",
+    "Politis & Romano (1994), publisher": "Primary paper",
+    "FanDuel push settlement rules": "Operator",
+    "GitHub Pages documentation": "Platform",
 }
 
 BLANK = '<span class="blank" aria-label="blank: unverified"></span>'
@@ -98,6 +122,7 @@ def research_source(context: str = "NFL scores") -> str:
 
 def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = False) -> str:
     nav = "".join(
+        f'<span class="navgroup">{e(t)}</span>' if s.startswith("__") else
         f'<a class="navlink{" active" if s == slug else ""}" href="{s}">{e(t)}</a>'
         for s, t in NAV
     )
@@ -250,8 +275,10 @@ it reflects missing executable sportsbook timestamps and failed multiplicity/pro
 </section>
 <section><h2>Explore the workspace</h2><div class="cards smallcards">
 <a class="minicard" href="injuries.html"><strong>Injuries &amp; 1st–4th depth</strong><span>Week 10 O/D deficiency matrix, 5 stale nfldata QBs caught, plus historical QB &amp; PBP absence research.</span></a>
+<a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Verbatim official club chart cells and Week 10 starter/replacement register.</span></a>
 <a class="minicard" href="lines.html"><strong>Originated lines</strong><span>Market-blind Elo, rolling matchup &amp; ridge models plus all 136 scheduled 2026 games.</span></a>
-<a class="minicard" href="questions.html"><strong>Pre-decision Q&amp;A &amp; gaps</strong><span>Known vs. unknown inventory, 14 grounded Q&amp;As and missing-data discovery plan.</span></a>
+<a class="minicard" href="questions.html"><strong>Pre-decision Q&amp;A &amp; gaps</strong><span>Known vs. unknown inventory, grounded Q&amp;As and missing-data discovery plan.</span></a>
+<a class="minicard" href="decisions.html"><strong>Decision register</strong><span>Readiness Q&amp;A gate with recorded DECISIONS.md status and reversal conditions.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Improvement suggestions</strong><span>Concrete Option A/B/C tracks marked Proposed — awaiting selection before changing models.</span></a>
 <a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, Holm FWER, provisional DSR, cost stress and redundancy checks.</span></a>
 <a class="minicard" href="correlations.html"><strong>Correlations &amp; parlays</strong><span>Same-game dependence, slate intervals, push rules and joint probability limits.</span></a>
@@ -478,6 +505,16 @@ Five upcoming <code>nfldata</code> QB fields are stale; <code>HOU</code> depth r
 {table(hpbp_rows, ["Unit", "Prior-3-game role absence proxy (2019–2022 PBP)", "Team-games", "Share", "Delta pts vs prior 3", "Delta yds vs prior 3", "Scope", "Official reference"], caption="Historical 2019–2022 PBP offensive & defensive starter-absence diagnostics (research estimate)")}
 <p><a href="assets/data/injury_week10_report.csv">Download Week 10 player-depth CSV</a> · <a href="assets/data/injury_deficiency_summary.csv">Unit summary CSV</a> · <a href="assets/data/injury_qb_audit_w10.csv">QB audit CSV</a> · <a href="assets/data/injury_historical_qb.csv">Historical QB CSV</a> · <a href="assets/data/injury_historical_pbp.csv">Historical PBP absence CSV</a></p>
 </section>"""
+    import render_decisions as rd
+    rd_inner = rd.build_injuries(d).split("</p>", 1)[1].rsplit("<footer>", 1)[0]
+    if "Evidence boundary:" in rd_inner:
+        rd_inner = rd_inner.split("</div>", 1)[1]
+    body += (
+        '<section><div class="flag info"><strong>Preserved PR #25 availability register &amp; 2019 pilot:</strong> '
+        'The tables below preserve the earlier PR #25 register (<code>AV-*</code>, <code>CF-*</code>, <code>SIG-*</code>) '
+        'and the 2019 Week 5 historical pilot verbatim; T14 refreshed Week 10 27/28 club coverage above takes precedence.</div></section>'
+        + rd_inner
+    )
     return layout("injuries.html", "Injuries & O/D depth deficiencies", "Week 10 2026 official injuries & 1st–4th string club depth charts plus historical starter-absence research.", body, wide=True)
 
 
@@ -641,20 +678,20 @@ def build_questions(d: dict) -> str:
     ]
 
     qas = [
-        ["Q01", "Should any betting strategy receive capital or leaderboard awards today?", "No. 0 of 18 canonical strategies pass all 8 gates (White p = 0.463 over 476 weeks); executable quote provenance (G1) and multiplicity (G4/G5) fail.", "Gate G1–G8 & White (2000)", official("White (2000), Econometric Society")],
-        ["Q02", "Can our originated spreads or totals outperform the market today?", "Not in current form. Market spread MAE (10.214) beats our market-blind ensemble (10.522) by 0.308 pts because our model ignores starting QBs and injuries.", "lines.html & model_metrics.csv", official("NFL scores")],
-        ["Q03", "How severe is omitting starter QB & injury depth from the current line model?", "Severe on affected weeks: in 2006–2026 no-lookahead checks, QB-change games (18.7% of slate) suffer +0.678 MAE penalty (+1.036 on home QB swaps).", "injury_historical_qb.csv", official("NFL injuries")],
-        ["Q04", "Why did refreshing data from Week 7 to Week 9 change White's p from 0.186 to 0.463?", "Adding 28 settled Week 8–9 games trimmed the best candidate's weekly Sharpe and raised bootstrap p cleanly into noise territory — confirming why small sample peaks cannot be trusted.", "reality_check.json", official("White (2000), Econometric Society")],
-        ["Q05", "Can we trust nfldata's upcoming Week 10 QB names automatically?", "No. 5 of 28 active Week 10 slots (MIN, MIA, ARI, SEA, BAL) already contain stale QBs in nfldata vs official IR/trades and club depth charts.", "injury_qb_audit_w10.csv", official("NFL injuries")],
-        ["Q06", "Why are HOU's 1st–4th string depth strings blank on injuries.html?", "houstontexans.com/team/depth-chart serves a raster graphic rather than HTML text. Zero-inference rules forbid guessing or pulling from unverified sites.", "week10_2026_clubs.csv", src_link("https://www.houstontexans.com/team/depth-chart", "HOU depth chart")],
-        ["Q07", "Why do prop combos show strong correlation yet fail validation?", "2019–2022 PBP proves real dependence (e.g., QB pass yds ↔ WR1 rec yds lift 1.136), but without actual sportsbook SGP/prop prices we cannot compute EV or pass G6.", "prop_combos.csv & prop_inputs.csv", official("FanDuel push settlement rules")],
-        ["Q08", "Are weather angles like WIND_UNDER (+9.15% research ROI) usable?", "No. WIND_UNDER carries Holm p = 1.0, provisional DSR 0.110, lacks pre-kickoff weather forecast timestamp provenance, and weather is excluded from default model inputs.", "strategy_gates.csv", official("NFL scores")],
-        ["Q09", "Could future information still be leaking anywhere in our pipeline?", "Checked and blocked by automated tests (test_no_lookahead.py, test_weather_fold.py, test_future_lines.py): chronological state updates, season-prior ridge fits, simultaneous parlay slates.", "leakage_checks.csv", official("NFL scores")],
-        ["Q10", "Why do games.csv and closing_lines.csv disagree on 4,782 rows?", "Different upstream market snapshots inside community nflverse files plus 3 confirmed 2015 closing_lines outcome errors verified against NFL.com Game Center.", "settlement_crosscheck.csv", official("NFL.com Game Center", "https://www.nfl.com/games/cardinals-at-steelers-2015-reg-6") if False else official("NFL scores")],
-        ["Q11", "Why did our research PBP absence proxy focus on 2019–2022 instead of 2026?", "Those 4 regular seasons (188,018 plays) are hash-pinned inside GitHub; 2023–2026 release assets sit on egress-blocked release-assets.githubusercontent.com.", "data/sources_pbp.json", official("NFL injuries")],
-        ["Q12", "Is the historical 2011–2021 annex under lab/ consistent with our main findings?", "Yes. Independent replication on SBR odds also finds 0 validated profitable strategies after bias and selection checks.", "lab/index.html", official("White (2000), Econometric Society")],
-        ["Q13", "What decision should the owner make before implementing any Suggestion?", "Choose primary mission: (1) Live line-origination tool enhanced with verified QB/injury adjustments, OR (2) Prospective regulated-odds betting research — and set budget/data policy.", "suggestions.html", official("GitHub Pages documentation")],
-        ["Q14", "Do any suggestions on suggestions.html alter models automatically today?", "No. Every option is labelled Proposed — awaiting selection so no unreviewed model change, heuristic weight, or unverified source enters production.", "suggestions.html", official("GitHub Pages documentation")],
+        ["T14-Q01", "Should any betting strategy receive capital or leaderboard awards today?", "No. 0 of 18 canonical strategies pass all 8 gates (White p = 0.463 over 476 weeks); executable quote provenance (G1) and multiplicity (G4/G5) fail.", "Gate G1–G8 & White (2000)", official("White (2000), Econometric Society")],
+        ["T14-Q02", "Can our originated spreads or totals outperform the market today?", "Not in current form. Market spread MAE (10.214) beats our market-blind ensemble (10.522) by 0.308 pts because our model ignores starting QBs and injuries.", "lines.html & model_metrics.csv", official("NFL scores")],
+        ["T14-Q03", "How severe is omitting starter QB & injury depth from the current line model?", "Severe on affected weeks: in 2006–2026 no-lookahead checks, QB-change games (18.7% of slate) suffer +0.678 MAE penalty (+1.036 on home QB swaps).", "injury_historical_qb.csv", official("NFL injuries")],
+        ["T14-Q04", "Why did refreshing data from Week 7 to Week 9 change White's p from 0.186 to 0.463?", "Adding 28 settled Week 8–9 games trimmed the best candidate's weekly Sharpe and raised bootstrap p cleanly into noise territory — confirming why small sample peaks cannot be trusted.", "reality_check.json", official("White (2000), Econometric Society")],
+        ["T14-Q05", "Can we trust nfldata's upcoming Week 10 QB names automatically?", "No. 5 of 28 active Week 10 slots (MIN, MIA, ARI, SEA, BAL) already contain stale QBs in nfldata vs official IR/trades and club depth charts.", "injury_qb_audit_w10.csv", official("NFL injuries")],
+        ["T14-Q06", "Why are HOU's 1st–4th string depth strings blank on injuries.html?", "houstontexans.com/team/depth-chart serves a raster graphic rather than HTML text. Zero-inference rules forbid guessing or pulling from unverified sites.", "week10_2026_clubs.csv", src_link("https://www.houstontexans.com/team/depth-chart", "HOU depth chart")],
+        ["T14-Q07", "Why do prop combos show strong correlation yet fail validation?", "2019–2022 PBP proves real dependence (e.g., QB pass yds ↔ WR1 rec yds lift 1.136), but without actual sportsbook SGP/prop prices we cannot compute EV or pass G6.", "prop_combos.csv & prop_inputs.csv", official("FanDuel push settlement rules")],
+        ["T14-Q08", "Are weather angles like WIND_UNDER (+9.15% research ROI) usable?", "No. WIND_UNDER carries Holm p = 1.0, provisional DSR 0.110, lacks pre-kickoff weather forecast timestamp provenance, and weather is excluded from default model inputs.", "strategy_gates.csv", official("NFL scores")],
+        ["T14-Q09", "Could future information still be leaking anywhere in our pipeline?", "Checked and blocked by automated tests (test_no_lookahead.py, test_weather_fold.py, test_future_lines.py): chronological state updates, season-prior ridge fits, simultaneous parlay slates.", "leakage_checks.csv", official("NFL scores")],
+        ["T14-Q10", "Why do games.csv and closing_lines.csv disagree on 4,782 rows?", "Different upstream market snapshots inside community nflverse files plus 3 confirmed 2015 closing_lines outcome errors verified against NFL.com Game Center.", "settlement_crosscheck.csv", official("NFL scores")],
+        ["T14-Q11", "Why did our research PBP absence proxy focus on 2019–2022 instead of 2026?", "Those 4 regular seasons (188,018 plays) are hash-pinned inside GitHub; 2023–2026 release assets sit on egress-blocked release-assets.githubusercontent.com.", "data/sources_pbp.json", official("NFL injuries")],
+        ["T14-Q12", "Is the historical 2011–2021 annex under lab/ consistent with our main findings?", "Yes. Independent replication on SBR odds also finds 0 validated profitable strategies after bias and selection checks.", "lab/index.html", official("White (2000), Econometric Society")],
+        ["T14-Q13", "What decision should the owner make before implementing any Suggestion?", "Choose primary mission: (1) Live line-origination tool enhanced with verified QB/injury adjustments, OR (2) Prospective regulated-odds betting research — and set budget/data policy.", "suggestions.html", official("GitHub Pages documentation")],
+        ["T14-Q14", "Do any suggestions on suggestions.html alter models automatically today?", "No. Every option is labelled Proposed — awaiting selection so no unreviewed model change, heuristic weight, or unverified source enters production.", "suggestions.html", official("GitHub Pages documentation")],
     ]
 
     discovery = [
@@ -679,6 +716,16 @@ def build_questions(d: dict) -> str:
 {table(discovery, ["Missing evidence", "Decision impact", "Concrete discovery method", "Acceptance verification rule", "Official reference"], caption="Actionable discovery roadmap for blocked evidence")}
 <p><a class="btn primary" href="suggestions.html">Review concrete Option A/B/C suggestions →</a></p>
 </section>"""
+    import render_decisions as rd
+    rd_inner = rd.build_questions(d).split("</p>", 1)[1].rsplit("<footer>", 1)[0]
+    if "Evidence boundary:" in rd_inner:
+        rd_inner = rd_inner.split("</div>", 1)[1]
+    body += (
+        '<section><div class="flag info"><strong>Preserved PR #25 pre-decision register (Q01–Q40):</strong> '
+        'The 40-question register below preserves the PR #25 gate table (<code>questions.csv</code>, pre-refresh <code>a270278</code> snapshot); '
+        'T14 refreshed findings above (<code>9654533e</code>, 59/59 score audit, 27/28 Week 10 club depth charts) reflect current repository state.</div></section>'
+        + rd_inner
+    )
     return layout("questions.html", "Pre-decision Q&A & missing gaps", "What we know for certain, what remains unknown, and exact legal steps to resolve each gap.", body, wide=True)
 
 
@@ -765,6 +812,15 @@ def build_suggestions(d: dict) -> str:
 {table(summary_rows, ["Track", "Candidate option", "Review status", "Reference"], caption="All proposed improvements awaiting owner selection")}
 </section>
 {''.join(sections_html)}"""
+    import render_decisions as rd
+    rd_inner = rd.build_suggestions(d).split("</p>", 1)[1].rsplit("<footer>", 1)[0]
+    if "Evidence boundary:" in rd_inner:
+        rd_inner = rd_inner.split("</div>", 1)[1]
+    body += (
+        '<section><div class="flag info"><strong>Preserved PR #25 review-before-implement register (S01–S20):</strong> '
+        'Preserved below with decision paths, worksheet, and change-control rules (<code>suggestions.csv</code>).</div></section>'
+        + rd_inner
+    )
     return layout("suggestions.html", "Improvement suggestions", "Concrete Option A/B/C paths with pros, cons and prerequisites — proposed only, awaiting selection.", body, wide=True)
 
 
@@ -815,7 +871,7 @@ def build_flagged(d: dict) -> str:
         ["F-15", "Medium · open", "Historical weekly 1st–4th string depth charts and T-90m pregame inactive feeds are missing; historical O/D absence research remains labelled Research Estimate.", official("NFL injuries")],
         ["F-16", "Medium · repaired", "Repaired missing CSS classes (hero, filters, blank, tabs, skip-link), FEATURE_DICT weather-missing scope, prop_inputs.csv PBP availability, single-source requirements.csv, and audit.py claim mismatches.", official("GitHub Pages documentation")],
     ]
-    body = f"""{notice()}<section><h2>Open evidence gaps and repaired irregularities</h2>
+    body = f"""{notice()}<section id="decision-gaps"><h2>Open evidence gaps and repaired irregularities</h2>
 <p>Open items do not block publishing an honest research dashboard; they block claiming a verified betting edge or awarding prizes.</p>
 <div class="table-tools"><label>Search findings <input class="filter" type="search" placeholder="Search HOU, QB, weather, prop, CSS…"></label><span class="small">{len(new)} register rows</span></div>
 {table(new, ["ID", "Severity / state", "Finding and disposition", "Source"], caption="Final integration audit & Week 10 review register")}
@@ -827,8 +883,8 @@ def build_flagged(d: dict) -> str:
 
 def build_sources(d: dict) -> str:
     files = [[e(f["logical"]), f["bytes"], e(f["sha256"][:16]), "Hash match; community source", official("GitHub Pages documentation") + " · " + src_link(f["url"], "Pinned publisher file")] for f in SRC["files"]]
-    refs = [[e(name), kind, "Read and verified for stated scope", src_link(url, "Official / primary source")]
-            for (name, url), kind in zip(OFFICIAL.items(), ["NFL", "NFL", "NFL", "NFL", "Primary paper", "Primary paper", "University paper record", "Primary paper", "Operator", "Platform"])]
+    refs = [[e(name), OFFICIAL_TYPES.get(name, "NFL"), "Read and verified for stated scope", src_link(url, "Official / primary source")]
+            for name, url in OFFICIAL.items()]
     club_rows = [[e(r.team), e(r.game_id), e(r.depth_status), e(r.note), src_link(r.depth_chart_url, f"{r.team} official depth chart") + " · " + official("NFL injuries")] for r in d["official_clubs"].itertuples()]
 
     body = f"""{notice()}<section><h2>Source hierarchy</h2><ol class="findings">
@@ -951,6 +1007,7 @@ nav{display:flex;gap:4px;flex-wrap:wrap}
 .navlink{padding:5px 9px;border-radius:8px;color:var(--muted);font-size:13px;white-space:nowrap}
 .navlink:hover{background:var(--chip);text-decoration:none;color:var(--text)}
 .navlink.active{background:var(--accent);color:#04101f;font-weight:600}
+.navgroup{padding:7px 10px 4px;color:#5b709a;font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;opacity:.9}
 h1{font-size:34px;line-height:1.2;margin:30px 0 6px;letter-spacing:-.5px}
 h2{font-size:21px;margin:34px 0 10px;letter-spacing:-.2px}
 h3{font-size:15.5px;margin:0 0 6px;color:var(--text)}
@@ -1045,6 +1102,8 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:v
 
 
 def main() -> None:
+    import render_decisions as rd
+    rd.write_csvs(PROC)
     d = load()
     (SITE / "assets").mkdir(parents=True, exist_ok=True)
     (SITE / "assets" / "style.css").write_text(CSS, encoding="utf-8")

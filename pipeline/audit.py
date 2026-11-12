@@ -197,7 +197,7 @@ def audit_rebuild(src: dict, digests: pd.DataFrame) -> pd.DataFrame:
         stages = ["build_datasets.py", "models.py", "backtest.py", "validation.py",
                   "correlations.py", "props_model.py", "injuries.py",
                   "render_summary.py", "render_requirements.py", "render_site.py",
-                  "render_annex.py", "verify_site.py"]
+                  "render_readiness.py", "render_annex.py", "verify_site.py"]
         log = []
         for stage in stages:
             proc = subprocess.run([sys.executable, str(tmp / "pipeline" / stage)], cwd=tmp,

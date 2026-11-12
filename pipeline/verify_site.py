@@ -28,6 +28,7 @@ ALLOW = {
 }
 BAD = re.compile(r"(?<![\w/])(nan|NaN|None|inf|-inf)(?![\w/-])")
 
+
 class Collector(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -56,21 +57,27 @@ class Collector(HTMLParser):
             self.cur.append(("".join(self.parts).strip(),self.hrefs.copy())); self.cell=False
         if tag=="tr" and self.body and self.cur: self.rows.append(self.cur); self.cur=[]
 
+
 def official_refs(hrefs):
     return [h for h in hrefs if urlsplit(h).scheme=="https" and urlsplit(h).hostname in ALLOW]
+
 
 def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
     pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))
-    expected={"index.html","executive-summary.html","lines.html","injuries.html","strategies.html","validation.html",
-              "correlations.html","props.html","questions.html","suggestions.html","methodology.html","requirements.html","verification.html","flagged.html","sources.html","audit.html"}
+    expected={
+        "index.html", "executive-summary.html", "lines.html", "injuries.html", "lineups.html",
+        "strategies.html", "validation.html", "correlations.html", "props.html",
+        "questions.html", "suggestions.html", "decisions.html",
+        "methodology.html", "requirements.html", "verification.html",
+        "flagged.html", "sources.html", "audit.html",
+    }
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)
     for page in pages:
         raw=page.read_text(); c=Collector(); c.feed(raw)
         no_source=[]; unflagged=[]
-        # Enforce blank numeric evidence cells in strict unverified metric tables.
         import html as html_mod
         metric_header=re.compile(r"ROI|Adjusted p|Holm p|DSR|Correlation|Estimate|MAE|Brier|Paired gap|Home handicap|Home ML|Away ML|Validated ROI|Public value",re.I)
         for tm in re.finditer(r"<table\b[^>]*>(.*?)</table>",raw,re.S):
@@ -89,10 +96,6 @@ def main():
         for i,row in enumerate(c.rows,1):
             hrefs=[h for _,links in row for h in links]
             if not official_refs(hrefs): no_source.append(i)
-            text=" ".join(t for t,_ in row)
-            # Canonical strict pages: numeric cells must be explicitly verified
-            # provenance (audit/hash), or accompanied by blank + unverified.
-            # Metric-cell enforcement is performed per table above.
         broken=[]
         for href in c.links:
             u=urlsplit(href)
@@ -131,9 +134,10 @@ def main():
         failures+=not bool(ok); rows.append(dict(check=name,passed=bool(ok)))
         print(f"[{'PASS' if ok else 'FAIL'}] {name}")
     pd.DataFrame(rows).to_csv(PROC/"verification_data.csv",index=False)
-    # Publish the exact final check results, not the previous build's copy.
     for name in ["verification_report.csv", "verification_data.csv"]:
         shutil.copy2(PROC / name, ROOT / "assets" / "data" / name)
     print(f"\n{failures} failing checks")
     return 1 if failures else 0
+
+
 if __name__=="__main__": sys.exit(main())

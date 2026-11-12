@@ -15,6 +15,17 @@ betting recommendation is authorized.
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
+## Decision readiness follow-up — 2026-11-12
+
+The dedicated `decisions.html` register supplies twelve questions with current answers, missing inputs,
+discovery steps and acceptance gates. `suggestions.html` compares eight proposed paths and alternatives;
+none is approved. `lineups.html` contains seven selected official Week 10 injury-report observations
+and quoted cells from two club depth charts, retrieved 2026-11-12. Unknown injury/status fields,
+confirmed starter/replacement roles, replacement depth ranks and point impacts stay blank.
+This is not league-wide or live tracking. A daily read-only Actions monitor archives three official
+source pages without promoting collection into verified extraction or changing model inputs.
+All-club coverage, game-day role confirmation and validated player-impact signals remain blocked.
+
 ## What was delivered
 
 | Requirement | Delivery | Evidence status | Official / primary reference |
@@ -30,7 +41,7 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 | Correlations | Reproducible research estimates; strict public values blank where inputs unverified | Partial evidence | [NFL official scores](https://www.nfl.com/scores/) |
 | Luck mitigation | Weekly stationary bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
 | Official score audit | 59/59 matching games across 2026 Weeks 8–9 (29/29) and historical NFL.com samples | Verified sample | [NFL official scores](https://www.nfl.com/scores/) |
-| Dashboard & Hygiene | 16 categorized pages, completed stylesheet, strict source checks and repaired audit claims | Ready for verification | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Dashboard & Hygiene | 18 categorized pages, completed stylesheet, strict source checks and repaired audit claims | Ready for verification | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 ## Material audit & T14 findings
 

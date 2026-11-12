@@ -1,4 +1,4 @@
-"""Static link/asset checker for docs/.
+"""Static link/asset checker across all canonical root pages and lab/ annex.
 
 Verifies
   * every internal href resolves to a file that exists
@@ -15,15 +15,15 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-# Updated by the integration session arena/ea02c4fb-korea1: pipeline/render_site.py replaced the
-# original nine pages with its own ten; the list below is the page set that actually ships, plus the
-# annex pages in lab/. Every href on these pages (including the nav entry to lab/) is resolved.
-PAGES = ["index.html", "executive-summary.html", "lines.html", "injuries.html", "strategies.html", "validation.html",
-         "correlations.html", "props.html", "questions.html", "suggestions.html", "methodology.html", "requirements.html",
-         "verification.html", "flagged.html", "sources.html", "audit.html",
-         "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
-         "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
-         "lab/flagged.html"]
+PAGES = [
+    "index.html", "executive-summary.html", "lines.html", "injuries.html", "lineups.html",
+    "strategies.html", "validation.html", "correlations.html", "props.html",
+    "questions.html", "suggestions.html", "decisions.html", "methodology.html",
+    "requirements.html", "verification.html", "flagged.html", "sources.html", "audit.html",
+    "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
+    "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
+    "lab/flagged.html",
+]
 HREF = re.compile(r'href="([^"]+)"')
 ID = re.compile(r'id="([^"]+)"')
 SRC = re.compile(r'src="([^"]+)"')
@@ -41,7 +41,6 @@ def main() -> int:
                 continue
             target, _, anchor = href.partition("#")
             if target:
-                # resolve relative to the page, so sub-sites (lab/) are checked correctly
                 path = (page.parent / target).resolve()
                 if not path.exists():
                     errors.append(f"{page.name}: missing file for href {href}")

@@ -1,0 +1,476 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-11-12",
+  "snapshot_scope": "Seven selected players from the official Week 10 WAS/NYG injury report; two club charts. Not league-wide or live.",
+  "sources": {
+    "injuries": {
+      "url": "https://www.nfl.com/injuries/",
+      "label": "NFL injury report",
+      "checked_date": "2026-11-12",
+      "result": "Read successfully: 2026 Week 10; Washington / New York section only transcribed.",
+      "role": "observation"
+    },
+    "was_depth": {
+      "url": "https://www.commanders.com/team/depth-chart",
+      "label": "Commanders published depth chart",
+      "checked_date": "2026-11-12",
+      "result": "Read successfully: offense, defense and special-teams rows.",
+      "role": "observation"
+    },
+    "nyg_depth": {
+      "url": "https://www.giants.com/team/depth-chart",
+      "label": "Giants published depth chart",
+      "checked_date": "2026-11-12",
+      "result": "Read successfully: offense, defense and special-teams rows.",
+      "role": "observation"
+    },
+    "scores": {
+      "url": "https://www.nfl.com/scores/",
+      "label": "NFL scores",
+      "checked_date": null,
+      "result": "Official context only; not freshly re-audited this session.",
+      "role": "context"
+    },
+    "white": {
+      "url": "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping",
+      "label": "White: data snooping",
+      "checked_date": null,
+      "result": "Primary method context retained from prior audit; not fresh verification.",
+      "role": "context"
+    },
+    "pages": {
+      "url": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages",
+      "label": "GitHub Pages documentation",
+      "checked_date": null,
+      "result": "Official platform context, not evidence of a live deployment.",
+      "role": "context"
+    },
+    "policy_404": {
+      "url": "https://operations.nfl.com/updates/football-ops/2017-nfl-injury-report-policy/",
+      "label": "Attempted NFL policy page — 404",
+      "checked_date": "2026-11-12",
+      "result": "Retrieved an official 404 / FLAG ON THE PLAY page; not usable policy evidence.",
+      "role": "failed verification"
+    },
+    "protections_404": {
+      "url": "https://operations.nfl.com/inside-football-ops/players-legends/player-protections/",
+      "label": "Attempted NFL policy page — 404",
+      "checked_date": "2026-11-12",
+      "result": "Retrieved an official 404 / FLAG ON THE PLAY page; not usable policy evidence.",
+      "role": "failed verification"
+    }
+  },
+  "questions": [
+    {
+      "id": "Q01",
+      "category": "Decision",
+      "question": "Can any strategy receive capital or a reward now?",
+      "answer": "No. The committed gate ledger has no validated candidate; quote evidence and prospective replication are missing.",
+      "missing": "Authenticated entry/close offers, complete trial registry, untouched forward results.",
+      "discovery": "Capture operator-owned timestamped offers and prospectively log every signal, including no-bets.",
+      "gate": "All eight gates plus prospective replication; no automatic wagering.",
+      "source": "white"
+    },
+    {
+      "id": "Q02",
+      "category": "Line origination",
+      "question": "Do we have independent fair lines?",
+      "answer": "A walk-forward market-free model exists; its estimates are research outputs, not official prices.",
+      "missing": "A full official historical outcome census and uncertainty/calibration evidence.",
+      "discovery": "Reconcile game IDs and results to NFL Game Centers; evaluate paired held-out calibration without moving the test window.",
+      "gate": "Verify observations before publishing numeric claims.",
+      "source": "scores"
+    },
+    {
+      "id": "Q03",
+      "category": "Prices",
+      "question": "Were historical odds actually executable at the time?",
+      "answer": "Not established by community archive hashes.",
+      "missing": "Operator, jurisdiction, offer time, line, price, limits, status and settlement rule version.",
+      "discovery": "Obtain a permitted operator-owned quote archive; retain receipt time and raw response hashes.",
+      "gate": "Unverified prices stay blank; do not infer missing offers.",
+      "source": "scores"
+    },
+    {
+      "id": "Q04",
+      "category": "Injuries",
+      "question": "Does an injury designation establish who plays?",
+      "answer": "No. The official report supplies injury/practice/game-status fields, not a complete confirmed lineup.",
+      "missing": "Official inactive lists and pregame participation/starting announcements for each game.",
+      "discovery": "Capture NFL and club reports with observation time and publication time kept separate.",
+      "gate": "No default healthy/active label for an absent or blank field.",
+      "source": "injuries"
+    },
+    {
+      "id": "Q05",
+      "category": "Depth",
+      "question": "Is a second-, third- or fourth-string replacement confirmed?",
+      "answer": "Published club chart cells are recorded separately; a chart does not confirm a game-time promotion.",
+      "missing": "Player identity joins, effective date, explicit replacement announcement and eligible roster.",
+      "discovery": "Reconcile chart, transactions, game-day inactives and named starting announcements; quarantine conflicts.",
+      "gate": "Do not turn column order into a confirmed starter or replacement.",
+      "source": "injuries"
+    },
+    {
+      "id": "Q06",
+      "category": "Matchups",
+      "question": "Can we quantify an offensive or defensive deficiency?",
+      "answer": "No verified player-level impact estimate is supplied by an injury or chart alone.",
+      "missing": "As-of snap shares, assignment/coverage context, opponent-adjusted performance and uncertainty.",
+      "discovery": "Test position-group availability interactions versus the base model on chronological holdouts; include offensive and defensive units.",
+      "gate": "Require incremental out-of-sample value and calibration; leave point adjustment blank meanwhile.",
+      "source": "injuries"
+    },
+    {
+      "id": "Q07",
+      "category": "Correlation",
+      "question": "Which correlation is needed for a parlay or prop combo?",
+      "answer": "Continuous player-stat correlation and binary leg-win dependence are not interchangeable.",
+      "missing": "Aligned player-game observations, exact thresholds, common game context and sample uncertainty.",
+      "discovery": "Estimate both marginal and joint probabilities on held-out games; bootstrap by game/week and test regime stability.",
+      "gate": "No independent-leg product for same-game pricing without validation; missing correlations blank.",
+      "source": "scores"
+    },
+    {
+      "id": "Q08",
+      "category": "Parlays",
+      "question": "Can a positive simulated parlay ROI justify entry?",
+      "answer": "No. The current tickets are research simulations, not authenticated operator offers.",
+      "missing": "Joint quote, leg eligibility, void/push rules, offer timestamp and limits.",
+      "discovery": "Compare same-time executable singles and offered joint tickets under the specific operator rules.",
+      "gate": "Pass all gates at ticket level after costs and adverse-price stress.",
+      "source": "white"
+    },
+    {
+      "id": "Q09",
+      "category": "Player props",
+      "question": "Can player-prop combinations be priced and rewarded?",
+      "answer": "Research prop calculations exist; verified prop and joint SGP prices do not.",
+      "missing": "Official player outcomes, participation, role, exact market thresholds and offered joint prices.",
+      "discovery": "Join official player/game evidence to timestamped operator offers, including inactive and voided tickets.",
+      "gate": "No prop ROI, reward or invented joint quote from missing inputs.",
+      "source": "injuries"
+    },
+    {
+      "id": "Q10",
+      "category": "Skill",
+      "question": "Can luck be removed completely?",
+      "answer": "No. Existing block-bootstrap, multiplicity, power and stability gates reduce false discoveries; they do not eliminate randomness.",
+      "missing": "Complete exploratory search history and untouched prospective replication.",
+      "discovery": "Freeze all strategy versions, thresholds, trial count and evaluation dates before a forward paper contest.",
+      "gate": "Reward eligibility requires independent replication, not a high raw ROI rank.",
+      "source": "white"
+    },
+    {
+      "id": "Q11",
+      "category": "Operations",
+      "question": "Is this a live league-wide injury service?",
+      "answer": "No. This page is a dated two-club evidence sample; the read-only monitor archives fresh source pages separately.",
+      "missing": "All-club coverage, extraction validation, effective dates, freshness SLA and recovery procedures.",
+      "discovery": "Expand source coverage only after parser fixtures, identity reconciliation, failure alerts and review of snapshot changes.",
+      "gate": "Never label the sample current beyond its retrieval date or present collection as verified extraction.",
+      "source": "injuries"
+    },
+    {
+      "id": "Q12",
+      "category": "Governance",
+      "question": "What decisions remain for the reviewer?",
+      "answer": "Recommendations are proposed, not approved. The site is read-only and needs no data entry to inspect.",
+      "missing": "Permitted data-access terms, deployment refresh policy, contest funding and legal eligibility.",
+      "discovery": "Compare the alternatives and evidence gates in the suggestions queue; authorize implementation only after documented review.",
+      "gate": "No purchase, monetary prize, account linking or bet execution is authorized here.",
+      "source": "pages"
+    }
+  ],
+  "suggestions": [
+    {
+      "id": "S01",
+      "priority": "P0",
+      "title": "Timestamped quote provenance",
+      "questions": "Q01 Q03 Q08 Q09",
+      "recommendation": "Prefer operator-owned permitted captures over another community archive.",
+      "alternative": "A second archive is cheaper but cannot prove executable offers.",
+      "acceptance": "Validate terms, timestamps, limits and raw hashes; reject future quotes.",
+      "benefit": "Unblocks credible economic validation.",
+      "risk": "Access terms, historical coverage and permitted cost remain unknown.",
+      "source": "white",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    },
+    {
+      "id": "S02",
+      "priority": "P0",
+      "title": "League-wide injury and lineup collector",
+      "questions": "Q04 Q05 Q11",
+      "recommendation": "Expand the read-only two-club pilot into official report, transactions and inactive snapshots.",
+      "alternative": "A news aggregator offers breadth but weakens the official-source requirement.",
+      "acceptance": "Fixture-tested extraction, all-club coverage, identity joins, publication-time evidence and stale-source alerts.",
+      "benefit": "Enables documented starter/backup availability without guessing.",
+      "risk": "Pilot only; no live league-wide coverage or confirmed promotion feed.",
+      "source": "injuries",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    },
+    {
+      "id": "S03",
+      "priority": "P1",
+      "title": "Position-group replacement scenarios",
+      "questions": "Q05 Q06",
+      "recommendation": "Evaluate offensive line, QB/receiver and defensive front/secondary availability interactions as separate hypotheses.",
+      "alternative": "Use a team-level absence count as a transparent baseline, not an assumed impact.",
+      "acceptance": "Verified roles/snaps, no post-kickoff features, incremental held-out calibration and multiplicity correction.",
+      "benefit": "Tests whether backup exposure adds predictive information.",
+      "risk": "No quantified deficiency or point adjustment is currently verified.",
+      "source": "injuries",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    },
+    {
+      "id": "S04",
+      "priority": "P1",
+      "title": "Joint-outcome simulation",
+      "questions": "Q07 Q08 Q09",
+      "recommendation": "Fit a calibrated shared game/usage simulation and compare with empirical joint events.",
+      "alternative": "An independent-leg product is only a diagnostic baseline.",
+      "acceptance": "Observed marginals and joint frequencies, game-block confidence intervals, tail checks and offered joint prices.",
+      "benefit": "Avoids treating all correlated legs as independent.",
+      "risk": "Sparse prop samples and missing joint quotes may keep this research-only.",
+      "source": "scores",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    },
+    {
+      "id": "S05",
+      "priority": "P0",
+      "title": "Prospective paper competition",
+      "questions": "Q01 Q10",
+      "recommendation": "Freeze entrants, trial registry and walk-forward evaluation before an untouched paper period.",
+      "alternative": "Ranking historical raw ROI is simpler but selection-biased.",
+      "acceptance": "All gate outcomes recorded; no reward without complete provenance and independent replication.",
+      "benefit": "Separates research ranking from reward eligibility.",
+      "risk": "No funded prize pool; reward amount and eligibility remain unset.",
+      "source": "white",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    },
+    {
+      "id": "S06",
+      "priority": "P1",
+      "title": "Evidence-first decision screen",
+      "questions": "Q02 Q11 Q12",
+      "recommendation": "Keep the readiness questions, source dates, blanks and blockers adjacent to leaderboard links.",
+      "alternative": "A headline-only performance dashboard obscures missing evidence.",
+      "acceptance": "Every row linked to evidence/context; distinguish observed fact from proposal; stale snapshots visibly dated.",
+      "benefit": "Makes missing information reviewable before model changes.",
+      "risk": "This review surface is implemented; substantive model proposals remain unapproved.",
+      "source": "pages",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    },
+    {
+      "id": "S07",
+      "priority": "P1",
+      "title": "Full outcome and settlement census",
+      "questions": "Q02 Q03",
+      "recommendation": "Reconcile every model game and settlement to official Game Centers before promoting metrics.",
+      "alternative": "A small score sample detects defects but cannot certify the full archive.",
+      "acceptance": "Exact game joins, blank unknown fields, row-level links and discrepancy quarantine.",
+      "benefit": "Expands verification beyond the inherited sample.",
+      "risk": "Official source access and historical completeness are not yet established.",
+      "source": "scores",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    },
+    {
+      "id": "S08",
+      "priority": "P2",
+      "title": "Calibrated abstention and uncertainty",
+      "questions": "Q02 Q06 Q10",
+      "recommendation": "Compare uncertainty-aware no-bet rules with the existing frozen thresholds in separate forward trials.",
+      "alternative": "Increasing stake on the top raw estimate compounds estimation error.",
+      "acceptance": "Pre-register thresholds, no-bet records, calibration bins, stress tests and incremental held-out benefit.",
+      "benefit": "Tests selective participation rather than forcing a pick.",
+      "risk": "No numeric uncertainty cutoff or stake recommendation is approved.",
+      "source": "white",
+      "status": "PROPOSED — NOT APPROVED",
+      "approved_at": null
+    }
+  ],
+  "lineups": [
+    {
+      "team": "WAS",
+      "player": "Lucas Patrick",
+      "position": "C",
+      "injury": "Concussion",
+      "practice_status": "Did Not Participate In Practice",
+      "game_status": "Out",
+      "chart_source": null,
+      "published_chart_row": null,
+      "id": "L01",
+      "source": "injuries",
+      "observed_date": "2026-11-12",
+      "source_published_at": null,
+      "confirmed_starter": null,
+      "confirmed_replacement": null,
+      "replacement_depth_rank": null,
+      "impact_points": null,
+      "injury_report_row_excerpt": "Lucas Patrick | C | Concussion | Did Not Participate In Practice | Out"
+    },
+    {
+      "team": "WAS",
+      "player": "Colson Yankoff",
+      "position": "TE",
+      "injury": "Knee",
+      "practice_status": "Did Not Participate In Practice",
+      "game_status": "Out",
+      "chart_source": "was_depth",
+      "published_chart_row": "TE | John Bates | Colson Yankoff",
+      "id": "L02",
+      "source": "injuries",
+      "observed_date": "2026-11-12",
+      "source_published_at": null,
+      "confirmed_starter": null,
+      "confirmed_replacement": null,
+      "replacement_depth_rank": null,
+      "impact_points": null,
+      "injury_report_row_excerpt": "Colson Yankoff | TE | Knee | Did Not Participate In Practice | Out"
+    },
+    {
+      "team": "WAS",
+      "player": "Jayden Daniels",
+      "position": "QB",
+      "injury": null,
+      "practice_status": "Full Participation in Practice",
+      "game_status": null,
+      "chart_source": "was_depth",
+      "published_chart_row": "QB | Jayden Daniels | Marcus Mariota | Athan Kaliakmanis",
+      "id": "L03",
+      "source": "injuries",
+      "observed_date": "2026-11-12",
+      "source_published_at": null,
+      "confirmed_starter": null,
+      "confirmed_replacement": null,
+      "replacement_depth_rank": null,
+      "impact_points": null,
+      "injury_report_row_excerpt": "Jayden Daniels | QB |  | Full Participation in Practice | "
+    },
+    {
+      "team": "WAS",
+      "player": "Amik Robertson",
+      "position": "CB",
+      "injury": null,
+      "practice_status": "Limited Participation in Practice",
+      "game_status": null,
+      "chart_source": "was_depth",
+      "published_chart_row": "CB | Amik Robertson | Rasul Douglas",
+      "id": "L04",
+      "source": "injuries",
+      "observed_date": "2026-11-12",
+      "source_published_at": null,
+      "confirmed_starter": null,
+      "confirmed_replacement": null,
+      "replacement_depth_rank": null,
+      "impact_points": null,
+      "injury_report_row_excerpt": "Amik Robertson | CB |  | Limited Participation in Practice | "
+    },
+    {
+      "team": "NYG",
+      "player": "Malik Harrison",
+      "position": "LB",
+      "injury": "Groin",
+      "practice_status": "Limited Participation in Practice",
+      "game_status": "Questionable",
+      "chart_source": null,
+      "published_chart_row": null,
+      "id": "L05",
+      "source": "injuries",
+      "observed_date": "2026-11-12",
+      "source_published_at": null,
+      "confirmed_starter": null,
+      "confirmed_replacement": null,
+      "replacement_depth_rank": null,
+      "impact_points": null,
+      "injury_report_row_excerpt": "Malik Harrison | LB | Groin | Limited Participation in Practice | Questionable"
+    },
+    {
+      "team": "NYG",
+      "player": "Colton Hood",
+      "position": "CB",
+      "injury": null,
+      "practice_status": "Full Participation in Practice",
+      "game_status": null,
+      "chart_source": "nyg_depth",
+      "published_chart_row": "CB | Greg Newsome II | Colton Hood",
+      "id": "L06",
+      "source": "injuries",
+      "observed_date": "2026-11-12",
+      "source_published_at": null,
+      "confirmed_starter": null,
+      "confirmed_replacement": null,
+      "replacement_depth_rank": null,
+      "impact_points": null,
+      "injury_report_row_excerpt": "Colton Hood | CB |  | Full Participation in Practice | "
+    },
+    {
+      "team": "NYG",
+      "player": "Theo Johnson",
+      "position": "TE",
+      "injury": null,
+      "practice_status": "Full Participation in Practice",
+      "game_status": null,
+      "chart_source": "nyg_depth",
+      "published_chart_row": "TE | Isaiah Likely | Theo Johnson | Chris Manhertz | Thomas Fidone II",
+      "id": "L07",
+      "source": "injuries",
+      "observed_date": "2026-11-12",
+      "source_published_at": null,
+      "confirmed_starter": null,
+      "confirmed_replacement": null,
+      "replacement_depth_rank": null,
+      "impact_points": null,
+      "injury_report_row_excerpt": "Theo Johnson | TE |  | Full Participation in Practice | "
+    }
+  ],
+  "flags": [
+    {
+      "id": "N-01",
+      "finding": "Injury board is a seven-player, two-club dated sample, not a live or complete NFL lineup feed.",
+      "next": "Build all-club collection and validated extraction before advertising league-wide tracking.",
+      "source": "injuries"
+    },
+    {
+      "id": "N-02",
+      "finding": "Blank injury/game-status fields stay blank; neither full practice nor an absent report proves game-time participation.",
+      "next": "Capture official inactives and explicit starting announcements with effective dates.",
+      "source": "injuries"
+    },
+    {
+      "id": "N-03",
+      "finding": "Chart rows do not confirm backup promotions, depth ranks or performance deficiencies; those values are blank.",
+      "next": "Resolve identities and independently verify roles and opponent-adjusted impact before model use.",
+      "source": "injuries"
+    },
+    {
+      "id": "N-04",
+      "finding": "Existing historical score sample and statistical references were not freshly re-audited row by row this session.",
+      "next": "Retain inherited audit dates; expand official reconciliation rather than claim a complete census.",
+      "source": "scores"
+    },
+    {
+      "id": "N-05",
+      "finding": "Two attempted Football Operations policy URLs returned 404 pages, despite successful page retrieval. No policy claim uses them.",
+      "next": "Find a current official policy before relying on its timing or designation rules.",
+      "source": "injuries",
+      "attempted_sources": [
+        "policy_404",
+        "protections_404"
+      ]
+    },
+    {
+      "id": "N-06",
+      "finding": "Direct shell collection of all three official pages failed with TLS EOF on 2026-11-12. Agent page retrieval succeeded for the dated observations; automated collection success is a separate claim.",
+      "next": "Inspect the Actions monitor result and manifest. A failed collection must remain failed, never a cached live update.",
+      "source": "injuries"
+    }
+  ]
+}

@@ -6,10 +6,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline.verify_site import Collector, ROOT, official_refs
 
 PAGES = [
-    "index.html", "executive-summary.html", "lines.html", "injuries.html",
+    "index.html", "executive-summary.html", "lines.html", "injuries.html", "lineups.html",
     "strategies.html", "validation.html", "correlations.html", "props.html",
-    "questions.html", "suggestions.html", "methodology.html", "requirements.html",
-    "flagged.html", "sources.html", "audit.html", "verification.html",
+    "questions.html", "suggestions.html", "decisions.html", "methodology.html",
+    "requirements.html", "flagged.html", "sources.html", "audit.html", "verification.html",
 ]
 
 
