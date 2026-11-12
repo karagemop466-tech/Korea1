@@ -52,8 +52,10 @@ def official_refs(hrefs):
 def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
     pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))
-    expected={"decisions.html","suggestions.html","lineups.html","index.html","executive-summary.html","lines.html","strategies.html","validation.html",
-              "correlations.html","props.html","methodology.html","requirements.html","verification.html","flagged.html","sources.html","audit.html"}
+    expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
+              "correlations.html","props.html","methodology.html","requirements.html","verification.html",
+              "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
+              "lineups.html","injuries.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

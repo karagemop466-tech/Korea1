@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # annex pages in lab/. Every href on these pages (including the nav entry to lab/) is resolved.
 PAGES = ["decisions.html","suggestions.html","lineups.html","index.html", "executive-summary.html", "lines.html", "strategies.html", "validation.html",
          "correlations.html", "props.html", "methodology.html", "requirements.html", "verification.html", "flagged.html", "sources.html", "audit.html",
+         "suggestions.html", "questions.html", "injuries.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]

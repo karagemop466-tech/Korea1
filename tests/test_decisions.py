@@ -9,7 +9,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'pipeline'))
-from render_decisions import load_register, render
+from render_readiness import load_register, render
 from verify_site import Collector, official_refs
 from monitor_official import collect, validate_response
 
@@ -44,6 +44,8 @@ def test_missing_lineup_facts_stay_null():
 
 def test_generated_pages_have_sources_captions_and_blank_roles():
     pages = render(load_register())
+    assert set(pages) == {'decisions.html', 'lineups.html'}
+    assert 'Parallel suggestion register' in pages['decisions.html']
     for name, content in pages.items():
         c = Collector(); c.feed(content)
         assert c.rows and c.tables == c.captions

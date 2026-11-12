@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-02T19:25Z
+Last updated: 2026-11-12T00:00Z
 
 ## How to use this board
 
@@ -35,6 +35,10 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
 | T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
+| T14 | **Suggestions register + open-questions register** (dedicated review page so a path can be chosen before any change; every row sourced) | **done (merged in T16)** | `arena/25460478-korea1` | `pipeline/decisions.py`, `pipeline/render_decisions.py`, `suggestions.html`, `questions.html`, `data/processed/{suggestions,questions}.csv`, `tests/test_decisions.py` |
+| T15 | **Injury + lineup-availability monitor** (official injury-report capture, depth-chart availability audit, deficiency-signal register) | **done (merged in T16)** | `arena/25460478-korea1` | `pipeline/availability.py`, `pipeline/render_availability.py`, `injuries.html`, `data/processed/{availability_sources,injury_snapshot_week10,availability_signals}.csv`, `data/official_source_checks.json` |
+| T16 | **Integration for T14–T15** (nav, index cards, executive summary, requirements rows, flagged rows, verify/test wiring, PR, merge, Pages) | **done** | `arena/25460478-korea1` | `pipeline/render_site.py` (NAV, index section, exec section, requirements rows, flagged rows only), `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
+
 
 **Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
 board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while
@@ -1093,6 +1097,62 @@ N1 checkpoint correction: the canonical verifier totals **570** table rows, not 
 changed outputs; `tests/check_rebuild.py` passed with zero drift. PR opened:
 <https://github.com/karagemop466-tech/Korea1/pull/22>. Archive upload explicitly includes hidden
 paths because its output root is `.cache/`; this avoids losing the failure manifest in Actions.
+
+## 2026-11-12 — T16 integration merge — `arena/25460478-korea1` at `9c9caf9`
+
+**Claim (appended before work):** T14/T16 owner `arena/25460478-korea1` merges `origin/main` (`9c9caf9`,
+the merged PR #22 of `arena/03f66e17-korea1`) into the suggestions/questions/injury branch, resolves the
+overlapping review surface, re-verifies and deploys. Files touched: `pipeline/render_site.py` (NAV, index
+cards, executive paragraph, requirements rows, F-15 only), `pipeline/verify_site.py`, `tests/check_sources.py`,
+`Makefile`, `pipeline/readiness` → `pipeline/render_readiness.py` (rename only), `pipeline/decisions.py`,
+`pipeline/availability.py`, `pipeline/render_decisions.py`, `tests/test_decisions.py`,
+`tests/test_review_registers.py`, docs. No change to models, gates, odds or rewards.
+
+### Why a merge and not a new PR
+
+Both sessions independently built "tell me the questions, the suggestions and the injury/lineup gap".
+Pushing both unchanged would have produced two suggestion pages, two blank-role lineup pages and two
+conflicting `tests/test_decisions.py`. One page per purpose is the rule, so the merge resolves ownership:
+
+| Surface | Owner kept | What happened to the other |
+|---|---|---|
+| `suggestions.html` | `arena/25460478-korea1` (22 proposals, four paths, worksheet) | `arena/03f66e17`'s eight-proposal register is appended **on `decisions.html`** as a labelled parallel register, byte-identical content, one URL |
+| `questions.html` | `arena/25460478-korea1` (40 questions) | `arena/03f66e17`'s twelve readiness questions stay on `decisions.html` |
+| `lineups.html` / `injuries.html` | both kept, different scopes | `lineups.html` = 7 observed players + club chart cells; `injuries.html` = 12 source checks, two exact captures, ten signal specifications |
+| `pipeline/render_decisions.py` | `arena/25460478-korea1` | theirs renamed `pipeline/render_readiness.py`; only the page-assembly lines changed, register data untouched |
+| `tests/test_decisions.py` | `arena/03f66e17` (adapted to the renamed module + new page set) | local T14/T15 tests moved verbatim to `tests/test_review_registers.py` |
+| `pipeline/monitor_official.py`, `.github/workflows/official-monitor.yml`, `research/decision-register.json` | `arena/03f66e17`, untouched | — |
+
+### Evidence added in this merge (new official sources)
+
+The prior branch recorded "no verified depth chart" from `nfl.com/teams/<club>/depth-chart` (404) and
+alphabetical rosters. That negative is correct for the league site but not for the clubs. Two club charts
+were read with the page-fetch tool on 2026-11-12:
+
+- <https://www.commanders.com/team/depth-chart> — HTTP 200, ordered cells per position (e.g. QB Jayden
+  Daniels / Marcus Mariota / Athan Kaliakmanis; C Nick Allegretti / Matt Gulbin).
+- <https://www.giants.com/team/depth-chart> — HTTP 200, ordered cells (e.g. QB J.J. McCarthy / Jameis
+  Winston; C Bryan Hudson / John Michael Schmitz Jr.).
+
+Therefore `pipeline/availability.py` gains AV-11/AV-12 (12 checks: 9 verified, 3 verified-negative), Q30
+becomes **ANSWERED** with its limits stated (2 of 32 clubs, no publication time on either chart, order is
+not a confirmed game-day role), and AV-S1…AV-S3 move BLOCKED → PILOT ONLY. Nothing is promoted into the
+model: no availability signal is in the leaderboard, no player is called a confirmed replacement, and no
+depth rank is invented for a player absent from a chart (e.g. Lucas Patrick is not on the WAS chart).
+
+### Verification
+
+- `make build`: exit 0 (data, model, backtest, props, site, verify).
+- `pipeline/verify_site.py`: **0 failing checks**; 28 pages (18 canonical + 10 annex).
+- `tests/check_sources.py`: 17 canonical pages / **621 rows**, strict official/primary pass.
+- `tests/check_links.py`: 28 pages; all internal links, anchors and assets resolve; no external deps.
+- `pytest`: **46 passed** (35 local + 11 from `arena/03f66e17`, both register suites kept).
+- `tests/check_rebuild.py`: run after the merge commit; result recorded below.
+
+### Deployment record
+
+PR, merge commit, Pages build and live-page fetches are appended here after execution. Until then this
+section records only local results; no deployment is inferred.
 
 ### N1 PR merge and collection-trigger repair
 
