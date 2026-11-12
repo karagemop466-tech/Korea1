@@ -25,16 +25,24 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
-## Decision readiness follow-up — 2026-11-12
+## Decision readiness & lineup follow-up — 2026-11-12
 
-The dedicated `decisions.html` register supplies twelve questions with current answers, missing inputs,
-discovery steps and acceptance gates. `suggestions.html` compares eight proposed paths and alternatives;
-none is approved. `lineups.html` contains seven selected official Week 10 injury-report observations
-and quoted cells from two club depth charts, retrieved 2026-11-12. Unknown injury/status fields,
-confirmed starter/replacement roles, replacement depth ranks and point impacts stay blank.
-This is not league-wide or live tracking. A daily read-only Actions monitor archives three official
-source pages without promoting collection into verified extraction or changing model inputs.
-All-club coverage, game-day role confirmation and validated player-impact signals remain blocked.
+The review surface stages all proposed improvements, pre-decision questions, missing-information discovery
+protocols, and Week 10 offensive/defensive starter-vs-backup tracking **before** any model or gate rule is changed:
+- **Suggestions for review (`suggestions-review.html` & `suggestions.html`):** compares Path A (Conservative),
+  Path B (Balanced) and Path C (Full) options with an interactive browser-only path selector alongside the 22-proposal
+  register (`suggestions.html`) and 8-proposal parallel register (`decisions.html`); zero model changes are auto-applied.
+- **Pre-decision Q&A & missing-info discovery (`decision-readiness.html`, `decisions.html`, `questions.html`):**
+  separates verified knowns from missing evidence across 14 core pre-decision questions and 8 discovery protocols,
+  and reconciles all **28 post-pin Week 8 & Week 9 2026 games** verified Final on NFL.com on 2026-11-12 without
+  mutating the historical backtest pin.
+- **Offensive & defensive 1st–4th string lineup tracker (`lineup-deficiencies.html`, `lineups.html`, `injuries.html`):**
+  verifies **39 Week 10 offensive and defensive entries across 8 NFL clubs / 4 complete matchups** (`WAS @ NYG`,
+  `NE vs DET`, `KC @ ATL`, `MIN @ GB`) against `nfl.com/injuries/`, 8 official NFL club depth charts (1st through
+  4th string), and the live NFL Football Operations T-90m/T-60m Game Day Administration inactive & roof rule
+  (`operations.nfl.com`). Club "Unofficial" disclaimers, blank source cells and roster/trade lag (e.g. Kirk Cousins
+  on MIN, Micah Parsons on GB, Lucas Patrick on WAS) remain blank/flagged rather than inferred, and walk-forward
+  community-PBP backup estimates stay blank in strict public HTML tables.
 
 ## What was delivered
 

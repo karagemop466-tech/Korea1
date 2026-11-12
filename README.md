@@ -15,9 +15,12 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
-- `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
+- `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
 - `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
+- `decision-readiness.html` — 14 pre-decision Q&As, 8 missing-info discovery blueprints and all 28 post-pin settled Week 8–9 NFL.com scores
+- `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
 - `questions.html` — what must be known before a decision, what is answered and what is blocked
+- `lineup-deficiencies.html` — 39 verified Week 10 offensive & defensive 1st–4th string entries across 8 NFL clubs (`WAS`, `NYG`, `NE`, `DET`, `KC`, `ATL`, `MIN`, `GB`), NFL Operations T-90m countdown rules, and prefix-safe PBP backup diagnostics
 - `lineups.html` — seven observed players plus two club depth charts; roles and impacts blank
 - `injuries.html` — verified official captures, the coverage gap and the availability signal register
 - `requirements.html` — requirement-by-requirement delivery register

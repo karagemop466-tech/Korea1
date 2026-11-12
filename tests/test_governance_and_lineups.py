@@ -113,6 +113,16 @@ def test_post_pin_settled_scores_reconcile_against_upcoming_snapshot():
         assert r.nfl_com_url.startswith("https://www.nfl.com/games/")
 
 
+def test_eight_club_allowlist_accepts_official_domains_and_rejects_lookalikes():
+    for host in (
+        "www.commanders.com", "www.giants.com", "www.patriots.com", "www.detroitlions.com",
+        "www.chiefs.com", "www.atlantafalcons.com", "www.vikings.com", "www.packers.com",
+    ):
+        assert official_refs([f"https://{host}/team/depth-chart"])
+        assert not official_refs([f"https://{host}.lookalike.org/team/depth-chart"])
+        assert not official_refs([f"http://{host}/team/depth-chart"])
+
+
 def test_rendered_governance_pages_pass_strict_source_and_blank_rules():
     for name in ("suggestions-review.html", "decision-readiness.html", "lineup-deficiencies.html"):
         p = ROOT / name

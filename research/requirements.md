@@ -22,10 +22,11 @@ Final integration owner: `arena/ed58af62-korea1`. Updated 2026-11-02.
 | R16 | Unconfirmable values blank and flagged | Strict public metric cells blank; explicit UNVERIFIED labels; research downloads segregated | Enforced |
 | R17 | Coordinate parallel work | Claims, scopes, conflict log, pinned session branch, final integration ownership | Implemented |
 | R18 | PR, merge, deploy and verify live site | Final PR and Pages API/live-page record in `COORDINATION.md` | Recorded after execution, never inferred |
-| R19 | Dedicated suggestions section, reviewed before changes | `suggestions.html`: 22 proposals with cost, risk, dependencies, four paths and a change-control workflow; `decisions.html` adds the parallel 8-proposal register; CSVs published | Implemented, nothing approved |
-| R20 | Questions, information and answers needed before a decision | `questions.html`: 40 questions (28 answered, 2 open, 8 blocked, 2 for decision); answered rows cite a source, blocked rows are blank with a closure test; `decisions.html`: 12 readiness questions | Implemented |
-| R21 | Injuries and lineup deficiencies (starters vs backups) | `injuries.html`: 12 official sources checked, two games captured exactly (2026 wk10: 20 rows; 2019 wk5: 11), ten-signal register; `lineups.html`: 7 observed players + ordered cells from 2 club charts | PARTIAL — order only: 2 of 32 clubs, no chart publication time, no confirmed game-day role |
-| R22 | Dated decision log | `DECISIONS.md`, linked from the suggestions page | Implemented |
+| R19 | Dedicated suggestions section, reviewed before changes | `suggestions-review.html` (12 staged proposals with Path A/B/C interactive selector) + `suggestions.html` (22 proposals, four paths) + `decisions.html` (parallel 8-proposal register); CSVs published | Implemented, nothing approved |
+| R20 | Questions, information and answers needed before a decision | `decision-readiness.html` (14 Q&As + 8 missing-info discovery blueprints) + `questions.html` (40 questions) + `decisions.html` (12 readiness questions) | Implemented |
+| R21 | Injuries and lineup deficiencies (starters vs backups) | `lineup-deficiencies.html` (39 Week 10 offensive & defensive 1st–4th string entries across 8 clubs / 4 matchups + prefix-safe PBP backup diagnostics) + `injuries.html` + `lineups.html` | Expanded — 8 of 32 clubs verified; club disclaimers & roster lag flagged; no confirmed game-day snap counts |
+| R22 | Dated decision log | `DECISIONS.md`, linked from the suggestions pages | Implemented |
+| R23 | Post-pin Week 8–9 official score census & T-90m countdown verification | `decision-readiness.html` reconciles all 28 settled Week 8–9 NFL.com Final scores; `lineup-deficiencies.html` verifies NFL Operations T-90m/T-60m pregame inactive & roof rule | Implemented |
 
 ## Evidence policy
 
