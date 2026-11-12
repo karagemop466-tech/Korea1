@@ -22,6 +22,10 @@ Final integration owner: `arena/ed58af62-korea1`. Updated 2026-11-02.
 | R16 | Unconfirmable values blank and flagged | Strict public metric cells blank; explicit UNVERIFIED labels; research downloads segregated | Enforced |
 | R17 | Coordinate parallel work | Claims, scopes, conflict log, pinned session branch, final integration ownership | Implemented |
 | R18 | PR, merge, deploy and verify live site | Final PR and Pages API/live-page record in `COORDINATION.md` | Recorded after execution, never inferred |
+| R19 | Dedicated suggestions section, reviewed before changes | `suggestions.html`: 22 proposals with cost, risk, dependencies, four paths and a change-control workflow; `suggestions.csv` | Implemented |
+| R20 | Questions, information and answers needed before a decision | `questions.html`: 40 questions; answered rows cite a source, blocked rows are blank with a closure test; `questions.csv` | Implemented |
+| R21 | Injuries and lineup deficiencies (starters vs backups) | `injuries.html`: official injury feed verified, two games captured exactly, eight-signal register | PARTIAL — depth classification blocked (no verified depth chart) |
+| R22 | Dated decision log | `DECISIONS.md`, linked from the suggestions page | Implemented |
 
 ## Evidence policy
 

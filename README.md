@@ -15,7 +15,11 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
+- `suggestions.html` — every proposed change with cost, risk, dependencies and four decision paths
+- `questions.html` — what must be known before a decision, what is answered and what is blocked
+- `injuries.html` — verified official injury captures, the depth-chart gap and the signal register
 - `requirements.html` — requirement-by-requirement delivery register
+- `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
 
 The publication source is **`main` / repository root**, not `docs/`.
@@ -54,6 +58,7 @@ key-number pricing claims, and permissive source checking. See `audit/REPORT.md`
 ## Coordination and deployment
 
 Read `COORDINATION.md` before editing. This Arena session is pinned to
-`arena/ed58af62-korea1`; the final PR, merge and deployment record are appended there.
+`arena/25460478-korea1`; that session's claim, sources, verification and PR/merge/deploy record are
+appended there.
 
 Research and education only. No guaranteed returns, betting recommendations or funded prize pool.
