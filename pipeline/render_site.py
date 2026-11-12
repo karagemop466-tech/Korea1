@@ -23,6 +23,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
 from render_audit import build_audit, irregularity_rows  # noqa: E402
+from render_registers import build_injuries, build_questions, build_suggestions  # noqa: E402
 
 # GitHub Pages for this repository is a branch build of `main` / `/` (the repo root),
 # and the API token in this environment is not permitted to change that. The site is
@@ -55,6 +56,9 @@ NAV = [
     ("decisions.html", "Decision readiness"),
     ("suggestions.html", "Suggestions"),
     ("lineups.html", "Injuries & lineups"),
+    ("injuries.html", "Injury register"),
+    ("questions.html", "Open questions"),
+    ("decision-paths.html", "Decision paths"),
     ("flagged.html", "Flagged for review"),
     ("sources.html", "Sources"),
     ("audit.html", "Independent audit"),
@@ -229,6 +233,9 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, multiplicity, costs and replication.</span></a>
 <a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
 <a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
+<a class="minicard" href="injuries.html"><strong>Injury register</strong><span>61 official rows joined to six club depth charts; starters, backups and gaps.</span></a>
+<a class="minicard" href="questions.html"><strong>Open questions</strong><span>Fifteen questions, the information inventory and how to find what is missing.</span></a>
+<a class="minicard" href="decision-paths.html"><strong>Decision paths</strong><span>Thirteen proposals, three funding paths and a decision log.</span></a>
 <a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
 </div></section>
@@ -508,6 +515,15 @@ def build_flagged(d):
         ["F-10", "Medium · repaired", "A normal continuity correction was described as correctly pricing NFL key numbers. The model now uses prior out-of-fold empirical residuals; predictive calibration remains unverified.", official("NFL scores")],
         ["F-11", "Medium · open", "Historical annex estimates use different archives and older code. They are retained for replication, not promoted to current verified findings.", official("NFL scores")],
         ["F-12", "Medium · repaired", "The old road-favourite comment contradicted its selection. The documented sign convention and selected side are now covered by a regression test.", official("NFL scores")],
+        ["F-13", "High · repaired 2026-11-12", "The published pin was 2026-11-02, so the 'upcoming' line board still contained games that had already been played. This session re-pinned to the current upstream commit, rebuilt every artefact and re-verified. The weekly cadence itself is still missing (suggestion S01).", official("NFL schedule")],
+        ["F-14", "High · open", "Injury and lineup tracking was listed as a requirement but no data existed before this session. A 6-club Week 10 pilot is now published; 26 of 32 clubs remain uncovered and no league-wide claim is made.", official("NFL injuries")],
+        ["F-15", "High · open", "Starter and backup roles rest on club-published depth charts. New England, Detroit and Kansas City label theirs UNOFFICIAL. No official pre-kickoff inactives or snap counts are archived yet, so a role is a projection, not an observation.", official("NFL scores")],
+        ["F-16", "Medium · open", "The official pages were read with the agent's page-fetch tool and transcribed into CSV. The SHA-256 pins prove the transcription is unchanged, not that it is byte-identical to the rendered page. A byte-exact crawl is still required for archival use (question Q15).", official("NFL injuries")],
+        ["F-17", "Medium · open", "The shared task board listed two integration tasks as 'in progress' with no commits since 2026-11-02. They were taken over under the board's own 60-minute rule and the takeover is logged; the stale rows were left in place rather than rewritten.", official("GitHub Pages documentation")],
+        ["F-18", "Medium · repaired", "README.md named the previous session as the pinned one and did not list the new pages. Corrected in this session.", official("GitHub Pages documentation")],
+        ["F-19", "Medium · repaired", "pipeline/executive_summary_addendum.md was not referenced by any renderer and carried pre-refresh figures (reality-check p = 0.186 against the current 0.463). The annex paragraph is now generated from the artefacts and the file is marked SUPERSEDED.", official("White (2000), Econometric Society")],
+        ["F-20", "Low · open", "A coordination-log entry states 26,149 settled bets; the rebuilt artefact reports 27,344. The log is append-only and was not rewritten, so the difference is recorded here instead of being edited away.", official("NFL scores")],
+        ["F-21", "Low · open", "Two requirement registers coexist: research/requirements.md (18 rows, strict) and requirements/requirements.csv (42 rows, earlier, with different status labels). The strict register is authoritative; the older one is kept for audit history.", official("GitHub Pages documentation")],
     ]
     body = f"""{notice()}<section><h2>Open evidence gaps and repaired irregularities</h2>
 <p>Open items do not block publication of a clearly labelled research site. They do block betting validation and rewards.
@@ -528,6 +544,15 @@ def build_sources(d):
     files = [[e(f["logical"]), f["bytes"], e(f["sha256"][:16]), "Hash match; community source", official("GitHub Pages documentation") + " · " + src_link(f["url"], "Pinned publisher file")] for f in SRC["files"]]
     refs = [[e(name), kind, "Read during this integration; supports only the stated scope", src_link(url, "Official / primary source")]
             for (name,url),kind in zip(OFFICIAL.items(), ["NFL", "NFL", "NFL", "NFL", "Primary paper", "Primary paper", "University paper record", "Primary paper", "Operator", "Platform"])]
+    prov = read_json(ROOT / "data" / "official" / "provenance_2026_w10.json")
+    inj_sources = [[e("NFL.com injury report — Week 10, 2026"), "Official league observation",
+                    "Every injury row on the register is transcribed from this page; capture time is printed on the page itself",
+                    src_link(prov["sources"][0]["url"], "NFL official injury report")]]
+    inj_sources += [[e(f"{d['team']} depth chart"), "Official club publication" + (" (labelled unofficial)" if "unofficial" in d["chart_label"].lower() else ""),
+                     e(d["chart_label"]),
+                     src_link(d["url"], f"{d['team']} club depth chart")] for d in prov["depth_chart_sources"]]
+    injury_sources_table = table(inj_sources, ["Source", "Class", "What it supports here", "Official link"],
+                                 caption="Official sources added for the injury and depth register")
     body = f"""{notice()}<section><h2>Source hierarchy</h2><ol class="findings">
 <li><strong>Official observations:</strong> NFL game results, schedules, rules and player availability.</li>
 <li><strong>Primary methods:</strong> original paper, publisher or author/university record; a citation does not validate our implementation by itself.</li>
@@ -536,7 +561,13 @@ def build_sources(d):
 <p>A source link is not a blanket endorsement. NFL.com does not authenticate the community sportsbook prices.</p></section>
 <section><h2>Official and primary references</h2>{table(refs, ["Reference", "Type", "Verification scope", "Link"], caption="Authoritative context and method sources")}</section>
 <section><h2>Pinned research inputs</h2>{table(files, ["File", "Bytes", "SHA-256 prefix", "Verification", "Publisher link"], caption="Exact upstream snapshot; hash verification is not official NFL verification")}</section>
+<section><h2>Official injury sources (Week 10, 2026 pilot)</h2>
+{injury_sources_table}
+<p class="small">These are the league page and the six club depth charts behind <a href="injuries.html">the injury register</a>.
+They are official publications; the depth charts are club projections and three clubs label theirs UNOFFICIAL.</p></section>
 <section><h2>Download the evidence</h2><div class="cards smallcards">
+<a class="minicard" href="assets/data/injury_report.csv"><strong>Injury register</strong><span>Official rows joined to club charts, with the source URL on every row.</span></a>
+<a class="minicard" href="assets/data/injury_team_summary.csv"><strong>Availability by club</strong><span>Ruled out, doubtful, questionable and unranked counts.</span></a>
 <a class="minicard" href="assets/data/strategy_gates.csv"><strong>Strategy gates</strong><span>Calculated research diagnostics and public verdicts.</span></a>
 <a class="minicard" href="assets/data/model_metrics.csv"><strong>Model metrics</strong><span>Paired per-market and per-season results.</span></a>
 <a class="minicard" href="assets/data/verification_report.csv"><strong>Site checks</strong><span>Row sources, links and evidence markers.</span></a>
@@ -565,10 +596,13 @@ def build_requirements(d):
         ("R15", "Official link on every table row", "Enforced in canonical site", "Automated allowlist and row-level checks; annex explicitly historical.", "GitHub Pages documentation"),
         ("R16", "Blank unverified values", "Enforced in strict public view", "Research estimates segregated and labelled, never called official.", "NFL scores"),
         ("R17", "Coordinate parallel work", "Implemented", "Claims, pinned-branch constraint, append-only conflict resolution and integration log.", "GitHub Pages documentation"),
+        ("R18", "PR, merge and live deployment", "Recorded after execution", "See COORDINATION.md and the final PR; never infer a successful deployment.", "GitHub Pages documentation"),
         ("R19", "Suggestions before implementation", "Implemented · proposals unapproved", "suggestions.html: eight paths with alternatives and acceptance evidence.", "GitHub Pages documentation"),
         ("R20", "Decision questions and missing information", "Implemented", "decisions.html: twelve questions, current answers, missing inputs and discovery steps.", "NFL injuries"),
         ("R21", "Injury and backup tracking", "Partial · sample only", "lineups.html: seven official report observations and two club charts; read-only source monitor. No confirmed replacements or impact estimates.", "NFL injuries"),
-        ("R18", "PR, merge and live deployment", "Recorded after execution", "See COORDINATION.md and the final PR; never infer a successful deployment.", "GitHub Pages documentation"),
+        ("R22", "Track injuries and lineup deficiencies", "Pilot · 6 of 32 clubs", "Official Week 10 injury rows joined by exact name to club depth charts; starters, backups and the next man up; 26 clubs flagged, never assumed healthy.", "NFL injuries"),
+        ("R23", "Review suggestions before implementing", "Implemented · nothing accepted", "13 proposals with problem, benefit, cost, risk, dependencies and three decision paths; a decision log records only what was decided.", "GitHub Pages documentation"),
+        ("R24", "Questions, information and answers register", "Implemented · 15 questions", "Each question states what is known with a source, what is missing, and the action that would settle it; 3 block any funded decision.", "White (2000), Econometric Society"),
     ]
     rows = [[i,title,status,detail,official(ref)] for i,title,status,detail,ref in requirements]
     body = f"""{notice()}<section><h2>Complete requirements matrix</h2><p>“Implemented” describes software,
@@ -686,6 +720,10 @@ def main() -> None:
         "index.html": build_index(d),
         "executive-summary.html": build_executive(d),
         "lines.html": build_lines(d),
+        # T14-T16 (arena/3e57f750-korea1): official injury register, decision questions, suggestions
+        "injuries.html": build_injuries(layout, table, card, kpi_grid, flag, src_link, SHA),
+        "questions.html": build_questions(layout, table, card, kpi_grid, flag, src_link),
+        "decision-paths.html": build_suggestions(layout, table, card, kpi_grid, flag, src_link),
         "strategies.html": build_strategies(d),
         "validation.html": build_validation(d),
         "correlations.html": build_correlations(d),

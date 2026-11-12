@@ -1,0 +1,88 @@
+{
+  "snapshot": "2026 NFL Week 10 \u2014 official injury report and club depth charts (pilot: 6 clubs)",
+  "fetched_utc": "2026-11-12T13:05Z",
+  "method": "Pages were read with the agent's page-fetch tool from the official domains; the shell in this sandbox cannot reach them (TLS handshake refused by the egress allowlist). The CSV files below are agent transcriptions of the rendered pages, not byte-exact crawls. Every row carries the page URL it was transcribed from. Transcription was checked by row counts per club, by a name-by-name re-read of each table, and by re-fetching the injury page after the transcription (same rows).",
+  "sources": [
+    {
+      "id": "injuries-w10",
+      "url": "https://www.nfl.com/injuries/",
+      "publisher": "NFL.com",
+      "title": "Official Latest NFL Injury Report for Players - Week 10 of the 2026 Season",
+      "observed": "2026 NFL Injury Report, WEEK 10; games of 2026-11-12 (WAS@NYG), 2026-11-15 (NE@DET, KC@ATL)",
+      "file": "data/official/injuries_2026_w10.csv",
+      "sha256": "e59fd3e6fd30ea11b3cc867f1eba53da2ec93bf405daf5ed15faf898561c1760"
+    }
+  ],
+  "depth_chart_sources": [
+    {
+      "team": "WAS",
+      "url": "https://www.commanders.com/team/depth-chart",
+      "publisher": "www.commanders.com",
+      "chart_label": "Club depth chart (page heading 'DEPTH CHART'); the club does not label it official",
+      "record_on_injury_page": "2-5-1"
+    },
+    {
+      "team": "NYG",
+      "url": "https://www.giants.com/team/depth-chart",
+      "publisher": "www.giants.com",
+      "chart_label": "Club depth chart (page heading 'DEPTH CHART'); the club does not label it official",
+      "record_on_injury_page": "5-2-1"
+    },
+    {
+      "team": "NE",
+      "url": "https://www.patriots.com/team/depth-chart",
+      "publisher": "www.patriots.com",
+      "chart_label": "'PATRIOTS UNOFFICIAL DEPTH CHART' \u2014 club states it reflects Patriots.com writers' opinions, not the organization",
+      "record_on_injury_page": "5-4"
+    },
+    {
+      "team": "DET",
+      "url": "https://www.detroitlions.com/team/depth-chart",
+      "publisher": "www.detroitlions.com",
+      "chart_label": "'2026 Unofficial Depth Chart Compiled by Lions Football Communications'",
+      "record_on_injury_page": "6-2"
+    },
+    {
+      "team": "KC",
+      "url": "https://www.chiefs.com/team/depth-chart",
+      "publisher": "www.chiefs.com",
+      "chart_label": "'Unofficial Depth Chart' (club page heading)",
+      "record_on_injury_page": "6-2"
+    },
+    {
+      "team": "ATL",
+      "url": "https://www.atlantafalcons.com/team/depth-chart",
+      "publisher": "www.atlantafalcons.com",
+      "chart_label": "Club depth chart (page heading 'DEPTH CHART'); the club does not label it official",
+      "record_on_injury_page": "3-6"
+    }
+  ],
+  "coverage": {
+    "clubs_depth_verified": [
+      "WAS",
+      "NYG",
+      "NE",
+      "DET",
+      "KC",
+      "ATL"
+    ],
+    "clubs_in_league": 32,
+    "games_covered": [
+      "WAS@NYG 2026-11-12 20:15 ET",
+      "NE@DET 2026-11-15 09:30 ET",
+      "KC@ATL 2026-11-15 13:00 ET"
+    ],
+    "not_covered": "26 clubs are NOT covered in this pilot; their rows are absent by design, not zero."
+  },
+  "limitations": [
+    "Club depth charts are published by the clubs, and several clubs explicitly label them UNOFFICIAL (NE, DET, KC).",
+    "Depth charts are a projection, not a starting lineup; official inactives and snap counts are published later.",
+    "The NFL report is a practice-participation report; a blank game status means no game designation was published at snapshot time.",
+    "Transcription is an agent-mediated step; a byte-exact archived crawl is required before this is treated as archival evidence."
+  ],
+  "depth_file": {
+    "path": "data/official/depth_charts_2026_w10.csv",
+    "sha256": "688ab53697a96387878ee31b99813ae5cf494ad2f064a6f180ffc3ec13e035b8",
+    "rows": 354
+  }
+}

@@ -1,0 +1,7 @@
+team,club,record,reported,practice_only,ruled_out,doubtful,questionable,starters_ruled_out,starters_flagged,backups_ruled_out,unranked_reported,off_ruled_out,def_ruled_out,deepest_replacement_rank,source_url,chart_url
+NE,New England Patriots,5-4,15,12,3,0,0,2,0,1,2,2,1,2,https://www.nfl.com/injuries/,https://www.patriots.com/team/depth-chart
+WAS,Washington Commanders,2-5-1,9,7,2,0,0,0,0,1,1,1,0,,https://www.nfl.com/injuries/,https://www.commanders.com/team/depth-chart
+KC,Kansas City Chiefs,6-2,11,11,0,0,0,0,0,0,1,0,0,,https://www.nfl.com/injuries/,https://www.chiefs.com/team/depth-chart
+NYG,New York Giants,5-2-1,11,10,0,0,1,0,0,0,1,0,0,,https://www.nfl.com/injuries/,https://www.giants.com/team/depth-chart
+DET,Detroit Lions,6-2,9,9,0,0,0,0,0,0,1,0,0,,https://www.nfl.com/injuries/,https://www.detroitlions.com/team/depth-chart
+ATL,Atlanta Falcons,3-6,6,6,0,0,0,0,0,0,0,0,0,,https://www.nfl.com/injuries/,https://www.atlantafalcons.com/team/depth-chart

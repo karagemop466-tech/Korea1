@@ -5,13 +5,16 @@ else
 PY := .venv/bin/python
 endif
 
-.PHONY: build data model backtest props strategies corr site verify test annex serve clean all
+.PHONY: build data injuries model backtest props strategies corr site verify test annex serve clean all
 
 all: build
 
 data:
 	$(PY) pipeline/fetch_data.py
 	$(PY) pipeline/build_datasets.py
+
+injuries: data
+	$(PY) pipeline/injuries.py
 
 model: data
 	$(PY) pipeline/models.py
@@ -29,6 +32,7 @@ site:
 	$(PY) pipeline/render_site.py
 	$(PY) pipeline/render_summary.py
 	$(PY) pipeline/render_decisions.py
+	$(PY) pipeline/render_registers.py
 	$(PY) pipeline/render_annex.py
 
 verify:
@@ -37,13 +41,13 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_injuries.py
 
 annex:
 	bash scripts/run_all.sh
 	$(PY) pipeline/render_annex.py
 
-build: data model backtest props site verify
+build: data injuries model backtest props site verify
 	@echo "build complete — site in repository root/, verification passed"
 
 serve: build

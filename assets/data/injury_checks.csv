@@ -1,0 +1,10 @@
+check,passed,detail
+injury rows present,True,61 rows
+depth rows present,True,354 rows
+every injury row has an official source,True,61/61 official
+every depth row has an official source,True,354/354 official
+injury file hash matches provenance,True,e59fd3e6fd30ea11
+depth file hash matches provenance,True,688ab53697a96387
+depth rank is an integer >= 1,True,all ranks >= 1
+"no duplicate (team, slot column, rank)",True,171 slot columns
+every club in the injury file has a depth chart,True,"['ATL', 'DET', 'KC', 'NE', 'NYG', 'WAS']"
