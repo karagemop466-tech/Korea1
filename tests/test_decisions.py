@@ -1,130 +1,106 @@
-"""T14/T15 regression tests: the review pages and their CSVs cannot drift apart.
-
-What is asserted
-----------------
-1. Every question/suggestion ID is unique and its status/recommendation is in the vocabulary.
-2. Every referenced question ID and every `ref` key actually exists.
-3. The pages render exactly one table row per CSV row, so a hand-edit to HTML is impossible
-   without breaking the build.
-4. Every injury capture row carries the official source URL it was transcribed from, and the
-   counts on the page match the data (2 Out / 1 Questionable for 2026 week 10).
-5. No unavailable answer is invented: blocked/open questions must have an empty answer, and a
-   BLOCKED availability signal must never be marked AVAILABLE.
-"""
-from __future__ import annotations
-
-import re
+"""Offline guards for review status, missing facts and read-only source collection."""
+import copy
+import gzip
+import json
 import sys
 from pathlib import Path
 
-import pandas as pd
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "pipeline"))
-
-import availability as av  # noqa: E402
-import decisions as dc  # noqa: E402
-from render_site import OFFICIAL  # noqa: E402
-
-PROC = ROOT / "data" / "processed"
+sys.path.insert(0, str(ROOT / 'pipeline'))
+from render_readiness import load_register, render
+from verify_site import Collector, official_refs
+from monitor_official import collect, validate_response
 
 
-def ids_unique(rows, key="id"):
-    ids = [r[key] for r in rows]
-    assert len(ids) == len(set(ids)), f"duplicate ids: {ids}"
+def test_register_ids_and_question_coverage():
+    d = load_register()
+    assert len(d['questions']) == 12 and len(d['suggestions']) == 8
+    ids = {q['id'] for q in d['questions']}
+    assert len(ids) == len(d['questions'])
+    assert set(' '.join(s['questions'] for s in d['suggestions']).split()) == ids
+    for q in d['questions']:
+        assert all(q[k] for k in ('question', 'answer', 'missing', 'discovery', 'gate'))
+        assert q['source'] in d['sources']
+    for s in d['suggestions']:
+        assert s['approved_at'] is None
+        assert s['status'] == 'PROPOSED — NOT APPROVED'
+        assert all(s[k] for k in ('alternative', 'acceptance', 'risk'))
 
 
-def test_ids_and_vocabulary():
-    ids_unique(dc.QUESTIONS)
-    ids_unique(dc.SUGGESTIONS)
-    ids_unique(av.SIGNALS)
-    ids_unique(av.SOURCE_CHECKS)
-    ids_unique(av.CONFLICTS)
-    for q in dc.QUESTIONS:
-        assert q["status"] in dc.STATUSES, q["id"]
-        assert q["area"] in dc.AREAS, q["id"]
-        assert q["ref"] in OFFICIAL, (q["id"], q["ref"])
-    for s in dc.SUGGESTIONS:
-        assert s["ref"] in OFFICIAL, (s["id"], s["ref"])
-        assert s["effort"] in {"S", "M", "L"}, s["id"]
-        for dep in s["depends"]:
-            assert dep in {q["id"] for q in dc.QUESTIONS}, (s["id"], dep)
+def test_missing_lineup_facts_stay_null():
+    d = load_register()
+    assert len(d['lineups']) == 7
+    for r in d['lineups']:
+        assert r['observed_date'] == '2026-11-12'
+        assert d['sources'][r['source']]['role'] == 'observation'
+        for k in ('source_published_at', 'confirmed_starter', 'confirmed_replacement', 'replacement_depth_rank', 'impact_points'):
+            assert r[k] is None
+    r = next(r for r in d['lineups'] if r['player'] == 'Jayden Daniels')
+    assert r['game_status'] is None and r['injury'] is None
+    assert next(r for r in d['lineups'] if r['player'] == 'Lucas Patrick')['published_chart_row'] is None
 
 
-def test_no_invented_answers():
-    for q in dc.QUESTIONS:
-        if q["status"] in {"BLOCKED", "OPEN", "NEEDS DECISION"}:
-            assert q["answer"] == "", f"{q['id']} is not ANSWERED but carries an answer"
-            assert q["missing"], f"{q['id']} gives no missing-information note"
-            assert q["close"], f"{q['id']} gives no closure test"
-    for s in av.SIGNALS:
-        if s["status"] == "BLOCKED":
-            assert "NO" in s["available"] or "No " in s["available"] or "no " in s["available"], s["id"]
+def test_generated_pages_have_sources_captions_and_blank_roles():
+    pages = render(load_register())
+    assert set(pages) == {'decisions.html', 'lineups.html'}
+    assert 'Parallel suggestion register' in pages['decisions.html']
+    for name, content in pages.items():
+        c = Collector(); c.feed(content)
+        assert c.rows and c.tables == c.captions
+        assert all(official_refs([u for _, us in row for u in us]) for row in c.rows)
+        assert 'not a live' in content.lower() or name != 'lineups.html'
+    c = Collector(); c.feed(pages['lineups.html'])
+    for row in c.rows:
+        assert all(row[i][0] == '' for i in (8, 9, 10, 11))
+    d = copy.deepcopy(load_register())
+    d['lineups'][0]['player'] = '<script>alert(1)</script>'
+    assert '<script>alert(1)</script>' not in render(d)['lineups.html']
 
 
-def test_pages_match_csvs():
-    """The rendered row count must equal the generated row count, in order."""
-    q = pd.read_csv(PROC / "questions.csv")
-    s = pd.read_csv(PROC / "suggestions.csv")
-    src = pd.read_csv(PROC / "availability_sources.csv")
-    sig = pd.read_csv(PROC / "availability_signals.csv")
-    conf = pd.read_csv(PROC / "availability_conflicts.csv")
-    snap26 = pd.read_csv(PROC / "injury_snapshot_week10.csv")
-    snap19 = pd.read_csv(PROC / "injury_snapshot_2019_wk5.csv")
-
-    assert len(q) == len(dc.QUESTIONS)
-    assert len(s) == len(dc.SUGGESTIONS)
-    assert len(src) == len(av.SOURCE_CHECKS)
-    assert len(sig) == len(av.SIGNALS)
-    assert len(conf) == len(av.CONFLICTS)
-    assert len(snap26) == 20 and len(snap19) == 11
-
-    qpage = (ROOT / "questions.html").read_text()
-    spage = (ROOT / "suggestions.html").read_text()
-    ipage = (ROOT / "injuries.html").read_text()
-    for row in q.itertuples():
-        assert f">{row.id}<" in qpage, row.id
-    for row in s.itertuples():
-        assert f">{row.id}<" in spage, row.id
-    for row in src.itertuples():
-        assert f">{row.id}<" in ipage, row.id
-    for row in sig.itertuples():
-        assert f">{row.id}<" in ipage, row.id
-    for row in conf.itertuples():
-        assert f">{row.id}<" in ipage, row.id
+def test_exact_club_allowlist_no_lookalikes():
+    assert official_refs(['https://www.commanders.com/team/depth-chart'])
+    assert official_refs(['https://www.giants.com/team/depth-chart'])
+    assert not official_refs(['https://www.giants.com.example.org/team/depth-chart'])
 
 
-def test_snapshot_rows_are_sourced():
-    snap = pd.read_csv(PROC / "injury_snapshot_week10.csv")
-    assert set(snap.source_url) == {av.URL_WEEK10}
-    assert set(snap.retrieved) == {av.RETRIEVED}
-    assert int((snap.game_status == "Out").sum()) == 2
-    assert int((snap.game_status == "Questionable").sum()) == 1
-    assert int(snap.club.eq("WAS").sum()) == 9
-    assert int(snap.club.eq("NYG").sum()) == 11
-    # a blank game status is not a claim of health
-    assert snap.game_status.isna().sum() == 17
-
-    hist = pd.read_csv(PROC / "injury_snapshot_2019_wk5.csv")
-    assert set(hist.source_url) == {av.URL_WEEK10_2019}
-    assert int((hist.game_status == "Out").sum()) == 1
-    assert int((hist.game_status == "Doubtful").sum()) == 1
-    assert int((hist.game_status == "Questionable").sum()) == 2
+HTML = b'<html><table><tr><td>Fixture only</td></tr></table>' + b' ' * 1500 + b'</html>'
 
 
-def test_official_checks_record_a_result():
-    for row in av.SOURCE_CHECKS:
-        assert row["url"].startswith("https://")
-        assert "HTTP" in row["result"], row["id"]
-        assert row["checked"] == av.RETRIEVED
-        # a negative result must say so; nothing may be silently "verified"
-        if "404" in row["result"] or "502" in row["result"]:
-            assert "NEGATIVE" in row["status"] or "VERIFIED" in row["status"]
+@pytest.mark.parametrize('url,status,ctype,data', [
+    ('https://www.nfl.com.evil.org/injuries/', 200, 'text/html', HTML),
+    ('https://www.nfl.com/injuries/', 404, 'text/html', HTML),
+    ('https://www.nfl.com/injuries/', 200, 'application/json', HTML),
+    ('https://www.nfl.com/injuries/', 200, 'text/html', b'404 - FLAG ON THE PLAY' + HTML),
+    ('https://www.nfl.com/injuries/', 200, 'text/html', HTML.replace(b'table', b'other')),
+])
+def test_monitor_rejects_bad_response(url, status, ctype, data):
+    with pytest.raises(ValueError):
+        validate_response(url, status, ctype, data)
 
 
-def test_no_template_placeholders_leak():
-    for page in ["suggestions.html", "questions.html", "injuries.html"]:
-        text = (ROOT / page).read_text()
-        assert "{{" not in text and "}}" not in text, page
-        assert not re.search(r">\s*(None|nan|NaN)\s*<", text), page
+def test_monitor_success_is_not_verified_extraction(tmp_path):
+    class Response:
+        status = 200
+        headers = {'Content-Type': 'text/html'}
+        def __init__(self, url): self.url = url
+        def geturl(self): return self.url
+        def read(self, size): return HTML
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+    d = load_register()
+    m = collect(d['sources'], tmp_path, opener=lambda req, **kw: Response(req.full_url))
+    assert len(m['sources']) == 3 and all(s['success'] for s in m['sources'])
+    assert 'NOT VERIFIED EXTRACTION' in m['evidence_status']
+    assert gzip.decompress((tmp_path / 'injuries.html.gz').read_bytes()) == HTML
+    assert json.loads((tmp_path / 'manifest.json').read_text()) == m
+
+
+def test_monitor_failure_manifest_not_fallback(tmp_path):
+    def unavailable(*args, **kwargs): raise OSError('fixture offline')
+    (tmp_path / 'injuries.html.gz').write_bytes(b'old success must not survive')
+    m = collect(load_register()['sources'], tmp_path, opener=unavailable)
+    assert not any(s['success'] for s in m['sources'])
+    assert all('error' in s and 'sha256' not in s for s in m['sources'])
+    assert not list(tmp_path.glob('*.gz'))

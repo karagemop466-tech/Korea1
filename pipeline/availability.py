@@ -30,6 +30,8 @@ URL_ROSTER_AZ = "https://www.nfl.com/teams/arizona-cardinals/roster"
 URL_ROSTER_WAS_DEPTH = "https://www.nfl.com/teams/washington-commanders/roster?tab=depth"
 URL_DEPTH_404 = "https://www.nfl.com/teams/arizona-cardinals/depth-chart"
 URL_RULEBOOK = "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook"
+URL_WAS_DEPTH = "https://www.commanders.com/team/depth-chart"
+URL_NYG_DEPTH = "https://www.giants.com/team/depth-chart"
 
 # id, source, url, what it provides, checked, result, status, enables
 SOURCE_CHECKS = [
@@ -98,9 +100,9 @@ SOURCE_CHECKS = [
          url=URL_DEPTH_404,
          provides="Test of the conventional depth-chart URL under nfl.com/teams",
          checked=RETRIEVED,
-         result="HTTP 404 · “Flag on the Play” error page",
+         result="HTTP 404 · “Flag on the Play” error page. Club sites publish charts (AV-11, AV-12); the league site does not",
          status="VERIFIED · NEGATIVE",
-         enables="Establishes that no official machine-readable depth chart was found at this path"),
+         enables="Establishes that the league site has no depth-chart page; the club route is the one that works"),
     dict(id="AV-10", source="2026 NFL rulebook",
          url=URL_RULEBOOK,
          provides="Rule text, including Rule 5 (players, substitutes and withdrawn players) and injury "
@@ -109,6 +111,22 @@ SOURCE_CHECKS = [
          result="HTTP 200 · rulebook with 2026 rule changes and a downloadable PDF",
          status="VERIFIED",
          enables="The rule basis for substitution and participation, not a depth ordering"),
+    dict(id="AV-11", source="Club depth chart (Washington Commanders)",
+         url=URL_WAS_DEPTH,
+         provides="Ordered cells per position: offence, defence and special teams",
+         checked=RETRIEVED,
+         result="HTTP 200 · tables present with published order, e.g. QB Jayden Daniels | Marcus Mariota | "
+                "Athan Kaliakmanis and C Nick Allegretti | Matt Gulbin. No publication timestamp is shown",
+         status="VERIFIED",
+         enables="Starter/backup ordering for this club; not a confirmed game-day lineup"),
+    dict(id="AV-12", source="Club depth chart (New York Giants)",
+         url=URL_NYG_DEPTH,
+         provides="Ordered cells per position: offence, defence and special teams",
+         checked=RETRIEVED,
+         result="HTTP 200 · tables present with published order, e.g. QB J.J. McCarthy | Jameis Winston and "
+                "C Bryan Hudson | John Michael Schmitz Jr. No publication timestamp is shown",
+         status="VERIFIED",
+         enables="Starter/backup ordering for this club; not a confirmed game-day lineup"),
 ]
 
 SNAPSHOT_2026 = [
@@ -185,26 +203,26 @@ SIGNALS = [
     dict(id="AV-S1", signal="QB1 unavailable",
          definition="The club's first-string quarterback is listed Out or Doubtful before kickoff.",
          inputs="Depth rank for QB at the capture time + official game status",
-         available="Report yes; depth rank NO", status="BLOCKED",
+         available="Report yes; club chart for 2 of 32 clubs", status="PILOT ONLY",
          leak="High if the depth rank is taken from post-game participation",
          gate="G1 data + timestamp rule + all eight gates"),
     dict(id="AV-S2", signal="Starting interior line out",
          definition="A first-string C or G is listed Out, changing protection and run scheme.",
          inputs="Depth rank for C/G + official game status",
-         available="Report yes; depth rank NO", status="BLOCKED",
+         available="Report yes; club chart for 2 of 32 clubs", status="PILOT ONLY",
          leak="High: line combinations are often only public after the game",
          gate="G1 data + timestamp rule + all eight gates"),
     dict(id="AV-S3", signal="Starting corner out",
          definition="A first-string CB is Out or Doubtful, shifting coverage assignments.",
          inputs="Depth rank for CB + official game status",
-         available="Report yes; depth rank NO", status="BLOCKED",
+         available="Report yes; club chart for 2 of 32 clubs", status="PILOT ONLY",
          leak="High: shadow/coverage assignment is a post-game observation",
          gate="G1 data + timestamp rule + all eight gates"),
     dict(id="AV-S4", signal="Second/third/fourth-string replacement",
          definition="The player who takes the most snaps at a position is not the first-string player.",
          inputs="Depth chart or participation/snap counts",
-         available="NO official depth chart found; no 2023–2026 participation",
-         status="BLOCKED",
+         available="Charts list 2–4 names; 2 of 32 clubs captured; no 2023–2026 participation",
+         status="OPEN",
          leak="Very high: snap counts are published after the game",
          gate="G1 data + timestamp rule + all eight gates"),
     dict(id="AV-S5", signal="Practice-status trend within the week",
@@ -256,8 +274,8 @@ METHOD_NOTES = [
     "A capture is only usable if it is timestamped before the kickoff of the game it describes. The "
     "2026 week-10 capture was taken on 2026-11-12, before the 20:15 ET kickoff, and the report itself "
     "is the league's pre-game publication.",
-    "No player is labelled 'starter' or 'backup' anywhere on this site. The report gives game status; "
-    "it does not give depth. Any future label needs a published rule and a source, per Q30 and S17.",
+    "A club chart publishes an order; it does not publish a game-day role. This site therefore quotes the "
+    "chart cells and does not call anyone a confirmed starter or replacement (Q30, Q32, S17).",
     "Absence of a player from the report is not evidence that he is healthy, and presence is not "
     "evidence that he will play: clubs list only players with a report entry, and game status may be "
     "blank.",

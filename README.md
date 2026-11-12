@@ -15,9 +15,11 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
-- `suggestions.html` — every proposed change with cost, risk, dependencies and four decision paths
+- `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
+- `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
 - `questions.html` — what must be known before a decision, what is answered and what is blocked
-- `injuries.html` — verified official injury captures, the depth-chart gap and the signal register
+- `lineups.html` — seven observed players plus two club depth charts; roles and impacts blank
+- `injuries.html` — verified official captures, the coverage gap and the availability signal register
 - `requirements.html` — requirement-by-requirement delivery register
 - `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
@@ -57,8 +59,16 @@ key-number pricing claims, and permissive source checking. See `audit/REPORT.md`
 
 ## Coordination and deployment
 
-Read `COORDINATION.md` before editing. This Arena session is pinned to
-`arena/25460478-korea1`; that session's claim, sources, verification and PR/merge/deploy record are
-appended there.
+Read `COORDINATION.md` before editing. The review surface was built by two sessions and merged:
+`arena/25460478-korea1` owns the suggestion/question/injury registers, and `arena/03f66e17-korea1`
+owns the readiness register, lineup-evidence page and the read-only source monitor. Both claims,
+their sources, the verification runs and the PR/merge/deploy record are appended there.
+
+## Injury and decision-readiness boundaries
+
+The follow-up dated **2026-11-12** adds a seven-player WAS/NYG official injury-report sample and the
+ordered cells of two club depth charts. This is not a live all-club service: coverage is 2 of 32 clubs,
+neither chart shows a publication time, and chart order does not prove a game-time role, a promotion or
+a performance deficiency. Unknown fields stay blank. The scheduled monitor only archives sources.
 
 Research and education only. No guaranteed returns, betting recommendations or funded prize pool.

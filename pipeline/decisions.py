@@ -331,13 +331,14 @@ QUESTIONS = [
     q("Q30", AREAS[4],
       "Can we tell a starter from a second-, third- or fourth-string backup?",
       "The whole 'deficiencies in the lineup' requirement.",
-      "BLOCKED",
-      "",
-      "No verified depth ordering. nfl.com/teams/<club>/depth-chart returns HTTP 404; the roster page "
-      "holds player status (ACT/RES/DEV) but is alphabetical, and ?tab=depth returns the same "
-      "alphabetical table, so 'starter out' cannot be asserted from official pages. Missing: a licensed "
-      "depth-chart/participation feed, or official gamebooks listing starters and inactives.",
-      "Evaluate gamebook/inactives provenance, then build the ranking with a documented rule (S17).",
+      "ANSWERED",
+      "Partly. Club sites publish ordered depth charts: the Commanders and Giants charts were read on "
+      "2026-11-12 (e.g. WAS QB Jayden Daniels | Marcus Mariota | Athan Kaliakmanis; NYG C Bryan Hudson | "
+      "John Michael Schmitz Jr.), which gives a starter/backup order for those two clubs. Limits: only 2 of "
+      "32 clubs are captured, no chart shows a publication time, the league site itself has no depth-chart "
+      "page (404), and a chart order is not a confirmed game-day role.",
+      "Missing: league-wide, timestamped charts or official inactives.",
+      "Capture every club chart weekly with a timestamp; keep roles unconfirmed until inactives (S17).",
       "NFL team roster (Arizona Cardinals)",
       [("roster (verified 200)", "https://www.nfl.com/teams/arizona-cardinals/roster"),
        ("depth-chart path (verified 404)", "https://www.nfl.com/teams/arizona-cardinals/depth-chart")], "L"),
@@ -573,15 +574,15 @@ SUGGESTIONS = [
     s("S17", "Obtain a depth chart or starter/inactive source and classify depth", AREAS[4],
       "Use a licensed depth chart or official gamebook inactives to label each player 1st/2nd/3rd "
       "string before kickoff, with the rule published.",
-      "Q30: no verified depth ordering exists on NFL.com today (404 and alphabetical rosters).",
-      "Q29, Q30, Q33", "L", "Very high", "No official machine-readable depth chart verified",
+      "Q30: club charts exist (2 verified) but the league site has none, so coverage and timing are the gaps.",
+      "Q29, Q30, Q33", "L", "Very high", "Two club charts verified 2026-11-12; 30 clubs and timing open",
       "Recommended next (Path C)", "Third-party depth charts are unofficial and sometimes wrong; the "
       "classification rule must be auditable and timestamped.",
       "NFL team roster (Arizona Cardinals)", depends=["Q30"]),
     s("S18", "Build a replacement-level deficit index, but keep it out of the leaderboard", AREAS[4],
       "Score each unit (QB, OL, CB, LB) by who is missing relative to depth, using only pre-kickoff "
       "information, and publish it as a labelled research feature.",
-      "The user's core availability requirement is specified but not computed.",
+      "The availability requirement is specified and its inputs partly exist, but nothing is computed.",
       "Q31, Q34", "L", "High", "Blocked on S17",
       "Pilot after S17", "A deficit index invites storytelling; it must be gated like any other signal.",
       "Bailey & López de Prado (2014), publisher", depends=["Q31", "Q34"]),

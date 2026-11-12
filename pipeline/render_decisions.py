@@ -315,20 +315,24 @@ def build_injuries(d) -> str:
 {rs.notice()}
 <section>
 <p class="flag warn"><strong>Status: PARTIAL, and deliberately so.</strong> The official injury report is verified and
-one game is captured exactly. Starter-versus-backup classification is <em>not</em> delivered: no verified
-depth ordering exists in the sources tested, so no player is called a second- or third-string replacement
-anywhere on this site. The signal register below is a specification with its blockers named.</p>
+one game is captured exactly. Club depth charts do exist and two were verified (Commanders, Giants), so a
+starter/backup <em>order</em> is available for those clubs — quoted cell by cell on
+<a href="lineups.html">Lineup evidence</a>. But no chart carries a publication time, only 2 of 32 clubs are
+captured, and chart order is not a confirmed game-day role, so no player is called a confirmed replacement
+and no availability signal is in the leaderboard.</p>
 {rs.kpi_grid([
     rs.card(str(len(av.SOURCE_CHECKS)), 'official pages tested', f'{verified} verified · {negative} verified-negative', ''),
     rs.card('1 of 14', 'week-10 games captured', 'Thursday WAS at NYG · 20 rows', ''),
-    rs.card('0', 'verified depth charts', '404 and alphabetical rosters; no ranking', 'bad'),
+    rs.card('2 of 32', 'club depth charts verified', 'nfl.com has no chart page (404); no chart shows a capture time', 'bad'),
     rs.card('0', 'availability signals in the leaderboard', 'Specification only — no reward', 'bad'),
 ])}
 </section>
 
 <section><h2>1 · What the official availability sources actually provide</h2>
 <p>Every row was retrieved on {e(av.RETRIEVED)} with the agent's page-fetch tool. A “verified-negative” row is a
-source that exists but does not provide what the requirement needs; that is a finding, not a failure to look.</p>
+source that exists but does not provide what the requirement needs; that is a finding, not a failure to look. The
+two club depth charts are the positive exception: the ordered cells they publish are transcribed on
+<a href="lineups.html">Lineup evidence</a>.</p>
 {rs.table(src_rows, ["ID", "Source and what it provides", "Checked", "Observed result", "Status",
                      "What it enables", "Link"],
           caption="Source inventory for injuries and lineups — checked 2026-11-12 (UTC)")}
@@ -390,8 +394,8 @@ until the corresponding inputs exist.</p>
 
 <section><h2>8 · What would move this from PARTIAL to MET</h2>
 <ol class="findings">
-<li><strong>A depth source with a rule.</strong> A licensed depth chart or official inactives, captured before
-kickoff, with the 1st/2nd/3rd-string rule written down (S17, question Q30).</li>
+<li><strong>League-wide depth with a timestamp.</strong> A capture of all 32 club charts (2 are verified) or
+official inactives, each dated before kickoff, with the 1st/2nd/3rd-string rule written down (S17, Q30, Q32).</li>
 <li><strong>A timestamped weekly capture.</strong> Every report stored with a UTC timestamp and the kickoff time,
 so leak risk is measurable rather than assumed (S16, Q32).</li>
 <li><strong>A gated deficit index.</strong> Starter-loss scoring per unit, computed only from pre-kickoff inputs,
