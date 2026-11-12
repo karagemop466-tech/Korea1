@@ -11,9 +11,23 @@ def main():
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
     src=read_json(ROOT/'data/sources.json')
     n=int(gates.verdict.eq('VALIDATED').sum()); matched=int(scores.status.eq('MATCH').sum())
+    # T16: the review registers are generated, so their counts are read from the same data, never retyped.
+    from decisions import SUGGESTIONS
+    from render_decisions import recount
+    import availability as av
+    rc = recount()
+    n_src = len(av.SOURCE_CHECKS)
+    # Group the conditional verdicts the same way injuries.html does: anything that did not yield the
+    # needed field counts as verified-negative (negative result), never as positive evidence.
+    n_verified = sum(1 for c in av.SOURCE_CHECKS if c["status"] == "VERIFIED")
+    n_neg = len(av.SOURCE_CHECKS) - n_verified
+    charts = sum(1 for c in av.SOURCE_CHECKS if "depth chart" in c["source"].lower())
+    from collections import Counter
+    sig = Counter(s["status"] for s in av.SIGNALS)
+    sig_line = f"{len(av.SIGNALS)} availability signals assessed: {sig['AVAILABLE']} available, {sig['PILOT ONLY']} pilot-only, {sig['OPEN']} open, {sig['BLOCKED']} blocked"
     text=f'''# Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02; availability tracker, decision board and open questions added 2026-11-12. Research snapshot: `{src['upstream']['commit_sha']}`.
+Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
 
 ## Decision
 
@@ -25,6 +39,29 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
+## Decision readiness follow-up — 2026-11-12
+
+Three review registers sit in front of the research, generated from the same data as the pages, and none
+of them is an approval:
+
+| Register | Size / status | What it establishes |
+|---|---|---|
+| `suggestions.html` | {rc['suggestions']} proposals — {rc['adopt']} ready now, {rc['pilot']} pilot, {rc['recommended']} recommended before any reward, {rc['rejected']} rejected, {rc['deferred']} deferred, {rc['blocked_suggestions']} blocked | Cost, risk, dependency and acceptance evidence for every change, plus four paths (A–D) and a change-control worksheet |
+| `decisions.html` | 12 readiness questions plus a parallel 8-proposal register | Current answers, missing inputs, discovery steps and the gate each one feeds |
+| `questions.html` | {rc['questions']} questions — {rc['answered']} answered, {rc['open']} open, {rc['blocked']} blocked, {rc['decisions']} needing an owner decision | Every answer cited; blocked rows left blank with the reason and a closure test |
+
+Two dated captures are transcribed exactly: the 2026 week-10 WAS/NYG report (20 rows — 2 Out, 1
+Questionable, 17 blank) and 2019 week 5 (11 rows). {sig_line} — **0 in the leaderboard**, because none
+clears the leakage and confirmation tests and the board is pinned before week 8.
+
+The official source inventory holds {n_src} checks ({n_verified} verified, {n_neg} verified-negative),
+including **{charts} club depth charts** read on 2026-11-12. The league site has no depth-chart page and
+its rosters are alphabetical, but the clubs publish charts, so a starter/backup *order* exists for those
+clubs — {charts} of 32 — with no publication time on either chart and no confirmed game-day role. No player
+is called a confirmed replacement, no depth rank is invented for a player absent from a chart, and no
+availability signal enters the model. A read-only daily Actions monitor archives the sources; collection is
+not verified extraction. All-club coverage, game-day role confirmation and validated impact remain blocked.
+
 ## Update of 2026-11-12
 
 | Area | Status | What changed and what it means | Official reference |
@@ -34,17 +71,6 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 | Open questions | Unanswered | `open-questions.html` separates what is known from what is missing and names how to find it. Some only you can answer: sportsbooks and jurisdiction, bankroll, success threshold, refresh cadence, reward. | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Line board freshness | Stale | The open line board still starts at Week 8 (snapshot pinned 2026-11-02); the injury capture is for the current week. Refreshing is suggestion DB-04. | [NFL schedule](https://www.nfl.com/schedules/) |
 | Site | Repaired | Navigation grouped by category; stylesheet now defines the classes the pages use. Review findings RV-01 to RV-11 are on `flagged.html`. | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
-
-## Decision readiness follow-up — 2026-11-12
-
-The dedicated `decisions.html` register supplies twelve questions with current answers, missing inputs,
-discovery steps and acceptance gates. `suggestions.html` compares eight proposed paths and alternatives;
-none is approved. `lineups.html` contains seven selected official Week 10 injury-report observations
-and quoted cells from two club depth charts, retrieved 2026-11-12. Unknown injury/status fields,
-confirmed starter/replacement roles, replacement depth ranks and point impacts stay blank.
-That sample page is not league-wide or live tracking; the league-wide scheduled capture is `availability.html` (table above). A daily read-only Actions monitor archives three official
-source pages without promoting collection into verified extraction or changing model inputs.
-Game-day role confirmation and validated player-impact signals remain blocked; all-club coverage is supplied by `availability.html`.
 
 ## What was delivered
 
@@ -59,8 +85,10 @@ Game-day role confirmation and validated player-impact signals remain blocked; a
 | Luck mitigation | Weekly-block bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
 | Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Official score audit | {matched} matching games in a {len(scores)}-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
-| Decision-support pages (arena/425336fc-korea1, PR #26) | `injury-report-week10.html` (hand capture of the official Week 10 injury report, replacement column blank by design), `pre-decision-register.html` (Q-01→Q-08), `review-gate-suggestions.html` (S-01→S-08) | Implemented; every row links to an official source, blank cells flagged UNVERIFIED | [NFL injury report](https://www.nfl.com/injuries/) · [research/decisions.md](research/decisions.md) · [research/suggestions.md](research/suggestions.md) |
-| Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge |
+| Suggestions before changes (R19) | {rc['suggestions']} proposals with cost, risk, dependencies, four paths and change control | Implemented; nothing approved |
+| Questions and answers (R20) | {rc['questions']} open questions plus 12 readiness questions, each with a closure test | Implemented; blocked rows blank |
+| Injury / lineup deficiency (R21) | Official report captures plus {charts} of 32 club depth charts | PARTIAL — order only, no confirmed roles | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 ## Material audit corrections
 
@@ -81,6 +109,7 @@ Game-day role confirmation and validated player-impact signals remain blocked; a
 |---|---|---|
 | Authenticated historical entry/closing quotes with timestamps and limits | No executable ROI or CLV validation | [NFL official scores](https://www.nfl.com/scores/) |
 | Verified player-prop prices and joint SGP quotes | No prop-combo ROI or validated correlation | [NFL injury report](https://www.nfl.com/injuries/) |
+| League-wide dated depth charts or official inactives ({charts} of 32 charts, neither dated) | No confirmed starter/replacement role and no availability term in any model | [NFL injury report](https://www.nfl.com/injuries/) |
 | Complete trial registry and untouched prospective replication | No reward eligibility | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Full official census of historical scores and pregame fields | Research inputs remain only partially officially verified | [NFL official scores](https://www.nfl.com/scores/) |
 

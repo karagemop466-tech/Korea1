@@ -1258,6 +1258,55 @@ dispatch-permission denial remain accurately logged even though the push-trigger
 succeeded. No credentials were requested, no other branch was edited or pushed, no sibling PR was
 closed/merged, and no source/model approval was inferred from successful site publication.
 
+## 2026-11-12 — T16b third integration merge — `arena/25460478-korea1` at `bc1c411`
+
+**Claim:** merge `origin/main` `bc1c411` (PR #26, session `arena/425336fc-korea1`, "T14–T23 integration")
+into the T16 branch and reconcile a third review surface. Files: `pipeline/render_site.py`,
+`pipeline/render_decisions.py`, `pipeline/parallel_pages.py` (new), `tests/*`, `research/injuries.md`,
+`EXECUTIVE_SUMMARY.md` (generated), `COORDINATION.md`. No model, gate, odds or reward change.
+
+### What the third branch had done
+
+It merged my T16 merge, then rebuilt `decisions.html`, `suggestions.html` and `injuries.html` *inside*
+`render_site.py` with its own registers (8 questions, 8 suggestions, a 259-row full-league week-10
+injury capture), and dropped `questions.html`/`lineups.html` from the rendered set. Because the
+Makefile still runs `render_readiness.py` after `render_site.py`, its `decisions.html` was then
+overwritten — so its eight pre-decision questions were not actually on the live site, and `questions.html`
+404'd.
+
+### Resolution
+
+| Content | Where it now lives |
+|---|---|
+| My 40-question register | `questions.html` (restored) |
+| Its 8 pre-decision questions | same page, section "Pre-decision questions" — verbatim, with a correction note |
+| My 22-proposal register + four paths + worksheet | `suggestions.html` (restored) |
+| Its 8-item suggestion log incl. the two **Adopted** items | same page, section "Suggestions for review" — verbatim |
+| My 12-source availability page + signals + 2 club charts | `injuries.html` (restored) |
+| Its full 259-row league week-10 injury capture | same page, section "Injuries & availability" — verbatim, with capture notes |
+| 12 readiness questions + parallel 8-proposal register | `decisions.html` (unchanged from my merge) |
+| 7 observed players + chart cells | `lineups.html` (restored) |
+
+Implementation detail: `pipeline/parallel_pages.py` is that session's renderer copied verbatim with
+three mechanical edits (renamed builders, `return body` instead of `layout(...)`, leading `notice()`
+dropped) so its HTML is embedded unchanged. Nothing was retyped, so no figure could be altered.
+
+Corrections published (not deletions): both embedded blocks say "no official depth chart", which was
+true for the league site but not for the clubs; each block now carries a dated correction pointing at
+`lineups.html`, and `research/injuries.md` carries the same update.
+
+### Verification
+
+- `make build`: exit 0.
+- `verify_site.py`: **0 failing checks**; `injuries.html` 316 rows, `questions.html` 48 rows,
+  `suggestions.html` 34 rows, `decisions.html` 28 rows, `lineups.html` 7 rows.
+- `check_sources.py`: 17 canonical pages / **895 rows**, strict pass.
+- `check_links.py`: 28 pages, no external dependencies.
+- `pytest`: **46 passed**.
+- `tests/check_rebuild.py`: run after the merge commit.
+
+Deployment record appended after the PR merges; nothing is inferred here.
+
 ---
 
 ## Session `arena/c0528572-korea1` — T14–T17 log (2026-11-12)
@@ -1327,6 +1376,6 @@ nfl.com daily; consolidating them is decision-board item DB-12/DB-14 and was **n
 | `main` at | What arrived | What conflicted | Resolution |
 |---|---|---|---|
 | `31cd628` (PRs #25/#27, `arena/25460478-korea1`) | `suggestions.html` (22 proposals), `questions.html` (40), `injuries.html` (source audit), F-13…F-17 | `NAV`, executive paragraph, page lists, `Makefile`, `README.md`, board rows (both sessions used T14–T16) | Their registers are the primary "Decide" links; mine are grouped as "Parallel registers" and say so on the page. Page/test lists unioned. Board rows of both sessions kept, collision noted. Their sentences saying coverage is 2 of 32 clubs are unchanged and now followed by a pointer to `availability.html` |
-| `bc1c411` (PR #26, `arena/425336fc-korea1`) | `build_injuries/suggestions/decisions` inside `render_site.py`, `research/*.md`, `injuries_week10.csv` | `pipeline/render_site.py` and every generated page | **Irregularity:** PR #26 wrote its three pages to `injuries.html`, `suggestions.html`, `decisions.html` (already published by two other sessions), removed those sessions' code from `render_site.py`, and `Verify site` failed on `main` at `bc1c411`. Resolution: `render_site.py` taken from the pre-#26 integrated version; the three #26 builders ported unchanged in content and published as `injury-report-week10.html`, `review-gate-suggestions.html`, `pre-decision-register.html`; their flat `__group__` nav and `.navgroup` rule replaced by the grouped sidebar; their hand-edited `EXECUTIVE_SUMMARY.md` row moved into the generator with the new filenames. Nothing deleted |
+| `bc1c411` (PR #26, `arena/425336fc-korea1`) then `357ff3a` (PR #28, `arena/25460478-korea1`) | #26: its own `injuries.html`, `suggestions.html`, `decisions.html` builders inside `render_site.py`; #28: `pipeline/parallel_pages.py`, generated executive summary | `pipeline/render_site.py`, `pipeline/render_summary.py`, every generated page | **Irregularity:** PR #26 wrote three pages to filenames two other sessions already published and removed their code; `Verify site` failed on `main` at `bc1c411`. I first ported the #26 pages to separate filenames (commit on this branch), then PR #28 landed with the owning session's own repair (`parallel_pages.py`, #26 content rendered inside the existing pages). Final resolution: **`render_site.py` and `render_summary.py` taken from `main` (#28) as-is, and only this session's additions re-applied on top** (grouped sidebar nav, stylesheet block, availability card, RV table on flagged, R21b row, executive update table). My three interim filenames were dropped again — #28's placement stands |
 
-After the third merge: `make build` + `make test` pass (51 tests; 34 pages link-checked; every canonical table row carries an allow-listed official/primary link).
+After the final merge `make build` + `make test` pass; counts are recorded with the PR result below.

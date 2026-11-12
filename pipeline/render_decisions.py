@@ -4,6 +4,7 @@ The pages are generated from `pipeline/decisions.py` and `pipeline/availability.
 HTML, the downloads and `tests/test_decisions.py` read one source of truth.
 """
 from __future__ import annotations
+import parallel_pages as _pp
 
 import sys
 from pathlib import Path
@@ -191,6 +192,11 @@ are the reviewer's input, not an observation.</p>
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Defects found while writing this page.</span></a>
 </div></section>
 """
+    if "injuries" in d:
+        body += _pp.parallel_suggestions(d)
+        body += ('<p class="flag info"><strong>Two registers on one page:</strong> the rows above are session '
+                 "arena/425336fc-korea1's proposal log; the 22-proposal register with costs, dependencies "
+                 'and four decision paths is further up this page.</p>')
     return rs.layout("suggestions.html", "Suggestions and decision paths",
                      "What could be improved, what it costs, and which questions must be answered before "
                      "a path is chosen.", body, wide=True)
@@ -252,12 +258,17 @@ placeholder="Try price, depth, gate, stale…"></label><span class="small">{n['q
 
 <section><h2>What the register says in one paragraph</h2>
 <p>The build is reproducible and its internal checks pass, but the evidence that would justify a bet is
-missing: there is no authenticated, timestamped price archive (Q09), no verified depth chart (Q30) and no
+missing: there is no authenticated, timestamped price archive (Q09), no league-wide, dated depth ordering (Q30) and no
 complete trial history (Q23). Everything that depends on those three is therefore blocked, and the
 strategy leaderboard correctly awards nothing. The fastest honest improvement is not more modelling — it is
 buying the price evidence (S07) and timestamping availability captures (S16).</p>
 </section>
 """
+    if "injuries" in d:
+        body += _pp.parallel_decisions(d)
+        body += ('<p class="flag info"><strong>Correction, 2026-11-12 (T16 merge):</strong> the answer to Q-05 '
+                 'keeps its original wording, but two club depth charts were verified that day — see '
+                 '<a href="lineups.html">Lineup evidence</a>; coverage is 2 of 32 clubs.</p>')
     return rs.layout("questions.html", "Open questions",
                      "What must be known before a decision can reasonably be made, what we already know, "
                      "and what is still missing.", body, wide=True)
@@ -406,11 +417,19 @@ a reward even if it predicts.</li>
 <div class="cards smallcards">
 <a class="minicard" href="assets/data/injury_snapshot_week10.csv"><strong>Week-10 capture</strong><span>20 rows, machine-readable.</span></a>
 <a class="minicard" href="assets/data/injury_snapshot_2019_wk5.csv"><strong>2019 capture</strong><span>11 rows, historical pilot.</span></a>
-<a class="minicard" href="assets/data/availability_sources.csv"><strong>Source checks</strong><span>Ten official pages and their observed results.</span></a>
+<a class="minicard" href="assets/data/availability_sources.csv"><strong>Source checks</strong><span>Twelve official pages and their observed results.</span></a>
 <a class="minicard" href="assets/data/availability_signals.csv"><strong>Signal register</strong><span>Eight signals and their blockers.</span></a>
 </div>
 </section>
 """
+    if "injuries" in d and len(d["injuries"]):
+        body += _pp.parallel_injuries(d)
+    if "injuries" in d:
+        body += ('<p class="flag info"><strong>Correction, 2026-11-12 (T16 merge):</strong> the league site has '
+                 'no depth-chart page, but two club charts do exist and were read that day — the ordered cells '
+                 'are on <a href="lineups.html">Lineup evidence</a>. The sentence above is kept as its author '
+                 'wrote it; the limitation it names still holds league-wide (2 of 32 clubs, no capture time).</p>')
+
     return rs.layout("injuries.html", "Injuries and lineup availability",
                      "Verified official injury captures, the depth-chart gap, and the deficiency signals that "
                      "cannot yet be computed.", body, wide=True)

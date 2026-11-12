@@ -21,7 +21,6 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGES = ["decisions.html","suggestions.html","lineups.html","index.html", "executive-summary.html", "lines.html", "strategies.html", "validation.html",
          "correlations.html", "props.html", "methodology.html", "requirements.html", "verification.html", "flagged.html", "sources.html", "audit.html",
          "availability.html", "decision-board.html", "open-questions.html",
-         "injury-report-week10.html", "review-gate-suggestions.html", "pre-decision-register.html",
          "suggestions.html", "questions.html", "injuries.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
