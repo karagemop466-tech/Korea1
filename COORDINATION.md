@@ -1039,3 +1039,72 @@ the merged code rather than hand-editing HTML.
 **Protocol deviation, recorded.** The platform pins this session to `arena/3e57f750-korea1` and it cannot
 create `session-<id>/<task>` branches; the same limitation was recorded by every earlier session. All work
 is therefore committed to this one branch, which is also the integration branch for this session's PR.
+
+### 2026-11-12T14:05Z — T14–T17 done (`arena/3e57f750-korea1`): injuries, questions, suggestions, refreshed pin
+
+**Task status.** T14, T15, T16 and T17 are **done**. Nothing in T14–T17 touches another session's
+scope, and no other claim has a commit after 2026-11-02, so the 60-minute takeover rule applied and the
+takeover was recorded in the claim commit `39a872b` before any scoped file was edited.
+
+**What was built**
+
+| Task | Artefact | What it delivers |
+|---|---|---|
+| T14 | `pipeline/injuries.py`, `data/official/*`, `data/processed/injury_*.csv`, `injuries.html` | 61 official Week 10, 2026 injury rows across 3 games and 6 clubs, joined by exact normalised name to 354 ranked rows from 6 club depth charts (171 chart columns). Per-club availability, starters ruled out, the next man up and his depth (2nd/3rd string), unranked rows, coverage ledger and 9 machine-checked invariants. |
+| T15 | `research/decision_questions.csv`, `research/information_inventory.csv`, `questions.html` | 15 questions with what is known (and its source), what is missing and the action that settles it; 12 inventory items (3 HAVE / 3 PARTIAL / 6 MISSING); a suggested answer sequence and the 4 decisions the current evidence does and does not support. |
+| T16 | `research/suggestions.csv`, `suggestions.html` | 13 proposals, each with problem, benefit, cost, risk, evidence status and dependencies; a six-step decision protocol, a scoring rubric, three decision paths (A evidence-first / B availability-first / C competition-first), a priority-versus-effort view and a decision log D01–D03. Nothing was accepted or implemented. |
+| T17 | refresh + integration | Pinned upstream refreshed `a270278f` → `9654533e`, every artefact rebuilt, 9 new flagged irregularities, README/executive summary/requirements/flagged/sources/index updated, verification suite extended, PR and deploy recorded below. |
+
+**Sources used (all read during this session; each is linked from every published row that relies on it)**
+
+| Source | URL | Used for |
+|---|---|---|
+| NFL.com official injury report, Week 10 2026 | https://www.nfl.com/injuries/ | All 61 injury rows (player, position, injury, practice status, game status, club record) |
+| Washington Commanders depth chart | https://www.commanders.com/team/depth-chart | 29 chart columns |
+| New York Giants depth chart | https://www.giants.com/team/depth-chart | 29 chart columns |
+| New England Patriots depth chart ("UNOFFICIAL", club states it reflects Patriots.com writers' opinions) | https://www.patriots.com/team/depth-chart | 29 chart columns |
+| Detroit Lions depth chart ("Unofficial … compiled by Lions Football Communications") | https://www.detroitlions.com/team/depth-chart | 28 chart columns |
+| Kansas City Chiefs depth chart ("Unofficial Depth Chart") | https://www.chiefs.com/team/depth-chart | 28 chart columns |
+| Atlanta Falcons depth chart | https://www.atlantafalcons.com/team/depth-chart | 28 chart columns |
+| nflverse/nfldata commit `9654533e5a0958726afcc076860f2c828ea0bf61` | https://github.com/nflverse/nfldata/commit/9654533e5a0958726afcc076860f2c828ea0bf61 | Refreshed pinned research input (community data, not official) |
+
+**Verification performed in this session (executed, not assumed)**
+
+| Check | Result |
+|---|---|
+| Official page reads | 8 pages read with the page-fetch tool (shell egress to nfl.com and the club domains is refused by the sandbox, as `pipeline/fetch_data.py` already documents) |
+| Transcription reconciliation | Row counts reconciled per club (WAS 9, NYG 11, NE 15, DET 9, KC 11, ATL 6 = 61); personal page URLs captured per row; the six charts re-read column by column, including two blank-rank columns kept as published (KC WR, KC KR/PR) |
+| `make build` (full pipeline, refreshed pin) | passed; renders 16 root pages + 9 annex pages, writes the processed tables and mirrors |
+| `pipeline/verify_site.py` | **0 failing checks** across 25 pages (V1 official reference per row, V1b blank unverified metrics, V2 links, V3 no missing tokens, V4 captions, V5 snapshot footer, V6 local assets) |
+| `tests/check_sources.py` | 15 canonical pages, **580 rows**, every row on an official/primary host |
+| `tests/check_links.py` | 25 pages, no broken link, anchor or asset, no external dependency |
+| `make test` | **35 passed** (6 new injury invariants: official source per row, hash match, no inferred depth rank, replacement from the same chart column, unranked flagged, repeated columns separated) |
+| Determinism | a second full `make build` produced a **clean git tree** (byte-identical outputs) |
+| Injury integrity | 9/9 checks pass: 61/61 and 354/354 rows official, both SHA-256 pins match, every rank an integer ≥ 1, no duplicate (team, slot column, rank) |
+
+**Published numbers moved by the refresh — recorded, not smoothed**
+
+Board now starts at Week 10 (2026-11-12), 136 games, weeks 10–18 (was weeks 8–18 including played
+games); model inputs now include results through Week 9 (2026-11-09); settled tickets 27,218 → **27,344**;
+spread error 10.523 → **10.522** vs market 10.214; total error 10.762 → **10.768** vs 10.529; White
+reality-check p 0.186 → **0.463** (research only). Verdicts unchanged: **0 of 18** candidates pass all
+eight gates, all 18 `UNVERIFIED`, no reward awarded. The model still loses to the market on both markets.
+
+**Irregularities found by this session's repo review**
+
+F-13 stale pin publishing played games as upcoming — **repaired** (refresh); cadence still open (S01).
+F-14 injury tracking was required but absent — **pilot delivered**, 26 clubs open (S02).
+F-15 starter/backup roles rest on club charts that NE/DET/KC label unofficial; no inactives or snap
+counts — **open** (S03). F-16 the injury snapshot is an agent transcription, not a byte-exact crawl —
+**open** (Q15). F-17 two board tasks were `in progress` for 10 days with no commits — taken over and
+logged. F-18 README named the previous session — repaired. F-19 `executive_summary_addendum.md` was
+unwired and carried pre-refresh figures (p 0.186 vs 0.463) — the annex paragraph is now generated from the
+artefacts and the file is marked SUPERSEDED. F-20 a log entry says 26,149 bets against the rebuilt
+27,344 — recorded, log left append-only. F-21 three requirement registers coexist — the HTML page is
+authoritative, the others are labelled. All nine are on `flagged.html` with a source link.
+
+**Schema note for future sessions.** `data/official/injuries_2026_w10.csv` and
+`data/official/depth_charts_2026_w10.csv` are the only files a refresh needs to replace; their SHA-256
+pins live in `data/official/provenance_2026_w10.json` and `pipeline/injuries.py` fails closed if a hash,
+a host or a slot rank disagrees. Extending to the other 26 clubs means appending rows and adding the club
+host to `OFFICIAL_HOSTS` in `pipeline/injuries.py` and `ALLOW` in `pipeline/verify_site.py`.
