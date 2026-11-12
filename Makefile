@@ -26,7 +26,10 @@ backtest:
 	$(PY) pipeline/correlations.py
 
 site:
+	$(PY) data/review/_author.py
+	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/render_site.py
+	$(PY) pipeline/render_review.py
 	$(PY) pipeline/render_summary.py
 	$(PY) pipeline/render_readiness.py
 	$(PY) pipeline/render_annex.py
@@ -37,7 +40,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py
 
 annex:
 	bash scripts/run_all.sh
