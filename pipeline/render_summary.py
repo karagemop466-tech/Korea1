@@ -39,28 +39,33 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
-## Decision readiness follow-up — 2026-11-12
+## Decision readiness & lineup follow-up — 2026-11-12
 
-Three review registers sit in front of the research, generated from the same data as the pages, and none
+Four review registers sit in front of the research, generated from the same data as the pages, and none
 of them is an approval:
 
 | Register | Size / status | What it establishes |
 |---|---|---|
+| `suggestions-review.html` | 12 staged improvements — interactive Path A / B / C selector | Side-by-side Conservative / Balanced / Full path options, trade-offs, affected gates and browser-only decision JSON export before any model or rule edit |
 | `suggestions.html` | {rc['suggestions']} proposals — {rc['adopt']} ready now, {rc['pilot']} pilot, {rc['recommended']} recommended before any reward, {rc['rejected']} rejected, {rc['deferred']} deferred, {rc['blocked_suggestions']} blocked | Cost, risk, dependency and acceptance evidence for every change, plus four paths (A–D) and a change-control worksheet |
+| `decision-readiness.html` | 14 pre-decision Q&As, 8 discovery protocols & 28 post-pin NFL.com scores | Separates verified knowns from missing inputs and reconciles all 28 Week 8–9 2026 games settled on NFL.com after the 2026-11-01 archive pin |
 | `decisions.html` | 12 readiness questions plus a parallel 8-proposal register | Current answers, missing inputs, discovery steps and the gate each one feeds |
 | `questions.html` | {rc['questions']} questions — {rc['answered']} answered, {rc['open']} open, {rc['blocked']} blocked, {rc['decisions']} needing an owner decision | Every answer cited; blocked rows left blank with the reason and a closure test |
+| `lineup-deficiencies.html` | 39 Week 10 entries across 8 clubs / 4 matchups + NFL Operations T-90m rule | Offensive & defensive 1st–4th string tracking across `WAS@NYG`, `NE@DET`, `KC@ATL` and `MIN@GB`, club disclaimers/trade lag, and prefix-safe PBP backup diagnostics |
 
-Two dated captures are transcribed exactly: the 2026 week-10 WAS/NYG report (20 rows — 2 Out, 1
-Questionable, 17 blank) and 2019 week 5 (11 rows). {sig_line} — **0 in the leaderboard**, because none
-clears the leakage and confirmation tests and the board is pinned before week 8.
+Two dated captures are transcribed in `injuries.html`: the 2026 week-10 WAS/NYG report (20 rows — 2 Out, 1
+Questionable, 17 blank) and 2019 week 5 (11 rows), while `lineup-deficiencies.html` expands verified 2026
+Week 10 depth-chart coverage to **8 of 32 clubs** (`commanders.com`, `giants.com`, `patriots.com`,
+`detroitlions.com`, `chiefs.com`, `atlantafalcons.com`, `vikings.com`, `packers.com`) and documents the
+mandatory T-90m Game Day Administration inactive & roof rule on `operations.nfl.com`. {sig_line} — **0 in
+the leaderboard**, because none clears the leakage and confirmation tests and the board is pinned before week 8.
 
-The official source inventory holds {n_src} checks ({n_verified} verified, {n_neg} verified-negative),
-including **{charts} club depth charts** read on 2026-11-12. The league site has no depth-chart page and
-its rosters are alphabetical, but the clubs publish charts, so a starter/backup *order* exists for those
-clubs — {charts} of 32 — with no publication time on either chart and no confirmed game-day role. No player
-is called a confirmed replacement, no depth rank is invented for a player absent from a chart, and no
-availability signal enters the model. A read-only daily Actions monitor archives the sources; collection is
-not verified extraction. All-club coverage, game-day role confirmation and validated impact remain blocked.
+The initial official source inventory in `availability.py` holds {n_src} checks ({n_verified} verified,
+{n_neg} verified-negative, including {charts} club depth charts), and `sources_lineups.json` adds 6 further
+verified club depth charts (total **8 of 32 clubs**). No player is called a confirmed game-day replacement,
+no depth rank is invented for a player absent from a chart, and no availability signal enters the model.
+A read-only daily Actions monitor archives the sources; collection is not verified extraction. All-club
+coverage, game-day role confirmation and validated impact remain blocked.
 
 ## Update of 2026-11-12
 

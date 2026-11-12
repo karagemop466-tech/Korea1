@@ -1403,3 +1403,48 @@ After the final merge `make build` + `make test` pass; counts are recorded with 
 | Re-verification at merge time | The 44 injury-report rows for WAS, NYG, NE and DET in `data/availability/injuries.csv` were re-read against https://www.nfl.com/injuries/ immediately before the merge: identical, field for field |
 | **Not confirmed** | The scheduled `availability.yml` now exists on `main`, but its final form (commit-back with rebase, checks before commit) has **not yet run**: manual dispatch from this session is refused (HTTP 403, token cannot dispatch workflows). Only the earlier probe version ran (run 43223697554, success). First scheduled run is due 2026-11-12 21:17 UTC; check the Actions tab. If it fails, the page keeps the 13:03Z snapshot and says so by its capture time |
 | Left untouched | PR #19 (open, conflicting, another session's), PR #24 (open, another session's) |
+
+## 2026-11-12 Phase — Session `arena/d6b3fd34-korea1` (G1–G6)
+
+### Concurrent-branch inspection & non-overlapping namespace resolution
+
+Inspected `main` (`645ef0c`, last updated 2026-11-02T21:01:54Z — all 2026-11-01/02 claims are >10 days old)
+and also ran `git ls-remote --heads origin` across all remote branches before claiming. Three sibling Arena
+sessions spawned simultaneously at 2026-11-12T12:56Z had just pushed claim-only commits to their own branches,
+each claiming full-deliverable integration scopes without awareness of the others:
+
+| Concurrent branch | Claim commit | Time (UTC) | Primary paths claimed on that branch |
+|---|---|---|---|
+| `arena/3e57f750-korea1` | `39a872b` | 12:57:19Z | `pipeline/injuries.py`, `data/official/**`, `injuries.html`, `research/decision-questions.csv`, `questions.html`, `research/suggestions.csv`, `suggestions.html`, `tests/test_injuries.py` (+ shared integration files) |
+| `arena/03f66e17-korea1` | `2b6fed2` | 12:57:30Z | `research/decision-register.json`, `pipeline/render_decisions.py`, `tests/test_decisions.py`, `assets/data/decision-register.json` (+ shared integration files) |
+| `arena/425336fc-korea1` | `a80c026` | 12:58:58Z | `research/repo_review.md`, `research/suggestions.md`, `suggestions.html`, `research/decisions.md`, `decisions.html`, `research/signals.md`, `research/leaderboard.md`, `research/injuries.md`, `injuries.html` (+ shared integration files) |
+
+**Platform constraint & non-overlap resolution:** Each Arena session is fixed by the runtime to its own branch
+(`arena/d6b3fd34-korea1` here; creating or switching to `session-<id>/<task>` branches is disallowed). To
+avoid colliding with any sibling's primary code, data, tests, or new HTML filenames while delivering the
+complete 2026-11-12 prompt end to end, `arena/d6b3fd34-korea1` namespaces all primary artefacts into strictly
+disjoint paths (`pipeline/lineup_deficiencies.py`, `pipeline/decision_readiness.py`, `pipeline/render_governance.py`,
+`data/lineups/**`, `data/governance/**`, `suggestions-review.html`, `decision-readiness.html`,
+`lineup-deficiencies.html`, `tests/test_governance_and_lineups.py`) and performs final integration of shared
+outputs (`COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `research/requirements.md`, `Makefile`,
+`pipeline/render_site.py`, `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`,
+`assets/data/**`, root `*.html`) only after pulling/merging `origin/main` without discarding any sibling work.
+No sibling branch or open PR (including PR #19) will be force-pushed, closed, or overwritten.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| G1 | Line-by-line repo review + official-source verification + 2026-11-12 freshness & irregularity audit | **done** | `arena/d6b3fd34-korea1` | `data/governance/repo_verification_2026_11_12.csv`, `data/governance/post_pin_nfl_scores_2026_11_12.csv`, `pipeline/decision_readiness.py` |
+| G2 | Suggestions Review Hub: decision-making improvements + dedicated review-before-implementation section/page | **done** | `arena/d6b3fd34-korea1` | `data/governance/suggestions_review.csv`, `suggestions-review.html`, `pipeline/render_governance.py`, `assets/app.js` |
+| G3 | Pre-Decision Q&A, Knowns vs Unknowns & Missing-Information Discovery Register | **done** | `arena/d6b3fd34-korea1` | `data/governance/decision_questions.csv`, `data/governance/missing_info_discovery.csv`, `decision-readiness.html`, `pipeline/render_governance.py` |
+| G4 | Offensive & Defensive Injury + 1st/2nd/3rd/4th-String Backup Lineup Deficiency Tracker (official NFL.com Week 10 2026 + 8 official club depth charts + historical starter/backup PBP evidence) | **done** | `arena/d6b3fd34-korea1` | `pipeline/lineup_deficiencies.py`, `data/lineups/**`, `lineup-deficiencies.html`, `tests/test_governance_and_lineups.py` |
+| G5 | Line origination, signal leaderboard, parlays/props correlation & luck-control audit integration + Executive Summary | **done** | `arena/d6b3fd34-korea1` | `EXECUTIVE_SUMMARY.md`, `research/requirements.md`, `pipeline/render_summary.py`, `DECISIONS.md` |
+| G6 | Final integration, strict source/link/blank-cell verification, PR → `main`, merge, GitHub Pages live deploy confirmation | **in progress** | `arena/d6b3fd34-korea1` | `COORDINATION.md`, `README.md`, `Makefile`, `pipeline/render_site.py`, `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`, `assets/data/**`, root `*.html` |
+
+### G1–G5 delivery & additive sibling-merge summary (`arena/d6b3fd34-korea1`)
+
+- **Conflict-free sibling preservation:** Merged `origin/main` through `7e6014c` (PRs #22, #23, #25, #26, #27, #28, #31 from `arena/03f66e17-korea1`, `arena/25460478-korea1`, and `arena/425336fc-korea1`). Every sibling page (`decisions.html`, `suggestions.html`, `questions.html`, `lineups.html`, `injuries.html`), data file, monitor workflow, and regression test suite (`test_decisions.py`, `test_review_registers.py`) was preserved intact with zero dropped entries.
+- **Expanded 8-club Week 10 offensive & defensive 1st–4th string tracking (`lineup-deficiencies.html`):** Verified 39 Week 10 injury and 1st–4th string depth-chart rows across **8 NFL clubs / 4 complete matchups** (`WAS @ NYG`, `NE vs DET`, `KC @ ATL`, `MIN @ GB`) from `nfl.com/injuries/` and `commanders.com`, `giants.com`, `patriots.com`, `detroitlions.com`, `chiefs.com`, `atlantafalcons.com`, `vikings.com`, and `packers.com`, plus the live `operations.nfl.com` T-90m/T-60m Game Day Administration inactive & roof rule and prefix-safe walk-forward PBP backup diagnostics (`pbp_backup_impact.csv`, with unverified community estimates kept strictly blank in public HTML).
+- **Interactive path-selector Suggestions Review Queue (`suggestions-review.html` & `index.html#suggestions-for-review`):** Staged 12 improvements with Conservative (Path A), Balanced (Path B), and Full (Path C) options and browser-only decision JSON export before any model or gate mutation.
+- **Pre-decision Q&A, Missing-Info Discovery & 28-Game Post-Pin Score Census (`decision-readiness.html`):** Published 14 pre-decision Q&As, 8 missing-info discovery workflows, and all **28 settled Week 8 (13) & Week 9 (15) 2026 Final scores** verified on NFL.com on 2026-11-12 (`post_pin_nfl_scores_2026_11_12.csv`).
+- **CSS & verifier repairs (`IR-2026-11-12-04`, `IR-2026-11-12-05`):** Repaired 14 missing CSS selectors in `pipeline/render_site.py` (`CSS`) and synchronized `verification.html` + the three new pages across `verify_site.py`, `check_sources.py`, and `check_links.py`.
+- **Pre-PR verification:** `make build` passed (`0 failing checks`, 30 pages); `tests/check_sources.py` passed (`21 canonical pages, 1,078 rows`); `tests/check_links.py` passed (`30 pages`); `make test` passed (`53 passed`); `tests/check_rebuild.py` passed (`0 changed files`).
