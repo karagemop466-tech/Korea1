@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import html
 import json
-import re
 import shutil
 import sys
 from pathlib import Path
@@ -24,11 +23,6 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
 from render_audit import build_audit, irregularity_rows  # noqa: E402
-# arena/3e57f750-korea1 registers, published on paths that do not collide with the site's own
-# decisions.html / suggestions.html / injuries.html pages (merged 2026-11-12).
-from render_registers import (build_injuries as build_depth_register,  # noqa: E402
-                              build_questions as build_information_gaps,
-                              build_suggestions as build_decision_paths)
 
 # GitHub Pages for this repository is a branch build of `main` / `/` (the repo root),
 # and the API token in this environment is not permitted to change that. The site is
@@ -48,37 +42,50 @@ URL_DATASETS = f"https://github.com/nflverse/nfldata/blob/{SHA}/DATASETS.md"
 URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
 GENERATED = SRC["generated_utc"]
 
-NAV = [
-    ("__group__", "Dashboard & decisions"),
-    ("index.html", "Dashboard"),
-    ("executive-summary.html", "Executive summary"),
-    ("decisions.html", "Pre-decision questions"),
-    ("suggestions.html", "Suggestions for review"),
-    ("information-gaps.html", "Information gaps"),
-    ("decision-paths.html", "Decision paths"),
-    ("__group__", "Lines & modeling"),
-    ("lines.html", "Originated lines"),
-    ("__group__", "Strategy competition"),
-    ("strategies.html", "Leaderboard"),
-    ("validation.html", "Validation gates"),
-    ("correlations.html", "Correlations & parlays"),
-    ("props.html", "Player props"),
-    ("__group__", "Availability"),
-    ("injuries.html", "Injuries & availability"),
-    ("availability-capture.html", "Injury report (row by row)"),
-    ("depth-register.html", "Depth & replacement"),
-    ("__group__", "Evidence"),
-    ("methodology.html", "Methodology"),
-    ("requirements.html", "Requirements"),
-    ("sources.html", "Sources & downloads"),
-    ("audit.html", "Independent audit"),
-    ("verification.html", "Reproducibility"),
-    ("flagged.html", "Flagged for review"),
-    ("__group__", "Replication annex"),
-    # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
-    # same questions from a different odds archive. Served from lab/ and not part of this render.
-    ("lab/index.html", "Replication annex"),
+# Grouped by category (T17, arena/c0528572-korea1): the flat list had grown to 14 links.
+NAV_GROUPS = [
+    ("Overview", [
+        ("index.html", "Dashboard"),
+        ("executive-summary.html", "Executive summary"),
+    ]),
+    # Review surface: suggestions/questions from arena/25460478-korea1, readiness from arena/03f66e17-korea1.
+    ("Decide", [
+        ("suggestions.html", "Suggestions & paths"),
+        ("questions.html", "Open questions"),
+        ("decisions.html", "Decision readiness"),
+        ("information-gaps.html", "Information gaps"),
+        ("decision-paths.html", "Decision paths"),
+        ("flagged.html", "Flagged for review"),
+    ]),
+    ("Lines & strategies", [
+        ("lines.html", "Originated lines"),
+        ("strategies.html", "Leaderboard"),
+        ("validation.html", "Validation gates"),
+        ("correlations.html", "Correlations"),
+        ("props.html", "Player props"),
+    ]),
+    ("Availability", [
+        ("availability.html", "Injuries & depth · all clubs"),
+        ("depth-register.html", "Depth join (hand-checked)"),
+        ("injuries.html", "Injury source audit"),
+        ("lineups.html", "Lineup sample"),
+    ]),
+    ("Parallel registers", [
+        # Second, independently written registers (arena/c0528572-korea1); overlap with "Decide" is expected.
+        ("decision-board.html", "Decision board (2nd)"),
+        ("open-questions.html", "Open questions (2nd)"),
+    ]),
+    ("Evidence", [
+        ("methodology.html", "Methodology"),
+        ("requirements.html", "Requirements"),
+        ("sources.html", "Sources"),
+        ("audit.html", "Independent audit"),
+        ("verification.html", "Reproducibility"),
+        # Integration session arena/ea02c4fb-korea1: independent build served from lab/.
+        ("lab/index.html", "Replication annex"),
+    ]),
 ]
+NAV = [item for _, items in NAV_GROUPS for item in items]
 
 
 def e(x) -> str:
@@ -91,9 +98,10 @@ def src_link(url: str, label: str = "source") -> str:
 
 def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = False) -> str:
     nav = "".join(
-        f'<span class="navgroup">{e(t)}</span>' if s.startswith("__") else
-        f'<a class="navlink{" active" if s == slug else ""}" href="{s}">{e(t)}</a>'
-        for s, t in NAV)
+        f'<div class="navgroup"><span class="navhead">{e(g)}</span>' + "".join(
+            f'<a class="navlink{" active" if s == slug else ""}" href="{s}"'
+            f'{" aria-current=page" if s == slug else ""}>{e(t)}</a>' for s, t in items) + "</div>"
+        for g, items in NAV_GROUPS)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -106,13 +114,12 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
 <script src="assets/app.js" defer></script>
 </head>
 <body>
-<header class="topbar">
-  <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
-    <nav aria-label="Main navigation">{nav}</nav>
-  </div>
-</header>
 <a class="skip-link" href="#main-content">Skip to content</a>
+<div class="shell">
+<header class="side">
+  <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+  <nav aria-label="Main navigation">{nav}</nav>
+</header>
 <main id="main-content" class="wrap{' wide' if wide else ''}">
   <h1>{e(title)}</h1>
   <p class="lede">{subtitle}</p>
@@ -124,6 +131,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
     <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
+</div>
 </body>
 </html>
 """
@@ -166,8 +174,9 @@ def load():
         d[name] = read_json(PROC / f"{name}.json")
     d["sources"] = SRC
     d["official_scores"] = pd.read_csv(ROOT / "data/audit/nfl_com_score_audit.csv")
-    inj = PROC / "injuries_week10.csv"
-    d["injuries"] = pd.read_csv(inj) if inj.exists() else pd.DataFrame()
+    # T16 merge: session arena/425336fc-korea1's full league week-10 capture, rendered verbatim.
+    _inj = PROC / "injuries_week10.csv"
+    d["injuries"] = pd.read_csv(_inj) if _inj.exists() else pd.DataFrame()
     return d
 
 
@@ -175,11 +184,6 @@ OFFICIAL = {
     "NFL scores": "https://www.nfl.com/scores/",
     "NFL rules": "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook",
     "NFL injuries": "https://www.nfl.com/injuries/",
-    # The roster page pipeline/decisions.py verified (200) when it established that NFL.com has no
-    # depth-chart path (the sibling /depth-chart/ request returned 404). Cited by Q30 and S16.
-    "NFL team roster (Arizona Cardinals)": "https://www.nfl.com/teams/arizona-cardinals/roster",
-    # Referenced by pipeline/decisions.py (merged 2026-11-12); the same official page, labelled for that register.
-    "NFL injury report (2026 week 10)": "https://www.nfl.com/injuries/",
     "NFL schedule": "https://www.nfl.com/schedules/",
     "White (2000), Econometric Society": "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping",
     "Bailey & López de Prado (2014), publisher": "https://www.pm-research.com/content/iijpormgmt/40/5/94",
@@ -187,23 +191,42 @@ OFFICIAL = {
     "Politis & Romano (1994), publisher": "https://www.tandfonline.com/doi/abs/10.1080/01621459.1994.10476870",
     "FanDuel push settlement rules": "https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push",
     "GitHub Pages documentation": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages",
+    # Added 2026-11-12 (arena/25460478-korea1); each was fetched and its result recorded in
+    # data/processed/availability_sources.csv. A verified-negative URL is still the official page.
+    "NFL injury report (2026 week 10)": "https://www.nfl.com/injuries/league/2026/reg10",
+    "NFL injuries": "https://www.nfl.com/injuries/",
+    "NFL injury report (2019 week 5)": "https://www.nfl.com/injuries/league/2019/reg5",
+    "NFL game centre (WAS at NYG)": "https://www.nfl.com/games/commanders-at-giants-2026-reg-10",
+    "NFL week 10 schedule": "https://www.nfl.com/schedules/2026/by-week/week-10",
+    "NFL week 8 scores": "https://www.nfl.com/scores/2026/week-8",
+    "NFL team roster (Arizona Cardinals)": "https://www.nfl.com/teams/arizona-cardinals/roster",
+    "NFL roster depth tab (verified no depth order)": "https://www.nfl.com/teams/washington-commanders/roster?tab=depth",
+    "NFL depth-chart path (verified 404)": "https://www.nfl.com/teams/arizona-cardinals/depth-chart",
+}
+
+# Evidence class per reference, used by the sources page. Kept as an explicit map so a new
+# reference cannot silently fall off the table (the previous zip() truncated silently).
+OFFICIAL_TYPE = {
+    "NFL scores": "NFL", "NFL rules": "NFL", "NFL injuries": "NFL", "NFL schedule": "NFL",
+    "White (2000), Econometric Society": "Primary paper",
+    "Bailey & López de Prado (2014), publisher": "Primary paper",
+    "Benjamini & Hochberg (1995), university record": "University paper record",
+    "Politis & Romano (1994), publisher": "Primary paper",
+    "FanDuel push settlement rules": "Operator",
+    "GitHub Pages documentation": "Platform",
+    "NFL injury report (2026 week 10)": "NFL",
+    "NFL injury report (2019 week 5)": "NFL",
+    "NFL game centre (WAS at NYG)": "NFL",
+    "NFL week 10 schedule": "NFL",
+    "NFL week 8 scores": "NFL",
+    "NFL team roster (Arizona Cardinals)": "NFL",
+    "NFL roster depth tab (verified no depth order)": "NFL",
+    "NFL depth-chart path (verified 404)": "NFL",
 }
 
 
 def official(name="NFL scores"):
-    """Official reference link. Team-roster references are derived, not guessed by hand.
-
-    pipeline/decisions.py cites `NFL team roster (<Club>)` for the verified roster and 404 depth-chart
-    checks it performed. The club slug is a mechanical transformation of the NFL.com team name, so the
-    link resolves to the same official page type for every club.
-    """
-    if name in OFFICIAL:
-        return src_link(OFFICIAL[name], name)
-    m = re.fullmatch(r"NFL team roster \((.+)\)", str(name))
-    if m:
-        slug = m.group(1).strip().lower().replace(" ", "-")
-        return src_link(f"https://www.nfl.com/teams/{slug}/roster", name)
-    raise KeyError(name)
+    return src_link(OFFICIAL[name], name)
 
 
 def research_source(context="NFL scores"):
@@ -263,7 +286,15 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
 <a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
 <a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
-<a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>\n<a class="minicard" href="injuries.html"><strong>Injuries &amp; availability</strong><span>Official Week 10 injury capture; starter/backup deficiency policy.</span></a>\n<a class="minicard" href="decisions.html"><strong>Pre-decision questions</strong><span>Information we have and do not have before any decision.</span></a>\n<a class="minicard" href="suggestions.html"><strong>Suggestions for review</strong><span>Review-before-implement register with recorded decisions.</span></a>
+<a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
+</div></section>
+<section><h2>Review before changing anything</h2><div class="cards smallcards">
+<a class="minicard" href="decisions.html"><strong>Decision readiness</strong><span>Twelve decision questions, known answers, missing inputs and a parallel eight-proposal register.</span></a>
+<a class="minicard" href="suggestions.html"><strong>Suggestions &amp; paths</strong><span>Twenty-two changes with cost, risk and dependencies, plus four coherent paths.</span></a>
+<a class="minicard" href="questions.html"><strong>Open questions</strong><span>What must be known first, what is answered, and what is blocked on data we do not have.</span></a>
+<a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Seven official injury observations plus two club depth charts; confirmed roles stay blank.</span></a>
+<a class="minicard" href="availability.html"><strong>Injuries &amp; depth · all clubs</strong><span>Scheduled capture of the official injury report and club depth charts: who is out, who is listed next.</span></a>
+<a class="minicard" href="injuries.html"><strong>Injury source audit</strong><span>Twelve verified official sources, two exact captures and the availability signal register.</span></a>
 </div></section>
 <section><h2>What the audit changed</h2><ul class="findings">
 <li>Default builds now use the published commit, not a silently moving upstream branch.</li>
@@ -279,13 +310,51 @@ def build_executive(d):
     gates, pred = d["strategy_gates"], d["originated_lines"]
     scores = d["official_scores"]
     matched = int(scores.status.eq("MATCH").sum())
+    from decisions import QUESTIONS, SUGGESTIONS
+    from render_decisions import recount
+    n = recount()
+    review_table = table([
+        ["Suggestions register", f"{n['suggestions']} proposals",
+         f"{n['adopt']} ready now, {n['pilot']} pilot, {n['recommended']} recommended before any reward, "
+         f"{n['rejected']} rejected. Nothing is implemented until a path is chosen.",
+         official("GitHub Pages documentation")],
+        ["Open questions", f"{n['questions']} questions · {n['answered']} answered",
+         f"{n['blocked']} blocked, {n['open']} open, {n['decisions']} need an owner decision. Blocked rows are blank, not filled in.",
+         official("NFL scores")],
+        ["Injuries and depth", "PARTIAL",
+         "The official injury report is verified (20 rows for one week-10 game) and two club depth charts are verified, "
+         "so a starter/backup order exists for those clubs. No chart carries a capture time, coverage is 2 of 32 clubs, "
+         "and no availability signal is in the leaderboard.",
+         official("NFL injury report (2026 week 10)")],
+        ["Recommended path", "Path A now, Path B next",
+         "Hold the evidence line while the site is cleaned up; buy authenticated prices before any reward is discussed; "
+         "run availability research alongside, not instead.",
+         official("White (2000), Econometric Society")],
+    ], ["Register", "Size / status", "What it establishes", "Official reference"],
+       caption="Registers published with this build; counts are generated from the same data as the pages")
     body = f"""
 {notice()}
 <section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
 <p>The repository contains a working line-origination pipeline, a strategy library, settlement tests,
 correlation diagnostics and a fail-closed competition. It does not contain the verified, timestamped
 sportsbook quotes needed to establish an executable edge. No single bet, parlay or player-prop combo
-has passed every gate. This is an evidence gap, not proof that every strategy has zero expected value.</p></section>
+has passed every gate. This is an evidence gap, not proof that every strategy has zero expected value.</p>
+<p><strong>Readiness follow-up · 2026-11-12:</strong> three independent review registers now sit in front of the
+research — a <a href="decisions.html">12-question readiness register</a> with an eight-proposal parallel register,
+a <a href="suggestions.html">22-proposal register with four decision paths</a>, and a
+<a href="questions.html">40-question open-question register</a> — plus two dated availability captures
+(<a href="injuries.html">league report</a> and <a href="lineups.html">club depth charts</a>). Confirmed
+starter/replacement roles, depth ranks and quantitative impacts remain blank. No strategy or proposal is newly
+approved, and no reward is funded. The scheduled league-wide capture (all clubs, refreshed automatically) is <a href="availability.html">Injuries &amp; depth · all clubs</a>.</p></section>
+<section><h2>Update of 2026-11-12</h2>
+{table([
+["Injuries and lineups", "Tracking live · effect not priced", "A scheduled workflow reads the official NFL.com injury report and each club's depth-chart page, then shows for offense and defense which first-listed players are Out or Doubtful and which 2nd, 3rd or 4th-string player the club lists next. It does not yet move the originated line: the point value of an absence has not been measured. See <a href='availability.html'>Injuries &amp; depth</a>.", official("NFL injuries")],
+["Second suggestions register", "Awaiting your decision", "A second, independently written list is on the <a href='decision-board.html'>decision board</a> with options, a recommendation and the evidence behind it. Nothing has been implemented. Decide DB-02 (real prices) and DB-03 (forward paper ledger) first: they unblock every verdict.", official("White (2000), Econometric Society")],
+["Second questions register", "Unanswered", "A second, independently written <a href='open-questions.html'>open-questions register</a> separates what is known from what is missing and names how to find it. Some questions only you can answer: sportsbooks and jurisdiction, bankroll, success threshold, refresh cadence, reward.", official("White (2000), Econometric Society")],
+["Line board freshness", "Stale", "The open line board still starts at Week 8 because the data snapshot is pinned at 2026-11-02; the injury capture is for the current week. Refreshing is suggestion DB-04.", official("NFL schedule")],
+["Site", "Repaired", "Navigation is grouped by category and the stylesheet now defines the classes the pages use. Findings from this review are on <a href='flagged.html'>Flagged for review</a> (RV-01 to RV-11).", official("GitHub Pages documentation")],
+], ["Area", "Status", "What changed and what it means", "Official reference"], caption="What is new since the 2026-11-02 report")}
+</section>
 <section><h2>Important details</h2>
 {table([
 ["Line origination", "Implemented", "Elo, rolling matchup points and ridge; season-by-season walk-forward fitting. Model outputs are estimates, not official lines.", official("NFL scores")],
@@ -303,6 +372,11 @@ has passed every gate. This is an evidence gap, not proof that every strategy ha
 <li>The old parlay entries selected the largest edges across an entire week, including later kickoffs. They now select an earliest eligible simultaneous slate.</li>
 <li>The old “LUCK” label confused failure to reject with proof of luck. Public verdicts now distinguish unverified evidence from validated performance.</li>
 <li>Earlier results remain available in the research annex for comparison. They are superseded for decision-making, not deleted.</li></ul></section>
+<section><h2>Review surface added 2026-11-12</h2>
+<p>Three registers now sit in front of the research so a decision can be made before code changes.
+None of them changes a published number; all of them make the missing evidence explicit.</p>
+{review_table}
+</section>
 <section><h2>Next evidence needed</h2><ol class="findings">
 <li>Timestamped, bookmaker-published pre-kickoff lines and executable ticket quotes, including limits and settlement terms.</li>
 <li>Official game results and timestamped player availability, with archived player statistics and prop settlement rules.</li>
@@ -519,6 +593,11 @@ This is a targeted code and claim audit with executable tests—not a claim that
 def build_flagged(d):
     from render_audit import irregularity_rows
     rows = irregularity_rows(SHA, src_link)
+    decisions = read_json(ROOT / "research/decision-register.json")
+    gap_rows = [[e(r["id"]), "Needs review", e(r["finding"]), e(r["next"]),
+                 src_link(decisions["sources"][r["source"]]["url"], "Official context (not verification)") +
+                 "".join("<br>" + src_link(decisions["sources"][key]["url"], "Attempted URL — 404") for key in r.get("attempted_sources", []))]
+                for r in decisions["flags"]]
     new = [
         ["F-01", "High · repaired", "Normal builds resolved upstream master despite claiming a pinned reproduction. Default now reads the committed SHA; refresh requires an explicit flag.", official("GitHub Pages documentation")],
         ["F-02", "High · repaired", "Full-history median weather filled missing observations and leaked future distribution information. Observed fields now stay blank; weather/roof excluded from default features.", official("NFL scores")],
@@ -532,23 +611,36 @@ def build_flagged(d):
         ["F-10", "Medium · repaired", "A normal continuity correction was described as correctly pricing NFL key numbers. The model now uses prior out-of-fold empirical residuals; predictive calibration remains unverified.", official("NFL scores")],
         ["F-11", "Medium · open", "Historical annex estimates use different archives and older code. They are retained for replication, not promoted to current verified findings.", official("NFL scores")],
         ["F-12", "Medium · repaired", "The old road-favourite comment contradicted its selection. The documented sign convention and selected side are now covered by a regression test.", official("NFL scores")],
-        ["F-13", "High · repaired", "The pinned upstream snapshot was stale: NFL.com showed week-8 games Final that the pin left blank, and master had moved 108 commits ahead. The pin was refreshed and every dataset, model, backtest, prop and page rebuilt and re-verified on 2026-11-12; before/after figures are shown side by side on the executive summary.", official("NFL scores")],
-        ["F-14", "Medium · open", "Availability coverage is 6 of 32 clubs. The official Week 10 report page as retrieved covers WAS, NYG, NE, DET, KC and ATL only; the other 26 clubs are outside this capture and are flagged, never assumed healthy.", official("NFL injuries")],
-        ["F-15", "Medium · open", "Four of the six club depth charts are labelled UNOFFICIAL by the clubs themselves (New England, Detroit, Kansas City; Washington publishes no status, Atlanta and the Giants publish none either). Chart order is not an official depth order, so no replacement is inferred from it alone.", src_link("https://www.patriots.com/team/depth-chart", "Patriots depth chart (unofficial)") + " · " + src_link("https://www.chiefs.com/team/depth-chart", "Chiefs depth chart (unofficial)")],
-        ["F-16", "Low · open", "The depth and injury registers are transcriptions, not byte-exact crawls: this environment cannot open nfl.com or the club sites from the shell, so pages were read through a text fetcher and typed in. Every row carries the page it came from, but a re-capture could differ in cell order.", src_link("https://www.nfl.com/injuries/", "NFL injury report")],
-        ["F-17", "Low · repaired", "Three claims on the coordination board (COORDINATION.md, repository root) went stale while their sessions were still listed as active. They were taken over only after the 60-minute no-commit rule and each takeover is recorded with a handoff note. The board is a repository artifact, not an official source, so this row cites the publishing platform.", official("GitHub Pages documentation")],
-        ["F-18", "Low · repaired", "The README (repository root) named a previous session as the current owner. It now names every session whose work is merged and points to the board for claims. Repository files are not official sources, so this row cites the publishing platform.", official("GitHub Pages documentation")],
-        ["F-19", "Medium · repaired", "An executive-summary addendum carrying pre-refresh figures was committed but never wired into the build, so it would have gone stale silently. It is marked SUPERSEDED and is not published; the live summary is regenerated every build.", official("GitHub Pages documentation")],
-        ["F-20", "Medium · open", "The audit log records 26,149 settled tickets while the current build settles 27,344, from different upstream pins. Neither figure is wrong; they are not comparable, and neither is a return claim.", official("NFL scores")],
-        ["F-21", "Low · open", "Three requirement registers exist (research/requirements.md, the site requirements page and the decision registers). The requirements page is generated from research/requirements.md, but the two decision registers keep their own question and suggestion ids; this is listed rather than merged, because merging would rewrite another session's ids.", official("GitHub Pages documentation")],
-        ["F-22", "High · repaired", "On 2026-11-12 main shipped with a red test suite: suggestions.html was a hard-coded 8-row list with ids S-01… while the generated register had 22 rows with ids S01…, and the availability page it linked was built from a raw capture instead of the sourced register. The page now renders from data/processed/suggestions.csv, the availability register renders from the availability module, and the raw transcription moved to availability-capture.html. make test: 52 passed.", official("GitHub Pages documentation")],
+        ["F-13", "High · open", "The originated board still lists week-8 games as open lines although NFL.com shows them Final (Cardinals 33–30 Cowboys, Panthers 19–27 Packers). The board is a pre-week-8 snapshot; the defect is the missing per-row status, not the numbers.", official("NFL week 8 scores")],
+        ["F-14", "High · open", "The live injury report describes week 10, which cannot be joined to a board frozen before week 8. Any availability column would be hindsight until the pin is refreshed or each row is labelled by kickoff.", official("NFL week 10 schedule")],
+        ["F-15", "High · open", "The league site has no depth-chart page (404) and its rosters are alphabetical, but the clubs do publish charts: two were verified on 2026-11-12. Coverage is therefore 2 of 32 clubs, no chart shows a publication time, and chart order is not a confirmed game-day role. Starter/backup tracking is PARTIAL and no replacement is confirmed.", official("NFL depth-chart path (verified 404)")],
+        ["F-16", "Medium · needs review", "Official NFL pages disagree on two values: Lucas Patrick is C on the report and roster but OL on Game Center; Malik Harrison is 'Limited Participation' on the report but 'Did participate' on Game Center. Both versions are published with the disposition; nothing was inferred.", official("NFL game centre (WAS at NYG)")],
+        ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
+        ["F-18", "High · repaired", "The pinned upstream snapshot was stale until 2026-11-12: NFL.com showed week-8 games Final that the pin left blank and upstream master had moved 108 commits ahead. The pin was refreshed and every dataset, model, backtest, prop and page rebuilt; before/after figures sit side by side on the executive summary. F-13 above keeps the original finding, which was about the missing per-row status rather than the pin.", official("NFL scores")],
+        ["F-19", "Medium · open", "Two availability captures now coexist. The scheduled tracker (availability.html, data/availability/) covers 24 clubs of official injury rows and 31 clubs of depth charts, while depth-register.html keeps a hand-typed capture of 61 rows across 6 clubs joined to 354 ranked depth rows. The hand capture is an independent check on the automatic one, not a second truth: where they disagree, the official page wins and the difference is listed on depth-register.html.", official("NFL injuries")],
+        ["F-20", "Medium · open", "Four of the six hand-captured club charts are labelled UNOFFICIAL by the clubs themselves (New England, Detroit, Kansas City; Washington, Atlanta and the Giants publish no status either). Chart order is not an official depth order, and the automatic tracker inherits the same limitation across all 31 clubs it reads.", src_link("https://www.patriots.com/team/depth-chart", "Patriots depth chart (unofficial)") + " · " + src_link("https://www.chiefs.com/team/depth-chart", "Chiefs depth chart (unofficial)")],
+        ["F-21", "Low · repaired", "Three claims on the coordination board went stale while their sessions were still listed as active. They were taken over only after the 60-minute no-commit rule, and each takeover is recorded with a handoff note. The board is a repository artefact, not an official source, so this row cites the publishing platform.", official("GitHub Pages documentation")],
+        ["F-22", "Low · repaired", "The README named a previous session as the current owner. It now names every session whose work is merged and points to the board for claims. Repository files are not official sources, so this row cites the publishing platform.", official("GitHub Pages documentation")],
+        ["F-23", "Medium · repaired", "An executive-summary addendum carrying pre-refresh figures was committed but never wired into the build, so it would have gone stale silently. It is marked SUPERSEDED and is not published; the live summary is regenerated every build.", official("GitHub Pages documentation")],
+        ["F-24", "Medium · open", "The audit log records 26,149 settled tickets while the current build settles 27,344, from different upstream pins. Neither figure is wrong; they are not comparable and neither is a return claim.", official("NFL scores")],
+        ["F-25", "Low · open", "Several question and suggestion registers now exist in parallel (questions.html, decisions.html, open-questions.html, decision-board.html, and this session's information-gaps.html / decision-paths.html). Each labels its own scope and none is merged, because merging would rewrite another session's ids; a reviewer should pick one as canonical rather than assume they agree.", official("GitHub Pages documentation")],
+        ["F-26", "High · repaired", "On 2026-11-12 the branch merged into main carried a red test suite: suggestions.html was a hard-coded eight-row list with ids S-01… while the generated register had 22 rows with ids S01…, and citations to NFL team rosters crashed the question register because those keys were missing from the official-source table. Both are fixed by rendering those pages from the register itself; make test passes.", official("GitHub Pages documentation")],
     ]
-    body = f"""{notice()}<section id="decision-gaps"><h2>Open evidence gaps and repaired irregularities</h2>
+    from render_review import flagged_rows
+    review = flagged_rows()
+    body = f"""{notice()}<section><h2>Review of 2026-11-12</h2>
+<p>Findings from the latest repository review and the first official availability capture. Proposed responses are on the
+<a href="decision-board.html">decision board</a>; none has been applied.</p>
+{table(review, ["ID", "Severity / state", "Finding", "Source"], caption="2026-11-12 review register")}</section>
+<section><h2>Open evidence gaps and repaired irregularities</h2>
 <p>Open items do not block publication of a clearly labelled research site. They do block betting validation and rewards.
 Earlier audit findings are preserved below, including their original scope.</p>
 <div class="table-tools"><label>Search findings <input class="filter" type="search" placeholder="Search source, prop, leakage…"></label></div>
 {table(new, ["ID", "Severity / state", "Finding and disposition", "Source"], caption="Final integration audit register")}
 </section><section><h2>Earlier official-source audit</h2>{table(rows, ["ID", "Severity", "Finding", "Source"], caption="Preserved findings from the independent T10 audit")}</section>
+<section id="decision-gaps"><h2>Decision-readiness findings · 2026-11-12</h2>
+<p>These are unresolved limitations, not approval to implement a proposal. See <a href="suggestions.html">suggestions</a> and <a href="lineups.html">dated lineup evidence</a>.</p>
+{table(gap_rows, ["ID", "State", "Finding", "Next evidence", "Official context"], caption="Follow-up gaps requiring review, not blocking publication")}</section>
 <section><h2>How to request a correction</h2><p>Use the repository issue tracker with the row ID, the authoritative source and the exact field.
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
@@ -557,8 +649,9 @@ No manual input is required to use the current site. A correction must update th
 
 def build_sources(d):
     files = [[e(f["logical"]), f["bytes"], e(f["sha256"][:16]), "Hash match; community source", official("GitHub Pages documentation") + " · " + src_link(f["url"], "Pinned publisher file")] for f in SRC["files"]]
-    refs = [[e(name), kind, "Read during this integration; supports only the stated scope", src_link(url, "Official / primary source")]
-            for (name,url),kind in zip(OFFICIAL.items(), ["NFL", "NFL", "NFL", "NFL", "Primary paper", "Primary paper", "University paper record", "Primary paper", "Operator", "Platform"])]
+    refs = [[e(name), OFFICIAL_TYPE[name], "Read during this integration; supports only the stated scope",
+             src_link(url, "Official / primary source")]
+            for name, url in OFFICIAL.items()]
     body = f"""{notice()}<section><h2>Source hierarchy</h2><ol class="findings">
 <li><strong>Official observations:</strong> NFL game results, schedules, rules and player availability.</li>
 <li><strong>Primary methods:</strong> original paper, publisher or author/university record; a citation does not validate our implementation by itself.</li>
@@ -597,125 +690,20 @@ def build_requirements(d):
         ("R16", "Blank unverified values", "Enforced in strict public view", "Research estimates segregated and labelled, never called official.", "NFL scores"),
         ("R17", "Coordinate parallel work", "Implemented", "Claims, pinned-branch constraint, append-only conflict resolution and integration log.", "GitHub Pages documentation"),
         ("R18", "PR, merge and live deployment", "Recorded after execution", "See COORDINATION.md and the final PR; never infer a successful deployment.", "GitHub Pages documentation"),
-        ("R19", "Suggestions reviewed before a change", "Implemented · nothing approved", "suggestions.html holds 22 proposals with cost, risk and dependencies; decision-paths.html groups a parallel 13 into three funding paths.", "GitHub Pages documentation"),
-        ("R20", "Questions and information needed before a decision", "Implemented", "questions.html: 40 questions, answered rows sourced, blocked rows blank with a closure test. information-gaps.html adds this build's 15-question inventory with 3 BLOCKING items.", "GitHub Pages documentation"),
-        ("R21", "Injuries and starter-to-backup deficiencies", "Partial · order only", "injuries.html: 12 official sources checked and two exact game captures. lineups.html: 7 observed players from 2 club charts.", "NFL injuries"),
-        ("R22", "Dated decision log", "Implemented", "DECISIONS.md, linked from the suggestions page.", "GitHub Pages documentation"),
-        ("R23", "Row-by-row official injury capture with a depth join", "Partial · 6 of 32 clubs", "availability-capture.html transcribes 258 report rows, every row linking the official page. depth-register.html joins 61 rows to 354 ranked depth rows with 9/9 integrity checks; 4 charts are self-labelled UNOFFICIAL.", "NFL injuries"),
-        ("R24", "Information inventory: what exists, what does not, how to close it", "Implemented", "information-gaps.html lists 3 HAVE, 3 PARTIAL and 6 MISSING items, each with a named closure method.", "GitHub Pages documentation"),
-        ("R25", "Choose a path before implementation", "Implemented · nothing chosen", "decision-paths.html: paths A evidence-first, B availability-first, C competition-first, with cost, risk, dependencies and a decision log.", "GitHub Pages documentation"),
+        ("R19", "Suggestions section reviewed before changes", "Implemented · proposals unapproved", "suggestions.html: 22 proposals with cost, risk and dependencies, four decision paths, a worksheet and change control; decisions.html adds a parallel eight-proposal register.", "GitHub Pages documentation"),
+        ("R20", "Questions, information and answers needed before a decision", "Implemented", "questions.html: 40 questions (answered ones cited, blocked ones blank with a closure test) and decisions.html: 12 readiness questions.", "NFL scores"),
+        ("R21", "Injury and lineup-deficiency tracking", "PARTIAL — order only, no confirmed roles", "Official injury report verified (2 games captured) and 2 of 32 club depth charts verified. No chart has a publication time and no replacement or impact is confirmed.", "NFL injury report (2026 week 10)"),
+        ("R21b", "Automatic all-club injury and depth tracking", "Implemented · effect not priced", "availability.html: scheduled capture of the official injury report and every readable club depth chart, with the 2nd/3rd/4th-string player listed behind an Out or Doubtful first-listed player. Game-day roles and point impact remain open.", "NFL injuries"),
+        ("R22", "Dated decision log", "Implemented", "DECISIONS.md records owner, choice, evidence and reversal condition; linked from suggestions.html.", "GitHub Pages documentation"),
+        ("R23", "Hand-checked depth join as a control on the automatic tracker", "Partial · 6 of 32 clubs", "depth-register.html joins 61 official injury rows to 354 ranked depth rows by exact name with 9/9 integrity checks; 6 players absent from a chart are reported UNRANKED, never guessed. It is published beside availability.html as an independent check, not as a second truth.", "NFL injuries"),
+        ("R24", "Information inventory: what exists, what does not, how to close it", "Implemented", "information-gaps.html lists 3 HAVE, 3 PARTIAL and 6 MISSING items with a named closure method each, plus 15 questions (3 BLOCKING, 6 HIGH) that gate any decision.", "GitHub Pages documentation"),
+        ("R25", "Choose a path before implementation", "Implemented · nothing chosen", "decision-paths.html: 13 proposals grouped into paths A evidence-first, B availability-first and C competition-first, each with cost, risk, dependencies and a decision log.", "GitHub Pages documentation"),
     ]
     rows = [[i,title,status,detail,official(ref)] for i,title,status,detail,ref in requirements]
     body = f"""{notice()}<section><h2>Complete requirements matrix</h2><p>“Implemented” describes software,
 not proof of a betting edge. Blocked evidence is published rather than fabricated.</p>
 {table(rows, ["ID", "Requirement", "Status", "Delivery / limitation", "Reference"], caption="Line-by-line coverage of the requested work")}</section>"""
     return layout("requirements.html", "Requirements", "Requested work mapped to delivered artifacts and explicit evidence gaps.", body, wide=True)
-
-
-UNVERIFIED_CELL = BLANK + ' <span class="unverified" style="font-size:11px">UNVERIFIED — depth not integrated</span>'
-
-
-def build_injuries(d):
-    """The site availability register (sources, signals, conflicts), rendered by render_decisions.
-
-    Its ids (AV-01, AV-S1, AV-C1 …) are asserted against data/processed/*.csv by
-    tests/test_review_registers.py, so the page must be generated from those structures.
-    The row-by-row official transcription lives on availability-capture.html.
-    """
-    from render_decisions import build_injuries as render_register
-    return render_register(d)
-
-
-def build_availability_capture(d):
-    inj = d["injuries"]
-    rows = []
-    for r in inj.itertuples(index=False):
-        team = e(r.team)
-        player = e(r.player) if isinstance(r.player, str) and r.player != "No Injuries Reported" else "—"
-        if isinstance(r.player, str) and r.player == "No Injuries Reported":
-            team = f"{e(r.team)} — {r.practice_status}"
-            player = "—"
-        refs = src_link("https://www.nfl.com/injuries/", "Official injury report")
-        if isinstance(r.player_url, str) and r.player_url.startswith("http") and r.player_url != "https://www.nfl.com/injuries/":
-            refs += " · " + src_link(r.player_url, e(r.player) if isinstance(r.player, str) else "player page")
-        rows.append([team, player, e(r.position), e(r.injury), e(r.practice_status),
-                     e(r.game_status), UNVERIFIED_CELL, refs])
-    TBL = table(rows, ["Team", "Player", "Position", "Injury", "Practice status",
-                       "Game status", "Starter → backup replacement", "Official reference"],
-                caption="Official injury report; replacement depth blank by design")
-    body = (notice()
-            + "<section><h2>Injuries &amp; availability — official capture, 2026 Week 10</h2>"
-            + "<p>Captured from the official NFL injury report (https://www.nfl.com/injuries/) on 2026-11-12. Every row links to the official report. "
-              '"Starter &rarr; backup replacement" is <strong>not</strong> integrated: NFL.com does not publish an official depth order, so no 2nd/3rd/4th-string replacement is inferred — '
-              "the cell is blank and flagged UNVERIFIED, on offense as on defense.</p>"
-            + TBL
-            + "<section><h2>How injuries feed decisions</h2>"
-            + "<p>When a starter carries \"Out\" or \"Did Not Participate\" the position group is flagged as potentially deficient. No depth order, no replacement-quality adjustment "
-              "and no originated-line impact are applied — an unverified replacement guess is worse than a blank cell. Refresh weekly, aligned to the official report; each capture is dated.</p>"
-            + '<p class="flag warn"><strong>Capture notes.</strong> Buffalo Bills rows were truncated mid-table during retrieval (rows shown are verified; remaining Bills rows are blank until the next capture). '
-              "San Francisco and Dallas lists end at the last row captured. Seattle, Cincinnati, Los Angeles Chargers and Baltimore officially reported no injuries for Week 10.</p></section>")
-    return layout("availability-capture.html", "Official injury capture — 2026 Week 10",
-                  "Row-by-row transcription of the official NFL injury report, blank where not verified.", body, wide=True)
-
-
-def build_suggestions(d):
-    """Rendered from data/processed/suggestions.csv by render_decisions, so page and CSV cannot drift.
-
-    Until 2026-11-12 this function held a hard-coded eight-row list (ids "S-01"…) while the generated
-    register carried 22 rows (ids "S01"…), so `suggestions.html` silently published 8 of 22 suggestions
-    and tests/test_review_registers.py failed. Delegating keeps one source of truth.
-    """
-    from render_decisions import build_suggestions as render_from_register
-    return render_from_register(d)
-
-def build_decisions(d):
-    rows = [
-        ["Q-01", "Is there any validated betting edge?", "A strategy passing all eight gates G1–G8 on authenticated quotes",
-         "No — 0 of 18 canonical strategies pass all eight gates; rewards unawarded", "Answered (negative)",
-         src_link("https://www.nfl.com/scores/", "NFL official scores"),
-         "Re-run pipeline/validation.py after every build; no promotion without G1–G8"],
-        ["Q-02", "Are authenticated, timestamped executable bookmaker quotes available?", "Entry/closing prices, timestamps, limits, settlement terms per bet",
-         "No — community closing lines are hash-verified as files, not authenticated as executable offers; -110 is never substituted", "Blocked",
-         src_link("https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push", "Operator settlement terms (example)"),
-         "Bookmaker quote archive with timestamps; no value inferred in the meantime"],
-        ["Q-03", "Are verified player-prop prices and joint SGP quotes available?", "Prop opening/closing prices, settlement terms, joint ticket quotes",
-         "No — no retrieved source carries prop prices; no prop ROI is calculated or claimed", "Blocked",
-         src_link("https://www.nfl.com/injuries/", "NFL injury report (player availability context only)"),
-         "Prop-price archive required; combinations remain hypotheses only"],
-        ["Q-04", "Is the data snapshot current enough for decisions?", "Snapshot date vs official schedule and results",
-         "No — pinned 2026-11-01T13:24:09Z holds 2026 weeks 1–7 complete plus only Thursday’s Week-8 game (CAR@GB 27–19); Week 9 is final on NFL.com but absent from the archive; Week 10 is upcoming",
-         "Blocked (stale)", src_link("https://www.nfl.com/scores/", "NFL official scores"),
-         "Explicit pin refresh (NFDATA_SHA / fetch_data.py --refresh-pin) followed by a new audit; never refresh silently"],
-        ["Q-05", "Are injuries and starter/backup deficiencies integrated into line origination?", "Weekly injury report with practice/game status and depth position for offense and defense",
-         "Partially — official Week 10 injury report captured on injuries.html; replacement depth (starter → 2nd/3rd/4th string) not integrated, blank and flagged UNVERIFIED",
-         "Partial", src_link("https://www.nfl.com/injuries/", "NFL injury report"),
-         "Weekly injury capture; NFL.com publishes no official depth chart — flag any replacement-level claim as unverified"],
-        ["Q-06", "Can correlation values be treated as verified?", "Joint outcomes at official lines, row-by-row provenance",
-         "No — measured from community settlement data; strict public values blank; cross-game intervals span zero, so neither independence nor dependence is claimed", "Blocked",
-         src_link("https://www.nfl.com/scores/", "NFL official scores"),
-         "Official lines and joint-outcome provenance required"],
-        ["Q-07", "Can luck be removed from strategy evaluation?", "A test proving skill rather than variance",
-         "No — gates bound luck but cannot eliminate it; deflated Sharpe is provisional while the trial count is unknown", "Answered (negative)",
-         src_link("https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping", "White (2000)"),
-         "Prospective replication on untouched weeks; frozen trial registry"],
-        ["Q-08", "Is a reward or prize decision authorized?", "Funded prize pool, sponsor, custody, payout obligation",
-         "No — reward tiers are defined; all unawarded; no prize pool is represented as existing", "Answered (negative)",
-         src_link("https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages", "GitHub Pages docs (publication only)"),
-         "Separate authorization and funding required before any reward"],
-    ]
-    TBL = table(rows, ["ID", "Question", "Information needed", "Answer", "Status", "Official source", "How to discover missing information"],
-                caption="Pre-decision register · blank cells are missing information, not zeros")
-    body = (notice()
-            + "<section><h2>Pre-decision questions — information we have and do not have</h2>"
-            + "<p>Blank means the information is not available and is never inferred. This register is the discovery plan: each question names the official source to check "
-              "and the action required to resolve it.</p>"
-            + "<div class='table-tools'><label>Search questions <input class='filter' type='search' placeholder='Search questions, answers or status'></label></div>"
-            + TBL
-            + "<section><h2>Decision rule</h2>"
-            + "<p>No decision — funding, reward, publication of a line for real-money use, or a site change affecting published numbers — may be made while any item above is Blocked or Partial "
-              "without a recorded waiver naming the exact item and rationale. Answered items still change when the underlying data is refreshed; re-check before every decision.</p></section>")
-    return layout("decisions.html", "Pre-decision questions",
-                  "Questions, information and answers that must be addressed before any decision.", body, wide=True)
 
 
 def build_reproducibility(d):
@@ -754,7 +742,6 @@ nav{display:flex;gap:4px;flex-wrap:wrap}
 .navlink{padding:6px 10px;border-radius:8px;color:var(--muted);font-size:13.5px}
 .navlink:hover{background:var(--chip);text-decoration:none;color:var(--text)}
 .navlink.active{background:var(--accent);color:#04101f;font-weight:600}
-.navgroup{padding:7px 10px 4px;color:#5b709a;font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;opacity:.9}
 h1{font-size:34px;line-height:1.2;margin:34px 0 6px;letter-spacing:-.5px}
 h2{font-size:21px;margin:38px 0 10px;letter-spacing:-.2px}
 h3{font-size:15.5px;margin:0 0 6px;color:var(--text)}
@@ -812,17 +799,81 @@ pre.pipeline,pre.math{background:#0a1526;border:1px solid var(--line);border-rad
  padding:14px;overflow-x:auto;font-size:12.5px;color:#b9cdf0}
 footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 @media(max-width:640px){h1{font-size:26px} .card-value{font-size:22px}}
+
+/* --- 2026-11-12 (T17): sidebar shell, grouped navigation and the classes the pages already used --- */
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--accent);color:#04101f;padding:8px 12px;z-index:50;border-radius:0 0 8px 0}
+.skip-link:focus{left:0}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:18px 14px;
+ background:#090e1a;border-right:1px solid var(--line)}
+.side .brand{display:block;margin:0 6px 14px}
+.brand .mark{background:var(--accent);color:#04101f;border-radius:6px;padding:2px 6px;font-size:12px;font-weight:800}
+.side nav{display:block}
+.navgroup{margin-bottom:14px}
+.navhead{display:block;padding:0 10px 4px;color:#6f84ab;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.side .navlink{display:block;padding:6px 10px}
+.shell>.wrap,.shell>.wrap.wide{max-width:1280px;width:100%;margin:0;padding:0 28px 64px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;background:var(--panel);
+ border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:8px 0 16px}
+.hero h2{margin:6px 0 8px;font-size:26px;line-height:1.2}
+.hero p{color:var(--muted);margin:0;max-width:64ch}
+.eyebrow{color:var(--accent);font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600}
+.hero-status{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13px;min-width:200px}
+.hero-status strong{display:block;font-size:17px;margin:2px 0}
+.hero-status small{color:var(--muted)}
+.status-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--warn);margin-right:6px}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.table-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 0;color:var(--muted);font-size:13px}
+.filter{background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:7px 10px;
+ font:inherit;font-size:13px;min-width:240px;margin-left:6px}
+.filter:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tablewrap{max-height:72vh;overflow:auto}
+th{cursor:pointer;z-index:1}
+th[aria-sort=ascending]::after{content:" \\25B2";font-size:9px}
+th[aria-sort=descending]::after{content:" \\25BC";font-size:9px}
+td{overflow-wrap:anywhere}
+td a{overflow-wrap:normal}
+.blank::after{content:"\\2014";color:#56688c}
+.unverified{color:var(--warn)}
+.pill.unverified{background:rgba(255,176,32,.12);color:var(--warn);border:1px solid rgba(255,176,32,.35)}
+.pill.good{background:rgba(55,214,122,.15);color:var(--good);border:1px solid rgba(55,214,122,.4)}
+.pill.bad{background:rgba(255,93,93,.13);color:var(--bad);border:1px solid rgba(255,93,93,.35)}
+.pill{white-space:nowrap}
+.card.good{border-color:#1f5a3a}
+.card.next{border-color:var(--accent)}
+td .sub{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+table.register td{min-width:150px}
+table.register td:first-child{min-width:70px;white-space:nowrap}
+[id]{scroll-margin-top:16px}
+@media(max-width:900px){
+ .shell{display:block}
+ .side{position:static;height:auto;display:flex;align-items:center;gap:10px;padding:8px 12px;border-right:0;
+  border-bottom:1px solid var(--line);overflow:visible}
+ .side .brand{margin:0;white-space:nowrap}
+ .side nav{display:flex;gap:2px;overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;min-width:0;flex:1}
+ .navgroup{display:flex;margin:0}
+ .navhead{display:none}
+ .shell>.wrap,.shell>.wrap.wide{padding:0 14px 48px}
+ .hero{grid-template-columns:1fr}
+ .filter{min-width:0;width:100%;margin:4px 0 0}
+}
 """
 
 
-def build_questions_site(d):
-    """Their render_decisions imports this module, so the import is deferred."""
-    from render_decisions import build_questions
-    return build_questions(d)
-
-
 def main() -> None:
+    # Lazy import: render_decisions imports this module for its helpers, so it must not be a
+    # top-level import here.
+    from render_decisions import (build_injuries, build_questions, build_suggestions,
+                                  write_csvs)
+    # arena/3e57f750-korea1 registers (depth-joined injury table, information inventory, decision paths).
+    from render_registers import (build_injuries as build_depth_register,
+                                  build_questions as build_information_gaps,
+                                  build_suggestions as build_decision_paths)
+
     d = load()
+    write_csvs(PROC)
     (SITE / "assets").mkdir(parents=True, exist_ok=True)
     (SITE / "assets" / "style.css").write_text(CSS, encoding="utf-8")
     (SITE / "assets" / "favicon.svg").write_text(
@@ -845,13 +896,11 @@ def main() -> None:
         "audit.html": build_audit(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
         "requirements.html": build_requirements(d),
         "verification.html": build_reproducibility(d),
-        # New this session: pre-decision register, suggestions register, injury capture
-        "questions.html": build_questions_site(d),
-        "decisions.html": build_decisions(d),
+        # T14/T15 — suggestions, open questions, availability evidence
         "suggestions.html": build_suggestions(d),
+        "questions.html": build_questions(d),
         "injuries.html": build_injuries(d),
-        "availability-capture.html": build_availability_capture(d),
-        # arena/3e57f750-korea1: full official register with depth join, information gaps, decision paths
+        # arena/3e57f750-korea1: hand-transcribed depth join, information inventory and decision paths
         "depth-register.html": build_depth_register(layout, table, card, kpi_grid, flag, src_link, SHA),
         "information-gaps.html": build_information_gaps(layout, table, card, kpi_grid, flag, src_link),
         "decision-paths.html": build_decision_paths(layout, table, card, kpi_grid, flag, src_link),

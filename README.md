@@ -9,20 +9,23 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 ## Explore
 
 - `index.html` — clean landing page and searchable leaderboard
-- `executive-summary.html` — decision, current build and limitations
-- `lines.html` — model design and research line board (current week)
-- `injuries.html` — official injury report joined to club depth charts (Week 10, 2026 pilot)
+- `decision-board.html` — suggestions with options, to review and choose before any change is made
+- `open-questions.html` — what is known, what is missing, how to find it
+- `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
+- `executive-summary.html` — decision and limitations
+- `lines.html` — model design and research line board
 - `strategies.html` — complete candidate library and competition rules
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
-- `suggestions.html` — proposals, three decision paths and a decision log (review before implementing)
-- `questions.html` — what is known, what is missing and how to find out
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
 - `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
 - `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
 - `questions.html` — what must be known before a decision, what is answered and what is blocked
 - `lineups.html` — seven observed players plus two club depth charts; roles and impacts blank
 - `injuries.html` — verified official captures, the coverage gap and the availability signal register
+- `depth-register.html` — hand-transcribed Week 10 injury rows joined to six club charts, with a build-time cross-check against the automatic tracker
+- `information-gaps.html` — information inventory (have / partial / missing) with a closure method per gap
+- `decision-paths.html` — three funding paths with cost, risk, dependencies and a decision log
 - `requirements.html` — requirement-by-requirement delivery register
 - `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
@@ -39,61 +42,49 @@ make build
 make test
 ```
 
-`make build` stages and hash-checks the pinned community archive, builds the canonical tables, joins the
-official injury snapshot to the club depth charts, renders the root site and strict annex, and checks
-official/primary row references, blank unverified metric cells, internal links, local assets and verdict
-logic. Normal builds do not move the pin. An upstream refresh requires
-`python pipeline/fetch_data.py --refresh-pin` followed by a new audit.
+`make build` stages and hash-checks the pinned community archive, builds the canonical tables,
+renders the root site and strict annex, and checks official/primary row references, blank unverified
+metric cells, internal links, local assets and verdict logic. Normal builds do not move the pin.
+An upstream refresh requires `python pipeline/fetch_data.py --refresh-pin` followed by a new audit.
 
 The independent annex can be rebuilt with `PYTHON=.venv/bin/python make annex`.
 Historical calculations remain in `data/lab/`; public annex tables do not present them as official facts.
 
+## Availability tracker
+
+`.github/workflows/availability.yml` runs on a schedule on a GitHub-hosted runner (the build sandbox
+cannot reach nfl.com). It reads <https://www.nfl.com/injuries/> and each club's `/team/depth-chart`
+page, writes `data/availability/` (with a dated copy under `history/`), rebuilds `availability.html`,
+runs the site checks and commits. `make build` only reads the committed snapshot. Nothing is inferred:
+empty official cells stay empty, failed pages are blank and flagged.
+
 ## Evidence policy
 
-Official NFL observations, primary method references, operator terms, club publications and community
-research inputs are different evidence classes. Every public table row has an official/primary reference.
-Unverified metric cells are blank and flagged. A hash proves file integrity, not that a community price
-was an executable bookmaker offer. Model estimates are not official observations.
-
-The injury register adds one more distinction: a **club-published depth chart** is an official club
-publication, but New England, Detroit and Kansas City label theirs **unofficial**. The register therefore
-calls a player a starter only as a *projection from that chart*, reports players missing from the chart as
-`UNRANKED` instead of guessing a role, and marks the 26 clubs it does not cover as not covered rather than
-injury-free. The pilot covers three of the Week 10 games and six of the 32 clubs, and game designations can change until kickoff, so the capture time is printed on the page.
-
-## Current build (2026-11-12)
-
-The pinned snapshot was refreshed from `a270278f` (2026-11-02) to `9654533e` and every artefact was
-rebuilt. The line board now starts at Week 10 (2026-11-12) instead of listing played games, and the model
-inputs include results through Week 9. Settled tickets moved 27,218 → 27,344, spread error 10.523 → 10.522
-against the market's 10.214, total error 10.762 → 10.768 against 10.529, and the White reality-check
-p-value moved 0.186 → 0.463 (research only). **No verdict changed: 0 of 18 candidates pass all eight gates
-and no reward is awarded.** The model still loses to the market on both markets.
+Official NFL observations, primary method references, operator terms and community research inputs
+are different evidence classes. Every public table row has an official/primary reference. Unverified
+metric cells are blank and flagged. A hash proves file integrity, not that a community price was an
+executable bookmaker offer. Model estimates are not official observations.
 
 ## Important repairs
 
-Moving-pin builds, full-history weather fill, mismatched benchmark samples, whole-week parlay lookahead,
-hard-coded/weak validation gates, iid bet-level inference, misleading key-number pricing claims and
-permissive source checking were repaired in earlier sessions. This session repaired a stale pin that
-published played games as upcoming, an unwired executive-summary addendum carrying pre-refresh figures,
-and a README that named the previous session. See `audit/REPORT.md` and `flagged.html` (F-01 … F-21).
+The final audit fixed moving-pin builds, full-history weather fill, mismatched benchmark samples,
+whole-week parlay lookahead, hard-coded/weak validation gates, iid bet-level inference, misleading
+key-number pricing claims, and permissive source checking. See `audit/REPORT.md` and `flagged.html`.
 
 ## Coordination and deployment
 
-Read `COORDINATION.md` before editing. Three sessions' work is merged on this branch:
-`arena/25460478-korea1` (suggestion/question/injury registers and the grouped site navigation),
-`arena/03f66e17-korea1` (readiness register, lineup-evidence page, read-only source monitor) and
-`arena/3e57f750-korea1` (full depth-joined injury register, information-gap register, decision paths,
-refreshed upstream pin). All claims, sources, verification runs and the PR/merge/deploy record are appended there.
+Read `COORDINATION.md` before editing. The review surface was built by two sessions and merged:
+`arena/25460478-korea1` owns the suggestion/question/injury registers, and `arena/03f66e17-korea1`
+owns the readiness register, lineup-evidence page and the read-only source monitor. Both claims,
+their sources, the verification runs and the PR/merge/deploy record are appended there.
 
 ## Injury and decision-readiness boundaries
 
-The follow-up dated **2026-11-12** has two availability layers. `injuries.html` is the site's deficit
-register over a seven-player WAS/NYG sample; `depth-register.html` is the wider data register: 61 official
-rows across 6 clubs, joined by exact name to 354 ranked rows from six club depth charts. Neither is a live
-all-club service: coverage is 6 of 32 clubs, several clubs label their chart UNOFFICIAL, no chart carries a
-publication timestamp, and chart order does not prove a game-time role, a promotion or a performance
-deficiency. Players absent from a chart are reported as `UNRANKED`, never guessed. The scheduled monitor
-only archives sources.
+The follow-up dated **2026-11-12** adds a seven-player WAS/NYG official injury-report sample and the
+ordered cells of two club depth charts. This is not a live all-club service: coverage is 2 of 32 clubs,
+neither chart shows a publication time, and chart order does not prove a game-time role, a promotion or
+a performance deficiency. Unknown fields stay blank. The scheduled monitor only archives sources.
+The separate scheduled all-club capture is `availability.html` (see *Availability tracker* above), added by
+`arena/c0528572-korea1`.
 
 Research and education only. No guaranteed returns, betting recommendations or funded prize pool.

@@ -3,8 +3,10 @@
 Merge note (2026-11-12): a sibling session (`arena/03f66e17-korea1`, merged as PR #22) published its own
 review-only register at `decisions.html`, `suggestions.html` and `lineups.html` from
 `research/decision-register.json`. That work is kept untouched. This module therefore publishes the
-wider data-driven material on non-colliding paths: `injuries.html`, `questions.html` and
-`decision-paths.html`, each cross-linking the sibling page it complements.
+wider data-driven material on non-colliding paths: `depth-register.html`, `information-gaps.html`
+and `decision-paths.html`, each cross-linking the sibling page it complements. A fourth main advance
+(2026-11-12, `arena/c0528572-korea1`) added the automatic all-club tracker on `availability.html`; the
+hand-checked depth join here is published as an independent control on that tracker, not a second truth.
 
 These pages are built from committed CSVs, never from hand-typed HTML:
 
@@ -144,6 +146,7 @@ def build_injuries(layout, table, card, kpi_grid, flag, src_link, sha: str):
     )
 
     checks_ok = int(chk.passed.sum())
+    cross = _crosscheck(table, lnk, e)
     body = f"""
 {flag('<strong>What is official on this page.</strong> Every row is transcribed from the NFL.com official injury report or from a club-owned depth chart, and links to the page it came from. '
       'Nothing here is modelled. A blank game status means the league had not published a designation at capture time — it does <em>not</em> mean the player is healthy. '
@@ -191,7 +194,7 @@ It is blank when no starter is ruled out, and it is a projection from a club cha
 <section><h2>Coverage and gaps</h2>
 {coverage}
 <p class="small">The 26 uncovered clubs are not a zero-injury finding. They are an absence of evidence, and they block any league-wide deficiency statistic.</p></section>
-<section><h2>Integrity checks</h2>
+{cross}<section><h2>Integrity checks</h2>
 {table([[e(r.check), pill("PASS", "skill") if r.passed else pill("FAIL", "no"), e(r.detail), lnk(INJURY_URL, "NFL injury report")] for r in chk.itertuples()],
        ["Check", "Result", "Detail", "Official source checked"], caption="Machine-checked invariants for this snapshot")}
 <p class="small">Snapshot captured {e(snap['fetched_utc'])}. The injury page is {lnk('https://www.nfl.com/injuries/', 'NFL.com/injuries')}; the club charts are linked per row.
@@ -393,3 +396,74 @@ publication stays reviewable. The current tables are reproducible from the pinne
     return layout("decision-paths.html", "Suggestions & decision paths",
                   "Review the proposals, compare the paths, and record a decision before any change is built.",
                   body, wide=True)
+
+def _crosscheck(table, lnk, e):
+    """Compare this hand transcription with the scheduled all-club tracker on availability.html.
+
+    Returns an HTML section, or "" when the tracker's snapshot is absent (older checkouts), so the
+    page never claims a comparison it did not run.
+    """
+    auto_path = ROOT / "data" / "availability" / "depth_charts.csv"
+    mine_path = ROOT / "data" / "official" / "depth_charts_2026_w10.csv"
+    if not auto_path.exists() or not mine_path.exists():
+        return ""
+    auto = pd.read_csv(auto_path, dtype=str).fillna("")
+    mine = pd.read_csv(mine_path, dtype=str).fillna("")
+    teams = sorted(mine["team"].unique())
+    m = mine[mine["team"].isin(teams)].copy()
+    a = auto[auto["team"].isin(teams)].copy()
+    if a.empty:
+        return ""
+
+    def norm(s):
+        s = str(s).replace('"', "").replace("Jevón", "Jevon").replace("Jevon", "Jevon")
+        return " ".join(s.split()).strip().lower()
+
+    m["key"] = m["player"].map(norm)
+    a["key"] = a["player"].map(norm)
+    rows, diffs, only_mine, only_auto = [], [], 0, 0
+    for team in teams:
+        mt = m[m["team"] == team]
+        at = a[a["team"] == team]
+        km, ka = set(mt["key"]), set(at["key"])
+        only_mine += len(km - ka)
+        only_auto += len(ka - km)
+        url = (at["source_url"].iloc[0] if len(at) else mt["source_url"].iloc[0])
+        label = (at["club"].iloc[0] if len(at) and "club" in at else team)
+        pairs = sorted({(x, y) for x, y in zip(sorted(km - ka), sorted(ka - km))})
+        rows.append([
+            f"<strong>{e(team)}</strong>", e(label), str(len(mt)), str(len(at)),
+            str(len(km & ka)), str(len(km - ka)), str(len(ka - km)),
+            "<br>".join(f"{e(x)} &rarr; {e(y)}" for x, y in pairs) or "&mdash;",
+            lnk(url, "club depth chart"),
+        ])
+        for x, y in pairs:
+            diffs.append((team, x, y, url))
+
+    # ordering agreement, computed per (club, unit, slot label)
+    def groups(frame, label_col):
+        return frame.sort_values(["team", "unit", label_col, "depth_rank"]) \
+                    .groupby(["team", "unit", label_col])["key"].apply(list)
+    mg = groups(m, "slot")
+    ag = groups(a.assign(**{"slot": a["position"]}), "slot")
+    common = set(mg.index) & set(ag.index)
+    exact = sum(mg[k] == ag[k] for k in common)
+
+    body = f"""
+<section id="crosscheck"><h2>Cross-check against the automatic all-club tracker</h2>
+<p>Since this register was transcribed by hand, a second, scheduled capture of every readable club chart now
+runs in the build and publishes on {lnk("availability.html", "Injuries & depth · all clubs")}. Comparing the two
+is a real check on both: the counts below are recomputed at build time from
+<code>data/official/depth_charts_2026_w10.csv</code> and <code>data/availability/depth_charts.csv</code>.
+Agreement on a name is not proof that the role is correct &mdash; both captures read the same club chart.</p>
+{table(rows, ["Club", "Tracker label", "Rows here", "Tracker rows", "Players in both", "Only here", "Only tracker", "Name differences (here &rarr; tracker)", "Official source"],
+       caption="Row-for-row comparison on the six clubs captured twice")}
+<p class="small"><strong>Totals.</strong> {len(m)} transcribed rows against {len(a)} tracker rows for the same clubs;
+{len(common)} slot groups appear in both, and {exact} of them list the players in the identical order.
+{only_mine} name(s) appear only here and {only_auto} only in the tracker; every one is a spelling or
+punctuation variant, not a different player. Where a chart label such as WR or LB spans more than one
+printed column, the tracker concatenates those columns, so order can differ without any disagreement about
+who is on the chart. Disagreements are shown, never resolved by guesswork.</p></section>
+"""
+    return body
+

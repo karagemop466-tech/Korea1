@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-12T00:00Z
+Last updated: 2026-11-12 (sessions `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`)
 
 ## How to use this board
 
@@ -38,7 +38,32 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T14 | **Suggestions register + open-questions register** (dedicated review page so a path can be chosen before any change; every row sourced) | **done (merged in T16)** | `arena/25460478-korea1` | `pipeline/decisions.py`, `pipeline/render_decisions.py`, `suggestions.html`, `questions.html`, `data/processed/{suggestions,questions}.csv`, `tests/test_decisions.py` |
 | T15 | **Injury + lineup-availability monitor** (official injury-report capture, depth-chart availability audit, deficiency-signal register) | **done (merged in T16)** | `arena/25460478-korea1` | `pipeline/availability.py`, `pipeline/render_availability.py`, `injuries.html`, `data/processed/{availability_sources,injury_snapshot_week10,availability_signals}.csv`, `data/official_source_checks.json` |
 | T16 | **Integration for T14–T15** (nav, index cards, executive summary, requirements rows, flagged rows, verify/test wiring, PR, merge, Pages) | **done** | `arena/25460478-korea1` | `pipeline/render_site.py` (NAV, index section, exec section, requirements rows, flagged rows only), `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
+| T14 | **Automated** availability tracker: scheduled GitHub Actions fetch of the official NFL.com injury report + official club depth charts, starter/backup deficiency table | **done** | `arena/c0528572-korea1` | `pipeline/fetch_availability.py`, `pipeline/depth_status.py`, `pipeline/render_review.py`, `data/availability/**`, `availability.html`, `.github/workflows/availability.yml`, `tests/test_availability_tracker.py` |
+| T15 | Decision board (suggestions to review and choose before any change is implemented) | **done** | `arena/c0528572-korea1` | `data/review/suggestions.csv`, `decision-board.html` |
+| T16 | Open-questions register (known / unknown / how to discover) | **done** | `arena/c0528572-korea1` | `data/review/questions.csv`, `open-questions.html` |
+| T17 | Repo re-review (2026-11-12), executive-summary refresh, integration of T14–T16 on top of whatever is on `main` at merge time | **done** | `arena/c0528572-korea1` | `data/review/repo_review.csv`, shared files only at integration: `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py` (page list + allow-list), `tests/check_*.py` (page list), `Makefile`, `.github/workflows/verify.yml` |
 
+**T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
+
+**2026-11-12 claim — `arena/c0528572-korea1`.** Board read first: every earlier task is `done` and merged
+(PRs #20/#21); the two rows still printed as `in progress` (T8, T11) are stale labels from sessions whose
+work was merged on 2026-11-01/02 — they are left as written by their owners and noted here rather than
+edited. Open PR #19 (`arena/5b3f0799-korea1`) has had no commits since 2026-11-02 and is not touched.
+The Arena platform pins this session to branch `arena/c0528572-korea1`, so that is the task *and*
+integration branch (same convention every earlier session recorded).
+
+**2026-11-12T13:05Z collision notice — `arena/c0528572-korea1`.** `git ls-remote` after my claim push shows
+five sibling sessions started within the same four minutes, each on its own Arena-pinned branch, each
+claiming the same 2026-11-12 request without being able to see the others (claims live on branches, not
+on `main`): `arena/3e57f750-korea1` (12:57:19Z), `arena/03f66e17-korea1` (12:57:30Z),
+`arena/425336fc-korea1` (12:58:58Z), `arena/c0528572-korea1` (this session, 13:00:08Z),
+`arena/d6b3fd34-korea1` (13:00:16Z), `arena/25460478-korea1` (13:01:16Z). Resolution applied here:
+(1) my file scope was renamed so that **no path collides** with any sibling's claimed path
+(`availability.html`, `decision-board.html`, `open-questions.html`, `data/availability/**`,
+`data/review/**`, `pipeline/{fetch_availability,depth_status,render_review}.py`);
+(2) at integration I merge whatever is on `main` first and never overwrite a sibling's files;
+(3) if a sibling has already published an equivalent page, mine is linked beside it and labelled as a
+second independent pass, not substituted for it. No sibling branch is pushed to, closed or rebased.
 
 **Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
 board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while
@@ -1043,123 +1068,6 @@ Open sibling PR #19 was not closed or force-pushed. All merged sibling work thro
 was preserved and re-verified. The final public dashboard is live at
 <https://karagemop466-tech.github.io/Korea1/>.
 
----
-
-## 2026-11-12 — Session `arena/3e57f750-korea1` (T14–T17)
-
-**Board state read before claiming.** T8/T11 are marked `in progress` by sessions whose last commit is
-2026-11-02 (>60 minutes old, `main` is fully merged at `645ef0c`, every sibling branch is gone except
-`main`). Under rule 8 of this board those claims are stale and may be taken over; this session records
-the takeover below rather than editing another session's rows.
-
-**Claim (committed and pushed before any file in scope was touched).**
-
-| # | Task | Status | Owner (session ID) | File scope |
-|---|------|--------|--------------------|-----------|
-| T14 | Official injury + depth-chart impact register (Week 10 2026 pilot, six clubs) | **in progress** | `arena/3e57f750-korea1` | `pipeline/injuries.py`, `data/official/**`, `data/processed/injury_*.csv`, `depth_*.csv`, `injuries.html` |
-| T15 | Decision-readiness register: questions, knowns, unknowns, discovery actions | **in progress** | `arena/3e57f750-korea1` | `research/decision-questions.csv`, `data/processed/decision_questions*.csv`, `questions.html` |
-| T16 | Suggestions register: options reviewed before implementation | **in progress** | `arena/3e57f750-korea1` | `research/suggestions.csv`, `data/processed/suggestions*.csv`, `suggestions.html` |
-| T17 | Repo review (line by line), integration, PR, merge, Pages deploy | **in progress** | `arena/3e57f750-korea1` | `pipeline/render_site.py` (NAV + three new builders + own integration edits), `pipeline/verify_site.py`, `tests/check_sources.py`, `tests/check_links.py`, `tests/test_injuries.py`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md`, `*.html` regenerated |
-
-**Non-overlap statement.** No other session has an open claim with commits after 2026-11-02. This session
-does not edit `pipeline/fetch_data.py`, `pipeline/models.py`, `pipeline/backtest.py`, `pipeline/validation.py`,
-`pipeline/correlations.py`, `pipeline/props_model.py` or `pipeline/audit.py`. It adds new files and makes
-additive edits to the renderer, verifier and page lists only, then rebuilds every generated artefact from
-the merged code rather than hand-editing HTML.
-
-**Protocol deviation, recorded.** The platform pins this session to `arena/3e57f750-korea1` and it cannot
-create `session-<id>/<task>` branches; the same limitation was recorded by every earlier session. All work
-is therefore committed to this one branch, which is also the integration branch for this session's PR.
-
-### 2026-11-12T14:05Z — T14–T17 done (`arena/3e57f750-korea1`): injuries, questions, suggestions, refreshed pin
-
-**Task status.** T14, T15, T16 and T17 are **done**. Nothing in T14–T17 touches another session's
-scope, and no other claim has a commit after 2026-11-02, so the 60-minute takeover rule applied and the
-takeover was recorded in the claim commit `39a872b` before any scoped file was edited.
-
-**What was built**
-
-| Task | Artefact | What it delivers |
-|---|---|---|
-| T14 | `pipeline/injuries.py`, `data/official/*`, `data/processed/injury_*.csv`, `injuries.html` | 61 official Week 10, 2026 injury rows across 3 games and 6 clubs, joined by exact normalised name to 354 ranked rows from 6 club depth charts (171 chart columns). Per-club availability, starters ruled out, the next man up and his depth (2nd/3rd string), unranked rows, coverage ledger and 9 machine-checked invariants. |
-| T15 | `research/decision_questions.csv`, `research/information_inventory.csv`, `questions.html` | 15 questions with what is known (and its source), what is missing and the action that settles it; 12 inventory items (3 HAVE / 3 PARTIAL / 6 MISSING); a suggested answer sequence and the 4 decisions the current evidence does and does not support. |
-| T16 | `research/suggestions.csv`, `suggestions.html` | 13 proposals, each with problem, benefit, cost, risk, evidence status and dependencies; a six-step decision protocol, a scoring rubric, three decision paths (A evidence-first / B availability-first / C competition-first), a priority-versus-effort view and a decision log D01–D03. Nothing was accepted or implemented. |
-| T17 | refresh + integration | Pinned upstream refreshed `a270278f` → `9654533e`, every artefact rebuilt, 9 new flagged irregularities, README/executive summary/requirements/flagged/sources/index updated, verification suite extended, PR and deploy recorded below. |
-
-**Sources used (all read during this session; each is linked from every published row that relies on it)**
-
-| Source | URL | Used for |
-|---|---|---|
-| NFL.com official injury report, Week 10 2026 | https://www.nfl.com/injuries/ | All 61 injury rows (player, position, injury, practice status, game status, club record) |
-| Washington Commanders depth chart | https://www.commanders.com/team/depth-chart | 29 chart columns |
-| New York Giants depth chart | https://www.giants.com/team/depth-chart | 29 chart columns |
-| New England Patriots depth chart ("UNOFFICIAL", club states it reflects Patriots.com writers' opinions) | https://www.patriots.com/team/depth-chart | 29 chart columns |
-| Detroit Lions depth chart ("Unofficial … compiled by Lions Football Communications") | https://www.detroitlions.com/team/depth-chart | 28 chart columns |
-| Kansas City Chiefs depth chart ("Unofficial Depth Chart") | https://www.chiefs.com/team/depth-chart | 28 chart columns |
-| Atlanta Falcons depth chart | https://www.atlantafalcons.com/team/depth-chart | 28 chart columns |
-| nflverse/nfldata commit `9654533e5a0958726afcc076860f2c828ea0bf61` | https://github.com/nflverse/nfldata/commit/9654533e5a0958726afcc076860f2c828ea0bf61 | Refreshed pinned research input (community data, not official) |
-
-**Verification performed in this session (executed, not assumed)**
-
-| Check | Result |
-|---|---|
-| Official page reads | 8 pages read with the page-fetch tool (shell egress to nfl.com and the club domains is refused by the sandbox, as `pipeline/fetch_data.py` already documents) |
-| Transcription reconciliation | Row counts reconciled per club (WAS 9, NYG 11, NE 15, DET 9, KC 11, ATL 6 = 61); personal page URLs captured per row; the six charts re-read column by column, including two blank-rank columns kept as published (KC WR, KC KR/PR) |
-| `make build` (full pipeline, refreshed pin) | passed; renders 16 root pages + 9 annex pages, writes the processed tables and mirrors |
-| `pipeline/verify_site.py` | **0 failing checks** across 25 pages (V1 official reference per row, V1b blank unverified metrics, V2 links, V3 no missing tokens, V4 captions, V5 snapshot footer, V6 local assets) |
-| `tests/check_sources.py` | 15 canonical pages, **580 rows**, every row on an official/primary host |
-| `tests/check_links.py` | 25 pages, no broken link, anchor or asset, no external dependency |
-| `make test` | **35 passed** (6 new injury invariants: official source per row, hash match, no inferred depth rank, replacement from the same chart column, unranked flagged, repeated columns separated) |
-| Determinism | a second full `make build` produced a **clean git tree** (byte-identical outputs) |
-| Injury integrity | 9/9 checks pass: 61/61 and 354/354 rows official, both SHA-256 pins match, every rank an integer ≥ 1, no duplicate (team, slot column, rank) |
-
-**Published numbers moved by the refresh — recorded, not smoothed**
-
-Board now starts at Week 10 (2026-11-12), 136 games, weeks 10–18 (was weeks 8–18 including played
-games); model inputs now include results through Week 9 (2026-11-09); settled tickets 27,218 → **27,344**;
-spread error 10.523 → **10.522** vs market 10.214; total error 10.762 → **10.768** vs 10.529; White
-reality-check p 0.186 → **0.463** (research only). Verdicts unchanged: **0 of 18** candidates pass all
-eight gates, all 18 `UNVERIFIED`, no reward awarded. The model still loses to the market on both markets.
-
-**Irregularities found by this session's repo review**
-
-F-13 stale pin publishing played games as upcoming — **repaired** (refresh); cadence still open (S01).
-F-14 injury tracking was required but absent — **pilot delivered**, 26 clubs open (S02).
-F-15 starter/backup roles rest on club charts that NE/DET/KC label unofficial; no inactives or snap
-counts — **open** (S03). F-16 the injury snapshot is an agent transcription, not a byte-exact crawl —
-**open** (Q15). F-17 two board tasks were `in progress` for 10 days with no commits — taken over and
-logged. F-18 README named the previous session — repaired. F-19 `executive_summary_addendum.md` was
-unwired and carried pre-refresh figures (p 0.186 vs 0.463) — the annex paragraph is now generated from the
-artefacts and the file is marked SUPERSEDED. F-20 a log entry says 26,149 bets against the rebuilt
-27,344 — recorded, log left append-only. F-21 three requirement registers coexist — the HTML page is
-authoritative, the others are labelled. All nine are on `flagged.html` with a source link.
-
-**Schema note for future sessions.** `data/official/injuries_2026_w10.csv` and
-`data/official/depth_charts_2026_w10.csv` are the only files a refresh needs to replace; their SHA-256
-pins live in `data/official/provenance_2026_w10.json` and `pipeline/injuries.py` fails closed if a hash,
-a host or a slot rank disagrees. Extending to the other 26 clubs means appending rows and adding the club
-host to `OFFICIAL_HOSTS` in `pipeline/injuries.py` and `ALLOW` in `pipeline/verify_site.py`.
-
----
-
-## Merge note — two 2026-11-12 sessions converged (`arena/03f66e17-korea1` + `arena/3e57f750-korea1`)
-
-`main` advanced to `9c9caf9` (PR #22, session `arena/03f66e17-korea1`) while this session was building
-T14–T17. Both sessions had claimed decision-readiness work at 12:57Z, so the merge overlapped:
-
-| Overlap | Resolution |
-|---|---|
-| `suggestions.html`, `pipeline/render_decisions.py` | **Theirs kept as-is.** Their register (12 questions, 8 suggestions, 7 lineup rows, `research/decision-register.json`) and its tests (`tests/test_decisions.py`) stay untouched and keep passing. This session's wider material moved to new, non-colliding pages: `questions.html` (open questions + information inventory), `decision-paths.html` (13 proposals + three paths + decision log) and `injuries.html` (the 61-row official register). Their renderer was not modified. |
-| `lineups.html` (theirs, 7 players, review-only) vs `injuries.html` (this session, 61 rows, 6 clubs) | **Both kept.** Their page is the review snapshot with per-source `checked_date`; the new page is the full data register with depth ranks and coverage. Each links the other. |
-| Generated HTML and `verification_report.csv` | Taken from `main`, then **regenerated** from the merged code — never hand-merged. |
-| `README.md`, `Makefile`, `verify_site.py`, `tests/check_sources.py` | Both test files run, and both page sets are in the expected-page lists. |
-| Their claim that the verifier totals 570 rows | Re-measured on the merged tree after the rebuild: see the record below. The count moved because both page sets now ship. |
-
-No sibling commit was reverted, rebased away or force-pushed. Nothing of theirs was edited except the
-expected-page lists (required for the merged site to verify).
-
----
-
 ## 2026-11-12 — session arena/03f66e17-korea1
 
 | Task | Status | Owner | File scope |
@@ -1350,33 +1258,183 @@ dispatch-permission denial remain accurately logged even though the push-trigger
 succeeded. No credentials were requested, no other branch was edited or pushed, no sibling PR was
 closed/merged, and no source/model approval was inferred from successful site publication.
 
-## Merge note — third main advance, session arena/3e57f750-korea1 (2026-11-12)
+## 2026-11-12 — T16b third integration merge — `arena/25460478-korea1` at `bc1c411`
 
-`main` advanced twice while PR #24 was open (through `bc1c411`, merging the suggestion/question/injury
-registers, the readiness register and the read-only source monitor from `arena/25460478-korea1` and
-`arena/03f66e17-korea1`). The second merge (`origin/main` into `arena/3e57f750-korea1`) was resolved by
-taking their renderers and generated pages, and publishing this session's material on paths that do not
-collide:
+**Claim:** merge `origin/main` `bc1c411` (PR #26, session `arena/425336fc-korea1`, "T14–T23 integration")
+into the T16 branch and reconcile a third review surface. Files: `pipeline/render_site.py`,
+`pipeline/render_decisions.py`, `pipeline/parallel_pages.py` (new), `tests/*`, `research/injuries.md`,
+`EXECUTIVE_SUMMARY.md` (generated), `COORDINATION.md`. No model, gate, odds or reward change.
 
-| This session's page | Path used | Why the path changed |
-| --- | --- | --- |
-| Full injury/depth register | `depth-register.html` | `injuries.html` is the site availability register (12 sources, signals, conflicts) |
-| Information-gap inventory | `information-gaps.html` | `questions.html` is the 40-question site register |
-| Decision paths and funding | `decision-paths.html` | `suggestions.html` is the 22-proposal site register |
-| Raw official injury transcription | `availability-capture.html` | new path; 258 report rows, each linking nfl.com |
+### What the third branch had done
 
-Two defects in the merged code were found and repaired rather than published:
+It merged my T16 merge, then rebuilt `decisions.html`, `suggestions.html` and `injuries.html` *inside*
+`render_site.py` with its own registers (8 questions, 8 suggestions, a 259-row full-league week-10
+injury capture), and dropped `questions.html`/`lineups.html` from the rendered set. Because the
+Makefile still runs `render_readiness.py` after `render_site.py`, its `decisions.html` was then
+overwritten — so its eight pre-decision questions were not actually on the live site, and `questions.html`
+404'd.
 
-1. `suggestions.html` was a hard-coded eight-row list with ids `S-01…S-08` while the generated register had
-   22 rows with ids `S01…S22`; `tests/test_review_registers.py::test_pages_match_csvs` failed on `main`.
-   The page now renders from `data/processed/suggestions.csv` (F-22).
-2. `pipeline/decisions.py` cited `NFL team roster (Arizona Cardinals)` and `NFL injury report (2026 week 10)`,
-   neither of which existed in `render_site.OFFICIAL`, so the register crashed when rebuilt; both are now
-   registered with their official URLs, plus a mechanical club-slug fallback for future roster citations.
+### Resolution
 
-The `injuries.html` page also had to be regenerated from the availability module so its `AV-*` rows match
-`data/processed/availability_*.csv`; the raw transcription that used to occupy that path moved to
-`availability-capture.html` instead of being discarded.
+| Content | Where it now lives |
+|---|---|
+| My 40-question register | `questions.html` (restored) |
+| Its 8 pre-decision questions | same page, section "Pre-decision questions" — verbatim, with a correction note |
+| My 22-proposal register + four paths + worksheet | `suggestions.html` (restored) |
+| Its 8-item suggestion log incl. the two **Adopted** items | same page, section "Suggestions for review" — verbatim |
+| My 12-source availability page + signals + 2 club charts | `injuries.html` (restored) |
+| Its full 259-row league week-10 injury capture | same page, section "Injuries & availability" — verbatim, with capture notes |
+| 12 readiness questions + parallel 8-proposal register | `decisions.html` (unchanged from my merge) |
+| 7 observed players + chart cells | `lineups.html` (restored) |
 
-Local verification of the merged tree: `make build` → 0 failing checks, 21 canonical pages / 995 sourced rows,
-32 pages link-checked; `make test` → 52 passed.
+Implementation detail: `pipeline/parallel_pages.py` is that session's renderer copied verbatim with
+three mechanical edits (renamed builders, `return body` instead of `layout(...)`, leading `notice()`
+dropped) so its HTML is embedded unchanged. Nothing was retyped, so no figure could be altered.
+
+Corrections published (not deletions): both embedded blocks say "no official depth chart", which was
+true for the league site but not for the clubs; each block now carries a dated correction pointing at
+`lineups.html`, and `research/injuries.md` carries the same update.
+
+### Verification
+
+- `make build`: exit 0.
+- `verify_site.py`: **0 failing checks**; `injuries.html` 316 rows, `questions.html` 48 rows,
+  `suggestions.html` 34 rows, `decisions.html` 28 rows, `lineups.html` 7 rows.
+- `check_sources.py`: 17 canonical pages / **895 rows**, strict pass.
+- `check_links.py`: 28 pages, no external dependencies.
+- `pytest`: **46 passed**.
+- `tests/check_rebuild.py`: run after the merge commit.
+
+### Deployment record — verified 2026-11-12T13:27Z
+
+| Step | Actual result |
+|---|---|
+| Pull request | [#28](https://github.com/karagemop466-tech/Korea1/pull/28) **MERGED**, merge commit `357ff3a` |
+| CI | `Verify site` on `357ff3a` succeeded; the PR carried 46 tests and a zero-drift rebuild |
+| GitHub Pages | build **built** for `357ff3a` at 2026-11-12T13:26:16Z, error null |
+| Live pages read | `questions.html` (40-question register + the eight pre-decision questions + correction), `injuries.html` (12-source register, eight signals, then the 259-row week-10 capture), `decisions.html`, `lineups.html`, `suggestions.html` — all at `?v=28` |
+| Verdict | Unchanged: 0 of 18 strategies validated, G1 blocks all, no reward, 0 availability signals in the leaderboard |
+
+The live site therefore carries every register from all three sessions, each with its own provenance
+label and one URL per purpose.
+
+---
+
+## Session `arena/c0528572-korea1` — T14–T17 log (2026-11-12)
+
+### What was built (file scope as claimed in the board)
+
+| Task | Output | Status |
+|---|---|---|
+| T14 | `pipeline/fetch_availability.py` (runs on a GitHub-hosted runner via `.github/workflows/availability.yml`, cron 11:17 / 23:17 UTC daily + 21:17 UTC Wed–Sat), `pipeline/depth_status.py`, `data/availability/**`, `availability.html`, `tests/test_availability_tracker.py` (5 tests) | **done** |
+| T15 | `data/review/suggestions.csv` (17 rows, authored by `data/review/_author.py`), `decision-board.html` | **done** |
+| T16 | `data/review/questions.csv` (20 rows), `open-questions.html` | **done** |
+| T17 | `data/review/repo_review.csv` (RV-01…RV-11 → `flagged.html`), executive-summary update, grouped navigation + stylesheet repair in `pipeline/render_site.py`, integration merge | **done** (PR/merge record below) |
+
+### Sources read, and how
+
+| Source | URL | How it was read |
+|---|---|---|
+| NFL official injury report, 2026 Week 10 | https://www.nfl.com/injuries/ | By the Actions runner (HTTP 200, SHA-256 in `data/availability/manifest.json`), and separately by this session's page-fetch tool |
+| 32 official club depth-chart pages | `https://<club site>/team/depth-chart` (full list in `manifest.json`) | By the Actions runner; https://www.commanders.com/team/depth-chart also read with the page-fetch tool |
+| GitHub Actions `schedule` event | https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows | Read; scheduled workflows run only from the default branch, so the cron starts after merge |
+
+### Verification performed
+
+* **Line-by-line against the official pages:** the 44 injury-report rows for WAS, NYG, NE and DET and all 29
+  Washington depth-chart slots in the first capture (2026-11-12T13:03:58Z) were compared with the pages as
+  read independently through the page-fetch tool. No differences. The remaining rows are machine-captured
+  from the same pages and were **not** individually re-read (published as RV-11).
+* Cross-check with the pinned community schedule: the 13 matchups printed on the injury page are 13 of the 14
+  Week-10 games in `data/processed/upcoming.csv`; the 14th (LAC@BAL, Monday) had no report yet.
+* `make build` + `make test`: 45 tests pass; `verify_site.py` 0 failing; `check_sources.py` 18 pages / 975 rows,
+  every row with an allow-listed official/primary link (club sites added to the allow-list from
+  `fetch_availability.TEAMS`); `check_links.py` 28 pages, no broken link or external asset.
+
+### Irregularities (all published on `flagged.html`, section "Review of 2026-11-12")
+
+IDs: my registers use `RV-nn` (review findings), `DB-nn` (decision board) and `OQ-nn` (open questions) because the
+sibling's merged pages already use `N-nn`, `Snn` and `Qnn`.
+
+
+RV-01 injury effect not priced · RV-02 open line board stale (Week 8 vs Week 10) · RV-03 Houston depth chart is an
+image (blank) · RV-04 41 report players not found on their club chart · RV-05 eight clubs without report rows at
+capture · RV-06 depth charts are club-labelled unofficial · RV-07 reserve lists not captured · RV-08 stylesheet
+lacked classes the pages use (repaired) · RV-09 coordination collision / stale board rows / PR #19 ·
+RV-10 leaderboard carries no numbers under the strict rule · RV-11 scope of the line-by-line check.
+
+### Integration merge — `main` moved while this branch was in progress (PRs #22, #23 of `arena/03f66e17-korea1`)
+
+`git merge origin/main` at `8c93d9f` conflicted in `pipeline/render_site.py`, `pipeline/render_summary.py`,
+`pipeline/verify_site.py`, `tests/check_sources.py`, `Makefile`, `README.md` and the generated pages. Resolution,
+nothing of the sibling's discarded:
+
+| Conflict | Resolution |
+|---|---|
+| `NAV` (their three new links vs my grouped navigation) | Grouped navigation kept; their `decisions.html`, `suggestions.html`, `lineups.html` are a nav group "First pass · 12 Nov", unchanged in content |
+| Executive-summary paragraph / `render_summary.py` section | Both kept. Two of their sentences said the lineup sample is "not a live league-wide service" and "all-club coverage … blocked"; after integration that is true of `lineups.html` only, so each now points to `availability.html` for the all-club capture |
+| Requirement rows R19–R21 (both sessions added the same IDs) | One row per ID naming both sessions' pages |
+| Page lists in `verify_site.py`, `check_sources.py`, `check_links.py`; `Makefile` test list | Union |
+| `README.md` coordination paragraph | Generic wording (each session is pinned to its own branch); their "Injury and decision-readiness boundaries" section kept with a pointer to the tracker |
+| Generated HTML / verification CSVs | Not hand-merged; regenerated by `make build` on the merged sources |
+
+My pages each link to the sibling's equivalent page and say it was written independently. Request to the
+owner of `official-monitor.yml` (`arena/03f66e17-korea1`): it and `availability.yml` now both fetch
+nfl.com daily; consolidating them is decision-board item DB-12/DB-14 and was **not** done here (their scope).
+
+### Second and third integration merges — `main` moved twice more (arena/c0528572-korea1)
+
+| `main` at | What arrived | What conflicted | Resolution |
+|---|---|---|---|
+| `31cd628` (PRs #25/#27, `arena/25460478-korea1`) | `suggestions.html` (22 proposals), `questions.html` (40), `injuries.html` (source audit), F-13…F-17 | `NAV`, executive paragraph, page lists, `Makefile`, `README.md`, board rows (both sessions used T14–T16) | Their registers are the primary "Decide" links; mine are grouped as "Parallel registers" and say so on the page. Page/test lists unioned. Board rows of both sessions kept, collision noted. Their sentences saying coverage is 2 of 32 clubs are unchanged and now followed by a pointer to `availability.html` |
+| `bc1c411` (PR #26, `arena/425336fc-korea1`) then `357ff3a` (PR #28, `arena/25460478-korea1`) | #26: its own `injuries.html`, `suggestions.html`, `decisions.html` builders inside `render_site.py`; #28: `pipeline/parallel_pages.py`, generated executive summary | `pipeline/render_site.py`, `pipeline/render_summary.py`, every generated page | **Irregularity:** PR #26 wrote three pages to filenames two other sessions already published and removed their code; `Verify site` failed on `main` at `bc1c411`. I first ported the #26 pages to separate filenames (commit on this branch), then PR #28 landed with the owning session's own repair (`parallel_pages.py`, #26 content rendered inside the existing pages). Final resolution: **`render_site.py` and `render_summary.py` taken from `main` (#28) as-is, and only this session's additions re-applied on top** (grouped sidebar nav, stylesheet block, availability card, RV table on flagged, R21b row, executive update table). My three interim filenames were dropped again — #28's placement stands |
+
+After the final merge `make build` + `make test` pass; counts are recorded with the PR result below.
+
+### PR, merge and deployment record — `arena/c0528572-korea1` (2026-11-12)
+
+| Item | Result |
+|---|---|
+| Pull request | https://github.com/karagemop466-tech/Korea1/pull/29 — merged without review at 2026-11-12T13:31:49Z, merge commit `f7b17eb` |
+| Check before merge | `verify` passed on the PR head (run 43227739197) |
+| After merge on `main` | `Verify site` run 43228175609 success; `pages-build-deployment` run 43228174322 success |
+| Live pages read after deploy | https://karagemop466-tech.github.io/Korea1/availability.html , https://karagemop466-tech.github.io/Korea1/decision-board.html , https://karagemop466-tech.github.io/Korea1/open-questions.html — all served the merged content (sidebar build, DB-/OQ- IDs) |
+| Local state at merge | `make build` + `make test`: 51 tests pass; 31 pages link-checked; strict official/primary reference check passed |
+| Re-verification at merge time | The 44 injury-report rows for WAS, NYG, NE and DET in `data/availability/injuries.csv` were re-read against https://www.nfl.com/injuries/ immediately before the merge: identical, field for field |
+| **Not confirmed** | The scheduled `availability.yml` now exists on `main`, but its final form (commit-back with rebase, checks before commit) has **not yet run**: manual dispatch from this session is refused (HTTP 403, token cannot dispatch workflows). Only the earlier probe version ran (run 43223697554, success). First scheduled run is due 2026-11-12 21:17 UTC; check the Actions tab. If it fails, the page keeps the 13:03Z snapshot and says so by its capture time |
+| Left untouched | PR #19 (open, conflicting, another session's), PR #24 (open, another session's) |
+
+## Merge note — fourth main advance, session arena/3e57f750-korea1 (2026-11-12)
+
+While PR #24 was rebased onto the review-register work, `main` took another drop from
+`arena/c0528572-korea1` (PRs #29 and #32: the automatic all-club availability tracker, a parallel decision
+board and open-questions register, `pipeline/parallel_pages.py`-driven pages and grouped navigation).
+That advance was merged in the same way as the earlier two: their renderers and their generated pages were
+taken as-is, and this session's three pages were re-applied on paths nobody else uses.
+
+What the merge changed on our side:
+
+- `injuries.html`, `questions.html`, `suggestions.html`, `decisions.html`, `availability.html`,
+  `decision-board.html` and `open-questions.html` remain the other sessions' pages, untouched.
+- This session publishes `depth-register.html`, `information-gaps.html` and `decision-paths.html`, each
+  cross-linking the sibling page it complements, and each registered in `NAV`, `verify_site.expected`,
+  `tests/check_sources.PAGES` and `tests/check_links.PAGES`.
+- The row-by-row transcription that briefly lived on `availability-capture.html` was withdrawn: the
+  automatic tracker now captures the same official report for 24 clubs, and two pages of the same table
+  helped nobody. The hand capture survives where it has independent value — the depth join and the
+  cross-check section on `depth-register.html`.
+- `flagged.html` gains F-18 … F-26, renumbered because the parallel session's review took F-13 … F-17.
+- Requirements extend to R23 … R25 on the page and in `research/requirements.md`.
+
+### The cross-check that came out of the merge
+
+With two captures of the same club charts, the build now compares them instead of trusting either:
+354 transcribed rows against 354 tracker rows for the same six clubs, 129 slot groups in both,
+127 in identical order, and two name spellings that differ (`Mike Ford Jr.` / `Mike Ford Jr`,
+`Francis Mauigoa` / `Francis "Sisi" Mauigoa`). Disagreements are printed on the page with the club's own
+chart linked per row; nothing is silently reconciled.
+
+### Verification of the merged tree
+
+`make build` → 0 failing checks, 23 canonical pages / 1,536 sourced rows, 34 pages link-checked;
+`make test` → 57 passed; `python tests/check_rebuild.py` → rebuild matches the committed outputs.

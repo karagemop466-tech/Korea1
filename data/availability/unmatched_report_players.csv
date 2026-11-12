@@ -1,0 +1,55 @@
+team,club,player,position,injury,practice_status,game_status,reason,player_url,source_url
+WAS,Commanders,Lucas Patrick,C,Concussion,Did Not Participate In Practice,Out,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/lucas-patrick/,https://www.nfl.com/injuries/
+NYG,Giants,Malik Harrison,LB,Groin,Limited Participation in Practice,Questionable,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/malik-harrison/,https://www.nfl.com/injuries/
+NE,Patriots,Reggie Gilliam,FB,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/reggie-gilliam/,https://www.nfl.com/injuries/
+NE,Patriots,Greg Van Roten,G,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/greg-van-roten/,https://www.nfl.com/injuries/
+DET,Lions,Kerby Joseph,S,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/kerby-joseph/,https://www.nfl.com/injuries/
+KC,Chiefs,Omarr Norman-Lott,DT,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/omarr-norman-lott/,https://www.nfl.com/injuries/
+GB,Packers,Aaron Banks,G,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/aaron-banks/,https://www.nfl.com/injuries/
+GB,Packers,Chris Brooks,RB,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/christopher-brooks/,https://www.nfl.com/injuries/
+GB,Packers,Javon Bullard,S,,Did Not Participate In Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/javon-bullard/,https://www.nfl.com/injuries/
+GB,Packers,Zaire Franklin,LB,,Did Not Participate In Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/zaire-franklin/,https://www.nfl.com/injuries/
+GB,Packers,Travis Glover,G,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/travis-glover/,https://www.nfl.com/injuries/
+GB,Packers,Ty'Ron Hopper,LB,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/ty-ron-hopper/,https://www.nfl.com/injuries/
+GB,Packers,Josh Jacobs,RB,,Did Not Participate In Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/josh-jacobs-x3315/,https://www.nfl.com/injuries/
+GB,Packers,Bo Melton,WR,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/bo-melton/,https://www.nfl.com/injuries/
+GB,Packers,Skyy Moore,WR,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/skyy-moore/,https://www.nfl.com/injuries/
+GB,Packers,Micah Parsons,LB,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/micah-parsons/,https://www.nfl.com/injuries/
+GB,Packers,Sean Rhyan,C,,Did Not Participate In Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/sean-rhyan/,https://www.nfl.com/injuries/
+GB,Packers,Trey Smack,K,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/trey-smack/,https://www.nfl.com/injuries/
+GB,Packers,Lukas Van Ness,LB,,Did Not Participate In Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/lukas-van-ness/,https://www.nfl.com/injuries/
+GB,Packers,Josh Whyle,TE,,Did Not Participate In Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/josh-whyle/,https://www.nfl.com/injuries/
+GB,Packers,Savion Williams,WR,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/savion-williams/,https://www.nfl.com/injuries/
+GB,Packers,Kevin Zeitler,G,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/kevin-zeitler/,https://www.nfl.com/injuries/
+BUF,Bills,Jordan Hancock,CB,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/jordan-hancock/,https://www.nfl.com/injuries/
+BUF,Bills,Tyrell Shavers,WR,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/tyrell-shavers/,https://www.nfl.com/injuries/
+NYJ,Jets,VJ Payne,S,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/vj-payne/,https://www.nfl.com/injuries/
+MIA,Dolphins,Darrell Baker Jr.,CB,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/darrell-baker-jr/,https://www.nfl.com/injuries/
+IND,Colts,Arden Key,DE,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/arden-key/,https://www.nfl.com/injuries/
+CAR,Panthers,Jonathon Brooks,RB,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/jonathon-brooks/,https://www.nfl.com/injuries/
+CAR,Panthers,Brady Christensen,G,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/brady-christensen/,https://www.nfl.com/injuries/
+CAR,Panthers,Mike Jackson,CB,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/mike-jackson/,https://www.nfl.com/injuries/
+CAR,Panthers,Xavier Legette,WR,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/xavier-legette/,https://www.nfl.com/injuries/
+NO,Saints,Travis Etienne,RB,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/travis-etienne/,https://www.nfl.com/injuries/
+HOU,Texans,Azeez Al-Shaair,LB,,Did Not Participate In Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/azeez-al-shaair/,https://www.nfl.com/injuries/
+HOU,Texans,Reed Blankenship,S,,Limited Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/reed-blankenship/,https://www.nfl.com/injuries/
+HOU,Texans,Tank Dell,WR,,Limited Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/tank-dell/,https://www.nfl.com/injuries/
+HOU,Texans,Blake Fisher,T,,Full Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/blake-fisher/,https://www.nfl.com/injuries/
+HOU,Texans,Marvin Harrison Jr.,WR,,Limited Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/marvin-harrison-jr/,https://www.nfl.com/injuries/
+HOU,Texans,Jacob Hummel,LB,,Limited Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/jake-hummel/,https://www.nfl.com/injuries/
+HOU,Texans,Brevin Jordan,TE,,Did Not Participate In Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/brevin-jordan/,https://www.nfl.com/injuries/
+HOU,Texans,Woody Marks,RB,,Limited Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/woody-marks/,https://www.nfl.com/injuries/
+HOU,Texans,David Montgomery,RB,,Did Not Participate In Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/david-montgomery/,https://www.nfl.com/injuries/
+HOU,Texans,Keylan Rutledge,G,,Did Not Participate In Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/keylan-rutledge/,https://www.nfl.com/injuries/
+HOU,Texans,Jaylin Smith,CB,,Limited Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/jaylin-smith/,https://www.nfl.com/injuries/
+HOU,Texans,Wyatt Teller,G,,Limited Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/wyatt-teller/,https://www.nfl.com/injuries/
+HOU,Texans,Tommy Togiai,DT,,Full Participation in Practice,,club depth chart not machine-readable at capture,https://www.nfl.com/players/tommy-togiai/,https://www.nfl.com/injuries/
+LA,Rams,Terrance Ferguson,TE,,Did Not Participate In Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/terrance-ferguson-2/,https://www.nfl.com/injuries/
+ARI,Cardinals,Zachary Carter,DT,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/zachary-carter-x9168/,https://www.nfl.com/injuries/
+ARI,Cardinals,Hunter Long,TE,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/hunter-long/,https://www.nfl.com/injuries/
+LV,Raiders,Foley Fatukasi,DT,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/foley-fatukasi/,https://www.nfl.com/injuries/
+SF,49ers,Nate Hobbs,CB,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/nate-hobbs/,https://www.nfl.com/injuries/
+SF,49ers,C.J. West,DT,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/cj-west/,https://www.nfl.com/injuries/
+DAL,Cowboys,Jonathan Bullard,DT,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/jonathan-bullard/,https://www.nfl.com/injuries/
+DAL,Cowboys,Devin Moore,CB,,Full Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/devin-moore-2/,https://www.nfl.com/injuries/
+PIT,Steelers,Derrick Harmon,DT,,Limited Participation in Practice,,name on injury report not found on the club's published depth chart,https://www.nfl.com/players/derrick-harmon-2/,https://www.nfl.com/injuries/
