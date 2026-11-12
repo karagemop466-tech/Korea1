@@ -1149,10 +1149,26 @@ depth rank is invented for a player absent from a chart (e.g. Lucas Patrick is n
 - `pytest`: **46 passed** (35 local + 11 from `arena/03f66e17`, both register suites kept).
 - `tests/check_rebuild.py`: run after the merge commit; result recorded below.
 
-### Deployment record
+### Deployment record — verified 2026-11-12T13:17Z
 
-PR, merge commit, Pages build and live-page fetches are appended here after execution. Until then this
-section records only local results; no deployment is inferred.
+| Step | Actual result |
+|---|---|
+| First merge of `main` | `8c93d9f` (PR #23) landed while PR #25 was open; merged locally, both coordination records kept, `check_rebuild.py` re-run: 0 changed files |
+| Implementation PR | [#25](https://github.com/karagemop466-tech/Korea1/pull/25), **MERGED** 2026-11-12T13:15:53Z, merge commit `8b5c974` |
+| CI | `Verify site` on `8b5c974`: **success** (pinned rebuild, 46 tests, zero generated-output drift) |
+| GitHub Pages | build **built** for `8b5c974` at 2026-11-12T13:16:51Z, error null; source still `main` / root |
+| Live pages read | `injuries.html` (12 sources, 2 of 32 charts, Q30 limits, PILOT ONLY signals), `decisions.html` (12 questions **and** the parallel 8-proposal register), `lineups.html` (7 observations, L01 chart cells blank because Patrick is not on the WAS chart), all fetched at `?v=25` |
+| Research verdict | Unchanged: 0 of 18 strategies validated, G1 blocks all, no reward, 0 availability signals in the leaderboard |
+
+Live URLs: <https://karagemop466-tech.github.io/Korea1/injuries.html>,
+<https://karagemop466-tech.github.io/Korea1/decisions.html>,
+<https://karagemop466-tech.github.io/Korea1/lineups.html>,
+<https://karagemop466-tech.github.io/Korea1/suggestions.html>,
+<https://karagemop466-tech.github.io/Korea1/questions.html>.
+
+Still open, published and blocking bets only (not publication): league-wide dated depth coverage
+(2 of 32 clubs, no capture time), all-club injury extraction, authenticated quotes, full official
+outcome census and prospective replication.
 
 ### N1 PR merge and collection-trigger repair
 
