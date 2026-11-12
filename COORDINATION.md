@@ -1011,3 +1011,42 @@ F1 (audit), F2 (repairs/dashboard) and F3 (integration/deploy) are complete for 
 Open sibling PR #19 was not closed or force-pushed. All merged sibling work through PRs #15–#18
 was preserved and re-verified. The final public dashboard is live at
 <https://karagemop466-tech.github.io/Korea1/>.
+
+---
+
+## 2026-11-12 Phase — Session `arena/d6b3fd34-korea1` (G1–G6)
+
+### Concurrent-branch inspection & non-overlapping namespace resolution
+
+Inspected `main` (`645ef0c`, last updated 2026-11-02T21:01:54Z — all 2026-11-01/02 claims are >10 days old)
+and also ran `git ls-remote --heads origin` across all remote branches before claiming. Three sibling Arena
+sessions spawned simultaneously at 2026-11-12T12:56Z had just pushed claim-only commits to their own branches,
+each claiming full-deliverable integration scopes without awareness of the others:
+
+| Concurrent branch | Claim commit | Time (UTC) | Primary paths claimed on that branch |
+|---|---|---|---|
+| `arena/3e57f750-korea1` | `39a872b` | 12:57:19Z | `pipeline/injuries.py`, `data/official/**`, `injuries.html`, `research/decision-questions.csv`, `questions.html`, `research/suggestions.csv`, `suggestions.html`, `tests/test_injuries.py` (+ shared integration files) |
+| `arena/03f66e17-korea1` | `2b6fed2` | 12:57:30Z | `research/decision-register.json`, `pipeline/render_decisions.py`, `tests/test_decisions.py`, `assets/data/decision-register.json` (+ shared integration files) |
+| `arena/425336fc-korea1` | `a80c026` | 12:58:58Z | `research/repo_review.md`, `research/suggestions.md`, `suggestions.html`, `research/decisions.md`, `decisions.html`, `research/signals.md`, `research/leaderboard.md`, `research/injuries.md`, `injuries.html` (+ shared integration files) |
+
+**Platform constraint & non-overlap resolution:** Each Arena session is fixed by the runtime to its own branch
+(`arena/d6b3fd34-korea1` here; creating or switching to `session-<id>/<task>` branches is disallowed). To
+avoid colliding with any sibling's primary code, data, tests, or new HTML filenames while delivering the
+complete 2026-11-12 prompt end to end, `arena/d6b3fd34-korea1` namespaces all primary artefacts into strictly
+disjoint paths (`pipeline/lineup_deficiencies.py`, `pipeline/decision_readiness.py`, `pipeline/render_governance.py`,
+`data/lineups/**`, `data/governance/**`, `suggestions-review.html`, `decision-readiness.html`,
+`lineup-deficiencies.html`, `tests/test_governance_and_lineups.py`) and performs final integration of shared
+outputs (`COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `research/requirements.md`, `Makefile`,
+`pipeline/render_site.py`, `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`,
+`assets/data/**`, root `*.html`) only after pulling/merging `origin/main` without discarding any sibling work.
+No sibling branch or open PR (including PR #19) will be force-pushed, closed, or overwritten.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| G1 | Line-by-line repo review + official-source verification + 2026-11-12 freshness & irregularity audit | **in progress** | `arena/d6b3fd34-korea1` | `data/governance/repo_verification_2026_11_12.csv`, `data/governance/requirements_2026_11_12.csv`, `pipeline/decision_readiness.py` |
+| G2 | Suggestions Review Hub: decision-making improvements + dedicated review-before-implementation section/page | **in progress** | `arena/d6b3fd34-korea1` | `data/governance/suggestions_review.csv`, `suggestions-review.html`, `pipeline/render_governance.py` |
+| G3 | Pre-Decision Q&A, Knowns vs Unknowns & Missing-Information Discovery Register | **in progress** | `arena/d6b3fd34-korea1` | `data/governance/decision_questions.csv`, `data/governance/missing_info_discovery.csv`, `decision-readiness.html`, `pipeline/render_governance.py` |
+| G4 | Offensive & Defensive Injury + 1st/2nd/3rd/4th-String Backup Lineup Deficiency Tracker (official NFL.com Week 10 2026 + official club depth charts + historical starter/backup PBP evidence) | **in progress** | `arena/d6b3fd34-korea1` | `pipeline/lineup_deficiencies.py`, `data/lineups/**`, `lineup-deficiencies.html`, `tests/test_governance_and_lineups.py` |
+| G5 | Line origination, signal leaderboard, parlays/props correlation & luck-control audit integration + Executive Summary | **in progress** | `arena/d6b3fd34-korea1` | `EXECUTIVE_SUMMARY.md`, `research/requirements.md`, `pipeline/render_summary.py` |
+| G6 | Final integration, strict source/link/blank-cell verification, PR → `main`, merge, GitHub Pages live deploy confirmation | **in progress** | `arena/d6b3fd34-korea1` | `COORDINATION.md`, `README.md`, `Makefile`, `pipeline/render_site.py`, `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`, `assets/data/**`, root `*.html` |
+
