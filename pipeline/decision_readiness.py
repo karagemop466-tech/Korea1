@@ -1,0 +1,678 @@
+"""G1/G2/G3 — Decision-readiness Q&A, missing-information discovery, site-improvement suggestions
+review queue (staged for review before implementing model/gate changes), full 2026-11-12
+requirements register, and line-by-line repo & post-pin official NFL score verification.
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import PROC, ROOT, write_json  # noqa: E402
+
+OUT_DIR = ROOT / "data" / "governance"
+VERIFIED_DATE = "2026-11-12"
+
+URLS = {
+    "nfl_scores": "https://www.nfl.com/scores/",
+    "nfl_scores_wk8": "https://www.nfl.com/scores/2026/REG8",
+    "nfl_scores_wk9": "https://www.nfl.com/scores/2026/REG9",
+    "nfl_injuries": "https://www.nfl.com/injuries/",
+    "nfl_inactives": "https://www.nfl.com/inactives/",
+    "nfl_schedule": "https://www.nfl.com/schedules/",
+    "nfl_game_prep": "https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep",
+    "nfl_rules": "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook",
+    "nfl_health": "https://operations.nfl.com/inside-football-ops/players-legends/player-health-safety",
+    "white_2000": "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping",
+    "bailey_2014": "https://www.pm-research.com/content/iijpormgmt/40/5/94",
+    "politis_1994": "https://www.tandfonline.com/doi/abs/10.1080/01621459.1994.10476870",
+    "bh_1995": "https://cris.tau.ac.il/en/publications/controlling-the-false-discovery-rate-a-practical-and-powerful-app-2/",
+    "fanduel_push": "https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push",
+    "github_pages": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages",
+}
+
+
+def build_suggestions() -> pd.DataFrame:
+    """12 site & decision-making improvement suggestions staged for human path selection BEFORE
+    changing the frozen canonical model, pin, or competition rules."""
+    rows = [
+        dict(
+            id="SUG-01",
+            category="Lineup & Injury Signal Integration",
+            priority="P0 · High impact",
+            title="Separate pre-game 90-minute active/inactive lineup adjustments from starter-blind team ratings",
+            current_gap="pipeline/models.py fits Elo/matchup/ridge on team scores and rest only; starter outs (e.g., QB1/CB1/OL cascades to 2nd–4th string) leave team ratings at full-strength levels.",
+            decision_impact="Prevents originating stale spreads/totals when 1st- or 2nd-string starters are ruled Out or DNP (walk-forward PBP diagnostic shows large negative scoring residuals under backup QBs/RBs).",
+            path_a="Path A (No-model gate): Keep models.py unchanged; add a manual/automated 'Lineup Alert Hold' flag that blocks bets whenever QB1 or >=2 unit starters are Out/DNP.",
+            path_b="Path B (Two-stage prior adjustment — Recommended): Keep base team rating frozen, apply an out-of-fold estimated positional replacement delta at T-85 min once official club inactives publish.",
+            path_c="Path C (Player-level bottom-up rating): Rebuild team spread/total origination from snap-weighted 53-man player ratings across all 22 offensive/defensive slots.",
+            recommended_path="Path B",
+            tradeoff_summary="Path A avoids estimation error but discards high-edge injury games; Path C needs multi-season snap-count licensing; Path B captures starter-to-backup drop-offs with auditable shrinkage.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G1, G2, G6",
+            official_ref_label="NFL Operations 90-min inactive rule",
+            official_ref_url=URLS["nfl_game_prep"],
+        ),
+        dict(
+            id="SUG-02",
+            category="Lineup & Injury Signal Integration",
+            priority="P0 · High impact",
+            title="Reconcile club 'Unofficial' depth charts with official NFL injury reports and mid-week transactions",
+            current_gap="2026-11-12 audit proved club depth charts carry explicit 'Unofficial' disclaimers and omit active trade/injury names (e.g., Kirk Cousins on MIN, Micah Parsons on GB, Lucas Patrick on WAS).",
+            decision_impact="Eliminates false confidence in 2nd/3rd/4th-string identity before sizing sides, totals, or backup player props.",
+            path_a="Path A (Discrepancy block): Flag any game/position with an injury-vs-depth mismatch as UNRESOLVED and suppress automated signal generation.",
+            path_b="Path B (Prior-snap + official report fusion — Recommended): Combine prior-week official game-book offensive/defensive snap shares with Wednesday–Friday NFL.com practice/game statuses.",
+            path_c="Path C (Commercial real-time depth feed): License an official NFL data distributor feed with transaction-synchronized depth ladders.",
+            recommended_path="Path B",
+            tradeoff_summary="Path A is zero-cost and safe; Path B uses verifiable game-book participation rather than writer-maintained club tables; Path C adds recurring vendor cost.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G1, G2",
+            official_ref_label="NFL official Week 10 injury report",
+            official_ref_url=URLS["nfl_injuries"],
+        ),
+        dict(
+            id="SUG-03",
+            category="Market & Quote Provenance",
+            priority="P0 · Critical blocker",
+            title="Build a prospective pre-kickoff executable quote & bet-limit logger to unlock Gate G1",
+            current_gap="0% of the 26,149 historical backtest tickets carry an authenticated sportsbook timestamp, house rulebook link, or bet limit; G1 fails closed for all 18 strategies.",
+            decision_impact="Without executable entry and closing quotes from regulated operators, neither CLV nor realized ROI can be distinguished from stale community consensus numbers.",
+            path_a="Path A (Paper-log single book): Archive timestamped pre-kickoff snapshots (T-24h, T-90m, T-5m) from one regulated operator with SHA-256 manifests.",
+            path_b="Path B (Multi-book prospective ledger — Recommended): Log synchronized quotes, vig, and posted limits across >=3 regulated books plus operator settlement rules at each NFL injury/inactive milestone.",
+            path_c="Path C (Historical commercial odds purchase): License historical tick-level opener-to-closer archives with verified bookmaker IDs.",
+            recommended_path="Path B",
+            tradeoff_summary="Path C is retroactive but still lacks personal account limits; Path B creates an unimpeachable prospective audit trail aligned with Gate G1 and Gate G7.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G1, G6, G7",
+            official_ref_label="FanDuel published settlement rules",
+            official_ref_url=URLS["fanduel_push"],
+        ),
+        dict(
+            id="SUG-04",
+            category="Market & Quote Provenance",
+            priority="P1 · High impact",
+            title="Capture player-prop thresholds, two-way prices, and actual Same-Game Parlay (SGP) joint quotes",
+            current_gap="props_model.py originates fair medians and copula lifts on 2019–2022 PBP, but zero historical prop prices or SGP multipliers exist in the repository.",
+            decision_impact="Allows direct measurement of whether sportsbook SGP correlation taxes exceed or underprice empirical QB-WR, RB-ML, and defensive-deficiency prop dependencies.",
+            path_a="Path A (Single-prop logging only): Log standalone two-way player-prop lines/odds for QB/RB/WR/TE starters and 2nd/3rd-string replacements.",
+            path_b="Path B (Paired standalone + SGP quote capture — Recommended): Log both standalone prop legs and the exact quoted SGP price for the 7 pre-registered combo structures.",
+            path_c="Path C (Full menu SGP scraper): Scrape all pairwise player combinations across every book.",
+            recommended_path="Path B",
+            tradeoff_summary="Path C explodes multiple-testing burden (hurting Gate G4/G5); Path B tests the exact pre-registered structural hypotheses without data-snooping inflation.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G1, G4, G5, G6",
+            official_ref_label="FanDuel parlay & push rules",
+            official_ref_url=URLS["fanduel_push"],
+        ),
+        dict(
+            id="SUG-05",
+            category="Dashboard UX & Decision Workflow",
+            priority="P1 · High impact",
+            title="Separate 'Frozen Historical Benchmark' from a versioned 'Weekly Live Slate Snapshot' on lines.html",
+            current_gap="Pinned snapshot a270278f3ac4 (2026-11-01) leaves 28 settled Week 8 & Week 9 games inside upcoming.csv/lines.html because refreshing the pin would alter historical backtest totals.",
+            decision_impact="Prevents a reviewer from mistaking already-settled Week 8/9 games for open Week 10+ decisions while preserving 100% byte-reproducibility of historical backtests.",
+            path_a="Path A (Status badge only): Keep single pin; annotate settled post-pin games via an official NFL.com reconciliation table (delivered in audit/readiness views).",
+            path_b="Path B (Dual-pin architecture — Recommended): Freeze historical backtest pin (1999–2025) separately from a weekly-versioned 2026 schedule/score manifest updated every Tuesday.",
+            path_c="Path C (Rolling re-pin on every build): Run --refresh-pin weekly and re-baseline all historical metrics.",
+            recommended_path="Path B",
+            tradeoff_summary="Path C shifts historical benchmark numbers every week; Path B gives live weekly decision utility AND immutable historical reproducibility.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G1, G2, UX",
+            official_ref_label="NFL official 2026 Week 9 scores",
+            official_ref_url=URLS["nfl_scores_wk9"],
+        ),
+        dict(
+            id="SUG-06",
+            category="Dashboard UX & Decision Workflow",
+            priority="P1 · Medium-high impact",
+            title="Add a single-screen Matchup Decision Card combining originated line, injury string drops, and gate blockers",
+            current_gap="To evaluate one game (e.g., NE vs DET or MIN @ GB), a user currently has to cross-reference lines.html, props.html,lineup-deficiencies.html, and flagged.html manually.",
+            decision_impact="Cuts pre-decision review time and surfaces hidden disqualifiers (e.g., 3rd-string OL/RB cascade or unverified quote source) alongside the model estimate.",
+            path_a="Path A (Static cross-links): Link matchup IDs across existing category tables.",
+            path_b="Path B (Unified game-drawer / filterable matchup matrix — Recommended): Add a per-game expandable row showing fair line, offensive/defensive string deficiencies, and Go/Hold checklist.",
+            path_c="Path C (Client-side interactive simulator): Allow users to toggle starter/backup status in-browser to preview sensitivity.",
+            recommended_path="Path B",
+            tradeoff_summary="Path C risks users over-fitting manual sliders; Path B presents verified facts and explicit blockers in one glance without inviting ad-hoc overrides.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="UX, G1, G2",
+            official_ref_label="NFL official schedule",
+            official_ref_url=URLS["nfl_schedule"],
+        ),
+        dict(
+            id="SUG-07",
+            category="Dashboard UX & Decision Workflow",
+            priority="P1 · Medium impact",
+            title="Provide an explicit 'Strict Official View' vs 'Labelled Research Numbers View' toggle with persistent warning banner",
+            current_gap="Strict public pages blank community-derived metrics (proper under verification policy), forcing reviewers to download CSVs or jump to lab/ to inspect exact MAE, Holm p, and DSR diagnostics.",
+            decision_impact="Lets quantitative reviewers inspect failure modes (e.g., why all 18 strategies fail gates) directly in-table without ever conflating community estimates with official NFL facts.",
+            path_a="Path A (Keep strict-only HTML + CSV links — current baseline): Zero risk of misreading community numbers as official.",
+            path_b="Path B (Side-by-side 'Official Verified' and 'Unverified Research Diagnostic' columns — Recommended): Keep official columns blank where unconfirmed, and display watermarked diagnostic columns only in an explicitly opt-in research drawer.",
+            path_c="Path C (Merge annex and canonical tables): Show all numbers inline with footnote disclaimers.",
+            recommended_path="Path A",
+            tradeoff_summary="Path C violates the strict blank-unverified verification rule; Path A (current) or a segregated diagnostic drawer (Path B) preserves strict provenance.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="UX, Verification",
+            official_ref_label="GitHub Pages documentation",
+            official_ref_url=URLS["github_pages"],
+        ),
+        dict(
+            id="SUG-08",
+            category="Lineup & Injury Signal Integration",
+            priority="P1 · High impact",
+            title="Model defensive secondary & front-seven backup cascades into opponent passing/rushing prop & total distributions",
+            current_gap="props_model.py models offensive player usage solely from the player's own prior games, ignoring opposing defensive starter outs (e.g., NE CB1 Carlton Davis III Out, DET CB1 D.J. Reed DNP, GB LB1/EDGE1/NB1 DNP).",
+            decision_impact="Captures asymmetric matchup edges where a healthy 1st-string offense (e.g., KC Mahomes/Rice/Kelce Full) faces a defense depleted to 2nd/3rd-string pass rushers and linebackers (ATL).",
+            path_a="Path A (Qualitative matchup tag): Surface opposing defensive 1st/2nd/3rd-string absences next to offensive prop hypotheses.",
+            path_b="Path B (Opponent unit-health covariate — Recommended): Add prior-only opponent pass/rush defensive efficiency adjusted for confirmed starter absences.",
+            path_c="Path C (Individual CB-WR shadow matchup model): Estimate route-level coverage matchups.",
+            recommended_path="Path B",
+            tradeoff_summary="Path C requires proprietary tracking data (Next Gen Stats routes); Path B uses observable unit participation and avoids noisy small-sample shadow assumptions.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G2, G3, G6",
+            official_ref_label="NFL official Week 10 injury report",
+            official_ref_url=URLS["nfl_injuries"],
+        ),
+        dict(
+            id="SUG-09",
+            category="Statistical Validation & Competition Governance",
+            priority="P1 · High impact",
+            title="Establish an append-only git-signed Pre-Registration Trial Ledger before testing any new injury or prop signal",
+            current_gap="validation.py uses TRIAL_REGISTER_LOWER_BOUND = 60 across canonical + historical + annex runs, leaving Deflated Sharpe provisional because earlier exploratory runs are uncounted.",
+            decision_impact="Eliminates selection-bias ambiguity (Gate G5) so future strategies that pass prospective testing can be evaluated against an exact, auditable trial denominator N.",
+            path_a="Path A (Manual markdown log): Record new strategy IDs in COORDINATION.md before coding.",
+            path_b="Path B (CI-enforced pre-registration manifest — Recommended): Require every strategy ID, frozen rule hash, and timestamp in data/governance/trial_registry.csv prior to backtest execution.",
+            path_c="Path C (External timestamping authority): Notarize strategy hashes externally before each NFL season.",
+            recommended_path="Path B",
+            tradeoff_summary="Path B is zero-cost, automated in GitHub Actions, and makes silent parameter tuning or deleted trials detectable in git history.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G4, G5, G8",
+            official_ref_label="Bailey & López de Prado (2014)",
+            official_ref_url=URLS["bailey_2014"],
+        ),
+        dict(
+            id="SUG-10",
+            category="Lineup & Injury Signal Integration",
+            priority="P2 · Medium impact",
+            title="Incorporate the official T-90m roof/wall designation and certified pre-kickoff stadium weather lock",
+            current_gap="Default models.py excludes temp/wind/roof because historical pre-kickoff timestamps were unverified; NFL Operations confirms retractable roof/wall state is reported at the 90-minute officiating meeting and locked at 60 minutes.",
+            decision_impact="Unlocks verified indoor/outdoor and wind-total signals (e.g., TOT_HIGH_WIND_UNDER) for prospective games without historical imputation leakage.",
+            path_a="Path A (Keep excluded): Continue omitting roof/weather until prospective archive reaches >=3 seasons.",
+            path_b="Path B (Prospective T-60m lock logger — Recommended): Log stadium roof position and NWS station wind/temp at T-60m alongside the 90-minute inactive report.",
+            path_c="Path C (Forecast weather feed at T-48h): Trade early openers on meteorological forecasts.",
+            recommended_path="Path B",
+            tradeoff_summary="Path B aligns strictly with the NFL Operations 90m/60m stadium-prep protocol and avoids forecast vendor drift.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G1, G2",
+            official_ref_label="NFL Operations stadium & roof protocol",
+            official_ref_url=URLS["nfl_game_prep"],
+        ),
+        dict(
+            id="SUG-11",
+            category="Statistical Validation & Competition Governance",
+            priority="P2 · Medium impact",
+            title="Replace flat-unit ROI leaderboard tie-breaking with Closing-Line Value (CLV) + Brier skill score during paper trading",
+            current_gap="With ~272 NFL games per season, binary win/loss ROI requires multiple seasons to achieve 80% statistical power at a 2% edge (Gate G3).",
+            decision_impact="Accelerates detection of genuine line-origination skill (or model decay) during untouched prospective paper trading while keeping Gate G6 realized-profit requirements intact.",
+            path_a="Path A (Realized ROI only): Wait multiple seasons for binary outcome convergence.",
+            path_b="Path B (Dual diagnostic: CLV + realized weekly bootstrap — Recommended): Use timestamped entry-vs-close probability delta as Tier-2 paper-trading diagnostic, while still requiring realized net profit for Tier-3 replication.",
+            path_c="Path C (CLV-only rewards): Award strategies purely on beating closing lines.",
+            recommended_path="Path B",
+            tradeoff_summary="Path C can be gamed in illiquid early markets or fail on correlated parlays; Path B improves statistical power without rewarding unprofitable CLV.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G3, G4, G6, G7",
+            official_ref_label="White (2000) Reality Check",
+            official_ref_url=URLS["white_2000"],
+        ),
+        dict(
+            id="SUG-12",
+            category="Statistical Validation & Competition Governance",
+            priority="P2 · Governance",
+            title="Define explicit competition governance, non-monetary recognition charter, and jurisdictional compliance sign-off",
+            current_gap="Prompt frames signal discovery as a leaderboard competition with rewards; currently all rewards are 'Unawarded' and no funded pool, sponsor, or legal terms exist.",
+            decision_impact="Prevents ambiguity over when a strategy qualifies for recognition and ensures research-only benchmarking never crosses into unauthorized wagering promotion.",
+            path_a="Path A (Research badge tiers only — Recommended): Formalize non-monetary 'Candidate' and 'Replicated Skill' badges gated on all 8 gates + 2 untouched prospective windows.",
+            path_b="Path B (Internal capital-allocation weightings): Allocate research paper-bankroll weights proportional to out-of-sample Kelly fraction capped at 1%.",
+            path_c="Path C (External sponsored contest): Require legal counsel, escrow, and jurisdictional contest rules before any monetary prize.",
+            recommended_path="Path A",
+            tradeoff_summary="Path A delivers immediate competitive accountability with zero legal/custody risk while Gate G1/G7 evidence is still being accumulated.",
+            review_state="PROPOSED · AWAITING PATH SELECTION",
+            gate_affected="G1–G8, Governance",
+            official_ref_label="White (2000) Reality Check",
+            official_ref_url=URLS["white_2000"],
+        ),
+    ]
+    return pd.DataFrame(rows)
+
+
+def build_decision_questions() -> pd.DataFrame:
+    """14 critical questions, what we HAVE, what we LACK, current evidence-based answers, and
+    concrete missing-information discovery methods required before making any reasonable decision."""
+    rows = [
+        dict(
+            id="DQ-01",
+            domain="1. Market & Quote Provenance",
+            question="Are our historical spreads, totals, and moneylines authenticated executable sportsbook offers with timestamps and limits?",
+            info_we_have="7,384 played games (1999–2026) in hash-pinned nflverse archive (`a270278f3ac4`) plus 2,945 games in SBR replication annex; internal score arithmetic matches 100%.",
+            info_we_lack="Bookmaker identity on `games.csv` closing lines, exact quote timestamps, opener-to-closer path outside 2021 (`WSGT` only), and maximum bet limits.",
+            current_answer="NO — UNVERIFIED FOR EXECUTION. Files are byte-verified community research snapshots, not authenticated sportsbook ticket offers; Gate G1 fails closed.",
+            blocker_severity="BLOCKS CAPITAL & REWARDS",
+            discovery_action="Deploy prospective multi-book pre-kickoff quote logger (T-24h, T-90m, T-5m) with operator URLs, house rules, and SHA-256 manifests (see MI-01).",
+            official_ref_label="NFL official scores",
+            official_ref_url=URLS["nfl_scores"],
+        ),
+        dict(
+            id="DQ-02",
+            domain="2. Line Origination Skill",
+            question="Does our market-free NFL line-origination ensemble beat the closing market out of sample?",
+            info_we_have="Walk-forward Elo + rolling matchup + ridge ensemble (2004–2026, prefix-stability tested, paired against available community closing lines in `model_metrics.csv`).",
+            info_we_lack="Official pre-kickoff injury/starter adjustments, snap-weighted roster ratings, and verified opening lines across multiple seasons.",
+            current_answer="NO — MODEL TRAILS CLOSING MARKET. Paired research diagnostics show ensemble spread/total MAE higher than closing market MAE; model differences alone are not positive EV.",
+            blocker_severity="BLOCKS CAPITAL & REWARDS",
+            discovery_action="Test whether adding T-90m starter/backup replacement deltas (MI-02/MI-03) reduces out-of-sample MAE against timestamped openers before risking capital.",
+            official_ref_label="White (2000) Reality Check",
+            official_ref_url=URLS["white_2000"],
+        ),
+        dict(
+            id="DQ-03",
+            domain="3. Offensive Lineup Deficiencies",
+            question="Do we know which offensive starters vs 2nd, 3rd, or 4th-string backups are playing before originating a line or prop?",
+            info_we_have="Verified Week 10 (2026-11-12) NFL.com injury report + 8-club 1st–4th string depth ladder (`data/lineups/week10_2026_injuries_depth.csv`), plus 2019–2022 PBP backup diagnostic.",
+            info_we_lack="League-wide automated 32-club ingestion, historical 90-minute official inactive archives (1999–2025), and verified game-day starter announcements (e.g., MIN QB uncertainty).",
+            current_answer="PARTIAL — WEEK 10 PILOT VERIFIED (8 CLUBS), HISTORICAL ARCHIVE MISSING. Current Week 10 exposes severe offensive cascades (NE RB3/RB4 & LG3+, MIN QB1/QB2/TE1/WR, GB RB1/C1/LG1-2), but `models.py` does not yet ingest them.",
+            blocker_severity="BLOCKS LIVE SLATE PRICING",
+            discovery_action="Capture club Game Day Administration inactive releases at T-90m across all 32 clubs and pair with official post-game NFL Gamebook offensive snap counts (MI-02, MI-03).",
+            official_ref_label="NFL official Week 10 injury report",
+            official_ref_url=URLS["nfl_injuries"],
+        ),
+        dict(
+            id="DQ-04",
+            domain="4. Defensive Lineup Deficiencies",
+            question="Do we track defensive starter absences where 2nd, 3rd, or 4th-string defenders replace injured starters?",
+            info_we_have="Verified Week 10 defensive depth cascades across 8 clubs (e.g., NE CB1 Out -> 2nd Channing Canada; DET CB1 DNP -> 2nd/3rd/4th chain; GB LB1 DNP + LB2 Limited -> 3rd Kristian Welch, EDGE1 & NB1 DNP; ATL 4 front-seven DNPs).",
+            info_we_lack="Historical defensive player snap shares and coverage/front-seven participation archives (community `prop_player_games.csv` tracks passers/rushers/receivers only, zero defensive snaps).",
+            current_answer="CURRENT WEEK TRACKED (PILOT); HISTORICAL DEFENSIVE SNAP DATA ABSENT. Neither `models.py` nor `props_model.py` currently adjusts totals or opponent props for defensive string drops.",
+            blocker_severity="BLOCKS LIVE SLATE PRICING",
+            discovery_action="Ingest official NFL Gamebook defensive play-time percentages and weekly NFL.com defensive injury statuses for all 32 teams (MI-03).",
+            official_ref_label="NFL official Week 10 injury report",
+            official_ref_url=URLS["nfl_injuries"],
+        ),
+        dict(
+            id="DQ-05",
+            domain="5. Depth-Chart Reliability",
+            question="Can official NFL club website depth charts and NFL.com/inactives be trusted without cross-checking?",
+            info_we_have="Direct 2026-11-12 verification of `nfl.com/inactives/` (blank placeholder page) and 8 club depth charts (`patriots.com`, `detroitlions.com`, `chiefs.com`, `vikings.com`, `packers.com` explicitly marked 'Unofficial').",
+            info_we_lack="An official league-centralized machine-readable 1st–4th string depth API prior to the 90-minute referee report.",
+            current_answer="NO — SINGLE-SOURCE DEPTH CHARTS LAG REALITY. Verified discrepancies include Kirk Cousins (traded to MIN, absent from Vikings depth chart), Micah Parsons (on GB injury report, absent from GB depth chart), and Lucas Patrick (Out at C for WAS, absent from WAS 2-deep).",
+            blocker_severity="BLOCKS LIVE SLATE PRICING",
+            discovery_action="Cross-validate three sources before kickoff: (1) NFL.com injury report, (2) prior-week official snap shares, and (3) club PR 90-minute inactive announcement (MI-02).",
+            official_ref_label="NFL Operations 90-min officiating meeting",
+            official_ref_url=URLS["nfl_game_prep"],
+        ),
+        dict(
+            id="DQ-06",
+            domain="6. Schedule & Snapshot Freshness",
+            question="Does the published 'Upcoming schedule' board reflect today's actual unplayed NFL games (2026-11-12, Week 10)?",
+            info_we_have="Pinned snapshot `a270278f3ac4` (2026-11-01) plus our 2026-11-12 NFL.com audit of all 28 settled Week 8 & Week 9 games (`post_pin_nfl_scores_2026_11_12.csv`).",
+            info_we_lack="Updated final scores inside `games_model.csv` for Weeks 8–9 without breaking the frozen `a270278f3ac4` historical benchmark pin.",
+            current_answer="NO IN RAW ARCHIVE — FLAGGED & RECONCILED. 28 games listed in `upcoming.csv` (13 in Week 8, 15 in Week 9) are already Final on NFL.com; Week 10 begins tonight (WAS @ NYG, 2026-11-12).",
+            blocker_severity="BLOCKS LIVE SLATE PRICING",
+            discovery_action="Review and approve SUG-05 Path B (dual-pin architecture separating frozen historical backtest from weekly 2026 live slate sync; see MI-08).",
+            official_ref_label="NFL official 2026 Week 8 & Week 9 scores",
+            official_ref_url=URLS["nfl_scores_wk9"],
+        ),
+        dict(
+            id="DQ-07",
+            domain="7. Single-Bet Strategy Edge",
+            question="Have any single-bet spread, total, moneyline, or situational angle strategies proven genuine skill?",
+            info_we_have="15 single-bet strategies evaluated walk-forward across weekly blocks with stationary bootstrap, Holm FWER correction, 5-cent adverse price stress, and season stability checks.",
+            info_we_lack="Authenticated executable quotes (G1) and any candidate passing Holm FWER <= 0.05 + DSR > 0.95 + >=2% stressed ROI simultaneously.",
+            current_answer="NO — 0 OF 15 SINGLE-BET STRATEGIES PASS VALIDATION. Zero candidates survive family-wise error control, adverse execution stress, and quote provenance gates.",
+            blocker_severity="BLOCKS CAPITAL & REWARDS",
+            discovery_action="Do not allocate capital to existing naive rules; test new pre-registered hypotheses incorporating verified T-90m lineup deficiencies against live openers (MI-01, MI-06).",
+            official_ref_label="Politis & Romano (1994) stationary bootstrap",
+            official_ref_url=URLS["politis_1994"],
+        ),
+        dict(
+            id="DQ-08",
+            domain="8. Parlays & Cross-Game Correlation",
+            question="Do 2-leg or 3-leg parlays generate skill-based positive expected value after accounting for correlation and vig?",
+            info_we_have="3 simultaneous-slate parlay strategies (`PARLAY2_SP_EDGE`, `PARLAY3_SP_EDGE`, `PARLAY2_TOT_EDGE`), weekly reality-check bootstrap, and cross-game margin/total correlation diagnostics.",
+            info_we_lack="Confirmed sportsbook parlay ticket offers, limits, and operator-specific push/void repricing across books.",
+            current_answer="NO — HIGH RAW PARLAY ROI IS VARIANCE, NOT VALIDATED SKILL. Compounding standalone vig (~4.5% per leg) degrades baseline EV unless leg edges or unpriced positive correlations are verified; 0 parlay strategies pass gates.",
+            blocker_severity="BLOCKS CAPITAL & REWARDS",
+            discovery_action="Log actual offered parlay payouts and push-reduction terms across operators before evaluating multi-leg strategies (MI-01, MI-04).",
+            official_ref_label="FanDuel parlay push settlement rules",
+            official_ref_url=URLS["fanduel_push"],
+        ),
+        dict(
+            id="DQ-09",
+            domain="9. Player-Prop Combos & SGP Pricing",
+            question="Can we profitably trade correlated player-prop combinations (e.g., QB passing + WR receiving, receptions + receiving yards)?",
+            info_we_have="21,033 player-games (2019–2022 PBP), 9,730 walk-forward prop lines, 7/7 season-total checks, and empirical copula/joint-lift estimates showing positive within-game QB-WR and rec-yards dependence.",
+            info_we_lack="Historical and live sportsbook player-prop lines, over/under juice, SGP correlation multipliers, and injury-void house rules.",
+            current_answer="BLOCKED BY MISSING PROP & SGP PRICES (GATE G1 & G6). Positive statistical correlation between QB and WR legs is real in play-by-play, but sportsbooks explicitly adjust SGP prices for correlation; without actual SGP quotes, EV is unknown.",
+            blocker_severity="BLOCKS CAPITAL & REWARDS",
+            discovery_action="Archive paired standalone prop prices and quoted SGP payouts for the 7 pre-registered combos across >=1 full season (MI-04).",
+            official_ref_label="FanDuel SGP & push rules",
+            official_ref_url=URLS["fanduel_push"],
+        ),
+        dict(
+            id="DQ-10",
+            domain="10. Correlation Precision & Tail Risk",
+            question="Are pooled point-estimate correlations sufficient to price parlays and Same-Game Parlays?",
+            info_we_have="Binary phi, joint lift, and Gaussian copula comparisons in `correlations.py` and `props_model.py`.",
+            info_we_lack="Official market-line inputs for strict public correlation tables, plus regime-specific correlations under extreme wind, blowouts, or backup QBs.",
+            current_answer="NO — BINARY PHI IS NOT IDENTICAL TO LATENT COPULA RHO. Dependence shifts across thresholds, key numbers (3, 7), and backup-QB game scripts; strict public correlation cells remain blank until underlying lines are officially verified.",
+            blocker_severity="BLOCKS CAPITAL & REWARDS",
+            discovery_action="Estimate threshold-specific joint win/push/loss tables on out-of-sample prospective quotes conditioned on confirmed starter status (MI-04).",
+            official_ref_label="White (2000) Reality Check",
+            official_ref_url=URLS["white_2000"],
+        ),
+        dict(
+            id="DQ-11",
+            domain="11. Luck Removal vs Luck Control",
+            question="Have we completely removed luck from the strategy competition, and do we know the exact multiple-testing burden?",
+            info_we_have="8 fail-closed gates: weekly block bootstrap, Holm FWER, power check (80% at 2% ROI), provisional DSR (`TRIAL_REGISTER_LOWER_BOUND = 60`), cost stress, season stability, and <90% overlap.",
+            info_we_lack="Exact count of unlogged exploratory trials across prior sessions and untouched prospective out-of-sample seasons.",
+            current_answer="LUCK IS BOUNDED, NEVER ZERO. Statistical gates bound false-discovery probability under stated assumptions, but only frozen pre-registration + untouched prospective replication separates skill from data snooping.",
+            blocker_severity="RESOLVED FOR GOVERNANCE · PROSPECTIVE RUN NEEDED",
+            discovery_action="Enforce append-only pre-registration (`trial_registry.csv`) before running any new strategy variant and require two untouched prospective windows (MI-06).",
+            official_ref_label="Bailey & López de Prado (2014)",
+            official_ref_url=URLS["bailey_2014"],
+        ),
+        dict(
+            id="DQ-12",
+            domain="12. Stadium Roof & Weather Timing",
+            question="When are retractable roof status and field weather officially known before kickoff?",
+            info_we_have="Verified NFL Operations stadium-prep protocol (`operations.nfl.com`): roof/wall state is declared at the 90-minute officiating meeting and physically positioned by 60 minutes pre-kickoff.",
+            info_we_lack="Historical pre-kickoff forecast/roof timestamps in `games.csv` (which records post-game observed weather only).",
+            current_answer="OFFICIALLY KNOWN AT T-90M / LOCKED AT T-60M PROSPECTIVELY; UNVERIFIED HISTORICALLY. Historical weather remains excluded from default `models.py` to prevent post-kickoff observation leakage.",
+            blocker_severity="RESOLVED FOR PROTOCOL · ARCHIVE NEEDED",
+            discovery_action="Log stadium roof/wall declaration at T-90m and NWS station wind/temperature at T-60m prospectively (MI-05).",
+            official_ref_label="NFL Operations Countdown to Kickoff",
+            official_ref_url=URLS["nfl_game_prep"],
+        ),
+        dict(
+            id="DQ-13",
+            domain="13. Official Historical Score Census",
+            question="Are all 7,384 historical game scores and settlement outcomes in the repository confirmed from NFL.com?",
+            info_we_have="31/31 matched scores in the T10 NFL.com sample (0 mismatches), 3/3 2015 `closing_lines.csv` flag errors caught and resolved via NFL.com Game Center, plus 28/28 Week 8–9 2026 scores verified.",
+            info_we_lack="Individual NFL.com verification of the remaining ~7,353 historical games (NFL.com web score selector covers 2010–2026 only; 2,913 pre-2010 games and 309 playoff games unchecked).",
+            current_answer="PARTIALLY VERIFIED SAMPLE ONLY (0 SCORE MISMATCHES FOUND). `games.csv` arithmetic is 100% internally consistent, but community hash verification is not a full official NFL census.",
+            blocker_severity="RESOLVED FOR RESEARCH ONLY",
+            discovery_action="Verify all 2010–2026 regular-season scores against NFL.com Game Center and cross-check pre-2010/postseason scores against official NFL Record & Fact Book / Gamebooks (MI-07).",
+            official_ref_label="NFL official scores (2010–2026)",
+            official_ref_url=URLS["nfl_scores"],
+        ),
+        dict(
+            id="DQ-14",
+            domain="14. Capital Allocation & Reward Payouts",
+            question="Can we reasonably fund a betting strategy or award leaderboard prizes today based on current repository evidence?",
+            info_we_have="Complete 8-gate evaluation across 18 canonical strategies, 18 annex strategies, and 7 prop-combo structures, plus Week 10 injury/depth readiness audit.",
+            info_we_lack="Any strategy passing all 8 gates, authenticated executable quote history, prop/SGP price history, and an authorized/funded prize charter.",
+            current_answer="NO — DO NOT FUND OR AWARD PRIZES YET. Keep the engine in paper-research mode, review the 12 staged suggestions (`suggestions-review.html`), choose an implementation path, and collect missing Gate G1/G6 prospective evidence first.",
+            blocker_severity="BLOCKS CAPITAL & REWARDS",
+            discovery_action="Review `suggestions-review.html`, select approved paths, and execute a frozen 2026–2027 prospective paper-trading window before reconsidering rewards (MI-01..MI-06).",
+            official_ref_label="White (2000) Reality Check",
+            official_ref_url=URLS["white_2000"],
+        ),
+    ]
+    return pd.DataFrame(rows)
+
+
+def build_missing_info_discovery() -> pd.DataFrame:
+    """10 concrete discovery workflows mapping each missing dataset to an authoritative collection method."""
+    rows = [
+        dict(
+            id="MI-01",
+            missing_information="Timestamped pre-kickoff executable spreads, totals, moneylines & bet limits",
+            why_currently_missing="Community `games.csv` and SBR archives omit bookmaker IDs, timestamps, and account limits; NFL does not publish betting odds.",
+            discovery_method="Run an automated snapshot collector against >=3 licensed sportsbook public boards at fixed pregame checkpoints (Tue opener, Fri injury report, T-85m post-inactives, T-5m close), storing raw JSON + SHA-256 + operator house-rules URL.",
+            timing_cadence="4 checkpoints per game week",
+            unlocks_gates="G1, G6, G7",
+            official_ref_label="FanDuel published house rules",
+            official_ref_url=URLS["fanduel_push"],
+        ),
+        dict(
+            id="MI-02",
+            missing_information="Official 90-minute pre-kickoff 32-club Inactive Lists & C2P helmet designations",
+            why_currently_missing="`nfl.com/inactives/` returned a blank season placeholder on 2026-11-12; `nfl.com/injuries/` stops at Friday/Wednesday practice/game designations (Questionable/Doubtful/Out).",
+            discovery_method="Ingest official club PR inactive releases published on each team's official `.com/news` feed immediately after the mandatory T-90m Referee Game Day Administration Report exchange.",
+            timing_cadence="T-90m before every kickoff",
+            unlocks_gates="G1, G2",
+            official_ref_label="NFL Operations 90-min inactive rule",
+            official_ref_url=URLS["nfl_game_prep"],
+        ),
+        dict(
+            id="MI-03",
+            missing_information="True offensive & defensive 1st/2nd/3rd/4th-string snap-share ladders (all 22 positions)",
+            why_currently_missing="Club website depth charts carry 'Unofficial' writer disclaimers, lag mid-week trades (e.g., Kirk Cousins, Micah Parsons), and community PBP omits offensive linemen and defensive coverage snaps.",
+            discovery_method="Parse official NFL post-game Gamebook PDFs (Playtime Percentage tables for every offensive and defensive player) to construct prior-only snap-weighted depth ladders updated strictly after each completed week.",
+            timing_cadence="Weekly Tuesday post-MNF",
+            unlocks_gates="G1, G2, G6",
+            official_ref_label="NFL official Week 10 injury report",
+            official_ref_url=URLS["nfl_injuries"],
+        ),
+        dict(
+            id="MI-04",
+            missing_information="Two-way player-prop lines/odds and Same-Game Parlay (SGP) joint ticket quotes",
+            why_currently_missing="No free public archive carries historical player-prop juice or SGP multi-leg quotes; without them, copula correlation lift cannot be compared against sportsbook SGP pricing.",
+            discovery_method="Log standalone two-way prices (passing/rushing/receiving/receptions/defensive tackles-sacks) plus exact SGP combo quotes for the 7 pre-registered structures at T-60m after inactives are confirmed.",
+            timing_cadence="T-60m before kickoff",
+            unlocks_gates="G1, G5, G6",
+            official_ref_label="FanDuel SGP & push settlement rules",
+            official_ref_url=URLS["fanduel_push"],
+        ),
+        dict(
+            id="MI-05",
+            missing_information="Pre-kickoff stadium retractable roof/wall lock & certified weather observation",
+            why_currently_missing="Archive `temp` and `wind` are recorded post-kickoff and missing for indoor/unplayed rows, causing historical lookahead if imputed naively.",
+            discovery_method="Capture the home club's mandatory T-90m roof/wall notification (locked at T-60m per NFL Game Operations Manual) and pair outdoor stadiums with NOAA/NWS hourly METAR observations at T-60m.",
+            timing_cadence="T-90m / T-60m pre-kickoff",
+            unlocks_gates="G1, G2",
+            official_ref_label="NFL Operations roof & field protocol",
+            official_ref_url=URLS["nfl_game_prep"],
+        ),
+        dict(
+            id="MI-06",
+            missing_information="Complete, tamper-evident count of all strategy trials (search-history denominator)",
+            why_currently_missing="Prior parallel sessions explored multiple library variants (`TRIAL_REGISTER_LOWER_BOUND = 60`), leaving total unlogged researcher degrees of freedom unknown.",
+            discovery_method="Freeze an append-only `trial_registry.csv` committed before any prospective window opens; increment trial count K on every parameter, feature, or threshold change for exact Deflated Sharpe & Holm adjustment.",
+            timing_cadence="Before every new candidate test",
+            unlocks_gates="G4, G5, G8",
+            official_ref_label="Bailey & López de Prado (2014)",
+            official_ref_url=URLS["bailey_2014"],
+        ),
+        dict(
+            id="MI-07",
+            missing_information="Full official NFL census of historical scores (2010–2026 regular/postseason & pre-2010)",
+            why_currently_missing="Only 39 historical games + 28 post-pin 2026 games have been manually cross-checked on NFL.com; NFL.com's web selector omits 1999–2009.",
+            discovery_method="Batch-verify 2010–2026 regular-season scores against NFL.com Game Center pages during off-build audits, and reconcile 1999–2009 against official NFL Record & Fact Book season summaries.",
+            timing_cadence="One-time archival audit",
+            unlocks_gates="G1",
+            official_ref_label="NFL official scores",
+            official_ref_url=URLS["nfl_scores"],
+        ),
+        dict(
+            id="MI-08",
+            missing_information="Decoupled live-season schedule/score feed vs immutable historical backtest pin",
+            why_currently_missing="Single SHA pin (`a270278f3ac4`, 2026-11-01) freezes Weeks 8–9 as 'upcoming' so historical backtest digests never drift.",
+            discovery_method="Adopt dual-manifest pinning (SUG-05 Path B): keep `sources.json` pinned for 1999–2025 backtests while maintaining a weekly-verified `2026_official_results.csv` synced to NFL.com.",
+            timing_cadence="Weekly Tuesday sync",
+            unlocks_gates="G1, G2",
+            official_ref_label="NFL official 2026 Week 9 scores",
+            official_ref_url=URLS["nfl_scores_wk9"],
+        ),
+    ]
+    return pd.DataFrame(rows)
+
+
+# All 28 regular-season games settled on NFL.com between the 2026-11-01 archive pin and 2026-11-12,
+# verified line by line against https://www.nfl.com/scores/2026/REG8 and REG9.
+POST_PIN_SCORES = [
+    ("2026_08_ARI_DAL", 8, "2026-11-01", "ARI", "DAL", 33, 30, "https://www.nfl.com/games/cardinals-at-cowboys-2026-reg-8"),
+    ("2026_08_ATL_TB", 8, "2026-11-01", "ATL", "TB", 0, 16, "https://www.nfl.com/games/falcons-at-buccaneers-2026-reg-8"),
+    ("2026_08_BAL_BUF", 8, "2026-11-01", "BAL", "BUF", 10, 36, "https://www.nfl.com/games/ravens-at-bills-2026-reg-8"),
+    ("2026_08_CLE_PIT", 8, "2026-11-01", "CLE", "PIT", 6, 27, "https://www.nfl.com/games/browns-at-steelers-2026-reg-8"),
+    ("2026_08_IND_JAX", 8, "2026-11-01", "IND", "JAX", 7, 42, "https://www.nfl.com/games/colts-at-jaguars-2026-reg-8"),
+    ("2026_08_LV_NYJ", 8, "2026-11-01", "LV", "NYJ", 38, 33, "https://www.nfl.com/games/raiders-at-jets-2026-reg-8"),
+    ("2026_08_MIN_DET", 8, "2026-11-01", "MIN", "DET", 15, 19, "https://www.nfl.com/games/vikings-at-lions-2026-reg-8"),
+    ("2026_08_TEN_CIN", 8, "2026-11-01", "TEN", "CIN", 36, 43, "https://www.nfl.com/games/titans-at-bengals-2026-reg-8"),
+    ("2026_08_LAC_LA", 8, "2026-11-01", "LAC", "LA", 9, 24, "https://www.nfl.com/games/chargers-at-rams-2026-reg-8"),
+    ("2026_08_KC_DEN", 8, "2026-11-01", "KC", "DEN", 24, 28, "https://www.nfl.com/games/chiefs-at-broncos-2026-reg-8"),
+    ("2026_08_NE_MIA", 8, "2026-11-01", "NE", "MIA", 24, 19, "https://www.nfl.com/games/patriots-at-dolphins-2026-reg-8"),
+    ("2026_08_PHI_WAS", 8, "2026-11-01", "PHI", "WAS", 10, 27, "https://www.nfl.com/games/eagles-at-commanders-2026-reg-8"),
+    ("2026_08_CHI_SEA", 8, "2026-11-02", "CHI", "SEA", 34, 17, "https://www.nfl.com/games/bears-at-seahawks-2026-reg-8"),
+    ("2026_09_JAX_BAL", 9, "2026-11-05", "JAX", "BAL", 33, 10, "https://www.nfl.com/games/jaguars-at-ravens-2026-reg-9"),
+    ("2026_09_CIN_ATL", 9, "2026-11-08", "CIN", "ATL", 34, 17, "https://www.nfl.com/games/bengals-at-falcons-2026-reg-9"),
+    ("2026_09_CLE_NO", 9, "2026-11-08", "CLE", "NO", 22, 23, "https://www.nfl.com/games/browns-at-saints-2026-reg-9"),
+    ("2026_09_DAL_IND", 9, "2026-11-08", "DAL", "IND", 27, 23, "https://www.nfl.com/games/cowboys-at-colts-2026-reg-9"),
+    ("2026_09_DEN_CAR", 9, "2026-11-08", "DEN", "CAR", 26, 21, "https://www.nfl.com/games/broncos-at-panthers-2026-reg-9"),
+    ("2026_09_DET_MIA", 9, "2026-11-08", "DET", "MIA", 19, 9, "https://www.nfl.com/games/lions-at-dolphins-2026-reg-9"),
+    ("2026_09_LA_WAS", 9, "2026-11-08", "LA", "WAS", 20, 13, "https://www.nfl.com/games/rams-at-commanders-2026-reg-9"),
+    ("2026_09_NYG_PHI", 9, "2026-11-08", "NYG", "PHI", 19, 11, "https://www.nfl.com/games/giants-at-eagles-2026-reg-9"),
+    ("2026_09_NYJ_KC", 9, "2026-11-08", "NYJ", "KC", 12, 35, "https://www.nfl.com/games/jets-at-chiefs-2026-reg-9"),
+    ("2026_09_HOU_LAC", 9, "2026-11-08", "HOU", "LAC", 44, 22, "https://www.nfl.com/games/texans-at-chargers-2026-reg-9"),
+    ("2026_09_LV_SF", 9, "2026-11-08", "LV", "SF", 17, 38, "https://www.nfl.com/games/raiders-at-49ers-2026-reg-9"),
+    ("2026_09_ARI_SEA", 9, "2026-11-08", "ARI", "SEA", 3, 17, "https://www.nfl.com/games/cardinals-at-seahawks-2026-reg-9"),
+    ("2026_09_GB_NE", 9, "2026-11-08", "GB", "NE", 45, 27, "https://www.nfl.com/games/packers-at-patriots-2026-reg-9"),
+    ("2026_09_TB_CHI", 9, "2026-11-08", "TB", "CHI", 24, 27, "https://www.nfl.com/games/buccaneers-at-bears-2026-reg-9"),
+    ("2026_09_BUF_MIN", 9, "2026-11-09", "BUF", "MIN", 23, 6, "https://www.nfl.com/games/bills-at-vikings-2026-reg-9"),
+]
+
+
+def build_post_pin_scores() -> pd.DataFrame:
+    up_ids = set()
+    up_path = PROC / "upcoming.csv"
+    if up_path.exists():
+        up_ids = set(pd.read_csv(up_path)["game_id"].astype(str))
+    rows = []
+    for gid, wk, gday, away, home, a_sc, h_sc, url in POST_PIN_SCORES:
+        in_up = gid in up_ids
+        rows.append({
+            "game_id": gid,
+            "season": 2026,
+            "week": wk,
+            "gameday": gday,
+            "matchup": f"{away} @ {home}",
+            "nfl_com_final": f"{away} {a_sc} – {h_sc} {home} (Final)",
+            "pinned_archive_state": "Listed as UPCOMING (blank score)" if in_up else "Present",
+            "audit_flag": "STALE_PIN_POST_SETTLEMENT" if in_up else "MATCH",
+            "verified_date": VERIFIED_DATE,
+            "nfl_com_url": url,
+        })
+    return pd.DataFrame(rows)
+
+
+def build_repo_verification() -> pd.DataFrame:
+    """Line-by-line review of repository modules, workflows, data files, and pages on 2026-11-12."""
+    rows = [
+        dict(
+            review_id="RV-01",
+            scope_path="pipeline/fetch_data.py & data/sources.json",
+            verification_performed="Verified SHA pin `a270278f3ac4e937295fe6a27814b3c4a2b62645` and SHA-256 checksums for all 7 raw nflverse files; confirmed normal builds never silently re-pin.",
+            status="VERIFIED · STALE SNAPSHOT FLAGGED",
+            irregularity_flag="Archive predates 28 settled Week 8 & Week 9 2026 games verified Final on NFL.com as of 2026-11-12 (see `post_pin_nfl_scores_2026_11_12.csv`).",
+            official_ref_url=URLS["nfl_scores_wk9"],
+        ),
+        dict(
+            review_id="RV-02",
+            scope_path="pipeline/build_datasets.py & pipeline/models.py",
+            verification_performed="Verified chronological sorting, Elo/rolling state updates after game emission, exclusion of weather/roof from default design matrix, and prefix-stability tests (`test_no_lookahead.py`, `test_integration.py`).",
+            status="VERIFIED · FEATURE GAP FLAGGED",
+            irregularity_flag="Models contain zero offensive or defensive injury / backup-string features; starter outs carry forward full-strength team ratings.",
+            official_ref_url=URLS["nfl_injuries"],
+        ),
+        dict(
+            review_id="RV-03",
+            scope_path="pipeline/strategies.py, backtest.py & validation.py",
+            verification_performed="Verified 18 pre-declared candidates, simultaneous-slate parlay leg selection, push-reduces settlement, 5-cent adverse stress, weekly stationary bootstrap, Holm FWER, and fail-closed Gate G1–G8 logic.",
+            status="VERIFIED · 0 VALIDATED",
+            irregularity_flag="All 18 strategies fail Gate G1 (0% authenticated executable sportsbook quotes) and none pass all 8 gates; rewards rightly remain NONE.",
+            official_ref_url=URLS["white_2000"],
+        ),
+        dict(
+            review_id="RV-04",
+            scope_path="pipeline/fetch_pbp.py & pipeline/props_model.py",
+            verification_performed="Verified 4 git-blob SHA-256 pins (2019–2022 regular season), GSIS player-ID keying, 7/7 season-total checks, half-integer prop lines, and prefix-stability tests (`test_props_integrity.py`).",
+            status="VERIFIED · MISSING PROP QUOTES",
+            irregularity_flag="Play-by-play covers 2019–2022 offensive skill stats only (no defensive snaps, no 2023–2026 full PBP, no sportsbook prop/SGP prices).",
+            official_ref_url=URLS["fanduel_push"],
+        ),
+        dict(
+            review_id="RV-05",
+            scope_path="pipeline/render_site.py & assets/style.css",
+            verification_performed="Inspected HTML emitters and CSS rules line by line across all root pages.",
+            status="DEFECT FOUND & REPAIRED (IR-2026-11-12-04)",
+            irregularity_flag="14 emitted classes (`.skip-link`, `.hero`, `.eyebrow`, `.actions`, `.btn.primary`, `.hero-status`, `.status-dot`, `.section-head`, `.table-tools`, `.filter`, `.pill.unverified`, `.unverified`, `.blank`, `.card.good`) lacked CSS definitions, leaving `.skip-link` visible and `.blank` cells visually empty. Repaired in CSS.",
+            official_ref_url=URLS["github_pages"],
+        ),
+        dict(
+            review_id="RV-06",
+            scope_path="tests/check_sources.py & pipeline/verify_site.py",
+            verification_performed="Compared page lists across `verify_site.py`, `tests/check_links.py`, and `tests/check_sources.py`.",
+            status="DEFECT FOUND & REPAIRED (IR-2026-11-12-05)",
+            irregularity_flag="`tests/check_sources.py` checked 12 root pages and omitted `verification.html` (which `verify_site.py` and `check_links.py` included). Synchronized all canonical pages across all three verifiers.",
+            official_ref_url=URLS["github_pages"],
+        ),
+        dict(
+            review_id="RV-07",
+            scope_path="analysis/ (legacy sibling directory) & archive/",
+            verification_performed="Reviewed preserved sibling directories from 2026-11-01/02 sessions.",
+            status="PRESERVED FOR PROVENANCE · FLAGGED",
+            irregularity_flag="`analysis/` expects a superseded `data/raw/nfldata/data/` path and is not wired into `Makefile` or CI; retained untouched per multi-session non-destruction rules.",
+            official_ref_url=URLS["github_pages"],
+        ),
+        dict(
+            review_id="RV-08",
+            scope_path="scripts/ & lab/ (independent SBR replication annex)",
+            verification_performed="Verified strict annex rendering (`pipeline/render_annex.py`), `scripts/98_linkcheck.py`, and `scripts/99_verify.py`.",
+            status="VERIFIED · STRICT DISPLAY ENFORCED",
+            irregularity_flag="Annex covers 2011–2021 SBR archive with 260 nulled spreads / 259 nulled totals; public annex cells are blanked and flagged UNVERIFIED.",
+            official_ref_url=URLS["nfl_scores"],
+        ),
+        dict(
+            review_id="RV-09",
+            scope_path="Official NFL Inactive endpoint (`nfl.com/inactives/`) & Club Depth Charts",
+            verification_performed="Read `https://www.nfl.com/inactives/` and 8 NFL club `.com/team/depth-chart` pages on 2026-11-12 alongside `operations.nfl.com` stadium-prep rules.",
+            status="IRREGULARITIES FLAGGED (IR-2026-11-12-02 & -03)",
+            irregularity_flag="`nfl.com/inactives/` displays a blank season placeholder; club depth charts carry 'Unofficial' writer disclaimers and omit active trade/injury players (Kirk Cousins, Micah Parsons, Lucas Patrick).",
+            official_ref_url=URLS["nfl_game_prep"],
+        ),
+    ]
+    return pd.DataFrame(rows)
+
+
+def main() -> None:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    sug = build_suggestions()
+    dq = build_decision_questions()
+    mi = build_missing_info_discovery()
+    post_scores = build_post_pin_scores()
+    rv = build_repo_verification()
+
+    sug.to_csv(OUT_DIR / "suggestions_review.csv", index=False)
+    dq.to_csv(OUT_DIR / "decision_questions.csv", index=False)
+    mi.to_csv(OUT_DIR / "missing_info_discovery.csv", index=False)
+    post_scores.to_csv(OUT_DIR / "post_pin_nfl_scores_2026_11_12.csv", index=False)
+    rv.to_csv(OUT_DIR / "repo_verification_2026_11_12.csv", index=False)
+
+    write_json(OUT_DIR / "summary_2026_11_12.json", {
+        "verified_date_utc": VERIFIED_DATE,
+        "suggestions_count": int(len(sug)),
+        "suggestions_awaiting_review": int((sug.review_state == "PROPOSED · AWAITING PATH SELECTION").sum()),
+        "decision_questions_count": int(len(dq)),
+        "capital_blocking_questions": int((dq.blocker_severity == "BLOCKS CAPITAL & REWARDS").sum()),
+        "live_pricing_blocking_questions": int((dq.blocker_severity == "BLOCKS LIVE SLATE PRICING").sum()),
+        "missing_info_protocols_count": int(len(mi)),
+        "post_pin_settled_games_verified": int(len(post_scores)),
+        "repo_review_items": int(len(rv)),
+    })
+    print(f"wrote governance tables to {OUT_DIR}: {len(sug)} suggestions, {len(dq)} questions, "
+          f"{len(mi)} discovery protocols, {len(post_scores)} post-pin NFL.com scores, {len(rv)} repo checks")
+
+
+if __name__ == "__main__":
+    main()

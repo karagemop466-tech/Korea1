@@ -1,0 +1,59 @@
+{
+  "verified_date_utc": "2026-11-12",
+  "week_audited": "2026 Regular Season Week 10",
+  "clubs_audited": [
+    "WAS",
+    "NYG",
+    "NE",
+    "DET",
+    "KC",
+    "ATL",
+    "MIN",
+    "GB"
+  ],
+  "entries_count": 39,
+  "offense_entries": 22,
+  "defense_entries": 17,
+  "official_sources": {
+    "nfl_injuries": "https://www.nfl.com/injuries/",
+    "nfl_inactives_checked_blank": "https://www.nfl.com/inactives/",
+    "nfl_game_prep_90min_rule": "https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep",
+    "nfl_player_health_safety": "https://operations.nfl.com/inside-football-ops/players-legends/player-health-safety",
+    "nfl_vikings_qb_news": "https://www.nfl.com/news/vikings-wont-commit-to-kirk-cousins-starting-packers",
+    "club_depth_charts": {
+      "WAS": {
+        "url": "https://www.commanders.com/team/depth-chart",
+        "disclaimer": "Club depth chart (Commanders.com; no explicit 'unofficial' banner on table)"
+      },
+      "NYG": {
+        "url": "https://www.giants.com/team/depth-chart",
+        "disclaimer": "Club depth chart (Giants.com)"
+      },
+      "NE": {
+        "url": "https://www.patriots.com/team/depth-chart",
+        "disclaimer": "Labelled 'Patriots Unofficial Depth Chart — published by the writers of Patriots.com'"
+      },
+      "DET": {
+        "url": "https://www.detroitlions.com/team/depth-chart",
+        "disclaimer": "Labelled '2026 Unofficial Depth Chart Compiled by Lions Football Communications'"
+      },
+      "KC": {
+        "url": "https://www.chiefs.com/team/depth-chart",
+        "disclaimer": "Labelled 'Kansas City Chiefs Unofficial Depth Chart'"
+      },
+      "ATL": {
+        "url": "https://www.atlantafalcons.com/team/depth-chart",
+        "disclaimer": "Club depth chart (AtlantaFalcons.com)"
+      },
+      "MIN": {
+        "url": "https://www.vikings.com/team/depth-chart",
+        "disclaimer": "Labelled '2026 Unofficial Depth Chart' (Vikings.com)"
+      },
+      "GB": {
+        "url": "https://www.packers.com/team/depth-chart",
+        "disclaimer": "Labelled 'Unofficial, Nov. 10, 2026' (Packers.com)"
+      }
+    }
+  },
+  "pbp_research_note": "pbp_backup_impact.csv is derived walk-forward from hash-pinned community play-by-play (2019-2022) and originated_lines.csv. Public HTML tables keep community-derived numeric metrics blank and flagged UNVERIFIED."
+}

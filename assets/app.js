@@ -41,4 +41,59 @@
       });
     }
   });
+
+  /* Reviewer path-selection preview on suggestions-review.html (browser-only; never mutates repo). */
+  var pickers = Array.from(document.querySelectorAll('.path-picker'));
+  var output = document.getElementById('path-selection-output');
+  if (pickers.length && output) {
+    var storageKey = 'nfl_line_lab_path_choices_v1';
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch (e) { saved = {}; }
+    function syncSummary() {
+      var choices = {};
+      var chosenCount = 0;
+      pickers.forEach(function (p) {
+        var id = p.getAttribute('data-sug-id');
+        var sel = p.querySelector('.path-select');
+        var val = sel ? sel.value : 'Pending review';
+        choices[id] = val;
+        if (val !== 'Pending review') chosenCount += 1;
+      });
+      try { localStorage.setItem(storageKey, JSON.stringify(choices)); } catch (e) {}
+      var summary = Object.keys(choices).map(function (k) { return k + ': ' + choices[k]; }).join(' · ');
+      output.textContent = 'Reviewer status (' + chosenCount + '/' + pickers.length + ' decided, preview only — 0 repo changes applied): ' + summary;
+      return choices;
+    }
+    pickers.forEach(function (p) {
+      var id = p.getAttribute('data-sug-id');
+      var sel = p.querySelector('.path-select');
+      if (sel && saved[id]) sel.value = saved[id];
+      if (sel) sel.addEventListener('change', syncSummary);
+    });
+    var btnRec = document.getElementById('apply-recommended-paths');
+    var btnReset = document.getElementById('reset-paths');
+    var btnExport = document.getElementById('export-paths');
+    if (btnRec) btnRec.addEventListener('click', function () {
+      pickers.forEach(function (p) {
+        var sel = p.querySelector('.path-select');
+        if (sel) sel.value = p.getAttribute('data-recommended') || 'Path B';
+      });
+      syncSummary();
+    });
+    if (btnReset) btnReset.addEventListener('click', function () {
+      pickers.forEach(function (p) {
+        var sel = p.querySelector('.path-select');
+        if (sel) sel.value = 'Pending review';
+      });
+      syncSummary();
+    });
+    if (btnExport) btnExport.addEventListener('click', function () {
+      var payload = JSON.stringify({reviewed_utc: new Date().toISOString(), decisions: syncSummary()}, null, 2);
+      output.textContent = payload;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).catch(function () {});
+      }
+    });
+    syncSummary();
+  }
 }());

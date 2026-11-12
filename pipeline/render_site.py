@@ -42,15 +42,16 @@ URL_DATASETS = f"https://github.com/nflverse/nfldata/blob/{SHA}/DATASETS.md"
 URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
 GENERATED = SRC["generated_utc"]
 
-# Grouped by category (T17, arena/c0528572-korea1): the flat list had grown to 14 links.
+# Grouped by category (T17, arena/c0528572-korea1 + G1–G6, arena/d6b3fd34-korea1).
 NAV_GROUPS = [
     ("Overview", [
         ("index.html", "Dashboard"),
         ("executive-summary.html", "Executive summary"),
     ]),
-    # Review surface: suggestions/questions from arena/25460478-korea1, readiness from arena/03f66e17-korea1.
     ("Decide", [
+        ("suggestions-review.html", "Path selector"),
         ("suggestions.html", "Suggestions & paths"),
+        ("decision-readiness.html", "Q&A + Week 8–9 audit"),
         ("questions.html", "Open questions"),
         ("decisions.html", "Decision readiness"),
         ("flagged.html", "Flagged for review"),
@@ -64,6 +65,7 @@ NAV_GROUPS = [
     ]),
     ("Availability", [
         ("availability.html", "Injuries & depth · all clubs"),
+        ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
         ("injuries.html", "Injury source audit"),
         ("lineups.html", "Lineup sample"),
     ]),
@@ -199,6 +201,18 @@ OFFICIAL = {
     "NFL team roster (Arizona Cardinals)": "https://www.nfl.com/teams/arizona-cardinals/roster",
     "NFL roster depth tab (verified no depth order)": "https://www.nfl.com/teams/washington-commanders/roster?tab=depth",
     "NFL depth-chart path (verified 404)": "https://www.nfl.com/teams/arizona-cardinals/depth-chart",
+    # Added 2026-11-12 (arena/d6b3fd34-korea1): live NFL Operations 90m countdown, Week 9 Finals & 8 club depth charts.
+    "NFL Operations pregame 90m rule": "https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep",
+    "NFL inactives (verified season placeholder)": "https://www.nfl.com/inactives/",
+    "NFL week 9 scores": "https://www.nfl.com/scores/2026/REG9",
+    "Commanders club depth chart": "https://www.commanders.com/team/depth-chart",
+    "Giants club depth chart": "https://www.giants.com/team/depth-chart",
+    "Patriots club depth chart": "https://www.patriots.com/team/depth-chart",
+    "Lions club depth chart": "https://www.detroitlions.com/team/depth-chart",
+    "Chiefs club depth chart": "https://www.chiefs.com/team/depth-chart",
+    "Falcons club depth chart": "https://www.atlantafalcons.com/team/depth-chart",
+    "Vikings club depth chart": "https://www.vikings.com/team/depth-chart",
+    "Packers club depth chart": "https://www.packers.com/team/depth-chart",
 }
 
 # Evidence class per reference, used by the sources page. Kept as an explicit map so a new
@@ -219,6 +233,17 @@ OFFICIAL_TYPE = {
     "NFL team roster (Arizona Cardinals)": "NFL",
     "NFL roster depth tab (verified no depth order)": "NFL",
     "NFL depth-chart path (verified 404)": "NFL",
+    "NFL Operations pregame 90m rule": "NFL Operations",
+    "NFL inactives (verified season placeholder)": "NFL",
+    "NFL week 9 scores": "NFL",
+    "Commanders club depth chart": "NFL Club",
+    "Giants club depth chart": "NFL Club",
+    "Patriots club depth chart": "NFL Club",
+    "Lions club depth chart": "NFL Club",
+    "Chiefs club depth chart": "NFL Club",
+    "Falcons club depth chart": "NFL Club",
+    "Vikings club depth chart": "NFL Club",
+    "Packers club depth chart": "NFL Club",
 }
 
 
@@ -286,13 +311,17 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
 </div></section>
 <section><h2>Review before changing anything</h2><div class="cards smallcards">
-<a class="minicard" href="decisions.html"><strong>Decision readiness</strong><span>Twelve decision questions, known answers, missing inputs and a parallel eight-proposal register.</span></a>
+<a class="minicard" href="suggestions-review.html"><strong>Interactive path selector</strong><span>Compare Path A / B / C across 12 staged improvements and export a decision JSON before changing code.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Suggestions &amp; paths</strong><span>Twenty-two changes with cost, risk and dependencies, plus four coherent paths.</span></a>
+<a class="minicard" href="decision-readiness.html"><strong>Q&amp;A + Week 8–9 reconciliation</strong><span>14 pre-decision Q&amp;As, 8 missing-info discovery blueprints and all 28 settled post-pin NFL.com scores.</span></a>
+<a class="minicard" href="decisions.html"><strong>Decision readiness</strong><span>Twelve decision questions, known answers, missing inputs and a parallel eight-proposal register.</span></a>
 <a class="minicard" href="questions.html"><strong>Open questions</strong><span>What must be known first, what is answered, and what is blocked on data we do not have.</span></a>
+<a class="minicard" href="lineup-deficiencies.html"><strong>8-club 1st–4th string tracker</strong><span>39 Week 10 offensive &amp; defensive injury/depth entries across WAS, NYG, NE, DET, KC, ATL, MIN &amp; GB.</span></a>
 <a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Seven official injury observations plus two club depth charts; confirmed roles stay blank.</span></a>
 <a class="minicard" href="availability.html"><strong>Injuries &amp; depth · all clubs</strong><span>Scheduled capture of the official injury report and club depth charts: who is out, who is listed next.</span></a>
 <a class="minicard" href="injuries.html"><strong>Injury source audit</strong><span>Twelve verified official sources, two exact captures and the availability signal register.</span></a>
 </div></section>
+{_landing_governance_sections()}
 <section><h2>What the audit changed</h2><ul class="findings">
 <li>Default builds now use the published commit, not a silently moving upstream branch.</li>
 <li>Missing weather is no longer filled from the full history. Weather and roof fields are excluded from the default model until their pre-kickoff availability is verified.</li>
@@ -318,11 +347,12 @@ def build_executive(d):
         ["Open questions", f"{n['questions']} questions · {n['answered']} answered",
          f"{n['blocked']} blocked, {n['open']} open, {n['decisions']} need an owner decision. Blocked rows are blank, not filled in.",
          official("NFL scores")],
-        ["Injuries and depth", "PARTIAL",
-         "The official injury report is verified (20 rows for one week-10 game) and two club depth charts are verified, "
-         "so a starter/backup order exists for those clubs. No chart carries a capture time, coverage is 2 of 32 clubs, "
-         "and no availability signal is in the leaderboard.",
+        ["Injuries and depth", "8 of 32 clubs verified",
+         "Official Week 10 injury report and 8 club depth charts (WAS, NYG, NE, DET, KC, ATL, MIN, GB — 39 offensive & defensive 1st–4th string entries) verified on 2026-11-12, plus NFL Operations T-90m inactive rule. Club disclaimers and roster lag are flagged; no availability signal is promoted into the frozen model.",
          official("NFL injury report (2026 week 10)")],
+        ["Post-pin score census", "28 settled Week 8–9 games",
+         "All 28 Week 8 (13) and Week 9 (15) 2026 games listed in upcoming.csv were verified Final on NFL.com on 2026-11-12 and reconciled on decision-readiness.html without mutating the historical backtest pin.",
+         official("NFL week 9 scores")],
         ["Recommended path", "Path A now, Path B next",
          "Hold the evidence line while the site is cleaned up; buy authenticated prices before any reward is discussed; "
          "run availability research alongside, not instead.",
@@ -627,8 +657,11 @@ Earlier audit findings are preserved below, including their original scope.</p>
 {table(new, ["ID", "Severity / state", "Finding and disposition", "Source"], caption="Final integration audit register")}
 </section><section><h2>Earlier official-source audit</h2>{table(rows, ["ID", "Severity", "Finding", "Source"], caption="Preserved findings from the independent T10 audit")}</section>
 <section id="decision-gaps"><h2>Decision-readiness findings · 2026-11-12</h2>
-<p>These are unresolved limitations, not approval to implement a proposal. See <a href="suggestions.html">suggestions</a> and <a href="lineups.html">dated lineup evidence</a>.</p>
+<p>These are unresolved limitations, not approval to implement a proposal. See <a href="suggestions.html">suggestions</a>, <a href="suggestions-review.html">interactive path selector</a>, <a href="lineup-deficiencies.html">8-club 1st–4th string tracker</a> and <a href="lineups.html">dated lineup evidence</a>.</p>
 {table(gap_rows, ["ID", "State", "Finding", "Next evidence", "Official context"], caption="Follow-up gaps requiring review, not blocking publication")}</section>
+<section id="expanded-2026-11-12-audit"><h2>Expanded 8-club &amp; post-pin audit · 2026-11-12 (`arena/d6b3fd34-korea1`)</h2>
+<p>Line-by-line audit of post-pin Week 8–9 settlement status, NFL.com inactives availability, 8 official NFL club depth charts, CSS coverage and checker parity.</p>
+{table(_flagged_2026_11_12_rows(), ["ID", "Severity / state", "Finding and disposition", "Official source"], caption="2026-11-12 expanded official-source and repository audit findings")}</section>
 <section><h2>How to request a correction</h2><p>Use the repository issue tracker with the row ID, the authoritative source and the exact field.
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
@@ -678,11 +711,12 @@ def build_requirements(d):
         ("R16", "Blank unverified values", "Enforced in strict public view", "Research estimates segregated and labelled, never called official.", "NFL scores"),
         ("R17", "Coordinate parallel work", "Implemented", "Claims, pinned-branch constraint, append-only conflict resolution and integration log.", "GitHub Pages documentation"),
         ("R18", "PR, merge and live deployment", "Recorded after execution", "See COORDINATION.md and the final PR; never infer a successful deployment.", "GitHub Pages documentation"),
-        ("R19", "Suggestions section reviewed before changes", "Implemented · proposals unapproved", "suggestions.html: 22 proposals with cost, risk and dependencies, four decision paths, a worksheet and change control; decisions.html adds a parallel eight-proposal register.", "GitHub Pages documentation"),
-        ("R20", "Questions, information and answers needed before a decision", "Implemented", "questions.html: 40 questions (answered ones cited, blocked ones blank with a closure test) and decisions.html: 12 readiness questions.", "NFL scores"),
-        ("R21", "Injury and lineup-deficiency tracking", "PARTIAL — order only, no confirmed roles", "Official injury report verified (2 games captured) and 2 of 32 club depth charts verified. No chart has a publication time and no replacement or impact is confirmed.", "NFL injury report (2026 week 10)"),
+        ("R19", "Suggestions section reviewed before changes", "Implemented · proposals unapproved", "suggestions-review.html (12 staged proposals with Path A/B/C interactive selector) + suggestions.html (22 proposals, four decision paths) + decisions.html (parallel 8-proposal register).", "GitHub Pages documentation"),
+        ("R20", "Questions, information and answers needed before a decision", "Implemented", "decision-readiness.html (14 Q&As + 8 missing-info discovery blueprints) + questions.html (40 questions) + decisions.html (12 readiness questions).", "NFL scores"),
+        ("R21", "Injury and lineup-deficiency tracking", "Expanded — 8 of 32 clubs verified", "lineup-deficiencies.html verifies 39 offensive & defensive 1st–4th string entries across 8 clubs / 4 Week 10 matchups (WAS, NYG, NE, DET, KC, ATL, MIN, GB) + walk-forward PBP backup diagnostics; injuries.html & lineups.html preserved.", "NFL injury report (2026 week 10)"),
         ("R21b", "Automatic all-club injury and depth tracking", "Implemented · effect not priced", "availability.html: scheduled capture of the official injury report and every readable club depth chart, with the 2nd/3rd/4th-string player listed behind an Out or Doubtful first-listed player. Game-day roles and point impact remain open.", "NFL injuries"),
         ("R22", "Dated decision log", "Implemented", "DECISIONS.md records owner, choice, evidence and reversal condition; linked from suggestions.html.", "GitHub Pages documentation"),
+        ("R23", "Post-pin Week 8–9 official score census & T-90m countdown verification", "Implemented", "All 28 post-pin Week 8–9 Final scores reconciled against NFL.com on decision-readiness.html; live NFL Operations T-90m/T-60m pregame inactive & roof rule verified.", "NFL Operations pregame 90m rule"),
     ]
     rows = [[i,title,status,detail,official(ref)] for i,title,status,detail,ref in requirements]
     body = f"""{notice()}<section><h2>Complete requirements matrix</h2><p>“Implemented” describes software,
@@ -782,6 +816,35 @@ tbody tr:hover{background:rgba(77,163,255,.06)}
 .findings li{margin:8px 0}
 pre.pipeline,pre.math{background:#0a1526;border:1px solid var(--line);border-radius:10px;
  padding:14px;overflow-x:auto;font-size:12.5px;color:#b9cdf0}
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip-link:focus{position:fixed;left:16px;top:12px;width:auto;height:auto;padding:8px 14px;
+ background:var(--accent);color:#04101f;font-weight:700;border-radius:8px;z-index:100}
+.hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;
+ background:linear-gradient(135deg,#111d34 0%,#0d1628 100%);border:1px solid var(--line);
+ border-radius:14px;padding:24px;margin:18px 0}
+.eyebrow{display:inline-block;font-size:11.5px;font-weight:700;text-transform:uppercase;
+ letter-spacing:.8px;color:var(--accent);margin-bottom:6px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{color:var(--text);cursor:pointer}
+.btn.primary{background:var(--accent);color:#04101f;border-color:var(--accent);font-weight:600}
+.btn.primary:hover{filter:brightness(1.08)}
+.hero-status{background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+ padding:14px 18px;font-size:13px;min-width:210px}
+.hero-status small{display:block;color:var(--muted);margin-top:4px;font-size:11.5px}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warn);margin-right:6px}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.table-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0}
+.filter,.path-select{background:#0a1526;color:var(--text);border:1px solid var(--line);
+ border-radius:7px;padding:5px 9px;font-size:12.5px}
+.filter:focus,.path-select:focus{outline:1px solid var(--accent);border-color:var(--accent)}
+.card.good{border-color:#1f573d;background:linear-gradient(180deg,#10231e,#121b2e)}
+.pill.unverified{background:rgba(143,163,200,.14);color:#b9cdf0;border:1px solid rgba(143,163,200,.35)}
+.unverified{color:var(--warn);font-size:11.5px;font-weight:600}
+.blank{display:inline-block;min-width:34px;height:14px;vertical-align:middle;
+ border-bottom:1px dashed rgba(143,163,200,.45);opacity:.75}
+.opt-mid{margin:6px 0;padding:6px 0;border-top:1px dashed rgba(34,48,77,.65);border-bottom:1px dashed rgba(34,48,77,.65)}
+.path-picker{display:flex;flex-direction:column;gap:6px}
+.path-select{background:#0a1526;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:5px 9px;font-size:12.5px}
 footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 @media(max-width:640px){h1{font-size:26px} .card-value{font-size:22px}}
 
@@ -847,11 +910,23 @@ table.register td:first-child{min-width:70px;white-space:nowrap}
 """
 
 
+def _landing_governance_sections() -> str:
+    from render_governance import render_landing_governance_sections
+    return render_landing_governance_sections(table, src_link)
+
+
+def _flagged_2026_11_12_rows() -> list[list[str]]:
+    from render_governance import render_flagged_2026_11_12_rows
+    return render_flagged_2026_11_12_rows(src_link)
+
+
 def main() -> None:
     # Lazy import: render_decisions imports this module for its helpers, so it must not be a
     # top-level import here.
     from render_decisions import (build_injuries, build_questions, build_suggestions,
                                   write_csvs)
+    from render_governance import (build_decision_readiness_page,
+                                   build_lineups_page, build_suggestions_page)
 
     d = load()
     write_csvs(PROC)
@@ -881,6 +956,10 @@ def main() -> None:
         "suggestions.html": build_suggestions(d),
         "questions.html": build_questions(d),
         "injuries.html": build_injuries(d),
+        # G2/G3/G4 (arena/d6b3fd34-korea1) — interactive path selector, post-pin Q&A, 8-club 1st-4th string tracker
+        "suggestions-review.html": build_suggestions_page(layout, table, card, kpi_grid, flag, src_link),
+        "decision-readiness.html": build_decision_readiness_page(layout, table, card, kpi_grid, flag, src_link),
+        "lineup-deficiencies.html": build_lineups_page(layout, table, card, kpi_grid, flag, src_link),
     }
     for name, html_text in pages.items():
         (SITE / name).write_text(html_text, encoding="utf-8")
@@ -897,6 +976,10 @@ def main() -> None:
         if f.name in skip or f.stat().st_size > 200_000:
             continue
         shutil.copy2(f, DOCS_DATA / f.name)
+    for folder in (ROOT / "data" / "governance", ROOT / "data" / "lineups"):
+        for f in folder.glob("*"):
+            if f.suffix in {".csv", ".json"} and f.stat().st_size <= 200_000:
+                shutil.copy2(f, DOCS_DATA / f.name)
 
     for name in ["model_config.json", "reality_check.json", "validation_config.json"]:
         shutil.copy2(PROC / name, DOCS_DATA / name)

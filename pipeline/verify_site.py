@@ -13,7 +13,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PROC, ROOT, read_json
 
-ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com", "operations.nfl.com", "www.econometricsociety.org",
+ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com",
+         "www.patriots.com", "www.detroitlions.com", "www.chiefs.com",
+         "www.atlantafalcons.com", "www.vikings.com", "www.packers.com",
+         "operations.nfl.com", "www.econometricsociety.org",
          "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
          "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov"}
 # Official club sites (depth-chart pages read by pipeline/fetch_availability.py).
@@ -59,7 +62,8 @@ def main():
     expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
               "correlations.html","props.html","methodology.html","requirements.html","verification.html",
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
-              "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html"}
+              "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
+              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

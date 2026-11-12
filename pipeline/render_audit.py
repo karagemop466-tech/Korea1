@@ -137,7 +137,13 @@ NFL.com page it was read from.</p>
 {table(hash_rows, ["File", "Bytes", "SHA-256 (first 16)", "Re-download", "Source"], caption="Pinned input files compared with the register")}
 <h2>Reproduction commands and evidence</h2>
 {table(check_rows, ["Check", "Result", "How", "Source"], caption="Reproduction commands; current results are recorded in the linked artifacts and final PR")}
+{_render_2026_11_12_audit(table, src_link)}
 """
     return layout("audit.html", "Independent audit",
                   "What was re-checked against NFL.com and official pages, what was not, and what looks wrong.",
                   body, wide=True)
+
+
+def _render_2026_11_12_audit(table, src_link) -> str:
+    from render_governance import render_audit_2026_11_12_section
+    return render_audit_2026_11_12_section(table, src_link)
