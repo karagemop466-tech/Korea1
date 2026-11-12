@@ -128,7 +128,7 @@ def build_availability() -> str:
 <section><h2>How to read this page</h2><ul class="findings">
 <li><strong>First-listed</strong> is the player the club prints first in a depth-chart slot. <strong>2nd / 3rd / 4th string</strong> is the club&rsquo;s printed order for the same slot. Clubs describe these charts as unofficial; the order is not a confirmed game-day lineup.</li>
 <li><strong>Next listed</strong> appears only when the first-listed player is designated Out or Doubtful. It is the next player in the slot who is not himself Out or Doubtful.</li>
-<li>The page does <strong>not</strong> estimate how many points an absence is worth. That is open question <a href="open-questions.html">Q-07</a>; the options are on the <a href="decision-board.html">decision board</a> (S-05, S-06).</li>
+<li>The page does <strong>not</strong> estimate how many points an absence is worth. That is open question <a href="open-questions.html">OQ-07</a>; the options are on the <a href="decision-board.html">decision board</a> (DB-05, DB-06).</li>
 <li>Players on the injury report are matched to depth charts by name within the same club. Unmatched names are listed in their own table, never guessed.</li>
 <li>A hand-checked seven-player sample from a parallel session is kept as published at <a href="lineups.html">Lineup sample</a>.</li></ul></section>
 <section><h2>Offense and defense: first-listed players affected, by club</h2>
@@ -171,21 +171,21 @@ def build_board() -> str:
 {flag('<strong>Nothing on this page has been implemented.</strong> Each row is a proposal with options. Choose an option '
       '(or reject the row) and the change is then made, tested and published. Until then the site behaves as before.', 'info')}
 {kpi_grid([card(str(len(rows)), "suggestions awaiting a decision", "none implemented", ""),
-           card("S-02 · S-03", "decide these first", "real prices and a forward ledger unblock every verdict", "bad"),
+           card("DB-02 · DB-03", "decide these first", "real prices and a forward ledger unblock every verdict", "bad"),
            card(str(sum(1 for r in rows if r["effort"] == "Small")), "small-effort items", "marked Small in the table below", "good"),
            card("0", "changes made without review", "by design", "")])}
 <section><h2>Suggested order</h2><ol class="findings">
-<li><strong><a href="#S-02">S-02</a> and <a href="#S-03">S-03</a></strong> — real prices and a forward paper ledger. Without these no strategy can be validated, whatever else is built.</li>
-<li><strong><a href="#S-01">S-01</a> and <a href="#S-04">S-04</a></strong> — make the dashboard readable and current.</li>
-<li><strong><a href="#S-06">S-06</a>, <a href="#S-07">S-07</a>, then <a href="#S-05">S-05</a></strong> — build injury history and game-day lineups before letting injuries move a line.</li>
+<li><strong><a href="#DB-02">DB-02</a> and <a href="#DB-03">DB-03</a></strong> — real prices and a forward paper ledger. Without these no strategy can be validated, whatever else is built.</li>
+<li><strong><a href="#DB-01">DB-01</a> and <a href="#DB-04">DB-04</a></strong> — make the dashboard readable and current.</li>
+<li><strong><a href="#DB-06">DB-06</a>, <a href="#DB-07">DB-07</a>, then <a href="#DB-05">DB-05</a></strong> — build injury history and game-day lineups before letting injuries move a line.</li>
 <li>Everything else in any order.</li></ol>
 <p>Several rows depend on an answer only you can give. Those are listed on <a href="open-questions.html">Open questions</a>.
 A separate first pass by a parallel session (eight proposed paths) is kept as published at <a href="suggestions.html">Suggestions (8 paths)</a>; the two lists were written independently and overlap.</p></section>
 <section><h2>Decision board</h2>
 {tools("Try prices, injuries, Small…")}
 {table(t, ["ID", "Suggestion", "Options", "Recommended", "What it unblocks", "Status · reference"], cls="register", caption="Suggestions for review · no row is implemented until an option is chosen")}</section>
-<section><h2>How to record a decision</h2><p>Open an issue naming the row and the option (for example &ldquo;S-03: A&rdquo;), or say so in the next session.
-<a class="btn" href="{REPO}/issues/new?title=Decision%3A%20S-">Record a decision</a>
+<section><h2>How to record a decision</h2><p>Open an issue naming the row and the option (for example &ldquo;DB-03: A&rdquo;), or say so in the next session.
+<a class="btn" href="{REPO}/issues/new?title=Decision%3A%20DB-">Record a decision</a>
 · <a href="data/review/suggestions.csv">Download the register (CSV)</a></p></section>"""
     return layout("decision-board.html", "Decision board",
                   "Suggestions to review and choose between before any change is implemented.", body, wide=True)
@@ -214,9 +214,9 @@ def build_questions() -> str:
 {"".join(f'<li><a href="#{e(r["id"])}"><strong>{e(r["id"])}</strong></a> — {e(r["question"])}</li>' for r in yours)}</ol></section>
 <section><h2>Full register</h2>
 {tools("Try injuries, prices, You…")}
-{table(t, ["ID", "Question", "What we know", "What we do not know", "How to find out", "Status · reference"], cls="register", caption="Questions, known and missing information · suggestions (S-nn) are on the decision board")}</section>
-<section><h2>Answering</h2><p>Reply in the next session or open an issue naming the question (for example &ldquo;Q-01&rdquo;).
-<a class="btn" href="{REPO}/issues/new?title=Answer%3A%20Q-">Answer a question</a>
+{table(t, ["ID", "Question", "What we know", "What we do not know", "How to find out", "Status · reference"], cls="register", caption="Questions, known and missing information · suggestions (DB-nn) are on the decision board")}</section>
+<section><h2>Answering</h2><p>Reply in the next session or open an issue naming the question (for example &ldquo;OQ-01&rdquo;).
+<a class="btn" href="{REPO}/issues/new?title=Answer%3A%20OQ-">Answer a question</a>
 · <a href="decision-board.html">Go to the decision board</a> · <a href="data/review/questions.csv">Download the register (CSV)</a></p>
 <p>A separate first pass by a parallel session (twelve questions with acceptance gates) is kept as published at <a href="decisions.html">Decision readiness</a>.</p></section>"""
     return layout("open-questions.html", "Open questions",

@@ -35,9 +35,9 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
 | T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
-| T14 | **Automated** availability tracker: scheduled GitHub Actions fetch of the official NFL.com injury report + official club depth charts, starter/backup deficiency table | **in progress** | `arena/c0528572-korea1` | `pipeline/fetch_availability.py`, `pipeline/depth_status.py`, `pipeline/render_review.py`, `data/availability/**`, `availability.html`, `.github/workflows/availability.yml`, `tests/test_availability_tracker.py` |
-| T15 | Decision board (suggestions to review and choose before any change is implemented) | **in progress** | `arena/c0528572-korea1` | `data/review/suggestions.csv`, `decision-board.html` |
-| T16 | Open-questions register (known / unknown / how to discover) | **in progress** | `arena/c0528572-korea1` | `data/review/questions.csv`, `open-questions.html` |
+| T14 | **Automated** availability tracker: scheduled GitHub Actions fetch of the official NFL.com injury report + official club depth charts, starter/backup deficiency table | **done** | `arena/c0528572-korea1` | `pipeline/fetch_availability.py`, `pipeline/depth_status.py`, `pipeline/render_review.py`, `data/availability/**`, `availability.html`, `.github/workflows/availability.yml`, `tests/test_availability_tracker.py` |
+| T15 | Decision board (suggestions to review and choose before any change is implemented) | **done** | `arena/c0528572-korea1` | `data/review/suggestions.csv`, `decision-board.html` |
+| T16 | Open-questions register (known / unknown / how to discover) | **done** | `arena/c0528572-korea1` | `data/review/questions.csv`, `open-questions.html` |
 | T17 | Repo re-review (2026-11-12), executive-summary refresh, integration of T14–T16 on top of whatever is on `main` at merge time | **in progress** | `arena/c0528572-korea1` | `data/review/repo_review.csv`, shared files only at integration: `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py` (page list + allow-list), `tests/check_*.py` (page list), `Makefile`, `.github/workflows/verify.yml` |
 
 **2026-11-12 claim — `arena/c0528572-korea1`.** Board read first: every earlier task is `done` and merged
@@ -1153,3 +1153,67 @@ on the site; they are not silently reclassified as completed verification. The l
 dispatch-permission denial remain accurately logged even though the push-triggered runner collection
 succeeded. No credentials were requested, no other branch was edited or pushed, no sibling PR was
 closed/merged, and no source/model approval was inferred from successful site publication.
+
+---
+
+## Session `arena/c0528572-korea1` — T14–T17 log (2026-11-12)
+
+### What was built (file scope as claimed in the board)
+
+| Task | Output | Status |
+|---|---|---|
+| T14 | `pipeline/fetch_availability.py` (runs on a GitHub-hosted runner via `.github/workflows/availability.yml`, cron 11:17 / 23:17 UTC daily + 21:17 UTC Wed–Sat), `pipeline/depth_status.py`, `data/availability/**`, `availability.html`, `tests/test_availability_tracker.py` (5 tests) | **done** |
+| T15 | `data/review/suggestions.csv` (17 rows, authored by `data/review/_author.py`), `decision-board.html` | **done** |
+| T16 | `data/review/questions.csv` (20 rows), `open-questions.html` | **done** |
+| T17 | `data/review/repo_review.csv` (RV-01…RV-11 → `flagged.html`), executive-summary update, grouped navigation + stylesheet repair in `pipeline/render_site.py`, integration merge | **done** (PR/merge record below) |
+
+### Sources read, and how
+
+| Source | URL | How it was read |
+|---|---|---|
+| NFL official injury report, 2026 Week 10 | https://www.nfl.com/injuries/ | By the Actions runner (HTTP 200, SHA-256 in `data/availability/manifest.json`), and separately by this session's page-fetch tool |
+| 32 official club depth-chart pages | `https://<club site>/team/depth-chart` (full list in `manifest.json`) | By the Actions runner; https://www.commanders.com/team/depth-chart also read with the page-fetch tool |
+| GitHub Actions `schedule` event | https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows | Read; scheduled workflows run only from the default branch, so the cron starts after merge |
+
+### Verification performed
+
+* **Line-by-line against the official pages:** the 44 injury-report rows for WAS, NYG, NE and DET and all 29
+  Washington depth-chart slots in the first capture (2026-11-12T13:03:58Z) were compared with the pages as
+  read independently through the page-fetch tool. No differences. The remaining rows are machine-captured
+  from the same pages and were **not** individually re-read (published as RV-11).
+* Cross-check with the pinned community schedule: the 13 matchups printed on the injury page are 13 of the 14
+  Week-10 games in `data/processed/upcoming.csv`; the 14th (LAC@BAL, Monday) had no report yet.
+* `make build` + `make test`: 45 tests pass; `verify_site.py` 0 failing; `check_sources.py` 18 pages / 975 rows,
+  every row with an allow-listed official/primary link (club sites added to the allow-list from
+  `fetch_availability.TEAMS`); `check_links.py` 28 pages, no broken link or external asset.
+
+### Irregularities (all published on `flagged.html`, section "Review of 2026-11-12")
+
+IDs: my registers use `RV-nn` (review findings), `DB-nn` (decision board) and `OQ-nn` (open questions) because the
+sibling's merged pages already use `N-nn`, `Snn` and `Qnn`.
+
+
+RV-01 injury effect not priced · RV-02 open line board stale (Week 8 vs Week 10) · RV-03 Houston depth chart is an
+image (blank) · RV-04 41 report players not found on their club chart · RV-05 eight clubs without report rows at
+capture · RV-06 depth charts are club-labelled unofficial · RV-07 reserve lists not captured · RV-08 stylesheet
+lacked classes the pages use (repaired) · RV-09 coordination collision / stale board rows / PR #19 ·
+RV-10 leaderboard carries no numbers under the strict rule · RV-11 scope of the line-by-line check.
+
+### Integration merge — `main` moved while this branch was in progress (PRs #22, #23 of `arena/03f66e17-korea1`)
+
+`git merge origin/main` at `8c93d9f` conflicted in `pipeline/render_site.py`, `pipeline/render_summary.py`,
+`pipeline/verify_site.py`, `tests/check_sources.py`, `Makefile`, `README.md` and the generated pages. Resolution,
+nothing of the sibling's discarded:
+
+| Conflict | Resolution |
+|---|---|
+| `NAV` (their three new links vs my grouped navigation) | Grouped navigation kept; their `decisions.html`, `suggestions.html`, `lineups.html` are a nav group "First pass · 12 Nov", unchanged in content |
+| Executive-summary paragraph / `render_summary.py` section | Both kept. Two of their sentences said the lineup sample is "not a live league-wide service" and "all-club coverage … blocked"; after integration that is true of `lineups.html` only, so each now points to `availability.html` for the all-club capture |
+| Requirement rows R19–R21 (both sessions added the same IDs) | One row per ID naming both sessions' pages |
+| Page lists in `verify_site.py`, `check_sources.py`, `check_links.py`; `Makefile` test list | Union |
+| `README.md` coordination paragraph | Generic wording (each session is pinned to its own branch); their "Injury and decision-readiness boundaries" section kept with a pointer to the tracker |
+| Generated HTML / verification CSVs | Not hand-merged; regenerated by `make build` on the merged sources |
+
+My pages each link to the sibling's equivalent page and say it was written independently. Request to the
+owner of `official-monitor.yml` (`arena/03f66e17-korea1`): it and `availability.yml` now both fetch
+nfl.com daily; consolidating them is decision-board item DB-12/DB-14 and was **not** done here (their scope).
