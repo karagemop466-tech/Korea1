@@ -1450,3 +1450,16 @@ blocker ("Complete trial registry and untouched prospective replication — no r
 outputs (`pipeline/render_site.py` NAV, root `*.html`, `README.md`, `EXECUTIVE_SUMMARY.md`, `Makefile`), three
 claim the file name `suggestions.html`, three claim `injuries.html`, two claim `questions.html` and three claim
 `pipeline/render_decisions.py`. This session cannot resolve that and does not try to; it keeps out of all of it.
+
+### Progress record — `arena/9e3e144b-korea1` — 2026-11-12T13:43Z
+
+| Item | Result | Evidence |
+|---|---|---|
+| Week 10 freeze | 14 games, 18 strategies registered, 65 picks, written 13:26:48Z from mirror commit `9654533e` | `data/forward/ledger.jsonl` entry 1, hash `3594aac9…263fc7` |
+| Server-side time | GitHub received the entry at **2026-11-12T13:28:07Z** — 11 h 47 min before the first Week 10 kickoff (WAS@NYG, 8:15 PM ET per NFL.com) | `data/forward/anchors.csv`; <https://github.com/karagemop466-tech/Korea1/activity?ref=arena/9e3e144b-korea1> |
+| Engine fidelity | The freeze engine regenerates the published 164-row board from the pin with a maximum difference of 0.0 | `python pipeline/forward_ledger.py reproduce` |
+| Owner authority kept | Ledger entry 2 (amendment A1): thresholds are proposed defaults; **no verdict or reward for any strategy until the owner decides** suggestions S12/S05 and questions Q25/Q26 | `data/forward/ledger.jsonl` entry 2 |
+| FW1 audit | Canonical board (PR #15, PR #20): 28 lines for games unplayed at the pin; **12 were published after those games had been played**, 16 before kickoff, and only **1** of the 16 (CHI@SEA) used current inputs | `data/forward/prereg_audit.csv`, `prereg_summary.csv` |
+| Tests | 77 passed, no network needed; six deliberate code mutations each caught | `tests/test_forward_ledger.py` |
+
+Nothing outside the claimed scope was edited. The existing site, its navigation and its tables are unchanged.
