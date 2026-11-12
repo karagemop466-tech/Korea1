@@ -35,6 +35,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
 | T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
+| T14 | **Decision Readiness, Injury & O/D Depth-Chart Deficiency Tracker (`injuries.html`), Suggestions (`suggestions.html`), Pre-Decision Q&A (`questions.html`), Refreshed 2026-11-12 Snapshot Audit, & Repo/UI Irregularity Fixes** | **in progress** | `arena/f115e6a2-korea1` | `COORDINATION.md`, `data/**`, `pipeline/**`, `tests/**`, `requirements/**`, `Makefile`, `assets/style.css`, `*.html`, `*.md`, `audit/REPORT.md` |
 
 **Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
 board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while
