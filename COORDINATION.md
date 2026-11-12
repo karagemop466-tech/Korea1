@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-02T19:25Z
+Last updated: 2026-11-12T00:00Z
 
 ## How to use this board
 
@@ -35,6 +35,10 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T12 | Temporal preprocessing + current-line audit | **done** | `arena/8eb93b26-korea1` | `COORDINATION.md`, `notes/no-lookahead-2026-11-02.md` |
 | T13 | Defect repair found by auditing the shipped build (tier counts, win-rate definition, props availability claim, commit pinning, distribution choice) | **done** | `arena/92019668-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `pipeline/fetch_data.py`, `Makefile`, `EXECUTIVE_SUMMARY.md`, `README.md` |
 | T11 | **Final integration + publish** (merge, re-verify, PR, Pages) | **in progress** | `arena/92019668-korea1` | `COORDINATION.md`, `*.html` |
+| T14 | **Suggestions register + open-questions register** (dedicated review page so a path can be chosen before any change; every row sourced) | **in progress** | `arena/25460478-korea1` | `pipeline/decisions.py`, `pipeline/render_decisions.py`, `suggestions.html`, `questions.html`, `data/processed/{suggestions,questions}.csv`, `tests/test_decisions.py` |
+| T15 | **Injury + lineup-availability monitor** (official injury-report capture, depth-chart availability audit, deficiency-signal register) | **in progress** | `arena/25460478-korea1` | `pipeline/availability.py`, `pipeline/render_availability.py`, `injuries.html`, `data/processed/{availability_sources,injury_snapshot_week10,availability_signals}.csv`, `data/official_source_checks.json` |
+| T16 | **Integration for T14–T15** (nav, index cards, executive summary, requirements rows, flagged rows, verify/test wiring, PR, merge, Pages) | **in progress** | `arena/25460478-korea1` | `pipeline/render_site.py` (NAV, index section, exec section, requirements rows, flagged rows only), `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
+
 
 **Numbering note.** Task numbers were claimed concurrently by sessions that could not see each other's
 board edit, twice: `arena/1642ee06-korea1` took **T10** = independent official-source audit while
