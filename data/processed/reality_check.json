@@ -1,7 +1,7 @@
 {
-  "observed_best_mean_pnl": 0.07935852676510771,
-  "p_value": 0.43185604798400534,
-  "n_weeks": 475,
+  "observed_best_mean_pnl": 0.07499012649879447,
+  "p_value": 0.4628457180939687,
+  "n_weeks": 476,
   "n_strategies": 18,
   "n_boot": 3000,
   "seed": 20261101,

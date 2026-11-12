@@ -1,0 +1,8 @@
+team,club,depth_chart_verified,chart_url,chart_label,injury_rows
+ATL,Atlanta Falcons,YES,https://www.atlantafalcons.com/team/depth-chart,Club depth chart (page heading 'DEPTH CHART'); the club does not label it official,6
+DET,Detroit Lions,YES,https://www.detroitlions.com/team/depth-chart,'2026 Unofficial Depth Chart Compiled by Lions Football Communications',9
+KC,Kansas City Chiefs,YES,https://www.chiefs.com/team/depth-chart,'Unofficial Depth Chart' (club page heading),11
+NE,New England Patriots,YES,https://www.patriots.com/team/depth-chart,"'PATRIOTS UNOFFICIAL DEPTH CHART' — club states it reflects Patriots.com writers' opinions, not the organization",15
+NYG,New York Giants,YES,https://www.giants.com/team/depth-chart,Club depth chart (page heading 'DEPTH CHART'); the club does not label it official,11
+WAS,Washington Commanders,YES,https://www.commanders.com/team/depth-chart,Club depth chart (page heading 'DEPTH CHART'); the club does not label it official,9
+(other clubs),Not covered by this pilot,NO,https://www.nfl.com/injuries/,26 of 32 clubs are outside the declared pilot scope,0

@@ -1,0 +1,62 @@
+game_id,kickoff_et,team,opponent,player,position,injury,practice_status,game_status,player_url,source_url,fetched_utc
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,John Bates,TE,,Full Participation in Practice,,https://www.nfl.com/players/john-bates/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Treylon Burks,WR,,Did Not Participate In Practice,,https://www.nfl.com/players/treylon-burks/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Jayden Daniels,QB,,Full Participation in Practice,,https://www.nfl.com/players/jayden-daniels/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Matt Gulbin,C,,Full Participation in Practice,,https://www.nfl.com/players/matt-gulbin/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Chig Okonkwo,TE,,Full Participation in Practice,,https://www.nfl.com/players/chigoziem-okonkwo/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Lucas Patrick,C,Concussion,Did Not Participate In Practice,Out,https://www.nfl.com/players/lucas-patrick/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Amik Robertson,CB,,Limited Participation in Practice,,https://www.nfl.com/players/amik-robertson/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Shy Tuttle,DT,,Full Participation in Practice,,https://www.nfl.com/players/shy-tuttle/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,WAS,NYG,Colson Yankoff,TE,Knee,Did Not Participate In Practice,Out,https://www.nfl.com/players/colson-yankoff/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Abdul Carter,LB,,Full Participation in Practice,,https://www.nfl.com/players/abdul-carter/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Jermaine Eluemunor,T,,Full Participation in Practice,,https://www.nfl.com/players/jermaine-eluemunor/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Malik Harrison,LB,Groin,Limited Participation in Practice,Questionable,https://www.nfl.com/players/malik-harrison/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Colton Hood,CB,,Full Participation in Practice,,https://www.nfl.com/players/colton-hood/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Theo Johnson,TE,,Full Participation in Practice,,https://www.nfl.com/players/theo-johnson/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Charlie Jones,WR,,Full Participation in Practice,,https://www.nfl.com/players/charlie-jones-3/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,J.J. McCarthy,QB,,Full Participation in Practice,,https://www.nfl.com/players/j-j-mccarthy/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Darnell Mooney,WR,,Full Participation in Practice,,https://www.nfl.com/players/darnell-mooney/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Malik Nabers,WR,,Full Participation in Practice,,https://www.nfl.com/players/malik-nabers/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Cam Skattebo,RB,,Full Participation in Practice,,https://www.nfl.com/players/cam-skattebo/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_WAS_NYG,2026-11-12T20:15,NYG,WAS,Andrew Thomas,T,,Full Participation in Practice,,https://www.nfl.com/players/andrew-thomas/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Ben Brown,C,Knee,Did Not Participate In Practice,Out,https://www.nfl.com/players/ben-brown-2/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,A.J. Brown,WR,,Limited Participation in Practice,,https://www.nfl.com/players/a-j-brown/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Kevin Byard,S,,Limited Participation in Practice,,https://www.nfl.com/players/kevin-byard/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Carlton Davis III,CB,Knee,Did Not Participate In Practice,Out,https://www.nfl.com/players/carlton-davis/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Reggie Gilliam,FB,,Limited Participation in Practice,,https://www.nfl.com/players/reggie-gilliam/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,TreVeyon Henderson,RB,Illness,Did Not Participate In Practice,Out,https://www.nfl.com/players/treveyon-henderson/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Hunter Henry,TE,,Limited Participation in Practice,,https://www.nfl.com/players/hunter-henry/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Cameron Latu,TE,,Did Not Participate In Practice,,https://www.nfl.com/players/cameron-latu/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Drake Maye,QB,,Full Participation in Practice,,https://www.nfl.com/players/drake-maye/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Morgan Moses,T,,Limited Participation in Practice,,https://www.nfl.com/players/morgan-moses/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Walter Rouse,T,,Did Not Participate In Practice,,https://www.nfl.com/players/walter-rouse/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Brenden Schooler,S,,Did Not Participate In Practice,,https://www.nfl.com/players/brenden-schooler/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Rhamondre Stevenson,RB,,Did Not Participate In Practice,,https://www.nfl.com/players/rhamondre-stevenson/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Greg Van Roten,G,,Limited Participation in Practice,,https://www.nfl.com/players/greg-van-roten/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,NE,DET,Charles Woods,CB,,Limited Participation in Practice,,https://www.nfl.com/players/charles-woods/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,Brian Branch,S,,Limited Participation in Practice,,https://www.nfl.com/players/brian-branch/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,Jared Goff,QB,,Limited Participation in Practice,,https://www.nfl.com/players/jared-goff/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,Kerby Joseph,S,,Limited Participation in Practice,,https://www.nfl.com/players/kerby-joseph/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,Cade Mays,C,,Did Not Participate In Practice,,https://www.nfl.com/players/cade-mays/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,D.J. Reed,CB,,Did Not Participate In Practice,,https://www.nfl.com/players/d-j-reed/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,Jacob Saylors,RB,,Full Participation in Practice,,https://www.nfl.com/players/jacob-saylors/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,Amon-Ra St. Brown,WR,,Limited Participation in Practice,,https://www.nfl.com/players/amon-ra-st-brown/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,Sione Vaki,RB,,Did Not Participate In Practice,,https://www.nfl.com/players/sione-vaki/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_NE_DET,2026-11-15T09:30,DET,NE,DJ Wonnum,DE,,Full Participation in Practice,,https://www.nfl.com/players/d-j-wonnum/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Jeffrey Bassa,LB,,Full Participation in Practice,,https://www.nfl.com/players/jeffrey-bassa/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Mansoor Delane,CB,,Full Participation in Practice,,https://www.nfl.com/players/mansoor-delane/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Justin Fields,QB,,Full Participation in Practice,,https://www.nfl.com/players/justin-fields/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Jaden Hicks,S,,Full Participation in Practice,,https://www.nfl.com/players/jaden-hicks/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Travis Kelce,TE,,Full Participation in Practice,,https://www.nfl.com/players/travis-kelce/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Patrick Mahomes,QB,,Full Participation in Practice,,https://www.nfl.com/players/patrick-mahomes/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Jaylon Moore,T,,Did Not Participate In Practice,,https://www.nfl.com/players/jaylon-moore-2/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Omarr Norman-Lott,DT,,Limited Participation in Practice,,https://www.nfl.com/players/omarr-norman-lott/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Rashee Rice,WR,,Full Participation in Practice,,https://www.nfl.com/players/rashee-rice/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Peter Woods,DT,,Did Not Participate In Practice,,https://www.nfl.com/players/peter-woods/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,KC,ATL,Xavier Worthy,WR,,Full Participation in Practice,,https://www.nfl.com/players/xavier-worthy/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,ATL,KC,Zachariah Branch,WR,,Did Not Participate In Practice,,https://www.nfl.com/players/zachariah-branch/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,ATL,KC,Divine Deablo,LB,,Limited Participation in Practice,,https://www.nfl.com/players/divine-deablo/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,ATL,KC,Gervon Dexter Sr.,DT,,Did Not Participate In Practice,,https://www.nfl.com/players/gervon-dexter/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,ATL,KC,James Pearce Jr.,DE,,Did Not Participate In Practice,,https://www.nfl.com/players/james-pearce-jr/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,ATL,KC,Za'Darius Smith,DE,,Did Not Participate In Practice,,https://www.nfl.com/players/za-darius-smith/,https://www.nfl.com/injuries/,2026-11-12T13:05Z
+2026_10_KC_ATL,2026-11-15T13:00,ATL,KC,Josh Woods,LB,,Did Not Participate In Practice,,https://www.nfl.com/players/josh-woods/,https://www.nfl.com/injuries/,2026-11-12T13:05Z

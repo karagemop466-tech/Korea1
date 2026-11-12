@@ -1,0 +1,19 @@
+{
+  "snapshot": "2026 NFL Week 10 — official injury report and club depth charts (pilot: 6 clubs)",
+  "fetched_utc": "2026-11-12T13:05Z",
+  "injury_source": "https://www.nfl.com/injuries/",
+  "injury_rows": 61,
+  "depth_rows": 354,
+  "clubs_covered": 6,
+  "clubs_total": 32,
+  "ruled_out": 5,
+  "starters_ruled_out": 2,
+  "unranked_rows": 6,
+  "no_game_designation": 55,
+  "limitations": [
+    "Club depth charts are published by the clubs, and several clubs explicitly label them UNOFFICIAL (NE, DET, KC).",
+    "Depth charts are a projection, not a starting lineup; official inactives and snap counts are published later.",
+    "The NFL report is a practice-participation report; a blank game status means no game designation was published at snapshot time.",
+    "Transcription is an agent-mediated step; a byte-exact archived crawl is required before this is treated as archival evidence."
+  ]
+}

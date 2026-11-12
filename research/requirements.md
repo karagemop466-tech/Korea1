@@ -1,6 +1,10 @@
 # NFL Line Lab — requirements and acceptance register
 
-Final integration owner: `arena/ed58af62-korea1`. Updated 2026-11-02.
+Final integration owner: `arena/3e57f750-korea1`. Updated 2026-11-12.
+
+> **Note (2026-11-12).** This register, `requirements.html` and the earlier `requirements/requirements.csv`
+> are three copies of the same register with different wording. The HTML page is authoritative for the
+> published status; keeping three copies is flagged as irregularity F-21 rather than silently reconciled.
 
 | ID | Requirement | Acceptance evidence | Status |
 |---|---|---|---|
@@ -22,6 +26,9 @@ Final integration owner: `arena/ed58af62-korea1`. Updated 2026-11-02.
 | R16 | Unconfirmable values blank and flagged | Strict public metric cells blank; explicit UNVERIFIED labels; research downloads segregated | Enforced |
 | R17 | Coordinate parallel work | Claims, scopes, conflict log, pinned session branch, final integration ownership | Implemented |
 | R18 | PR, merge, deploy and verify live site | Final PR and Pages API/live-page record in `COORDINATION.md` | Recorded after execution, never inferred |
+| R19 | Track injuries and lineup deficiencies | `pipeline/injuries.py`; official Week 10 report joined to 6 club depth charts; `injuries.html` | Pilot: 6 of 32 clubs; 26 flagged, never assumed healthy |
+| R20 | Review suggestions before implementing | `research/suggestions.csv`; `suggestions.html`; decision log D01-D03 | Implemented; no suggestion accepted |
+| R21 | Questions, information and answers register | `research/decision_questions.csv`; `research/information_inventory.csv`; `questions.html` | Implemented; 3 questions block a funded decision |
 
 ## Evidence policy
 

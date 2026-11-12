@@ -1,11 +1,11 @@
 {
-  "generated_utc": "2026-11-02T17:26:06Z",
-  "upstream_commit": "a270278f3ac4e937295fe6a27814b3c4a2b62645",
-  "games_modelled": 7384,
-  "bets_simulated": 27218,
+  "generated_utc": "2026-11-12T13:00:21Z",
+  "upstream_commit": "9654533e5a0958726afcc076860f2c828ea0bf61",
+  "games_modelled": 7412,
+  "bets_simulated": 27344,
   "strategies_tested": 18,
   "strategies_passing": 0,
-  "reality_check_p_research_only": 0.43185604798400534,
+  "reality_check_p_research_only": 0.4628457180939687,
   "official_market_quote_coverage": 0,
   "public_view": "strict-source; unverified observations blank"
 }

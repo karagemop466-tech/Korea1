@@ -11,9 +11,17 @@ def main():
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
     src=read_json(ROOT/'data/sources.json')
     n=int(gates.verdict.eq('VALIDATED').sum()); matched=int(scores.status.eq('MATCH').sum())
+    published=(src.get('generated_utc') or '')[:10]
+    bets=int(pd.read_csv(PROC/'strategy_summary.csv').n.sum())
+    rc=read_json(PROC/'reality_check.json')
+    metrics=pd.read_csv(PROC/'model_metrics.csv')
+    m=metrics[(metrics.model.isin(['ensemble','market']))&(metrics.season.astype(str)=='ALL')]
+    spread=m[m.market=='spread'].set_index('model')['mae']
+    total=m[m.market=='total'].set_index('model')['mae']
+    snap=read_json(PROC/'injury_snapshot.json')
     text=f'''# Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
+Publication snapshot: {published}. Research snapshot: `{src['upstream']['commit_sha']}`.
 
 ## Decision
 
@@ -38,7 +46,27 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 | Luck mitigation | Weekly-block bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
 | Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Official score audit | {matched} matching games in a {len(scores)}-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
+| Injury and depth register | {snap['injury_rows']} official Week 10 rows for {snap['clubs_covered']} of 32 clubs, joined by exact name to club depth charts; {snap['starters_ruled_out']} listed starters ruled out | Pilot only; 26 clubs flagged as uncovered | [NFL official injury report](https://www.nfl.com/injuries/) |
+| Decision questions | 15 questions with what is known, what is missing and the resolution path | 3 block any funded decision | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+| Suggestions register | 13 proposals with cost, risk, dependencies and three decision paths; none accepted | Nothing implemented without review | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 | Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+
+## Current build (2026-11-12 refresh)
+
+The pinned snapshot was refreshed from upstream commit `a270278f` (2026-11-02) to
+`{src['upstream']['commit_sha'][:12]}` and the whole pipeline was rebuilt. Consequences, stated rather than smoothed over:
+
+| Item | Before the refresh | After the refresh |
+|---|---|---|
+| Line board | Weeks 8-18, including games already played | Weeks 10-18 (136 games), starting 2026-11-12 |
+| Results in the model | Through Week 8 | Through Week 9 (2026-11-09) |
+| Settled tickets | 27,218 | {bets:,} |
+| Spread error, model vs market | 10.523 vs 10.215 | {spread.get('ensemble', float('nan')):.3f} vs {spread.get('market', float('nan')):.3f} |
+| Total error, model vs market | 10.762 vs 10.527 | {total.get('ensemble', float('nan')):.3f} vs {total.get('market', float('nan')):.3f} |
+| White reality-check p (research only) | 0.186 | {rc.get('p_value', float('nan')):.3f} |
+
+The verdicts did not move: {n} of {len(gates)} canonical strategies pass all eight gates and no reward is awarded.
+The model still does not beat the market on either market, which is the finding that matters for line origination.
 
 ## Material audit corrections
 

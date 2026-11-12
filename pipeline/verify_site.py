@@ -15,7 +15,10 @@ from common import PROC, ROOT, read_json
 
 ALLOW = {"www.nfl.com", "nfl.com", "operations.nfl.com", "www.econometricsociety.org",
          "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
-         "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov"}
+         "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov",
+         # Official club sites: the clubs' own depth charts, read and linked per row by T14.
+         "www.commanders.com", "www.giants.com", "www.patriots.com",
+         "www.detroitlions.com", "www.chiefs.com", "www.atlantafalcons.com"}
 BAD = re.compile(r"(?<![\w/])(nan|NaN|None|inf|-inf)(?![\w/-])")
 
 class Collector(HTMLParser):
@@ -53,7 +56,8 @@ def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
     pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))
     expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
-              "correlations.html","props.html","methodology.html","requirements.html","verification.html","flagged.html","sources.html","audit.html"}
+              "correlations.html","props.html","methodology.html","requirements.html","verification.html","flagged.html","sources.html","audit.html",
+              "injuries.html","questions.html","suggestions.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

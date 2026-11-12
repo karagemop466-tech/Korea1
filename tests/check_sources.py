@@ -4,7 +4,8 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from pipeline.verify_site import Collector,official_refs,ROOT
 PAGES=["index.html","executive-summary.html","lines.html","strategies.html","validation.html","audit.html",
-       "correlations.html","props.html","methodology.html","requirements.html","flagged.html","sources.html"]
+       "correlations.html","props.html","methodology.html","requirements.html","flagged.html","sources.html",
+       "injuries.html","questions.html","suggestions.html"]
 def main():
     problems=[]; total=0
     for name in PAGES:
