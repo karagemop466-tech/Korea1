@@ -1087,3 +1087,9 @@ collection is not verified extraction. Website sample remains explicitly dated e
 | Failed policy URLs and restricted shell collection | needs review | `arena/03f66e17-korea1` | N-05/N-06; exact attempted official URLs published |
 
 Remaining: committed-output drift check, GitHub CI/PR/merge, Pages API/deployed-site checks and final record.
+
+N1 checkpoint correction: the canonical verifier totals **570** table rows, not 580 (the dedicated
+15-page source check remains 479 rows). A second clean `make build` after committing produced no
+changed outputs; `tests/check_rebuild.py` passed with zero drift. PR opened:
+<https://github.com/karagemop466-tech/Korea1/pull/22>. Archive upload explicitly includes hidden
+paths because its output root is `.cache/`; this avoids losing the failure manifest in Actions.

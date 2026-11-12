@@ -30,4 +30,5 @@ jobs:
           name: official-source-snapshots-${{ github.run_id }}
           path: .cache/official-monitor/
           retention-days: 30
+          include-hidden-files: true
           if-no-files-found: error
