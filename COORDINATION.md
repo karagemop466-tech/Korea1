@@ -1016,7 +1016,7 @@ was preserved and re-verified. The final public dashboard is live at
 
 | Task | Status | Owner | File scope |
 |---|---|---|---|
-| N1 Decision-readiness audit, suggestions review queue, lineup evidence contract, final integration and publish | in progress | `arena/03f66e17-korea1` | `COORDINATION.md`, `README.md`, `research/decision-register.json`, `pipeline/render_decisions.py`, `pipeline/render_site.py` (navigation and landing links only), `pipeline/render_summary.py` (readiness note only), `pipeline/verify_site.py` (page registration only), `tests/check_sources.py` (page registration only), `tests/test_decisions.py`, `Makefile`, `.github/workflows/verify.yml`, generated root HTML and `assets/data/decision-register.json` |
+| N1 Decision-readiness audit, suggestions review queue, lineup evidence contract, final integration and publish | done | `arena/03f66e17-korea1` | `COORDINATION.md`, `README.md`, `research/decision-register.json`, `pipeline/render_decisions.py`, `pipeline/render_site.py` (navigation and landing links only), `pipeline/render_summary.py` (readiness note only), `pipeline/verify_site.py` (page registration only), `tests/check_sources.py` (page registration only), `tests/test_decisions.py`, `Makefile`, `.github/workflows/verify.yml`, generated root HTML and `assets/data/decision-register.json` |
 
 Earlier in-progress integration claims are over ten days old, and their completion records above
 show publication. N1 is a new, non-overlapping follow-up, not a takeover of open PR #19.
@@ -1093,3 +1093,39 @@ N1 checkpoint correction: the canonical verifier totals **570** table rows, not 
 changed outputs; `tests/check_rebuild.py` passed with zero drift. PR opened:
 <https://github.com/karagemop466-tech/Korea1/pull/22>. Archive upload explicitly includes hidden
 paths because its output root is `.cache/`; this avoids losing the failure manifest in Actions.
+
+### N1 PR merge and collection-trigger repair
+
+PR [#22](https://github.com/karagemop466-tech/Korea1/pull/22) **MERGED** at
+2026-11-12T13:08:55Z, commit `9c9caf90f386cea0466b2a2afa4d4d7132c110e4`.
+Both push and PR `verify` checks passed (runs 43224110910 / 43224120272; current PR check 2m8s).
+Pages build 1363212449 started for that exact merge SHA; final built status is checked below.
+
+An immediate `gh workflow run official-monitor.yml --ref main` was denied with HTTP 403
+`Resource not accessible by integration` (dispatch permission, not a missing credential).
+No secret was requested or changed. Added a path-limited **push** trigger for monitor code,
+workflow and source-register changes, so collection can test automatically on the assigned branch
+without dispatch permission. Daily schedule remains; documentation-only updates do not re-collect.
+This is an operational trigger repair, not an approval of the proposed model/data expansions.
+
+## N1 DONE — verified live publication and read-only collection result
+
+| Step | Actual result |
+|---|---|
+| Implementation PR | [#22](https://github.com/karagemop466-tech/Korea1/pull/22), merged 2026-11-12T13:08:55Z |
+| Merge commit | `9c9caf90f386cea0466b2a2afa4d4d7132c110e4` |
+| Pre-merge CI | PR run [43224120272](https://github.com/karagemop466-tech/Korea1/actions/runs/43224120272) and push run 43224110910 succeeded; pinned rebuild, 40 tests and zero generated-output drift |
+| GitHub Pages | Build 1363212449: **built** for that exact merge commit, error message null, updated 2026-11-12T13:09:31Z; main / root publication source unchanged |
+| Live pages read | [decisions](https://karagemop466-tech.github.io/Korea1/decisions.html?v=22), [suggestions](https://karagemop466-tech.github.io/Korea1/suggestions.html?v=22), [lineups](https://karagemop466-tech.github.io/Korea1/lineups.html?v=22), [flagged](https://karagemop466-tech.github.io/Korea1/flagged.html?v=22), [executive summary](https://karagemop466-tech.github.io/Korea1/executive-summary.html?v=22) all fetched successfully; questions, proposal statuses, explicit blanks and limitations confirmed |
+| Automated official collection | [Run 43224601120](https://github.com/karagemop466-tech/Korea1/actions/runs/43224601120): **success**, archive job 131204447702, collection and upload steps both success; completed 2026-11-12T13:09:39Z |
+| Retained archive metadata | Artifact `official-source-snapshots-43224601120`, ID 13947475928, 182,289 bytes, not expired at check; raw collection only, not verified extraction |
+| Artifact/log inspection boundary | Artifact download and full logs redirect to hosts blocked by sandbox egress and could not be read locally. GitHub API job/step conclusions and artifact metadata were checked; no claim to inspect the remote manifest's individual hashes or downloaded HTML |
+| Follow-up PR | [#23](https://github.com/karagemop466-tech/Korea1/pull/23): records these results and adds the tested path-limited monitor trigger; no data/model/website-value changes |
+| Final research decision | 0 of 18 canonical strategies validated; no reward award; no claim to eliminate luck or confirm missing roles/quantitative impact |
+
+N1 is complete for the explicitly stated follow-up scope. All-club live extraction, authenticated
+quote history, full official outcome census and prospective evidence remain **needs review**, published
+on the site; they are not silently reclassified as completed verification. The local TLS failures and
+dispatch-permission denial remain accurately logged even though the push-triggered runner collection
+succeeded. No credentials were requested, no other branch was edited or pushed, no sibling PR was
+closed/merged, and no source/model approval was inferred from successful site publication.
