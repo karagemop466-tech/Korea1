@@ -506,7 +506,7 @@ def build_flagged(d):
         ["F-11", "Medium · open", "Historical annex estimates use different archives and older code. They are retained for replication, not promoted to current verified findings.", official("NFL scores")],
         ["F-12", "Medium · repaired", "The old road-favourite comment contradicted its selection. The documented sign convention and selected side are now covered by a regression test.", official("NFL scores")],
     ]
-    body = f"""{notice()}<section><h2>Open evidence gaps and repaired irregularities</h2>
+    body = f"""{notice()}<section id="decision-gaps"><h2>Open evidence gaps and repaired irregularities</h2>
 <p>Open items do not block publication of a clearly labelled research site. They do block betting validation and rewards.
 Earlier audit findings are preserved below, including their original scope.</p>
 <div class="table-tools"><label>Search findings <input class="filter" type="search" placeholder="Search source, prop, leakage…"></label></div>
