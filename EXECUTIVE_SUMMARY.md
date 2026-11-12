@@ -37,6 +37,7 @@ All-club coverage, game-day role confirmation and validated player-impact signal
 | Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Official score audit | 31 matching games in a 39-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
 | Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Decision-support pages | `injuries.html` (official Week 10 injury capture, starter/backup deficiency blank by design), `decisions.html` (pre-decision register Q-01→Q-08), `suggestions.html` (review-before-implement register S-01→S-08) | Implemented; every row links to an official source, blank cells flagged UNVERIFIED | [NFL injury report](https://www.nfl.com/injuries/) · [research/decisions.md](research/decisions.md) · [research/suggestions.md](research/suggestions.md) |
 
 ## Material audit corrections
 
