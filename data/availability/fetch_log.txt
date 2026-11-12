@@ -1,0 +1,33 @@
+ARI  depth rows= 58 status=200 
+ATL  depth rows= 59 status=200 
+BAL  depth rows= 60 status=200 
+BUF  depth rows= 61 status=200 
+CAR  depth rows= 57 status=200 
+CHI  depth rows= 59 status=200 
+CIN  depth rows= 60 status=200 
+CLE  depth rows= 58 status=200 
+DAL  depth rows= 61 status=200 
+DEN  depth rows= 60 status=200 
+DET  depth rows= 57 status=200 
+GB   depth rows= 57 status=200 
+HOU  depth rows=  0 status=200 parsed 0 rows
+IND  depth rows= 57 status=200 
+JAX  depth rows= 58 status=200 
+KC   depth rows= 56 status=200 
+LV   depth rows= 58 status=200 
+LAC  depth rows= 61 status=200 
+LA   depth rows= 57 status=200 
+MIA  depth rows= 56 status=200 
+MIN  depth rows= 59 status=200 
+NE   depth rows= 62 status=200 
+NO   depth rows= 61 status=200 
+NYG  depth rows= 60 status=200 
+NYJ  depth rows= 58 status=200 
+PHI  depth rows= 54 status=200 
+PIT  depth rows= 59 status=200 
+SF   depth rows= 58 status=200 
+SEA  depth rows= 63 status=200 
+TB   depth rows= 60 status=200 
+TEN  depth rows= 65 status=200 
+WAS  depth rows= 60 status=200 
+injury rows=254 ({'season': '2026', 'week': 'WEEK 10'}); depth charts parsed for 31/32 clubs
