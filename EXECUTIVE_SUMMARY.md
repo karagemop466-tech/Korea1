@@ -12,6 +12,17 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
+## Decision readiness follow-up — 2026-11-12
+
+The dedicated `decisions.html` register supplies twelve questions with current answers, missing inputs,
+discovery steps and acceptance gates. `suggestions.html` compares eight proposed paths and alternatives;
+none is approved. `lineups.html` contains seven selected official Week 10 injury-report observations
+and quoted cells from two club depth charts, retrieved 2026-11-12. Unknown injury/status fields,
+confirmed starter/replacement roles, replacement depth ranks and point impacts stay blank.
+This is not league-wide or live tracking. A daily read-only Actions monitor archives three official
+source pages without promoting collection into verified extraction or changing model inputs.
+All-club coverage, game-day role confirmation and validated player-impact signals remain blocked.
+
 ## What was delivered
 
 | Requirement | Delivery | Evidence status | Official / primary reference |
