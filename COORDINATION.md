@@ -1280,5 +1280,16 @@ true for the league site but not for the clubs; each block now carries a dated c
 - `pytest`: **46 passed**.
 - `tests/check_rebuild.py`: run after the merge commit.
 
-Deployment record appended after the PR merges; nothing is inferred here.
+### Deployment record — verified 2026-11-12T13:27Z
+
+| Step | Actual result |
+|---|---|
+| Pull request | [#28](https://github.com/karagemop466-tech/Korea1/pull/28) **MERGED**, merge commit `357ff3a` |
+| CI | `Verify site` on `357ff3a` succeeded; the PR carried 46 tests and a zero-drift rebuild |
+| GitHub Pages | build **built** for `357ff3a` at 2026-11-12T13:26:16Z, error null |
+| Live pages read | `questions.html` (40-question register + the eight pre-decision questions + correction), `injuries.html` (12-source register, eight signals, then the 259-row week-10 capture), `decisions.html`, `lineups.html`, `suggestions.html` — all at `?v=28` |
+| Verdict | Unchanged: 0 of 18 strategies validated, G1 blocks all, no reward, 0 availability signals in the leaderboard |
+
+The live site therefore carries every register from all three sessions, each with its own provenance
+label and one URL per purpose.
 
