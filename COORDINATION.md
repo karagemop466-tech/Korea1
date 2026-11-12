@@ -1011,3 +1011,18 @@ F1 (audit), F2 (repairs/dashboard) and F3 (integration/deploy) are complete for 
 Open sibling PR #19 was not closed or force-pushed. All merged sibling work through PRs #15–#18
 was preserved and re-verified. The final public dashboard is live at
 <https://karagemop466-tech.github.io/Korea1/>.
+
+## 2026-11-12 — session arena/03f66e17-korea1
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| N1 Decision-readiness audit, suggestions review queue, lineup evidence contract, final integration and publish | in progress | `arena/03f66e17-korea1` | `COORDINATION.md`, `README.md`, `research/decision-register.json`, `pipeline/render_decisions.py`, `pipeline/render_site.py` (navigation and landing links only), `pipeline/render_summary.py` (readiness note only), `pipeline/verify_site.py` (page registration only), `tests/check_sources.py` (page registration only), `tests/test_decisions.py`, `Makefile`, `.github/workflows/verify.yml`, generated root HTML and `assets/data/decision-register.json` |
+
+Earlier in-progress integration claims are over ten days old, and their completion records above
+show publication. N1 is a new, non-overlapping follow-up, not a takeover of open PR #19.
+The platform fixes this session to its assigned branch; the requested `session-<id>/...` naming
+cannot be used. All work stays on `arena/03f66e17-korea1`. No other session's branch will be edited.
+Scope: audit existing strict evidence boundaries, add the missing dedicated suggestions and
+question/answer register and lineup monitoring readiness, test the combined site, PR and deploy.
+Network access to NFL/operator domains may be restricted; any such verification failures will be
+recorded, not represented as fresh official-source confirmation.
