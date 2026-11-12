@@ -11,6 +11,20 @@ def main():
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
     src=read_json(ROOT/'data/sources.json')
     n=int(gates.verdict.eq('VALIDATED').sum()); matched=int(scores.status.eq('MATCH').sum())
+    # T16: the review registers are generated, so their counts are read from the same data, never retyped.
+    from decisions import SUGGESTIONS
+    from render_decisions import recount
+    import availability as av
+    rc = recount()
+    n_src = len(av.SOURCE_CHECKS)
+    # Group the conditional verdicts the same way injuries.html does: anything that did not yield the
+    # needed field counts as verified-negative (negative result), never as positive evidence.
+    n_verified = sum(1 for c in av.SOURCE_CHECKS if c["status"] == "VERIFIED")
+    n_neg = len(av.SOURCE_CHECKS) - n_verified
+    charts = sum(1 for c in av.SOURCE_CHECKS if "depth chart" in c["source"].lower())
+    from collections import Counter
+    sig = Counter(s["status"] for s in av.SIGNALS)
+    sig_line = f"{len(av.SIGNALS)} availability signals assessed: {sig['AVAILABLE']} available, {sig['PILOT ONLY']} pilot-only, {sig['OPEN']} open, {sig['BLOCKED']} blocked"
     text=f'''# Executive summary — NFL Line Lab
 
 Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
@@ -27,22 +41,31 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 
 ## Decision readiness & lineup follow-up — 2026-11-12
 
-The review surface stages all proposed improvements, pre-decision questions, missing-information discovery
-protocols, and Week 10 offensive/defensive starter-vs-backup tracking **before** any model or gate rule is changed:
-- **Suggestions for review (`suggestions-review.html` & `suggestions.html`):** compares Path A (Conservative),
-  Path B (Balanced) and Path C (Full) options with an interactive browser-only path selector alongside the 22-proposal
-  register (`suggestions.html`) and 8-proposal parallel register (`decisions.html`); zero model changes are auto-applied.
-- **Pre-decision Q&A & missing-info discovery (`decision-readiness.html`, `decisions.html`, `questions.html`):**
-  separates verified knowns from missing evidence across 14 core pre-decision questions and 8 discovery protocols,
-  and reconciles all **28 post-pin Week 8 & Week 9 2026 games** verified Final on NFL.com on 2026-11-12 without
-  mutating the historical backtest pin.
-- **Offensive & defensive 1st–4th string lineup tracker (`lineup-deficiencies.html`, `lineups.html`, `injuries.html`):**
-  verifies **39 Week 10 offensive and defensive entries across 8 NFL clubs / 4 complete matchups** (`WAS @ NYG`,
-  `NE vs DET`, `KC @ ATL`, `MIN @ GB`) against `nfl.com/injuries/`, 8 official NFL club depth charts (1st through
-  4th string), and the live NFL Football Operations T-90m/T-60m Game Day Administration inactive & roof rule
-  (`operations.nfl.com`). Club "Unofficial" disclaimers, blank source cells and roster/trade lag (e.g. Kirk Cousins
-  on MIN, Micah Parsons on GB, Lucas Patrick on WAS) remain blank/flagged rather than inferred, and walk-forward
-  community-PBP backup estimates stay blank in strict public HTML tables.
+Four review registers sit in front of the research, generated from the same data as the pages, and none
+of them is an approval:
+
+| Register | Size / status | What it establishes |
+|---|---|---|
+| `suggestions-review.html` | 12 staged improvements — interactive Path A / B / C selector | Side-by-side Conservative / Balanced / Full path options, trade-offs, affected gates and browser-only decision JSON export before any model or rule edit |
+| `suggestions.html` | {rc['suggestions']} proposals — {rc['adopt']} ready now, {rc['pilot']} pilot, {rc['recommended']} recommended before any reward, {rc['rejected']} rejected, {rc['deferred']} deferred, {rc['blocked_suggestions']} blocked | Cost, risk, dependency and acceptance evidence for every change, plus four paths (A–D) and a change-control worksheet |
+| `decision-readiness.html` | 14 pre-decision Q&As, 8 discovery protocols & 28 post-pin NFL.com scores | Separates verified knowns from missing inputs and reconciles all 28 Week 8–9 2026 games settled on NFL.com after the 2026-11-01 archive pin |
+| `decisions.html` | 12 readiness questions plus a parallel 8-proposal register | Current answers, missing inputs, discovery steps and the gate each one feeds |
+| `questions.html` | {rc['questions']} questions — {rc['answered']} answered, {rc['open']} open, {rc['blocked']} blocked, {rc['decisions']} needing an owner decision | Every answer cited; blocked rows left blank with the reason and a closure test |
+| `lineup-deficiencies.html` | 39 Week 10 entries across 8 clubs / 4 matchups + NFL Operations T-90m rule | Offensive & defensive 1st–4th string tracking across `WAS@NYG`, `NE@DET`, `KC@ATL` and `MIN@GB`, club disclaimers/trade lag, and prefix-safe PBP backup diagnostics |
+
+Two dated captures are transcribed in `injuries.html`: the 2026 week-10 WAS/NYG report (20 rows — 2 Out, 1
+Questionable, 17 blank) and 2019 week 5 (11 rows), while `lineup-deficiencies.html` expands verified 2026
+Week 10 depth-chart coverage to **8 of 32 clubs** (`commanders.com`, `giants.com`, `patriots.com`,
+`detroitlions.com`, `chiefs.com`, `atlantafalcons.com`, `vikings.com`, `packers.com`) and documents the
+mandatory T-90m Game Day Administration inactive & roof rule on `operations.nfl.com`. {sig_line} — **0 in
+the leaderboard**, because none clears the leakage and confirmation tests and the board is pinned before week 8.
+
+The initial official source inventory in `availability.py` holds {n_src} checks ({n_verified} verified,
+{n_neg} verified-negative, including {charts} club depth charts), and `sources_lineups.json` adds 6 further
+verified club depth charts (total **8 of 32 clubs**). No player is called a confirmed game-day replacement,
+no depth rank is invented for a player absent from a chart, and no availability signal enters the model.
+A read-only daily Actions monitor archives the sources; collection is not verified extraction. All-club
+coverage, game-day role confirmation and validated impact remain blocked.
 
 ## What was delivered
 
@@ -57,7 +80,10 @@ protocols, and Week 10 offensive/defensive starter-vs-backup tracking **before**
 | Luck mitigation | Weekly-block bootstrap, Holm FWER, power, provisional DSR, stability and redundancy | Implemented with assumptions | [Bailey & López de Prado (2014)](https://www.pm-research.com/content/iijpormgmt/40/5/94) |
 | Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Official score audit | {matched} matching games in a {len(scores)}-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
-| Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+| Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge |
+| Suggestions before changes (R19) | {rc['suggestions']} proposals with cost, risk, dependencies, four paths and change control | Implemented; nothing approved |
+| Questions and answers (R20) | {rc['questions']} open questions plus 12 readiness questions, each with a closure test | Implemented; blocked rows blank |
+| Injury / lineup deficiency (R21) | Official report captures plus {charts} of 32 club depth charts | PARTIAL — order only, no confirmed roles | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 ## Material audit corrections
 
@@ -78,6 +104,7 @@ protocols, and Week 10 offensive/defensive starter-vs-backup tracking **before**
 |---|---|---|
 | Authenticated historical entry/closing quotes with timestamps and limits | No executable ROI or CLV validation | [NFL official scores](https://www.nfl.com/scores/) |
 | Verified player-prop prices and joint SGP quotes | No prop-combo ROI or validated correlation | [NFL injury report](https://www.nfl.com/injuries/) |
+| League-wide dated depth charts or official inactives ({charts} of 32 charts, neither dated) | No confirmed starter/replacement role and no availability term in any model | [NFL injury report](https://www.nfl.com/injuries/) |
 | Complete trial registry and untouched prospective replication | No reward eligibility | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Full official census of historical scores and pregame fields | Research inputs remain only partially officially verified | [NFL official scores](https://www.nfl.com/scores/) |
 

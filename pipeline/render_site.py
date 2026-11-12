@@ -155,6 +155,9 @@ def load():
         d[name] = read_json(PROC / f"{name}.json")
     d["sources"] = SRC
     d["official_scores"] = pd.read_csv(ROOT / "data/audit/nfl_com_score_audit.csv")
+    # T16 merge: session arena/425336fc-korea1's full league week-10 capture, rendered verbatim.
+    _inj = PROC / "injuries_week10.csv"
+    d["injuries"] = pd.read_csv(_inj) if _inj.exists() else pd.DataFrame()
     return d
 
 

@@ -739,6 +739,33 @@ New files: `pipeline/render_audit.py`, `scripts/audit_nfl_scores.py`, `scripts/a
 `scripts/99_verify.py` 9/9 · `scripts/98_linkcheck.py` pass.
 ---
 
+## New work phase — session `arena/425336fc-korea1` (current branch, at `main` tip `645ef0c`)
+
+Claimed 2026-11-12. Platform note: this Arena session is pinned to `arena/425336fc-korea1`; the
+`session-<id>/<task>` worktree pattern cannot be used here, so this session works directly on its
+pinned branch and acts as the integration owner for the shared outputs it adds below. Sibling
+branches remain untouched; nothing already merged is reverted, rebased or discarded.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| T14 | Repo line-by-line review + official-source verification + irregularity register | in progress | `arena/425336fc-korea1` | `research/repo_review.md`, `data/audit/official_review.json` (append only) |
+| T15 | Site improvement suggestions + dedicated "Suggestions for review" section (review-before-implement) | in progress | `arena/425336fc-korea1` | `research/suggestions.md`, `suggestions.html`, nav entries |
+| T16 | Pre-decision questions / information / answers register + missing-information discovery plan | in progress | `arena/425336fc-korea1` | `research/decisions.md`, `decisions.html`, nav entries |
+| T17 | NFL line-origination signal research (single bets, parlays, player-prop combos) | in progress | `arena/425336fc-korea1` | `research/signals.md` |
+| T18 | Strategy leaderboard + rewards design (currently unawarded) | in progress | `arena/425336fc-korea1` | `research/leaderboard.md` |
+| T19 | Injury & backup-deficiency tracking (defense 2nd/3rd/4th string, offense starters/backups) | in progress | `arena/425336fc-korea1` | `research/injuries.md`, `injuries.html`, verified against nfl.com/injuries |
+| T20 | Executive summary update (important details) | in progress | `arena/425336fc-korea1` | `EXECUTIVE_SUMMARY.md`, `executive-summary.html` |
+| T21 | Site reorganization: category subpages, clean landing page, all-new pages rendered + verified | in progress | `arena/425336fc-korea1` | `pipeline/render_site.py` (new builders + nav), root `*.html`, `assets/` |
+| T22 | Final verification pass (verify_site, check_links, check_sources) | unclaimed | `arena/425336fc-korea1` | `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py` |
+| T23 | PR → main, merge without waiting, confirm Pages deploy, record PR link + result | unclaimed | `arena/425336fc-korea1` | `COORDINATION.md`, PR record, live site confirmation |
+
+### 2026-11-12 — claims committed — `arena/425336fc-korea1`
+
+Tasks T14–T23 claimed for this session; claim commit pushed immediately before any task work.
+T22/T22 verification runs only after T14–T21 artifacts exist. T23 runs only after T22 passes.
+
+---
+
 ## Final verification and integration — session `arena/ed58af62-korea1`
 
 Claimed at 2026-11-02T17:20Z. Previous whole-project owners last reported on 2026-11-01;
@@ -1205,6 +1232,66 @@ on the site; they are not silently reclassified as completed verification. The l
 dispatch-permission denial remain accurately logged even though the push-triggered runner collection
 succeeded. No credentials were requested, no other branch was edited or pushed, no sibling PR was
 closed/merged, and no source/model approval was inferred from successful site publication.
+
+## 2026-11-12 — T16b third integration merge — `arena/25460478-korea1` at `bc1c411`
+
+**Claim:** merge `origin/main` `bc1c411` (PR #26, session `arena/425336fc-korea1`, "T14–T23 integration")
+into the T16 branch and reconcile a third review surface. Files: `pipeline/render_site.py`,
+`pipeline/render_decisions.py`, `pipeline/parallel_pages.py` (new), `tests/*`, `research/injuries.md`,
+`EXECUTIVE_SUMMARY.md` (generated), `COORDINATION.md`. No model, gate, odds or reward change.
+
+### What the third branch had done
+
+It merged my T16 merge, then rebuilt `decisions.html`, `suggestions.html` and `injuries.html` *inside*
+`render_site.py` with its own registers (8 questions, 8 suggestions, a 259-row full-league week-10
+injury capture), and dropped `questions.html`/`lineups.html` from the rendered set. Because the
+Makefile still runs `render_readiness.py` after `render_site.py`, its `decisions.html` was then
+overwritten — so its eight pre-decision questions were not actually on the live site, and `questions.html`
+404'd.
+
+### Resolution
+
+| Content | Where it now lives |
+|---|---|
+| My 40-question register | `questions.html` (restored) |
+| Its 8 pre-decision questions | same page, section "Pre-decision questions" — verbatim, with a correction note |
+| My 22-proposal register + four paths + worksheet | `suggestions.html` (restored) |
+| Its 8-item suggestion log incl. the two **Adopted** items | same page, section "Suggestions for review" — verbatim |
+| My 12-source availability page + signals + 2 club charts | `injuries.html` (restored) |
+| Its full 259-row league week-10 injury capture | same page, section "Injuries & availability" — verbatim, with capture notes |
+| 12 readiness questions + parallel 8-proposal register | `decisions.html` (unchanged from my merge) |
+| 7 observed players + chart cells | `lineups.html` (restored) |
+
+Implementation detail: `pipeline/parallel_pages.py` is that session's renderer copied verbatim with
+three mechanical edits (renamed builders, `return body` instead of `layout(...)`, leading `notice()`
+dropped) so its HTML is embedded unchanged. Nothing was retyped, so no figure could be altered.
+
+Corrections published (not deletions): both embedded blocks say "no official depth chart", which was
+true for the league site but not for the clubs; each block now carries a dated correction pointing at
+`lineups.html`, and `research/injuries.md` carries the same update.
+
+### Verification
+
+- `make build`: exit 0.
+- `verify_site.py`: **0 failing checks**; `injuries.html` 316 rows, `questions.html` 48 rows,
+  `suggestions.html` 34 rows, `decisions.html` 28 rows, `lineups.html` 7 rows.
+- `check_sources.py`: 17 canonical pages / **895 rows**, strict pass.
+- `check_links.py`: 28 pages, no external dependencies.
+- `pytest`: **46 passed**.
+- `tests/check_rebuild.py`: run after the merge commit.
+
+### Deployment record — verified 2026-11-12T13:27Z
+
+| Step | Actual result |
+|---|---|
+| Pull request | [#28](https://github.com/karagemop466-tech/Korea1/pull/28) **MERGED**, merge commit `357ff3a` |
+| CI | `Verify site` on `357ff3a` succeeded; the PR carried 46 tests and a zero-drift rebuild |
+| GitHub Pages | build **built** for `357ff3a` at 2026-11-12T13:26:16Z, error null |
+| Live pages read | `questions.html` (40-question register + the eight pre-decision questions + correction), `injuries.html` (12-source register, eight signals, then the 259-row week-10 capture), `decisions.html`, `lineups.html`, `suggestions.html` — all at `?v=28` |
+| Verdict | Unchanged: 0 of 18 strategies validated, G1 blocks all, no reward, 0 availability signals in the leaderboard |
+
+The live site therefore carries every register from all three sessions, each with its own provenance
+label and one URL per purpose.
 
 ---
 
