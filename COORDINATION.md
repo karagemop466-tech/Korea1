@@ -1511,3 +1511,61 @@ claim the file name `suggestions.html`, three claim `injuries.html`, two claim `
 | Tests | 77 passed, no network needed; six deliberate code mutations each caught | `tests/test_forward_ledger.py` |
 
 Nothing outside the claimed scope was edited. The existing site, its navigation and its tables are unchanged.
+
+---
+
+## arena/774867ed-korea1 — injury/availability pipeline + registers (additive)
+
+**Numbering collision, recorded.** This session claimed **T14** (injury/availability tracking) and
+**T15** (suggestions + open questions) on 2026-11-12. By the time the rebase onto `origin/main`
+completed, sibling sessions had already merged their own **T14–T23**, **G1–G6** and **FW1–FW5**
+(`arena/9e3e144b-korea1`, `arena/c0528572-korea1`, `arena/d6b3fd34-korea1`, `arena/425336fc-korea1`,
+`arena/25460478-korea1`, `arena/03f66e17-korea1`). The same numbers therefore mean different work on
+different branches. **Resolution: this session does not renumber anything.** It keeps its pipeline and
+registers as additive artifacts and leaves every merged page, renderer, test and NAV entry untouched.
+
+### What this session adds (nothing here replaces a merged page)
+
+| Artifact | What it is | Why it is additive |
+|---|---|---|
+| `data/evidence/nfl_injuries/week10_2026/` | The official NFL injury page written verbatim at 2026-11-12T13:06:29Z (SHA-256 `d7c832ec7b32…`), plus the 25 official news headlines and a `manifest.json` | Committed under `data/evidence/` because `data/raw/` is gitignored; a clean checkout can rebuild the tables without re-fetching. The merged `availability.yml` workflow stores its own copy under `data/availability/` — different provenance, different runner |
+| `pipeline/fetch_injuries.py` | Parses the verbatim snapshot into 254 player rows; stages the pinned community roster archive (`a270278f3ac4`, hash-checked) | Reads `data/evidence/nfl_injuries/` first, then `data/raw/nfl_injuries/`. Does not touch the merged `availability.py` / `depth_status.py` |
+| `pipeline/injuries.py` | Availability / lineup-deficiency engine: position-group pressure (154 rows), QB depth by games started (32 teams), roster depth history 2006–2018 (6,743 rows), lineup-deficiency history (7,093 rows), backup-QB impact, evidence gaps | Outputs `data/processed/injury_*.csv` / `lineup_deficiency*.csv` / `roster_depth_history.csv` — filenames that do not collide with the merged `availability_*.csv` / `injuries_week10.csv` / `injury_snapshot_*.csv` |
+| `pipeline/build_review.py` | Validates `research/suggestions-register.md` (25 rows) and `research/open-questions-register.md` (16 rows); **fails the build** on empty required cells, duplicate ids, out-of-vocabulary status/severity, or a source that is neither official/primary nor explicitly flagged | Writes `data/processed/review_suggestions.csv` / `review_questions.csv` (renamed to avoid clobbering the merged `suggestions.csv` / `questions.csv`) |
+| `research/suggestions-register.md`, `research/open-questions-register.md` | 25 suggestions and 16 questions, each with evidence-we-have / evidence-missing / how-to-verify / linked question or suggestion | Editable markdown; the merged `data/review/_author.py` produces a different, authored register. Both are published as downloads |
+| `Makefile` `injuries` / `review` targets | `injuries: data` → `fetch_injuries.py` → `injuries.py`; `review: injuries` → `build_review.py`; `site: injuries review`; `build` depends on `injuries` | Additive: the existing `site` recipe steps are unchanged and still run first |
+
+### Verification (all on `origin/main` + this session's additive files)
+
+| Check | Result |
+|---|---|
+| `make injuries review` | Clean: 254 injury rows, 24 teams with entries, 154 pressure rows, 6,743 depth rows, 1,251 backup-QB games, 25 suggestions / 16 questions, 0 validation problems |
+| `make build` (data → model → backtest → props → injuries → site → verify) | **Passed end to end** |
+| `pipeline/verify_site.py` | **0 failing checks** across 23 pages |
+| `tests/check_sources.py` | **1,575 rows** on 24 canonical pages, every row with an official/primary reference |
+| `tests/check_links.py` | **33 pages**, no broken internal links, anchors or assets, no external CDN dependency |
+| `tests/check_rebuild.py` | **Rebuild matches committed outputs** (0 changed files; rtol 1e-08, atol 1e-10) |
+
+### Irregularities recorded (not resolved by this session)
+
+- **IR-774867-01 — numbering collision.** Six sessions claim final integration of shared outputs
+  (`render_site.py` NAV, root `*.html`, `README.md`, `EXECUTIVE_SUMMARY.md`, `Makefile`); three claim
+  `suggestions.html`, three claim `injuries.html`, two claim `questions.html`. This session resolved
+  every conflict by taking the merged side and adding its own artifacts under non-colliding names.
+- **IR-774867-02 — official snapshot provenance differs.** This session read `nfl.com/injuries/` with
+  the agent page-fetch tool (shell egress refuses the TLS handshake) and committed the body verbatim.
+  The merged `availability.yml` workflow fetched the same page from a GitHub-hosted runner
+  (382,618 bytes, SHA-256 `8b18e223e7eff…`) and stores it under `data/availability/`. Both describe
+  Week 10 of 2026; neither is claimed to be a census.
+- **IR-774867-03 — roster archive is community-sourced and stale.** `rosters.csv` ends at season 2019
+  and its 2019 rows carry no games/starts/AV, so depth ranking stops at 2018. Recorded as `GAP-INJ-07`.
+- **IR-774867-04 — 4 teams absent from the official page.** CHI, DEN, PHI and TB were not listed at
+  capture time. Recorded as absent, **not** as injury-free.
+
+### Cross-scope requests logged (none blocked this session)
+
+- The final integration owner should confirm that `make build` still passes with the additive
+  `injuries` / `review` targets and that the published `assets/data/injury_*.csv` and
+  `assets/data/review_*.csv` downloads are reachable.
+- No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
+  root `*.html` are the merged versions.

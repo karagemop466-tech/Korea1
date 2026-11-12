@@ -1,0 +1,2 @@
+snapshot_id,source,tier,files,bytes,sha256
+nfl_injuries_2026_w10,nflverse/nfldata@a270278f3ac4,community mirror of Pro Football Reference (nflverse/nfldata),"data/positions.csv, data/rosters.csv, data/teams.csv",1698177,"78e7421c852a9378, 0e9582602289c790, b7cfab98e6ac35c6"

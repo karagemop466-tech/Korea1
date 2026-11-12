@@ -58,6 +58,20 @@ page, writes `data/availability/` (with a dated copy under `history/`), rebuilds
 runs the site checks and commits. `make build` only reads the committed snapshot. Nothing is inferred:
 empty official cells stay empty, failed pages are blank and flagged.
 
+## Additive injury / availability pipeline (session `arena/774867ed-korea1`)
+
+A second, independent pipeline runs alongside the availability tracker above. It reads a committed
+verbatim copy of the official injury page under `data/evidence/nfl_injuries/` (the sandbox shell
+cannot reach nfl.com, so the page is captured with the page-fetch tool and written to disk with its
+SHA-256), stages the pinned community roster archive, and produces availability, position-group
+pressure, QB depth, roster-depth history and lineup-deficiency tables under
+`data/processed/injury_*.csv` / `lineup_deficiency*.csv` / `roster_depth_history.csv`. The
+suggestion and open-question registers live in `research/*.md` and are validated by
+`pipeline/build_review.py`, which **fails the build** on an empty required cell, a duplicate id, an
+out-of-vocabulary status, or a source that is neither official/primary nor explicitly flagged. Run
+them with `make injuries review`; `make build` runs them automatically. None of these tables or
+registers replaces a published page — they are additive evidence and downloads.
+
 ## Evidence policy
 
 Official NFL observations, primary method references, operator terms and community research inputs
