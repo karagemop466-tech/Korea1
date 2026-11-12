@@ -19,6 +19,10 @@ ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com",
          "operations.nfl.com", "www.econometricsociety.org",
          "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
          "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov"}
+# Official club sites (depth-chart pages read by pipeline/fetch_availability.py).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fetch_availability import TEAMS as _CLUBS
+ALLOW |= {t[3] for t in _CLUBS}
 BAD = re.compile(r"(?<![\w/])(nan|NaN|None|inf|-inf)(?![\w/-])")
 
 class Collector(HTMLParser):
@@ -58,8 +62,8 @@ def main():
     expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
               "correlations.html","props.html","methodology.html","requirements.html","verification.html",
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
-              "lineups.html","injuries.html","suggestions-review.html","decision-readiness.html",
-              "lineup-deficiencies.html"}
+              "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
+              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

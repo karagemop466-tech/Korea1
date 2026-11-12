@@ -42,33 +42,49 @@ URL_DATASETS = f"https://github.com/nflverse/nfldata/blob/{SHA}/DATASETS.md"
 URL_NFL_RULES = "https://operations.nfl.com/the-rules/nfl-rulebook/"
 GENERATED = SRC["generated_utc"]
 
-NAV = [
-    ("index.html", "Dashboard"),
-    ("executive-summary.html", "Executive summary"),
-    ("lines.html", "Originated lines"),
-    ("strategies.html", "Leaderboard"),
-    ("validation.html", "Validation gates"),
-    ("correlations.html", "Correlations"),
-    ("props.html", "Player props"),
-    ("methodology.html", "Methodology"),
-    ("requirements.html", "Requirements"),
-    # T16 + G1–G6 integration: review before changing anything + expanded 8-club & post-pin evidence.
-    ("suggestions-review.html", "Path selector"),
-    ("suggestions.html", "Suggestions"),
-    ("decision-readiness.html", "Q&A + Week 8–9 audit"),
-    ("decisions.html", "Decision readiness"),
-    ("questions.html", "Open questions"),
-    ("lineup-deficiencies.html", "8-club 1st–4th strings"),
-    ("lineups.html", "Lineup evidence"),
-    ("injuries.html", "Injuries & depth"),
-    ("flagged.html", "Flagged for review"),
-    ("sources.html", "Sources"),
-    ("audit.html", "Independent audit"),
-    ("verification.html", "Reproducibility"),
-    # Added by the integration session arena/ea02c4fb-korea1: a fourth, independent build of the
-    # same questions from a different odds archive. Served from lab/ and not part of this render.
-    ("lab/index.html", "Replication annex"),
+# Grouped by category (T17, arena/c0528572-korea1 + G1–G6, arena/d6b3fd34-korea1).
+NAV_GROUPS = [
+    ("Overview", [
+        ("index.html", "Dashboard"),
+        ("executive-summary.html", "Executive summary"),
+    ]),
+    ("Decide", [
+        ("suggestions-review.html", "Path selector"),
+        ("suggestions.html", "Suggestions & paths"),
+        ("decision-readiness.html", "Q&A + Week 8–9 audit"),
+        ("questions.html", "Open questions"),
+        ("decisions.html", "Decision readiness"),
+        ("flagged.html", "Flagged for review"),
+    ]),
+    ("Lines & strategies", [
+        ("lines.html", "Originated lines"),
+        ("strategies.html", "Leaderboard"),
+        ("validation.html", "Validation gates"),
+        ("correlations.html", "Correlations"),
+        ("props.html", "Player props"),
+    ]),
+    ("Availability", [
+        ("availability.html", "Injuries & depth · all clubs"),
+        ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
+        ("injuries.html", "Injury source audit"),
+        ("lineups.html", "Lineup sample"),
+    ]),
+    ("Parallel registers", [
+        # Second, independently written registers (arena/c0528572-korea1); overlap with "Decide" is expected.
+        ("decision-board.html", "Decision board (2nd)"),
+        ("open-questions.html", "Open questions (2nd)"),
+    ]),
+    ("Evidence", [
+        ("methodology.html", "Methodology"),
+        ("requirements.html", "Requirements"),
+        ("sources.html", "Sources"),
+        ("audit.html", "Independent audit"),
+        ("verification.html", "Reproducibility"),
+        # Integration session arena/ea02c4fb-korea1: independent build served from lab/.
+        ("lab/index.html", "Replication annex"),
+    ]),
 ]
+NAV = [item for _, items in NAV_GROUPS for item in items]
 
 
 def e(x) -> str:
@@ -81,8 +97,10 @@ def src_link(url: str, label: str = "source") -> str:
 
 def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = False) -> str:
     nav = "".join(
-        f'<a class="navlink{" active" if s == slug else ""}" href="{s}">{e(t)}</a>'
-        for s, t in NAV)
+        f'<div class="navgroup"><span class="navhead">{e(g)}</span>' + "".join(
+            f'<a class="navlink{" active" if s == slug else ""}" href="{s}"'
+            f'{" aria-current=page" if s == slug else ""}>{e(t)}</a>' for s, t in items) + "</div>"
+        for g, items in NAV_GROUPS)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -95,13 +113,12 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
 <script src="assets/app.js" defer></script>
 </head>
 <body>
-<header class="topbar">
-  <div class="wrap">
-    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
-    <nav aria-label="Main navigation">{nav}</nav>
-  </div>
-</header>
 <a class="skip-link" href="#main-content">Skip to content</a>
+<div class="shell">
+<header class="side">
+  <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+  <nav aria-label="Main navigation">{nav}</nav>
+</header>
 <main id="main-content" class="wrap{' wide' if wide else ''}">
   <h1>{e(title)}</h1>
   <p class="lede">{subtitle}</p>
@@ -113,6 +130,7 @@ def layout(slug: str, title: str, subtitle: str, body: str, *, wide: bool = Fals
     <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
   </footer>
 </main>
+</div>
 </body>
 </html>
 """
@@ -300,7 +318,8 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="questions.html"><strong>Open questions</strong><span>What must be known first, what is answered, and what is blocked on data we do not have.</span></a>
 <a class="minicard" href="lineup-deficiencies.html"><strong>8-club 1st–4th string tracker</strong><span>39 Week 10 offensive &amp; defensive injury/depth entries across WAS, NYG, NE, DET, KC, ATL, MIN &amp; GB.</span></a>
 <a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Seven official injury observations plus two club depth charts; confirmed roles stay blank.</span></a>
-<a class="minicard" href="injuries.html"><strong>Injuries &amp; depth</strong><span>Twelve verified official sources, two exact captures and the availability signal register.</span></a>
+<a class="minicard" href="availability.html"><strong>Injuries &amp; depth · all clubs</strong><span>Scheduled capture of the official injury report and club depth charts: who is out, who is listed next.</span></a>
+<a class="minicard" href="injuries.html"><strong>Injury source audit</strong><span>Twelve verified official sources, two exact captures and the availability signal register.</span></a>
 </div></section>
 {_landing_governance_sections()}
 <section><h2>What the audit changed</h2><ul class="findings">
@@ -353,7 +372,16 @@ a <a href="suggestions.html">22-proposal register with four decision paths</a>, 
 <a href="questions.html">40-question open-question register</a> — plus two dated availability captures
 (<a href="injuries.html">league report</a> and <a href="lineups.html">club depth charts</a>). Confirmed
 starter/replacement roles, depth ranks and quantitative impacts remain blank. No strategy or proposal is newly
-approved, and no reward is funded.</p></section>
+approved, and no reward is funded. The scheduled league-wide capture (all clubs, refreshed automatically) is <a href="availability.html">Injuries &amp; depth · all clubs</a>.</p></section>
+<section><h2>Update of 2026-11-12</h2>
+{table([
+["Injuries and lineups", "Tracking live · effect not priced", "A scheduled workflow reads the official NFL.com injury report and each club's depth-chart page, then shows for offense and defense which first-listed players are Out or Doubtful and which 2nd, 3rd or 4th-string player the club lists next. It does not yet move the originated line: the point value of an absence has not been measured. See <a href='availability.html'>Injuries &amp; depth</a>.", official("NFL injuries")],
+["Second suggestions register", "Awaiting your decision", "A second, independently written list is on the <a href='decision-board.html'>decision board</a> with options, a recommendation and the evidence behind it. Nothing has been implemented. Decide DB-02 (real prices) and DB-03 (forward paper ledger) first: they unblock every verdict.", official("White (2000), Econometric Society")],
+["Second questions register", "Unanswered", "A second, independently written <a href='open-questions.html'>open-questions register</a> separates what is known from what is missing and names how to find it. Some questions only you can answer: sportsbooks and jurisdiction, bankroll, success threshold, refresh cadence, reward.", official("White (2000), Econometric Society")],
+["Line board freshness", "Stale", "The open line board still starts at Week 8 because the data snapshot is pinned at 2026-11-02; the injury capture is for the current week. Refreshing is suggestion DB-04.", official("NFL schedule")],
+["Site", "Repaired", "Navigation is grouped by category and the stylesheet now defines the classes the pages use. Findings from this review are on <a href='flagged.html'>Flagged for review</a> (RV-01 to RV-11).", official("GitHub Pages documentation")],
+], ["Area", "Status", "What changed and what it means", "Official reference"], caption="What is new since the 2026-11-02 report")}
+</section>
 <section><h2>Important details</h2>
 {table([
 ["Line origination", "Implemented", "Elo, rolling matchup points and ridge; season-by-season walk-forward fitting. Model outputs are estimates, not official lines.", official("NFL scores")],
@@ -616,7 +644,13 @@ def build_flagged(d):
         ["F-16", "Medium · needs review", "Official NFL pages disagree on two values: Lucas Patrick is C on the report and roster but OL on Game Center; Malik Harrison is 'Limited Participation' on the report but 'Did participate' on Game Center. Both versions are published with the disposition; nothing was inferred.", official("NFL game centre (WAS at NYG)")],
         ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
     ]
-    body = f"""{notice()}<section><h2>Open evidence gaps and repaired irregularities</h2>
+    from render_review import flagged_rows
+    review = flagged_rows()
+    body = f"""{notice()}<section><h2>Review of 2026-11-12</h2>
+<p>Findings from the latest repository review and the first official availability capture. Proposed responses are on the
+<a href="decision-board.html">decision board</a>; none has been applied.</p>
+{table(review, ["ID", "Severity / state", "Finding", "Source"], caption="2026-11-12 review register")}</section>
+<section><h2>Open evidence gaps and repaired irregularities</h2>
 <p>Open items do not block publication of a clearly labelled research site. They do block betting validation and rewards.
 Earlier audit findings are preserved below, including their original scope.</p>
 <div class="table-tools"><label>Search findings <input class="filter" type="search" placeholder="Search source, prop, leakage…"></label></div>
@@ -680,6 +714,7 @@ def build_requirements(d):
         ("R19", "Suggestions section reviewed before changes", "Implemented · proposals unapproved", "suggestions-review.html (12 staged proposals with Path A/B/C interactive selector) + suggestions.html (22 proposals, four decision paths) + decisions.html (parallel 8-proposal register).", "GitHub Pages documentation"),
         ("R20", "Questions, information and answers needed before a decision", "Implemented", "decision-readiness.html (14 Q&As + 8 missing-info discovery blueprints) + questions.html (40 questions) + decisions.html (12 readiness questions).", "NFL scores"),
         ("R21", "Injury and lineup-deficiency tracking", "Expanded — 8 of 32 clubs verified", "lineup-deficiencies.html verifies 39 offensive & defensive 1st–4th string entries across 8 clubs / 4 Week 10 matchups (WAS, NYG, NE, DET, KC, ATL, MIN, GB) + walk-forward PBP backup diagnostics; injuries.html & lineups.html preserved.", "NFL injury report (2026 week 10)"),
+        ("R21b", "Automatic all-club injury and depth tracking", "Implemented · effect not priced", "availability.html: scheduled capture of the official injury report and every readable club depth chart, with the 2nd/3rd/4th-string player listed behind an Out or Doubtful first-listed player. Game-day roles and point impact remain open.", "NFL injuries"),
         ("R22", "Dated decision log", "Implemented", "DECISIONS.md records owner, choice, evidence and reversal condition; linked from suggestions.html.", "GitHub Pages documentation"),
         ("R23", "Post-pin Week 8–9 official score census & T-90m countdown verification", "Implemented", "All 28 post-pin Week 8–9 Final scores reconciled against NFL.com on decision-readiness.html; live NFL Operations T-90m/T-60m pregame inactive & roof rule verified.", "NFL Operations pregame 90m rule"),
     ]
@@ -809,8 +844,69 @@ pre.pipeline,pre.math{background:#0a1526;border:1px solid var(--line);border-rad
  border-bottom:1px dashed rgba(143,163,200,.45);opacity:.75}
 .opt-mid{margin:6px 0;padding:6px 0;border-top:1px dashed rgba(34,48,77,.65);border-bottom:1px dashed rgba(34,48,77,.65)}
 .path-picker{display:flex;flex-direction:column;gap:6px}
+.path-select{background:#0a1526;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:5px 9px;font-size:12.5px}
 footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
-@media(max-width:740px){h1{font-size:26px} .card-value{font-size:22px} .hero{grid-template-columns:1fr}}
+@media(max-width:640px){h1{font-size:26px} .card-value{font-size:22px}}
+
+/* --- 2026-11-12 (T17): sidebar shell, grouped navigation and the classes the pages already used --- */
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--accent);color:#04101f;padding:8px 12px;z-index:50;border-radius:0 0 8px 0}
+.skip-link:focus{left:0}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:18px 14px;
+ background:#090e1a;border-right:1px solid var(--line)}
+.side .brand{display:block;margin:0 6px 14px}
+.brand .mark{background:var(--accent);color:#04101f;border-radius:6px;padding:2px 6px;font-size:12px;font-weight:800}
+.side nav{display:block}
+.navgroup{margin-bottom:14px}
+.navhead{display:block;padding:0 10px 4px;color:#6f84ab;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.side .navlink{display:block;padding:6px 10px}
+.shell>.wrap,.shell>.wrap.wide{max-width:1280px;width:100%;margin:0;padding:0 28px 64px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;background:var(--panel);
+ border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:8px 0 16px}
+.hero h2{margin:6px 0 8px;font-size:26px;line-height:1.2}
+.hero p{color:var(--muted);margin:0;max-width:64ch}
+.eyebrow{color:var(--accent);font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600}
+.hero-status{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13px;min-width:200px}
+.hero-status strong{display:block;font-size:17px;margin:2px 0}
+.hero-status small{color:var(--muted)}
+.status-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--warn);margin-right:6px}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.table-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 0;color:var(--muted);font-size:13px}
+.filter{background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:7px 10px;
+ font:inherit;font-size:13px;min-width:240px;margin-left:6px}
+.filter:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tablewrap{max-height:72vh;overflow:auto}
+th{cursor:pointer;z-index:1}
+th[aria-sort=ascending]::after{content:" \\25B2";font-size:9px}
+th[aria-sort=descending]::after{content:" \\25BC";font-size:9px}
+td{overflow-wrap:anywhere}
+td a{overflow-wrap:normal}
+.blank::after{content:"\\2014";color:#56688c}
+.unverified{color:var(--warn)}
+.pill.unverified{background:rgba(255,176,32,.12);color:var(--warn);border:1px solid rgba(255,176,32,.35)}
+.pill.good{background:rgba(55,214,122,.15);color:var(--good);border:1px solid rgba(55,214,122,.4)}
+.pill.bad{background:rgba(255,93,93,.13);color:var(--bad);border:1px solid rgba(255,93,93,.35)}
+.pill{white-space:nowrap}
+.card.good{border-color:#1f5a3a}
+.card.next{border-color:var(--accent)}
+td .sub{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+table.register td{min-width:150px}
+table.register td:first-child{min-width:70px;white-space:nowrap}
+[id]{scroll-margin-top:16px}
+@media(max-width:900px){
+ .shell{display:block}
+ .side{position:static;height:auto;display:flex;align-items:center;gap:10px;padding:8px 12px;border-right:0;
+  border-bottom:1px solid var(--line);overflow:visible}
+ .side .brand{margin:0;white-space:nowrap}
+ .side nav{display:flex;gap:2px;overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;min-width:0;flex:1}
+ .navgroup{display:flex;margin:0}
+ .navhead{display:none}
+ .shell>.wrap,.shell>.wrap.wide{padding:0 14px 48px}
+ .hero{grid-template-columns:1fr}
+ .filter{min-width:0;width:100%;margin:4px 0 0}
+}
 """
 
 
