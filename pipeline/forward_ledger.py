@@ -140,7 +140,8 @@ def chain_hash(prev_hash: str, body: dict) -> str:
     return sha256_text(prev_hash + "\n" + canonical(body))
 
 
-def read_ledger(path: Path = LEDGER) -> list[dict]:
+def read_ledger(path: Path | None = None) -> list[dict]:
+    path = path or LEDGER
     if not path.exists():
         return []
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
@@ -162,7 +163,8 @@ def verify_chain(entries: list[dict]) -> list[str]:
     return problems
 
 
-def append_entry(body: dict, path: Path = LEDGER) -> dict:
+def append_entry(body: dict, path: Path | None = None) -> dict:
+    path = path or LEDGER
     entries = read_ledger(path)
     problems = verify_chain(entries)
     if problems:
@@ -194,7 +196,7 @@ def r6(x):
     return None if not np.isfinite(f) else round(f, 6)
 
 
-def ensure_genesis(actor: str, now: dt.datetime | None = None, path: Path = LEDGER) -> None:
+def ensure_genesis(actor: str, now: dt.datetime | None = None, path: Path | None = None) -> None:
     if read_ledger(path):
         return
     append_entry({"type": "GENESIS", "created_utc": iso(now or utcnow()), "actor": actor,
@@ -232,12 +234,30 @@ def commit_time(sha: str) -> str | None:
         return None
 
 
+def _copy_canonical_pin(sha: str, dest: Path) -> None:
+    """If `sha` is the canonical pin and data/raw/ holds its verified files, copy them."""
+    try:
+        pin = json.loads((ROOT / "data" / "sources.json").read_text(encoding="utf-8"))
+        if pin["upstream"]["commit_sha"] != sha:
+            return
+        want = {f["logical"]: f["sha256"] for f in pin["files"]}
+        pairs = [(ROOT / "data" / "raw" / Path(f).name, f) for f in SNAP_FILES]
+        if all(src.exists() and sha256_file(src) == want.get(logical) for src, logical in pairs):
+            dest.mkdir(parents=True, exist_ok=True)
+            for src, _ in pairs:
+                (dest / src.name).write_bytes(src.read_bytes())
+    except Exception:
+        return
+
+
 def fetch_snapshot(sha: str) -> dict:
     """Stage one upstream commit under data/raw/forward/<sha>/ and record its hashes."""
     if len(sha) != 40 or any(c not in "0123456789abcdef" for c in sha):
         raise ValueError("a snapshot is named by a full lowercase commit SHA")
     dest = RAWF / sha
     need = [dest / Path(f).name for f in SNAP_FILES]
+    if not all(p.exists() for p in need):
+        _copy_canonical_pin(sha, dest)
     if not all(p.exists() for p in need):
         blob = _http(f"https://codeload.github.com/{UPSTREAM}/tar.gz/{sha}")
         dest.mkdir(parents=True, exist_ok=True)
@@ -476,8 +496,9 @@ def repo_head() -> str | None:
 
 
 def freeze(sha: str | None = None, now: dt.datetime | None = None, actor: str = "unknown",
-           dry_run: bool = False, path: Path = LEDGER) -> dict:
+           dry_run: bool = False, path: Path | None = None) -> dict:
     """Freeze every eligible, not-yet-frozen game of the next slate. Fails closed."""
+    path = path or LEDGER
     now = now or utcnow()
     sha = sha or resolve_head()
     manifest = fetch_snapshot(sha)
@@ -524,6 +545,23 @@ def freeze(sha: str | None = None, now: dt.datetime | None = None, actor: str = 
     return {"status": "FROZEN", "seq": entry["seq"], "entry_hash": entry["entry_hash"],
             "season": slate["season"], "week": slate["week"], "cards": len(body["cards"]),
             "picks": len(picks), "excluded": excluded, "snapshot": sha}
+
+
+def amend(amendment_id: str, text: str, actor: str, references: list[str] | None = None,
+          now: dt.datetime | None = None, path: Path | None = None) -> dict:
+    """Append a rule change. It never alters an entry that is already in the chain."""
+    return append_entry({"type": "PROTOCOL_AMENDMENT", "id": amendment_id, "created_utc": iso(now or utcnow()),
+                         "actor": actor, "text": text, "references": references or []}, path)
+
+
+def void(game_ids: list[str], reason: str, actor: str, now: dt.datetime | None = None,
+         path: Path | None = None) -> dict:
+    """Withdraw frozen games from the forward record (e.g. an entry found to post-date kickoff)."""
+    unknown = set(game_ids) - frozen_game_ids(read_ledger(path))
+    if unknown:
+        raise ValueError(f"not frozen, cannot void: {sorted(unknown)}")
+    return append_entry({"type": "VOID", "created_utc": iso(now or utcnow()), "actor": actor,
+                         "game_ids": sorted(game_ids), "reason": reason}, path)
 
 
 # ---------------------------------------------------------------------------
@@ -584,7 +622,16 @@ def main() -> int:
     fz.add_argument("--snapshot", help="upstream commit SHA (default: current upstream head)")
     fz.add_argument("--dry-run", action="store_true")
     fz.add_argument("--actor", default=os.environ.get("FORWARD_ACTOR", "unknown"))
+    am = sub.add_parser("amend", help="append a protocol amendment")
+    am.add_argument("--id", required=True)
+    am.add_argument("--text", required=True)
+    am.add_argument("--ref", action="append", default=[])
+    am.add_argument("--actor", default=os.environ.get("FORWARD_ACTOR", "unknown"))
     args = ap.parse_args()
+    if args.cmd == "amend":
+        entry = amend(args.id, args.text, args.actor, args.ref)
+        print(json.dumps({"status": "AMENDED", "seq": entry["seq"], "entry_hash": entry["entry_hash"]}, indent=2))
+        return 0
     if args.cmd == "reproduce":
         result = reproduce()
         print(json.dumps(result, indent=2))
