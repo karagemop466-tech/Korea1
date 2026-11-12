@@ -1011,3 +1011,31 @@ F1 (audit), F2 (repairs/dashboard) and F3 (integration/deploy) are complete for 
 Open sibling PR #19 was not closed or force-pushed. All merged sibling work through PRs #15–#18
 was preserved and re-verified. The final public dashboard is live at
 <https://karagemop466-tech.github.io/Korea1/>.
+
+---
+
+## 2026-11-12 — Session `arena/3e57f750-korea1` (T14–T17)
+
+**Board state read before claiming.** T8/T11 are marked `in progress` by sessions whose last commit is
+2026-11-02 (>60 minutes old, `main` is fully merged at `645ef0c`, every sibling branch is gone except
+`main`). Under rule 8 of this board those claims are stale and may be taken over; this session records
+the takeover below rather than editing another session's rows.
+
+**Claim (committed and pushed before any file in scope was touched).**
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| T14 | Official injury + depth-chart impact register (Week 10 2026 pilot, six clubs) | **in progress** | `arena/3e57f750-korea1` | `pipeline/injuries.py`, `data/official/**`, `data/processed/injury_*.csv`, `depth_*.csv`, `injuries.html` |
+| T15 | Decision-readiness register: questions, knowns, unknowns, discovery actions | **in progress** | `arena/3e57f750-korea1` | `research/decision-questions.csv`, `data/processed/decision_questions*.csv`, `questions.html` |
+| T16 | Suggestions register: options reviewed before implementation | **in progress** | `arena/3e57f750-korea1` | `research/suggestions.csv`, `data/processed/suggestions*.csv`, `suggestions.html` |
+| T17 | Repo review (line by line), integration, PR, merge, Pages deploy | **in progress** | `arena/3e57f750-korea1` | `pipeline/render_site.py` (NAV + three new builders + own integration edits), `pipeline/verify_site.py`, `tests/check_sources.py`, `tests/check_links.py`, `tests/test_injuries.py`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md`, `*.html` regenerated |
+
+**Non-overlap statement.** No other session has an open claim with commits after 2026-11-02. This session
+does not edit `pipeline/fetch_data.py`, `pipeline/models.py`, `pipeline/backtest.py`, `pipeline/validation.py`,
+`pipeline/correlations.py`, `pipeline/props_model.py` or `pipeline/audit.py`. It adds new files and makes
+additive edits to the renderer, verifier and page lists only, then rebuilds every generated artefact from
+the merged code rather than hand-editing HTML.
+
+**Protocol deviation, recorded.** The platform pins this session to `arena/3e57f750-korea1` and it cannot
+create `session-<id>/<task>` branches; the same limitation was recorded by every earlier session. All work
+is therefore committed to this one branch, which is also the integration branch for this session's PR.
