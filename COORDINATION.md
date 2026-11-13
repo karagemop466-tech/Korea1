@@ -45,6 +45,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | R1 | **2026-11-13 availability reconciliation**: check the automated Week 10 injury report and club depth-chart snapshot (`data/availability/`, commit `43a946a`) against the official pages (line-level sample), publish the gap register, correct the stale "2 of 32 clubs" coverage claims, flag the HOU capture failure and the club-side "Unofficial Depth Chart" label | **done** | `arena/18c4acce-korea1` | `data/governance/availability_reconciliation_2026_11_13.csv` (new), `pipeline/decisions.py` (Q30 / S17 text only), `pipeline/availability.py` (AV-S1…S4 `available` text only), `pipeline/render_decisions.py` (coverage sentences only), `pipeline/render_site.py` (F-15 row + coverage sentence only), `research/injuries.md` (row 12 only), `README.md` (coverage sentence only), `EXECUTIVE_SUMMARY.md` (two coverage rows only), `DECISIONS.md` (D-05 row), `data/evidence/nfl_injuries/week10_2026/manifest.json` (null-hash repair), `COORDINATION.md` (own section + this row), `scripts/reconcile_availability_2026_11_13.py` (new), `assets/data/*_2026_11_13.csv` (new downloads) |
 
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
+| T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **in progress** | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -1711,3 +1712,39 @@ published on the Flagged-for-Review page. V1–V4 are complete for this session.
 - **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
 - **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
 
+---
+
+## Session `arena/84e42ecc-korea1` — T40 referent audit (2026-11-13)
+
+**Board read first.** Every task above is `done` and merged (PRs #20–#36). Two PRs remain open and are
+**not touched**: #30 (`arena/f115e6a2-korea1`) and #24 (`arena/3e57f750-korea1`). `main` tip at claim
+time is `43a946a` ("availability: official snapshot 2026-11-13T18:32Z"). The Arena platform pins this
+session to branch `arena/84e42ecc-korea1`, so that branch is both the task branch and the final
+integration branch (same convention every earlier session recorded).
+
+**Why T40 exists.** The published site prints external citations on every table row. Prior sessions
+verified that each row *has* a reference in an allow-listed domain (a **presence** check), which is
+explicitly recorded as "proves reference presence, not truth of a claim". Several URLs in the tree were
+never resolved against a live page — for example the two `operations.nfl.com` policy URLs that
+`arena/03f66e17-korea1` recorded as returning official 404 / "FLAG ON THE PLAY" text (N-05). A citation
+that 404s is worse than no citation: it looks like evidence and is not. T40 closes that gap.
+
+**Scope discipline.** No model, strategy, statistic, threshold, upstream pin or validation gate is
+changed. This session edits only: its own new scripts/CSV/page, plus the minimum shared-file edits
+needed to register that page (this is the same class of cross-scope edit every earlier session logged).
+No previously published page's *content* is rewritten except to replace a URL that this session's audit
+proved does not resolve, and every such replacement is listed in the register.
+
+### Method
+
+1. Extract every external `href` from every published `*.html` page (root + `lab/` + `archive/**`
+   excluded from the live nav but included in the audit), deduplicated to a URL register.
+2. Resolve each URL and record: HTTP status, final redirect target, page `<title>`, whether the fetched
+   body actually contains the text the site attributes to it, and the fetch timestamp.
+3. Classify: `RESOLVED` (200 + body supports the claim), `REDIRECT` (200 after redirect to a different
+   path — recorded, target shown), `UNRESOLVED` (4xx/5xx/DNS/TLS), `UNCHECKED` (cannot be fetched).
+4. Every `UNRESOLVED` / `UNCHECKED` referent is published on the site's Flagged-for-Review page and on a
+   new `referents.html` register, with the exact URL, the status observed and the fetch timestamp. None
+   is silently deleted and none is silently replaced with a different URL that makes the same claim.
+5. Where an `UNRESOLVED` URL is replaced, the replacement is itself `RESOLVED` and the pair is recorded
+   in the register (old → new → status → timestamp).
