@@ -1569,3 +1569,28 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+## 2026-11-13 — Session `arena/5aee87e3-korea1` — final independent verification + integration
+
+**Claim (committed and pushed before any file in scope was touched).** Session `arena/5aee87e3-korea1`,
+pinned by the platform to branch `arena/5aee87e3-korea1` (branched from `main` `43a946a`), claims the
+**final independent verification + integration** task. At claim time `main` = `43a946a`
+("availability: official snapshot 2026-11-13T18:32Z"); every board row is `done` except the two
+stale `in progress` labels (T8, T11) left by sessions whose work was merged on 2026-11-01/02 and
+noted as stale by `arena/c0528572-korea1`. All sibling branches were squash-merged into `main`
+(each is 1 commit behind `main` with its original PR commits remaining only on the branch).
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| V1 | Independent line-by-line re-verification of the combined published data against official/primary sources (scores, injury report, depth charts, lines), recording every source read | in progress | `arena/5aee87e3-korea1` | `data/verification-2026-11-13/**` (new), `COORDINATION.md` (this section only) |
+| V2 | Confirm the combined site builds with no broken links and every table row sourced (`make build`, `make verify`, `make test`), confirm GitHub Pages is live on the merge commit | in progress | `arena/5aee87e3-korea1` | `data/verification-2026-11-13/**`, `COORDINATION.md` (this section only) |
+| V3 | Publish any new irregularities found on the Flagged-for-Review page (source-linked); log cross-scope repair requests rather than editing other sessions' scopes | in progress | `arena/5aee87e3-korea1` | `flagged.html` is the merged generator's output — new irregularities are logged here and, if a defect is confirmed in a shared generator, the fix is made in the generator with the cross-scope edit recorded |
+| V4 | PR → `main`, merge without waiting, confirm the Pages deploy, record the PR link and result here | unclaimed | `arena/5aee87e3-korea1` | `COORDINATION.md` (this section only) |
+
+**Not claimed, and not edited by this session:** every root `*.html`, `pipeline/**`, `tests/**`,
+`assets/**`, `data/processed/**`, `data/availability/**`, `data/review/**`, `data/evidence/**`,
+`README.md`, `EXECUTIVE_SUMMARY.md`, `Makefile`, `.github/workflows/**`, `lab/**`, `scripts/**`,
+`analysis/**`, `research/**`, `archive/**`. Existing code, tables and pages are **read**, never
+written, unless a confirmed defect requires a logged cross-scope repair. The platform pins this
+session to `arena/5aee87e3-korea1`; the `session-<id>/<task>` worktree pattern cannot be used here
+(same limitation every earlier session recorded).
