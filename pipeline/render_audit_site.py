@@ -840,11 +840,14 @@ def page_flagged(d: dict) -> str:
 
     drows = []
     for _, r in digest_bad.head(40).iterrows():
-        drows.append([f"<code>{e(r['file'])}</code>", e(r["recorded_sha"]), e(r["actual_sha"]),
+        drows.append([f"<code>{e(r['file'])}</code>", e(r["recorded_sha"]),
                       e(r["recorded_rows"]), e(r["actual_rows"]), e(r["state"]), blank(),
                       ref("gh_actions")])
-    t_digest = table("Every digest entry that no longer matches (first 40)",
-                     ["File", "Recorded SHA-256", "Current SHA-256", "Recorded rows", "Current rows",
+    t_digest = table("Every digest entry that no longer matches (first 40). The current SHA-256 is "
+                     "deliberately not printed here: it is environment-specific, so the state column "
+                     "and the row counts are the reproducible facts. Run "
+                     "`make audit` to regenerate the full comparison.",
+                     ["File", "Recorded SHA-256", "Recorded rows", "Current rows",
                       "State", "Status", "Official reference"], drows)
 
     urows = []

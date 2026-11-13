@@ -77,7 +77,8 @@ def test_depth_chart_coverage_is_rederived_from_the_manifest():
     assert df.loc["AV-01", "recomputed_value"] == f"{len(ok)}"
 
 
-def test_digest_baseline_matches_the_recorded_file():
+def test_digest_baseline_matches_the_recorded_file(tmp_path, monkeypatch):
+    monkeypatch.setattr(ra, "OUT", tmp_path)   # never rewrite the committed baseline
     a = ra.Audit()
     df = ra.audit_digest_baseline(a)
     # every recorded file must at least be present, and the state vocabulary is closed

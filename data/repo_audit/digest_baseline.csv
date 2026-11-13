@@ -34,7 +34,7 @@ strategy_stats.csv,50df04688e5c,29b696fe7235,18,18,DIGEST DIFFERS
 strategy_summary.csv,9fa09ea328b5,5c036cc1672e,18,18,DIGEST DIFFERS
 upcoming.csv,7cc32d1abaf9,c9aece76d86f,164,164,DIGEST DIFFERS
 verification_data.csv,d745a61b14ac,4e5c644716a8,10,6,DIGEST DIFFERS
-verification_report.csv,9873332e1161,d5d832dfa82a,13,41,DIGEST DIFFERS
+verification_report.csv,9873332e1161,f9244c5b8b88,13,41,DIGEST DIFFERS
 vig_by_season.csv,49e2e398e461,18249433e097,21,21,DIGEST DIFFERS
 weather_fill.json,a462293582a1,a462293582a1,,3,MATCH
 audit.html,e9bbf00a4092,8b98417defe6,,,DIGEST DIFFERS
