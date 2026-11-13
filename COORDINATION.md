@@ -2106,3 +2106,7 @@ After the T41 merge note landed, `main` advanced from `c16c25c` to `9cca4bc` in 
 T24 is rebased onto `9cca4bc`, retaining the full T41 and T24 coordination histories. On this combined tree, the audit passed; T24 tests passed (5); `make build` passed with zero verifier failures (27 canonical pages / 2,134 sourced rows; 36 pages checked for links); `make test` passed (107); `py_compile` and `git diff --check` passed. The build left no generated changes. Snapshot inputs and historical data remain untouched.
 
 The remote PR #40 branch is still `d340ead` on the old `5fa44db` base; its two checks passed on that stale head. Confirm the remote tip and lease-push the locally rebased branch onto `9cca4bc`, then wait for fresh PR checks. Merge and the post-merge Pages check remain pending.
+
+### 2026-11-13T23:46Z — refreshed PR #40 head verified; merge pending
+
+After confirming the remote branch was still `d340ead` and `main` was `9cca4bc`, the T24 branch was refreshed with `--force-with-lease` to `677b7a4e155c314c8c37500c3d1d82a2d378a844`. PR #40 is `MERGEABLE`. Both current-head Verify runs passed: push run [43529271477](https://github.com/karagemop466-tech/Korea1/actions/runs/43529271477) completed at 23:45:17Z, and pull-request run [43529279764](https://github.com/karagemop466-tech/Korea1/actions/runs/43529279764) completed at 23:45:49Z. The checks cover the rebased tree on `main` `9cca4bc`. No T24 merge or post-merge Pages result is claimed yet; merge only after the required checks remain green.
