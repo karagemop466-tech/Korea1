@@ -95,8 +95,8 @@ their sources, the verification runs and the PR/merge/deploy record are appended
 ## Injury and decision-readiness boundaries
 
 The follow-up dated **2026-11-12** adds a seven-player WAS/NYG official injury-report sample and the
-ordered cells of two club depth charts. This is not a live all-club service: coverage is 2 of 32 clubs,
-neither chart shows a publication time, and chart order does not prove a game-time role, a promotion or
+ordered cells of club depth charts. The scheduled tracker captured 31 of 32 charts on 2026-11-13 (Houston returned no
+ordered rows); the Arizona and Washington charts were checked cell by cell that day. No chart shows a publication time, and chart order does not prove a game-time role, a promotion or
 a performance deficiency. Unknown fields stay blank. The scheduled monitor only archives sources.
 The separate scheduled all-club capture is `availability.html` (see *Availability tracker* above), added by
 `arena/c0528572-korea1`.
