@@ -1596,13 +1596,13 @@ the board is done or merged. Each change is one sentence or one row and is logge
 - NFL injury report, Week 10 2026, read with the page-fetch tool: <https://www.nfl.com/injuries/league/2026/reg10> (title "Official NFL Injury Report for Players - Week 10 of the 2026 Season"; WAS and NYG tables read in full).
 - Club depth charts read with the page-fetch tool: <https://www.azcardinals.com/team/depth-chart> ("Arizona Cardinals Official Depth Chart"), <https://www.commanders.com/team/depth-chart> (no label), <https://www.houstontexans.com/team/depth-chart> ("Unofficial Depth Chart"; no ordered rows in the retrieved text).
 - Automated capture and its manifest, read from the repo: `data/availability/manifest.json` (retrieved `2026-11-13T18:32:20Z`), `data/availability/depth_charts.csv`, `data/availability/injuries.csv`, and `data/availability/history/2026-11-12/` for the previous day.
-- Week 10 schedule as printed on the injury report: THU 12 Nov WAS @ NYG 8:15 PM ET; SUN 15 Nov NE @ DET 9:30 AM ET; KC @ ATL 1:00 PM ET; Texans @ Browns on 15 Nov per the Texans page.
+- Week 10 games as printed on the injury report (team order as printed, which is not an away/home claim): Thu 12 Nov WAS–NYG 8:15 PM EST; Sun 15 Nov NE–DET 9:30 AM EST; Sun 15 Nov KC–ATL 1:00 PM EST. The Texans page gives the Texans–Browns game as 15 November at Huntington Bank Field.
 
 **Verification performed.**
 | Check | Result | Artefact |
 |---|---|---|
-| Arizona depth chart, every official cell (30 rows, 58 names) vs automated capture | 58 of 58 names match. One official cell holds two names with no rank order (Zaven Collins and Baron Browning under OLB); the capture stores both at rank 1, so this is recorded as a **tie**, not a mismatch. | `data/governance/availability_reconciliation_2026_11_13.csv` |
-| Washington depth chart, every official cell (30 rows) vs automated capture | 60 of 60 names match, in order. | same |
+| Arizona depth chart, every official cell (29 table rows, 58 names) vs automated capture | 58 of 58 names match. One official cell holds two names with no rank order (Zaven Collins and Baron Browning under OLB); the capture stores both at rank 1, so this is recorded as a **tie**, not a mismatch. | `data/governance/availability_reconciliation_2026_11_13.csv` |
+| Washington depth chart, every official cell (29 table rows, 60 names) vs automated capture | 60 of 60 names match, in order. | same |
 | Injury report rows, Washington (9) and Giants (11) vs automated capture | 20 of 20 exact matches (player, position, injury, practice status, game status). | `data/governance/injury_reconciliation_2026_11_13.csv` |
 | Houston depth chart | Automated capture has **0 rows** on 2026-11-12 and 2026-11-13. The live page's retrieved text has no ordered rows and is headed "Unofficial Depth Chart". Left **blank and flagged** (F-18). No Houston role inferred. | flagged.html F-18 |
 | Club chart labels | Arizona "Official"; Houston "Unofficial"; Washington unlabelled. Flagged (F-19); not used to rank sources. | flagged.html F-19 |
