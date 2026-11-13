@@ -23,7 +23,7 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "methodology.html", "requirements.html", "verification.html", "flagged.html", "sources.html",
          "audit.html", "availability.html", "decision-board.html", "open-questions.html",
          "questions.html", "injuries.html", "suggestions-review.html",
-         "decision-readiness.html", "lineup-deficiencies.html",
+         "decision-readiness.html", "lineup-deficiencies.html", "forward.html",
          "live-verification.html", "review.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",

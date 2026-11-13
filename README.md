@@ -17,6 +17,7 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
 - `strategies.html` — complete candidate library and competition rules
+- `forward.html` — **forward test**: picks frozen before kickoff, settled only against official NFL.com finals (4 of 65 settled; no verdicts, no rewards)
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
@@ -71,6 +72,17 @@ every status needs its capture time beside it.
 
 `make reviewall` also consolidates the four suggestion registers and three question registers
 (`pipeline/review_consolidated.py`) without deleting, renumbering or re-ranking anything.
+
+## Forward test (settlement)
+
+`forward.html` publishes the picks frozen before kickoff, settled only against an official NFL.com
+final. `.github/workflows/forward-ledger.yml` removes manual input from the parts that are safe to
+automate: it archives official game pages, re-runs the settlement engine and rebuilds the page. It
+writes *proposed* scores to `data/forward/official_candidates.csv` and **never** to
+`data/forward/official_results.csv`, which is evidence; promotion of a proposal stays a reviewed
+step because the extraction rules have never been validated against real NFL.com HTML. The module
+asserts that by hashing the evidence file before and after each run, and
+`tests/test_forward_capture.py` fails if it ever changes.
 
 ## Availability tracker
 

@@ -1,0 +1,18 @@
+{
+  "repo": "nflverse/nfldata",
+  "sha": "b6047f62bdffb23c775e6d0f9b5472a609fff94e",
+  "commit_time_utc": "2026-11-13T22:35:18Z",
+  "browse_url": "https://github.com/nflverse/nfldata/blob/b6047f62bdffb23c775e6d0f9b5472a609fff94e/data/games.csv",
+  "archive_url": "https://codeload.github.com/nflverse/nfldata/tar.gz/b6047f62bdffb23c775e6d0f9b5472a609fff94e",
+  "evidence_class": "C - community mirror, not an official NFL source",
+  "files": {
+    "games.csv": {
+      "sha256": "9ab611538abceaf0c401304e5d9a2fcd93a366874be601fece3d8b746616f9e7",
+      "bytes": 2190036
+    },
+    "closing_lines.csv": {
+      "sha256": "3571e1c9fc8d7396f405fb7c17d43c15676d335ffc932fbb03ff18da691d1729",
+      "bytes": 942229
+    }
+  }
+}

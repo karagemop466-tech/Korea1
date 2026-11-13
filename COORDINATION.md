@@ -1847,3 +1847,119 @@ an earlier *edit* to one of them. Reading the rendered live page after a merge i
 `pipeline/review_consolidated.py`, `pipeline/render_live.py`, `data/live/**`,
 `live-verification.html`, `review.html`, `tests/test_live_verify.py`,
 `tests/test_review_consolidated.py`, plus the V3 integration points claimed on the board.
+
+## Session `arena/8a322b62-korea1` — T41 (FW6): forward-ledger settlement + first published forward page
+
+### 2026-11-13T23:00Z — claim (committed and pushed before any file in scope was touched)
+
+**Board read first.** `main` tip at claim time is `43a946a` ("availability: official snapshot
+2026-11-13T18:32Z"). Every earlier task is `done` and merged. Three sibling sessions are live on
+`2026-11-13` and their claims were read with `git show origin/<branch>:COORDINATION.md` before
+choosing a scope:
+
+| Live sibling | Claim | Paths it owns (from its own claim text) |
+|---|---|---|
+| `arena/84e42ecc-korea1` | T40 referent audit (resolve every external URL) | its own scripts/CSV, `referents.html` |
+| `arena/beafe2ae-korea1` | T24 current-snapshot audit | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md` |
+| `arena/d58198fc-korea1` | R1–R5 repo audit sub-site | `pipeline/repo_audit.py`, `data/repo_audit/**`, `review/**`, `pipeline/render_audit_site.py`, `pipeline/verify_audit_site.py`; explicitly **excludes `data/forward/**`** |
+
+**Why T41 exists.** The forward ledger merged in PR #34 (`arena/9e3e144b-korea1`, tasks FW1–FW2)
+froze 14 Week 10 games / 18 strategies / 65 picks before kickoff, and it is the only part of this
+project that removes hindsight by construction. Two things are true of it on `main` today:
+
+1. **No page publishes it.** `forward/` does not exist on any branch (`git log --all -- forward/`
+   is empty); the ledger is data-only. The site therefore shows a leaderboard with no prospective
+   record beside it, which is the single most decision-relevant number the project can produce.
+2. **All 65 picks are `OPEN`, 0 counted.** `data/forward/graded_picks.csv` has no graded row, so
+   `scoreboard.csv` prints `0` for every strategy and every gate reads `NOT REACHED`.
+
+Since the freeze, the first Week 10 game has settled. The official NFL.com scores page
+(<https://www.nfl.com/scores/2026/week-10>) shows **WAS 24 – NYG 21, Final** for
+`2026_10_WAS_NYG`. That game carries **4 frozen picks**. Grading it is the first real forward
+observation this project has ever had, and it is currently being dropped.
+
+| # | Task | Status | Owner | File scope (all new or append-only) |
+|---|------|--------|-------|-------------------------------------|
+| T41a | Official settlement capture for `2026_10_WAS_NYG`: record the final score with its official URL, capture time and transcribed heading, so grading rests on an official page and not on the community mirror | **in progress** | `arena/8a322b62-korea1` | `data/forward/official_results.csv` (append-only), `data/forward/captures/**` |
+| T41b | Settlement engine: grade frozen picks and cards against official finals only; leave any game without an official final `OPEN`; no provisional credit | **in progress** | `arena/8a322b62-korea1` | `pipeline/forward_settle.py`, `data/forward/graded_*.csv`, `data/forward/scoreboard.csv` |
+| T41c | First published forward page: frozen-vs-graded table, per-strategy prospective record, gate status, and a plainly worded statement that n=4 is not evidence | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_forward.py`, `forward.html` |
+| T41d | Tests that a pick cannot settle without an official result, that an unsettled pick stays `OPEN`, and that the settled arithmetic is exact | **in progress** | `arena/8a322b62-korea1` | `tests/test_forward_settlement.py` |
+| T41e | Integration: one NAV line, page lists in `verify_site.py` / `tests/check_*.py`, one `Makefile` line, one `README` line | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_site.py` (**NAV tuple only**), `pipeline/verify_site.py` (**page set only**), `tests/check_links.py` (**page list only, if it is not a glob**), `Makefile`, `README.md` (one line) |
+
+**Not claimed and not touched by this session:** `data/processed/**`, `data/review/**`,
+`data/availability/**`, `data/evidence/**`, `assets/**`, `assets/data/**`, `.github/workflows/**`,
+`pipeline/render_{site,summary,review,decisions,readiness,annex,audit,governance,requirements}.py`
+beyond the single NAV tuple in `render_site.py`, every root `*.html` except the new `forward.html`,
+and every path in the three sibling claims above.
+
+**Protocol deviation, recorded.** The platform pins this session to
+`arena/8a322b62-korea1`; it cannot create a `session-<id>/<task>` branch. Same limitation every
+earlier session recorded. This branch is both task and integration branch.
+
+**Deliberate evidence rule for this task.** A pick may settle **only** from a score transcribed
+from an official NFL.com page and stored with that page's URL and a capture timestamp. The
+community mirror (`nflverse/nfldata`) is used by the existing engine for *closing lines*, which is
+a different field; it is not accepted as a settlement source. If no official final exists for a
+game, its picks stay `OPEN` and are printed as `OPEN`, not as a push, a void or a win.
+
+### T41 — done (2026-11-13T23:55Z) — `arena/8a322b62-korea1`
+
+**Merge note (recorded, not hidden).** `main` advanced by 13 commits while T41 was in progress, and
+the merge collided in four files. Nothing was discarded:
+
+| Conflict | Resolution |
+|---|---|
+| `pipeline/fetch_injuries.py` | **The same defect was found independently by `arena/18c4acce-korea1` (R1, commit `cf58a72`) and by this session.** One fix only. The merged form keeps R1's `snapshot_dir / logical` path convention and this session's fail-closed rule (a named-but-missing evidence file raises rather than being recorded as `null`). Both sessions are credited in the code comment and F-T41-03 is worded as a joint find |
+| `COORDINATION.md` | Both logs kept verbatim and in order; R1's log (merged first on `main`) precedes this one. No earlier entry was edited |
+| `data/processed/verification_report.csv`, `assets/data/verification_report.csv` | Generated files — not hand-merged. Took `main`'s side and regenerated by re-running the verifier on the merged tree (the repo's stated convention) |
+
+The overlap is now recorded, and the duplicate work cost one review pass rather than a wrong number.
+
+
+**What was actually missing.** The ledger merged in PR #34 froze 65 tickets / 18 strategies / 14
+Week 10 games before kickoff, but nothing published the prospective record, and three days after the
+freeze **all 65 tickets were still `OPEN`**: no official final had ever been recorded, so the engine
+had fallen back to the community mirror and marked 4 tickets `PROVISIONAL`. Gate F2 therefore read
+`PENDING` and no forward number existed anywhere on the site. `git log --all -- forward/` is empty —
+the published page never existed on any branch.
+
+| Step | Result |
+|---|---|
+| Official settlement source | [WAS 24 – NYG 21, Final](https://www.nfl.com/games/commanders-at-giants-2026-reg-10), cross-checked on [the week-10 scores page](https://www.nfl.com/scores/2026/week-10). Quarter cells 0/10/7/7 and 0/7/7/7 sum to the printed totals; the official Game Book PDF is linked from the capture. Transcripts + SHA-256 in `data/forward/captures/2026_10_WAS_NYG/` |
+| Settlement | Re-ran the **existing** engine (`pipeline/forward_grade.py`) rather than writing a second implementation. 4 of 65 tickets move `OPEN → OFFICIAL`; 61 stay `OPEN`. Gate F2 `PENDING → PASS` for the 4 strategies with a settled ticket. Hand-checked: NYG +2.5 loses by 3; total 45 over 40.5 wins; a win at −118 pays 0.847458 |
+| Published page | `forward.html` — 39 rows, 5 captioned tables, every row with an official/primary reference; frozen-vs-graded table, all 14 games with settlement state, per-strategy record, and `NO VERDICT` on every row. No p-value, no ROI, no verdict |
+| Defect repaired | `data/evidence/nfl_injuries/week10_2026/manifest.json` was rewritten by **every** build and carried `"sha256": null` for `news_register.md` (`fetch_injuries.py` hashed only `files[0]`). `tests/check_rebuild.py` does not cover `data/evidence/`, so it survived review. Now every declared file is hashed; a null or mismatched digest fails the build. Verified by restoring the old code: 2 tests fail |
+| Automation (F-T41-06) | `.github/workflows/forward-ledger.yml` + `pipeline/forward_fetch_official.py`. Archives official pages and writes **proposed** scores to `data/forward/official_candidates.csv`; **never** writes `official_results.csv`, and hashes that file before/after, raising if it moved. Promotion of a proposal stays reviewed because the extraction rules are unvalidated against real NFL.com HTML (the sandbox cannot reach nfl.com: `TLS/SSL connection has been closed (EOF)`) |
+
+**Verification performed**
+
+| Check | Result |
+|---|---|
+| `make build` | Passed end to end |
+| `pipeline/verify_site.py` | **0 failing checks**, 34 pages, `forward.html` 39 rows / 0 without official source |
+| `tests/check_sources.py` | 25 canonical pages, **1,715 rows**, strict official/primary pass |
+| `tests/check_links.py` | 34 pages, no broken internal links, anchors or assets |
+| `make test` | **77 passed** (was 68); 10 new settlement guards + 4 evidence guards + 5 capture guards |
+| `tests/check_rebuild.py` | Rebuild matches committed outputs, 0 changed files |
+| Tree after `make build` | Clean — the evidence-manifest rewrite no longer dirties the repository |
+| Mutation testing | Wrong official score → 4 tests fail. `OPEN` pick forced to `OFFICIAL` → 2 tests fail. Old `fetch_injuries.py` → 2 tests fail. Bug injected into the capture step → guard test fails **and** the module's own self-check raises |
+
+**Irregularities logged as F-T41-01..06 on `flagged.html`** (two repaired, four open). The open ones
+are: four settled tickets are not evidence of skill; gate F6 still fails for all 18 strategies
+(community-mirror prices, not bookmaker quotes); settlement of a *new* game still needs a reviewed
+promotion step; and the capture parser is unvalidated against real NFL.com HTML.
+
+**Numbers published, and what did not move.** Forward: 4/65 settled, net −0.305 units, 0 validated.
+No retrospective figure changed: the canonical backtest, the 18 strategies' verdicts (10 `NO EDGE`,
+8 `LUCK`), the model MAEs and the props module are untouched. `forward.html` is a new output, not a
+restatement of an old one.
+
+**Scope discipline.** Edited only `data/forward/**` (append + regenerate), `forward.html`,
+`pipeline/render_forward.py`, `pipeline/forward_fetch_official.py`, `tests/test_forward_settlement.py`,
+`tests/test_evidence_integrity.py`, `tests/test_forward_capture.py`,
+`.github/workflows/forward-ledger.yml`, and the minimum shared-file registrations: one NAV tuple and
+one executive-summary section in `pipeline/render_site.py`, one section in `pipeline/render_summary.py`,
+the page lists in `pipeline/verify_site.py` / `tests/check_{sources,links}.py`, one `Makefile` line +
+test list, one `README.md` section, and `pipeline/fetch_injuries.py` for the manifest hash repair.
+No sibling branch was touched; no file claimed by `arena/84e42ecc-korea1`,
+`arena/beafe2ae-korea1` or `arena/d58198fc-korea1` was edited.
