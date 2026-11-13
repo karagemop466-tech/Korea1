@@ -214,6 +214,8 @@ OFFICIAL = {
     "Falcons club depth chart": "https://www.atlantafalcons.com/team/depth-chart",
     "Vikings club depth chart": "https://www.vikings.com/team/depth-chart",
     "Packers club depth chart": "https://www.packers.com/team/depth-chart",
+    "Texans club depth chart": "https://www.houstontexans.com/team/depth-chart",
+    "Arizona club depth chart": "https://www.azcardinals.com/team/depth-chart",
 }
 
 # Evidence class per reference, used by the sources page. Kept as an explicit map so a new
@@ -245,6 +247,8 @@ OFFICIAL_TYPE = {
     "Falcons club depth chart": "NFL Club",
     "Vikings club depth chart": "NFL Club",
     "Packers club depth chart": "NFL Club",
+    "Texans club depth chart": "NFL Club",
+    "Arizona club depth chart": "NFL Club",
 }
 
 
@@ -691,8 +695,11 @@ def build_flagged(d):
         ["F-12", "Medium · repaired", "The old road-favourite comment contradicted its selection. The documented sign convention and selected side are now covered by a regression test.", official("NFL scores")],
         ["F-13", "High · open", "The originated board still lists week-8 games as open lines although NFL.com shows them Final (Cardinals 33–30 Cowboys, Panthers 19–27 Packers). The board is a pre-week-8 snapshot; the defect is the missing per-row status, not the numbers.", official("NFL week 8 scores")],
         ["F-14", "High · open", "The live injury report describes week 10, which cannot be joined to a board frozen before week 8. Any availability column would be hindsight until the pin is refreshed or each row is labelled by kickoff.", official("NFL week 10 schedule")],
-        ["F-15", "High · open", "The league site has no depth-chart page (404) and its rosters are alphabetical, but the clubs do publish charts: two were verified on 2026-11-12. Coverage is therefore 2 of 32 clubs, no chart shows a publication time, and chart order is not a confirmed game-day role. Starter/backup tracking is PARTIAL and no replacement is confirmed.", official("NFL depth-chart path (verified 404)")],
+        ["F-15", "High · open", "The league site has no depth-chart page (404) and its rosters are alphabetical, but the clubs do publish charts. The automated run of 2026-11-13 captured 31 of 32 charts (Houston returned no ordered rows on either capture); Arizona and Washington were checked cell by cell that day. No chart shows a publication time, and chart order is not a confirmed game-day role. Starter/backup tracking is PARTIAL and no replacement is confirmed.", official("NFL depth-chart path (verified 404)")],
         ["F-16", "Medium · needs review", "Official NFL pages disagree on two values: Lucas Patrick is C on the report and roster but OL on Game Center; Malik Harrison is 'Limited Participation' on the report but 'Did participate' on Game Center. Both versions are published with the disposition; nothing was inferred.", official("NFL game centre (WAS at NYG)")],
+        ["F-18", "High · open", "Houston Texans: the automated depth-chart tracker returned 0 rows on both the 2026-11-12 and 2026-11-13 captures (the chart is not in the published table). The club page labels its chart 'Unofficial Depth Chart' and the page text retrieved on 2026-11-13 carries no ordered rows. Houston is left blank and unverified; no Houston role is inferred.", official("Texans club depth chart")],
+        ["F-19", "Medium · open", "Club depth-chart labels differ: the Arizona page reads 'Arizona Cardinals Official Depth Chart', the Houston page reads 'Unofficial Depth Chart', and the Washington page carries no label. The published tables treat all club charts alike; the label is recorded here, not used to rank sources.", official("Arizona club depth chart")],
+        ["F-20", "Low · repaired", "The official injury-evidence manifest recorded the news register with no SHA-256 (the hash loop only set a default). The loop now hashes every staged file; the value was checked with sha256sum.", official("NFL injuries")],
         ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
     ]
     from render_review import flagged_rows
