@@ -109,6 +109,18 @@ def sha() -> str:
     return json.loads((ROOT / "data/sources.json").read_text())["upstream"]["commit_sha"]
 
 
+def audit_stamp() -> str:
+    """The audit's own generation time, taken from data/repo_audit/summary.json.
+
+    The pages must be byte-identical across rebuilds (`tests/check_rebuild.py`
+    compares them with HEAD), so the timestamp is read from the audit output
+    rather than taken from the wall clock at render time."""
+    try:
+        return json.loads((ROOT / "data" / "repo_audit" / "summary.json").read_text())["generated_utc"]
+    except Exception:                                       # noqa: BLE001
+        return ""
+
+
 def shell(slug: str, title: str, subtitle: str, body: str) -> str:
     nav = "".join(
         f'<a class="navlink{" active" if f == slug else ""}" href="{f}"'
@@ -136,7 +148,7 @@ def shell(slug: str, title: str, subtitle: str, body: str) -> str:
 {body}
 <footer>
 Canonical research snapshot <code>{sha()[:12]}</code> · audit generated
-{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%MZ')} ·
+{audit_stamp()} ·
 <a href="flagged.html">Flagged for review</a> · <a href="../flagged.html">Main evidence register</a> ·
 Research and education only; no guaranteed returns and no reward is awarded.
 </footer>

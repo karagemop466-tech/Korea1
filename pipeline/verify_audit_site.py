@@ -128,6 +128,15 @@ def main() -> int:
     if f"{n_bad} of {len(digest)}" not in (REVIEW / "flagged.html").read_text():
         failures.append("flagged.html does not print the stale-digest count")
 
+    # R13: rebuild determinism — rendering twice must produce identical bytes
+    import subprocess
+    before = {n: (REVIEW / n).read_bytes() for n in NAV}
+    subprocess.run([sys.executable, str(ROOT / "pipeline/render_audit_site.py")],
+                   cwd=ROOT, capture_output=True, check=True)
+    changed = [n for n in NAV if (REVIEW / n).read_bytes() != before[n]]
+    if changed:
+        failures.append(f"render is not deterministic: {changed}")
+
     # R12: HTML structure + every class used is defined in assets/style.css
     from html.parser import HTMLParser
     css = (ROOT / "assets" / "style.css").read_text()
