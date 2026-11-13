@@ -1699,3 +1699,15 @@ Pages is live at <https://karagemop466-tech.github.io/Korea1/>. The research ver
 **0 of 18 canonical strategies validated, no reward award**, with the open evidence gaps (authenticated
 executable quotes, verified prop prices, full official outcome census, all-club dated depth coverage)
 published on the Flagged-for-Review page. V1–V4 are complete for this session.
+
+### R1 — PR, merge and deployment record (2026-11-13) — `arena/18c4acce-korea1`
+
+- **Pull request:** [#39](https://github.com/karagemop466-tech/Korea1/pull/39) (`arena/18c4acce-korea1` → `main`), title "R1: 2026-11-13 availability reconciliation — official line checks, coverage corrected to 31 of 32, Houston gap flagged".
+- **Pre-merge CI:** `verify` on head `75d0985` = pass (run [43524448536](https://github.com/karagemop466-tech/Korea1/actions/runs/43524448536)); on head `b5f3da7` = pass (run [43525123037](https://github.com/karagemop466-tech/Korea1/actions/runs/43525123037), 1m17s).
+- **Merge:** `gh pr merge 39 --merge` → **MERGED** at `2026-11-13T23:12:12Z`, merge commit [`d2b5610`](https://github.com/karagemop466-tech/Korea1/commit/d2b56108614c99b10ed62766a5571518bb3612b1). Before the merge, `origin/main` had advanced by `266134e` / `cf359ae` (the V1–V4 verification record of `arena/5aee87e3-korea1`, PR #37). It was merged into this branch (`2c38d21`) rather than rebased, because the same `COORDINATION.md` section conflicted on every commit; both sections were kept in full.
+- **Merge-time verification on the merged tree:** `make build` exit 0 (verify_site 0 failing checks; check_sources; check_links), `make test` 58 passed, `tests/check_rebuild.py` 0 drift.
+- **GitHub Pages:** `pages/builds/latest` = `built` for commit `d2b5610` at `2026-11-13T23:12:36Z`, no error (source `main` / `/`, legacy build).
+- **Live check (fetched 2026-11-13 after the build):** <https://karagemop466-tech.github.io/Korea1/injuries.html> shows "31 of 32 club depth charts captured · HOU missing · 2 checked cell by cell"; <https://karagemop466-tech.github.io/Korea1/flagged.html> shows F-15 (corrected), F-18 (Houston), F-19 (club chart labels) and F-20 (repaired hash).
+- **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
+- **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
+
