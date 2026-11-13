@@ -1,0 +1,45 @@
+{
+  "generated_utc": "2026-11-13T23:02:40Z",
+  "official_page": "https://www.nfl.com/injuries/league/2026/reg10",
+  "method": "read the official NFL.com Week 10 injury report in full with the page-fetch tool; all four matchup sections transcribed cell by cell; blank official cells left blank, never guessed",
+  "transcribed_clubs": [
+    "ATL",
+    "DET",
+    "GB",
+    "KC",
+    "MIN",
+    "NE",
+    "NYG",
+    "WAS"
+  ],
+  "official_rows": 98,
+  "published_rows": 326,
+  "fields_compared": 368,
+  "match": 288,
+  "confirmed_defects": 1,
+  "unresolved": 8,
+  "drift_possible": 71,
+  "no_basis": 0,
+  "out_of_scope": 236,
+  "clubs_passing": 3,
+  "clubs": 8,
+  "parser_calibration": {
+    "available": true,
+    "archive_rows": 254,
+    "snapshot_rows": 254,
+    "matched_rows": 254,
+    "row_gaps": 0,
+    "cell_differences": 0,
+    "cells_compared": 1016,
+    "verdict": "PARSER_FAITHFUL"
+  },
+  "internal_consistency": {
+    "rows": 326,
+    "clubs": 28,
+    "contradictions": 1,
+    "vocabulary": 0,
+    "duplicates": 0,
+    "rows_with_issue": 1
+  },
+  "scope_note": "week 10 of the 2026 season, the eight clubs in the four matchups transcribed. This is a sample, not a census of all 32 clubs."
+}

@@ -1,0 +1,2 @@
+club,player,check,severity,practice_status,game_status,injury,source_url,note
+DET,Kerby Joseph,unavailable_but_full_practice,contradiction,Full Participation in Practice,Out,Knee,https://www.nfl.com/injuries/,game status says the player is Out or Doubtful while practice status says full participation; the two cells cannot both describe the same player
