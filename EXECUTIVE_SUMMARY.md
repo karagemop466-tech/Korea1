@@ -1,6 +1,6 @@
 # Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02. Research snapshot: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
+Final integration: 2026-11-13. Research snapshot: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
 
 ## Decision
 
@@ -49,6 +49,31 @@ coverage, game-day role confirmation and validated impact remain blocked.
 | Open questions | Unanswered | `open-questions.html` separates what is known from what is missing and names how to find it. Some only you can answer: sportsbooks and jurisdiction, bankroll, success threshold, refresh cadence, reward. | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Line board freshness | Stale | The open line board still starts at Week 8 (snapshot pinned 2026-11-02); the injury capture is for the current week. Refreshing is suggestion DB-04. | [NFL schedule](https://www.nfl.com/schedules/) |
 | Site | Repaired | Navigation grouped by category; stylesheet now defines the classes the pages use. Review findings RV-01 to RV-11 are on `flagged.html`. | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+
+## Update of 2026-11-13 — one hub, first measured notions, first prospective result
+
+Six sessions each wrote their own suggestion and question register. The site arrived at **8
+machine-readable registers plus 2 prose registers covering the same ground**, and a
+reviewer could not tell which to read or whether anything had been dropped. This session consolidated them
+without deleting any of them:
+
+| Deliverable | What it is | Why it matters |
+|---|---|---|
+| `decision-hub.html` | **16 canonical decisions** (DH-01–DH-16) replacing six overlapping registers, mapped to all **166 source rows** across 8 registers | One place to choose a path. `build_hub.py` fails the build if any register row is unmapped, mapped twice, or mapped to a row that does not exist |
+| `improvements.html` | 15 improvements: 4 built this session, 1 partly built, 10 proposed with the owner question each one needs | The dedicated section for reviewing suggestions before implementing changes |
+| `gameday-deficiencies.html` | **171 rows across 26 clubs**: 40 first-string Out, 22 second-to-fourth string Out, 10 doubtful, 86 questionable, 3 compounded | The 1st–4th string deficiency register now covers all 26 reporting clubs, offense and defense, never just four matchups |
+| Capture drift | **381 differing cells** between two reads of the same official page 90 minutes apart | Measures how fast the injury input moves; it is why a designation without T-90m inactives is not a confirmation |
+| Forward ledger | First prospective result: **2W 2L 0P, net -0.3050 units** on 4 picks; 61 still open | The only mechanism in the repository that removes hindsight. Nothing in it is awarded |
+| 2026-11-13 verification pass | **19 claims checked** against official pages: 11 clean, 8 revealing 8 irregularities (IR-01–IR-08) | Recorded in `research/verification-2026-11-13.md` and on `flagged.html`, each with its official link |
+| Determinism repair | `fetch_injuries.py` now hashes every committed file and writes the manifest only on change | A clean build is byte-identical again; the manifest no longer carries a null digest |
+
+Three of these came from ideas six separate sessions had already filed and none could build alone: an
+all-club deficiency register (S03/SR-04/SUG-06), a single canonical question surface (DB-01/S05/SR-01),
+and prospective grading of the forward ledger (DB-03/S07/SR-03).
+
+**What to decide first:** DH-02 (price provenance) and DH-04 (data freshness). Both are cheap to answer
+and both block the money question. Do not relax a validation gate to produce a winner — that produces a
+winner, not evidence (DH-15).
 
 ## What was delivered
 

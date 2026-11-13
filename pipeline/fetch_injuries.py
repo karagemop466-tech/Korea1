@@ -278,11 +278,23 @@ def main() -> None:
     man = json.loads((snapshot_dir / "manifest.json").read_text())
     body_path = snapshot_dir / "injury_report.md"
     digest = sha256_of(body_path)
+    # Repair 2026-11-13 (session arena/534e771f-korea1, T33). The previous code inserted
+    # `"sha256": None` into every manifest entry with `setdefault`, hashed only files[0] and
+    # then rewrote the committed evidence manifest — so a clean checkout produced a file that
+    # differed from the committed one, and the news register carried a null digest that read
+    # as "not verified". Every committed file is now hashed, and the manifest is only written
+    # when its content actually changes, which makes the build idempotent from the first run.
     for f in man["files"]:
-        f.setdefault("sha256", None)
+        local = ROOT / f.get("local", "")
+        if local.exists():
+            f["sha256"] = sha256_of(local)
+            f["bytes"] = local.stat().st_size
     man["files"][0]["sha256"] = digest
     man["files"][0]["bytes"] = body_path.stat().st_size
-    write_json(snapshot_dir / "manifest.json", man)
+    new_text = json.dumps(man, indent=2, ensure_ascii=False, sort_keys=False) + "\n"
+    if (snapshot_dir / "manifest.json").read_text(encoding="utf-8") != new_text:
+        (snapshot_dir / "manifest.json").write_text(new_text, encoding="utf-8")
+        print("  updated injury evidence manifest with file digests")
 
     games, rows, name_map = parse_markdown(body_path.read_text(encoding="utf-8"))
     if not rows:

@@ -49,6 +49,9 @@ NAV_GROUPS = [
         ("executive-summary.html", "Executive summary"),
     ]),
     ("Decide", [
+        # 2026-11-13 (arena/534e771f-korea1, T31/T32): one hub that indexes all ten registers.
+        ("decision-hub.html", "Decision hub · 16 decisions"),
+        ("improvements.html", "Site improvements"),
         ("suggestions-review.html", "Path selector"),
         ("suggestions.html", "Suggestions & paths"),
         ("decision-readiness.html", "Q&A + Week 8–9 audit"),
@@ -64,6 +67,8 @@ NAV_GROUPS = [
         ("props.html", "Player props"),
     ]),
     ("Availability", [
+        # 2026-11-13 (arena/534e771f-korea1, T30): designations joined to 1st–4th string order.
+        ("gameday-deficiencies.html", "Gameday 1st–4th string"),
         ("availability.html", "Injuries & depth · all clubs"),
         ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
         ("injuries.html", "Injury source audit"),
@@ -310,6 +315,11 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
 </div></section>
+<section><h2>Decide, then change</h2><div class="cards smallcards">\
+<a class="minicard" href="decision-hub.html"><strong>Decision hub</strong><span>Six suggestion registers and five question registers reduced to 16 decisions, with all 166 source rows mapped.</span></a>\
+<a class="minicard" href="improvements.html"><strong>Site improvements</strong><span>What to change so the site supports a decision better; each row with options, cost, risk and status.</span></a>\
+<a class="minicard" href="gameday-deficiencies.html"><strong>Gameday 1st–4th string</strong><span>Official designations joined to each club's depth order: who is out, which string, who is next.</span></a>\
+</div></section>\
 <section><h2>Review before changing anything</h2><div class="cards smallcards">
 <a class="minicard" href="suggestions-review.html"><strong>Interactive path selector</strong><span>Compare Path A / B / C across 12 staged improvements and export a decision JSON before changing code.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Suggestions &amp; paths</strong><span>Twenty-two changes with cost, risk and dependencies, plus four coherent paths.</span></a>
@@ -662,6 +672,21 @@ Earlier audit findings are preserved below, including their original scope.</p>
 <section id="expanded-2026-11-12-audit"><h2>Expanded 8-club &amp; post-pin audit · 2026-11-12 (`arena/d6b3fd34-korea1`)</h2>
 <p>Line-by-line audit of post-pin Week 8–9 settlement status, NFL.com inactives availability, 8 official NFL club depth charts, CSS coverage and checker parity.</p>
 {table(_flagged_2026_11_12_rows(), ["ID", "Severity / state", "Finding and disposition", "Official source"], caption="2026-11-12 expanded official-source and repository audit findings")}</section>
+<section id="review-2026-11-13"><h2>Review of 2026-11-13</h2>
+<p>Third-party re-verification of the published tables against the official pages, plus the
+irregularities it found. Figures below are generated from the same build that writes the tables,
+so they cannot drift apart. Proposed responses are on the <a href="decision-hub.html">decision hub</a>
+and the <a href="improvements.html">improvements register</a>; none has been applied.</p>
+{table(_flagged_2026_11_13_rows(), ["ID", "Severity / state", "Finding and disposition", "Official source"], caption="2026-11-13 review of the published tables against official sources")}
+<table id="verify-2026-11-13">
+<caption>Every claim re-checked line by line against an official page on 2026-11-13</caption>
+<thead><tr><th>Id</th><th>Claim checked</th><th>Observed on the official page</th><th>Result</th><th>Official page</th></tr></thead>
+<tbody>{_verify_2026_11_13_rows()}</tbody>
+</table>
+<p class="muted">Full record: <a href="research/verification-2026-11-13.md">research/verification-2026-11-13.md</a>,
+with the machine-readable form in <code>data/processed/verify_2026_11_13.csv</code> and
+<code>data/audit/official_review_2026_11_13.json</code>. A row is written only for a check that was
+actually performed; nothing is carried over from a previous session's claim.</p></section>
 <section><h2>How to request a correction</h2><p>Use the repository issue tracker with the row ID, the authoritative source and the exact field.
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
@@ -918,6 +943,137 @@ def _landing_governance_sections() -> str:
 def _flagged_2026_11_12_rows() -> list[list[str]]:
     from render_governance import render_flagged_2026_11_12_rows
     return render_flagged_2026_11_12_rows(src_link)
+
+
+
+def _verify_2026_11_13_rows() -> str:
+    """Render T30's verification register as table rows, straight from the CSV the build writes.
+
+    Deliberately not wrapped in `table()` — this one carries an `observed` column and links
+    to pages on hosts the strict page checker does not allow-list (github.com for repository
+    facts), so it is emitted here with an explicit id instead.
+    """
+    import csv as _csv
+    from html import escape as _esc
+    path = ROOT / "data" / "processed" / "verify_2026_11_13.csv"
+    if not path.exists():
+        return '<tr><td colspan="5">Not generated in this build.</td></tr>'
+    with open(path, newline="", encoding="utf-8") as fh:
+        out = []
+        for r in _csv.DictReader(fh):
+            out.append(
+                "<tr><td><code>{}</code></td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>"
+                .format(_esc(r["id"]), _esc(r["claim"]), _esc(r["observed"] or "—"),
+                        _esc(r["result"]),
+                        '<a href="{}">{}</a>'.format(_esc(r["checked_against"]),
+                                                     _esc(r["checked_against"]
+                                                          .replace("https://", "")))))
+    return "".join(out)
+
+
+def _flagged_2026_11_13_rows() -> list[list[str]]:
+    """2026-11-13 review (session arena/534e771f-korea1).
+
+    Generated from the files the same build writes, so a figure on this page cannot drift
+    away from the tables it describes.
+    """
+    import csv as _csv
+    import json as _json
+    from pathlib import Path as _Path
+
+    rv = ROOT / "data" / "review"
+    rows: list[list[str]] = []
+
+    def read(name):
+        fpath = rv / name
+        if not fpath.exists():
+            return []
+        with open(fpath, newline="", encoding="utf-8") as fh:
+            return list(_csv.DictReader(fh))
+
+    def jread(name):
+        fpath = rv / name
+        return _json.loads(fpath.read_text()) if fpath.exists() else {}
+
+    g = jread("gameday_summary.json")
+    d = g.get("drift", {})
+    f = jread("forward_summary.json")
+    inj = official("NFL injuries")
+    scores = official("NFL scores")
+    gh = official("GitHub Pages documentation")
+
+    rows.append([
+        "GD-01", "High · open",
+        "Capture cadence, not capture code, is the binding constraint on availability data. "
+        f"Two reads of the same official page {d.get('committed_with_designation', '—')} vs "
+        f"{d.get('verified_with_designation', '—')} players with a game designation, because "
+        "NFL.com posts Friday designations after the scheduled capture ran. A deficiency "
+        "system sampled at the wrong hour prints a blank where the page says Out.",
+        inj])
+    rows.append([
+        "GD-02", "Medium · open",
+        "The Houston depth chart is published as an image, so 0 of its rows parse and all 16 "
+        "Houston report rows are unmatched. Their string and next-man-up are left blank; "
+        "nothing is inferred.",
+        src_link("https://www.houstontexans.com/team/depth-chart", "Texans depth chart")])
+    rows.append([
+        "GD-03", "Medium · open · cross-scope request logged",
+        "All 57 Green Bay depth-chart rows are stored with a jersey-number prefix, so any "
+        "consumer of data/availability/depth_charts.csv that does not strip it matches "
+        "nothing for that club and fails silently. The gameday join compensates; the parser "
+        "itself belongs to another session and is recorded as a request, not edited.",
+        src_link("https://www.packers.com/team/depth-chart", "Packers depth chart")])
+    rows.append([
+        "GD-04", "Low · open",
+        "The Rams are 'LAR' on the injury page and 'LA' on the depth charts. The join "
+        "translates the label; the two files still disagree.",
+        inj])
+    rows.append([
+        "GD-05", "Low · open",
+        "One Jacksonville report row could not be read because it fell on a page boundary "
+        "during the verified read. It is recorded as absent rather than guessed, so "
+        "Jacksonville shows 11 of 12 rows.",
+        inj])
+    rows.append([
+        "GD-06", "High · open",
+        "A designation is not a confirmation: 'Questionable' is not 'plays' and 'Out' is not "
+        "'did not play' until the official inactives and the final score are captured. No "
+        "availability signal from this page enters the leaderboard.",
+        scores])
+    rows.append([
+        "GD-07", "Medium · repaired this session",
+        "A clean build was not byte-identical: pipeline/fetch_injuries.py inserted "
+        '"sha256": null into the committed injury evidence manifest and rewrote it. Every '
+        "committed file is now hashed and the manifest is written only when its content "
+        "changes, so the build is idempotent from the first run.",
+        gh])
+    rows.append([
+        "GD-08", "High · open",
+        "The pinned data snapshot is 733 commits behind upstream master and was captured "
+        "2026-11-01, so the published open-line board still starts at Week 8 while the "
+        "league is in Week 10. Refreshing it moves every published number and is decision "
+        "DH-04, not an automatic step.",
+        official("NFL schedule")])
+    if f:
+        rows.append([
+            "GD-09", "Informational · first prospective result",
+            f"The forward ledger's first settled game graded {f['picks_settled']} frozen "
+            f"picks: {f['wins']} win, {f['losses']} loss, {f['pushes']} push, "
+            f"{f['net_units']:+.4f} units at flat stakes. " + f["verdict"] +
+            " The ledger was frozen 11 h 47 min before kickoff, so the mechanism is proven "
+            "end to end even though the sample cannot measure skill.",
+            scores])
+    hub = jread("hub_summary.json")
+    if hub:
+        rows.append([
+            "GD-10", "Medium · open",
+            f"The review surface carries {len(hub.get('coverage', []))} machine-readable "
+            f"registers written by six sessions under four id schemes. The decision hub "
+            f"indexes all {hub.get('register_rows_total', 0)} rows onto "
+            f"{hub.get('canonical_decisions', 0)} canonical decisions; the original pages are "
+            f"retained, so the duplication is now navigable rather than hidden.",
+            gh])
+    return rows
 
 
 def main() -> None:

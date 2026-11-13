@@ -1,0 +1,43 @@
+{
+  "generated_utc": "2026-11-13T23:47Z",
+  "freeze": {
+    "frozen_utc": "2026-11-12T13:26:48Z",
+    "pushed_utc": "2026-11-12T13:28:07Z",
+    "kickoff_utc": "2026-11-13T01:15:00Z",
+    "lead_time": "11 h 47 min before kickoff",
+    "ledger": "data/forward/ledger.jsonl",
+    "entry_hash": "3594aac9abd2e10b1741f9e998b6ad023e217bba638451dfdd050ddb11263fc7"
+  },
+  "official": [
+    {
+      "game_id": "2026_10_WAS_NYG",
+      "season": "2026",
+      "week": "10",
+      "gameday": "2026-11-12",
+      "away_team": "WAS",
+      "away_score": 24,
+      "home_team": "NYG",
+      "home_score": 21,
+      "total_points": 45,
+      "home_margin": -3,
+      "status_on_page": "Final",
+      "kickoff_slot": "Thu Nov 12, 8:15 PM EST",
+      "venue": "MetLife Stadium, East Rutherford, NJ",
+      "source_url": "https://www.nfl.com/games/commanders-at-giants-2026-reg-10",
+      "corroborating_url": "https://www.nfl.com/scores/2026/week-10",
+      "verified_utc": "2026-11-13T23:00Z",
+      "verified_by": "arena/534e771f-korea1"
+    }
+  ],
+  "picks_total": 65,
+  "picks_settled": 4,
+  "picks_still_open": 61,
+  "games_settled": 1,
+  "games_frozen": 17,
+  "wins": 2,
+  "losses": 2,
+  "pushes": 0,
+  "net_units": -0.305,
+  "verdict": "NOT A RESULT — 1 of 17 games settled and 4 of 65 picks graded, against a 30-week / 150-pick horizon",
+  "strategies_frozen": 14
+}
