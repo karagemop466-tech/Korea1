@@ -126,18 +126,23 @@ def test_power_arithmetic_is_monotonic_and_sane():
     assert ra.correlation_needed(0.5) < ra.correlation_needed(0.2)
 
 
-def test_audit_runs_end_to_end(tmp_path):
-    r = subprocess.run([sys.executable, str(ROOT / "pipeline/repo_audit.py")],
+def test_audit_runs_end_to_end_in_an_isolated_directory(tmp_path, monkeypatch):
+    """Run the audit with its output directory redirected, so the committed
+    artifacts are never rewritten by a test run (the CI rebuild check compares the
+    working tree against HEAD after `make test`)."""
+    monkeypatch.setattr(ra, "OUT", tmp_path)
+    assert ra.main() == 0
+    assert (tmp_path / "claims.csv").exists()
+    assert (tmp_path / "summary.json").exists()
+
+
+def test_verifier_passes_without_touching_committed_artifacts():
+    before = {p.name: p.read_bytes() for p in (ROOT / "review").glob("*.html")}
+    r = subprocess.run([sys.executable, str(ROOT / "pipeline/verify_audit_site.py")],
                        cwd=ROOT, capture_output=True, text=True)
-    assert r.returncode == 0, r.stderr
-    assert "claims=" in r.stdout
-
-
-def test_render_and_verify_are_idempotent():
-    for script in ("pipeline/render_audit_site.py", "pipeline/verify_audit_site.py"):
-        r = subprocess.run([sys.executable, str(ROOT / script)], cwd=ROOT,
-                           capture_output=True, text=True)
-        assert r.returncode == 0, f"{script}\n{r.stdout}\n{r.stderr}"
+    assert r.returncode == 0, f"{r.stdout}\n{r.stderr}"
+    after = {p.name: p.read_bytes() for p in (ROOT / "review").glob("*.html")}
+    assert before == after, "the verifier must not rewrite published pages"
 
 
 def test_review_pages_have_no_unsourced_rows():

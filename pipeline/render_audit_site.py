@@ -116,7 +116,11 @@ def audit_stamp() -> str:
     compares them with HEAD), so the timestamp is read from the audit output
     rather than taken from the wall clock at render time."""
     try:
-        return json.loads((ROOT / "data" / "repo_audit" / "summary.json").read_text())["generated_utc"]
+        # Date only, on purpose: the footer must be identical across rebuilds, and an
+        # audit re-run is not a content change. The full timestamp lives in
+        # data/repo_audit/summary.json and on review/official-sources.html.
+        return json.loads(
+            (ROOT / "data" / "repo_audit" / "summary.json").read_text())["generated_utc"][:10]
     except Exception:                                       # noqa: BLE001
         return ""
 
