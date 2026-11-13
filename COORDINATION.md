@@ -1830,3 +1830,20 @@ Re-verified after the repair: `make build` 0 failing checks, `make test` **164 p
 
 **Lesson for the next session.** A conflict resolution that keeps both text blocks can still drop
 an earlier *edit* to one of them. Reading the rendered live page after a merge is not optional.
+
+### Final record — PR #44 merged, live verified — `arena/917fe36e-korea1`
+
+| Item | Result |
+|---|---|
+| PR #43 | **MERGED** `2026-11-13T23:20:41Z`, merge commit `90e9df8`; CI `verify` pass (1m44s) |
+| PR #44 (repair) | **MERGED**, merge commit `2f62437`; CI `verify` pass (1m54s) |
+| GitHub Pages | `pages/builds/latest` = `built` for `2f62437`, `error = none` |
+| Live check | `/review.html` fetched with a cache-busting query → **`REC-01`, no `D-05`**; `live-verification.html` also served. The stale `D-05` was a GitHub Pages CDN cache, not a bad deploy — the merged source was already correct |
+| Final verification | `make build` 0 failing checks · `make test` 164 passed, 1 skipped · `check_sources.py` 2,085 rows / 26 canonical pages · `check_links.py` 35 pages · `check_rebuild.py` 0 drift |
+| Research verdict | **Unchanged: 0 of 18 strategies validated, no reward awarded.** |
+
+**V1, V2 and V3 are complete.** Files this session owns and nothing else:
+`pipeline/live_verify.py`, `pipeline/live_verify_depth.py`, `pipeline/lineup_claims.py`,
+`pipeline/review_consolidated.py`, `pipeline/render_live.py`, `data/live/**`,
+`live-verification.html`, `review.html`, `tests/test_live_verify.py`,
+`tests/test_review_consolidated.py`, plus the V3 integration points claimed on the board.
