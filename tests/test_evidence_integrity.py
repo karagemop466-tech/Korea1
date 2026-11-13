@@ -14,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,11 +45,12 @@ def test_manifest_hashes_match_the_committed_bytes():
 def test_build_does_not_rewrite_the_evidence_manifest():
     """A rebuild must be a no-op for committed evidence, so the tree cannot drift on every run."""
     before = MANIFEST.read_bytes()
-    r = subprocess.run([str(ROOT / ".venv" / "bin" / "python"), "pipeline/fetch_injuries.py"],
+    # `sys.executable`, not a hard-coded .venv path: CI runs these tests with the system
+    # interpreter, where .venv/bin/python does not exist and subprocess raises FileNotFoundError
+    # instead of returning a status. (Caught by CI on PR #42, not locally, because .venv exists
+    # in the build sandbox — a reminder that a green local run is not a green CI run.)
+    r = subprocess.run([sys.executable, "pipeline/fetch_injuries.py"],
                        cwd=ROOT, capture_output=True, text=True)
-    if r.returncode != 0 and not (ROOT / ".venv").exists():
-        import pytest
-        pytest.skip("needs the build environment")
     assert r.returncode == 0, r.stderr[-2000:]
     assert MANIFEST.read_bytes() == before, "fetch_injuries.py rewrote the committed evidence manifest"
 
