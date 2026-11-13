@@ -321,9 +321,12 @@ def flagged_rows() -> list[list[str]]:
          "executable quotes. This cannot be closed by citing a URL; it needs a purchased or licensed feed.",
          src_link("https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping", "White (2000)")],
         ["F-T41-06", "Low · open",
-         "Settlement is manual. This session recorded one official final by hand from the page-fetch tool, "
-         "because the sandbox cannot reach nfl.com and no scheduled workflow grades the ledger. Until that is "
-         "automated, every future settlement needs a session to capture it.",
+         "Promotion of an official final is still manual. The scheduled workflow "
+         "(.github/workflows/forward-ledger.yml) now archives official game pages and re-runs settlement, but it "
+         "writes only *proposed* scores to official_candidates.csv: its extraction rules have never been run "
+         "against real NFL.com HTML, because this sandbox cannot reach nfl.com (TLS closed). Until those rules "
+         "are validated on a runner, a session must confirm each proposal against the archived page before it "
+         "enters official_results.csv. That step is deliberate, not an unfinished chore.",
          src_link("https://www.nfl.com/scores/", "NFL.com scores")],
     ]
 
