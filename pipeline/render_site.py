@@ -59,6 +59,7 @@ NAV_GROUPS = [
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
         ("strategies.html", "Leaderboard"),
+        ("forward.html", "Forward test record"),
         ("validation.html", "Validation gates"),
         ("correlations.html", "Correlations"),
         ("props.html", "Player props"),

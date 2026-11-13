@@ -63,7 +63,8 @@ def main():
               "correlations.html","props.html","methodology.html","requirements.html","verification.html",
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
-              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html"}
+              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
+              "forward.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

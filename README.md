@@ -15,6 +15,7 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
 - `strategies.html` — complete candidate library and competition rules
+- `forward.html` — **forward test**: picks frozen before kickoff, settled only against official NFL.com finals (4 of 65 settled; no verdicts, no rewards)
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
