@@ -6,6 +6,9 @@ import pandas as pd
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from common import ROOT,PROC,read_json
 
+# Published addendum: appended verbatim so a rebuild reproduces the committed file.
+_ADDENDUM = ROOT / "pipeline" / "executive_summary_addendum.md"
+
 def main():
     gates=pd.read_csv(PROC/'strategy_gates.csv')
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
@@ -130,6 +133,8 @@ every third-party historical observation has been individually authenticated.
 
 **Research and education only. No guaranteed returns.**
 '''
+    if _ADDENDUM.exists():
+        text = text.rstrip("\n") + "\n" + _ADDENDUM.read_text()
     (ROOT/'EXECUTIVE_SUMMARY.md').write_text(text)
     print('wrote EXECUTIVE_SUMMARY.md')
 if __name__=='__main__':main()
