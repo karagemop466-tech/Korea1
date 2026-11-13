@@ -25,6 +25,17 @@ def main():
     from collections import Counter
     sig = Counter(s["status"] for s in av.SIGNALS)
     sig_line = f"{len(av.SIGNALS)} availability signals assessed: {sig['AVAILABLE']} available, {sig['PILOT ONLY']} pilot-only, {sig['OPEN']} open, {sig['BLOCKED']} blocked"
+    # T41 (arena/8a322b62-korea1): forward-test settlement, read from data/forward/ so the
+    # executive summary cannot drift from forward.html. Nothing here is retyped.
+    fwd = ROOT/'data'/'forward'
+    _pk = pd.read_csv(fwd/'graded_picks.csv', dtype=str, keep_default_na=False) if (fwd/'graded_picks.csv').exists() else pd.DataFrame()
+    _sb = pd.read_csv(fwd/'scoreboard.csv', dtype=str, keep_default_na=False) if (fwd/'scoreboard.csv').exists() else pd.DataFrame()
+    f_declared = len(_pk)
+    f_settled = int((_pk.status == 'OFFICIAL').sum()) if f_declared else 0
+    f_open = int((_pk.status == 'OPEN').sum()) if f_declared else 0
+    f_strat_with = len(_sb[_sb.counted.astype(str).ne('0') & _sb.counted.astype(str).ne('')]) if len(_sb) else 0
+    f_units = pd.to_numeric(_pk.loc[_pk.status == 'OFFICIAL', 'pnl'], errors='coerce').sum() if f_declared else 0.0
+    f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
     text=f'''# Executive summary — NFL Line Lab
 
 Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
@@ -76,6 +87,34 @@ coverage, game-day role confirmation and validated impact remain blocked.
 | Open questions | Unanswered | `open-questions.html` separates what is known from what is missing and names how to find it. Some only you can answer: sportsbooks and jurisdiction, bankroll, success threshold, refresh cadence, reward. | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Line board freshness | Stale | The open line board still starts at Week 8 (snapshot pinned 2026-11-02); the injury capture is for the current week. Refreshing is suggestion DB-04. | [NFL schedule](https://www.nfl.com/schedules/) |
 | Site | Repaired | Navigation grouped by category; stylesheet now defines the classes the pages use. Review findings RV-01 to RV-11 are on `flagged.html`. | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
+
+## Forward test — first settlement, 2026-11-13 (session `arena/8a322b62-korea1`)
+
+The repository now publishes a **prospective** record, which is the only evidence that cannot be
+contaminated by hindsight. `forward.html` prints every ticket frozen before kickoff and settles it only
+against an official NFL.com final.
+
+| Item | State | Meaning |
+|---|---|---|
+| Frozen before kickoff | {f_declared} tickets across 18 strategies and 14 Week 10 games; written `2026-11-12T13:26:48Z`, received by GitHub `13:28:07Z`, 11.78 h before the first kickoff | The picks were public before the games started. The receipt time is GitHub's, not the committer's. [NFL week 10 schedule](https://www.nfl.com/schedules/2026/by-week/reg-10) |
+| Settled from an official final | **{f_settled} of {f_declared}** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | {f_open} tickets stay `OPEN`; none is defaulted to a push or a void. Net {f_units:+.3f} units across the settled tickets. |
+| Strategies with a counted result | {f_strat_with} of {len(_sb) if len(_sb) else 18} | One ticket each is not a record. |
+| Validated strategies / rewards | **{f_validated} / none** | No strategy is past its declared horizon (150 single or 60 parlay tickets over 30 weeks); verdicts are withheld from the agent by ledger amendment A1. |
+| Gate F2 (official settlement) | PASS where a ticket has settled | Settlement now rests on an official page; before this pass the same 4 tickets were `PROVISIONAL`. |
+| Gate F6 (quote provenance) | FAIL for all strategies | Frozen prices are community-mirror values, not authenticated bookmaker quotes. |
+
+**What this does not mean.** {f_settled} tickets at one game is not a sample, and a 2–2 split is
+indistinguishable from chance. `forward.html` prints no p-value, no ROI and no verdict, and awards
+nothing. The honest reading is that the forward clock has started and the record can now be audited;
+nothing about the strategy library has been demonstrated.
+
+**A defect repaired on the way.** The committed evidence manifest
+`data/evidence/nfl_injuries/week10_2026/manifest.json` was rewritten by every build and carried
+`"sha256": null` for `news_register.md`, because `pipeline/fetch_injuries.py` hashed only `files[0]`.
+`tests/check_rebuild.py` does not cover `data/evidence/`, so the drift survived review and left the tree
+dirty after each build. Every declared file is now hashed, a missing file raises, and
+`tests/test_evidence_integrity.py` fails on a null or mismatched digest (verified by restoring the old
+code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 
 ## What was delivered
 

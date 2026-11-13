@@ -285,6 +285,49 @@ def render() -> dict[str, str]:
         body, wide=True)}
 
 
+def flagged_rows() -> list[list[str]]:
+    """Findings from T41, for the Flagged-for-review page.
+
+    Kept here so the register and the page that produced it stay in one file. Two of these are
+    defects this session repaired; the rest are boundaries the reader must know about.
+    """
+    return [
+        ["F-T41-01", "High · repaired",
+         "The forward ledger was data-only: 65 tickets were frozen before kickoff and nothing on the site "
+         "published the prospective record, so the leaderboard showed only retrospective backtests. "
+         "Repaired with forward.html, which prints every frozen ticket and its settlement state.",
+         src_link(NFL_WEEK10, "NFL.com week 10 scores")],
+        ["F-T41-02", "High · repaired",
+         "All 65 frozen tickets were OPEN three days after the first game settled, because no official final "
+         "had been recorded. The engine had already fallen back to the community mirror and marked 4 tickets "
+         "PROVISIONAL, which gate F2 correctly refuses to count. Repaired by recording WAS 24–21 NYG from two "
+         "official pages; the 4 tickets are now OFFICIAL and the 61 unplayed tickets remain OPEN.",
+         src_link("https://www.nfl.com/games/commanders-at-giants-2026-reg-10", "NFL.com Game Center")],
+        ["F-T41-03", "Medium · repaired",
+         "The committed evidence manifest data/evidence/nfl_injuries/week10_2026/manifest.json was rewritten "
+         "by every build and carried \"sha256\": null for news_register.md, because fetch_injuries.py hashed "
+         "only files[0]. tests/check_rebuild.py does not cover data/evidence/, so the drift went unnoticed. "
+         "Now every declared file is hashed and tests/test_evidence_integrity.py fails on a null or mismatched "
+         "digest.",
+         src_link("https://www.nfl.com/injuries/", "NFL.com injury report")],
+        ["F-T41-04", "Medium · open",
+         "Four settled tickets are not evidence of skill and are not treated as such. Two won and two lost; "
+         "the ledger's own gate F3 withholds any significance number until 150 single or 60 parlay tickets "
+         "over 30 weeks. No p-value is printed on forward.html for that reason.",
+         src_link("https://www.pm-research.com/content/iijpormgmt/40/5/94", "Bailey & López de Prado (2014)")],
+        ["F-T41-05", "Medium · open",
+         "Gate F6 (quote provenance) fails for all 18 strategies: the frozen prices came from the community "
+         "mirror, not authenticated bookmaker quotes, and no official source publishes a historical record of "
+         "executable quotes. This cannot be closed by citing a URL; it needs a purchased or licensed feed.",
+         src_link("https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping", "White (2000)")],
+        ["F-T41-06", "Low · open",
+         "Settlement is manual. This session recorded one official final by hand from the page-fetch tool, "
+         "because the sandbox cannot reach nfl.com and no scheduled workflow grades the ledger. Until that is "
+         "automated, every future settlement needs a session to capture it.",
+         src_link("https://www.nfl.com/scores/", "NFL.com scores")],
+    ]
+
+
 def main() -> int:
     for name, content in render().items():
         (ROOT / name).write_text(content, encoding="utf-8")
