@@ -16,10 +16,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROC = ROOT / "data" / "processed"
+# Independent official-source verification artefacts (session arena/917fe36e-korea1).
+LIVE_DIR = ROOT / "data" / "live"
+# The moment the official pages were read for the 2026-11-13 verification pass. It is a
+# constant, not a clock reading, so that `make build` is byte-reproducible: the extract in
+# data/live/ is a fixed document and its capture time is part of that document.
+LIVE_CAPTURE_UTC = "2026-11-13T22:57:59Z"
 SITE = ROOT
 SITE_DATA = SITE / "assets" / "data"
 
-for _p in (RAW, PROC, SITE_DATA):
+for _p in (RAW, PROC, SITE_DATA, LIVE_DIR):
     _p.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------

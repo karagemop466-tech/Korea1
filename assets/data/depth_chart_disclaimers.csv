@@ -1,0 +1,5 @@
+team,source_url,quoted_text,consequence
+DET,https://www.detroitlions.com/team/depth-chart,2026 Unofficial Depth Chart Compiled by Lions Football Communications,"the chart the site treats as the club's published order is labelled unofficial by the club itself; a 2nd-string cell is an ordering, not a depth-chart fact the club commits to"
+NE,https://www.patriots.com/team/depth-chart,The 2026 depth chart is unofficial and is published by the writers of Patriots.com. The depth chart reflects the opinions of the Patriots.com writers and don't necessarily reflect those of the organization.,"the Patriots chart is the writers' opinion, not a club statement; any 1st/2nd/3rd-string claim for NE inherits that limit"
+WAS,https://www.commanders.com/team/depth-chart,(no unofficial disclaimer displayed; page titled 'Team Depth Chart'),ordering is published by the club; no publication timestamp is shown
+NYG,https://www.giants.com/team/depth-chart,(no unofficial disclaimer displayed; page titled 'Team Depth Chart'),ordering is published by the club; no publication timestamp is shown
