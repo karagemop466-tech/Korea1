@@ -2043,7 +2043,7 @@ A complete local `make build` regenerated one out-of-scope evidence manifest wit
 **Cross-scope requests (logged; no files outside T24 scope edited):**
 1. The completed executive-summary scope should add the 2026-11-13 automated coverage result (31/32 charts, HOU parser gap) and clearly distinguish it from the separate 2026-11-12 hand-checked 8/32 sample and older 2/32 sample. `EXECUTIVE_SUMMARY.md`, `executive-summary.html`, `pipeline/render_summary.py` and `flagged.html` were not edited.
 2. The availability-tracker owner should inspect the official HOU page and either repair its parser or retain the explicit blank/failure state; source: <https://www.houstontexans.com/team/depth-chart>. The current page flags this correctly.
-3. The injury-ingestion owner should store a real SHA-256 for the committed official `news_register.md` or omit its hash field consistently, and add a regression check. The files in that prior task's scope were not edited.
+3. The injury-ingestion owner should store a real SHA-256 for the committed official `news_register.md` or omit its hash field consistently, and add a regression check. **Resolved upstream by PR #39** (merged as `d2b5610`): the ingest code now hashes each staged file and the current manifest records the verified digest. T24 did not edit that scope.
 4. The integration owner should add `tests/test_current_snapshot_audit.py` to the routine test target/workflow if this audit is to remain a CI gate; the completed Makefile/workflow scopes were not edited.
 5. Current-snapshot failure and unmatched-name counts should be carried into the dedicated `flagged.html` register on the next shared-output integration. The dated snapshot ledger and `availability.html` already expose the source-level failure; shared renderer/navigation files were not edited.
 
@@ -2059,4 +2059,14 @@ A second `git pull --rebase origin main` advanced `origin/main` from `cf359ae` t
 
 ### 2026-11-13T23:12Z — T24 branch pushed and scoped PR opened
 
-The rebased T24 branch was pushed to `origin/arena/beafe2ae-korea1` using a lease against its observed remote tip `0fa06e38689cde57b28bb4f635af93db090b9c22`; the branch head is `acd83e750a8c8bcae7e63b54e1b4cff8f4ce23d0`, based on `origin/main` `266134ed69e1e6e254688436ecf1af38cd6d4adf`. Scoped pull request [#40](https://github.com/karagemop466-tech/Korea1/pull/40) is open against `main`. Its description contains the snapshot findings, verification, source and data limitations, and scoped review notes. Two `verify` runs (43525007346 and 43525231126) were still in progress at inspection; merge and post-merge Pages deployment remain pending.
+The rebased T24 branch was pushed to `origin/arena/beafe2ae-korea1` using a lease against its observed remote tip `0fa06e38689cde57b28bb4f635af93db090b9c22`; the branch head is `acd83e750a8c8bcae7e63b54e1b4cff8f4ce23d0`, based on `origin/main` `266134ed69e1e6e254688436ecf1af38cd6d4adf`. Scoped pull request [#40](https://github.com/karagemop466-tech/Korea1/pull/40) is open against `main`. Its description contains the snapshot findings, verification, source and data limitations, and scoped review notes. At that initial head both `verify` runs (43525007346 and 43525231126) passed; merge and post-merge Pages deployment remain pending.
+
+### 2026-11-13T23:16Z — PR #39 merge, T24 rebase and regression verification
+
+PR [#39](https://github.com/karagemop466-tech/Korea1/pull/39) merged at 23:12:12Z as `d2b56108614c99b10ed62766a5571518bb3612b1`, advancing `main` from `266134e`. R1 corrected the old two-of-32 coverage claim, left Houston's unreadable chart blank and flagged, and repaired the news-register evidence hash. T24 was rebased onto `d2b5610`; the only conflicts were append-only coordination content, and both the R1 integration record and T24 claim/log were retained. No audit input or T24 source/test/report code conflicted.
+
+Post-rebase checks on the combined tree: the T24 audit passed (33 official-source records; 326 injury rows; 31/32 depth charts parsed; 1,833 depth rows; 909 slots; 68 unmatched players; 544 sourced availability rows), the T24 tests passed (4), `make build` passed with zero verifier failures (24 canonical pages / 1,681 sourced rows; 33-page link check), and `make test` passed (58). The rebase build left no generated changes. The T24 branch has been updated locally; PR #40's previously submitted head `acd83e7` has passing checks but must be refreshed onto `d2b5610` before merge. PR #40 merge and its resulting Pages deployment are still pending.
+
+### 2026-11-13T23:18Z — upstream PR #41 advances coordination base
+
+PR [#41](https://github.com/karagemop466-tech/Korea1/pull/41), a documentation-only R1 merge/deployment record, merged at 23:15:20Z. `main` advanced from `d2b5610` to `705b2ec`; the intervening diff is only `COORDINATION.md`. T24 must rebase once more onto this current base before updating PR #40. No T24 source data, audit inputs, or code scope changed upstream.
