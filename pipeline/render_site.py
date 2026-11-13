@@ -78,6 +78,7 @@ NAV_GROUPS = [
         ("methodology.html", "Methodology"),
         ("requirements.html", "Requirements"),
         ("sources.html", "Sources"),
+        ("referents.html", "Referent register"),
         ("audit.html", "Independent audit"),
         ("verification.html", "Reproducibility"),
         # Integration session arena/ea02c4fb-korea1: independent build served from lab/.

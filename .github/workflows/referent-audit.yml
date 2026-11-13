@@ -1,0 +1,109 @@
+name: Referent audit
+
+# T40 (arena/84e42ecc-korea1).  Resolves every external URL printed on the published
+# site and commits the result.  Runs on a GitHub-hosted runner because the build
+# sandbox has no outbound access to NFL, club or publisher domains.
+#
+# This workflow NEVER edits a citation.  It records what each URL resolves to.
+# Repairs are a human decision, recorded in data/audit/referent_expectations.csv
+# and published on referents.html and flagged.html.
+
+on:
+  schedule:
+    - cron: "37 6 * * *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Probe only the first N URLs (0 = all)"
+        required: false
+        default: "0"
+      host:
+        description: "Only probe URLs whose host contains this string"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: referent-audit
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Probe every external referent
+        run: |
+          python3 scripts/referent_probe.py \
+            --limit "${{ github.event.inputs.limit || 0 }}" \
+            --host "${{ github.event.inputs.host }}" \
+            --timeout 25 --sleep 0.25 2>&1 | tail -n 600
+
+      - name: Summarise
+        id: summary
+        run: |
+          python3 - <<'PY'
+          import json, os
+          p = "data/audit/referent_probe.json"
+          if not os.path.exists(p):
+              raise SystemExit("probe produced no output")
+          d = json.load(open(p))
+          s = d.get("summary", {})
+          print("::group::referent probe summary")
+          print(json.dumps(s, indent=1))
+          print("::endgroup::")
+          for k in ("UNRESOLVED", "EXPECTED-MISS", "REDIRECT"):
+              if s.get(k):
+                  print(f"::warning::{k}: {s[k]} referent(s) need a decision")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as fh:
+              fh.write("## Referent probe\n\n")
+              fh.write(f"- URLs on site: **{d.get('urls_total', 0)}**\n")
+              fh.write(f"- Probed: **{len(d.get('rows', []))}**\n")
+              for k in sorted(s):
+                  fh.write(f"- {k}: **{s[k]}**\n")
+          PY
+
+      - name: Render the register page
+        run: |
+          python3 -m pip install --quiet pandas numpy scipy
+          python3 pipeline/render_referents.py
+
+      - name: Verify the rendered page
+        continue-on-error: true
+        id: verify
+        run: |
+          python3 pipeline/verify_site.py 2>&1 | tail -n 40
+          python3 tests/check_links.py 2>&1 | tail -n 20
+
+      - name: Upload the raw probe output as an artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: referent-probe
+          path: |
+            data/audit/referent_probe.json
+            data/audit/referent_register.csv
+          retention-days: 90
+
+      - name: Commit the result
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audit/referent_probe.json data/audit/referent_register.csv referents.html
+          if git diff --cached --quiet; then
+            echo "no change to commit"
+          else
+            git commit -m "referent audit $(date -u +%Y-%m-%dT%H:%MZ): $(python3 -c "import json;print(json.load(open('data/audit/referent_probe.json'))['summary'])")"
+            for i in 1 2 3 4 5; do
+              git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+              echo "push attempt $i failed, retrying"; sleep 10
+            done
+            exit 1
+          fi

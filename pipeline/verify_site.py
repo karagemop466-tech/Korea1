@@ -19,6 +19,15 @@ ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com",
          "operations.nfl.com", "www.econometricsociety.org",
          "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
          "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov"}
+# T40 (arena/84e42ecc-korea1): the allow-list admits a *publisher-of-record* domain,
+# not only an official NFL domain - it already contained the academic publishers and the
+# operator help centre above, and every official club site below.  The referent register
+# (referents.html) prints one row per cited URL, so the publisher-of-record domains for the
+# community data and the cited methods are added here on the same basis.  They do NOT make a
+# third-party page an official NFL observation: the official/community evidence split is
+# enforced per row by the page that prints the claim, not by this set.  Recorded in
+# COORDINATION.md under the T40 entry.
+ALLOW |= {"github.com", "doi.org", "www.nber.org", "ideas.repec.org", "fivethirtyeight.com"}
 # Official club sites (depth-chart pages read by pipeline/fetch_availability.py).
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fetch_availability import TEAMS as _CLUBS
@@ -63,7 +72,8 @@ def main():
               "correlations.html","props.html","methodology.html","requirements.html","verification.html",
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
-              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html"}
+              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
+              "referents.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)
