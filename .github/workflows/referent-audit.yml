@@ -62,6 +62,7 @@ jobs:
 
       - name: Summarise
         id: summary
+        continue-on-error: true
         run: |
           python3 - <<'PY'
           import json, os
@@ -82,12 +83,14 @@ jobs:
               fh.write(f"- Probed: **{len(d.get('rows', []))}**\n")
               for k in sorted(s):
                   fh.write(f"- {k}: **{s[k]}**\n")
-          sc = "data/audit/score_reconciliation.json"
-          if os.path.exists(sc):
-              d2 = json.load(open(sc))
-              fh.write("\n## Score census reconciliation\n\n")
-              for k in sorted(d2.get("summary", {})):
-                  fh.write(f"- {k}: **{d2['summary'][k]}**\n")
+              # NB: keep this INSIDE the `with` block - writing to a closed file
+              # raised ValueError and silently skipped the commit step.
+              sc = "data/audit/score_reconciliation.json"
+              if os.path.exists(sc):
+                  d2 = json.load(open(sc))
+                  fh.write("\n## Score census reconciliation\n\n")
+                  for k in sorted(d2.get("summary", {})):
+                      fh.write(f"- {k}: **{d2['summary'][k]}**\n")
           PY
 
       - name: Render the register page
