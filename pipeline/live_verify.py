@@ -43,7 +43,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import ROOT, write_json  # noqa: E402
+from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
 OFFICIAL_PAGE = "https://www.nfl.com/injuries/league/2026/reg10"
@@ -274,7 +274,7 @@ def main() -> int:
 
     c = graded.defect_class.value_counts()
     head = dict(
-        generated_utc=pd.Timestamp.now("UTC").strftime("%Y-%m-%dT%H:%M:%SZ"),
+        generated_utc=LIVE_CAPTURE_UTC,
         official_page=OFFICIAL_PAGE,
         method=METHOD,
         transcribed_clubs=in_scope,

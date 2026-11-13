@@ -31,7 +31,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import ROOT, write_json  # noqa: E402
+from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
 SNAPSHOT = ROOT / "data" / "availability" / "depth_charts.csv"
@@ -125,7 +125,7 @@ def main() -> int:
 
     counts = detail.verdict.value_counts().to_dict()
     head = dict(
-        generated_utc=pd.Timestamp.now("UTC").strftime("%Y-%m-%dT%H:%M:%SZ"),
+        generated_utc=LIVE_CAPTURE_UTC,
         clubs=teams,
         slots_compared=int(len(detail)),
         match=int(counts.get("MATCH", 0)),

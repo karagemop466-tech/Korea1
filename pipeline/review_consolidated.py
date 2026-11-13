@@ -33,7 +33,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import ROOT, write_json  # noqa: E402
+from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
 
@@ -69,23 +69,71 @@ TOPICS = {
 # Registers read, with the page that publishes them.
 REGISTERS = [
     ("suggestions", ROOT / "data/processed/suggestions.csv", "suggestions.html",
-     "id", "title", "effort", "impact"),
+     "id", "title", "effort", "impact", "official_reference"),
     ("path-selector", ROOT / "data/governance/suggestions_review.csv", "suggestions-review.html",
-     "id", "title", "priority", ""),
+     "id", "title", "priority", "", "official_ref_label"),
     ("decision-board", ROOT / "data/review/suggestions.csv", "decision-board.html",
-     "id", "suggestion", "effort", ""),
+     "id", "suggestion", "effort", "", "source"),
     ("parallel-register", ROOT / "data/processed/review_suggestions.csv", "questions.html",
-     "id", "suggestion", "priority", ""),
+     "id", "suggestion", "priority", "", "source_url"),
 ]
 
 QUESTIONS = [
     ("questions", ROOT / "data/processed/questions.csv", "questions.html",
-     "id", "question", "status", "blocks"),
+     "id", "question", "status", "blocks", "official_reference"),
     ("open-questions", ROOT / "data/review/questions.csv", "open-questions.html",
-     "id", "question", "status", "category"),
+     "id", "question", "status", "category", "source"),
     ("decision-readiness", ROOT / "data/governance/decision_questions.csv", "decisions.html",
-     "id", "question", "blocker_severity", "domain"),
+     "id", "question", "blocker_severity", "domain", "official_ref_url"),
 ]
+
+
+# Source labels used by the registers -> the official page each label means. The
+# registers already carry a source on every row; this map turns a short label into the
+# URL the row is actually citing, so a consolidated table can show it.
+SOURCE_URL = {
+    "White": ("White (2000), Econometric Society",
+              "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping"),
+    "Bailey": ("Bailey & López de Prado (2014)",
+               "https://www.pm-research.com/content/iijpormgmt/40/5/94"),
+    "NFL scores": ("NFL official scores", "https://www.nfl.com/scores/"),
+    "NFL injuries": ("NFL injury report", "https://www.nfl.com/injuries/"),
+    "NFL schedule": ("NFL schedule", "https://www.nfl.com/schedules/"),
+    "NFL inactives": ("NFL inactives", "https://www.nfl.com/inactives/"),
+    "GitHub Pages": ("GitHub Pages documentation",
+                     "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"),
+    "GitHub Actions schedule": ("GitHub Actions scheduled workflows",
+                                "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"),
+    "FanDuel": ("FanDuel push settlement rules",
+                "https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push"),
+    "Club depth chart": ("NFL club depth chart", "https://www.commanders.com/team/depth-chart"),
+    "NFL injury report (2026 week 10)": ("NFL injury report, 2026 week 10",
+                                        "https://www.nfl.com/injuries/league/2026/reg10"),
+    "NFL official Week 10 injury report": ("NFL injury report, 2026 week 10",
+                                           "https://www.nfl.com/injuries/league/2026/reg10"),
+    "NFL official 2026 Week 9 scores": ("NFL official 2026 Week 9 scores",
+                                        "https://www.nfl.com/scores/2026/REG9"),
+    "NFL official schedule": ("NFL schedule", "https://www.nfl.com/schedules/"),
+    "NFL team roster (Arizona Cardinals)": ("NFL club roster",
+                                            "https://www.nfl.com/teams/arizona-cardinals/roster"),
+    "NFL rules": ("NFL rulebook", "https://operations.nfl.com/the-rules/nfl-rulebook/"),
+    "Benjamini & Hochberg (1995), university record": (
+        "Benjamini & Hochberg (1995), university record",
+        "https://cris.tau.ac.il/en/publications/controlling-the-false-discovery-rate-a-practical-and-powerful-app-2/"),
+    "NFL Operations": ("NFL Operations pregame rules",
+                       "https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep"),
+}
+
+
+def resolve_source(label: str) -> tuple[str, str]:
+    """Return (label, url) for a register's own source label; blank stays blank."""
+    lab = (label or "").strip()
+    if not lab:
+        return "", ""
+    for key, (name, url) in SOURCE_URL.items():
+        if lab.lower().startswith(key.lower()):
+            return name, url
+    return lab, ""
 
 
 def classify(text: str) -> str:
@@ -100,30 +148,42 @@ def classify(text: str) -> str:
 
 def load_suggestions() -> pd.DataFrame:
     rows = []
-    for register, path, page, idc, textc, ec, ic in REGISTERS:
+    for register, path, page, idc, textc, ec, ic, sc in REGISTERS:
         if not path.exists():
             continue
         d = pd.read_csv(path).fillna("")
         for r in d.itertuples(index=False):
             g = lambda c: getattr(r, c, "") if c else ""  # noqa: E731
             text = str(g(textc))
+            raw = str(g(sc))
+            if raw.startswith("http"):
+                label, url = "Official / primary source", raw
+            else:
+                label, url = resolve_source(raw)
             rows.append(dict(register=register, page=page, id=str(g(idc)), text=text,
                              effort=str(g(ec)), impact=str(g(ic)),
+                             source_label=label, source_url=url,
                              topic=classify(text + " " + str(g(ic)))))
     return pd.DataFrame(rows)
 
 
 def load_questions() -> pd.DataFrame:
     rows = []
-    for register, path, page, idc, textc, sc, bc in QUESTIONS:
+    for register, path, page, idc, textc, stc, bc, sc in QUESTIONS:
         if not path.exists():
             continue
         d = pd.read_csv(path).fillna("")
         for r in d.itertuples(index=False):
             g = lambda c: getattr(r, c, "") if c else ""  # noqa: E731
             text = str(g(textc))
+            raw = str(g(sc))
+            if raw.startswith("http"):
+                label, url = "Official / primary source", raw
+            else:
+                label, url = resolve_source(raw)
             rows.append(dict(register=register, page=page, id=str(g(idc)), text=text,
-                             status=str(g(sc)), blocks=str(g(bc)), topic=classify(text)))
+                             status=str(g(stc)), blocks=str(g(bc)),
+                             source_label=label, source_url=url, topic=classify(text)))
     return pd.DataFrame(rows)
 
 
@@ -171,7 +231,7 @@ def main() -> int:
         convergence_topics=int((summary.registers_agreeing >= 3).sum()),
     )
     head = dict(
-        generated_utc=pd.Timestamp.now("UTC").strftime("%Y-%m-%dT%H:%M:%SZ"),
+        generated_utc=LIVE_CAPTURE_UTC,
         counts=counts,
         registers=[dict(register=r, page=p, path=str(Path(f).relative_to(ROOT)),
                         rows=int(len(pd.read_csv(f)))) for r, f, p, *_ in REGISTERS
