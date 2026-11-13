@@ -91,6 +91,35 @@ than assumed. The census is therefore spot-verified, not machine-verified end to
 All of this is published on `referents.html` and cross-listed on `flagged.html` as F-21 to F-28. Nothing
 was silently repaired: a citation is only changed after a human confirms the replacement says the same thing.
 
+## Forward test — first settlement, 2026-11-13 (session `arena/8a322b62-korea1`)
+
+The repository now publishes a **prospective** record, which is the only evidence that cannot be
+contaminated by hindsight. `forward.html` prints every ticket frozen before kickoff and settles it only
+against an official NFL.com final.
+
+| Item | State | Meaning |
+|---|---|---|
+| Frozen before kickoff | 65 tickets across 18 strategies and 14 Week 10 games; written `2026-11-12T13:26:48Z`, received by GitHub `13:28:07Z`, 11.78 h before the first kickoff | The picks were public before the games started. The receipt time is GitHub's, not the committer's. [NFL week 10 schedule](https://www.nfl.com/schedules/2026/by-week/reg-10) |
+| Settled from an official final | **4 of 65** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | 61 tickets stay `OPEN`; none is defaulted to a push or a void. Net -0.305 units across the settled tickets. |
+| Strategies with a counted result | 4 of 18 | One ticket each is not a record. |
+| Validated strategies / rewards | **0 / none** | No strategy is past its declared horizon (150 single or 60 parlay tickets over 30 weeks); verdicts are withheld from the agent by ledger amendment A1. |
+| Gate F2 (official settlement) | PASS where a ticket has settled | Settlement now rests on an official page; before this pass the same 4 tickets were `PROVISIONAL`. |
+| Gate F6 (quote provenance) | FAIL for all strategies | Frozen prices are community-mirror values, not authenticated bookmaker quotes. |
+
+**What this does not mean.** 4 tickets at one game is not a sample, and a 2–2 split is
+indistinguishable from chance. `forward.html` prints no p-value, no ROI and no verdict, and awards
+nothing. The honest reading is that the forward clock has started and the record can now be audited;
+nothing about the strategy library has been demonstrated.
+
+**A defect repaired on the way.** The committed evidence manifest
+`data/evidence/nfl_injuries/week10_2026/manifest.json` was rewritten by every build and carried
+`"sha256": null` for `news_register.md`, because `pipeline/fetch_injuries.py` hashed only `files[0]`.
+`tests/check_rebuild.py` does not cover `data/evidence/`, so the drift survived review and left the tree
+dirty after each build. Every declared file is now hashed, a missing file raises, and
+`tests/test_evidence_integrity.py` fails on a null or mismatched digest (verified by restoring the old
+code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
+
+
 ## What was delivered
 
 | Requirement | Delivery | Evidence status | Official / primary reference |
