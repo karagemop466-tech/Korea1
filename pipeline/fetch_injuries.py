@@ -278,8 +278,19 @@ def main() -> None:
     man = json.loads((snapshot_dir / "manifest.json").read_text())
     body_path = snapshot_dir / "injury_report.md"
     digest = sha256_of(body_path)
+    # Hash every file the manifest declares, not just the report body.
+    #
+    # Defect found 2026-11-13 (arena/8a322b62-korea1): the previous code called
+    # `setdefault("sha256", None)` and then hashed only `files[0]`, so every build rewrote
+    # this committed manifest and recorded `"sha256": null` for `news_register.md`. A
+    # committed evidence manifest that says null for a file it names undercuts the hash's only
+    # purpose, and the rewrite made the tree dirty on every `make build`.
     for f in man["files"]:
-        f.setdefault("sha256", None)
+        local = ROOT / f["local"]
+        if not local.exists():
+            raise RuntimeError(f"manifest names a missing evidence file: {f['local']}")
+        f["sha256"] = sha256_of(local)
+        f["bytes"] = local.stat().st_size
     man["files"][0]["sha256"] = digest
     man["files"][0]["bytes"] = body_path.stat().st_size
     write_json(snapshot_dir / "manifest.json", man)
