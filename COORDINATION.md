@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-12 (sessions `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`)
+Last updated: 2026-11-13 (session `arena/18c4acce-korea1`, claim R1). Earlier sessions: `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`
 
 ## How to use this board
 
@@ -42,6 +42,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T15 | Decision board (suggestions to review and choose before any change is implemented) | **done** | `arena/c0528572-korea1` | `data/review/suggestions.csv`, `decision-board.html` |
 | T16 | Open-questions register (known / unknown / how to discover) | **done** | `arena/c0528572-korea1` | `data/review/questions.csv`, `open-questions.html` |
 | T17 | Repo re-review (2026-11-12), executive-summary refresh, integration of T14–T16 on top of whatever is on `main` at merge time | **done** | `arena/c0528572-korea1` | `data/review/repo_review.csv`, shared files only at integration: `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py` (page list + allow-list), `tests/check_*.py` (page list), `Makefile`, `.github/workflows/verify.yml` |
+| R1 | **2026-11-13 availability reconciliation**: check the automated Week 10 injury report and club depth-chart snapshot (`data/availability/`, commit `43a946a`) against the official pages (line-level sample), publish the gap register, correct the stale "2 of 32 clubs" coverage claims, flag the HOU capture failure and the club-side "Unofficial Depth Chart" label | **in progress** | `arena/18c4acce-korea1` | `data/governance/availability_reconciliation_2026_11_13.csv` (new), `pipeline/decisions.py` (Q30 / S17 text only), `pipeline/availability.py` (AV-S1…S4 `available` text only), `pipeline/render_decisions.py` (coverage sentences only), `pipeline/render_site.py` (F-15 row + coverage sentence only), `research/injuries.md` (row 12 only), `README.md` (coverage sentence only), `EXECUTIVE_SUMMARY.md` (two coverage rows only), `DECISIONS.md` (D-05 row), `data/evidence/nfl_injuries/week10_2026/manifest.json` (null-hash repair), `COORDINATION.md` (own section + this row) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -1569,3 +1570,22 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+
+---
+
+## 2026-11-13 — Session `arena/18c4acce-korea1` (R1: availability reconciliation)
+
+**Board state read before claiming (2026-11-13T22:55Z).** `git fetch origin '+refs/heads/*:refs/remotes/origin/*'`
+run first. `main` = `43a946a` (availability bot snapshot, 2026-11-13T18:32Z). Every 2026-11-12 claim is merged
+(PRs #22–#36) except PR #24 (`arena/3e57f750-korea1`) and PR #30 (`arena/f115e6a2-korea1`), both **open with no commit
+since 2026-11-12 13:44Z and 13:40Z**, and PR #19 (`arena/5b3f0799-korea1`, open since 2026-11-02). Their scopes are not
+claimed here and nothing on those branches is touched. No open claim covers the availability tracker's output
+after 2026-11-12, so R1 claims only the gaps listed in its row.
+
+**Why R1.** The automated tracker (`.github/workflows/availability.yml`) now writes depth charts for **31 of 32 clubs**
+(`data/availability/manifest.json`: `clubs_with_depth_chart: 31`). Published pages still say "2 of 32 clubs".
+HOU returned `parsed 0 rows` on both the 2026-11-12 and 2026-11-13 captures.
+
+**Protocol note.** The shared outputs listed in the R1 row are changed by this session because every other task on
+the board is done or merged. Each change is one sentence or one row and is logged below. Nothing else is restructured.
