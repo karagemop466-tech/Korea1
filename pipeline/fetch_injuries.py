@@ -278,8 +278,13 @@ def main() -> None:
     man = json.loads((snapshot_dir / "manifest.json").read_text())
     body_path = snapshot_dir / "injury_report.md"
     digest = sha256_of(body_path)
+    # Hash every staged file from its own path (R1, 2026-11-13). The earlier code only set a
+    # default of None for entries after the first, so the news register was recorded with no hash.
     for f in man["files"]:
-        f.setdefault("sha256", None)
+        local = snapshot_dir / f["logical"]
+        f["sha256"] = sha256_of(local) if local.exists() else None
+        if local.exists():
+            f["bytes"] = local.stat().st_size
     man["files"][0]["sha256"] = digest
     man["files"][0]["bytes"] = body_path.stat().st_size
     write_json(snapshot_dir / "manifest.json", man)
