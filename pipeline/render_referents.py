@@ -381,6 +381,11 @@ checked for presence.</p>
   community archive still listed those games as upcoming. Every one of the 28 rows is re-opened here
   and the final score is read again from the official game page. A row only counts as verified when
   the header summary and the quarter-by-quarter table on the same official page agree.</p>
+  {flag("<strong>Read UNPARSED as 'no verdict', not as 'agrees'.</strong> The official game-centre page "
+        "is client-rendered - the runner receives raw HTML that contains no score, so the automated pass "
+        "cannot confirm or refute any row. Two rows were opened by hand on 2026-11-13 and both agree with "
+        "the official page, including the Atlanta 0-16 shutout. The census is spot-verified, not "
+        "machine-verified end to end, and this page says so rather than implying a clean pass.", "warn")}
   {flag("<strong>Why this matters.</strong> These 28 rows are the only place where the project "
         "compares its own archived outcomes against an official source. If they agree, the pin is "
         "trustworthy for scores even though it is stale for results; if any disagree, the whole census "

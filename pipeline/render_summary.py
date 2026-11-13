@@ -108,6 +108,13 @@ Separately, `scripts/score_reconcile.py` re-opens the official game page for all
 archived outcomes against an official source, so agreement here is what makes the pin trustworthy for
 scores even though it is stale for results.
 
+**The first machine run produced no verdict for any of the 28 rows.** The official game-centre page is
+client-rendered: the runner receives raw HTML with no score in it, so every row came back `UNPARSED`
+rather than `MATCH` or `MISMATCH`. That is recorded as a parser limitation, not as agreement. Two rows
+(`ARI 33–30 DAL` and `ATL 0–16 TB`) were opened by hand on 2026-11-13 and both agree with the official
+page — including the Atlanta shutout, which is exactly the kind of value that should be re-checked rather
+than assumed. The census is therefore spot-verified, not machine-verified end to end.
+
 All of this is published on `referents.html` and cross-listed on `flagged.html` as F-21 to F-28. Nothing
 was silently repaired: a citation is only changed after a human confirms the replacement says the same thing.
 

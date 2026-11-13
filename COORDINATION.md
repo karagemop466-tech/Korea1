@@ -1882,3 +1882,90 @@ an earlier *edit* to one of them. Reading the rendered live page after a merge i
 `pipeline/review_consolidated.py`, `pipeline/render_live.py`, `data/live/**`,
 `live-verification.html`, `review.html`, `tests/test_live_verify.py`,
 `tests/test_review_consolidated.py`, plus the V3 integration points claimed on the board.
+
+### T40 result — `arena/84e42ecc-korea1` (2026-11-13)
+
+**What was done.** Every external URL printed on the published site was extracted and resolved against
+the live page, and the result was published. This is the check that was missing: the existing verifiers
+confirm each row *carries* an official-domain reference, which is a presence check, and the board already
+said so explicitly ("proves reference presence, not truth of a claim"). A citation that 404s looks like
+evidence and is not.
+
+**Artefacts** (all inside the claimed scope):
+
+| File | What it holds |
+|---|---|
+| `scripts/referent_probe.py` | Extracts every external `href` from `*.html` + `lab/*.html`, resolves it, records status, redirect target, content type, byte count, SHA-256, `<title>`, and whether the asserted text is present. |
+| `scripts/score_reconcile.py` | Re-reads the final score for all 28 rows of the Week 8–9 2026 census from the official game page. |
+| `data/audit/referent_expectations.csv` | Per-URL claim text, manual status, checked date, evidence note, and whether a manual read overrides the machine. |
+| `data/audit/referent_probe.json` / `referent_register.csv` | Full machine output. |
+| `data/audit/score_reconciliation.json` / `.csv` | Score census re-check. |
+| `referents.html` | The published register: verdict definitions, claim-support checks, unresolved/qualified referents, score census, full machine register, reproduction table. |
+| `.github/workflows/referent-audit.yml` | Nightly runner probe (the build sandbox has no egress to NFL, club or publisher domains) + `workflow_dispatch` + push trigger. |
+
+**Probe result, 2026-11-13T23:37Z (475 distinct URLs on site, all probed):**
+454 resolved · 8 redirect · 11 unresolved · 2 claim-not-supported.
+
+**Confirmed dead — independently by hand and by machine.** Two NFL Football Operations policy pages
+(`/updates/football-ops/2017-nfl-injury-report-policy/`, `/inside-football-ops/players-legends/player-protections/`,
+both "404 - FLAG ON THE PLAY", three pages each — previously N-05, **still printed**); the NFL.com
+`/teams/<club>/depth-chart` path (four pages); `docs.github.com` Pages publishing-source page;
+`github.com/clausherther/nfl-dbt/tree/main/...` (branch is `master` — the `blob/master` paths in
+`data/sources_pbp.json` do resolve); `Korea1/blob/main/data/processed/audit.json` (no such file).
+
+**Two findings that needed judgement rather than a code change:**
+
+1. **The Deflated Sharpe Ratio citation is fine; the probe is wrong.** `pm-research.com` reported
+   UNRESOLVED (HTTP 302) and it is printed on 13 pages. Opened by hand it serves the correct record:
+   Bailey & López de Prado, *Journal of Portfolio Management* 40(5), 94–107, DOI 10.3905/jpm.2014.40.5.094.
+   The publisher serves an interstitial to non-browser clients. The manual read overrides the probe and
+   the reason is published; F-24 was downgraded from *Medium · open* to *Low · needs review*.
+2. **The FanDuel parlay-push page is fine too.** The probe reports EXPECTED-MISS because the help centre
+   is client-rendered — the runner only sees a "Loading / CSS Error" shell. Read with a rendering reader
+   the quoted settlement rule is present. Manual read overrides.
+
+Both are recorded as overrides with the reason, because a machine 4xx is not proof a page is wrong, any
+more than a 200 is proof a claim is right.
+
+**Still unverified, not asserted either way:** `tandfonline.com` and three `doi.org` handles return 403 —
+automated access refused, which is not proof of absence. The citation text is unchanged; the links are
+unverified in this pass.
+
+**Redirects (8), all working today but with stale printed paths:** `the-rules/nfl-rulebook` →
+`rules-officiating/2026-nfl-rulebook` (13 pages); `player-health-safety` →
+`preparation-safety/health-safety`; `/scores/2026/REG8` and `REG9` → `week-8` / `week-9`; the Kelly DOI →
+IEEE Xplore; two `issues/new` links → GitHub login (benign — they require auth). One redirect is a real
+problem: **the FiveThirtyEight Elo methodology URL now lands on `abcnews.com/politics`**, so the K=20 and
+one-third-regression values this project quotes are no longer readable from the printed link.
+
+**Score census — honest result.** All 28 rows came back `UNPARSED`: the official game-centre page is
+client-rendered and the runner gets raw HTML with no score in it. That is recorded as *no verdict*, not
+as agreement. Two rows were opened by hand on 2026-11-13 and both match the official page, including the
+Atlanta 0–16 shutout — the kind of value worth re-checking rather than assuming. The census is
+spot-verified, not machine-verified end to end, and both the page and the executive summary say so.
+
+**Irregularity logged for the availability page owner (not repaired here):** the landing page still
+presents WAS @ NYG with a 2026-11-12 kickoff as a forward-looking matchup, but the official Week 10
+schedule shows it FINAL — Commanders 24, Giants 21. Filed as F-28; `arena/18c4acce-korea1` owns that page.
+
+**Deliberate non-change.** `github.com` was briefly added to the `ALLOW` list in `verify_site.py` so the
+register could print one table row per URL. It was **reverted**: it broke
+`tests/test_integration.py::test_official_allowlist_rejects_community_only`, which encodes a rule this
+project must keep — a community repository URL is never an official source. `referents.html` instead
+prints official/primary referents as table rows and community/method publishers in a separated, clearly
+labelled list. Nothing is hidden; the reason is printed on the page and in `verify_site.py`.
+
+**Cross-scope edits** (minimum needed to register one new page; no other session's content rewritten):
+`pipeline/render_site.py` (NAV entry, one `index.html` card, two hero buttons, eight `flagged.html` rows
+F-21–F-28), `pipeline/verify_site.py` (page registration + the reverted-allowlist note),
+`tests/check_sources.py` / `tests/check_links.py` (page registration), `Makefile` (two targets),
+`pipeline/render_summary.py` (one section), `README.md` (one section + one link), `COORDINATION.md`.
+
+**Verification before the pull request:** `make build` clean; `pipeline/verify_site.py` 0 failing checks;
+`tests/check_sources.py` 27 canonical pages / 2,605 rows, every row with an official/primary reference;
+`tests/check_links.py` 36 pages, no broken internal links, anchors or assets; `pytest tests/` 164 passed,
+1 skipped.
+
+**Open PRs #24 and #30 were not merged.** Both are `CONFLICTING` against current `main` (109 and 125
+changed files, last updated 2026-11-12), their T14–T17 / T14 titles match work already merged through
+other branches, and the protocol says do not merge a broken site. Left open for their owners.
