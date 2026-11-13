@@ -67,11 +67,18 @@ NFL_SCHEDULES = "https://www.nfl.com/schedules/"
 RESULT_TONE = {
     "RESOLVED": "good",
     "REDIRECT": "luck",
+    "REDIRECT-BROKEN": "bad",
     "UNRESOLVED": "bad",
     "EXPECTED-MISS": "bad",
     "UNCHECKED": "unverified",
     "RESOLVED-NOTE": "unverified",
+    "UNPARSED": "unverified",
+    "MATCH": "good",
+    "MISMATCH": "bad",
 }
+
+# Manual statuses that need a human decision, whatever the machine probe said.
+NEEDS_DECISION = {"UNRESOLVED", "EXPECTED-MISS", "REDIRECT-BROKEN", "RESOLVED-NOTE", "MISMATCH"}
 
 RESULT_NOTE = {
     "RESOLVED": "loaded; supports the claim",
@@ -130,12 +137,13 @@ def build() -> str:
     m_rows = []
     for r in m_official:
         st = r["manual_status"]
+        override = r.get("manual_overrides_probe") == "1"
         m_rows.append([
             f"<strong>{e(r.get('ref_id',''))}</strong>",
             e(r.get("claim", "")),
             src_link(r["url"], shorten(r["url"])),
             r.get("expect", "") and f"<code>{e(r['expect'])}</code>" or '<span class="muted">no text check</span>',
-            result_pill(st),
+            result_pill(st) + (" <span class='muted'>manual read overrides probe</span>" if override else ""),
             e(r.get("manual_checked_at", "")),
             e(r.get("manual_note", "")),
         ])
@@ -150,7 +158,7 @@ def build() -> str:
         out = []
         for r in items:
             out.append(
-                f"<li>{result_pill(r.get('manual_status') or r.get('result',''))} "
+                f"<li>{result_pill((r.get('manual_status') if r.get('manual_overrides_probe')=='1' else None) or r.get('manual_status') or r.get('result',''))} "
                 f"{src_link(r[key_url], shorten(r[key_url], 78))}"
                 f"<div class='muted'>{e(r.get('claim') or r.get('ref_id',''))}</div>"
                 f"<div class='small'>{e(r.get('manual_note') or (r.get('error') or ''))}</div></li>")
@@ -165,29 +173,37 @@ def build() -> str:
                    ) if m_other else ""
 
     # ---------------------------------------------------------------- irregular rows
-    bad = [r for r in rows if r.get("result") in ("UNRESOLVED", "EXPECTED-MISS", "UNCHECKED")
+    # A manual read overrides the machine probe when the probe is known to be
+    # unreliable on that host (client-rendered pages, bot-blocked publishers).
+    def effective(r):
+        if r.get("manual_status") and r.get("manual_overrides_probe") == "1":
+            return r["manual_status"]
+        return r.get("result", "")
+
+    bad = [r for r in rows if effective(r) in ("UNRESOLVED", "EXPECTED-MISS", "UNCHECKED")
            and is_official(r["url"])]
-    bad_other = [r for r in rows if r.get("result") in ("UNRESOLVED", "EXPECTED-MISS", "UNCHECKED")
+    bad_other = [r for r in rows if effective(r) in ("UNRESOLVED", "EXPECTED-MISS", "UNCHECKED")
                  and not is_official(r["url"])]
-    note_rows = [r for r in m_official if r.get("manual_status") == "RESOLVED-NOTE"]
+    note_rows = [r for r in m_official
+                 if r.get("manual_status") in ("RESOLVED-NOTE", "REDIRECT-BROKEN")]
     irr = []
     for r in bad:
         irr.append([
-            result_pill(r["result"]),
+            result_pill(effective(r)),
             e(r.get("status", "")),
             src_link(r["url"], shorten(r["url"])),
-            e(r.get("title", "")[:90]) or '<span class="blank" aria-label="blank: unverified"></span>',
+            e(r.get("title", "")[:90]) or e(r.get("ref_id", "")),
             f"{r.get('n_pages', 0)}",
             e((r.get("error") or "")[:70]) or '<span class="muted">—</span>',
         ])
     for r in note_rows:
         irr.append([
-            result_pill("RESOLVED-NOTE"),
-            "200",
+            result_pill(r["manual_status"]),
+            '<span class="muted">200</span>',
             src_link(r["url"], shorten(r["url"])),
             e(r.get("ref_id", "")),
-            '<span class="muted">—</span>',
-            e(r.get("manual_note", "")[:200]),
+            '<span class="muted">see note</span>',
+            e(r.get("manual_note", "")[:260]),
         ])
     irr_tbl = table(
         irr,
