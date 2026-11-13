@@ -56,6 +56,10 @@ jobs:
             --host "${{ github.event.inputs.host }}" \
             --timeout 25 --sleep 0.25 2>&1 | tail -n 600
 
+      - name: Re-check the published score census against the live official game pages
+        run: |
+          python3 scripts/score_reconcile.py --timeout 25 --sleep 0.4 2>&1 | tail -n 60
+
       - name: Summarise
         id: summary
         run: |
@@ -78,6 +82,12 @@ jobs:
               fh.write(f"- Probed: **{len(d.get('rows', []))}**\n")
               for k in sorted(s):
                   fh.write(f"- {k}: **{s[k]}**\n")
+          sc = "data/audit/score_reconciliation.json"
+          if os.path.exists(sc):
+              d2 = json.load(open(sc))
+              fh.write("\n## Score census reconciliation\n\n")
+              for k in sorted(d2.get("summary", {})):
+                  fh.write(f"- {k}: **{d2['summary'][k]}**\n")
           PY
 
       - name: Render the register page
@@ -99,13 +109,17 @@ jobs:
           path: |
             data/audit/referent_probe.json
             data/audit/referent_register.csv
+            data/audit/score_reconciliation.json
+            data/audit/score_reconciliation.csv
           retention-days: 90
 
       - name: Commit the result
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/audit/referent_probe.json data/audit/referent_register.csv referents.html
+          git add data/audit/referent_probe.json data/audit/referent_register.csv \
+                  data/audit/score_reconciliation.json data/audit/score_reconciliation.csv \
+                  referents.html
           if git diff --cached --quiet; then
             echo "no change to commit"
           else

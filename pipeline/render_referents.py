@@ -38,6 +38,23 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from render_site import ROOT, card, e, flag, kpi_grid, layout, src_link, table  # noqa: E402
+from verify_site import ALLOW  # noqa: E402  (single source of truth for "official/primary")
+
+
+def is_official(url: str) -> bool:
+    """True when the referent's host is an allow-listed official/primary publisher.
+
+    Only these referents are printed as table rows.  Community repositories and
+    method publishers (github.com, doi.org, ...) are printed in a separated list:
+    tests/test_integration.py::test_official_allowlist_rejects_community_only
+    enforces that a community URL is never an official source, and a table row on
+    a canonical page is read as a sourced claim.
+    """
+    from urllib.parse import urlsplit
+    try:
+        return urlsplit(url).hostname in ALLOW
+    except Exception:
+        return False
 
 AUDIT = ROOT / "data" / "audit"
 PROBE_JSON = AUDIT / "referent_probe.json"
@@ -108,8 +125,10 @@ def build() -> str:
 
     # ---------------------------------------------------------------- manual checks
     manual = [r for r in expectations if r.get("manual_status")]
+    m_official = [r for r in manual if is_official(r["url"])]
+    m_other = [r for r in manual if not is_official(r["url"])]
     m_rows = []
-    for r in manual:
+    for r in m_official:
         st = r["manual_status"]
         m_rows.append([
             f"<strong>{e(r.get('ref_id',''))}</strong>",
@@ -127,9 +146,30 @@ def build() -> str:
         caption="Claim-support checks: each URL was opened and the asserted text looked for in the response",
     ) if m_rows else flag("No manual claim-support checks recorded yet.", "warn")
 
+    def other_list(items, key_url="url"):
+        out = []
+        for r in items:
+            out.append(
+                f"<li>{result_pill(r.get('manual_status') or r.get('result',''))} "
+                f"{src_link(r[key_url], shorten(r[key_url], 78))}"
+                f"<div class='muted'>{e(r.get('claim') or r.get('ref_id',''))}</div>"
+                f"<div class='small'>{e(r.get('manual_note') or (r.get('error') or ''))}</div></li>")
+        return '<ul class="findings">' + "".join(out) + "</ul>"
+
+    other_block = (f'<p class="small">These referents are community data publishers or method '
+                   f'publishers, not official NFL sources, so they are listed rather than tabled: '
+                   f'a table row on a canonical page is read as a sourced claim, and '
+                   f'<code>tests/test_integration.py</code> enforces that a community repository URL '
+                   f'is never an official source. Their resolution is recorded all the same.</p>'
+                   + other_list(m_other)
+                   ) if m_other else ""
+
     # ---------------------------------------------------------------- irregular rows
-    bad = [r for r in rows if r.get("result") in ("UNRESOLVED", "EXPECTED-MISS", "UNCHECKED")]
-    note_rows = [r for r in manual if r.get("manual_status") == "RESOLVED-NOTE"]
+    bad = [r for r in rows if r.get("result") in ("UNRESOLVED", "EXPECTED-MISS", "UNCHECKED")
+           and is_official(r["url"])]
+    bad_other = [r for r in rows if r.get("result") in ("UNRESOLVED", "EXPECTED-MISS", "UNCHECKED")
+                 and not is_official(r["url"])]
+    note_rows = [r for r in m_official if r.get("manual_status") == "RESOLVED-NOTE"]
     irr = []
     for r in bad:
         irr.append([
@@ -153,11 +193,15 @@ def build() -> str:
         irr,
         ["Result", "HTTP", "Referent", "Page title / ref", "Rows citing it", "Observed"],
         caption="Referents that did not resolve, did not support their claim, or resolve with a caveat",
-    ) if irr else flag("No unresolved referents in the last probe run.", "good")
+    ) if irr else flag("No unresolved official referents in the last probe run.", "good")
+    irr_other = (f'<h3>Unresolved referents that are not official sources</h3>' + other_list(bad_other)
+                 ) if bad_other else ""
 
     # ---------------------------------------------------------------- full register
+    reg = [r for r in rows if is_official(r["url"])]
+    reg_other = [r for r in rows if not is_official(r["url"])]
     full = []
-    for r in rows:
+    for r in reg:
         full.append([
             result_pill(r["result"]),
             e(r.get("status", "")),
@@ -178,6 +222,56 @@ def build() -> str:
     ) if full else flag(
         "The machine register is empty: <code>scripts/referent_probe.py</code> has not completed a run "
         "with outbound network access. The manual claim-support checks above are unaffected.", "warn")
+    reg_other_block = (
+        f"<h3>Community and method publishers ({len(reg_other)})</h3>"
+        + (f'<p class="small">Probed on the same schedule. Listed, not tabled — see the note above.</p>'
+           + other_list(reg_other))
+    ) if reg_other else ""
+
+    # ---------------------------------------------------------------- score census
+    sc_path = AUDIT / "score_reconciliation.json"
+    sc = json.loads(sc_path.read_text()) if sc_path.exists() else {}
+    sc_rows = sc.get("results", [])
+    sc_summary = sc.get("summary", {})
+    if sc_rows:
+        srows = []
+        for r in sc_rows:
+            res = r["result"]
+            tone = {"MATCH": "good", "MISMATCH": "bad"}.get(res, "unverified")
+            srows.append([
+                f"<strong>{e(r['game_id'])}</strong>",
+                f"Wk {e(r['week'])}",
+                e(r["matchup"]),
+                e(r["published_claim"]),
+                (f"{e(r['live_away'])} – {e(r['live_home'])}"
+                 if r["live_away"] != "" else '<span class="blank" aria-label="blank: unverified"></span>'),
+                pill(res, tone),
+                e(r.get("http_status", "")),
+                src_link(r["nfl_com_url"], shorten(r["nfl_com_url"], 58)),
+            ])
+        score_tbl = tools("filter by team, week or result") + table(
+            srows,
+            ["Game", "Week", "Matchup", "Published claim", "Live official page", "Result",
+             "HTTP", "Official game page"],
+            caption="The 28-row Week 8–9 2026 score census, re-read from the official NFL.com game page for every row",
+        )
+        score_head = (
+            f'<div class="cards">'
+            + card(f"{len(sc_rows)}", "census rows re-checked", "against the official game page", "")
+            + card(f"{sc_summary.get('MATCH', 0)}", "match", "live official page agrees", "good")
+            + card(f"{sc_summary.get('MISMATCH', 0)}", "mismatch", "published row disagrees with the official page",
+                   "bad" if sc_summary.get("MISMATCH") else "good")
+            + card(f"{sc_summary.get('UNPARSED', 0)}", "unparsed", "page loaded, score not readable — no verdict",
+                   "unverified")
+            + "</div>"
+        )
+    else:
+        score_tbl = flag(
+            "The score census has not been re-checked yet: "
+            "<code>scripts/score_reconcile.py</code> has not completed a run with outbound network "
+            "access. Two rows (<code>2026_08_ARI_DAL</code> and <code>2026_08_ATL_TB</code>) were "
+            "checked by hand on 2026-11-13 and both agree with the official game page.", "warn")
+        score_head = ""
 
     # ---------------------------------------------------------------- cards
     n_by = lambda k: summary.get(k, 0)  # noqa: E731
@@ -239,6 +333,7 @@ checked for presence.</p>
   the asserted text was looked for in the response — not assumed from the URL.</p>
   {tools('try rulebook, inactive, parlay, reality check…')}
   {manual_tbl}
+  {other_block}
 </section>
 
 <section id="irregular">
@@ -247,16 +342,35 @@ checked for presence.</p>
   <p>These are the rows that need a decision. None has been silently repaired: a citation is only
   changed after a human has looked at the replacement page and confirmed it says the same thing.</p>
   {irr_tbl}
+  {irr_other}
 </section>
 
 <section id="register">
   <div class="section-head"><h2>Full machine register</h2>
-    <a href="data/audit/referent_register.csv">Download referent_register.csv</a></div>
+    {('<a href="data/audit/referent_register.csv">Download referent_register.csv</a>'
+      if rows else '<span class="small">download appears once a probe run has completed</span>')}</div>
   <p>Produced by <code>scripts/referent_probe.py</code>, which extracts every external
   <code>href</code> from every published page and resolves it. The probe runs on a GitHub-hosted runner
   because the build sandbox has no outbound access to NFL or club domains.</p>
   {tools('filter by host, status or page')}
   {full_tbl}
+  {reg_other_block}
+</section>
+
+<section id="score-census">
+  <div class="section-head"><h2>Score census reconciliation</h2>
+    {('<a href="data/audit/score_reconciliation.csv">Download score_reconciliation.csv</a>'
+      if sc_rows else '<span class="small">download appears once a probe run has completed</span>')}</div>
+  <p>The Week 8–9 2026 score census was transcribed from nfl.com on 2026-11-12 while the pinned
+  community archive still listed those games as upcoming. Every one of the 28 rows is re-opened here
+  and the final score is read again from the official game page. A row only counts as verified when
+  the header summary and the quarter-by-quarter table on the same official page agree.</p>
+  {flag("<strong>Why this matters.</strong> These 28 rows are the only place where the project "
+        "compares its own archived outcomes against an official source. If they agree, the pin is "
+        "trustworthy for scores even though it is stale for results; if any disagree, the whole census "
+        "has to be re-transcribed.", "info")}
+  {score_head}
+  {score_tbl}
 </section>
 
 <section id="how-to-reproduce">
