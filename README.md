@@ -51,6 +51,17 @@ An upstream refresh requires `python pipeline/fetch_data.py --refresh-pin` follo
 The independent annex can be rebuilt with `PYTHON=.venv/bin/python make annex`.
 Historical calculations remain in `data/lab/`; public annex tables do not present them as official facts.
 
+## Forward test (settlement)
+
+`forward.html` publishes the picks frozen before kickoff, settled only against an official NFL.com
+final. `.github/workflows/forward-ledger.yml` removes manual input from the parts that are safe to
+automate: it archives official game pages, re-runs the settlement engine and rebuilds the page. It
+writes *proposed* scores to `data/forward/official_candidates.csv` and **never** to
+`data/forward/official_results.csv`, which is evidence; promotion of a proposal stays a reviewed
+step because the extraction rules have never been validated against real NFL.com HTML. The module
+asserts that by hashing the evidence file before and after each run, and
+`tests/test_forward_capture.py` fails if it ever changes.
+
 ## Availability tracker
 
 `.github/workflows/availability.yml` runs on a schedule on a GitHub-hosted runner (the build sandbox
