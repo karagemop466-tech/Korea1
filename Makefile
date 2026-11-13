@@ -5,7 +5,7 @@ else
 PY := .venv/bin/python
 endif
 
-.PHONY: build data model backtest props injuries review site verify test annex serve clean all forward-capture
+.PHONY: build data model backtest props injuries review liveverify reviewall site verify test annex serve clean all forward-capture
 
 all: build
 
@@ -38,7 +38,19 @@ injuries: data
 review: injuries
 	$(PY) pipeline/build_review.py
 
-site: injuries review
+# Independent official-source re-verification (session arena/917fe36e-korea1).
+# Reads the committed official extracts under data/live/ and the pinned snapshot;
+# no network access, so this is safe in CI. Writes only data/live/**.
+liveverify:
+	$(PY) pipeline/live_verify.py
+	$(PY) pipeline/live_verify_depth.py
+	$(PY) pipeline/lineup_claims.py
+
+# Consolidated review surface across the four suggestion registers.
+reviewall: liveverify
+	$(PY) pipeline/review_consolidated.py
+
+site: injuries review reviewall
 	$(PY) data/review/_author.py
 	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/lineup_deficiencies.py
@@ -56,7 +68,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives

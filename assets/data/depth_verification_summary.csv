@@ -1,0 +1,5 @@
+team,MATCH,MISMATCH,MISSING,EXTRA,slots,verdict,source_url
+DET,28,0,0,0,28,PASS,https://www.detroitlions.com/team/depth-chart
+NE,29,0,0,0,29,PASS,https://www.patriots.com/team/depth-chart
+NYG,29,0,0,0,29,PASS,https://www.giants.com/team/depth-chart
+WAS,29,0,0,0,29,PASS,https://www.commanders.com/team/depth-chart
