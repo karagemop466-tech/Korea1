@@ -2048,3 +2048,9 @@ A complete local `make build` regenerated one out-of-scope evidence manifest wit
 5. Current-snapshot failure and unmatched-name counts should be carried into the dedicated `flagged.html` register on the next shared-output integration. The dated snapshot ledger and `availability.html` already expose the source-level failure; shared renderer/navigation files were not edited.
 
 No PR or deployment result is recorded yet; T24 stays **in progress** until the scoped PR is merged and the resulting Pages deployment is confirmed.
+
+### 2026-11-13T23:08Z — concurrent integration update / rebase conflict resolution
+
+`git pull --rebase origin main` advanced the base from `43a946a` to `cf359ae` (merged PR #37, the `arena/5aee87e3-korea1` independent verification record) while T24 was in progress. The conflict was confined to append-only `COORDINATION.md`: the upstream V1/V2/V3 verification section and this session's T24 claim were both retained, followed by T24's audit log. No source data, pages, code, or other session output was discarded or edited.
+
+Two active sibling PRs were discovered after the rebase: [#39](https://github.com/karagemop466-tech/Korea1/pull/39) (`arena/18c4acce-korea1`, availability reconciliation/official-line sample/coverage and hash fixes) and [#38](https://github.com/karagemop466-tech/Korea1/pull/38) (`arena/d58198fc-korea1`, broad repository audit and review sub-site). Their file lists do not overlap T24's new `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, or dated `research/` report; only the append-only coordination log is shared. T24 remains additive and does not modify or push to either sibling branch. Their PRs were open with verification jobs in progress at this check. The T24 PR/deployment record is still pending.
