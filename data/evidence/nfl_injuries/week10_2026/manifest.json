@@ -21,7 +21,8 @@
       "logical": "news_register.md",
       "local": "data/evidence/nfl_injuries/week10_2026/news_register.md",
       "role": "verbatim official NFL.com news items displayed on the injury page at retrieval time",
-      "bytes": 4663
+      "bytes": 4663,
+      "sha256": null
     }
   ],
   "scope_observed": {

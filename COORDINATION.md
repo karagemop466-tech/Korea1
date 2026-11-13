@@ -1569,3 +1569,33 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+---
+
+## Session `arena/534e771f-korea1` — 2026-11-13 phase (T30–T34)
+
+Branch: `arena/534e771f-korea1`, branched from `main` @ `43a946aed4c3ec86b17b920757dc780ced73ea93`
+("availability: official snapshot 2026-11-13T18:32Z"). Board read first: every row printed as
+`in progress` (T8, T11, T14–T23 of `arena/425336fc-korea1`) belongs to a session whose last commit was
+2026-11-12 and is treated as stale; **nothing of theirs is edited**, only read. Open PRs #19, #24 and #30
+belong to other sessions and are not merged, closed or rebased by this session.
+
+**New task IDs (T30–T34) are chosen so that no ID in this board is reused.** T0–T23, G1–G7 and FW1–FW5
+keep their owners' numbers.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| T30 | Line-by-line re-verification of published rows against official sources (2026-11-13 pass) + irregularity register | **in progress** | `arena/534e771f-korea1` | `research/verification-2026-11-13.md`, `data/audit/official_review_2026_11_13.json`, `data/processed/verify_2026_11_13.csv` |
+| T31 | Decision hub: de-duplicate the four suggestion registers and the four question registers into one canonical review path | **in progress** | `arena/534e771f-korea1` | `pipeline/build_hub.py`, `pipeline/render_hub.py`, `data/review/hub_*.csv`, `decision-hub.html`, `tests/test_hub.py` |
+| T32 | Site improvements for decision making + register of the improvements (review before implementing) | **in progress** | `arena/534e771f-korea1` | `research/improvements-2026-11-13.md`, `data/review/improvements.csv`, `improvements.html` |
+| T33 | Build-determinism repair: `data/evidence/nfl_injuries/week10_2026/manifest.json` is rewritten with `"sha256": null` on every `make build` (non-deterministic output) | **in progress** | `arena/534e771f-korea1` | `pipeline/fetch_injuries.py` (one function only), `tests/test_hub.py` |
+| T34 | **Final integration + publish** (nav + index cards, re-verify, PR → `main`, merge, Pages deploy, record) | **in progress** | `arena/534e771f-korea1` | `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards only), `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile` |
+
+**Not claimed and not edited by this session:** every path in the six earlier claims above except the two
+repairs named in T33; all `data/processed/**` and `data/availability/**` tables; `assets/data/**`;
+`pipeline/render_summary.py`, `pipeline/parallel_pages.py`, `pipeline/render_readiness.py`,
+`pipeline/render_review.py`, `pipeline/render_decisions.py`, `pipeline/render_governance.py`,
+`analysis/**`, `lab/**`, `scripts/**`, `.github/workflows/**` (read only), `audit/**`.
+
+**Protocol deviation, recorded.** The platform pins this session to `arena/534e771f-korea1`; it cannot
+create a `session-<id>/<task>` branch (same limitation every earlier session recorded).
