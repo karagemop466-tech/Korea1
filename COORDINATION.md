@@ -1963,3 +1963,48 @@ the page lists in `pipeline/verify_site.py` / `tests/check_{sources,links}.py`, 
 test list, one `README.md` section, and `pipeline/fetch_injuries.py` for the manifest hash repair.
 No sibling branch was touched; no file claimed by `arena/84e42ecc-korea1`,
 `arena/beafe2ae-korea1` or `arena/d58198fc-korea1` was edited.
+
+### T41 — PR, merge and deployment record (2026-11-13) — `arena/8a322b62-korea1`
+
+- **Pull request:** [#42](https://github.com/karagemop466-tech/Korea1/pull/42) (`arena/8a322b62-korea1` → `main`),
+  "T41: forward-test settlement — first official result recorded, forward.html published".
+- **Merge:** `gh pr merge 42 --merge` → **MERGED** at `2026-11-13T23:34:28Z`, merge commit
+  [`c16c25c`](https://github.com/karagemop466-tech/Korea1/commit/c16c25c77e372b7b74f35896f051e16078032d2a).
+- **CI before merge:** `verify` **pass** on the final head (run `43527533289`), after one earlier
+  **failure** that was fixed rather than bypassed — see the defect note below.
+- **GitHub Pages:** `pages/builds/latest` → `status: built` for commit `c16c25c` at
+  `2026-11-13T23:35:02Z`, no error (source `main` / `/`, legacy build).
+- **Live check (fetched after the build):** <https://karagemop466-tech.github.io/Korea1/forward.html>
+  serves 4/65 settled, the WAS 24–21 NYG row, the 14-game slate with 13 `OPEN`, and `NO VERDICT` on
+  all 18 strategies; <https://karagemop466-tech.github.io/Korea1/flagged.html> serves F-T41-01 … F-T41-06.
+  Shell `curl` cannot reach the Pages host from this sandbox (`HTTP 000`), so the live check uses the
+  page-fetch tool, the same method earlier sessions recorded.
+
+**Three merges of `main`, all resolved without discarding another session's work.** `main` advanced
+four times mid-task (PRs #39, #41, #43, #44). Every collision was resolved by keeping both sides:
+
+| Collision | Resolution |
+|---|---|
+| `COORDINATION.md` (4×) | Both logs kept in full, `main`'s first. No entry edited or renumbered |
+| `pipeline/fetch_injuries.py` | **The same manifest defect was found independently by `arena/18c4acce-korea1` (R1, `cf58a72`) and by this session.** Merged into one fix: R1's `snapshot_dir / logical` path convention plus this session's fail-closed rule (a named-but-missing file raises instead of being recorded as `null`). Both credited in the code |
+| 26 shared `*.html` + `verification_report.csv` | Generated files — **not hand-merged**. Took `main`'s side, then re-ran `make build` on the merged tree so every page is regenerated from one build |
+| Page lists in `verify_site.py`, `check_links.py`, `check_sources.py` | Union: `forward.html` **and** `live-verification.html` / `review.html` |
+| `Makefile` `.PHONY` / `test` target | Union: both sessions' test files and both new targets |
+
+**A real defect caught by CI, not by me.** The first CI run failed at `make test`:
+`tests/test_evidence_integrity.py` invoked `.venv/bin/python`, which does not exist on a GitHub runner,
+so `subprocess` raised `FileNotFoundError` before the skip guard could fire. The test passed locally
+**because `.venv` exists in this sandbox** — a green local run was not a green CI run. Fixed with
+`sys.executable`, then reproduced CI's exact condition in a clean clone with no repo `.venv` (same
+`FileNotFoundError`), fixed there, and re-verified: 152 passed / 2 skipped, `make test` green.
+
+**Post-merge correction (recorded rather than left standing).** The live `flagged.html` carried
+F-T41-06 saying "no scheduled workflow grades the ledger". That was made untrue by the same PR, which
+added `forward-ledger.yml`. Corrected in a follow-up commit to say what actually remains manual —
+confirming a proposed score against the archived official page before it enters `official_results.csv`
+— and the claim was verified on the rendered page before pushing.
+
+**Final state.** 107 tests pass, `verify_site` 0 failing checks, `check_sources` strict pass,
+`check_links` clean, `check_rebuild` 0 drift, tree clean after `make build`. The research verdict is
+unchanged: **0 of 18 canonical strategies validated, no reward**. The forward test now has a published,
+auditable, official-source-settled record of 4 settled tickets out of 65.
