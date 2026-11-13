@@ -8,7 +8,9 @@ PAGES=["index.html","executive-summary.html","lines.html","strategies.html","val
        "flagged.html","sources.html","decisions.html","suggestions.html","questions.html",
        "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
        "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
-       "decision-hub.html","improvements.html","gameday-deficiencies.html"]
+       # 2026-11-13: two sessions added pages on the same day. Both sets are kept.
+       "decision-hub.html","improvements.html","gameday-deficiencies.html",
+       "forward.html","live-verification.html","review.html"]
 def main():
     problems=[]; total=0
     for name in PAGES:

@@ -278,17 +278,22 @@ def main() -> None:
     man = json.loads((snapshot_dir / "manifest.json").read_text())
     body_path = snapshot_dir / "injury_report.md"
     digest = sha256_of(body_path)
-    # Repair 2026-11-13 (session arena/534e771f-korea1, T33). The previous code inserted
-    # `"sha256": None` into every manifest entry with `setdefault`, hashed only files[0] and
-    # then rewrote the committed evidence manifest — so a clean checkout produced a file that
-    # differed from the committed one, and the news register carried a null digest that read
-    # as "not verified". Every committed file is now hashed, and the manifest is only written
-    # when its content actually changes, which makes the build idempotent from the first run.
+    # Hash every staged file from its own path, fail-closed.
+    #
+    # Found three times independently on 2026-11-13 — arena/18c4acce-korea1 (R1),
+    # arena/8a322b62-korea1 (T41) and arena/534e771f-korea1 (T33) — the earlier code set a
+    # default of None for entries after the first, so news_register.md was recorded with no
+    # digest and every clean build rewrote this committed manifest, meaning a fresh checkout
+    # did not reproduce the published bytes. Merged form keeps R1's `snapshot_dir / logical`
+    # path convention and T41's fail-closed rule: a file the manifest names but does not
+    # exist raises instead of being recorded as null. The manifest is written below only
+    # when its content actually changes, so the build is idempotent from the first run.
     for f in man["files"]:
-        local = ROOT / f.get("local", "")
-        if local.exists():
-            f["sha256"] = sha256_of(local)
-            f["bytes"] = local.stat().st_size
+        local = snapshot_dir / f["logical"]
+        if not local.exists():
+            raise RuntimeError(f"manifest names a missing evidence file: {f['logical']}")
+        f["sha256"] = sha256_of(local)
+        f["bytes"] = local.stat().st_size
     man["files"][0]["sha256"] = digest
     man["files"][0]["bytes"] = body_path.stat().st_size
     new_text = json.dumps(man, indent=2, ensure_ascii=False, sort_keys=False) + "\n"

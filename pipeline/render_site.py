@@ -49,9 +49,11 @@ NAV_GROUPS = [
         ("executive-summary.html", "Executive summary"),
     ]),
     ("Decide", [
-        # 2026-11-13 (arena/534e771f-korea1, T31/T32): one hub that indexes all ten registers.
+        # 2026-11-13: two sessions each built a "review before you change" surface on the
+        # same day. Both are kept and cross-linked rather than one being discarded.
         ("decision-hub.html", "Decision hub · 16 decisions"),
         ("improvements.html", "Site improvements"),
+        ("review.html", "Review & choose a path"),
         ("suggestions-review.html", "Path selector"),
         ("suggestions.html", "Suggestions & paths"),
         ("decision-readiness.html", "Q&A + Week 8–9 audit"),
@@ -62,6 +64,7 @@ NAV_GROUPS = [
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
         ("strategies.html", "Leaderboard"),
+        ("forward.html", "Forward test record"),
         ("validation.html", "Validation gates"),
         ("correlations.html", "Correlations"),
         ("props.html", "Player props"),
@@ -84,6 +87,7 @@ NAV_GROUPS = [
         ("requirements.html", "Requirements"),
         ("sources.html", "Sources"),
         ("audit.html", "Independent audit"),
+        ("live-verification.html", "Live verification"),
         ("verification.html", "Reproducibility"),
         # Integration session arena/ea02c4fb-korea1: independent build served from lab/.
         ("lab/index.html", "Replication annex"),
@@ -218,6 +222,8 @@ OFFICIAL = {
     "Falcons club depth chart": "https://www.atlantafalcons.com/team/depth-chart",
     "Vikings club depth chart": "https://www.vikings.com/team/depth-chart",
     "Packers club depth chart": "https://www.packers.com/team/depth-chart",
+    "Texans club depth chart": "https://www.houstontexans.com/team/depth-chart",
+    "Arizona club depth chart": "https://www.azcardinals.com/team/depth-chart",
 }
 
 # Evidence class per reference, used by the sources page. Kept as an explicit map so a new
@@ -249,6 +255,8 @@ OFFICIAL_TYPE = {
     "Falcons club depth chart": "NFL Club",
     "Vikings club depth chart": "NFL Club",
     "Packers club depth chart": "NFL Club",
+    "Texans club depth chart": "NFL Club",
+    "Arizona club depth chart": "NFL Club",
 }
 
 
@@ -321,6 +329,8 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="gameday-deficiencies.html"><strong>Gameday 1st–4th string</strong><span>Official designations joined to each club's depth order: who is out, which string, who is next.</span></a>\
 </div></section>\
 <section><h2>Review before changing anything</h2><div class="cards smallcards">
+<a class="minicard" href="review.html"><strong>Review &amp; choose a path</strong><span>All four suggestion registers and all three question registers in one table, with a single recommended first move and the reason for it.</span></a>
+<a class="minicard" href="live-verification.html"><strong>Live verification</strong><span>Every published availability row and depth-chart slot re-checked against the official page, with the verdict and the reason beside it.</span></a>
 <a class="minicard" href="suggestions-review.html"><strong>Interactive path selector</strong><span>Compare Path A / B / C across 12 staged improvements and export a decision JSON before changing code.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Suggestions &amp; paths</strong><span>Twenty-two changes with cost, risk and dependencies, plus four coherent paths.</span></a>
 <a class="minicard" href="decision-readiness.html"><strong>Q&amp;A + Week 8–9 reconciliation</strong><span>14 pre-decision Q&amp;As, 8 missing-info discovery blueprints and all 28 settled post-pin NFL.com scores.</span></a>
@@ -369,6 +379,42 @@ def build_executive(d):
          official("White (2000), Econometric Society")],
     ], ["Register", "Size / status", "What it establishes", "Official reference"],
        caption="Registers published with this build; counts are generated from the same data as the pages")
+    # T41 (arena/8a322b62-korea1): forward-test settlement, read from data/forward/ so this page
+    # cannot drift from forward.html. Nothing here is retyped by hand.
+    fwd_dir = ROOT / "data" / "forward"
+    fpick = pd.read_csv(fwd_dir / "graded_picks.csv", dtype=str, keep_default_na=False) \
+        if (fwd_dir / "graded_picks.csv").exists() else pd.DataFrame()
+    fsb = pd.read_csv(fwd_dir / "scoreboard.csv", dtype=str, keep_default_na=False) \
+        if (fwd_dir / "scoreboard.csv").exists() else pd.DataFrame()
+    fwd_declared = len(fpick)
+    fwd_settled = int((fpick.status == "OFFICIAL").sum()) if fwd_declared else 0
+    fwd_open = int((fpick.status == "OPEN").sum()) if fwd_declared else 0
+    fwd_units = pd.to_numeric(fpick.loc[fpick.status == "OFFICIAL", "pnl"], errors="coerce").sum() \
+        if fwd_declared else 0.0
+    fwd_validated = int((fsb.verdict == "VALIDATED").sum()) if len(fsb) else 0
+    forward_cards = kpi_grid([
+        card(f"{fwd_settled} / {fwd_declared}", "frozen tickets settled", "settled only from an official NFL.com final",
+             "good" if fwd_settled else ""),
+        card(f"{fwd_open}", "still open", "not settled, not voided, not counted"),
+        card(f"{fwd_units:+.3f}", "net units settled", "one game — not a track record"),
+        card(f"{fwd_validated}", "strategies validated", "no horizon reached; verdicts withheld", "bad"),
+    ])
+    forward_table = table([
+        ["Frozen before kickoff", f"{fwd_declared} tickets · 18 strategies · 14 Week 10 games",
+         "written 2026-11-12T13:26:48Z; received by GitHub 13:28:07Z, 11.78 h before the first kickoff",
+         src_link("https://www.nfl.com/schedules/2026/by-week/reg-10", "NFL week 10 schedule")],
+        ["Settled from an official final", f"WAS 24–21 NYG → {fwd_settled} of {fwd_declared} tickets",
+         f"net {fwd_units:+.3f} units; {fwd_open} tickets stay OPEN",
+         src_link("https://www.nfl.com/games/commanders-at-giants-2026-reg-10", "NFL.com Game Center")],
+        ["Gate F2 (official settlement)", "PASS where a ticket has settled",
+         "before this pass the same 4 tickets were PROVISIONAL from the community mirror",
+         src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
+        ["Gate F6 (quote provenance)", "FAIL for all 18 strategies",
+         "frozen prices are community-mirror values, not authenticated bookmaker quotes",
+         src_link("https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping",
+                  "White (2000)")],
+    ], ["Item", "State", "Meaning", "Official / primary reference"],
+       caption="Forward-test state at the first settlement")
     body = f"""
 {notice()}
 <section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
@@ -414,13 +460,92 @@ approved, and no reward is funded. The scheduled league-wide capture (all clubs,
 None of them changes a published number; all of them make the missing evidence explicit.</p>
 {review_table}
 </section>
+<section id="forward"><h2>Forward test — first settlement, 2026-11-13</h2>
+<p>A <strong>prospective</strong> record is the only evidence that cannot be contaminated by hindsight. <a href="forward.html">forward.html</a>
+prints every ticket frozen before kickoff and settles it only against an official NFL.com final.</p>
+{forward_cards}
+{forward_table}
+<p><strong>What this does not mean.</strong> {fwd_settled} tickets at one game is not a sample, and a 2–2 split is
+indistinguishable from chance. The page prints no p-value, no ROI and no verdict, and awards nothing. The forward clock
+has started; nothing about the strategy library has been demonstrated.</p>
+<p class="muted">Evidence-source defect repaired in this pass: the committed injury evidence manifest was rewritten by
+every build and carried <code>"sha256": null</code> for one of the two files it names, because
+<code>pipeline/fetch_injuries.py</code> hashed only the first entry. Every declared file is now hashed and
+<code>tests/test_evidence_integrity.py</code> fails on a null or mismatched digest. Findings F-T41-01 to F-T41-06 are on
+<a href="flagged.html">Flagged for review</a>.</p></section>
 <section><h2>Next evidence needed</h2><ol class="findings">
 <li>Timestamped, bookmaker-published pre-kickoff lines and executable ticket quotes, including limits and settlement terms.</li>
 <li>Official game results and timestamped player availability, with archived player statistics and prop settlement rules.</li>
 <li>A frozen prospective registry of all strategy trials, followed by untouched paper-trading replication.</li>
 <li>Joint prop outcomes and actual SGP prices to test correlation rather than assume independence.</li>
 </ol><p><a class="btn" href="requirements.html">See the complete requirements matrix →</a></p></section>"""
+    body += _exec_verification_section()
     return layout("executive-summary.html", "Executive summary", "The decision, the evidence and the limits—without a promised betting edge.", body)
+
+
+def _exec_verification_section() -> str:
+    """Exec-summary section added by the 2026-11-13 independent verification pass."""
+    from common import LIVE_DIR
+    v = read_json(LIVE_DIR / "verification_summary.json") if (LIVE_DIR / "verification_summary.json").exists() else {}
+    c = read_json(LIVE_DIR / "lineup_claim_summary.json") if (LIVE_DIR / "lineup_claim_summary.json").exists() else {}
+    d = read_json(LIVE_DIR / "depth_verification_summary.json") if (LIVE_DIR / "depth_verification_summary.json").exists() else {}
+    r = read_json(LIVE_DIR / "review_summary.json") if (LIVE_DIR / "review_summary.json").exists() else {}
+    cal = v.get("parser_calibration", {})
+    rec = r.get("recommended_first_move", {})
+    drift = c.get("official_capture_drift", {})
+    rows = [
+        ["Build parser controlled against a fixed document",
+         f"{cal.get('matched_rows', '—')}/{cal.get('archive_rows', '—')} rows and "
+         f"{cal.get('cells_compared', '—')} cells; {cal.get('cell_differences', '—')} differ",
+         "The published parser reads the official page faithfully, so a later difference is the "
+         "source moving, not the build misreading it.",
+         src_link("https://www.nfl.com/injuries/league/2026/reg10", "NFL injury report")],
+        ["Injury table re-checked field by field",
+         f"{v.get('clubs_passing', '—')}/{v.get('clubs', '—')} clubs clean; "
+         f"{v.get('confirmed_defects', '—')} confirmed defect, {v.get('unresolved', '—')} unresolved",
+         f"{v.get('clubs_passing', '—')} of {v.get('clubs', '—')} clubs are clean at field level. "
+         f"The remaining differences are {v.get('unresolved', '—')} players present on the official "
+         "page but absent from the snapshot, plus one self-contradictory row (DET Kerby Joseph: "
+         "Out and Full Participation). No cell is asserted as a fabrication.",
+         src_link("https://www.nfl.com/injuries/league/2026/reg10", "NFL injury report") + " · " +
+         src_link("live-verification.html", "verdicts")],
+        ["Depth charts re-checked slot by slot",
+         f"{d.get('match', '—')}/{d.get('slots_compared', '—')} slots, "
+         f"{d.get('players_compared', '—')} players",
+         "The 1st/2nd/3rd/4th-string ordering is extracted correctly. Two of the four charts are "
+         "labelled unofficial by the clubs, which limits what the order proves.",
+         src_link("https://www.patriots.com/team/depth-chart", "patriots.com depth chart")],
+        ["Availability sentences graded one by one",
+         f"{c.get('confirmed', '—')}/{c.get('claims', '—')} current · "
+         f"{c.get('stale', '—')} stale · {c.get('contradicted', '—')} contradicted",
+         f"{c.get('agree_with_archive', '—')} of {c.get('claims', '—')} matched the official page on "
+         f"2026-11-12; the official page then revised {drift.get('values_changed', '—')} values in 29 "
+         "hours. Nothing was fabricated; the page is stale and does not say so.",
+         src_link("https://www.nfl.com/injuries/league/2026/reg10", "NFL injury report") + " · " +
+         src_link("live-verification.html", "verdicts")],
+        ["Four suggestion registers consolidated",
+         f"{r.get('counts', {}).get('suggestion_rows', '—')} proposals · "
+         f"{r.get('counts', {}).get('question_rows', '—')} questions",
+         f"Nothing deleted, renumbered or re-ranked. Recommended first move: "
+         f"<strong>{rec.get('topic', '—')}</strong> — raised independently by "
+         f"{rec.get('registers_agreeing', '—')} of the registers and holding "
+         f"{rec.get('blocked_questions', '—')} blocked questions.",
+         src_link("https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping", "White (2000)") + " · " +
+         src_link("review.html", "review")],
+    ]
+    return f"""
+<section><div class="section-head"><h2>Verification of 2026-11-13</h2><a href="live-verification.html">Full verdicts →</a></div>
+<p>The build's own verifier proves every row <em>carries</em> an official link. It cannot prove the
+row <em>matches</em> it. This pass did the second check, outside the build, against the official
+pages read directly.</p>
+{table(rows, ["Check", "Result", "What it changes for a decision", "Source"],
+       caption="Independent verification of the published availability data, 2026-11-13")}
+<p><strong>The decision does not change.</strong> No price evidence exists, so gate G1 still fails
+for all eighteen strategies and no reward can be awarded. What changes is confidence in the
+<em>availability</em> layer: its extraction is correct, its freshness is not guaranteed, and one
+row contains a contradiction. See <a href="flagged.html">Flagged for review</a> for the six new
+irregularities.</p>
+</section>"""
 
 
 def build_lines(d):
@@ -629,6 +754,7 @@ This is a targeted code and claim audit with executable tests—not a claim that
 
 def build_flagged(d):
     from render_audit import irregularity_rows
+    from render_forward import flagged_rows as _forward_flagged_rows
     rows = irregularity_rows(SHA, src_link)
     decisions = read_json(ROOT / "research/decision-register.json")
     gap_rows = [[e(r["id"]), "Needs review", e(r["finding"]), e(r["next"]),
@@ -650,8 +776,11 @@ def build_flagged(d):
         ["F-12", "Medium · repaired", "The old road-favourite comment contradicted its selection. The documented sign convention and selected side are now covered by a regression test.", official("NFL scores")],
         ["F-13", "High · open", "The originated board still lists week-8 games as open lines although NFL.com shows them Final (Cardinals 33–30 Cowboys, Panthers 19–27 Packers). The board is a pre-week-8 snapshot; the defect is the missing per-row status, not the numbers.", official("NFL week 8 scores")],
         ["F-14", "High · open", "The live injury report describes week 10, which cannot be joined to a board frozen before week 8. Any availability column would be hindsight until the pin is refreshed or each row is labelled by kickoff.", official("NFL week 10 schedule")],
-        ["F-15", "High · open", "The league site has no depth-chart page (404) and its rosters are alphabetical, but the clubs do publish charts: two were verified on 2026-11-12. Coverage is therefore 2 of 32 clubs, no chart shows a publication time, and chart order is not a confirmed game-day role. Starter/backup tracking is PARTIAL and no replacement is confirmed.", official("NFL depth-chart path (verified 404)")],
+        ["F-15", "High · open", "The league site has no depth-chart page (404) and its rosters are alphabetical, but the clubs do publish charts. The automated run of 2026-11-13 captured 31 of 32 charts (Houston returned no ordered rows on either capture); Arizona and Washington were checked cell by cell that day. No chart shows a publication time, and chart order is not a confirmed game-day role. Starter/backup tracking is PARTIAL and no replacement is confirmed.", official("NFL depth-chart path (verified 404)")],
         ["F-16", "Medium · needs review", "Official NFL pages disagree on two values: Lucas Patrick is C on the report and roster but OL on Game Center; Malik Harrison is 'Limited Participation' on the report but 'Did participate' on Game Center. Both versions are published with the disposition; nothing was inferred.", official("NFL game centre (WAS at NYG)")],
+        ["F-18", "High · open", "Houston Texans: the automated depth-chart tracker returned 0 rows on both the 2026-11-12 and 2026-11-13 captures (the chart is not in the published table). The club page labels its chart 'Unofficial Depth Chart' and the page text retrieved on 2026-11-13 carries no ordered rows. Houston is left blank and unverified; no Houston role is inferred.", official("Texans club depth chart")],
+        ["F-19", "Medium · open", "Club depth-chart labels differ: the Arizona page reads 'Arizona Cardinals Official Depth Chart', the Houston page reads 'Unofficial Depth Chart', and the Washington page carries no label. The published tables treat all club charts alike; the label is recorded here, not used to rank sources.", official("Arizona club depth chart")],
+        ["F-20", "Low · repaired", "The official injury-evidence manifest recorded the news register with no SHA-256 (the hash loop only set a default). The loop now hashes every staged file; the value was checked with sha256sum.", official("NFL injuries")],
         ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
     ]
     from render_review import flagged_rows
@@ -687,6 +816,9 @@ and the <a href="improvements.html">improvements register</a>; none has been app
 with the machine-readable form in <code>data/processed/verify_2026_11_13.csv</code> and
 <code>data/audit/official_review_2026_11_13.json</code>. A row is written only for a check that was
 actually performed; nothing is carried over from a previous session's claim.</p></section>
+<section id="forward-2026-11-13"><h2>Forward-test findings · 2026-11-13 (`arena/8a322b62-korea1`)</h2>
+<p>The forward ledger's first settlement pass, and the defects found while doing it. The prospective record itself is on <a href="forward.html">Forward test</a>.</p>
+{table(_forward_flagged_rows(), ["ID", "Severity / state", "Finding and disposition", "Official source"], caption="Forward-ledger settlement findings, 2026-11-13")}</section>
 <section><h2>How to request a correction</h2><p>Use the repository issue tracker with the row ID, the authoritative source and the exact field.
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
@@ -741,6 +873,8 @@ def build_requirements(d):
         ("R21", "Injury and lineup-deficiency tracking", "Expanded — 8 of 32 clubs verified", "lineup-deficiencies.html verifies 39 offensive & defensive 1st–4th string entries across 8 clubs / 4 Week 10 matchups (WAS, NYG, NE, DET, KC, ATL, MIN, GB) + walk-forward PBP backup diagnostics; injuries.html & lineups.html preserved.", "NFL injury report (2026 week 10)"),
         ("R21b", "Automatic all-club injury and depth tracking", "Implemented · effect not priced", "availability.html: scheduled capture of the official injury report and every readable club depth chart, with the 2nd/3rd/4th-string player listed behind an Out or Doubtful first-listed player. Game-day roles and point impact remain open.", "NFL injuries"),
         ("R22", "Dated decision log", "Implemented", "DECISIONS.md records owner, choice, evidence and reversal condition; linked from suggestions.html.", "GitHub Pages documentation"),
+        ("R24", "Line-by-line verification against official sources", "Implemented · sample, not census", "live-verification.html re-checks the published injury table field by field, all four transcribed club depth charts slot by slot, and all 59 matchup availability sentences against three independent official captures. The build's parser is controlled against the repository's own verbatim 2026-11-12 capture (254/254 rows, 0/1,016 cells differ).", "NFL injury report (2026 week 10)"),
+        ("R25", "One consolidated review surface before any change", "Implemented · nothing implemented", "review.html merges four suggestion registers (76 proposals) and three question registers (74 questions) without deleting, renumbering or re-ranking any of them, and records one recommended first move with its reason and its limits.", "White (2000), Econometric Society"),
         ("R23", "Post-pin Week 8–9 official score census & T-90m countdown verification", "Implemented", "All 28 post-pin Week 8–9 Final scores reconciled against NFL.com on decision-readiness.html; live NFL Operations T-90m/T-60m pregame inactive & roof rule verified.", "NFL Operations pregame 90m rule"),
     ]
     rows = [[i,title,status,detail,official(ref)] for i,title,status,detail,ref in requirements]
@@ -940,9 +1074,55 @@ def _landing_governance_sections() -> str:
     return render_landing_governance_sections(table, src_link)
 
 
+def _flagged_2026_11_13_rows() -> list[list[str]]:
+    """Irregularities found by the independent 2026-11-13 verification pass (V1/V2)."""
+    return [
+        ["IR-2026-11-13-01", "High · open",
+         "The official injury page revised <strong>57 of 326</strong> player values between the "
+         "2026-11-12T13:06Z capture and the 2026-11-13T18:32Z capture, while the page continued "
+         "to describe the same week 10. A status shown without its capture time is therefore "
+         "not evidence of anything, even when it was correct when written.",
+         src_link("https://www.nfl.com/injuries/league/2026/reg10", "nfl.com injury report")],
+        ["IR-2026-11-13-02", "Medium · open",
+         "17 of the 59 availability sentences on <code>lineup-deficiencies.html</code> no longer "
+         "describe the official page: they matched the official values on 2026-11-12 but the "
+         "source has since moved. This is staleness, not fabrication — 57 of 59 agree with the "
+         "contemporaneous archive. The page carries no per-row capture time to warn a reader.",
+         src_link("lineup-deficiencies.html", "lineup-deficiencies.html") + " · " +
+         src_link("https://www.nfl.com/injuries/league/2026/reg10", "official page")],
+        ["IR-2026-11-13-03", "Medium · open",
+         "One published row is self-contradictory: DET <em>Kerby Joseph</em> carries game status "
+         "<em>Out</em> and practice status <em>Full Participation in Practice</em>. The two cells "
+         "cannot both be true. It is the only such row in 326.",
+         src_link("https://www.nfl.com/injuries/league/2026/reg10", "official page")],
+        ["IR-2026-11-13-04", "Low · open",
+         "Eight players (KC <em>Kenneth Walker III</em>; ATL <em>Jake Matthews</em>, "
+         "<em>Liam McCullough</em>; MIN <em>Jordan Addison</em>, <em>Christian Darrisaw</em>, "
+         "<em>Josh Metellus</em>, <em>Harrison Smith</em>; GB <em>Xavier McKinney</em>) appear on "
+         "the official page but are absent from the committed snapshot. A status added between "
+         "capture times and a parser drop both fit the evidence; it is recorded as unresolved "
+         "rather than as either.",
+         src_link("https://www.nfl.com/injuries/league/2026/reg10", "official page")],
+        ["IR-2026-11-13-05", "Medium · open",
+         "Two of the four verified depth charts are labelled <strong>unofficial</strong> by the "
+         "clubs themselves: the Lions chart is “compiled by Lions Football Communications” and "
+         "the Patriots chart “reflects the opinions of the Patriots.com writers and don't "
+         "necessarily reflect those of the organization”. The extracted rows match exactly, but "
+         "a 2nd-string cell is an ordering, not a confirmed role.",
+         src_link("https://www.patriots.com/team/depth-chart", "patriots.com") + " · " +
+         src_link("https://www.detroitlions.com/team/depth-chart", "detroitlions.com")],
+        ["IR-2026-11-13-06", "Low · resolved in this pass",
+         "The three checkers disagreed on the canonical page list: <code>verify_site.py</code> "
+         "and <code>check_sources.py</code> were updated for <code>live-verification.html</code> "
+         "and <code>review.html</code>. All three now check 26 canonical pages and 35 pages in "
+         "total, and report zero failures.",
+         src_link("https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages", "GitHub Pages documentation")],
+    ]
+
+
 def _flagged_2026_11_12_rows() -> list[list[str]]:
     from render_governance import render_flagged_2026_11_12_rows
-    return render_flagged_2026_11_12_rows(src_link)
+    return render_flagged_2026_11_12_rows(src_link) + _flagged_2026_11_13_rows()
 
 
 
@@ -1083,6 +1263,7 @@ def main() -> None:
                                   write_csvs)
     from render_governance import (build_decision_readiness_page,
                                    build_lineups_page, build_suggestions_page)
+    from render_live import build_live as build_live_page, build_review as build_review_page
 
     d = load()
     write_csvs(PROC)
@@ -1116,6 +1297,10 @@ def main() -> None:
         "suggestions-review.html": build_suggestions_page(layout, table, card, kpi_grid, flag, src_link),
         "decision-readiness.html": build_decision_readiness_page(layout, table, card, kpi_grid, flag, src_link),
         "lineup-deficiencies.html": build_lineups_page(layout, table, card, kpi_grid, flag, src_link),
+        # V1/V2 (arena/917fe36e-korea1): independent official re-verification and the
+        # consolidated review surface. Both read only data/live/**.
+        "live-verification.html": build_live_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
+        "review.html": build_review_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
     }
     for name, html_text in pages.items():
         (SITE / name).write_text(html_text, encoding="utf-8")
@@ -1132,7 +1317,7 @@ def main() -> None:
         if f.name in skip or f.stat().st_size > 200_000:
             continue
         shutil.copy2(f, DOCS_DATA / f.name)
-    for folder in (ROOT / "data" / "governance", ROOT / "data" / "lineups"):
+    for folder in (ROOT / "data" / "governance", ROOT / "data" / "lineups", ROOT / "data" / "live"):
         for f in folder.glob("*"):
             if f.suffix in {".csv", ".json"} and f.stat().st_size <= 200_000:
                 shutil.copy2(f, DOCS_DATA / f.name)

@@ -84,8 +84,11 @@ def main():
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
               "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
-              # 2026-11-13 (arena/534e771f-korea1, T30–T32)
-              "decision-hub.html","improvements.html","gameday-deficiencies.html"}
+              # 2026-11-13 (arena/534e771f-korea1, T30-T32)
+              "decision-hub.html","improvements.html","gameday-deficiencies.html",
+              # 2026-11-13 (arena/8a322b62-korea1, T41) — merged from main without
+              # discarding either session's pages; both sets stay in the canonical list.
+              "forward.html","live-verification.html","review.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

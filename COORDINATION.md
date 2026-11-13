@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-12 (sessions `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`)
+Last updated: 2026-11-13 (session `arena/18c4acce-korea1`, claim R1). Earlier sessions: `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`
 
 ## How to use this board
 
@@ -42,6 +42,9 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | T15 | Decision board (suggestions to review and choose before any change is implemented) | **done** | `arena/c0528572-korea1` | `data/review/suggestions.csv`, `decision-board.html` |
 | T16 | Open-questions register (known / unknown / how to discover) | **done** | `arena/c0528572-korea1` | `data/review/questions.csv`, `open-questions.html` |
 | T17 | Repo re-review (2026-11-12), executive-summary refresh, integration of T14–T16 on top of whatever is on `main` at merge time | **done** | `arena/c0528572-korea1` | `data/review/repo_review.csv`, shared files only at integration: `COORDINATION.md`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV + index cards + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py` (page list + allow-list), `tests/check_*.py` (page list), `Makefile`, `.github/workflows/verify.yml` |
+| R1 | **2026-11-13 availability reconciliation**: check the automated Week 10 injury report and club depth-chart snapshot (`data/availability/`, commit `43a946a`) against the official pages (line-level sample), publish the gap register, correct the stale "2 of 32 clubs" coverage claims, flag the HOU capture failure and the club-side "Unofficial Depth Chart" label | **done** | `arena/18c4acce-korea1` | `data/governance/availability_reconciliation_2026_11_13.csv` (new), `pipeline/decisions.py` (Q30 / S17 text only), `pipeline/availability.py` (AV-S1…S4 `available` text only), `pipeline/render_decisions.py` (coverage sentences only), `pipeline/render_site.py` (F-15 row + coverage sentence only), `research/injuries.md` (row 12 only), `README.md` (coverage sentence only), `EXECUTIVE_SUMMARY.md` (two coverage rows only), `DECISIONS.md` (D-05 row), `data/evidence/nfl_injuries/week10_2026/manifest.json` (null-hash repair), `COORDINATION.md` (own section + this row), `scripts/reconcile_availability_2026_11_13.py` (new), `assets/data/*_2026_11_13.csv` (new downloads) |
+
+**R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -1569,6 +1572,442 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+
+---
+
+## 2026-11-13 — Session `arena/18c4acce-korea1` (R1: availability reconciliation)
+
+**Board state read before claiming (2026-11-13T22:55Z).** `git fetch origin '+refs/heads/*:refs/remotes/origin/*'`
+run first. `main` = `43a946a` (availability bot snapshot, 2026-11-13T18:32Z). Every 2026-11-12 claim is merged
+(PRs #22–#36) except PR #24 (`arena/3e57f750-korea1`) and PR #30 (`arena/f115e6a2-korea1`), both **open with no commit
+since 2026-11-12 13:44Z and 13:40Z**, and PR #19 (`arena/5b3f0799-korea1`, open since 2026-11-02). Their scopes are not
+claimed here and nothing on those branches is touched. No open claim covers the availability tracker's output
+after 2026-11-12, so R1 claims only the gaps listed in its row.
+
+**Why R1.** The automated tracker (`.github/workflows/availability.yml`) now writes depth charts for **31 of 32 clubs**
+(`data/availability/manifest.json`: `clubs_with_depth_chart: 31`). Published pages still say "2 of 32 clubs".
+HOU returned `parsed 0 rows` on both the 2026-11-12 and 2026-11-13 captures.
+
+**Protocol note.** The shared outputs listed in the R1 row are changed by this session because every other task on
+the board is done or merged. Each change is one sentence or one row and is logged below. Nothing else is restructured.
+
+### R1 — results (2026-11-13T23:30Z) — `arena/18c4acce-korea1`
+
+**Sources read (official only; each one linked in the published files).**
+- NFL injury report, Week 10 2026, read with the page-fetch tool: <https://www.nfl.com/injuries/league/2026/reg10> (title "Official NFL Injury Report for Players - Week 10 of the 2026 Season"; WAS and NYG tables read in full).
+- Club depth charts read with the page-fetch tool: <https://www.azcardinals.com/team/depth-chart> ("Arizona Cardinals Official Depth Chart"), <https://www.commanders.com/team/depth-chart> (no label), <https://www.houstontexans.com/team/depth-chart> ("Unofficial Depth Chart"; no ordered rows in the retrieved text).
+- Automated capture and its manifest, read from the repo: `data/availability/manifest.json` (retrieved `2026-11-13T18:32:20Z`), `data/availability/depth_charts.csv`, `data/availability/injuries.csv`, and `data/availability/history/2026-11-12/` for the previous day.
+- Week 10 games as printed on the injury report (team order as printed, which is not an away/home claim): Thu 12 Nov WAS–NYG 8:15 PM EST; Sun 15 Nov NE–DET 9:30 AM EST; Sun 15 Nov KC–ATL 1:00 PM EST. The Texans page gives the Texans–Browns game as 15 November at Huntington Bank Field.
+
+**Verification performed.**
+| Check | Result | Artefact |
+|---|---|---|
+| Arizona depth chart, every official cell (29 table rows, 58 names) vs automated capture | 58 of 58 names match. One official cell holds two names with no rank order (Zaven Collins and Baron Browning under OLB); the capture stores both at rank 1, so this is recorded as a **tie**, not a mismatch. | `data/governance/availability_reconciliation_2026_11_13.csv` |
+| Washington depth chart, every official cell (29 table rows, 60 names) vs automated capture | 60 of 60 names match, in order. | same |
+| Injury report rows, Washington (9) and Giants (11) vs automated capture | 20 of 20 exact matches (player, position, injury, practice status, game status). | `data/governance/injury_reconciliation_2026_11_13.csv` |
+| Houston depth chart | Automated capture has **0 rows** on 2026-11-12 and 2026-11-13. The live page's retrieved text has no ordered rows and is headed "Unofficial Depth Chart". Left **blank and flagged** (F-18). No Houston role inferred. | flagged.html F-18 |
+| Club chart labels | Arizona "Official"; Houston "Unofficial"; Washington unlabelled. Flagged (F-19); not used to rank sources. | flagged.html F-19 |
+| Coverage claims | "2 of 32 clubs" text on 10 published surfaces (Q30, S17, AV-S1…S4, the Status paragraph and card on `questions.html`/`injuries.html`, F-15, `README.md`, `EXECUTIVE_SUMMARY.md`, `research/injuries.md`) replaced with the automated count **31 of 32** and the exact checks made. | `git diff` of this commit range |
+| Null hash in the injury evidence manifest | The news register had `sha256: null`. Cause: the hash loop only defaulted missing keys to `None`. Fixed to hash every staged file; value `f57ba2f9…56527` matches `sha256sum`. | F-20 · `pipeline/fetch_injuries.py` |
+| Build and gates | `make build` exit 0 (verify_site: 0 failing; check_sources; check_links); `make test` 58 passed; `tests/check_rebuild.py` 0 drift after commit. | `/tmp` logs of this session; repeatable with `make build && make test` |
+
+**What is NOT verified in this session (stated, not hidden).**
+- 29 of 31 captured club charts were not compared cell by cell. The automated capture for them is unverified and remains a machine capture of the official pages, not a checked table.
+- 306 of the 326 snapshot injury rows were not compared to the official page (only WAS and NYG were read). The snapshot's SHA-256 (`7b4a9c83…fb25d3`) could not be reproduced from the sandbox, because the sandbox cannot reach nfl.com with the shell.
+- Chart order is still **not** a confirmed game-day role for any club. No availability signal enters the leaderboard.
+
+**Irregularities (also on `flagged.html`).**
+- **IR-R1-01 — Houston chart not captured on two consecutive runs** (F-18). Likely cause: the page exposes no static ordered table to the parser. Not confirmed; the parser was not changed because the raw HTML is only reachable from the GitHub runner.
+- **IR-R1-02 — club chart labels differ** (F-19).
+- **IR-R1-03 — tie in one cell** (Arizona OLB: two names, no rank). The tracker stores this as rank 1 for both players, with alphabetical order in the file. Readers should not read rank 2 into that row.
+- **IR-R1-04 — stale coverage claims** on ten published surfaces (now corrected, see table).
+- **IR-R1-05 — the evidence manifest had a null hash** (F-20, repaired).
+
+**Board hygiene (logged, not edited — these belong to their owners).**
+- `arena/9e3e144b-korea1` rows FW1–FW5 still read **in progress**, but PR #34 (FW1/FW2) and the FW follow-ups are merged to `main`; the board row is stale.
+- Three PRs are **open** and unmerged, with no commit since 2026-11-12: PR #19 (`arena/5b3f0799-korea1`, since 2026-11-02), PR #24 (`arena/3e57f750-korea1`, last commit 2026-11-12 13:44Z) and PR #30 (`arena/f115e6a2-korea1`, last commit 2026-11-12 13:40Z). Their claims are older than 60 minutes with no recent commits, so they may be taken over by a later session. This session did not take them over.
+- The availability bot commits to `main` directly (`.github/workflows/availability.yml`), so every branch that rebuilds `data/availability/` must rebase onto the newest `main` before pushing.
+
+## 2026-11-13 — Session `arena/5aee87e3-korea1` — final independent verification + integration
+
+**Claim (committed and pushed before any file in scope was touched).** Session `arena/5aee87e3-korea1`,
+pinned by the platform to branch `arena/5aee87e3-korea1` (branched from `main` `43a946a`), claims the
+**final independent verification + integration** task. At claim time `main` = `43a946a`
+("availability: official snapshot 2026-11-13T18:32Z"); every board row is `done` except the two
+stale `in progress` labels (T8, T11) left by sessions whose work was merged on 2026-11-01/02 and
+noted as stale by `arena/c0528572-korea1`. All sibling branches were squash-merged into `main`
+(each is 1 commit behind `main` with its original PR commits remaining only on the branch).
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| V1 | Independent line-by-line re-verification of the combined published data against official/primary sources (scores, injury report, depth charts, lines), recording every source read | **done** | `arena/5aee87e3-korea1` | `data/verification-2026-11-13/**` (new), `COORDINATION.md` (this section only) |
+| V2 | Confirm the combined site builds with no broken links and every table row sourced (`make build`, `make verify`, `make test`), confirm GitHub Pages is live on the merge commit | **done** | `arena/5aee87e3-korea1` | `data/verification-2026-11-13/**`, `COORDINATION.md` (this section only) |
+| V3 | Publish any new irregularities found on the Flagged-for-Review page (source-linked); log cross-scope repair requests rather than editing other sessions' scopes | **done** | `arena/5aee87e3-korea1` | No new defects found; the two freshness/depth-chart irregularities were already published (RV-02 / IR-2026-11-12-01 / IR-2026-11-12-03) and are confirmed below |
+| V4 | PR → `main`, merge without waiting, confirm the Pages deploy, record the PR link and result here | in progress | `arena/5aee87e3-korea1` | `COORDINATION.md` (this section only) |
+
+**Not claimed, and not edited by this session:** every root `*.html`, `pipeline/**`, `tests/**`,
+`assets/**`, `data/processed/**`, `data/availability/**`, `data/review/**`, `data/evidence/**`,
+`README.md`, `EXECUTIVE_SUMMARY.md`, `Makefile`, `.github/workflows/**`, `lab/**`, `scripts/**`,
+`analysis/**`, `research/**`, `archive/**`. Existing code, tables and pages are **read**, never
+written, unless a confirmed defect requires a logged cross-scope repair. The platform pins this
+session to `arena/5aee87e3-korea1`; the `session-<id>/<task>` worktree pattern cannot be used here
+(same limitation every earlier session recorded).
+
+### V1/V2/V3 — independent verification results (2026-11-13T22:58Z) — `arena/5aee87e3-korea1`
+
+The full merged build was re-run and every published data class was re-checked against an official or
+primary source. Full detail and source links are in `data/verification-2026-11-13/verification.csv`
+and `verification.md`.
+
+| Check | What was done | Official / primary source | Result |
+|---|---|---|---|
+| Build + tests | `make build`, `make test`, `make verify` on the branch (on `main` tip `43a946a`) | `pipeline/**`, `tests/**` | build PASS (no drift), **58 tests passed**, verifiers **0 failing** (24 pages / 1676 rows sourced; 33 pages no broken links) |
+| Official injury report (Week 10) | WAS + NYG rows in `lineups.html` / `injuries.html` compared field-by-field (player, position, injury, practice status, game status) | <https://www.nfl.com/injuries/> | **match** — WAS (Bates, Burks, Daniels, Gulbin, Okonkwo, Patrick Out, Robertson, Tuttle, Yankoff Out) and NYG (Carter, Eluemunor, Harrison Questionable, Hood, Johnson, Jones, McCarthy, Mooney, Nabers, Skattebo, Thomas) identical |
+| Club depth chart (WAS) | QB/C/TE depth cells in `injuries.html` / `lineups.html` vs the official club chart | <https://www.commanders.com/team/depth-chart> | **match** — QB Daniels/Mariota/Kaliakmanis, C Allegretti/Gulbin, TE Okonkwo/Sinnott and Bates/Yankoff; Lucas Patrick absent (Out), consistent with the site note |
+| Official score (Week 10 TNF) | Commanders 24 @ Giants 21 Final, 2026-11-12 | <https://www.nfl.com/scores/> | **match** |
+| Live deployed site | Deployed `index.html` headline figures + leaderboard vs the local build | <https://karagemop466-tech.github.io/Korea1/index.html> | **match** — 0 validated strategies / 18 candidates unawarded / 31 official score matches / 0 prop-price tickets / 8 gates |
+| Pages deploy | Pages build status, source, commit | GitHub Pages API `pages/builds/latest` | **built**, commit `43a946a`, source `main`/root, updated 2026-11-13T18:33:06Z |
+| Flagged register | Every published irregularity carries a source link and a disposition | `flagged.html` | **PASS** — IR-T10-*, RV-*, N-*, IR-2026-11-12-* all sourced |
+
+**Irregularities confirmed, not introduced (already published; no change made):**
+- **RV-02 / IR-2026-11-12-01** — the open line board is a pinned **Week 8** snapshot (2026-11-01);
+  the official injury report and scores are now for **Week 10**. The board is labelled "snapshot, not
+  a live feed" with the pin date. This is a deliberate pin (refreshing would move every published
+  number without re-review), so it is confirmed and left as flagged rather than silently refreshed.
+- **IR-2026-11-12-03** — club depth charts are club-labelled **"Unofficial"** and lag roster state.
+  Confirmed: the Commanders chart is club-published and current to the capture, but the general caveat
+  stands for all charts. Left as published.
+
+**No new defects were found.** No shared output (generator, test, page) required repair in this pass,
+so no cross-scope edit was made. The two freshness/depth-chart items above were already on the
+Flagged-for-Review page and are re-confirmed here against the live official sources.
+
+### V4 — PR, merge and deployment record — `arena/5aee87e3-korea1` (2026-11-13)
+
+| Step | Result |
+|---|---|
+| Pull request | [#37](https://github.com/karagemop466-tech/Korea1/pull/37), `arena/5aee87e3-korea1` → `main`, "VERIFY: final independent verification + integration record (2026-11-13)" |
+| Pre-merge CI | `verify` job **passed** (run 43523752016, job 132224279500, 2m19s) — pinned rebuild, tests, strict source/link checks |
+| Merge | **MERGED** without waiting for approval; fast-forward to merge commit `cf359ae209dbb3e3a4dc5618476c25158341fba3` |
+| GitHub Pages | build **built** for `cf359ae` (build 1367534822), error null; source still `main` / repository root |
+| Live site | `flagged.html` and `index.html` re-fetched with a cache-busting query after the merge — served the merged content; every irregularity row carries its source link |
+| Scope | Documentation + verification artifacts only (`COORDINATION.md`, `data/verification-2026-11-13/**`). No model, gate, odds, page or reward change. Other sessions' open PRs (#19, #24, #30) were not touched. |
+
+**Final state.** The combined site builds with no broken links and every table row sourced; GitHub
+Pages is live at <https://karagemop466-tech.github.io/Korea1/>. The research verdict is unchanged:
+**0 of 18 canonical strategies validated, no reward award**, with the open evidence gaps (authenticated
+executable quotes, verified prop prices, full official outcome census, all-club dated depth coverage)
+published on the Flagged-for-Review page. V1–V4 are complete for this session.
+
+### R1 — PR, merge and deployment record (2026-11-13) — `arena/18c4acce-korea1`
+
+- **Pull request:** [#39](https://github.com/karagemop466-tech/Korea1/pull/39) (`arena/18c4acce-korea1` → `main`), title "R1: 2026-11-13 availability reconciliation — official line checks, coverage corrected to 31 of 32, Houston gap flagged".
+- **Pre-merge CI:** `verify` on head `75d0985` = pass (run [43524448536](https://github.com/karagemop466-tech/Korea1/actions/runs/43524448536)); on head `b5f3da7` = pass (run [43525123037](https://github.com/karagemop466-tech/Korea1/actions/runs/43525123037), 1m17s).
+- **Merge:** `gh pr merge 39 --merge` → **MERGED** at `2026-11-13T23:12:12Z`, merge commit [`d2b5610`](https://github.com/karagemop466-tech/Korea1/commit/d2b56108614c99b10ed62766a5571518bb3612b1). Before the merge, `origin/main` had advanced by `266134e` / `cf359ae` (the V1–V4 verification record of `arena/5aee87e3-korea1`, PR #37). It was merged into this branch (`2c38d21`) rather than rebased, because the same `COORDINATION.md` section conflicted on every commit; both sections were kept in full.
+- **Merge-time verification on the merged tree:** `make build` exit 0 (verify_site 0 failing checks; check_sources; check_links), `make test` 58 passed, `tests/check_rebuild.py` 0 drift.
+- **GitHub Pages:** `pages/builds/latest` = `built` for commit `d2b5610` at `2026-11-13T23:12:36Z`, no error (source `main` / `/`, legacy build).
+- **Live check (fetched 2026-11-13 after the build):** <https://karagemop466-tech.github.io/Korea1/injuries.html> shows "31 of 32 club depth charts captured · HOU missing · 2 checked cell by cell"; <https://karagemop466-tech.github.io/Korea1/flagged.html> shows F-15 (corrected), F-18 (Houston), F-19 (club chart labels) and F-20 (repaired hash).
+- **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
+- **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
+
+---
+
+## 2026-11-13 — Session `arena/917fe36e-korea1` — independent verification + suggestions review
+
+**Board read first.** On `main` at `43a946a`, every earlier task is `done` or `needs review` and
+merged. Two rows still print `in progress` (T8, T11) and the FW1–FW5 rows print `in progress`;
+those are stale labels from branches that never merged, left exactly as their owners wrote them.
+Nothing was renumbered and nothing was overwritten.
+
+**Scope decision.** The repository already publishes every page the 2026-11-12 brief asked for
+(suggestions, questions, injuries, leaderboard, gates, correlations, props, flagged). This session
+therefore does **not** rebuild those pages. It adds the one thing the merged build asserts but cannot
+prove from its own sandbox: **line-by-line re-verification of published rows against live official
+sources**, plus a consolidation of the four competing suggestion/question registers into a single
+review surface with a chosen-path record.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| V1 | Independent re-verification of published injury/depth/schedule rows against live official sources; publish a per-row verdict table | **in progress** | `arena/917fe36e-korea1` | `pipeline/live_verify.py`, `data/live/**`, `live-verification.html`, `tests/test_live_verify.py` |
+| V2 | Consolidated suggestion + question review surface: merge the four registers, de-duplicate, rank, and record a recommended path without implementing any change | **in progress** | `arena/917fe36e-korea1` | `pipeline/review_consolidated.py`, `data/live/review_consolidated.csv`, `review.html`, `tests/test_review_consolidated.py` |
+| V3 | Integration: NAV entries, index cards, executive-summary section, requirements rows, flagged rows, verifier + link-check wiring, PR, merge, Pages confirmation | **in progress** | `arena/917fe36e-korea1` | `pipeline/render_site.py` (NAV/index/exec/requirements/flagged only), `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
+
+**Not touched:** every file in the claims above by any other session, `data/processed/**`,
+`data/availability/**`, `data/forward/**`, `data/review/**`, `data/evidence/**`, `archive/**`,
+`lab/**`, `assets/app.js`, and every existing root `*.html` other than the two new pages this
+session creates (`live-verification.html`, `review.html`) and the renderer's NAV/index/exec/
+requirements/flagged generators.
+
+**Platform deviation, recorded.** The platform pins this session to `arena/917fe36e-korea1`; it
+cannot create a separate `session-<id>/<task>` branch. Same deviation every earlier session recorded.
+
+**Irregularity for the record (IR-917-00).** Four registers now answer the same brief on different
+pages — `suggestions.html` (22), `suggestions-review.html` (12), `decision-board.html` (17) and
+`open-questions.html`/`questions.html` (40 + 20). V2 does not delete or renumber any of them; it
+publishes one cross-register index so the owner can compare them in one place.
+
+### 2026-11-13 — V1–V3 complete — `arena/917fe36e-korea1`
+
+**Sources read (all with the page-fetch tool; the shell's TLS handshake to `nfl.com` still fails,
+re-measured this session):**
+
+| Source | What was taken from it |
+|---|---|
+| <https://www.nfl.com/injuries/league/2026/reg10> | all four week-10 matchup sections, read in full; 98 player rows committed as `data/live/official_injury_extract_2026_reg10.csv` |
+| <https://www.commanders.com/team/depth-chart> · <https://www.giants.com/team/depth-chart> · <https://www.detroitlions.com/team/depth-chart> · <https://www.patriots.com/team/depth-chart> | 115 position rows / 239 players, committed as `data/live/official_depth_extract_2026_11_13.csv` |
+| <https://www.nfl.com/games/cardinals-at-cowboys-2026-reg-8> | spot check of one previously audited score (AZ 33 – DAL 30 Final) against the published audit row; agreed |
+| repo's own `data/evidence/nfl_injuries/week10_2026/injury_report.md` | the fixed control document (verbatim official page, 2026-11-12T13:06:29Z) |
+
+**Verification performed (`make liveverify`, `make build`, `make test`, `check_rebuild`):**
+
+| Check | Result |
+|---|---|
+| Parser control (fixed 11-12 document vs the workflow's own 11-12 snapshot) | **254/254 rows, 1,016 cells, 0 differences → PARSER_FAITHFUL** |
+| Injury table, field by field, 8 clubs | 288 MATCH · **1 confirmed defect** · 8 unresolved · 71 drift-possible · 0 no-basis |
+| Internal consistency, all 326 rows / 28 clubs | **1 self-contradiction** (DET Kerby Joseph, *Out* + *Full Participation*) · 0 vocabulary · 0 duplicates |
+| Depth charts, slot by slot | **115/115 slots, 239 players, 0 mismatches** (4 clubs) |
+| Matchup sentences on `lineup-deficiencies.html` | 41 confirmed current · **17 stale** · **0 contradicted** · 57/59 agree with the contemporaneous archive |
+| Official page movement between two official captures | **57 of 326 player values revised in 29 hours** |
+| Register consolidation | 76 proposals in 4 registers, 74 questions in 3, **0 dropped, 0 renumbered, 0 re-ranked**, 150/150 rows carry a resolved official/primary URL |
+| `make build` | passed: 0 failing checks, 26 canonical pages, 2,080 rows, all with an official/primary reference |
+| `make test` | **162 passed, 1 skipped** (18 new in `test_live_verify.py`, 10 new in `test_review_consolidated.py`) |
+| `tests/check_links.py` | 35 pages, no broken internal links, anchors or assets |
+| `tests/check_rebuild.py` | rebuild matches committed outputs, 0 changed files |
+
+**Headline finding, and why it matters for the brief.** The site's availability extraction is
+correct — the parser reproduces a fixed official document exactly — but the official page itself
+moves fast: 57 of 326 values changed in 29 hours. 17 of 59 published matchup sentences are
+therefore one to two days stale with no capture time shown beside them. That is a **freshness
+defect, not a fabrication defect**, and it is the strongest argument for the capture-time-per-row
+suggestion already in the registers.
+
+**Irregularities recorded (published on `flagged.html` as IR-2026-11-13-01 … 06):**
+IR-01 official page drift; IR-02 17 stale sentences with no per-row capture time; IR-03 the one
+self-contradictory row; IR-04 eight players on the official page but absent from the snapshot,
+cause unresolved; IR-05 two of four verified depth charts are labelled *unofficial* by the clubs
+themselves; IR-06 the three checkers disagreed on the canonical page list, now synchronised.
+
+**No other session's file was edited.** Files written: `pipeline/live_verify.py`,
+`pipeline/live_verify_depth.py`, `pipeline/lineup_claims.py`, `pipeline/review_consolidated.py`,
+`pipeline/render_live.py`, `data/live/**`, `live-verification.html`, `review.html`, plus the
+integration points this session claimed in V3 (`pipeline/render_site.py` NAV/index/exec/
+requirements/flagged generators only, `pipeline/verify_site.py`, `tests/check_links.py`,
+`tests/check_sources.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `DECISIONS.md`,
+`COORDINATION.md`).
+
+### R1 — PR, merge and deployment record (2026-11-13) — `arena/18c4acce-korea1`
+
+- **Pull request:** [#39](https://github.com/karagemop466-tech/Korea1/pull/39) (`arena/18c4acce-korea1` → `main`), title "R1: 2026-11-13 availability reconciliation — official line checks, coverage corrected to 31 of 32, Houston gap flagged".
+- **Pre-merge CI:** `verify` on head `75d0985` = pass (run [43524448536](https://github.com/karagemop466-tech/Korea1/actions/runs/43524448536)); on head `b5f3da7` = pass (run [43525123037](https://github.com/karagemop466-tech/Korea1/actions/runs/43525123037), 1m17s).
+- **Merge:** `gh pr merge 39 --merge` → **MERGED** at `2026-11-13T23:12:12Z`, merge commit [`d2b5610`](https://github.com/karagemop466-tech/Korea1/commit/d2b56108614c99b10ed62766a5571518bb3612b1). Before the merge, `origin/main` had advanced by `266134e` / `cf359ae` (the V1–V4 verification record of `arena/5aee87e3-korea1`, PR #37). It was merged into this branch (`2c38d21`) rather than rebased, because the same `COORDINATION.md` section conflicted on every commit; both sections were kept in full.
+- **Merge-time verification on the merged tree:** `make build` exit 0 (verify_site 0 failing checks; check_sources; check_links), `make test` 58 passed, `tests/check_rebuild.py` 0 drift.
+- **GitHub Pages:** `pages/builds/latest` = `built` for commit `d2b5610` at `2026-11-13T23:12:36Z`, no error (source `main` / `/`, legacy build).
+- **Live check (fetched 2026-11-13 after the build):** <https://karagemop466-tech.github.io/Korea1/injuries.html> shows "31 of 32 club depth charts captured · HOU missing · 2 checked cell by cell"; <https://karagemop466-tech.github.io/Korea1/flagged.html> shows F-15 (corrected), F-18 (Houston), F-19 (club chart labels) and F-20 (repaired hash).
+- **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
+- **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
+
+
+### Post-merge correction — `arena/917fe36e-korea1` — PR #43
+
+**PR #43 merged** at `2026-11-13T23:20:41Z` (merge commit `90e9df8`), CI `verify` passed (1m44s),
+GitHub Pages `builds/latest` = `built` for `90e9df8`, no error. Live check confirmed
+<https://karagemop466-tech.github.io/Korea1/review.html> and `/live-verification.html` serve the
+merged content.
+
+**Defect found by reading the live page, and repaired.** The live `review.html` still cited
+"decision D-05", a forward reference to a decision row that was never recorded. An earlier edit
+replacing it was lost while resolving the second `COORDINATION.md`/`render_live.py` rebase
+conflict. Repaired in `pipeline/render_live.py`; the page now points at `REC-01` in
+`DECISIONS.md` and states plainly that it is a recommendation, not a decision. Two regression
+tests were added (`test_review_page_does_not_cite_a_decision_row_that_does_not_exist`,
+`test_every_recommendation_on_the_page_is_marked_as_a_recommendation`) so the same error cannot
+ship silently again. A diff of every file this session owns against the pre-rebase backup
+confirmed this was the only content lost.
+
+Re-verified after the repair: `make build` 0 failing checks, `make test` **164 passed, 1 skipped**,
+`check_sources.py` 2,085 rows on 26 canonical pages, `check_links.py` 35 pages.
+
+**Lesson for the next session.** A conflict resolution that keeps both text blocks can still drop
+an earlier *edit* to one of them. Reading the rendered live page after a merge is not optional.
+
+### Final record — PR #44 merged, live verified — `arena/917fe36e-korea1`
+
+| Item | Result |
+|---|---|
+| PR #43 | **MERGED** `2026-11-13T23:20:41Z`, merge commit `90e9df8`; CI `verify` pass (1m44s) |
+| PR #44 (repair) | **MERGED**, merge commit `2f62437`; CI `verify` pass (1m54s) |
+| GitHub Pages | `pages/builds/latest` = `built` for `2f62437`, `error = none` |
+| Live check | `/review.html` fetched with a cache-busting query → **`REC-01`, no `D-05`**; `live-verification.html` also served. The stale `D-05` was a GitHub Pages CDN cache, not a bad deploy — the merged source was already correct |
+| Final verification | `make build` 0 failing checks · `make test` 164 passed, 1 skipped · `check_sources.py` 2,085 rows / 26 canonical pages · `check_links.py` 35 pages · `check_rebuild.py` 0 drift |
+| Research verdict | **Unchanged: 0 of 18 strategies validated, no reward awarded.** |
+
+**V1, V2 and V3 are complete.** Files this session owns and nothing else:
+`pipeline/live_verify.py`, `pipeline/live_verify_depth.py`, `pipeline/lineup_claims.py`,
+`pipeline/review_consolidated.py`, `pipeline/render_live.py`, `data/live/**`,
+`live-verification.html`, `review.html`, `tests/test_live_verify.py`,
+`tests/test_review_consolidated.py`, plus the V3 integration points claimed on the board.
+
+## Session `arena/8a322b62-korea1` — T41 (FW6): forward-ledger settlement + first published forward page
+
+### 2026-11-13T23:00Z — claim (committed and pushed before any file in scope was touched)
+
+**Board read first.** `main` tip at claim time is `43a946a` ("availability: official snapshot
+2026-11-13T18:32Z"). Every earlier task is `done` and merged. Three sibling sessions are live on
+`2026-11-13` and their claims were read with `git show origin/<branch>:COORDINATION.md` before
+choosing a scope:
+
+| Live sibling | Claim | Paths it owns (from its own claim text) |
+|---|---|---|
+| `arena/84e42ecc-korea1` | T40 referent audit (resolve every external URL) | its own scripts/CSV, `referents.html` |
+| `arena/beafe2ae-korea1` | T24 current-snapshot audit | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md` |
+| `arena/d58198fc-korea1` | R1–R5 repo audit sub-site | `pipeline/repo_audit.py`, `data/repo_audit/**`, `review/**`, `pipeline/render_audit_site.py`, `pipeline/verify_audit_site.py`; explicitly **excludes `data/forward/**`** |
+
+**Why T41 exists.** The forward ledger merged in PR #34 (`arena/9e3e144b-korea1`, tasks FW1–FW2)
+froze 14 Week 10 games / 18 strategies / 65 picks before kickoff, and it is the only part of this
+project that removes hindsight by construction. Two things are true of it on `main` today:
+
+1. **No page publishes it.** `forward/` does not exist on any branch (`git log --all -- forward/`
+   is empty); the ledger is data-only. The site therefore shows a leaderboard with no prospective
+   record beside it, which is the single most decision-relevant number the project can produce.
+2. **All 65 picks are `OPEN`, 0 counted.** `data/forward/graded_picks.csv` has no graded row, so
+   `scoreboard.csv` prints `0` for every strategy and every gate reads `NOT REACHED`.
+
+Since the freeze, the first Week 10 game has settled. The official NFL.com scores page
+(<https://www.nfl.com/scores/2026/week-10>) shows **WAS 24 – NYG 21, Final** for
+`2026_10_WAS_NYG`. That game carries **4 frozen picks**. Grading it is the first real forward
+observation this project has ever had, and it is currently being dropped.
+
+| # | Task | Status | Owner | File scope (all new or append-only) |
+|---|------|--------|-------|-------------------------------------|
+| T41a | Official settlement capture for `2026_10_WAS_NYG`: record the final score with its official URL, capture time and transcribed heading, so grading rests on an official page and not on the community mirror | **in progress** | `arena/8a322b62-korea1` | `data/forward/official_results.csv` (append-only), `data/forward/captures/**` |
+| T41b | Settlement engine: grade frozen picks and cards against official finals only; leave any game without an official final `OPEN`; no provisional credit | **in progress** | `arena/8a322b62-korea1` | `pipeline/forward_settle.py`, `data/forward/graded_*.csv`, `data/forward/scoreboard.csv` |
+| T41c | First published forward page: frozen-vs-graded table, per-strategy prospective record, gate status, and a plainly worded statement that n=4 is not evidence | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_forward.py`, `forward.html` |
+| T41d | Tests that a pick cannot settle without an official result, that an unsettled pick stays `OPEN`, and that the settled arithmetic is exact | **in progress** | `arena/8a322b62-korea1` | `tests/test_forward_settlement.py` |
+| T41e | Integration: one NAV line, page lists in `verify_site.py` / `tests/check_*.py`, one `Makefile` line, one `README` line | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_site.py` (**NAV tuple only**), `pipeline/verify_site.py` (**page set only**), `tests/check_links.py` (**page list only, if it is not a glob**), `Makefile`, `README.md` (one line) |
+
+**Not claimed and not touched by this session:** `data/processed/**`, `data/review/**`,
+`data/availability/**`, `data/evidence/**`, `assets/**`, `assets/data/**`, `.github/workflows/**`,
+`pipeline/render_{site,summary,review,decisions,readiness,annex,audit,governance,requirements}.py`
+beyond the single NAV tuple in `render_site.py`, every root `*.html` except the new `forward.html`,
+and every path in the three sibling claims above.
+
+**Protocol deviation, recorded.** The platform pins this session to
+`arena/8a322b62-korea1`; it cannot create a `session-<id>/<task>` branch. Same limitation every
+earlier session recorded. This branch is both task and integration branch.
+
+**Deliberate evidence rule for this task.** A pick may settle **only** from a score transcribed
+from an official NFL.com page and stored with that page's URL and a capture timestamp. The
+community mirror (`nflverse/nfldata`) is used by the existing engine for *closing lines*, which is
+a different field; it is not accepted as a settlement source. If no official final exists for a
+game, its picks stay `OPEN` and are printed as `OPEN`, not as a push, a void or a win.
+
+### T41 — done (2026-11-13T23:55Z) — `arena/8a322b62-korea1`
+
+**Merge note (recorded, not hidden).** `main` advanced by 13 commits while T41 was in progress, and
+the merge collided in four files. Nothing was discarded:
+
+| Conflict | Resolution |
+|---|---|
+| `pipeline/fetch_injuries.py` | **The same defect was found independently by `arena/18c4acce-korea1` (R1, commit `cf58a72`) and by this session.** One fix only. The merged form keeps R1's `snapshot_dir / logical` path convention and this session's fail-closed rule (a named-but-missing evidence file raises rather than being recorded as `null`). Both sessions are credited in the code comment and F-T41-03 is worded as a joint find |
+| `COORDINATION.md` | Both logs kept verbatim and in order; R1's log (merged first on `main`) precedes this one. No earlier entry was edited |
+| `data/processed/verification_report.csv`, `assets/data/verification_report.csv` | Generated files — not hand-merged. Took `main`'s side and regenerated by re-running the verifier on the merged tree (the repo's stated convention) |
+
+The overlap is now recorded, and the duplicate work cost one review pass rather than a wrong number.
+
+
+**What was actually missing.** The ledger merged in PR #34 froze 65 tickets / 18 strategies / 14
+Week 10 games before kickoff, but nothing published the prospective record, and three days after the
+freeze **all 65 tickets were still `OPEN`**: no official final had ever been recorded, so the engine
+had fallen back to the community mirror and marked 4 tickets `PROVISIONAL`. Gate F2 therefore read
+`PENDING` and no forward number existed anywhere on the site. `git log --all -- forward/` is empty —
+the published page never existed on any branch.
+
+| Step | Result |
+|---|---|
+| Official settlement source | [WAS 24 – NYG 21, Final](https://www.nfl.com/games/commanders-at-giants-2026-reg-10), cross-checked on [the week-10 scores page](https://www.nfl.com/scores/2026/week-10). Quarter cells 0/10/7/7 and 0/7/7/7 sum to the printed totals; the official Game Book PDF is linked from the capture. Transcripts + SHA-256 in `data/forward/captures/2026_10_WAS_NYG/` |
+| Settlement | Re-ran the **existing** engine (`pipeline/forward_grade.py`) rather than writing a second implementation. 4 of 65 tickets move `OPEN → OFFICIAL`; 61 stay `OPEN`. Gate F2 `PENDING → PASS` for the 4 strategies with a settled ticket. Hand-checked: NYG +2.5 loses by 3; total 45 over 40.5 wins; a win at −118 pays 0.847458 |
+| Published page | `forward.html` — 39 rows, 5 captioned tables, every row with an official/primary reference; frozen-vs-graded table, all 14 games with settlement state, per-strategy record, and `NO VERDICT` on every row. No p-value, no ROI, no verdict |
+| Defect repaired | `data/evidence/nfl_injuries/week10_2026/manifest.json` was rewritten by **every** build and carried `"sha256": null` for `news_register.md` (`fetch_injuries.py` hashed only `files[0]`). `tests/check_rebuild.py` does not cover `data/evidence/`, so it survived review. Now every declared file is hashed; a null or mismatched digest fails the build. Verified by restoring the old code: 2 tests fail |
+| Automation (F-T41-06) | `.github/workflows/forward-ledger.yml` + `pipeline/forward_fetch_official.py`. Archives official pages and writes **proposed** scores to `data/forward/official_candidates.csv`; **never** writes `official_results.csv`, and hashes that file before/after, raising if it moved. Promotion of a proposal stays reviewed because the extraction rules are unvalidated against real NFL.com HTML (the sandbox cannot reach nfl.com: `TLS/SSL connection has been closed (EOF)`) |
+
+**Verification performed**
+
+| Check | Result |
+|---|---|
+| `make build` | Passed end to end |
+| `pipeline/verify_site.py` | **0 failing checks**, 34 pages, `forward.html` 39 rows / 0 without official source |
+| `tests/check_sources.py` | 25 canonical pages, **1,715 rows**, strict official/primary pass |
+| `tests/check_links.py` | 34 pages, no broken internal links, anchors or assets |
+| `make test` | **77 passed** (was 68); 10 new settlement guards + 4 evidence guards + 5 capture guards |
+| `tests/check_rebuild.py` | Rebuild matches committed outputs, 0 changed files |
+| Tree after `make build` | Clean — the evidence-manifest rewrite no longer dirties the repository |
+| Mutation testing | Wrong official score → 4 tests fail. `OPEN` pick forced to `OFFICIAL` → 2 tests fail. Old `fetch_injuries.py` → 2 tests fail. Bug injected into the capture step → guard test fails **and** the module's own self-check raises |
+
+**Irregularities logged as F-T41-01..06 on `flagged.html`** (two repaired, four open). The open ones
+are: four settled tickets are not evidence of skill; gate F6 still fails for all 18 strategies
+(community-mirror prices, not bookmaker quotes); settlement of a *new* game still needs a reviewed
+promotion step; and the capture parser is unvalidated against real NFL.com HTML.
+
+**Numbers published, and what did not move.** Forward: 4/65 settled, net −0.305 units, 0 validated.
+No retrospective figure changed: the canonical backtest, the 18 strategies' verdicts (10 `NO EDGE`,
+8 `LUCK`), the model MAEs and the props module are untouched. `forward.html` is a new output, not a
+restatement of an old one.
+
+**Scope discipline.** Edited only `data/forward/**` (append + regenerate), `forward.html`,
+`pipeline/render_forward.py`, `pipeline/forward_fetch_official.py`, `tests/test_forward_settlement.py`,
+`tests/test_evidence_integrity.py`, `tests/test_forward_capture.py`,
+`.github/workflows/forward-ledger.yml`, and the minimum shared-file registrations: one NAV tuple and
+one executive-summary section in `pipeline/render_site.py`, one section in `pipeline/render_summary.py`,
+the page lists in `pipeline/verify_site.py` / `tests/check_{sources,links}.py`, one `Makefile` line +
+test list, one `README.md` section, and `pipeline/fetch_injuries.py` for the manifest hash repair.
+No sibling branch was touched; no file claimed by `arena/84e42ecc-korea1`,
+`arena/beafe2ae-korea1` or `arena/d58198fc-korea1` was edited.
+
+### T41 — PR, merge and deployment record (2026-11-13) — `arena/8a322b62-korea1`
+
+- **Pull request:** [#42](https://github.com/karagemop466-tech/Korea1/pull/42) (`arena/8a322b62-korea1` → `main`),
+  "T41: forward-test settlement — first official result recorded, forward.html published".
+- **Merge:** `gh pr merge 42 --merge` → **MERGED** at `2026-11-13T23:34:28Z`, merge commit
+  [`c16c25c`](https://github.com/karagemop466-tech/Korea1/commit/c16c25c77e372b7b74f35896f051e16078032d2a).
+- **CI before merge:** `verify` **pass** on the final head (run `43527533289`), after one earlier
+  **failure** that was fixed rather than bypassed — see the defect note below.
+- **GitHub Pages:** `pages/builds/latest` → `status: built` for commit `c16c25c` at
+  `2026-11-13T23:35:02Z`, no error (source `main` / `/`, legacy build).
+- **Live check (fetched after the build):** <https://karagemop466-tech.github.io/Korea1/forward.html>
+  serves 4/65 settled, the WAS 24–21 NYG row, the 14-game slate with 13 `OPEN`, and `NO VERDICT` on
+  all 18 strategies; <https://karagemop466-tech.github.io/Korea1/flagged.html> serves F-T41-01 … F-T41-06.
+  Shell `curl` cannot reach the Pages host from this sandbox (`HTTP 000`), so the live check uses the
+  page-fetch tool, the same method earlier sessions recorded.
+
+**Three merges of `main`, all resolved without discarding another session's work.** `main` advanced
+four times mid-task (PRs #39, #41, #43, #44). Every collision was resolved by keeping both sides:
+
+| Collision | Resolution |
+|---|---|
+| `COORDINATION.md` (4×) | Both logs kept in full, `main`'s first. No entry edited or renumbered |
+| `pipeline/fetch_injuries.py` | **The same manifest defect was found independently by `arena/18c4acce-korea1` (R1, `cf58a72`) and by this session.** Merged into one fix: R1's `snapshot_dir / logical` path convention plus this session's fail-closed rule (a named-but-missing file raises instead of being recorded as `null`). Both credited in the code |
+| 26 shared `*.html` + `verification_report.csv` | Generated files — **not hand-merged**. Took `main`'s side, then re-ran `make build` on the merged tree so every page is regenerated from one build |
+| Page lists in `verify_site.py`, `check_links.py`, `check_sources.py` | Union: `forward.html` **and** `live-verification.html` / `review.html` |
+| `Makefile` `.PHONY` / `test` target | Union: both sessions' test files and both new targets |
+
+**A real defect caught by CI, not by me.** The first CI run failed at `make test`:
+`tests/test_evidence_integrity.py` invoked `.venv/bin/python`, which does not exist on a GitHub runner,
+so `subprocess` raised `FileNotFoundError` before the skip guard could fire. The test passed locally
+**because `.venv` exists in this sandbox** — a green local run was not a green CI run. Fixed with
+`sys.executable`, then reproduced CI's exact condition in a clean clone with no repo `.venv` (same
+`FileNotFoundError`), fixed there, and re-verified: 152 passed / 2 skipped, `make test` green.
+
+**Post-merge correction (recorded rather than left standing).** The live `flagged.html` carried
+F-T41-06 saying "no scheduled workflow grades the ledger". That was made untrue by the same PR, which
+added `forward-ledger.yml`. Corrected in a follow-up commit to say what actually remains manual —
+confirming a proposed score against the archived official page before it enters `official_results.csv`
+— and the claim was verified on the rendered page before pushing.
+
+**Final state.** 107 tests pass, `verify_site` 0 failing checks, `check_sources` strict pass,
+`check_links` clean, `check_rebuild` 0 drift, tree clean after `make build`. The research verdict is
+unchanged: **0 of 18 canonical strategies validated, no reward**. The forward test now has a published,
+auditable, official-source-settled record of 4 settled tickets out of 65.
 
 ---
 

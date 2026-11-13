@@ -1,0 +1,31 @@
+{
+  "capture_id": "nfl_2026_w10_was_nyg",
+  "game_id": "2026_10_WAS_NYG",
+  "season": 2026,
+  "week": 10,
+  "away_team": "WAS",
+  "away_score": 24,
+  "home_team": "NYG",
+  "home_score": 21,
+  "status_on_page": "Final",
+  "official_url": "https://www.nfl.com/games/commanders-at-giants-2026-reg-10",
+  "secondary_url": "https://www.nfl.com/scores/2026/week-10",
+  "gamebook_pdf": "https://static.www.nfl.com/image/upload/v1794570519/gamecenter/ab5828d9-4feb-11f1-abca-2c54536568a9.pdf",
+  "captured_utc": "2026-11-13T23:10:00Z",
+  "retrieval_method": {
+    "tool": "agent page-fetch tool",
+    "note": "The sandbox shell egress allowlist cannot open www.nfl.com (TLS reset), so the official page is read with the agent page-fetch tool and the relevant blocks are transcribed verbatim to disk. A SHA-256 proves these bytes were not altered after capture; it does not prove the capture is a complete transcription of the page."
+  },
+  "cross_check": "Two independent official pages (the week-10 scores page and the game page) both print WAS 24 - NYG 21, Final. The game page quarter cells sum to the printed totals.",
+  "tier": "official NFL source (nfl.com)",
+  "files": {
+    "game_page_excerpt.md": {
+      "sha256": "d883f9432f68661a23f08780a49573c9d06c57acb7b561a48b93e078c7a0b4e2",
+      "bytes": 1108
+    },
+    "scoreboard_excerpt.md": {
+      "sha256": "deeaf04cb002f126f91f9cdc67f85965fc0c6b37c61bb1b27c14fbf6fc5d54c3",
+      "bytes": 1306
+    }
+  }
+}
