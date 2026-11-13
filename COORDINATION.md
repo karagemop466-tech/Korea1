@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-13 (session `arena/18c4acce-korea1`, claim R1). Earlier sessions: `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`
+Last updated: 2026-11-13 (latest: `arena/beafe2ae-korea1`; concurrent R1 integration: `arena/18c4acce-korea1`; prior sessions: `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`)
 
 ## How to use this board
 
@@ -2021,3 +2021,30 @@ session to `arena/beafe2ae-korea1`; that is the only branch used. Claim scope is
 `research/availability-snapshot-audit-2026-11-13.md`, and this T24 row/log in `COORDINATION.md`.
 No generated pages, navigation, shared tables, or files in another task's scope will be edited. The
 claim is committed and pushed before the audit files are created.
+
+### 2026-11-13T23:05Z — T24 audit and verification complete; PR/deploy pending
+
+**Official-source scope:** the dated ledger in `research/availability-snapshot-audit-2026-11-13.md` contains a direct official link on every one of 33 capture rows: the NFL injury-report page (<https://www.nfl.com/injuries/>) and all 32 club depth-chart URLs from `pipeline/fetch_availability.py`. Snapshot commit `43a946aed4c3ec86b17b920757dc780ced73ea93` records the scheduled capture at 2026-11-13T18:32:20Z. The source capture workflow reports success at <https://github.com/karagemop466-tech/Korea1/actions/runs/43483547465>; the Pages deployment reports success at <https://github.com/karagemop466-tech/Korea1/actions/runs/43483664141>.
+
+**Results from the committed data (no values inferred):** 326 NFL injury-report rows across 28 listed clubs; CHI, DEN, PHI and TB are not listed and are not labelled injury-free. 31 of 32 club depth-chart captures parsed, yielding 1,833 rows across 31 clubs. HOU returned HTTP 200 and 490,113 bytes but parsed zero rows; no HOU chart rows were published, and the failure is present in the availability capture log. Of 68 unmatched injury-report rows, 16 are from HOU's unavailable chart and 52 are name matches not found in their clubs' published charts. These rows remain unmatched and excluded from lineup counts. The 909-slot derived join was regenerated exactly from the committed source CSVs.
+
+**Verification performed:**
+- `make build` — pass; pipeline completed; `pipeline/verify_site.py` reported 0 failing checks.
+- `make test` — 58 passed; `.venv/bin/python -m pytest -q tests/test_current_snapshot_audit.py` — 4 passed.
+- `tests/check_sources.py` — 24 canonical pages, 1,676 rows; every table row had an official/primary reference.
+- `tests/check_links.py` — 33 pages; internal files, anchors and local assets resolve; no external asset dependency.
+- `pipeline/current_snapshot_audit.py --write-report` — pass; 33 source records, row provenance/timestamps, per-team capture counts, history-copy equality, all 3 derived tables, all 544 availability page rows and 5 captions checked.
+- GitHub Pages API reports the site public, built, HTTPS-enforced, served from `main:/`; the latest deployment and deployment record both succeeded.
+
+**Limitations and irregularities:** the availability workflow stores parsed CSVs and response metadata/hashes, not current raw HTML, so the HTTP response hashes cannot be independently recomputed from the checkout. GitHub API job/step statuses were inspected; retrieval of the runner log archive from this sandbox ended with EOF. The HOU parsing failure and the 68 unmatched rows are explicitly visible on `availability.html`; no missing lineup role or point impact was filled in.
+
+A complete local `make build` regenerated one out-of-scope evidence manifest with `sha256: null` for `news_register.md` because `pipeline/fetch_injuries.py` sets absent digests to null and only refreshes the injury-report digest. The actual `news_register.md` SHA-256 is `f57ba2f9447b4f286af912c348871fa9c6b9d266c628ce8126bf8ce051f56527`. The incidental build-generated manifest diff was restored; no other generated output remained changed. This is logged as a cross-scope request, not silently edited.
+
+**Cross-scope requests (logged; no files outside T24 scope edited):**
+1. The completed executive-summary scope should add the 2026-11-13 automated coverage result (31/32 charts, HOU parser gap) and clearly distinguish it from the separate 2026-11-12 hand-checked 8/32 sample and older 2/32 sample. `EXECUTIVE_SUMMARY.md`, `executive-summary.html`, `pipeline/render_summary.py` and `flagged.html` were not edited.
+2. The availability-tracker owner should inspect the official HOU page and either repair its parser or retain the explicit blank/failure state; source: <https://www.houstontexans.com/team/depth-chart>. The current page flags this correctly.
+3. The injury-ingestion owner should store a real SHA-256 for the committed official `news_register.md` or omit its hash field consistently, and add a regression check. The files in that prior task's scope were not edited.
+4. The integration owner should add `tests/test_current_snapshot_audit.py` to the routine test target/workflow if this audit is to remain a CI gate; the completed Makefile/workflow scopes were not edited.
+5. Current-snapshot failure and unmatched-name counts should be carried into the dedicated `flagged.html` register on the next shared-output integration. The dated snapshot ledger and `availability.html` already expose the source-level failure; shared renderer/navigation files were not edited.
+
+No PR or deployment result is recorded yet; T24 stays **in progress** until the scoped PR is merged and the resulting Pages deployment is confirmed.
