@@ -21,3 +21,13 @@ unverified number verified.
 
 Those are owner decisions with a cost. This log records only what the agent could decide without
 spending money or making a claim the evidence does not support.
+
+## Agent recommendation — 2026-11-13 (not a decision)
+
+| ID | Date (UTC) | Owner | Recommendation | Evidence at the time | Reversal condition |
+|---|---|---|---|---|---|
+| REC-01 | 2026-11-13 | Agent session `arena/917fe36e-korea1` | Treat **prices and executable quotes** as the first-paid item and **availability modelling** as the first no-cost work item, both behind Path A's rule that nothing unverified is presented as verified. | `review.html` (76 proposals in 4 registers, 74 questions in 3 registers; 4 of 4 registers raise prices and it holds the most blocked questions) and `live-verification.html` (the availability layer is extracted correctly but goes stale within 29 hours) | Reverse on any recorded D-row that selects a different path |
+
+This is a recommendation, not a decision. It is separated from the D-rows above precisely so it
+cannot be read as an approval: no money has been committed, no reward is authorised, and no
+published number changed.

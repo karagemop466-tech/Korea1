@@ -1711,3 +1711,99 @@ published on the Flagged-for-Review page. V1–V4 are complete for this session.
 - **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
 - **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
 
+---
+
+## 2026-11-13 — Session `arena/917fe36e-korea1` — independent verification + suggestions review
+
+**Board read first.** On `main` at `43a946a`, every earlier task is `done` or `needs review` and
+merged. Two rows still print `in progress` (T8, T11) and the FW1–FW5 rows print `in progress`;
+those are stale labels from branches that never merged, left exactly as their owners wrote them.
+Nothing was renumbered and nothing was overwritten.
+
+**Scope decision.** The repository already publishes every page the 2026-11-12 brief asked for
+(suggestions, questions, injuries, leaderboard, gates, correlations, props, flagged). This session
+therefore does **not** rebuild those pages. It adds the one thing the merged build asserts but cannot
+prove from its own sandbox: **line-by-line re-verification of published rows against live official
+sources**, plus a consolidation of the four competing suggestion/question registers into a single
+review surface with a chosen-path record.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| V1 | Independent re-verification of published injury/depth/schedule rows against live official sources; publish a per-row verdict table | **in progress** | `arena/917fe36e-korea1` | `pipeline/live_verify.py`, `data/live/**`, `live-verification.html`, `tests/test_live_verify.py` |
+| V2 | Consolidated suggestion + question review surface: merge the four registers, de-duplicate, rank, and record a recommended path without implementing any change | **in progress** | `arena/917fe36e-korea1` | `pipeline/review_consolidated.py`, `data/live/review_consolidated.csv`, `review.html`, `tests/test_review_consolidated.py` |
+| V3 | Integration: NAV entries, index cards, executive-summary section, requirements rows, flagged rows, verifier + link-check wiring, PR, merge, Pages confirmation | **in progress** | `arena/917fe36e-korea1` | `pipeline/render_site.py` (NAV/index/exec/requirements/flagged only), `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
+
+**Not touched:** every file in the claims above by any other session, `data/processed/**`,
+`data/availability/**`, `data/forward/**`, `data/review/**`, `data/evidence/**`, `archive/**`,
+`lab/**`, `assets/app.js`, and every existing root `*.html` other than the two new pages this
+session creates (`live-verification.html`, `review.html`) and the renderer's NAV/index/exec/
+requirements/flagged generators.
+
+**Platform deviation, recorded.** The platform pins this session to `arena/917fe36e-korea1`; it
+cannot create a separate `session-<id>/<task>` branch. Same deviation every earlier session recorded.
+
+**Irregularity for the record (IR-917-00).** Four registers now answer the same brief on different
+pages — `suggestions.html` (22), `suggestions-review.html` (12), `decision-board.html` (17) and
+`open-questions.html`/`questions.html` (40 + 20). V2 does not delete or renumber any of them; it
+publishes one cross-register index so the owner can compare them in one place.
+
+### 2026-11-13 — V1–V3 complete — `arena/917fe36e-korea1`
+
+**Sources read (all with the page-fetch tool; the shell's TLS handshake to `nfl.com` still fails,
+re-measured this session):**
+
+| Source | What was taken from it |
+|---|---|
+| <https://www.nfl.com/injuries/league/2026/reg10> | all four week-10 matchup sections, read in full; 98 player rows committed as `data/live/official_injury_extract_2026_reg10.csv` |
+| <https://www.commanders.com/team/depth-chart> · <https://www.giants.com/team/depth-chart> · <https://www.detroitlions.com/team/depth-chart> · <https://www.patriots.com/team/depth-chart> | 115 position rows / 239 players, committed as `data/live/official_depth_extract_2026_11_13.csv` |
+| <https://www.nfl.com/games/cardinals-at-cowboys-2026-reg-8> | spot check of one previously audited score (AZ 33 – DAL 30 Final) against the published audit row; agreed |
+| repo's own `data/evidence/nfl_injuries/week10_2026/injury_report.md` | the fixed control document (verbatim official page, 2026-11-12T13:06:29Z) |
+
+**Verification performed (`make liveverify`, `make build`, `make test`, `check_rebuild`):**
+
+| Check | Result |
+|---|---|
+| Parser control (fixed 11-12 document vs the workflow's own 11-12 snapshot) | **254/254 rows, 1,016 cells, 0 differences → PARSER_FAITHFUL** |
+| Injury table, field by field, 8 clubs | 288 MATCH · **1 confirmed defect** · 8 unresolved · 71 drift-possible · 0 no-basis |
+| Internal consistency, all 326 rows / 28 clubs | **1 self-contradiction** (DET Kerby Joseph, *Out* + *Full Participation*) · 0 vocabulary · 0 duplicates |
+| Depth charts, slot by slot | **115/115 slots, 239 players, 0 mismatches** (4 clubs) |
+| Matchup sentences on `lineup-deficiencies.html` | 41 confirmed current · **17 stale** · **0 contradicted** · 57/59 agree with the contemporaneous archive |
+| Official page movement between two official captures | **57 of 326 player values revised in 29 hours** |
+| Register consolidation | 76 proposals in 4 registers, 74 questions in 3, **0 dropped, 0 renumbered, 0 re-ranked**, 150/150 rows carry a resolved official/primary URL |
+| `make build` | passed: 0 failing checks, 26 canonical pages, 2,080 rows, all with an official/primary reference |
+| `make test` | **162 passed, 1 skipped** (18 new in `test_live_verify.py`, 10 new in `test_review_consolidated.py`) |
+| `tests/check_links.py` | 35 pages, no broken internal links, anchors or assets |
+| `tests/check_rebuild.py` | rebuild matches committed outputs, 0 changed files |
+
+**Headline finding, and why it matters for the brief.** The site's availability extraction is
+correct — the parser reproduces a fixed official document exactly — but the official page itself
+moves fast: 57 of 326 values changed in 29 hours. 17 of 59 published matchup sentences are
+therefore one to two days stale with no capture time shown beside them. That is a **freshness
+defect, not a fabrication defect**, and it is the strongest argument for the capture-time-per-row
+suggestion already in the registers.
+
+**Irregularities recorded (published on `flagged.html` as IR-2026-11-13-01 … 06):**
+IR-01 official page drift; IR-02 17 stale sentences with no per-row capture time; IR-03 the one
+self-contradictory row; IR-04 eight players on the official page but absent from the snapshot,
+cause unresolved; IR-05 two of four verified depth charts are labelled *unofficial* by the clubs
+themselves; IR-06 the three checkers disagreed on the canonical page list, now synchronised.
+
+**No other session's file was edited.** Files written: `pipeline/live_verify.py`,
+`pipeline/live_verify_depth.py`, `pipeline/lineup_claims.py`, `pipeline/review_consolidated.py`,
+`pipeline/render_live.py`, `data/live/**`, `live-verification.html`, `review.html`, plus the
+integration points this session claimed in V3 (`pipeline/render_site.py` NAV/index/exec/
+requirements/flagged generators only, `pipeline/verify_site.py`, `tests/check_links.py`,
+`tests/check_sources.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `DECISIONS.md`,
+`COORDINATION.md`).
+
+### R1 — PR, merge and deployment record (2026-11-13) — `arena/18c4acce-korea1`
+
+- **Pull request:** [#39](https://github.com/karagemop466-tech/Korea1/pull/39) (`arena/18c4acce-korea1` → `main`), title "R1: 2026-11-13 availability reconciliation — official line checks, coverage corrected to 31 of 32, Houston gap flagged".
+- **Pre-merge CI:** `verify` on head `75d0985` = pass (run [43524448536](https://github.com/karagemop466-tech/Korea1/actions/runs/43524448536)); on head `b5f3da7` = pass (run [43525123037](https://github.com/karagemop466-tech/Korea1/actions/runs/43525123037), 1m17s).
+- **Merge:** `gh pr merge 39 --merge` → **MERGED** at `2026-11-13T23:12:12Z`, merge commit [`d2b5610`](https://github.com/karagemop466-tech/Korea1/commit/d2b56108614c99b10ed62766a5571518bb3612b1). Before the merge, `origin/main` had advanced by `266134e` / `cf359ae` (the V1–V4 verification record of `arena/5aee87e3-korea1`, PR #37). It was merged into this branch (`2c38d21`) rather than rebased, because the same `COORDINATION.md` section conflicted on every commit; both sections were kept in full.
+- **Merge-time verification on the merged tree:** `make build` exit 0 (verify_site 0 failing checks; check_sources; check_links), `make test` 58 passed, `tests/check_rebuild.py` 0 drift.
+- **GitHub Pages:** `pages/builds/latest` = `built` for commit `d2b5610` at `2026-11-13T23:12:36Z`, no error (source `main` / `/`, legacy build).
+- **Live check (fetched 2026-11-13 after the build):** <https://karagemop466-tech.github.io/Korea1/injuries.html> shows "31 of 32 club depth charts captured · HOU missing · 2 checked cell by cell"; <https://karagemop466-tech.github.io/Korea1/flagged.html> shows F-15 (corrected), F-18 (Houston), F-19 (club chart labels) and F-20 (repaired hash).
+- **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
+- **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
+

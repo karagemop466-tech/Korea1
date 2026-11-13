@@ -1,0 +1,23 @@
+{
+  "generated_utc": "2026-11-13T22:57:59Z",
+  "claims": 59,
+  "confirmed": 41,
+  "contradicted": 0,
+  "out_of_scope": 1,
+  "stale": 17,
+  "no_capture_evidence": 0,
+  "agree_with_archive": 57,
+  "differ_from_archive": 1,
+  "not_in_archive": 0,
+  "current": 41,
+  "quoted_not_found": 0,
+  "page": "lineup-deficiencies.html",
+  "data": "data/lineups/week10_2026_matchup_deficiencies.csv",
+  "method": "each published sentence is matched to its official cell: status claims against nfl.com/injuries/league/2026/reg10, replacement claims against the club's own depth chart",
+  "official_capture_drift": {
+    "players": 326,
+    "values_changed": 57,
+    "window": "2026-11-12T13:06Z -> 2026-11-13T18:32Z",
+    "note": "the official injury page revised these cells between two official captures 29 hours apart; it is why every published status must carry its capture time"
+  }
+}
