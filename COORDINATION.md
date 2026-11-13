@@ -1,6 +1,6 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-13 (session `arena/18c4acce-korea1`, claim R1). Earlier sessions: `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`
+Last updated: 2026-11-13 (latest: `arena/beafe2ae-korea1`; concurrent R1 integration: `arena/18c4acce-korea1`; prior sessions: `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`)
 
 ## How to use this board
 
@@ -46,6 +46,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
 | T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **in progress** | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
+| T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -1969,3 +1970,268 @@ F-21–F-28), `pipeline/verify_site.py` (page registration + the reverted-allowl
 **Open PRs #24 and #30 were not merged.** Both are `CONFLICTING` against current `main` (109 and 125
 changed files, last updated 2026-11-12), their T14–T17 / T14 titles match work already merged through
 other branches, and the protocol says do not merge a broken site. Left open for their owners.
+## Session `arena/8a322b62-korea1` — T41 (FW6): forward-ledger settlement + first published forward page
+
+### 2026-11-13T23:00Z — claim (committed and pushed before any file in scope was touched)
+
+**Board read first.** `main` tip at claim time is `43a946a` ("availability: official snapshot
+2026-11-13T18:32Z"). Every earlier task is `done` and merged. Three sibling sessions are live on
+`2026-11-13` and their claims were read with `git show origin/<branch>:COORDINATION.md` before
+choosing a scope:
+
+| Live sibling | Claim | Paths it owns (from its own claim text) |
+|---|---|---|
+| `arena/84e42ecc-korea1` | T40 referent audit (resolve every external URL) | its own scripts/CSV, `referents.html` |
+| `arena/beafe2ae-korea1` | T24 current-snapshot audit | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md` |
+| `arena/d58198fc-korea1` | R1–R5 repo audit sub-site | `pipeline/repo_audit.py`, `data/repo_audit/**`, `review/**`, `pipeline/render_audit_site.py`, `pipeline/verify_audit_site.py`; explicitly **excludes `data/forward/**`** |
+
+**Why T41 exists.** The forward ledger merged in PR #34 (`arena/9e3e144b-korea1`, tasks FW1–FW2)
+froze 14 Week 10 games / 18 strategies / 65 picks before kickoff, and it is the only part of this
+project that removes hindsight by construction. Two things are true of it on `main` today:
+
+1. **No page publishes it.** `forward/` does not exist on any branch (`git log --all -- forward/`
+   is empty); the ledger is data-only. The site therefore shows a leaderboard with no prospective
+   record beside it, which is the single most decision-relevant number the project can produce.
+2. **All 65 picks are `OPEN`, 0 counted.** `data/forward/graded_picks.csv` has no graded row, so
+   `scoreboard.csv` prints `0` for every strategy and every gate reads `NOT REACHED`.
+
+Since the freeze, the first Week 10 game has settled. The official NFL.com scores page
+(<https://www.nfl.com/scores/2026/week-10>) shows **WAS 24 – NYG 21, Final** for
+`2026_10_WAS_NYG`. That game carries **4 frozen picks**. Grading it is the first real forward
+observation this project has ever had, and it is currently being dropped.
+
+| # | Task | Status | Owner | File scope (all new or append-only) |
+|---|------|--------|-------|-------------------------------------|
+| T41a | Official settlement capture for `2026_10_WAS_NYG`: record the final score with its official URL, capture time and transcribed heading, so grading rests on an official page and not on the community mirror | **in progress** | `arena/8a322b62-korea1` | `data/forward/official_results.csv` (append-only), `data/forward/captures/**` |
+| T41b | Settlement engine: grade frozen picks and cards against official finals only; leave any game without an official final `OPEN`; no provisional credit | **in progress** | `arena/8a322b62-korea1` | `pipeline/forward_settle.py`, `data/forward/graded_*.csv`, `data/forward/scoreboard.csv` |
+| T41c | First published forward page: frozen-vs-graded table, per-strategy prospective record, gate status, and a plainly worded statement that n=4 is not evidence | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_forward.py`, `forward.html` |
+| T41d | Tests that a pick cannot settle without an official result, that an unsettled pick stays `OPEN`, and that the settled arithmetic is exact | **in progress** | `arena/8a322b62-korea1` | `tests/test_forward_settlement.py` |
+| T41e | Integration: one NAV line, page lists in `verify_site.py` / `tests/check_*.py`, one `Makefile` line, one `README` line | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_site.py` (**NAV tuple only**), `pipeline/verify_site.py` (**page set only**), `tests/check_links.py` (**page list only, if it is not a glob**), `Makefile`, `README.md` (one line) |
+
+**Not claimed and not touched by this session:** `data/processed/**`, `data/review/**`,
+`data/availability/**`, `data/evidence/**`, `assets/**`, `assets/data/**`, `.github/workflows/**`,
+`pipeline/render_{site,summary,review,decisions,readiness,annex,audit,governance,requirements}.py`
+beyond the single NAV tuple in `render_site.py`, every root `*.html` except the new `forward.html`,
+and every path in the three sibling claims above.
+
+**Protocol deviation, recorded.** The platform pins this session to
+`arena/8a322b62-korea1`; it cannot create a `session-<id>/<task>` branch. Same limitation every
+earlier session recorded. This branch is both task and integration branch.
+
+**Deliberate evidence rule for this task.** A pick may settle **only** from a score transcribed
+from an official NFL.com page and stored with that page's URL and a capture timestamp. The
+community mirror (`nflverse/nfldata`) is used by the existing engine for *closing lines*, which is
+a different field; it is not accepted as a settlement source. If no official final exists for a
+game, its picks stay `OPEN` and are printed as `OPEN`, not as a push, a void or a win.
+
+### T41 — done (2026-11-13T23:55Z) — `arena/8a322b62-korea1`
+
+**Merge note (recorded, not hidden).** `main` advanced by 13 commits while T41 was in progress, and
+the merge collided in four files. Nothing was discarded:
+
+| Conflict | Resolution |
+|---|---|
+| `pipeline/fetch_injuries.py` | **The same defect was found independently by `arena/18c4acce-korea1` (R1, commit `cf58a72`) and by this session.** One fix only. The merged form keeps R1's `snapshot_dir / logical` path convention and this session's fail-closed rule (a named-but-missing evidence file raises rather than being recorded as `null`). Both sessions are credited in the code comment and F-T41-03 is worded as a joint find |
+| `COORDINATION.md` | Both logs kept verbatim and in order; R1's log (merged first on `main`) precedes this one. No earlier entry was edited |
+| `data/processed/verification_report.csv`, `assets/data/verification_report.csv` | Generated files — not hand-merged. Took `main`'s side and regenerated by re-running the verifier on the merged tree (the repo's stated convention) |
+
+The overlap is now recorded, and the duplicate work cost one review pass rather than a wrong number.
+
+
+**What was actually missing.** The ledger merged in PR #34 froze 65 tickets / 18 strategies / 14
+Week 10 games before kickoff, but nothing published the prospective record, and three days after the
+freeze **all 65 tickets were still `OPEN`**: no official final had ever been recorded, so the engine
+had fallen back to the community mirror and marked 4 tickets `PROVISIONAL`. Gate F2 therefore read
+`PENDING` and no forward number existed anywhere on the site. `git log --all -- forward/` is empty —
+the published page never existed on any branch.
+
+| Step | Result |
+|---|---|
+| Official settlement source | [WAS 24 – NYG 21, Final](https://www.nfl.com/games/commanders-at-giants-2026-reg-10), cross-checked on [the week-10 scores page](https://www.nfl.com/scores/2026/week-10). Quarter cells 0/10/7/7 and 0/7/7/7 sum to the printed totals; the official Game Book PDF is linked from the capture. Transcripts + SHA-256 in `data/forward/captures/2026_10_WAS_NYG/` |
+| Settlement | Re-ran the **existing** engine (`pipeline/forward_grade.py`) rather than writing a second implementation. 4 of 65 tickets move `OPEN → OFFICIAL`; 61 stay `OPEN`. Gate F2 `PENDING → PASS` for the 4 strategies with a settled ticket. Hand-checked: NYG +2.5 loses by 3; total 45 over 40.5 wins; a win at −118 pays 0.847458 |
+| Published page | `forward.html` — 39 rows, 5 captioned tables, every row with an official/primary reference; frozen-vs-graded table, all 14 games with settlement state, per-strategy record, and `NO VERDICT` on every row. No p-value, no ROI, no verdict |
+| Defect repaired | `data/evidence/nfl_injuries/week10_2026/manifest.json` was rewritten by **every** build and carried `"sha256": null` for `news_register.md` (`fetch_injuries.py` hashed only `files[0]`). `tests/check_rebuild.py` does not cover `data/evidence/`, so it survived review. Now every declared file is hashed; a null or mismatched digest fails the build. Verified by restoring the old code: 2 tests fail |
+| Automation (F-T41-06) | `.github/workflows/forward-ledger.yml` + `pipeline/forward_fetch_official.py`. Archives official pages and writes **proposed** scores to `data/forward/official_candidates.csv`; **never** writes `official_results.csv`, and hashes that file before/after, raising if it moved. Promotion of a proposal stays reviewed because the extraction rules are unvalidated against real NFL.com HTML (the sandbox cannot reach nfl.com: `TLS/SSL connection has been closed (EOF)`) |
+
+**Verification performed**
+
+| Check | Result |
+|---|---|
+| `make build` | Passed end to end |
+| `pipeline/verify_site.py` | **0 failing checks**, 34 pages, `forward.html` 39 rows / 0 without official source |
+| `tests/check_sources.py` | 25 canonical pages, **1,715 rows**, strict official/primary pass |
+| `tests/check_links.py` | 34 pages, no broken internal links, anchors or assets |
+| `make test` | **77 passed** (was 68); 10 new settlement guards + 4 evidence guards + 5 capture guards |
+| `tests/check_rebuild.py` | Rebuild matches committed outputs, 0 changed files |
+| Tree after `make build` | Clean — the evidence-manifest rewrite no longer dirties the repository |
+| Mutation testing | Wrong official score → 4 tests fail. `OPEN` pick forced to `OFFICIAL` → 2 tests fail. Old `fetch_injuries.py` → 2 tests fail. Bug injected into the capture step → guard test fails **and** the module's own self-check raises |
+
+**Irregularities logged as F-T41-01..06 on `flagged.html`** (two repaired, four open). The open ones
+are: four settled tickets are not evidence of skill; gate F6 still fails for all 18 strategies
+(community-mirror prices, not bookmaker quotes); settlement of a *new* game still needs a reviewed
+promotion step; and the capture parser is unvalidated against real NFL.com HTML.
+
+**Numbers published, and what did not move.** Forward: 4/65 settled, net −0.305 units, 0 validated.
+No retrospective figure changed: the canonical backtest, the 18 strategies' verdicts (10 `NO EDGE`,
+8 `LUCK`), the model MAEs and the props module are untouched. `forward.html` is a new output, not a
+restatement of an old one.
+
+**Scope discipline.** Edited only `data/forward/**` (append + regenerate), `forward.html`,
+`pipeline/render_forward.py`, `pipeline/forward_fetch_official.py`, `tests/test_forward_settlement.py`,
+`tests/test_evidence_integrity.py`, `tests/test_forward_capture.py`,
+`.github/workflows/forward-ledger.yml`, and the minimum shared-file registrations: one NAV tuple and
+one executive-summary section in `pipeline/render_site.py`, one section in `pipeline/render_summary.py`,
+the page lists in `pipeline/verify_site.py` / `tests/check_{sources,links}.py`, one `Makefile` line +
+test list, one `README.md` section, and `pipeline/fetch_injuries.py` for the manifest hash repair.
+No sibling branch was touched; no file claimed by `arena/84e42ecc-korea1`,
+`arena/beafe2ae-korea1` or `arena/d58198fc-korea1` was edited.
+
+### T41 — PR, merge and deployment record (2026-11-13) — `arena/8a322b62-korea1`
+
+- **Pull request:** [#42](https://github.com/karagemop466-tech/Korea1/pull/42) (`arena/8a322b62-korea1` → `main`),
+  "T41: forward-test settlement — first official result recorded, forward.html published".
+- **Merge:** `gh pr merge 42 --merge` → **MERGED** at `2026-11-13T23:34:28Z`, merge commit
+  [`c16c25c`](https://github.com/karagemop466-tech/Korea1/commit/c16c25c77e372b7b74f35896f051e16078032d2a).
+- **CI before merge:** `verify` **pass** on the final head (run `43527533289`), after one earlier
+  **failure** that was fixed rather than bypassed — see the defect note below.
+- **GitHub Pages:** `pages/builds/latest` → `status: built` for commit `c16c25c` at
+  `2026-11-13T23:35:02Z`, no error (source `main` / `/`, legacy build).
+- **Live check (fetched after the build):** <https://karagemop466-tech.github.io/Korea1/forward.html>
+  serves 4/65 settled, the WAS 24–21 NYG row, the 14-game slate with 13 `OPEN`, and `NO VERDICT` on
+  all 18 strategies; <https://karagemop466-tech.github.io/Korea1/flagged.html> serves F-T41-01 … F-T41-06.
+  Shell `curl` cannot reach the Pages host from this sandbox (`HTTP 000`), so the live check uses the
+  page-fetch tool, the same method earlier sessions recorded.
+
+**Three merges of `main`, all resolved without discarding another session's work.** `main` advanced
+four times mid-task (PRs #39, #41, #43, #44). Every collision was resolved by keeping both sides:
+
+| Collision | Resolution |
+|---|---|
+| `COORDINATION.md` (4×) | Both logs kept in full, `main`'s first. No entry edited or renumbered |
+| `pipeline/fetch_injuries.py` | **The same manifest defect was found independently by `arena/18c4acce-korea1` (R1, `cf58a72`) and by this session.** Merged into one fix: R1's `snapshot_dir / logical` path convention plus this session's fail-closed rule (a named-but-missing file raises instead of being recorded as `null`). Both credited in the code |
+| 26 shared `*.html` + `verification_report.csv` | Generated files — **not hand-merged**. Took `main`'s side, then re-ran `make build` on the merged tree so every page is regenerated from one build |
+| Page lists in `verify_site.py`, `check_links.py`, `check_sources.py` | Union: `forward.html` **and** `live-verification.html` / `review.html` |
+| `Makefile` `.PHONY` / `test` target | Union: both sessions' test files and both new targets |
+
+**A real defect caught by CI, not by me.** The first CI run failed at `make test`:
+`tests/test_evidence_integrity.py` invoked `.venv/bin/python`, which does not exist on a GitHub runner,
+so `subprocess` raised `FileNotFoundError` before the skip guard could fire. The test passed locally
+**because `.venv` exists in this sandbox** — a green local run was not a green CI run. Fixed with
+`sys.executable`, then reproduced CI's exact condition in a clean clone with no repo `.venv` (same
+`FileNotFoundError`), fixed there, and re-verified: 152 passed / 2 skipped, `make test` green.
+
+**Post-merge correction (recorded rather than left standing).** The live `flagged.html` carried
+F-T41-06 saying "no scheduled workflow grades the ledger". That was made untrue by the same PR, which
+added `forward-ledger.yml`. Corrected in a follow-up commit to say what actually remains manual —
+confirming a proposed score against the archived official page before it enters `official_results.csv`
+— and the claim was verified on the rendered page before pushing.
+
+**Final state.** 107 tests pass, `verify_site` 0 failing checks, `check_sources` strict pass,
+`check_links` clean, `check_rebuild` 0 drift, tree clean after `make build`. The research verdict is
+unchanged: **0 of 18 canonical strategies validated, no reward**. The forward test now has a published,
+auditable, official-source-settled record of 4 settled tickets out of 65.
+
+## Session `arena/beafe2ae-korea1` — T24 current-snapshot audit + final verification
+
+### 2026-11-13T22:53Z — claim
+
+Board read before work. T24 is a distinct audit of the 2026-11-13 committed availability snapshot and
+current public build, not a restart of the completed injury/decision/model tasks. The platform pins this
+session to `arena/beafe2ae-korea1`; that is the only branch used. Claim scope is limited to
+`pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`,
+`research/availability-snapshot-audit-2026-11-13.md`, and this T24 row/log in `COORDINATION.md`.
+No generated pages, navigation, shared tables, or files in another task's scope will be edited. The
+claim is committed and pushed before the audit files are created.
+
+### 2026-11-13T23:05Z — T24 audit and verification complete; PR/deploy pending
+
+**Official-source scope:** the dated ledger in `research/availability-snapshot-audit-2026-11-13.md` contains a direct official link on every one of 33 capture rows: the NFL injury-report page (<https://www.nfl.com/injuries/>) and all 32 club depth-chart URLs from `pipeline/fetch_availability.py`. Snapshot commit `43a946aed4c3ec86b17b920757dc780ced73ea93` records the scheduled capture at 2026-11-13T18:32:20Z. The source capture workflow reports success at <https://github.com/karagemop466-tech/Korea1/actions/runs/43483547465>; the Pages deployment reports success at <https://github.com/karagemop466-tech/Korea1/actions/runs/43483664141>.
+
+**Results from the committed data (no values inferred):** 326 NFL injury-report rows across 28 listed clubs; CHI, DEN, PHI and TB are not listed and are not labelled injury-free. 31 of 32 club depth-chart captures parsed, yielding 1,833 rows across 31 clubs. HOU returned HTTP 200 and 490,113 bytes but parsed zero rows; no HOU chart rows were published, and the failure is present in the availability capture log. Of 68 unmatched injury-report rows, 16 are from HOU's unavailable chart and 52 are name matches not found in their clubs' published charts. These rows remain unmatched and excluded from lineup counts. The 909-slot derived join was regenerated exactly from the committed source CSVs.
+
+**Verification performed:**
+- `make build` — pass; pipeline completed; `pipeline/verify_site.py` reported 0 failing checks.
+- `make test` — 58 passed; `.venv/bin/python -m pytest -q tests/test_current_snapshot_audit.py` — 4 passed.
+- `tests/check_sources.py` — 24 canonical pages, 1,676 rows; every table row had an official/primary reference.
+- `tests/check_links.py` — 33 pages; internal files, anchors and local assets resolve; no external asset dependency.
+- `pipeline/current_snapshot_audit.py --write-report` — pass; 33 source records, row provenance/timestamps, per-team capture counts, history-copy equality, all 3 derived tables, all 544 availability page rows and 5 captions checked.
+- GitHub Pages API reports the site public, built, HTTPS-enforced, served from `main:/`; the latest deployment and deployment record both succeeded.
+
+**Limitations and irregularities:** the availability workflow stores parsed CSVs and response metadata/hashes, not current raw HTML, so the HTTP response hashes cannot be independently recomputed from the checkout. GitHub API job/step statuses were inspected; retrieval of the runner log archive from this sandbox ended with EOF. The HOU parsing failure and the 68 unmatched rows are explicitly visible on `availability.html`; no missing lineup role or point impact was filled in.
+
+A complete local `make build` regenerated one out-of-scope evidence manifest with `sha256: null` for `news_register.md` because `pipeline/fetch_injuries.py` sets absent digests to null and only refreshes the injury-report digest. The actual `news_register.md` SHA-256 is `f57ba2f9447b4f286af912c348871fa9c6b9d266c628ce8126bf8ce051f56527`. The incidental build-generated manifest diff was restored; no other generated output remained changed. This is logged as a cross-scope request, not silently edited.
+
+**Cross-scope requests (logged; no files outside T24 scope edited):**
+1. The completed executive-summary scope should add the 2026-11-13 automated coverage result (31/32 charts, HOU parser gap) and clearly distinguish it from the separate 2026-11-12 hand-checked 8/32 sample and older 2/32 sample. PRs #39 and #43 updated other surfaces, but the current `EXECUTIVE_SUMMARY.md` still says “2 of 32” at lines 69 and 90; this remains a cross-scope request. T24 did not edit `EXECUTIVE_SUMMARY.md`, `executive-summary.html`, `pipeline/render_summary.py` or `flagged.html`.
+2. The availability-tracker owner should inspect the official HOU page and either repair its parser or retain the explicit blank/failure state; source: <https://www.houstontexans.com/team/depth-chart>. The current page flags this correctly.
+3. The injury-ingestion owner should store a real SHA-256 for the committed official `news_register.md` or omit its hash field consistently, and add a regression check. **Resolved upstream by PR #39** (merged as `d2b5610`): the ingest code now hashes each staged file and the current manifest records the verified digest. T24 did not edit that scope.
+4. The integration owner should add `tests/test_current_snapshot_audit.py` to the routine test target/workflow if this audit is to remain a CI gate; the completed Makefile/workflow scopes were not edited.
+5. Partial follow-up in PRs #39 and #43: `flagged.html` now flags the HOU capture failure, 31/32 chart coverage, the Kerby Joseph practice-status contradiction (`IR-2026-11-13-03`), and eight later official rows absent from the snapshot as unresolved (`IR-2026-11-13-04`). The exact T24 join count of 68 unmatched injury-report rows is still in the audit report and `availability.html`, but not the dedicated flagged register; request a source-linked count on the next shared-output integration. T24 did not edit shared renderer/navigation files.
+
+No PR or deployment result is recorded yet; T24 stays **in progress** until the scoped PR is merged and the resulting Pages deployment is confirmed.
+
+### 2026-11-13T23:08Z — concurrent integration update / rebase conflict resolution
+
+`git pull --rebase origin main` advanced the base from `43a946a` to `cf359ae` (merged PR #37, the `arena/5aee87e3-korea1` independent verification record) while T24 was in progress. The conflict was confined to append-only `COORDINATION.md`: the upstream V1/V2/V3 verification section and this session's T24 claim were both retained, followed by T24's audit log. No source data, pages, code, or other session output was discarded or edited.
+
+Two active sibling PRs were discovered after the rebase: [#39](https://github.com/karagemop466-tech/Korea1/pull/39) (`arena/18c4acce-korea1`, availability reconciliation/official-line sample/coverage and hash fixes) and [#38](https://github.com/karagemop466-tech/Korea1/pull/38) (`arena/d58198fc-korea1`, broad repository audit and review sub-site). Their file lists do not overlap T24's new `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, or dated `research/` report; only the append-only coordination log is shared. T24 remains additive and does not modify or push to either sibling branch. Their PRs were open with verification jobs in progress at this check. The T24 PR/deployment record is still pending.
+
+A second `git pull --rebase origin main` advanced `origin/main` from `cf359ae` to `266134e` (the V4 merge/deployment record for PR #37) before the T24 push. This produced another append-only `COORDINATION.md` conflict; the complete upstream V4 result and T24's claim were both retained. No other file conflicted. On re-check, PR #39's verification passed; PR #38's verification failed and its owner must resolve that before merge. T24 did not edit either PR's file scope or merge either sibling branch.
+
+### 2026-11-13T23:12Z — T24 branch pushed and scoped PR opened
+
+The rebased T24 branch was pushed to `origin/arena/beafe2ae-korea1` using a lease against its observed remote tip `0fa06e38689cde57b28bb4f635af93db090b9c22`; the branch head is `acd83e750a8c8bcae7e63b54e1b4cff8f4ce23d0`, based on `origin/main` `266134ed69e1e6e254688436ecf1af38cd6d4adf`. Scoped pull request [#40](https://github.com/karagemop466-tech/Korea1/pull/40) is open against `main`. Its description contains the snapshot findings, verification, source and data limitations, and scoped review notes. At that initial head both `verify` runs (43525007346 and 43525231126) passed; merge and post-merge Pages deployment remain pending.
+
+### 2026-11-13T23:16Z — PR #39 merge, T24 rebase and regression verification
+
+PR [#39](https://github.com/karagemop466-tech/Korea1/pull/39) merged at 23:12:12Z as `d2b56108614c99b10ed62766a5571518bb3612b1`, advancing `main` from `266134e`. R1 corrected the old two-of-32 coverage claim, left Houston's unreadable chart blank and flagged, and repaired the news-register evidence hash. T24 was rebased onto `d2b5610`; the only conflicts were append-only coordination content, and both the R1 integration record and T24 claim/log were retained. No audit input or T24 source/test/report code conflicted.
+
+Post-rebase checks on the combined tree: the T24 audit passed (33 official-source records; 326 injury rows; 31/32 depth charts parsed; 1,833 depth rows; 909 slots; 68 unmatched players; 544 sourced availability rows), the T24 tests passed (4), `make build` passed with zero verifier failures (24 canonical pages / 1,681 sourced rows; 33-page link check), and `make test` passed (58). The rebase build left no generated changes. The T24 branch has been updated locally; PR #40's previously submitted head `acd83e7` has passing checks but must be refreshed onto `d2b5610` before merge. PR #40 merge and its resulting Pages deployment are still pending.
+
+### 2026-11-13T23:18Z — upstream PR #41 advances coordination base
+
+PR [#41](https://github.com/karagemop466-tech/Korea1/pull/41), a documentation-only R1 merge/deployment record, merged at 23:15:20Z. `main` advanced from `d2b5610` to `705b2ec`; the intervening diff is only `COORDINATION.md`. T24 must rebase once more onto this current base before updating PR #40. No T24 source data, audit inputs, or code scope changed upstream.
+
+### 2026-11-13T23:26Z — PR #43 integration, official discrepancy logged, T24 re-verified
+
+PR [#43](https://github.com/karagemop466-tech/Korea1/pull/43) merged at 23:20:41Z as `90e9df8af7566f5361c620739c6aecea5b818e66`, adding the independent V1–V3 source comparison and consolidated review. Its Pages deployment run [43526406206](https://github.com/karagemop466-tech/Korea1/actions/runs/43526406206) succeeded. T24 was rebased onto `90e9df8`; the coordination conflict was resolved by retaining the full V1–V3 and R1 records with the T24 claim/log. No T24 source CSV or audit input changed.
+
+The merged line-by-line review compares the 18:32Z snapshot with its later NFL Week 10 page read (generated at 22:57:59Z): DET Kerby Joseph's captured `Full Participation in Practice` / `Out` row differs from the later official `Did Not Participate In Practice` / `Out` row. The comparator classifies the practice-status field `INCONSISTENT`; the issue is now visible with an official NFL link in `live-verification.html` and `flagged.html` as IR-2026-11-13-03. Eight players later present on the official page but absent from the snapshot are flagged as unresolved (IR-2026-11-13-04), not asserted to be parser drops. T24 records these as later-source discrepancies and does not rewrite the historical snapshot or infer roles/impact. The 68 unmatched injury/depth rows remain exposed in the audit report and availability page; their exact count is still not on `flagged.html` (see cross-scope request #5). The current `EXECUTIVE_SUMMARY.md` still contains the stale two-of-32 wording (request #1).
+
+On the rebased tree: `pipeline/current_snapshot_audit.py` passed; the T24 regression suite passed (5); `make build` passed with zero failures (26 canonical pages / 2,085 sourced rows, 35 pages checked for links); `make test` passed (86). The report records this latest run and the Kerby discrepancy. The build left no generated changes. PR #40's remote head is still the pre-rebase `acd83e7` (its checks passed only on that earlier head/base); refresh it onto `90e9df8` before merge. T24 merge and the resulting Pages deployment remain pending.
+
+### 2026-11-13T23:33Z — PRs #44/#45 merged; final T24 rebase and verification
+
+PR [#44](https://github.com/karagemop466-tech/Korea1/pull/44) merged at 23:26:27Z as `2f62437`; it repairs only the V1–V3 review citation and adds its regression checks. PR [#45](https://github.com/karagemop466-tech/Korea1/pull/45) merged at 23:30:41Z as `5fa44db`, documenting that integration; its intervening diff was only `COORDINATION.md`. T24 is based on current `main` `5fa44db`; all upstream V1–V3, R1 and T24 records are retained. No T24 source data or audit input changed.
+
+After rebasing, the T24 audit passed and its updated suite passed (5); `make build` passed with zero failing checks (26 canonical pages / 2,085 sourced rows, 35 pages checked for links); `make test` passed (88). The public Pages API reports built from `main:/` at `5fa44db`; deployment run [43527643082](https://github.com/karagemop466-tech/Korea1/actions/runs/43527643082) succeeded. The rendered availability page and report retain the Kerby discrepancy as a flagged later-source conflict, without overwriting snapshot values.
+
+PR #40's remote branch still points to the old pre-rebase head `acd83e7`, so it remains conflicting until refreshed. Its old-head verify passed but does not validate the current base. Push the rebased T24 commits with a lease against that observed remote tip; wait for the updated PR checks before merging. T24 merge and its post-merge Pages deployment are still pending.
+
+### 2026-11-13T23:34Z — rebased T24 branch pushed; updated checks pending
+
+The PR #40 branch was refreshed by a lease-guarded force push from observed remote head `acd83e7` to `d340ead4e18aacaa3703b3d69ba1d3808ac490a1`, now based on `main` `5fa44db`. PR #40 is mergeable. The updated `verify` workflow runs for `d340ead` are [43528077260](https://github.com/karagemop466-tech/Korea1/actions/runs/43528077260) (in progress) and [43528084771](https://github.com/karagemop466-tech/Korea1/actions/runs/43528084771) (queued) at inspection. No T24 merge or post-merge deployment is claimed yet.
+
+### 2026-11-13T23:36Z — PR #42 merged; T24 rechecked on the new base
+
+PR [#42](https://github.com/karagemop466-tech/Korea1/pull/42) merged at 23:34:28Z as `c16c25c`. Its two PR Verify runs, [43527870229](https://github.com/karagemop466-tech/Korea1/actions/runs/43527870229) and [43527864112](https://github.com/karagemop466-tech/Korea1/actions/runs/43527864112), succeeded. Pages deployment [43528119880](https://github.com/karagemop466-tech/Korea1/actions/runs/43528119880) succeeded, and the Pages API now reports `main:/` built at `c16c25c`. T24 was rebased onto this `main` tip with upstream T41 and T24 coordination records retained.
+
+On the current combined local tree, the T24 audit passed; its regression suite passed (5); `make build` passed with zero verifier failures (27 canonical pages / 2,134 sourced rows; 36 pages checked for links); and `make test` passed (107). A separate post-merge `main` Verify run, [43528121286](https://github.com/karagemop466-tech/Korea1/actions/runs/43528121286), failed at `Verify pinned inputs and rebuild`. GitHub's job API confirms that step failed, but the log archive download returned EOF, so the cause is unknown; no cause is attributed to T24. The combined local build passes.
+
+PR #40 still points remotely at `d340ead` (based on the previous `5fa44db` main) and is conflicting with the new base. Its two checks for that older base both passed, but do not verify this tree. Reconfirm the remote head, push the rebase onto `c16c25c` with a lease, and wait for refreshed PR checks before any merge. T24 merge and its post-merge Pages deployment remain pending.
+
+### 2026-11-13T23:43Z — T24 rebased onto current main; local verification complete
+
+After the T41 merge note landed, `main` advanced from `c16c25c` to `9cca4bc` in a coordination-only `COORDINATION.md` commit. Its Verify run [43528589459](https://github.com/karagemop466-tech/Korea1/actions/runs/43528589459) and Pages deployment [43528589107](https://github.com/karagemop466-tech/Korea1/actions/runs/43528589107) succeeded. The prior post-merge Verify failure on `c16c25c` (run 43528121286) remains unexplained because its log archive could not be retrieved (EOF); no failure cause is inferred. Pages API reports public and built from `main:/`.
+
+T24 is rebased onto `9cca4bc`, retaining the full T41 and T24 coordination histories. On this combined tree, the audit passed; T24 tests passed (5); `make build` passed with zero verifier failures (27 canonical pages / 2,134 sourced rows; 36 pages checked for links); `make test` passed (107); `py_compile` and `git diff --check` passed. The build left no generated changes. Snapshot inputs and historical data remain untouched.
+
+The remote PR #40 branch is still `d340ead` on the old `5fa44db` base; its two checks passed on that stale head. Confirm the remote tip and lease-push the locally rebased branch onto `9cca4bc`, then wait for fresh PR checks. Merge and the post-merge Pages check remain pending.
+
+### 2026-11-13T23:46Z — refreshed PR #40 head verified; merge pending
+
+After confirming the remote branch was still `d340ead` and `main` was `9cca4bc`, the T24 branch was refreshed with `--force-with-lease` to `677b7a4e155c314c8c37500c3d1d82a2d378a844`. PR #40 is `MERGEABLE`. Both current-head Verify runs passed: push run [43529271477](https://github.com/karagemop466-tech/Korea1/actions/runs/43529271477) completed at 23:45:17Z, and pull-request run [43529279764](https://github.com/karagemop466-tech/Korea1/actions/runs/43529279764) completed at 23:45:49Z. The checks cover the rebased tree on `main` `9cca4bc`. No T24 merge or post-merge Pages result is claimed yet; merge only after the required checks remain green.
+
+### 2026-11-13T23:49Z — final PR #40 checks pass; ready to merge
+
+The final T24 head is `fe22f42540120d6e726bcce9b1a08ea26bd7f81f` on base `9cca4bc`. Verify passed for both the push event ([43529580412](https://github.com/karagemop466-tech/Korea1/actions/runs/43529580412), completed 23:48:05Z) and the pull-request event ([43529588092](https://github.com/karagemop466-tech/Korea1/actions/runs/43529588092), completed 23:48:59Z). GitHub reports PR #40 `MERGEABLE`. Local audit, T24 tests, full build and full test results are recorded in the preceding entry. The scoped PR is ready for merge; its Pages deployment is necessarily still pending.

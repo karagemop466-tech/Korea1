@@ -60,6 +60,7 @@ NAV_GROUPS = [
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
         ("strategies.html", "Leaderboard"),
+        ("forward.html", "Forward test record"),
         ("validation.html", "Validation gates"),
         ("correlations.html", "Correlations"),
         ("props.html", "Player props"),
@@ -371,6 +372,42 @@ def build_executive(d):
          official("White (2000), Econometric Society")],
     ], ["Register", "Size / status", "What it establishes", "Official reference"],
        caption="Registers published with this build; counts are generated from the same data as the pages")
+    # T41 (arena/8a322b62-korea1): forward-test settlement, read from data/forward/ so this page
+    # cannot drift from forward.html. Nothing here is retyped by hand.
+    fwd_dir = ROOT / "data" / "forward"
+    fpick = pd.read_csv(fwd_dir / "graded_picks.csv", dtype=str, keep_default_na=False) \
+        if (fwd_dir / "graded_picks.csv").exists() else pd.DataFrame()
+    fsb = pd.read_csv(fwd_dir / "scoreboard.csv", dtype=str, keep_default_na=False) \
+        if (fwd_dir / "scoreboard.csv").exists() else pd.DataFrame()
+    fwd_declared = len(fpick)
+    fwd_settled = int((fpick.status == "OFFICIAL").sum()) if fwd_declared else 0
+    fwd_open = int((fpick.status == "OPEN").sum()) if fwd_declared else 0
+    fwd_units = pd.to_numeric(fpick.loc[fpick.status == "OFFICIAL", "pnl"], errors="coerce").sum() \
+        if fwd_declared else 0.0
+    fwd_validated = int((fsb.verdict == "VALIDATED").sum()) if len(fsb) else 0
+    forward_cards = kpi_grid([
+        card(f"{fwd_settled} / {fwd_declared}", "frozen tickets settled", "settled only from an official NFL.com final",
+             "good" if fwd_settled else ""),
+        card(f"{fwd_open}", "still open", "not settled, not voided, not counted"),
+        card(f"{fwd_units:+.3f}", "net units settled", "one game — not a track record"),
+        card(f"{fwd_validated}", "strategies validated", "no horizon reached; verdicts withheld", "bad"),
+    ])
+    forward_table = table([
+        ["Frozen before kickoff", f"{fwd_declared} tickets · 18 strategies · 14 Week 10 games",
+         "written 2026-11-12T13:26:48Z; received by GitHub 13:28:07Z, 11.78 h before the first kickoff",
+         src_link("https://www.nfl.com/schedules/2026/by-week/reg-10", "NFL week 10 schedule")],
+        ["Settled from an official final", f"WAS 24–21 NYG → {fwd_settled} of {fwd_declared} tickets",
+         f"net {fwd_units:+.3f} units; {fwd_open} tickets stay OPEN",
+         src_link("https://www.nfl.com/games/commanders-at-giants-2026-reg-10", "NFL.com Game Center")],
+        ["Gate F2 (official settlement)", "PASS where a ticket has settled",
+         "before this pass the same 4 tickets were PROVISIONAL from the community mirror",
+         src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
+        ["Gate F6 (quote provenance)", "FAIL for all 18 strategies",
+         "frozen prices are community-mirror values, not authenticated bookmaker quotes",
+         src_link("https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping",
+                  "White (2000)")],
+    ], ["Item", "State", "Meaning", "Official / primary reference"],
+       caption="Forward-test state at the first settlement")
     body = f"""
 {notice()}
 <section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
@@ -416,6 +453,19 @@ approved, and no reward is funded. The scheduled league-wide capture (all clubs,
 None of them changes a published number; all of them make the missing evidence explicit.</p>
 {review_table}
 </section>
+<section id="forward"><h2>Forward test — first settlement, 2026-11-13</h2>
+<p>A <strong>prospective</strong> record is the only evidence that cannot be contaminated by hindsight. <a href="forward.html">forward.html</a>
+prints every ticket frozen before kickoff and settles it only against an official NFL.com final.</p>
+{forward_cards}
+{forward_table}
+<p><strong>What this does not mean.</strong> {fwd_settled} tickets at one game is not a sample, and a 2–2 split is
+indistinguishable from chance. The page prints no p-value, no ROI and no verdict, and awards nothing. The forward clock
+has started; nothing about the strategy library has been demonstrated.</p>
+<p class="muted">Evidence-source defect repaired in this pass: the committed injury evidence manifest was rewritten by
+every build and carried <code>"sha256": null</code> for one of the two files it names, because
+<code>pipeline/fetch_injuries.py</code> hashed only the first entry. Every declared file is now hashed and
+<code>tests/test_evidence_integrity.py</code> fails on a null or mismatched digest. Findings F-T41-01 to F-T41-06 are on
+<a href="flagged.html">Flagged for review</a>.</p></section>
 <section><h2>Next evidence needed</h2><ol class="findings">
 <li>Timestamped, bookmaker-published pre-kickoff lines and executable ticket quotes, including limits and settlement terms.</li>
 <li>Official game results and timestamped player availability, with archived player statistics and prop settlement rules.</li>
@@ -697,6 +747,7 @@ This is a targeted code and claim audit with executable tests—not a claim that
 
 def build_flagged(d):
     from render_audit import irregularity_rows
+    from render_forward import flagged_rows as _forward_flagged_rows
     rows = irregularity_rows(SHA, src_link)
     decisions = read_json(ROOT / "research/decision-register.json")
     gap_rows = [[e(r["id"]), "Needs review", e(r["finding"]), e(r["next"]),
@@ -752,6 +803,9 @@ Earlier audit findings are preserved below, including their original scope.</p>
 <section id="expanded-2026-11-12-audit"><h2>Expanded 8-club &amp; post-pin audit · 2026-11-12 (`arena/d6b3fd34-korea1`)</h2>
 <p>Line-by-line audit of post-pin Week 8–9 settlement status, NFL.com inactives availability, 8 official NFL club depth charts, CSS coverage and checker parity.</p>
 {table(_flagged_2026_11_12_rows(), ["ID", "Severity / state", "Finding and disposition", "Official source"], caption="2026-11-12 expanded official-source and repository audit findings")}</section>
+<section id="forward-2026-11-13"><h2>Forward-test findings · 2026-11-13 (`arena/8a322b62-korea1`)</h2>
+<p>The forward ledger's first settlement pass, and the defects found while doing it. The prospective record itself is on <a href="forward.html">Forward test</a>.</p>
+{table(_forward_flagged_rows(), ["ID", "Severity / state", "Finding and disposition", "Official source"], caption="Forward-ledger settlement findings, 2026-11-13")}</section>
 <section><h2>How to request a correction</h2><p>Use the repository issue tracker with the row ID, the authoritative source and the exact field.
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""

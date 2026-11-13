@@ -1,0 +1,67 @@
+name: Forward ledger (settle + capture)
+
+# Removes manual input from the forward test, on a runner that can actually reach nfl.com.
+#
+# What it does, and what it deliberately does not:
+#   1. archives official NFL.com game pages for frozen games with no official final yet and
+#      writes *proposed* scores to data/forward/official_candidates.csv (never to
+#      official_results.csv — see pipeline/forward_fetch_official.py for why);
+#   2. re-runs the settlement engine against whatever official finals are already recorded,
+#      refreshes data/forward/*.csv and rebuilds forward.html;
+#   3. commits only if a file actually changed.
+#
+# Promotion of a proposed score into official_results.csv stays a reviewed step. Automating
+# that would mean trusting a parser that has never been validated against real NFL.com HTML,
+# and it would put unattributed bytes into an evidence file.
+on:
+  schedule:
+    # 03:17 UTC Tue and Fri: after the Monday-night game and after the Thursday-night game.
+    - cron: "17 3 * * 2,5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: forward-ledger-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Archive official pages and propose scores
+        run: python pipeline/forward_fetch_official.py
+
+      # The engine also reads the community mirror for closing lines (CLV) and as a cross-check.
+      # A mirror-only score can never count: it is labelled PROVISIONAL and gate F2 goes PENDING,
+      # so the mirror can only ever *disagree* with an official final, never replace one.
+      - name: Re-run settlement against recorded official finals
+        run: python pipeline/forward_grade.py
+
+      - name: Rebuild the forward page
+        run: python pipeline/render_forward.py
+
+      - name: Verify before publishing
+        run: |
+          python pipeline/verify_site.py
+          python tests/check_sources.py
+          python tests/check_links.py
+          python -m pytest -q tests/test_forward_settlement.py tests/test_evidence_integrity.py
+
+      - name: Commit if anything changed
+        run: |
+          git config user.name "forward-ledger-bot"
+          git config user.email "forward-ledger-bot@users.noreply.github.com"
+          git add -A data/forward forward.html data/processed/verification_report.csv assets/data/verification_report.csv
+          git diff --cached --quiet && { echo "no change"; exit 0; }
+          git commit -m "forward: capture official pages and re-settle $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
