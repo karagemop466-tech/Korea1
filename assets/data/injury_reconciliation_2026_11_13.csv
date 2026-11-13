@@ -1,0 +1,23 @@
+club,player,official_position,snapshot_position,official_injury,snapshot_injury,official_practice,snapshot_practice,official_game,snapshot_game,result,official_source,checked_utc
+WAS,John Bates,TE,TE,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Treylon Burks,WR,WR,,,Did Not Participate In Practice,Did Not Participate In Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Jayden Daniels,QB,QB,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Matt Gulbin,C,C,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Chig Okonkwo,TE,TE,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Lucas Patrick,C,C,Concussion,Concussion,Did Not Participate In Practice,Did Not Participate In Practice,Out,Out,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Amik Robertson,CB,CB,,,Limited Participation in Practice,Limited Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Shy Tuttle,DT,DT,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,Colson Yankoff,TE,TE,Knee,Knee,Did Not Participate In Practice,Did Not Participate In Practice,Out,Out,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+WAS,(snapshot rows not on the sampled official table),,,,,,,,,SNAPSHOT EXTRA ROWS: 0,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Abdul Carter,LB,LB,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Jermaine Eluemunor,T,T,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Malik Harrison,LB,LB,Groin,Groin,Limited Participation in Practice,Limited Participation in Practice,Questionable,Questionable,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Colton Hood,CB,CB,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Theo Johnson,TE,TE,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Charlie Jones,WR,WR,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,J.J. McCarthy,QB,QB,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Darnell Mooney,WR,WR,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Malik Nabers,WR,WR,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Cam Skattebo,RB,RB,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,Andrew Thomas,T,T,,,Full Participation in Practice,Full Participation in Practice,,,MATCH,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13
+NYG,(snapshot rows not on the sampled official table),,,,,,,,,SNAPSHOT EXTRA ROWS: 0,https://www.nfl.com/injuries/league/2026/reg10,2026-11-13

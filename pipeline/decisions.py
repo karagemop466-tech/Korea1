@@ -334,9 +334,11 @@ QUESTIONS = [
       "ANSWERED",
       "Partly. Club sites publish ordered depth charts: the Commanders and Giants charts were read on "
       "2026-11-12 (e.g. WAS QB Jayden Daniels | Marcus Mariota | Athan Kaliakmanis; NYG C Bryan Hudson | "
-      "John Michael Schmitz Jr.), which gives a starter/backup order for those two clubs. Limits: only 2 of "
-      "32 clubs are captured, no chart shows a publication time, the league site itself has no depth-chart "
-      "page (404), and a chart order is not a confirmed game-day role.",
+      "John Michael Schmitz Jr.), which gives a starter/backup order for those two clubs. Limits: the automated "
+      "run of 2026-11-13 parsed 31 of 32 club charts (HOU returned no ordered rows on either capture); the WAS and "
+      "ARI charts were checked cell by cell that day (data/governance/availability_reconciliation_2026_11_13.csv); "
+      "no chart shows a publication time, the league site itself has no depth-chart page (404), the Texans chart "
+      "is labelled 'Unofficial', and a chart order is not a confirmed game-day role.",
       "Missing: league-wide, timestamped charts or official inactives.",
       "Capture every club chart weekly with a timestamp; keep roles unconfirmed until inactives (S17).",
       "NFL team roster (Arizona Cardinals)",
@@ -574,8 +576,8 @@ SUGGESTIONS = [
     s("S17", "Obtain a depth chart or starter/inactive source and classify depth", AREAS[4],
       "Use a licensed depth chart or official gamebook inactives to label each player 1st/2nd/3rd "
       "string before kickoff, with the rule published.",
-      "Q30: club charts exist (2 verified) but the league site has none, so coverage and timing are the gaps.",
-      "Q29, Q30, Q33", "L", "Very high", "Two club charts verified 2026-11-12; 30 clubs and timing open",
+      "Q30: club charts exist (31 of 32 captured automatically; 2 checked line by line) but the league site has none, so coverage and timing are the gaps.",
+      "Q29, Q30, Q33", "L", "Very high", "31 of 32 club charts captured 2026-11-13 (HOU missing); 2 checked line by line; timing open",
       "Recommended next (Path C)", "Third-party depth charts are unofficial and sometimes wrong; the "
       "classification rule must be auditable and timestamped.",
       "NFL team roster (Arizona Cardinals)", depends=["Q30"]),

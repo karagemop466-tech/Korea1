@@ -268,7 +268,8 @@ buying the price evidence (S07) and timestamping availability captures (S16).</p
         body += _pp.parallel_decisions(d)
         body += ('<p class="flag info"><strong>Correction, 2026-11-12 (T16 merge):</strong> the answer to Q-05 '
                  'keeps its original wording, but two club depth charts were verified that day — see '
-                 '<a href="lineups.html">Lineup evidence</a>; coverage is 2 of 32 clubs.</p>')
+                 '<a href="lineups.html">Lineup evidence</a>; coverage is 31 of 32 clubs captured automatically '
+                 '(HOU missing), and 2 were checked line by line on 2026-11-13.</p>')
     return rs.layout("questions.html", "Open questions",
                      "What must be known before a decision can reasonably be made, what we already know, "
                      "and what is still missing.", body, wide=True)
@@ -326,15 +327,16 @@ def build_injuries(d) -> str:
 {rs.notice()}
 <section>
 <p class="flag warn"><strong>Status: PARTIAL, and deliberately so.</strong> The official injury report is verified and
-one game is captured exactly. Club depth charts do exist and two were verified (Commanders, Giants), so a
-starter/backup <em>order</em> is available for those clubs — quoted cell by cell on
-<a href="lineups.html">Lineup evidence</a>. But no chart carries a publication time, only 2 of 32 clubs are
-captured, and chart order is not a confirmed game-day role, so no player is called a confirmed replacement
+one game is captured exactly. Club depth charts exist: the automated run of 2026-11-13 captured 31 of 32 (Houston
+returned no ordered rows on either capture), so a starter/backup <em>order</em> is available for those clubs.
+Commanders and Giants charts are quoted cell by cell on <a href="lineups.html">Lineup evidence</a>;
+the Commanders and Arizona charts were checked cell by cell again on 2026-11-13. But no chart carries a publication time, and
+chart order is not a confirmed game-day role, so no player is called a confirmed replacement
 and no availability signal is in the leaderboard.</p>
 {rs.kpi_grid([
     rs.card(str(len(av.SOURCE_CHECKS)), 'official pages tested', f'{verified} verified · {negative} verified-negative', ''),
     rs.card('1 of 14', 'week-10 games captured', 'Thursday WAS at NYG · 20 rows', ''),
-    rs.card('2 of 32', 'club depth charts verified', 'nfl.com has no chart page (404); no chart shows a capture time', 'bad'),
+    rs.card('31 of 32', 'club depth charts captured', 'HOU missing · 2 checked cell by cell · no chart shows a capture time', 'bad'),
     rs.card('0', 'availability signals in the leaderboard', 'Specification only — no reward', 'bad'),
 ])}
 </section>
@@ -428,7 +430,8 @@ a reward even if it predicts.</li>
         body += ('<p class="flag info"><strong>Correction, 2026-11-12 (T16 merge):</strong> the league site has '
                  'no depth-chart page, but two club charts do exist and were read that day — the ordered cells '
                  'are on <a href="lineups.html">Lineup evidence</a>. The sentence above is kept as its author '
-                 'wrote it; the limitation it names still holds league-wide (2 of 32 clubs, no capture time).</p>')
+                 'wrote it; the limitation it names still holds league-wide (31 of 32 clubs captured, HOU missing, '
+                 '2 checked line by line, no capture time).</p>')
 
     return rs.layout("injuries.html", "Injuries and lineup availability",
                      "Verified official injury captures, the depth-chart gap, and the deficiency signals that "

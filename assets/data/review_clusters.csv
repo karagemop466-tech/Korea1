@@ -1,0 +1,8 @@
+topic,proposals,registers_agreeing,registers,questions,blocked_questions,ids,priority_score
+Prices & executable quotes,11,4,"decision-board, parallel-register, path-selector, suggestions",17,8,"DB-02, DB-09, DB-14, S-08, S-09, S-15, S07, S10, S20, SUG-03, SUG-04",16
+"Injuries, depth & availability",18,4,"decision-board, parallel-register, path-selector, suggestions",13,4,"DB-03, DB-05, DB-06, DB-07, DB-08, DB-13, S-06, S-07, S-12, S-24, S-25, S16",12
+"Validation, luck & trial registry",15,4,"decision-board, parallel-register, path-selector, suggestions",14,4,"DB-01, DB-10, DB-11, DB-16, S-04, S-11, S-16, S-17, S-18, S-20, S13, S14",12
+Data freshness & provenance,15,4,"decision-board, parallel-register, path-selector, suggestions",15,2,"DB-04, DB-15, S-03, S-10, S-13, S-14, S-22, S-23, S04, S05, S08, S15",10
+"Site, workflow & governance",9,4,"decision-board, parallel-register, path-selector, suggestions",10,1,"DB-12, S-01, S-02, S-19, S01, S03, S11, S22, SUG-12",9
+Unclassified,7,3,"decision-board, parallel-register, suggestions",4,0,"DB-17, S-05, S-21, S02, S06, S12, S18",6
+Player props,1,1,suggestions,1,1,S09,3

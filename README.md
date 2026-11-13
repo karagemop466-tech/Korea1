@@ -9,6 +9,8 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 ## Explore
 
 - `index.html` — clean landing page and searchable leaderboard
+- `review.html` — **all four suggestion registers and all three question registers in one table** (76 proposals, 74 questions), clustered by topic, with one recommended first move and its limits. Nothing implemented.
+- `live-verification.html` — **line-by-line re-check of the published availability data against the official pages**: injury cells, depth-chart slots and all 59 matchup sentences, each with a verdict and its source
 - `decision-board.html` — suggestions with options, to review and choose before any change is made
 - `open-questions.html` — what is known, what is missing, how to find it
 - `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
@@ -53,6 +55,26 @@ An upstream refresh requires `python pipeline/fetch_data.py --refresh-pin` follo
 
 The independent annex can be rebuilt with `PYTHON=.venv/bin/python make annex`.
 Historical calculations remain in `data/lab/`; public annex tables do not present them as official facts.
+
+## Independent verification (2026-11-13)
+
+The build's own verifier proves every row *carries* an official link; it cannot prove the row
+*matches* it. `make liveverify` runs three graders that read committed official extracts under
+`data/live/` and compare them with what is published:
+
+| Grader | What it checks | Result on 2026-11-13 |
+|---|---|---|
+| `pipeline/live_verify.py` | the published injury table, field by field, against `nfl.com/injuries/league/2026/reg10` | parser controlled against the repo's own verbatim 2026-11-12 capture: **254/254 rows, 0/1,016 cells differ**; 3 of 8 clubs clean, 1 confirmed defect, 8 unresolved |
+| `pipeline/live_verify_depth.py` | every depth-chart slot as an ordered list, against four official club charts | **115/115 slots, 239 players** |
+| `pipeline/lineup_claims.py` | all 59 availability sentences on `lineup-deficiencies.html`, against three official captures | **41 current, 17 stale, 0 contradicted**; 57 of 59 agree with the contemporaneous archive |
+
+The control matters: because the parser is provably faithful on a fixed document, a difference
+found against today's live page is the *source moving*, not the build misreading it. The official
+page revised **57 of 326** player values in the 29 hours between the two captures — which is why
+every status needs its capture time beside it.
+
+`make reviewall` also consolidates the four suggestion registers and three question registers
+(`pipeline/review_consolidated.py`) without deleting, renumbering or re-ranking anything.
 
 ## Availability tracker
 
@@ -130,8 +152,8 @@ their sources, the verification runs and the PR/merge/deploy record are appended
 ## Injury and decision-readiness boundaries
 
 The follow-up dated **2026-11-12** adds a seven-player WAS/NYG official injury-report sample and the
-ordered cells of two club depth charts. This is not a live all-club service: coverage is 2 of 32 clubs,
-neither chart shows a publication time, and chart order does not prove a game-time role, a promotion or
+ordered cells of club depth charts. The scheduled tracker captured 31 of 32 charts on 2026-11-13 (Houston returned no
+ordered rows); the Arizona and Washington charts were checked cell by cell that day. No chart shows a publication time, and chart order does not prove a game-time role, a promotion or
 a performance deficiency. Unknown fields stay blank. The scheduled monitor only archives sources.
 The separate scheduled all-club capture is `availability.html` (see *Availability tracker* above), added by
 `arena/c0528572-korea1`.

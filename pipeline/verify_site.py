@@ -64,6 +64,7 @@ def main():
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
               "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
+              "live-verification.html","review.html",
               "review/index.html","review/claims.html","review/my-lines.html","review/injuries.html",
               "review/suggestions.html","review/questions.html","review/official-sources.html",
               "review/flagged.html"}

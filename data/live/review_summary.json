@@ -1,0 +1,66 @@
+{
+  "generated_utc": "2026-11-13T22:57:59Z",
+  "counts": {
+    "suggestion_registers": 4,
+    "suggestion_rows": 76,
+    "question_registers": 3,
+    "question_rows": 74,
+    "topics": 7,
+    "convergence_topics": 6
+  },
+  "registers": [
+    {
+      "register": "suggestions",
+      "page": "suggestions.html",
+      "path": "data/processed/suggestions.csv",
+      "rows": 22
+    },
+    {
+      "register": "path-selector",
+      "page": "suggestions-review.html",
+      "path": "data/governance/suggestions_review.csv",
+      "rows": 12
+    },
+    {
+      "register": "decision-board",
+      "page": "decision-board.html",
+      "path": "data/review/suggestions.csv",
+      "rows": 17
+    },
+    {
+      "register": "parallel-register",
+      "page": "questions.html",
+      "path": "data/processed/review_suggestions.csv",
+      "rows": 25
+    }
+  ],
+  "question_registers": [
+    {
+      "register": "questions",
+      "page": "questions.html",
+      "path": "data/processed/questions.csv",
+      "rows": 40
+    },
+    {
+      "register": "open-questions",
+      "page": "open-questions.html",
+      "path": "data/review/questions.csv",
+      "rows": 20
+    },
+    {
+      "register": "decision-readiness",
+      "page": "decisions.html",
+      "path": "data/governance/decision_questions.csv",
+      "rows": 14
+    }
+  ],
+  "method": "explicit keyword map (printed on the page) applied to each proposal's own text; no model, no re-ranking of any register's own priority",
+  "recommended_first_move": {
+    "topic": "Prices & executable quotes",
+    "proposals": 11,
+    "registers_agreeing": 4,
+    "blocked_questions": 8,
+    "why": "it is the only topic that more than half of the independent registers converge on and that also holds the largest number of blocked questions; nothing downstream can be validated while it is open",
+    "what_it_does_not_do": "it does not spend money, does not approve a reward and does not change any published number"
+  }
+}

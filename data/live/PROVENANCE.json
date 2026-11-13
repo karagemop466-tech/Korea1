@@ -1,0 +1,31 @@
+{
+  "generated_utc": "2026-11-13T22:57:59Z",
+  "official_page": "https://www.nfl.com/injuries/league/2026/reg10",
+  "network_note": "the build sandbox shell cannot complete a TLS handshake with nfl.com (re-measured 2026-11-13 22:5xZ: URLError, 'TLS/SSL connection has been closed'), so the extract was taken with the agent page-fetch tool and committed here so a clean checkout can re-run the comparison offline",
+  "method": "read the official NFL.com Week 10 injury report in full with the page-fetch tool; all four matchup sections transcribed cell by cell; blank official cells left blank, never guessed",
+  "transcribed_clubs": [
+    "ATL",
+    "DET",
+    "GB",
+    "KC",
+    "MIN",
+    "NE",
+    "NYG",
+    "WAS"
+  ],
+  "drift_control": {
+    "available": true,
+    "archive_rows": 254,
+    "snapshot_rows": 254,
+    "matched_rows": 254,
+    "row_gaps": 0,
+    "cell_differences": 0,
+    "cells_compared": 1016,
+    "verdict": "PARSER_FAITHFUL"
+  },
+  "transcription_limits": [
+    "four of the sixteen week-10 matchups were transcribed; the other twelve are out of scope",
+    "the extract is a hand transcription and is itself subject to transcription error; every disagreeing cell is published for manual re-check rather than auto-corrected",
+    "the official page is a live document and can change between captures; capture date recorded above, published snapshot retrieved 2026-11-13T18:32:20Z"
+  ]
+}

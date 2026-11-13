@@ -9,7 +9,7 @@
 | Component | Source | Status |
 |---|---|---|
 | Weekly injury report (player, position, injury, practice status, game status) | https://www.nfl.com/injuries/ (official) | Captured for Week 10 on `injuries.html` |
-| Starter / backup depth position | Published club charts only: 2 of 32 clubs verified 2026-11-12 (WAS, NYG), no capture time, no league-wide feed | Blank — UNVERIFIED; chart cells are quoted on `lineups.html`, no 2nd/3rd/4th-string replacement is inferred |
+| Starter / backup depth position | Published club charts only: 31 of 32 captured by the automated run 2026-11-13 (HOU missing); Arizona and Washington checked cell by cell that day; no capture time; no league-wide feed | Blank — UNVERIFIED; chart cells are quoted on `lineups.html`, no 2nd/3rd/4th-string replacement is inferred |
 | Same deficiency for offense | Same as above | Blank — UNVERIFIED |
 | Same deficiency for defense | Same as above | Blank — UNVERIFIED |
 | Pre-kickoff availability timestamp | Practice status is a proxy, not a timestamp | Blank — UNVERIFIED |

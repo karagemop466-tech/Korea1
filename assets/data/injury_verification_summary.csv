@@ -1,0 +1,9 @@
+club,fields_compared,match,confirmed_defect,drift_possible,unresolved,unverified_no_basis,source_url,verdict
+ATL,38,22,0,14,2,0,https://www.nfl.com/injuries/league/2026/reg10,REVIEW
+DET,36,30,1,5,0,0,https://www.nfl.com/injuries/league/2026/reg10,REVIEW
+GB,65,38,0,26,1,0,https://www.nfl.com/injuries/league/2026/reg10,REVIEW
+KC,49,38,0,10,1,0,https://www.nfl.com/injuries/league/2026/reg10,REVIEW
+MIN,40,20,0,16,4,0,https://www.nfl.com/injuries/league/2026/reg10,REVIEW
+NE,60,60,0,0,0,0,https://www.nfl.com/injuries/league/2026/reg10,PASS
+NYG,44,44,0,0,0,0,https://www.nfl.com/injuries/league/2026/reg10,PASS
+WAS,36,36,0,0,0,0,https://www.nfl.com/injuries/league/2026/reg10,PASS
