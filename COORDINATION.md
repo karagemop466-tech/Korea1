@@ -1569,3 +1569,59 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+---
+
+## Session `arena/8a322b62-korea1` — T41 (FW6): forward-ledger settlement + first published forward page
+
+### 2026-11-13T23:00Z — claim (committed and pushed before any file in scope was touched)
+
+**Board read first.** `main` tip at claim time is `43a946a` ("availability: official snapshot
+2026-11-13T18:32Z"). Every earlier task is `done` and merged. Three sibling sessions are live on
+`2026-11-13` and their claims were read with `git show origin/<branch>:COORDINATION.md` before
+choosing a scope:
+
+| Live sibling | Claim | Paths it owns (from its own claim text) |
+|---|---|---|
+| `arena/84e42ecc-korea1` | T40 referent audit (resolve every external URL) | its own scripts/CSV, `referents.html` |
+| `arena/beafe2ae-korea1` | T24 current-snapshot audit | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md` |
+| `arena/d58198fc-korea1` | R1–R5 repo audit sub-site | `pipeline/repo_audit.py`, `data/repo_audit/**`, `review/**`, `pipeline/render_audit_site.py`, `pipeline/verify_audit_site.py`; explicitly **excludes `data/forward/**`** |
+
+**Why T41 exists.** The forward ledger merged in PR #34 (`arena/9e3e144b-korea1`, tasks FW1–FW2)
+froze 14 Week 10 games / 18 strategies / 65 picks before kickoff, and it is the only part of this
+project that removes hindsight by construction. Two things are true of it on `main` today:
+
+1. **No page publishes it.** `forward/` does not exist on any branch (`git log --all -- forward/`
+   is empty); the ledger is data-only. The site therefore shows a leaderboard with no prospective
+   record beside it, which is the single most decision-relevant number the project can produce.
+2. **All 65 picks are `OPEN`, 0 counted.** `data/forward/graded_picks.csv` has no graded row, so
+   `scoreboard.csv` prints `0` for every strategy and every gate reads `NOT REACHED`.
+
+Since the freeze, the first Week 10 game has settled. The official NFL.com scores page
+(<https://www.nfl.com/scores/2026/week-10>) shows **WAS 24 – NYG 21, Final** for
+`2026_10_WAS_NYG`. That game carries **4 frozen picks**. Grading it is the first real forward
+observation this project has ever had, and it is currently being dropped.
+
+| # | Task | Status | Owner | File scope (all new or append-only) |
+|---|------|--------|-------|-------------------------------------|
+| T41a | Official settlement capture for `2026_10_WAS_NYG`: record the final score with its official URL, capture time and transcribed heading, so grading rests on an official page and not on the community mirror | **in progress** | `arena/8a322b62-korea1` | `data/forward/official_results.csv` (append-only), `data/forward/captures/**` |
+| T41b | Settlement engine: grade frozen picks and cards against official finals only; leave any game without an official final `OPEN`; no provisional credit | **in progress** | `arena/8a322b62-korea1` | `pipeline/forward_settle.py`, `data/forward/graded_*.csv`, `data/forward/scoreboard.csv` |
+| T41c | First published forward page: frozen-vs-graded table, per-strategy prospective record, gate status, and a plainly worded statement that n=4 is not evidence | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_forward.py`, `forward.html` |
+| T41d | Tests that a pick cannot settle without an official result, that an unsettled pick stays `OPEN`, and that the settled arithmetic is exact | **in progress** | `arena/8a322b62-korea1` | `tests/test_forward_settlement.py` |
+| T41e | Integration: one NAV line, page lists in `verify_site.py` / `tests/check_*.py`, one `Makefile` line, one `README` line | **in progress** | `arena/8a322b62-korea1` | `pipeline/render_site.py` (**NAV tuple only**), `pipeline/verify_site.py` (**page set only**), `tests/check_links.py` (**page list only, if it is not a glob**), `Makefile`, `README.md` (one line) |
+
+**Not claimed and not touched by this session:** `data/processed/**`, `data/review/**`,
+`data/availability/**`, `data/evidence/**`, `assets/**`, `assets/data/**`, `.github/workflows/**`,
+`pipeline/render_{site,summary,review,decisions,readiness,annex,audit,governance,requirements}.py`
+beyond the single NAV tuple in `render_site.py`, every root `*.html` except the new `forward.html`,
+and every path in the three sibling claims above.
+
+**Protocol deviation, recorded.** The platform pins this session to
+`arena/8a322b62-korea1`; it cannot create a `session-<id>/<task>` branch. Same limitation every
+earlier session recorded. This branch is both task and integration branch.
+
+**Deliberate evidence rule for this task.** A pick may settle **only** from a score transcribed
+from an official NFL.com page and stored with that page's URL and a capture timestamp. The
+community mirror (`nflverse/nfldata`) is used by the existing engine for *closing lines*, which is
+a different field; it is not accepted as a settlement source. If no official final exists for a
+game, its picks stay `OPEN` and are printed as `OPEN`, not as a push, a void or a win.
