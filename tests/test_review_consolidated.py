@@ -98,6 +98,21 @@ def test_recommendation_points_at_a_cluster_that_actually_exists():
     assert rec in set(c.topic)
 
 
+def test_review_page_does_not_cite_a_decision_row_that_does_not_exist():
+    """A forward reference to a decision that was never recorded is a factual error."""
+    import re
+    html = (ROOT / "review.html").read_text()
+    decisions = (ROOT / "DECISIONS.md").read_text()
+    cited = set(re.findall(r"\bD-\d{2}\b", html))
+    assert cited == set(), f"review.html cites decision rows {sorted(cited)}"
+
+
+def test_every_recommendation_on_the_page_is_marked_as_a_recommendation():
+    html = (ROOT / "review.html").read_text()
+    assert "recommendation" in html.lower()
+    assert "not a decision until" in html.lower() or "not a decision" in html.lower()
+
+
 def test_nothing_is_marked_implemented_by_this_session():
     """V2 must not turn a proposal into a delivery."""
     head = (ROOT / "data/live/review_summary.json").read_text().lower()
