@@ -11,6 +11,15 @@ name: Referent audit
 on:
   schedule:
     - cron: "37 6 * * *"
+  # GitHub only exposes workflow_dispatch for workflows present on the default
+  # branch, so the audit branch also triggers on push (and after the merge to
+  # main the schedule + manual dispatch take over).
+  push:
+    branches: ["arena/84e42ecc-korea1"]
+    paths:
+      - "scripts/referent_probe.py"
+      - "data/audit/referent_expectations.csv"
+      - ".github/workflows/referent-audit.yml"
   workflow_dispatch:
     inputs:
       limit:
