@@ -38,6 +38,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "data", "governance", "post_pin_nfl_scores_2026_11_12.csv")
 OUT_CSV = os.path.join(ROOT, "data", "audit", "score_reconciliation.csv")
 OUT_JSON = os.path.join(ROOT, "data", "audit", "score_reconciliation.json")
+DEBUG_TXT = os.path.join(ROOT, "data", "audit", "score_debug_snippets.txt")
 
 USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -65,6 +66,29 @@ def fetch(url: str, timeout: int = 30) -> dict:
         return {"status": 0, "body": b"", "final_url": "", "error": type(exc).__name__ + ": " + str(exc)[:160]}
 
 
+# Candidate JSON keys an NFL.com game-centre page may embed.  The page is
+# client-rendered, so the raw HTML a runner fetches looks nothing like the
+# rendered text: try these before giving up.
+JSON_PATTERNS = [
+    (r'"visitorTeamScore"\s*:\s*(\d+)', r'"homeTeamScore"\s*:\s*(\d+)'),
+    (r'"awayTeamScore"\s*:\s*(\d+)', r'"homeTeamScore"\s*:\s*(\d+)'),
+    (r'"awayScore"\s*:\s*(\d+)', r'"homeScore"\s*:\s*(\d+)'),
+    (r'"awayPoints"\s*:\s*(\d+)', r'"homePoints"\s*:\s*(\d+)'),
+    (r'"visitorScore"\s*:\s*(\d+)', r'"homeScore"\s*:\s*(\d+)'),
+    (r'"visitorPoints"\s*:\s*(\d+)', r'"homePoints"\s*:\s*(\d+)'),
+    (r'"away"\s*:\s*\{\s*"score"\s*:\s*(\d+)', r'"home"\s*:\s*\{\s*"score"\s*:\s*(\d+)'),
+]
+
+
+def scores_from_json(text: str):
+    for pa, ph in JSON_PATTERNS:
+        a = re.search(pa, text)
+        h = re.search(ph, text)
+        if a and h:
+            return int(a.group(1)), int(h.group(1))
+    return None
+
+
 def live_scores(text: str):
     """Return (away, home, blocks_agree) or None when the page does not yield them.
 
@@ -76,11 +100,15 @@ def live_scores(text: str):
     if FLAG_ON_THE_PLAY in text and len(text) < 20000:
         return None
     vals = [int(m.group(1)) for m in POINTS.finditer(text)]
-    if len(vals) < 2:
-        return None
-    away, home = vals[0], vals[1]
-    agree = 1 if len(vals) >= 4 and (vals[2], vals[3]) == (away, home) else 0
-    return away, home, agree
+    if len(vals) >= 2:
+        away, home = vals[0], vals[1]
+        agree = 1 if len(vals) >= 4 and (vals[2], vals[3]) == (away, home) else 0
+        return away, home, agree
+    got = scores_from_json(text)
+    if got is not None:
+        away, home = got
+        return away, home, 0  # single source on the page, so no second block to agree with
+    return None
 
 
 def main() -> int:

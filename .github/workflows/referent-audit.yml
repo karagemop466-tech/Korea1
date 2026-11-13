@@ -58,7 +58,7 @@ jobs:
 
       - name: Re-check the published score census against the live official game pages
         run: |
-          python3 scripts/score_reconcile.py --timeout 25 --sleep 0.4 2>&1 | tail -n 60
+          SCORE_DEBUG=1 python3 scripts/score_reconcile.py --timeout 25 --sleep 0.2 2>&1 | tail -n 60
 
       - name: Summarise
         id: summary
@@ -114,6 +114,7 @@ jobs:
             data/audit/referent_register.csv
             data/audit/score_reconciliation.json
             data/audit/score_reconciliation.csv
+            data/audit/score_debug_snippets.txt
           retention-days: 90
 
       - name: Commit the result
