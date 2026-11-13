@@ -45,6 +45,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | R1 | **2026-11-13 availability reconciliation**: check the automated Week 10 injury report and club depth-chart snapshot (`data/availability/`, commit `43a946a`) against the official pages (line-level sample), publish the gap register, correct the stale "2 of 32 clubs" coverage claims, flag the HOU capture failure and the club-side "Unofficial Depth Chart" label | **done** | `arena/18c4acce-korea1` | `data/governance/availability_reconciliation_2026_11_13.csv` (new), `pipeline/decisions.py` (Q30 / S17 text only), `pipeline/availability.py` (AV-S1…S4 `available` text only), `pipeline/render_decisions.py` (coverage sentences only), `pipeline/render_site.py` (F-15 row + coverage sentence only), `research/injuries.md` (row 12 only), `README.md` (coverage sentence only), `EXECUTIVE_SUMMARY.md` (two coverage rows only), `DECISIONS.md` (D-05 row), `data/evidence/nfl_injuries/week10_2026/manifest.json` (null-hash repair), `COORDINATION.md` (own section + this row), `scripts/reconcile_availability_2026_11_13.py` (new), `assets/data/*_2026_11_13.csv` (new downloads) |
 
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
+| T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -2008,3 +2009,15 @@ confirming a proposed score against the archived official page before it enters 
 `check_links` clean, `check_rebuild` 0 drift, tree clean after `make build`. The research verdict is
 unchanged: **0 of 18 canonical strategies validated, no reward**. The forward test now has a published,
 auditable, official-source-settled record of 4 settled tickets out of 65.
+
+## Session `arena/beafe2ae-korea1` — T24 current-snapshot audit + final verification
+
+### 2026-11-13T22:53Z — claim
+
+Board read before work. T24 is a distinct audit of the 2026-11-13 committed availability snapshot and
+current public build, not a restart of the completed injury/decision/model tasks. The platform pins this
+session to `arena/beafe2ae-korea1`; that is the only branch used. Claim scope is limited to
+`pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`,
+`research/availability-snapshot-audit-2026-11-13.md`, and this T24 row/log in `COORDINATION.md`.
+No generated pages, navigation, shared tables, or files in another task's scope will be edited. The
+claim is committed and pushed before the audit files are created.
