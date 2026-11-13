@@ -2090,3 +2090,11 @@ PR #40's remote branch still points to the old pre-rebase head `acd83e7`, so it 
 ### 2026-11-13T23:34Z — rebased T24 branch pushed; updated checks pending
 
 The PR #40 branch was refreshed by a lease-guarded force push from observed remote head `acd83e7` to `d340ead4e18aacaa3703b3d69ba1d3808ac490a1`, now based on `main` `5fa44db`. PR #40 is mergeable. The updated `verify` workflow runs for `d340ead` are [43528077260](https://github.com/karagemop466-tech/Korea1/actions/runs/43528077260) (in progress) and [43528084771](https://github.com/karagemop466-tech/Korea1/actions/runs/43528084771) (queued) at inspection. No T24 merge or post-merge deployment is claimed yet.
+
+### 2026-11-13T23:36Z — PR #42 merged; T24 rechecked on the new base
+
+PR [#42](https://github.com/karagemop466-tech/Korea1/pull/42) merged at 23:34:28Z as `c16c25c`. Its two PR Verify runs, [43527870229](https://github.com/karagemop466-tech/Korea1/actions/runs/43527870229) and [43527864112](https://github.com/karagemop466-tech/Korea1/actions/runs/43527864112), succeeded. Pages deployment [43528119880](https://github.com/karagemop466-tech/Korea1/actions/runs/43528119880) succeeded, and the Pages API now reports `main:/` built at `c16c25c`. T24 was rebased onto this `main` tip with upstream T41 and T24 coordination records retained.
+
+On the current combined local tree, the T24 audit passed; its regression suite passed (5); `make build` passed with zero verifier failures (27 canonical pages / 2,134 sourced rows; 36 pages checked for links); and `make test` passed (107). A separate post-merge `main` Verify run, [43528121286](https://github.com/karagemop466-tech/Korea1/actions/runs/43528121286), failed at `Verify pinned inputs and rebuild`. GitHub's job API confirms that step failed, but the log archive download returned EOF, so the cause is unknown; no cause is attributed to T24. The combined local build passes.
+
+PR #40 still points remotely at `d340ead` (based on the previous `5fa44db` main) and is conflicting with the new base. Its two checks for that older base both passed, but do not verify this tree. Reconfirm the remote head, push the rebase onto `c16c25c` with a lease, and wait for refreshed PR checks before any merge. T24 merge and its post-merge Pages deployment remain pending.
