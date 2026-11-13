@@ -1569,3 +1569,26 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+---
+
+## Claim — `arena/d58198fc-korea1` — 2026-11-13T22:55Z
+
+Board read first. Every task above is `done`/merged or belongs to a session whose branch is not
+touched by this one. This session adds a **new, self-contained audit sub-site** and edits no
+existing published page. The platform pins this session to `arena/d58198fc-korea1`; it cannot create
+`session-<id>/<task>` branches (same limitation every earlier session recorded), so this branch is
+both task and integration branch.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| R1 | **Repo line-by-line audit**: machine-check every quantitative claim published in `README.md`, `EXECUTIVE_SUMMARY.md` and the root pages against the CSVs that back them; emit each as a row with verdict + evidence path | in progress | `arena/d58198fc-korea1` | `pipeline/repo_audit.py`, `data/repo_audit/**` |
+| R2 | **Official-source re-verification pass 2026-11-13**: re-read the official pages the site cites, record HTTP status / content assertion / capture time, flag anything that no longer says what the site says | in progress | `arena/d58198fc-korea1` | `data/repo_audit/official_*.csv`, `data/repo_audit/captures/**` |
+| R3 | **Suggestions decision matrix**: score every existing suggestion on impact · cost · evidence-readiness · dependency · reversibility and publish a ranked recommendation sequence with a "choose before implementing" checklist | in progress | `arena/d58198fc-korea1` | `data/repo_audit/suggestions_matrix.csv`, `review/**` |
+| R4 | **Additive sub-site** `review/` with its own generator + verifier + flagged page; one nav line and one README/exec link added at integration only | in progress | `arena/d58198fc-korea1` | `review/**`, `pipeline/render_audit_site.py`, `pipeline/verify_audit_site.py`, `tests/test_repo_audit.py` |
+| R5 | **Integration**: NAV line, page list in `verify_site.py` + `tests/check_*.py`, README/EXEC links, Makefile target, PR → `main`, merge, Pages deploy check | in progress | `arena/d58198fc-korea1` | `COORDINATION.md` (this section), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (one section), `pipeline/render_site.py` (NAV only), `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile` |
+
+**Not touched by this session:** every existing root `*.html`, `pipeline/render_review.py`,
+`pipeline/render_decisions.py`, `pipeline/render_readiness.py`, `pipeline/verify_site.py` beyond the
+page list, `data/processed/**`, `data/review/**`, `data/governance/**`, `data/availability/**`,
+`data/forward/**`, `assets/**`, `.github/workflows/**`.
