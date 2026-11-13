@@ -1569,3 +1569,57 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+## 2026-11-13 — Session `arena/5aee87e3-korea1` — final independent verification + integration
+
+**Claim (committed and pushed before any file in scope was touched).** Session `arena/5aee87e3-korea1`,
+pinned by the platform to branch `arena/5aee87e3-korea1` (branched from `main` `43a946a`), claims the
+**final independent verification + integration** task. At claim time `main` = `43a946a`
+("availability: official snapshot 2026-11-13T18:32Z"); every board row is `done` except the two
+stale `in progress` labels (T8, T11) left by sessions whose work was merged on 2026-11-01/02 and
+noted as stale by `arena/c0528572-korea1`. All sibling branches were squash-merged into `main`
+(each is 1 commit behind `main` with its original PR commits remaining only on the branch).
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| V1 | Independent line-by-line re-verification of the combined published data against official/primary sources (scores, injury report, depth charts, lines), recording every source read | **done** | `arena/5aee87e3-korea1` | `data/verification-2026-11-13/**` (new), `COORDINATION.md` (this section only) |
+| V2 | Confirm the combined site builds with no broken links and every table row sourced (`make build`, `make verify`, `make test`), confirm GitHub Pages is live on the merge commit | **done** | `arena/5aee87e3-korea1` | `data/verification-2026-11-13/**`, `COORDINATION.md` (this section only) |
+| V3 | Publish any new irregularities found on the Flagged-for-Review page (source-linked); log cross-scope repair requests rather than editing other sessions' scopes | **done** | `arena/5aee87e3-korea1` | No new defects found; the two freshness/depth-chart irregularities were already published (RV-02 / IR-2026-11-12-01 / IR-2026-11-12-03) and are confirmed below |
+| V4 | PR → `main`, merge without waiting, confirm the Pages deploy, record the PR link and result here | in progress | `arena/5aee87e3-korea1` | `COORDINATION.md` (this section only) |
+
+**Not claimed, and not edited by this session:** every root `*.html`, `pipeline/**`, `tests/**`,
+`assets/**`, `data/processed/**`, `data/availability/**`, `data/review/**`, `data/evidence/**`,
+`README.md`, `EXECUTIVE_SUMMARY.md`, `Makefile`, `.github/workflows/**`, `lab/**`, `scripts/**`,
+`analysis/**`, `research/**`, `archive/**`. Existing code, tables and pages are **read**, never
+written, unless a confirmed defect requires a logged cross-scope repair. The platform pins this
+session to `arena/5aee87e3-korea1`; the `session-<id>/<task>` worktree pattern cannot be used here
+(same limitation every earlier session recorded).
+
+### V1/V2/V3 — independent verification results (2026-11-13T22:58Z) — `arena/5aee87e3-korea1`
+
+The full merged build was re-run and every published data class was re-checked against an official or
+primary source. Full detail and source links are in `data/verification-2026-11-13/verification.csv`
+and `verification.md`.
+
+| Check | What was done | Official / primary source | Result |
+|---|---|---|---|
+| Build + tests | `make build`, `make test`, `make verify` on the branch (on `main` tip `43a946a`) | `pipeline/**`, `tests/**` | build PASS (no drift), **58 tests passed**, verifiers **0 failing** (24 pages / 1676 rows sourced; 33 pages no broken links) |
+| Official injury report (Week 10) | WAS + NYG rows in `lineups.html` / `injuries.html` compared field-by-field (player, position, injury, practice status, game status) | <https://www.nfl.com/injuries/> | **match** — WAS (Bates, Burks, Daniels, Gulbin, Okonkwo, Patrick Out, Robertson, Tuttle, Yankoff Out) and NYG (Carter, Eluemunor, Harrison Questionable, Hood, Johnson, Jones, McCarthy, Mooney, Nabers, Skattebo, Thomas) identical |
+| Club depth chart (WAS) | QB/C/TE depth cells in `injuries.html` / `lineups.html` vs the official club chart | <https://www.commanders.com/team/depth-chart> | **match** — QB Daniels/Mariota/Kaliakmanis, C Allegretti/Gulbin, TE Okonkwo/Sinnott and Bates/Yankoff; Lucas Patrick absent (Out), consistent with the site note |
+| Official score (Week 10 TNF) | Commanders 24 @ Giants 21 Final, 2026-11-12 | <https://www.nfl.com/scores/> | **match** |
+| Live deployed site | Deployed `index.html` headline figures + leaderboard vs the local build | <https://karagemop466-tech.github.io/Korea1/index.html> | **match** — 0 validated strategies / 18 candidates unawarded / 31 official score matches / 0 prop-price tickets / 8 gates |
+| Pages deploy | Pages build status, source, commit | GitHub Pages API `pages/builds/latest` | **built**, commit `43a946a`, source `main`/root, updated 2026-11-13T18:33:06Z |
+| Flagged register | Every published irregularity carries a source link and a disposition | `flagged.html` | **PASS** — IR-T10-*, RV-*, N-*, IR-2026-11-12-* all sourced |
+
+**Irregularities confirmed, not introduced (already published; no change made):**
+- **RV-02 / IR-2026-11-12-01** — the open line board is a pinned **Week 8** snapshot (2026-11-01);
+  the official injury report and scores are now for **Week 10**. The board is labelled "snapshot, not
+  a live feed" with the pin date. This is a deliberate pin (refreshing would move every published
+  number without re-review), so it is confirmed and left as flagged rather than silently refreshed.
+- **IR-2026-11-12-03** — club depth charts are club-labelled **"Unofficial"** and lag roster state.
+  Confirmed: the Commanders chart is club-published and current to the capture, but the general caveat
+  stands for all charts. Left as published.
+
+**No new defects were found.** No shared output (generator, test, page) required repair in this pass,
+so no cross-scope edit was made. The two freshness/depth-chart items above were already on the
+Flagged-for-Review page and are re-confirmed here against the live official sources.
