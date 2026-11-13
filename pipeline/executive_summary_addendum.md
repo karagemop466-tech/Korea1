@@ -34,9 +34,9 @@ no published page; its output is the `review/` sub-site.
 
 | Result | Count | What it means |
 |---|---|---|
-| Claims re-derived | 44 | one row per published number, each with its evidence file |
+| Claims re-derived | 45 | one row per published number, each with its evidence file |
 | Confirmed exactly | 36 | recomputed value = published value |
-| Flagged (drift) | 2 | published text and repository artifact disagree; both values shown |
+| Flagged (drift) | 3 | published text and repository artifact disagree; both values shown |
 | Undecidable | 1 | left blank, never estimated |
 | Official pages re-read | 11 of 12 | page-fetch captures in `data/repo_audit/captures/` |
 

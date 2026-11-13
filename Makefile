@@ -69,7 +69,7 @@ audit: data
 	$(PY) pipeline/render_audit_site.py
 	$(PY) pipeline/verify_audit_site.py
 
-audit-site:
+audit-site: audit
 	$(PY) pipeline/render_audit_site.py
 	$(PY) pipeline/verify_audit_site.py
 
@@ -86,7 +86,7 @@ annex:
 	bash scripts/run_all.sh
 	$(PY) pipeline/render_annex.py
 
-build: data model backtest props injuries site audit-site verify
+build: data model backtest props injuries site audit verify
 	@echo "build complete — site in repository root/, verification passed"
 
 serve: build

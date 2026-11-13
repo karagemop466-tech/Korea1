@@ -344,7 +344,10 @@ def audit_cross_page_consistency(a: Audit) -> None:
         # id, fact, artifact value, files that must state it, text patterns that count as stating it
         ("CP-01", "Club depth charts successfully parsed", "31 of 32",
          ["injuries.html", "questions.html", "flagged.html"],
-         [r"(\d+) of 32"], "data/availability/manifest.json"),
+         # Every one of the four pages states "31 of 32", but in different sentences
+         # ("captured 31 of 32", "parsed 31 of 32", "clubs captured 31 of 32"). A bare
+         # `(\d+) of 32` matches several and produced a false DRIFT; anchor to the verb.
+         [r"(?:captured|parsed|for) (\d+) of 32", r"(\d+) of 32 clubs"], "data/availability/manifest.json"),
         ("CP-02", "Canonical strategy count", str(len(gate)),
          ["EXECUTIVE_SUMMARY.md", "strategies.html"],
          [r"(\d+)\s+strategies\b", r"(\d+)\s+canonical\s+candidates"], "data/processed/strategy_gates.csv"),
