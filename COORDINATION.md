@@ -1711,3 +1711,39 @@ published on the Flagged-for-Review page. V1–V4 are complete for this session.
 - **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
 - **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
 
+---
+
+## 2026-11-13 — Session `arena/917fe36e-korea1` — independent verification + suggestions review
+
+**Board read first.** On `main` at `43a946a`, every earlier task is `done` or `needs review` and
+merged. Two rows still print `in progress` (T8, T11) and the FW1–FW5 rows print `in progress`;
+those are stale labels from branches that never merged, left exactly as their owners wrote them.
+Nothing was renumbered and nothing was overwritten.
+
+**Scope decision.** The repository already publishes every page the 2026-11-12 brief asked for
+(suggestions, questions, injuries, leaderboard, gates, correlations, props, flagged). This session
+therefore does **not** rebuild those pages. It adds the one thing the merged build asserts but cannot
+prove from its own sandbox: **line-by-line re-verification of published rows against live official
+sources**, plus a consolidation of the four competing suggestion/question registers into a single
+review surface with a chosen-path record.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| V1 | Independent re-verification of published injury/depth/schedule rows against live official sources; publish a per-row verdict table | **in progress** | `arena/917fe36e-korea1` | `pipeline/live_verify.py`, `data/live/**`, `live-verification.html`, `tests/test_live_verify.py` |
+| V2 | Consolidated suggestion + question review surface: merge the four registers, de-duplicate, rank, and record a recommended path without implementing any change | **in progress** | `arena/917fe36e-korea1` | `pipeline/review_consolidated.py`, `data/live/review_consolidated.csv`, `review.html`, `tests/test_review_consolidated.py` |
+| V3 | Integration: NAV entries, index cards, executive-summary section, requirements rows, flagged rows, verifier + link-check wiring, PR, merge, Pages confirmation | **in progress** | `arena/917fe36e-korea1` | `pipeline/render_site.py` (NAV/index/exec/requirements/flagged only), `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`, `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
+
+**Not touched:** every file in the claims above by any other session, `data/processed/**`,
+`data/availability/**`, `data/forward/**`, `data/review/**`, `data/evidence/**`, `archive/**`,
+`lab/**`, `assets/app.js`, and every existing root `*.html` other than the two new pages this
+session creates (`live-verification.html`, `review.html`) and the renderer's NAV/index/exec/
+requirements/flagged generators.
+
+**Platform deviation, recorded.** The platform pins this session to `arena/917fe36e-korea1`; it
+cannot create a separate `session-<id>/<task>` branch. Same deviation every earlier session recorded.
+
+**Irregularity for the record (IR-917-00).** Four registers now answer the same brief on different
+pages — `suggestions.html` (22), `suggestions-review.html` (12), `decision-board.html` (17) and
+`open-questions.html`/`questions.html` (40 + 20). V2 does not delete or renumber any of them; it
+publishes one cross-register index so the owner can compare them in one place.
+
