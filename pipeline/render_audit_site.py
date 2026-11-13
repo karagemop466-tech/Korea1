@@ -232,28 +232,32 @@ def page_index(d: dict) -> str:
         f'<div class="card-label">{e(l)}</div><div class="card-note">{e(n)}</div></div>'
         for k, v, l, n in cards)
 
-    t_findings = table('The five findings that change what you should do next',
-        ['#', 'Finding', 'Evidence', 'Official reference'],
-        [['1', 'The availability pages understate their own coverage. The scheduled tracker parses '
-               + str(d["avail_sum"].get("clubs_with_depth_chart", 0)) + ' of 32 club depth charts; '
-               'injuries.html, questions.html and flagged.html still say 2 of 32.',
-          'data/availability/manifest.json vs the three pages', ref('nfl_injuries')],
-         ['2', 'The recorded reproducibility baseline no longer matches the tree. '
-               + str(int((d["digest"]["state"] != "MATCH").sum())) + ' of ' + str(len(d["digest"]))
-               + ' recorded SHA-256 digests differ from the committed files, including '
-               'strategy_bets.csv, whose row count moved from 26,149 to 27,218 graded rows.',
-          'data/processed/audit_digests.csv vs data/repo_audit/digest_baseline.csv', ref('gh_actions')],
-         ['3', 'The injury-to-line step is still unmeasured, and this audit now shows exactly how much '
-               'data it needs before it could be believed (see Lines &amp; signals).',
-          'data/processed/availability_signals.csv', ref('ops')],
-         ['4', 'Every official score row the site publishes was re-read on 2026-11-13: 28 of 28 Week 8-9 '
-               'finals agree, and the two club depth charts, the T-90 inactive rule, both primary '
-               'statistics papers and the operator push rule all still say what the site says they say.',
-          'data/repo_audit/captures/*.json', ref('nfl_reg8')],
-         ['5', 'The decision surface is already rich (22 suggestions, 12 staged paths, 60 questions, 14 '
-               'pre-decision Q&amp;As) but has never been ranked on one scale. This audit scores all 22 '
-               'on impact, evidence-readiness, cost, unblocking power and reversibility so one path can '
-               'be chosen today.', 'data/repo_audit/suggestions_matrix.csv', ref('white')]])
+    drift = d["claims"][d["claims"]["verdict"] == "DRIFT"]
+    finding_rows = []
+    for i, (_, r) in enumerate(drift.iterrows(), 1):
+        note = str(r["note"]) if str(r["note"]) not in ("", "nan") else ""
+        key = "gh_actions" if r["area"] == "Reproducibility" else "white"
+        finding_rows.append([str(i), f"<strong>{e(r['area'])}.</strong> {e(r['claim'])}. "
+                                     f"Published: <em>{e(r['published_value'])}</em>; recomputed: "
+                                     f"<strong>{e(r['recomputed_value'])}</strong>. {e(note[:240])}",
+                             f"<code>{e(r['evidence_path'])}</code>", ref(key)])
+    finding_rows.append([str(len(drift) + 1),
+        "The injury-to-line step is still unmeasured, and this audit now shows exactly how much data it "
+        "needs before it could be believed (see <em>Lines &amp; signals</em>).",
+        "data/processed/availability_signals.csv", ref("ops")])
+    finding_rows.append([str(len(drift) + 2),
+        "Every official page the site cites was re-read on 2026-11-13. All 28 Week 8-9 score rows, all "
+        "20 WAS/NYG injury rows, 89 of 89 club depth-chart cells, the T-90 inactive rule, the operator "
+        "push rule and both primary statistics papers still say what the site says they say. "
+        "<strong>Zero official pages were contradicted.</strong>",
+        "data/repo_audit/captures/*.json", ref("nfl_reg8")])
+    finding_rows.append([str(len(drift) + 3),
+        "The decision surface is already rich (22 suggestions, 12 staged paths, 60 questions, 14 "
+        "pre-decision Q&amp;As) but had never been ranked on one scale. All 22 are now scored on impact, "
+        "evidence-readiness, cost, unblocking power and reversibility, so one path can be chosen today.",
+        "data/repo_audit/suggestions_matrix.csv", ref("white")])
+    t_findings = table("What changes what you should do next, in order of severity",
+                       ["#", "Finding", "Evidence", "Official reference"], finding_rows)
 
     t_map = table('Sub-site map', ['Page', 'Question it answers', 'Official reference'],
         [['<a href="claims.html">Claim check</a>', 'Is each published number still true?', ref('white')],

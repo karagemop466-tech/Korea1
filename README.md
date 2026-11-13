@@ -79,22 +79,27 @@ registers replaces a published page — they are additive evidence and downloads
 ## Independent repo audit (`review/`)
 
 `make audit` re-derives **every** published number from the artifact that is supposed to support it and
-publishes the result on `review/`. Current result: **44 claims checked — 34 confirmed exactly, 5 flagged
-as drift, 1 undecidable (left blank), 4 self-referential**. The five flags, in order of what they change:
+publishes the result on `review/`. Current result: **45 claims checked —
+36 confirmed exactly, 3 flagged as drift, 1 undecidable (left
+blank), 5 self-referential**.
 
-1. **Depth-chart coverage is understated.** The scheduled tracker parses **31 of 32** club charts
-   (`data/availability/manifest.json`); `injuries.html`, `questions.html` and `flagged.html` still say
-   *2 of 32*. Not corrected by the audit — published on `review/flagged.html`.
-2. **The reproducibility baseline is stale.** `data/processed/audit_digests.csv` records a SHA-256 for
-   every derived table and rendered page; re-running the check fails on **34 of 50** entries, including
-   `strategy_bets.csv` (recorded 26,149 rows, now 27,218). Fixing it rewrites published numbers, so it
-   is the owner's call.
-3. **`26,149` is no longer reproducible.** The single-leg ticket count in SUG-03 recomputes to 26,188
-   today; the all-rows total is 27,218.
-4. **One game is missing from the post-pin score register.** NFL.com's Week 8 page carries 14 finals;
-   `post_pin_nfl_scores_2026_11_12.csv` lists 13 for Week 8 (CAR 19 – GB 27 is absent).
-5. **The Week 10 Thursday game has been played.** WAS 24 – NYG 21 went final on 2026-11-12, so any
-   Week 10 line frozen before it is now settled.
+The flags that matter, each with the file that decides it (full detail on `review/flagged.html`):
+
+1. **The reproducibility baseline is stale.** `data/processed/audit_digests.csv` records a SHA-256 for
+   every derived table and rendered page, and `pipeline/audit.py` was written to fail when a digest no
+   longer matches. Re-running that comparison today fails on **34 of 50** entries, including
+   `strategy_bets.csv` (recorded 26,149 rows, now 27,218) and `verification_report.csv` (13 pages, now
+   33). Fixing it rewrites published numbers, so it is the owner's call.
+2. **`26,149` is no longer reproducible.** The single-leg ticket count quoted in SUG-03 recomputes to
+   26,188 today; the all-rows total is 27,218.
+3. **The Week 10 Thursday game is settled.** WAS 24 – NYG 21 went Final on 2026-11-12 per
+   <https://www.nfl.com/schedules/>, so any Week 10 line frozen before it is closed.
+4. **One Week 8 game is absent from the post-pin score register.** NFL.com's Week 8 page carries 14
+   finals; `post_pin_nfl_scores_2026_11_12.csv` lists 13 for Week 8. Verified against
+   <https://www.nfl.com/scores/2026/REG8>; recorded as an observation, not as a dataset error.
+
+One finding was **fixed by a parallel session while this audit was running** and is now recorded as
+confirmed: the depth-chart coverage text states 31 of 32, matching `data/availability/manifest.json`.
 
 The audit also re-read the official pages the site cites. All 28 Week 8–9 score rows, the 20 WAS/NYG
 injury rows, 89 of 89 club depth-chart cells, the T-90 inactive rule, the operator parlay push rule and

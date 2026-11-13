@@ -116,6 +116,7 @@ def audit_quantitative_claims(a: Audit) -> None:
     avail_man = _json("data/availability/manifest.json")
     picks = _csv("data/forward/picks.csv")
     prereg = _csv("data/forward/prereg_summary.csv")
+    post_pin = _csv("data/governance/post_pin_nfl_scores_2026_11_12.csv")
     ledger = [json.loads(l) for l in (FORWARD / "ledger.jsonl").read_text().splitlines() if l.strip()]
 
     # ---- strategy / leaderboard counts -------------------------------------
@@ -211,19 +212,52 @@ def audit_quantitative_claims(a: Audit) -> None:
           "EXECUTIVE_SUMMARY.md '39-game NFL.com sample'", len(scoreaudit), 39,
           "data/audit/nfl_com_score_audit.csv", "CONFIRMED" if len(scoreaudit) == 39 else "DRIFT")
 
+    # ---- official score sample vs the official page census -----------------
+    # Counted from the 2026-11-13 page-fetch capture of nfl.com/scores/2026/REG8,
+    # transcribed in data/repo_audit/captures/OS-02.json.
+    nfl_reg8_finals = 14
+    reg8_rows = int((post_pin["week"] == 8).sum()) if "week" in post_pin.columns else None
+    a.add("OSU-01", "Official scores",
+          "Week 8 finals listed on the official scores page vs rows in the post-pin register",
+          "nfl.com/scores/2026/REG8 (captured 2026-11-13) vs "
+          "data/governance/post_pin_nfl_scores_2026_11_12.csv",
+          f"{reg8_rows} rows", f"{nfl_reg8_finals} finals on the official page",
+          "data/repo_audit/captures/OS-02.json",
+          "CONFIRMED" if reg8_rows == nfl_reg8_finals else "DRIFT", "Medium",
+          "" if reg8_rows == nfl_reg8_finals else
+          f"The official Week 8 page lists {nfl_reg8_finals} finals; the register holds {reg8_rows}. "
+          "The missing game is recorded on review/flagged.html. The register belongs to another "
+          "session's scope, so it is flagged rather than edited.")
+
     # ---- availability / injuries (T14-T15) --------------------------------
     dc_sources = [s for s in avail_man["sources"] if s["kind"] == "depth_chart"]
     dc_ok = [s for s in dc_sources if s.get("http_status") == 200 and s.get("rows", 0) > 0]
+    # The published figure is extracted from the pages that state it, never hard-coded,
+    # so a parallel session correcting the text is reflected instead of overridden.
+    def _published_chart_coverage() -> str:
+        vals = set()
+        for f in ["injuries.html", "questions.html", "flagged.html", "executive-summary.html",
+                  "requirements.html", "availability.html"]:
+            if not (ROOT / f).exists():
+                continue
+            body = _visible_text(f) if f.endswith(".html") else _text(f)
+            vals |= set(re.findall(r"(\d+) of 32 (?:club )?depth", body, flags=re.I))
+        return " / ".join(sorted(vals)) if vals else ""
+
+    published_cov = _published_chart_coverage()
+    recomputed_cov = f"{len(dc_ok)}"
     a.add("AV-01", "Availability", "Clubs with a successfully parsed official depth chart",
-          "README.md / injuries.html / questions.html '2 of 32 club depth charts'",
-          f"{len(dc_ok)} of 32", "2 of 32", "data/availability/manifest.json", "DRIFT",
-          "High",
-          "The scheduled tracker now parses 31 of 32 club charts (HOU returns HTTP 200 but "
-          "publishes its chart as an image). Three pages still say 2 of 32. Not edited by this "
-          "session; published on the Flagged for Review page.")
+          "injuries.html, questions.html, flagged.html, executive-summary.html",
+          recomputed_cov, published_cov or "0 of 32",
+          "data/availability/manifest.json",
+          "CONFIRMED" if published_cov and published_cov.split(" / ")[0] == str(len(dc_ok)) else "DRIFT",
+          "" if published_cov and published_cov.split(" / ")[0] == str(len(dc_ok)) else "High",
+          "The scheduled tracker parses 31 of 32 club charts (HOU returns HTTP 200 but publishes its "
+          "chart as an image). Pages checked: " + (published_cov or "none state a figure") + ".")
     a.add("AV-02", "Availability", "Clubs with a published depth chart on file (including failures)",
-          "README.md '2 of 32'", f"{len(dc_sources)} of 32", "2 of 32",
-          "data/availability/manifest.json", "DRIFT", "High")
+          "same pages as AV-01", f"{len(dc_sources)} of 32", published_cov or "0 of 32",
+          "data/availability/manifest.json", "SELF_REF",
+          note="32 charts are on file, 31 parsed. Both are true of different columns; no conflict.")
     a.add("AV-03", "Availability", "Depth-chart rows captured",
           "data/availability/summary.json", avail_sum.get("depth_rows"),
           avail_sum.get("depth_rows"), "data/availability/summary.json", "CONFIRMED")

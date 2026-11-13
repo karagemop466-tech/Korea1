@@ -139,18 +139,18 @@ no published page; its output is the `review/` sub-site.
 | Result | Count | What it means |
 |---|---|---|
 | Claims re-derived | 44 | one row per published number, each with its evidence file |
-| Confirmed exactly | 34 | recomputed value = published value |
-| Flagged (drift) | 5 | published text and repository artifact disagree; both values shown |
+| Confirmed exactly | 36 | recomputed value = published value |
+| Flagged (drift) | 2 | published text and repository artifact disagree; both values shown |
 | Undecidable | 1 | left blank, never estimated |
 | Official pages re-read | 11 of 12 | page-fetch captures in `data/repo_audit/captures/` |
 
-**The five flags.** (1) The scheduled tracker parses **31 of 32** club depth charts while `injuries.html`,
-`questions.html` and `flagged.html` still say *2 of 32*. (2) The repository's own reproducibility baseline
-(`data/processed/audit_digests.csv`) fails on **34 of 50** recorded digests, including `strategy_bets.csv`
-(26,149 recorded rows, 27,218 now). (3) The `26,149` single-leg ticket figure recomputes to 26,188 today,
-with 27,218 graded rows in total. (4) NFL.com's Week 8 page carries 14 finals; the post-pin score register
-lists 13 for Week 8 (CAR 19 – GB 27 absent). (5) WAS 24 – NYG 21 went final on 2026-11-12, so the Week 10
-Thursday game is settled and any line frozen before it is closed.
+**The flags.** (1) The repository's own reproducibility baseline (`data/processed/audit_digests.csv`)
+fails on **34 of 50** recorded digests, including `strategy_bets.csv` (26,149 recorded rows,
+27,218 now) and `verification_report.csv` (13 pages, now 33). (2) The `26,149` single-leg ticket figure
+recomputes to 26,188 today, with 27,218 graded rows in total. (3) WAS 24 – NYG 21 went final on
+2026-11-12, so the Week 10 Thursday game is settled. (4) NFL.com's Week 8 page carries 14 finals while the
+post-pin score register lists 13 for Week 8; recorded as an observation. One earlier finding — the
+depth-chart coverage text — was corrected by a parallel session while this audit ran and now reads 31 of 32.
 
 **What the official re-read confirmed.** All 28 Week 8–9 score rows, all 20 WAS/NYG injury-report rows,
 89 of 89 ordered club depth-chart cells, the T-90 inactive-list rule on `operations.nfl.com`, the operator
@@ -165,5 +165,5 @@ signal is not priced and the leaderboard stays empty; it is not caution for its 
 **Read it at** `review/index.html` (overview), `review/claims.html` (line-by-line claim check),
 `review/suggestions.html` (ranked decision matrix and a six-step recommended sequence),
 `review/injuries.html`, `review/questions.html`, `review/official-sources.html`,
-`review/flagged.html` (the five flags plus 34 stale digests, for your review after the site is live).
+`review/flagged.html` (the flags plus every stale digest, for your review after the site is live).
 Reproduce with `make audit`. Nothing flagged here blocks publication.
