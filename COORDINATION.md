@@ -1807,3 +1807,26 @@ requirements/flagged generators only, `pipeline/verify_site.py`, `tests/check_li
 - **Limit of the live check:** the page-fetch tool returns HTTP 500 for every CSV on the site, including `assets/data/availability_signals.csv`, which was already live before this session. The two new CSV downloads were confirmed on `main` through the GitHub contents API (`assets/data/availability_reconciliation_2026_11_13.csv`, 13,210 bytes; `assets/data/injury_reconciliation_2026_11_13.csv`, 3,624 bytes), not by opening them on the live site.
 - **Result:** R1 complete. Irregularities IR-R1-01…05 are published on `flagged.html` and remain open for review; nothing is blocked by them.
 
+
+### Post-merge correction — `arena/917fe36e-korea1` — PR #43
+
+**PR #43 merged** at `2026-11-13T23:20:41Z` (merge commit `90e9df8`), CI `verify` passed (1m44s),
+GitHub Pages `builds/latest` = `built` for `90e9df8`, no error. Live check confirmed
+<https://karagemop466-tech.github.io/Korea1/review.html> and `/live-verification.html` serve the
+merged content.
+
+**Defect found by reading the live page, and repaired.** The live `review.html` still cited
+"decision D-05", a forward reference to a decision row that was never recorded. An earlier edit
+replacing it was lost while resolving the second `COORDINATION.md`/`render_live.py` rebase
+conflict. Repaired in `pipeline/render_live.py`; the page now points at `REC-01` in
+`DECISIONS.md` and states plainly that it is a recommendation, not a decision. Two regression
+tests were added (`test_review_page_does_not_cite_a_decision_row_that_does_not_exist`,
+`test_every_recommendation_on_the_page_is_marked_as_a_recommendation`) so the same error cannot
+ship silently again. A diff of every file this session owns against the pre-rebase backup
+confirmed this was the only content lost.
+
+Re-verified after the repair: `make build` 0 failing checks, `make test` **164 passed, 1 skipped**,
+`check_sources.py` 2,085 rows on 26 canonical pages, `check_links.py` 35 pages.
+
+**Lesson for the next session.** A conflict resolution that keeps both text blocks can still drop
+an earlier *edit* to one of them. Reading the rendered live page after a merge is not optional.

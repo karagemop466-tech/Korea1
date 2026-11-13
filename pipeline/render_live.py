@@ -413,8 +413,10 @@ are simply downstream of this one.</p>
  caption="Table 3. The three defensible paths. B and C are not mutually exclusive; A is what the site does today.")}
 <p>This review recommends <strong>B as the first purchase and C as the work that needs no
 purchase</strong>, both behind A's rule that nothing unverified is presented as verified. That
-combination is recorded as decision D-05 in the decision log, marked as the agent's
-recommendation and reversible by you at any time.</p>
+combination is this page's recommendation, labelled as the agent's recommendation and
+reversible by you at any time. It is not a decision until it is recorded as one in
+<code>DECISIONS.md</code>, which currently holds it as <code>REC-01</code> — explicitly a
+recommendation, not a D-row.</p>
 </section>""")
 
     # ---- questions --------------------------------------------------------
