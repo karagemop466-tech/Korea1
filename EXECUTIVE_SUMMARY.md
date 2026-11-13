@@ -105,7 +105,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 457 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 487 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
