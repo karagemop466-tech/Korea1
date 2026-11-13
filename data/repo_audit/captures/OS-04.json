@@ -1,0 +1,9 @@
+{
+  "id": "OS-04",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "NFL Schedules: Games, Times, Matchups & Tickets",
+  "assertion_checked": "PARTIAL",
+  "note": "Official schedule for 2026 present. Two facts checked against the site: (a) WAS at NYG is listed FINAL 24-21, i.e. the Week 10 Thursday game had already been played when this audit ran on 2026-11-13; (b) NE at DET is listed with an International Game tag for Munich, Sunday 15 November, 9:30 AM, FOX - the repo's own file data/lineups/week10_2026_matchup_deficiencies.csv labels that same game 'NE vs DET' with kickoff '2026-11-15 09:30 EST' and no venue. The venue tag is missing there; flagged.",
+  "url": "https://www.nfl.com/schedules/"
+}

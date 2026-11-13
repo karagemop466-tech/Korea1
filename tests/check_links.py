@@ -26,7 +26,10 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "decision-readiness.html", "lineup-deficiencies.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
-         "lab/flagged.html"]
+         "lab/flagged.html",
+         "review/index.html", "review/claims.html", "review/my-lines.html", "review/injuries.html",
+         "review/suggestions.html", "review/questions.html", "review/official-sources.html",
+         "review/flagged.html"]
 HREF = re.compile(r'href="([^"]+)"')
 ID = re.compile(r'id="([^"]+)"')
 SRC = re.compile(r'src="([^"]+)"')

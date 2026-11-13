@@ -26,6 +26,10 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `lineup-deficiencies.html` — 39 verified Week 10 offensive & defensive 1st–4th string entries across 8 NFL clubs (`WAS`, `NYG`, `NE`, `DET`, `KC`, `ATL`, `MIN`, `GB`), NFL Operations T-90m countdown rules, and prefix-safe PBP backup diagnostics
 - `lineups.html` — seven observed players plus two club depth charts; roles and impacts blank
 - `injuries.html` — verified official captures, the coverage gap and the availability signal register
+- `review/index.html` — **independent repo audit, 2026-11-13**: every published claim re-derived from the
+  file that backs it, every cited official page re-read, and all 22 proposals ranked on one scale
+  (`review/claims.html`, `review/my-lines.html`, `review/injuries.html`, `review/suggestions.html`,
+  `review/questions.html`, `review/official-sources.html`, `review/flagged.html`)
 - `requirements.html` — requirement-by-requirement delivery register
 - `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
@@ -71,6 +75,32 @@ suggestion and open-question registers live in `research/*.md` and are validated
 out-of-vocabulary status, or a source that is neither official/primary nor explicitly flagged. Run
 them with `make injuries review`; `make build` runs them automatically. None of these tables or
 registers replaces a published page — they are additive evidence and downloads.
+
+## Independent repo audit (`review/`)
+
+`make audit` re-derives **every** published number from the artifact that is supposed to support it and
+publishes the result on `review/`. Current result: **44 claims checked — 34 confirmed exactly, 5 flagged
+as drift, 1 undecidable (left blank), 4 self-referential**. The five flags, in order of what they change:
+
+1. **Depth-chart coverage is understated.** The scheduled tracker parses **31 of 32** club charts
+   (`data/availability/manifest.json`); `injuries.html`, `questions.html` and `flagged.html` still say
+   *2 of 32*. Not corrected by the audit — published on `review/flagged.html`.
+2. **The reproducibility baseline is stale.** `data/processed/audit_digests.csv` records a SHA-256 for
+   every derived table and rendered page; re-running the check fails on **34 of 50** entries, including
+   `strategy_bets.csv` (recorded 26,149 rows, now 27,218). Fixing it rewrites published numbers, so it
+   is the owner's call.
+3. **`26,149` is no longer reproducible.** The single-leg ticket count in SUG-03 recomputes to 26,188
+   today; the all-rows total is 27,218.
+4. **One game is missing from the post-pin score register.** NFL.com's Week 8 page carries 14 finals;
+   `post_pin_nfl_scores_2026_11_12.csv` lists 13 for Week 8 (CAR 19 – GB 27 is absent).
+5. **The Week 10 Thursday game has been played.** WAS 24 – NYG 21 went final on 2026-11-12, so any
+   Week 10 line frozen before it is now settled.
+
+The audit also re-read the official pages the site cites. All 28 Week 8–9 score rows, the 20 WAS/NYG
+injury rows, 89 of 89 club depth-chart cells, the T-90 inactive rule, the operator parlay push rule and
+both primary statistics papers still say what the site says they say
+(`review/official-sources.html`, captures in `data/repo_audit/captures/`). The sandbox shell cannot
+reach nfl.com, so these were read with the agent page-fetch tool and transcribed with a timestamp.
 
 ## Evidence policy
 

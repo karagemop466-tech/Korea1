@@ -1,0 +1,10 @@
+{
+  "id": "OS-05",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "NFL Football Operations | NFL Football Operations",
+  "assertion_checked": "PASS",
+  "note": "Verbatim: '90-minute officiating meeting ... exchange of Game Day Administration Reports (which includes a club's inactive list ...)'. Confirms a 90-minute pregame inactive deadline.",
+  "bytes": "",
+  "url": "https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep"
+}

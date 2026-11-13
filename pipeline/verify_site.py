@@ -58,14 +58,17 @@ def official_refs(hrefs):
 
 def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
-    pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))
+    pages=sorted(ROOT.glob("*.html"))+sorted((ROOT/"lab").glob("*.html"))+sorted((ROOT/"review").glob("*.html"))
     expected={"index.html","executive-summary.html","lines.html","strategies.html","validation.html",
               "correlations.html","props.html","methodology.html","requirements.html","verification.html",
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
-              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html"}
+              "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
+              "review/index.html","review/claims.html","review/my-lines.html","review/injuries.html",
+              "review/suggestions.html","review/questions.html","review/official-sources.html",
+              "review/flagged.html"}
     results=[]; failures=0
-    missing=expected-{p.name for p in pages}
+    missing=expected-{str(p.relative_to(ROOT)) for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)
     for page in pages:
         raw=page.read_text(); c=Collector(); c.feed(raw)

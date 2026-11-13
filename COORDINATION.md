@@ -1569,3 +1569,74 @@ registers as additive artifacts and leaves every merged page, renderer, test and
   `assets/data/review_*.csv` downloads are reachable.
 - No shared output was edited. `pipeline/render_site.py`, `tests/check_*.py`, `README.md` and every
   root `*.html` are the merged versions.
+
+---
+
+## Claim — `arena/d58198fc-korea1` — 2026-11-13T22:55Z
+
+Board read first. Every task above is `done`/merged or belongs to a session whose branch is not
+touched by this one. This session adds a **new, self-contained audit sub-site** and edits no
+existing published page. The platform pins this session to `arena/d58198fc-korea1`; it cannot create
+`session-<id>/<task>` branches (same limitation every earlier session recorded), so this branch is
+both task and integration branch.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| R1 | **Repo line-by-line audit**: machine-check every quantitative claim published in `README.md`, `EXECUTIVE_SUMMARY.md` and the root pages against the CSVs that back them; emit each as a row with verdict + evidence path | in progress | `arena/d58198fc-korea1` | `pipeline/repo_audit.py`, `data/repo_audit/**` |
+| R2 | **Official-source re-verification pass 2026-11-13**: re-read the official pages the site cites, record HTTP status / content assertion / capture time, flag anything that no longer says what the site says | in progress | `arena/d58198fc-korea1` | `data/repo_audit/official_*.csv`, `data/repo_audit/captures/**` |
+| R3 | **Suggestions decision matrix**: score every existing suggestion on impact · cost · evidence-readiness · dependency · reversibility and publish a ranked recommendation sequence with a "choose before implementing" checklist | in progress | `arena/d58198fc-korea1` | `data/repo_audit/suggestions_matrix.csv`, `review/**` |
+| R4 | **Additive sub-site** `review/` with its own generator + verifier + flagged page; one nav line and one README/exec link added at integration only | in progress | `arena/d58198fc-korea1` | `review/**`, `pipeline/render_audit_site.py`, `pipeline/verify_audit_site.py`, `tests/test_repo_audit.py` |
+| R5 | **Integration**: NAV line, page list in `verify_site.py` + `tests/check_*.py`, README/EXEC links, Makefile target, PR → `main`, merge, Pages deploy check | in progress | `arena/d58198fc-korea1` | `COORDINATION.md` (this section), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (one section), `pipeline/render_site.py` (NAV only), `pipeline/verify_site.py`, `tests/check_*.py`, `Makefile` |
+
+**Not touched by this session:** every existing root `*.html`, `pipeline/render_review.py`,
+`pipeline/render_decisions.py`, `pipeline/render_readiness.py`, `pipeline/verify_site.py` beyond the
+page list, `data/processed/**`, `data/review/**`, `data/governance/**`, `data/availability/**`,
+`data/forward/**`, `assets/**`, `.github/workflows/**`.
+
+### Progress record — `arena/d58198fc-korea1` — 2026-11-13T23:40Z
+
+| Item | Result | Evidence |
+|---|---|---|
+| R1 claims re-derived | **44 checked, 34 confirmed, 5 drift, 1 undecidable, 4 self-referential** | `data/repo_audit/claims.csv`, `summary.json` |
+| R1b cross-page consistency | 4 facts checked across pages; 1 drifts (depth-chart coverage) | `data/repo_audit/claims.csv` (CP-01…CP-04) |
+| R1c reproducibility baseline | **34 of 50** recorded SHA-256 digests no longer match, incl. `strategy_bets.csv` (26,149 → 27,218 rows) | `data/repo_audit/digest_baseline.csv` |
+| R2 official re-verification | 11 of 12 cited official pages re-read on 2026-11-13; **0 contradictions**; captures committed | `data/repo_audit/captures/OS-*.json`, `official_sources.csv` |
+| R3 decision matrix | all 22 suggestions scored on 5 weighted criteria + six-step sequence; 12 path-selector items indexed | `data/repo_audit/suggestions_matrix.csv`, `paths_matrix.csv` |
+| R4 sub-site | 8 pages under `review/`, own generator + fail-closed verifier + 16 tests | `review/**`, `pipeline/{repo_audit,render_audit_site,verify_audit_site}.py`, `tests/test_repo_audit.py` |
+| Verification | `verify_site.py` 0 failures (41 pages) · `verify_audit_site.py` 0 failures · `check_sources.py` 2,075 rows on 32 pages · `check_links.py` 41 pages · pytest 149 passed, 2 skipped | local run, 2026-11-13T23:40Z |
+
+**Verdicts on the flags found (none blocks publication; all are on `review/flagged.html`):**
+
+- **RA-02/03/04 — depth-chart coverage.** The scheduled tracker parses 31 of 32 club charts (HOU is an
+  image); `injuries.html`, `questions.html` and `flagged.html` still say *2 of 32*. Detected from
+  `data/availability/manifest.json`. **Not edited** — those pages belong to other sessions' scopes; the
+  request to refresh them is logged here rather than acted on.
+- **RA-05 — stale digest baseline.** `audit_digests.csv` fails on 34 of 50 entries. Repair is
+  `python pipeline/audit.py --rebuild` + diff review, and it rewrites published numbers, so it is the
+  owner's decision. Logged, not executed.
+- **RA-01 — 26,149 tickets.** Recomputes to 26,188 single-leg rows today (27,218 graded rows total).
+  Detected from `strategy_gates.csv`; SUG-03's wording belongs to another scope.
+- **RA-06 — Week 8 score register.** NFL.com's Week 8 page carries 14 finals; the post-pin register lists
+  13 (CAR 19 – GB 27 absent). Verified directly against
+  <https://www.nfl.com/scores/2026/REG8>. Not edited.
+- **RA-07 — Week 10 Thursday is settled.** WAS 24 – NYG 21 went Final on 2026-11-12 per
+  <https://www.nfl.com/schedules/>. Recorded so no one treats a pre-kickoff Week 10 line as open.
+
+**What the official re-read confirmed (no contradiction found):** all 28 Week 8–9 score rows
+(<https://www.nfl.com/scores/2026/REG8>, `/REG9`), all 20 WAS/NYG injury-report rows
+(<https://www.nfl.com/injuries/>), 89 of 89 ordered club depth-chart cells
+(commanders.com, giants.com), the T-90 Game Day Administration inactive rule
+(operations.nfl.com), the FanDuel parlay push rule, White (2000) and Bailey & López de Prado (2014).
+Houston's chart is confirmed unparseable (image + "Unofficial Depth Chart" heading), closing RV-03.
+
+**Files written by this session:** `pipeline/repo_audit.py`, `pipeline/render_audit_site.py`,
+`pipeline/verify_audit_site.py`, `tests/test_repo_audit.py`, `review/**`, `data/repo_audit/**`,
+`COORDINATION.md` (this section), `README.md` (one bullet + one section), `EXECUTIVE_SUMMARY.md` (one
+section), `Makefile` (`audit` / `audit-site` targets, `test` list, `build` dependency),
+`pipeline/render_site.py` (one NAV entry), `pipeline/verify_site.py` (page list + path-key fix),
+`tests/check_links.py` + `tests/check_sources.py` (page lists), `DECISIONS.md` (D-05).
+
+**Fix applied in passing (bug, not a claim):** `pipeline/verify_site.py` compared `expected` (relative
+path strings) against `{p.name for p in pages}` (bare file names). Every sub-directory page (`lab/*`,
+now `review/*`) was therefore reported missing on every run while the run still exited 0. It now compares
+relative paths and the sub-site pages are genuinely checked.

@@ -1,0 +1,45 @@
+id,area,claim,claim_source,published_value,recomputed_value,evidence_path,verdict,severity,note
+QA-01,Leaderboard,Number of canonical strategies on the leaderboard,"README.md, index.html, EXECUTIVE_SUMMARY.md",18,18,data/processed/strategy_gates.csv,CONFIRMED,,
+QA-02,Leaderboard,Strategies that pass all eight validation gates,EXECUTIVE_SUMMARY.md '0 of 18 canonical strategies pass all eight final gates',0,0,data/processed/strategy_gates.csv,CONFIRMED,,
+QA-03,Leaderboard,Rows where all eight gate booleans are true,pipeline/verify_site.py gate consistency check,0,0,data/processed/strategy_gates.csv,CONFIRMED,High,
+QA-04,Leaderboard,Rewards actually awarded,README.md 'no reward award',0,0,data/processed/strategy_gates.csv,CONFIRMED,High,
+QA-05,Leaderboard,Strategies passing the executable-quote gate G1,README.md 'Authenticated executable quotes ... missing',0,0,data/processed/strategy_gates.csv,CONFIRMED,High,
+QA-06,Leaderboard,Maximum official-quote coverage across strategies,EXECUTIVE_SUMMARY.md 'do not contain authenticated ... quotes',0.0,0.0,data/processed/strategy_gates.csv,CONFIRMED,High,
+QA-07,Leaderboard,"Single-leg research tickets (SUG-03's '26,149 historical backtest tickets')",data/governance/suggestions_review.csv SUG-03,26149,26188,data/processed/strategy_gates.csv,DRIFT,Medium,"Neither 27218 (all rows) nor 26188 (single legs) matches 26,149."
+QA-08,Registers,Question register size and status split,"README.md, executive-summary.html","40 questions - 29 answered, 2 open, 7 blocked, 2 need decision","40 questions - 29 answered, 2 open, 7 blocked, 2 need decision",data/processed/questions.csv,CONFIRMED,Medium,
+QA-09,Registers,Suggestion register size,README.md '22 proposals',22,22,data/processed/suggestions.csv,CONFIRMED,Medium,
+QA-10,Registers,Path-selector review rows,README.md '12 staged improvements',12,12,data/governance/suggestions_review.csv,CONFIRMED,,
+QA-11,Registers,Pre-decision Q&A count,README.md '14 pre-decision Q&As',14,14,data/governance/decision_questions.csv,CONFIRMED,,
+QA-12,Registers,Missing-information discovery blueprints,README.md '8 missing-info discovery blueprints',8,8,data/governance/missing_info_discovery.csv,CONFIRMED,,
+QA-13,Registers,Second (parallel) open-question register size,README.md 'open-questions.html',14,20,data/review/questions.csv,SELF_REF,,"A second, independently written register; its row count is not a claim about the first."
+QA-14,Registers,Repo-review findings on the flagged page,executive-summary.html 'RV-01 to RV-11',11,11,data/review/repo_review.csv,CONFIRMED,Low,
+QA-15,Official scores,Games where the pinned archive agrees with NFL.com,index.html card '31 official score matches',31,31,data/audit/nfl_com_score_audit.csv,CONFIRMED,Medium,
+QA-16,Official scores,Games NFL.com shows as Final but the pinned archive leaves blank,EXECUTIVE_SUMMARY.md sample description,8,8,data/audit/nfl_com_score_audit.csv,CONFIRMED,Medium,
+QA-17,Official scores,Size of the NFL.com score sample,EXECUTIVE_SUMMARY.md '39-game NFL.com sample',39,39,data/audit/nfl_com_score_audit.csv,CONFIRMED,,
+AV-01,Availability,Clubs with a successfully parsed official depth chart,README.md / injuries.html / questions.html '2 of 32 club depth charts',2 of 32,31 of 32,data/availability/manifest.json,DRIFT,High,The scheduled tracker now parses 31 of 32 club charts (HOU returns HTTP 200 but publishes its chart as an image). Three pages still say 2 of 32. Not edited by this session; published on the Flagged for Review page.
+AV-02,Availability,Clubs with a published depth chart on file (including failures),README.md '2 of 32',2 of 32,32 of 32,data/availability/manifest.json,DRIFT,High,
+AV-03,Availability,Depth-chart rows captured,data/availability/summary.json,1833,1833,data/availability/summary.json,CONFIRMED,,
+AV-04,Availability,Starting slots audited (offence + defence + special teams),data/availability/summary.json,909,909,data/availability/summary.json,CONFIRMED,,
+AV-05,Availability,Slots whose first-listed player is Out,injuries.html availability summary,4,4,data/availability/summary.json,CONFIRMED,,
+AV-06,Availability,Clubs appearing on the official injury report,executive-summary.html,28,28,data/availability/summary.json,CONFIRMED,,
+AV-07,Availability,Official injury-report player rows captured,availability.html,326,326,data/availability/summary.json,CONFIRMED,,
+AV-08,Availability,Every captured injury row names an official source URL,verification policy (no unsourced rows),326,326,data/availability/injuries.csv,CONFIRMED,High,
+AV-09,Availability,Slots where the first-listed player did not practise,availability.html,,59,data/availability/slot_status.csv,SELF_REF,,
+LI-01,Lineups,Week-10 matchup deficiency cards verified against club charts,README.md '39 verified Week 10 ... entries across 8 NFL clubs',4,4,data/lineups/week10_2026_matchup_deficiencies.csv,SELF_REF,,It is 4 matchup cards holding 39 slot entries; both statements are true of different columns. No conflict.
+LI-02,Lineups,Position-group pressure rows,COORDINATION.md T14 register '154 rows',154,154,data/processed/lineup_deficiency.csv,CONFIRMED,,
+FW-01,Forward ledger,Forward-test picks frozen before kickoff,COORDINATION.md FW1-FW5 '65 picks',65,65,data/forward/picks.csv,CONFIRMED,Medium,
+FW-02,Forward ledger,Hash-chained ledger entries,data/forward/ledger.jsonl,3,3,data/forward/ledger.jsonl,CONFIRMED,Low,
+FW-03,Forward ledger,Lines published after the game had been played (pre-registration audit),COORDINATION.md FW1 audit '12 were published after those games had been played',,,data/forward/prereg_summary.csv,UNVERIFIABLE,Medium,The per-line audit is in prereg_audit.csv; the summary column names differ from the claim's wording. Count left blank rather than inferred.
+FW-04,Forward ledger,Every ledger entry links to the previous entry and matches its own hash,COORDINATION.md 'append-only hash-chained freeze',intact,intact,data/forward/ledger.jsonl,CONFIRMED,High,
+CP-01,Cross-page,Club depth charts successfully parsed,"every page that states it: injuries.html, questions.html, flagged.html",2,31 of 32,data/availability/manifest.json,DRIFT,High,flagged.html: ['2']; injuries.html: ['2']; questions.html: ['2']
+CP-02,Cross-page,Canonical strategy count,"every page that states it: EXECUTIVE_SUMMARY.md, strategies.html",18,18,data/processed/strategy_gates.csv,CONFIRMED,,EXECUTIVE_SUMMARY.md: ['18']; strategies.html: []
+CP-03,Cross-page,Availability signal register size,every page that states it: EXECUTIVE_SUMMARY.md,8,8,data/processed/availability_signals.csv,CONFIRMED,,EXECUTIVE_SUMMARY.md: ['8']
+CP-04,Cross-page,Suggestion register size,every page that states it: EXECUTIVE_SUMMARY.md,22,22,data/processed/suggestions.csv,CONFIRMED,,EXECUTIVE_SUMMARY.md: ['22']
+DG-01,Reproducibility,Recorded digest baseline still matches the committed files,data/processed/audit_digests.csv + pipeline/audit.py (fails on mismatch),50 of 50 match,16 of 50 match,data/repo_audit/digest_baseline.csv,DRIFT,High,"34 entries no longer match: corr_cross_game.csv, corr_market.csv, corr_same_game.csv, data_audit.csv, feature_dict.csv, games_model.csv, model_config.json, model_metrics.csv, originated_lines.csv, originated_upcoming.csv, prop_inputs.csv, reality_check.json. The audit engine that wrote this baseline is fail-closed, so either the baseline or the committed tables have moved since it ran. Flagged, not rewritten."
+SM-01,Suggestions,Every suggestion carries a scored decision basis,this audit,22,22,data/repo_audit/suggestions_matrix.csv,CONFIRMED,,
+SM-02,Suggestions,Suggestion ids are unique,this audit,22,22,data/repo_audit/suggestions_matrix.csv,CONFIRMED,High,
+SM-03,Suggestions,Every suggestion links an official/primary reference,this audit,22,22,data/processed/suggestions.csv,CONFIRMED,High,
+SM-04,Suggestions,Decision questions recorded before any implementation,decisions.html / decision-board.html,14,14,data/governance/decision_questions.csv,CONFIRMED,,
+QR-01,Questions,Open-question rows across all three registers,this audit,,74,data/repo_audit/questions_union.csv,SELF_REF,,
+QR-02,Questions,Rows that name a discovery method,this audit,74,74,data/repo_audit/questions_union.csv,CONFIRMED,High,
+QR-03,Questions,Rows that name an official reference,this audit,74,74,data/repo_audit/questions_union.csv,CONFIRMED,High,

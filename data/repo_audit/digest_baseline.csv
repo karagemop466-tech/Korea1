@@ -1,0 +1,51 @@
+file,recorded_sha,actual_sha,recorded_rows,actual_rows,state
+corr_cross_game.csv,a025f9bbc70e,55bc3e90e502,2,2,DIGEST DIFFERS
+corr_market.csv,eac6e126e603,90da0802c376,8,8,DIGEST DIFFERS
+corr_same_game.csv,5aa2078be6b9,6dc3b80d76e8,3,3,DIGEST DIFFERS
+corr_team_totals.csv,db8f4ae808bf,db8f4ae808bf,10,10,MATCH
+data_audit.csv,9c9d769f65d2,5a85142b03f3,7,6,DIGEST DIFFERS
+fav_longshot.csv,0c815e8b4a07,0c815e8b4a07,13,13,MATCH
+feature_dict.csv,dd1507857529,0376e6000d1e,23,23,DIGEST DIFFERS
+games_model.csv,1a999cfef9c5,6098713bd917,7384,7384,DIGEST DIFFERS
+key_numbers.csv,8374e1f2c8d7,8374e1f2c8d7,15,15,MATCH
+model_config.json,b39426b6916e,77e66850a288,,6,DIGEST DIFFERS
+model_metrics.csv,fed95a3e23da,36eac2833ea7,216,260,DIGEST DIFFERS
+originated_lines.csv,ffdc838127e8,d5ddedcdbede,6073,6073,DIGEST DIFFERS
+originated_upcoming.csv,6cf3be28aea2,3cf4b8dc28c8,164,164,DIGEST DIFFERS
+prop_accuracy.csv,cdb04c10ed87,cdb04c10ed87,12,12,MATCH
+prop_calibration.csv,1228fc99a44b,1228fc99a44b,40,40,MATCH
+prop_combos.csv,3051ba50920a,3051ba50920a,7,7,MATCH
+prop_correlation_summary.csv,99e03b06de19,99e03b06de19,7,7,MATCH
+prop_correlations.csv,857b982ddf38,857b982ddf38,21,21,MATCH
+prop_definition_validation.csv,6c8227ec581c,6c8227ec581c,7,7,MATCH
+prop_gates.csv,919544fd4cc5,919544fd4cc5,7,7,MATCH
+prop_inputs.csv,0896229459a5,7d26477058d3,6,6,DIGEST DIFFERS
+prop_lines.csv,921a760085c8,921a760085c8,9730,9730,MATCH
+prop_player_games.csv,2503edad13c6,2503edad13c6,21033,21033,MATCH
+prop_report.json,c4da2fb3bf6a,c4da2fb3bf6a,,14,MATCH
+prop_skill.csv,1876b381cf74,1876b381cf74,4,4,MATCH
+reality_check.json,be4d22139e58,0cc1eb4cf5ec,,10,DIGEST DIFFERS
+settlement_crosscheck.csv,857ca45efb08,857ca45efb08,13472,13472,MATCH
+strategy_bets.csv,3ffeb6a1663b,9f471b4a0c1e,26149,27218,DIGEST DIFFERS
+strategy_gates.csv,0f309331ece0,ab713f041144,18,18,DIGEST DIFFERS
+strategy_overlap.csv,2738b1c835ce,aca0326e7e61,18,18,DIGEST DIFFERS
+strategy_seasons.csv,6258ea60aca0,0061b6b0dbe5,376,376,DIGEST DIFFERS
+strategy_stats.csv,50df04688e5c,29b696fe7235,18,18,DIGEST DIFFERS
+strategy_summary.csv,9fa09ea328b5,5c036cc1672e,18,18,DIGEST DIFFERS
+upcoming.csv,7cc32d1abaf9,c9aece76d86f,164,164,DIGEST DIFFERS
+verification_data.csv,d745a61b14ac,4e5c644716a8,10,6,DIGEST DIFFERS
+verification_report.csv,9873332e1161,9dcbeb9d2544,13,41,DIGEST DIFFERS
+vig_by_season.csv,49e2e398e461,18249433e097,21,21,DIGEST DIFFERS
+weather_fill.json,a462293582a1,a462293582a1,,3,MATCH
+audit.html,e9bbf00a4092,8b98417defe6,,,DIGEST DIFFERS
+correlations.html,7e3e02a8192b,830e4cef7299,,,DIGEST DIFFERS
+executive-summary.html,2987e81757d7,4390693e5885,,,DIGEST DIFFERS
+flagged.html,01fc8c4000be,7d94d340a11d,,,DIGEST DIFFERS
+index.html,96ef66c9f682,3d69ad9702a0,,,DIGEST DIFFERS
+lines.html,6d9875a93fc3,28ca273d415f,,,DIGEST DIFFERS
+methodology.html,f19843edb7f8,6a5ae70a8921,,,DIGEST DIFFERS
+props.html,82d422973fbe,78b829a0bb22,,,DIGEST DIFFERS
+requirements.html,ea09782e9c45,08877706a985,,,DIGEST DIFFERS
+sources.html,43adfefa07a8,a06a81c77b14,,,DIGEST DIFFERS
+strategies.html,5dd145763018,ea5774fe3fd4,,,DIGEST DIFFERS
+validation.html,b1233b601cae,7c2c482f3fbe,,,DIGEST DIFFERS

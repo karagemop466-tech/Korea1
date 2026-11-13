@@ -1,0 +1,9 @@
+{
+  "id": "OS-09",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "What happens if my FanDuel parlay is a push?",
+  "assertion_checked": "PASS",
+  "note": "Verbatim: 'Seahawks/Cowboys pushed and your parlay win is now recalculated as a 3-leg bet with revised (but likely lower) odds' and 'The same applies to voids and voided bets.' This is the operator house rule the site cites for push-aware parlay settlement.",
+  "url": "https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push"
+}
