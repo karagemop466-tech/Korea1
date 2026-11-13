@@ -51,3 +51,13 @@ def test_report_source_ledger_links_each_official_page(result: dict) -> None:
     assert len(source_rows) == 33
     assert all(re.search(r"\]\(https://www\.[^ )]+\)", line) for line in source_rows)
     assert "## Flagged for review and evidence boundaries" in report
+
+
+def test_report_flags_post_snapshot_official_discrepancy_without_rewriting_history(result: dict) -> None:
+    report = audit.render_report(result)
+    assert "DET Kerby Joseph" in report
+    assert "Full Participation in Practice" in report
+    assert "Did Not Participate In Practice" in report
+    assert "IR-2026-11-13-03" in report
+    assert "https://www.nfl.com/injuries/league/2026/reg10" in report
+    assert "No historical value was overwritten" in report
