@@ -128,6 +128,45 @@ def main() -> int:
     if f"{n_bad} of {len(digest)}" not in (REVIEW / "flagged.html").read_text():
         failures.append("flagged.html does not print the stale-digest count")
 
+    # R12: HTML structure + every class used is defined in assets/style.css
+    from html.parser import HTMLParser
+    css = (ROOT / "assets" / "style.css").read_text()
+    defined = set(re.findall(r"\.([a-zA-Z][\w-]*)", css))
+    VOID = {"meta", "link", "br", "img", "hr", "input", "source", "area", "base",
+            "col", "embed", "param", "track", "wbr"}
+
+    class _P(HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.stack, self.errs = [], []
+
+        def handle_starttag(self, tag, attrs):
+            if tag not in VOID:
+                self.stack.append(tag)
+
+        def handle_endtag(self, tag):
+            if tag in VOID:
+                return
+            if not self.stack:
+                self.errs.append(f"stray </{tag}>")
+            elif self.stack[-1] == tag:
+                self.stack.pop()
+            else:
+                self.errs.append(f"mismatch </{tag}> vs open <{self.stack[-1]}>")
+
+    for name in NAV:
+        raw = (REVIEW / name).read_text()
+        parser = _P()
+        parser.feed(raw)
+        if parser.errs or parser.stack:
+            failures.append(f"{name}: HTML structure {parser.errs[:3]} {parser.stack[:3]}")
+        classes = set()
+        for m in re.finditer(r'class="([^"]+)"', raw):
+            classes |= set(m.group(1).split())
+        undef = classes - defined
+        if undef:
+            failures.append(f"{name}: classes not defined in assets/style.css {sorted(undef)}")
+
     print()
     for f in failures:
         print("FAIL:", f)
