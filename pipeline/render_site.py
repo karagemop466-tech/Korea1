@@ -293,7 +293,9 @@ def build_index(d):
   <p>A reproducible research workspace for single bets, parlays and player-prop combinations.
   The current evidence does <strong>not</strong> support a validated betting strategy or a prize award.</p>
   <div class="actions"><a class="btn primary" href="executive-summary.html">Read the executive summary</a>
-  <a class="btn" href="strategies.html">Explore the leaderboard</a></div></div>
+  <a class="btn" href="strategies.html">Explore the leaderboard</a></div>
+  <a class="btn" href="suggestions-review.html">Review &amp; choose a path</a>
+  <a class="btn" href="referents.html">Check every citation</a></div>
   <div class="hero-status"><span class="status-dot"></span> Research only<br><strong>No validated edge</strong><small>Official quote coverage is incomplete.</small></div>
 </div>
 {notice()}
@@ -314,6 +316,7 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
 <a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
+<a class="minicard" href="referents.html"><strong>Referent register</strong><span>Every citation on the site, resolved against the live page — plus the score census re-checked row by row.</span></a>
 </div></section>
 <section><h2>Review before changing anything</h2><div class="cards smallcards">
 <a class="minicard" href="suggestions-review.html"><strong>Interactive path selector</strong><span>Compare Path A / B / C across 12 staged improvements and export a decision JSON before changing code.</span></a>
@@ -650,7 +653,16 @@ def build_flagged(d):
         ["F-18", "High · open", "Houston Texans: the automated depth-chart tracker returned 0 rows on both the 2026-11-12 and 2026-11-13 captures (the chart is not in the published table). The club page labels its chart 'Unofficial Depth Chart' and the page text retrieved on 2026-11-13 carries no ordered rows. Houston is left blank and unverified; no Houston role is inferred.", official("Texans club depth chart")],
         ["F-19", "Medium · open", "Club depth-chart labels differ: the Arizona page reads 'Arizona Cardinals Official Depth Chart', the Houston page reads 'Unofficial Depth Chart', and the Washington page carries no label. The published tables treat all club charts alike; the label is recorded here, not used to rank sources.", official("Arizona club depth chart")],
         ["F-20", "Low · repaired", "The official injury-evidence manifest recorded the news register with no SHA-256 (the hash loop only set a default). The loop now hashes every staged file; the value was checked with sha256sum.", official("NFL injuries")],
-        ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
+        ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],        ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
+        # ---- T40 referent audit (arena/84e42ecc-korea1, 2026-11-13) -----------------
+        ["F-21", "High · open", "Eleven external URLs printed as citations on the site do not resolve (404 / 403 / 302 that could not be followed). They are published with their exact status, the pages that print them and the fetch time on the <a href='referents.html'>referent register</a>. No URL has been silently removed or replaced.", official("NFL rules")],
+        ["F-22", "High · open", "Two NFL Football Operations policy URLs return '404 - FLAG ON THE PLAY': the 2017 injury-report policy and the player-protections page (each printed on three pages). They were already recorded as N-05 on 2026-11-12 and are still printed; they are not policy evidence and no replacement official page has been confirmed.", official("NFL Operations pregame 90m rule")],
+        ["F-23", "Medium · open", "The NFL.com path /teams/&lt;club&gt;/depth-chart returns 404, and '?tab=depth' on an NFL.com roster page has no effect on the served HTML. The working official source for 1st-4th string data is the club's own depth-chart page, verified live for Arizona on 2026-11-13. No replacement or promotion is inferred from chart order.", official("NFL depth-chart path (verified 404)")],
+        ["F-24", "Medium · open", "The Deflated Sharpe Ratio reference is printed on 13 pages and its pm-research URL returned a 302 that could not be followed to a readable page; its DOI handle did the same. The tandfonline reference and three doi.org handles returned 403 (automated access refused, not proof of absence). The citation text is unchanged; the links are unverified in this pass.", official("Bailey & López de Prado (2014), publisher")],
+        ["F-25", "Medium · open", "The FiveThirtyEight Elo methodology URL now redirects to abcnews.com/politics rather than the methodology document, so the K=20 and one-third-regression values quoted by this project are no longer readable from the printed URL. The annex record of a 2026-11-01 confirmation is superseded for the link, not for the values.", official("NFL scores")],
+        ["F-26", "Low · needs review", "Eight URLs resolve only through a redirect, including operations.nfl.com/the-rules/nfl-rulebook (to the 2026 rulebook) and /scores/2026/REG8 and REG9 (to week-8 and week-9). They work today; the printed paths are stale and should be updated to the final paths.", official("NFL week 8 scores")],
+        ["F-27", "Low · needs review", "Two GitHub links 404: the nfl-dbt play-by-play path uses /tree/main/ but that repository's default branch is master (the master paths used in data/sources_pbp.json do resolve), and data/processed/audit.json does not exist on main. Both need a corrected path; neither affects a published number.", official("GitHub Pages documentation")],
+        ["F-28", "Medium · open", "The landing page still presents WAS @ NYG with a 2026-11-12 kickoff as a forward-looking lineup-deficiency matchup, but the official Week 10 schedule shows it FINAL (Commanders 24, Giants 21, 12 November 2026). This is the availability page's scope (session arena/18c4acce-korea1) and was not repaired here.", official("NFL week 10 schedule")],
     ]
     from render_review import flagged_rows
     review = flagged_rows()

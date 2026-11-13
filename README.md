@@ -17,6 +17,7 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `strategies.html` — complete candidate library and competition rules
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
+- `referents.html` — every citation on the site, resolved against the live page it points at
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
 - `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
 - `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
@@ -71,6 +72,31 @@ suggestion and open-question registers live in `research/*.md` and are validated
 out-of-vocabulary status, or a source that is neither official/primary nor explicitly flagged. Run
 them with `make injuries review`; `make build` runs them automatically. None of these tables or
 registers replaces a published page — they are additive evidence and downloads.
+
+## Citation integrity (`referents.html`)
+
+Every published row was already checked for the *presence* of an official reference. Presence is not
+proof: a URL that resolves to a 404 looks like evidence and is not. `scripts/referent_probe.py` extracts
+every external URL printed on the site and resolves it on a GitHub-hosted runner (the build sandbox has
+no egress to NFL or club domains), recording HTTP status, redirect target, body hash, page title and —
+where a claim check is defined — whether the page actually contains the text the row attributes to it.
+`scripts/score_reconcile.py` re-opens the official game page for all 28 rows of the Week 8–9 2026 score
+census and re-reads each final score.
+
+The current run resolves 455 of 475 printed URLs, with 8 redirects, 11 unresolved and one claim check
+that the machine cannot perform (the FanDuel help centre is client-rendered; a manual read is recorded
+instead and the reason is published). Results, including the exact URLs that do not resolve, are on
+`referents.html` and cross-listed on `flagged.html` as F-21 to F-28.
+
+```bash
+# regenerate the page from the committed probe output
+make referent-render
+# re-probe (needs outbound network access; normally the scheduled workflow does this)
+make referents
+```
+
+Nothing here repairs a citation automatically. A URL is only changed after a human has confirmed the
+replacement page says the same thing.
 
 ## Evidence policy
 
