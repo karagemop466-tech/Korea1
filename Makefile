@@ -5,7 +5,7 @@ else
 PY := .venv/bin/python
 endif
 
-.PHONY: build data model backtest props injuries review site verify test annex serve clean all
+.PHONY: build data model backtest props injuries review site verify test annex audit audit-site serve clean all
 
 all: build
 
@@ -49,19 +49,32 @@ site: injuries review
 	$(PY) pipeline/render_readiness.py
 	$(PY) pipeline/render_annex.py
 
+# Independent repo audit (session arena/d58198fc-korea1). Re-derives every published
+# claim from the artifacts, re-verifies the official-source register and rebuilds the
+# review/ sub-site. Read-only with respect to every published page.
+audit: data
+	$(PY) pipeline/repo_audit.py
+	$(PY) pipeline/render_audit_site.py
+	$(PY) pipeline/verify_audit_site.py
+
+audit-site:
+	$(PY) pipeline/render_audit_site.py
+	$(PY) pipeline/verify_audit_site.py
+
 verify:
 	$(PY) pipeline/verify_site.py
+	$(PY) pipeline/verify_audit_site.py
 	$(PY) tests/check_sources.py
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_repo_audit.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py
 
 annex:
 	bash scripts/run_all.sh
 	$(PY) pipeline/render_annex.py
 
-build: data model backtest props injuries site verify
+build: data model backtest props injuries site audit-site verify
 	@echo "build complete — site in repository root/, verification passed"
 
 serve: build

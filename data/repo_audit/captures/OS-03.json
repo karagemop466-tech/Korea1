@@ -1,0 +1,10 @@
+{
+  "id": "OS-03",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "NFL 2026 Week 9 Scores and Highlights: Live Updates, Results & Recaps",
+  "assertion_checked": "PASS",
+  "note": "15 games, all Final; all 15 agree with the repo's Week 9 rows. Byes listed: PIT, TEN.",
+  "bytes": "",
+  "url": "https://www.nfl.com/scores/2026/REG9"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "OS-08",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "Depth Chart | Houston Texans - HoustonTexans.com",
+  "assertion_checked": "FAIL",
+  "note": "Page is headed 'Unofficial Depth Chart' and the chart itself is served as an image (static.clubs.nfl.com/.../texans/a5or0zowuo36y1txf4ly) with no player table. This confirms flagged.html RV-03: Houston cannot be parsed, so its 31 siblings are the only machine-readable charts. It also confirms the 'Unofficial' disclaimer that the site quotes.",
+  "url": "https://www.houstontexans.com/team/depth-chart"
+}

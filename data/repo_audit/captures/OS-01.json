@@ -1,0 +1,10 @@
+{
+  "id": "OS-01",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "Official Latest NFL Injury Report for Players - Week 10 of the 2026 Season | NFL.com",
+  "assertion_checked": "PASS",
+  "note": "Page heading 'Injuries - WEEK 10'. Washington table = 9 players, NY Giants table = 11 players; all 20 rows agree cell-by-cell with data/availability/injuries.csv (player, position, injury, practice status, game status). Example verbatim: 'Lucas Patrick | C | Concussion | Did Not Participate In Practice | Out'.",
+  "bytes": "",
+  "url": "https://www.nfl.com/injuries/"
+}

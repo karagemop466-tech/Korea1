@@ -1,0 +1,9 @@
+{
+  "id": "OS-07",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "Giants Team Depth Chart | New York Giants - Giants.com",
+  "assertion_checked": "PASS",
+  "note": "All 60 ordered slot cells agree with data/availability/depth_charts.csv for team NYG, including multi-rank rows (TE Isaiah Likely | Theo Johnson | Chris Manhertz | Thomas Fidone II).",
+  "url": "https://www.giants.com/team/depth-chart"
+}

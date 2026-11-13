@@ -82,6 +82,8 @@ NAV_GROUPS = [
         ("verification.html", "Reproducibility"),
         # Integration session arena/ea02c4fb-korea1: independent build served from lab/.
         ("lab/index.html", "Replication annex"),
+        # Session arena/d58198fc-korea1: independent repo audit sub-site.
+        ("review/index.html", "Repo audit · 2026-11-13"),
     ]),
 ]
 NAV = [item for _, items in NAV_GROUPS for item in items]

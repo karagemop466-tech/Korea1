@@ -50,6 +50,45 @@ coverage, game-day role confirmation and validated impact remain blocked.
 | Line board freshness | Stale | The open line board still starts at Week 8 (snapshot pinned 2026-11-02); the injury capture is for the current week. Refreshing is suggestion DB-04. | [NFL schedule](https://www.nfl.com/schedules/) |
 | Site | Repaired | Navigation grouped by category; stylesheet now defines the classes the pages use. Review findings RV-01 to RV-11 are on `flagged.html`. | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
+
+## Independent repo audit — 2026-11-13 (session `arena/d58198fc-korea1`)
+
+A second, self-contained audit re-derived every published number from the artifact that is supposed to
+support it, re-read every official page the site cites, and ranked all 22 proposals on one scale. It edits
+no published page; its output is the `review/` sub-site.
+
+| Result | Count | What it means |
+|---|---|---|
+| Claims re-derived | 44 | one row per published number, each with its evidence file |
+| Confirmed exactly | 34 | recomputed value = published value |
+| Flagged (drift) | 5 | published text and repository artifact disagree; both values shown |
+| Undecidable | 1 | left blank, never estimated |
+| Official pages re-read | 11 of 12 | page-fetch captures in `data/repo_audit/captures/` |
+
+**The five flags.** (1) The scheduled tracker parses **31 of 32** club depth charts while `injuries.html`,
+`questions.html` and `flagged.html` still say *2 of 32*. (2) The repository's own reproducibility baseline
+(`data/processed/audit_digests.csv`) fails on **34 of 50** recorded digests, including `strategy_bets.csv`
+(26,149 recorded rows, 27,218 now). (3) The `26,149` single-leg ticket figure recomputes to 26,188 today,
+with 27,218 graded rows in total. (4) NFL.com's Week 8 page carries 14 finals; the post-pin score register
+lists 13 for Week 8 (CAR 19 – GB 27 absent). (5) WAS 24 – NYG 21 went final on 2026-11-12, so the Week 10
+Thursday game is settled and any line frozen before it is closed.
+
+**What the official re-read confirmed.** All 28 Week 8–9 score rows, all 20 WAS/NYG injury-report rows,
+89 of 89 ordered club depth-chart cells, the T-90 inactive-list rule on `operations.nfl.com`, the operator
+parlay push rule, and both primary statistics references (White 2000; Bailey & López de Prado 2014) still
+say exactly what the site says they say. **Zero official pages were contradicted.**
+
+**One number that changes the plan.** A half-point starter effect needs about **2,479 team-games** — more
+than four full seasons — before a test could distinguish it from noise at 80% power, and a 0.20 leg
+correlation needs about 6.1 seasons of paired observations. That is the quantitative reason the injury
+signal is not priced and the leaderboard stays empty; it is not caution for its own sake.
+
+**Read it at** `review/index.html` (overview), `review/claims.html` (line-by-line claim check),
+`review/suggestions.html` (ranked decision matrix and a six-step recommended sequence),
+`review/injuries.html`, `review/questions.html`, `review/official-sources.html`,
+`review/flagged.html` (the five flags plus 34 stale digests, for your review after the site is live).
+Reproduce with `make audit`. Nothing flagged here blocks publication.
+
 ## What was delivered
 
 | Requirement | Delivery | Evidence status | Official / primary reference |

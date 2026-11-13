@@ -1,0 +1,10 @@
+{
+  "id": "OS-02",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "NFL 2026 Week 8 Scores and Highlights: Live Updates, Results & Recaps",
+  "assertion_checked": "PASS",
+  "note": "14 games, all marked Final. Verified line by line against the repo rows: 13 of 14 agree. The Week 8 page also carries CAR 19 - GB 27 (Panthers at Packers, Thu Oct 29); that game is absent from data/governance/post_pin_nfl_scores_2026_11_12.csv, whose Week 8 section holds 13.",
+  "bytes": "",
+  "url": "https://www.nfl.com/scores/2026/REG8"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "OS-06",
+  "captured_utc": "2026-11-13T23:20:00Z",
+  "http_status": 200,
+  "title": "Washington Commanders l Team Depth Chart | Washington Commanders - Commanders.com",
+  "assertion_checked": "PASS",
+  "note": "Offence/Defence/Special-teams tables present. All 29 ordered slot cells agree with data/availability/depth_charts.csv for team WAS, including blank cells preserved as blanks (e.g. LB Frankie Luvu | (blank) | Kain Medrano -> depth ranks 1 and 3).",
+  "bytes": "",
+  "url": "https://www.commanders.com/team/depth-chart"
+}

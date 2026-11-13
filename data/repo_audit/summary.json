@@ -1,0 +1,14 @@
+{
+  "generated_utc": "2026-11-13T23:02:26Z",
+  "claims_checked": 44,
+  "confirmed": 34,
+  "drift": 5,
+  "unverifiable": 1,
+  "self_ref": 4,
+  "high_severity": 4,
+  "suggestions_scored": 22,
+  "questions_unioned": 74,
+  "official_sources_listed": 12,
+  "official_sources_captured": 11,
+  "claims_sha256": "afd47e7aa345ef6e75f0b14f5e8d992d76002994b8c2c58ba9b07199cedbfc7a"
+}
