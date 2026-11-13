@@ -2110,3 +2110,7 @@ The remote PR #40 branch is still `d340ead` on the old `5fa44db` base; its two c
 ### 2026-11-13T23:46Z — refreshed PR #40 head verified; merge pending
 
 After confirming the remote branch was still `d340ead` and `main` was `9cca4bc`, the T24 branch was refreshed with `--force-with-lease` to `677b7a4e155c314c8c37500c3d1d82a2d378a844`. PR #40 is `MERGEABLE`. Both current-head Verify runs passed: push run [43529271477](https://github.com/karagemop466-tech/Korea1/actions/runs/43529271477) completed at 23:45:17Z, and pull-request run [43529279764](https://github.com/karagemop466-tech/Korea1/actions/runs/43529279764) completed at 23:45:49Z. The checks cover the rebased tree on `main` `9cca4bc`. No T24 merge or post-merge Pages result is claimed yet; merge only after the required checks remain green.
+
+### 2026-11-13T23:49Z — final PR #40 checks pass; ready to merge
+
+The final T24 head is `fe22f42540120d6e726bcce9b1a08ea26bd7f81f` on base `9cca4bc`. Verify passed for both the push event ([43529580412](https://github.com/karagemop466-tech/Korea1/actions/runs/43529580412), completed 23:48:05Z) and the pull-request event ([43529588092](https://github.com/karagemop466-tech/Korea1/actions/runs/43529588092), completed 23:48:59Z). GitHub reports PR #40 `MERGEABLE`. Local audit, T24 tests, full build and full test results are recorded in the preceding entry. The scoped PR is ready for merge; its Pages deployment is necessarily still pending.
