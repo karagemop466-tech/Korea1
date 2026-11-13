@@ -1623,3 +1623,20 @@ and `verification.md`.
 **No new defects were found.** No shared output (generator, test, page) required repair in this pass,
 so no cross-scope edit was made. The two freshness/depth-chart items above were already on the
 Flagged-for-Review page and are re-confirmed here against the live official sources.
+
+### V4 — PR, merge and deployment record — `arena/5aee87e3-korea1` (2026-11-13)
+
+| Step | Result |
+|---|---|
+| Pull request | [#37](https://github.com/karagemop466-tech/Korea1/pull/37), `arena/5aee87e3-korea1` → `main`, "VERIFY: final independent verification + integration record (2026-11-13)" |
+| Pre-merge CI | `verify` job **passed** (run 43523752016, job 132224279500, 2m19s) — pinned rebuild, tests, strict source/link checks |
+| Merge | **MERGED** without waiting for approval; fast-forward to merge commit `cf359ae209dbb3e3a4dc5618476c25158341fba3` |
+| GitHub Pages | build **built** for `cf359ae` (build 1367534822), error null; source still `main` / repository root |
+| Live site | `flagged.html` and `index.html` re-fetched with a cache-busting query after the merge — served the merged content; every irregularity row carries its source link |
+| Scope | Documentation + verification artifacts only (`COORDINATION.md`, `data/verification-2026-11-13/**`). No model, gate, odds, page or reward change. Other sessions' open PRs (#19, #24, #30) were not touched. |
+
+**Final state.** The combined site builds with no broken links and every table row sourced; GitHub
+Pages is live at <https://karagemop466-tech.github.io/Korea1/>. The research verdict is unchanged:
+**0 of 18 canonical strategies validated, no reward award**, with the open evidence gaps (authenticated
+executable quotes, verified prop prices, full official outcome census, all-club dated depth coverage)
+published on the Flagged-for-Review page. V1–V4 are complete for this session.
