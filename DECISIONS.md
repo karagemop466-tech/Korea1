@@ -20,3 +20,4 @@ unverified number verified.
 
 Those are owner decisions with a cost. This log records only what the agent could decide without
 spending money or making a claim the evidence does not support.
+| D-05 | 2026-11-13 | Agent session `arena/d58198fc-korea1` | Publish the independent repo audit as an **additive** sub-site under `review/` and change **no published number, table or verdict** on the main site. The five drift findings (depth-chart coverage, stale digest baseline, 26,149 tickets, missing Week 8 score, settled Week 10 Thursday game) are published with both values on `review/flagged.html`. | `data/repo_audit/claims.csv` (44 claims: 34 confirmed, 5 drift, 1 undecidable), 11 official captures, `verify_site.py` + `verify_audit_site.py` at 0 failures | Reverse only after the owner approves a rebuild: `python pipeline/audit.py --rebuild` re-freezes `audit_digests.csv` and the narrative figures are refreshed with it |
