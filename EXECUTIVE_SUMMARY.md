@@ -96,6 +96,37 @@ code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 | Questions and answers (R20) | 40 open questions plus 12 readiness questions, each with a closure test | Implemented; blocked rows blank |
 | Injury / lineup deficiency (R21) | Official report captures plus 2 of 32 club depth charts | PARTIAL — order only, no confirmed roles | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
+## Addendum - 2026-11-13
+
+A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read the official pages.
+
+| What was added | Size | What it does |
+|---|---|---|
+| `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
+| `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
+| `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
+| `repo-review.html` | 457 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+
+**Official-source re-verification performed on 2026-11-13.**
+
+| Check | Result |
+|---|---|
+| Pinned upstream commit | `a270278f3ac4e937295fe6a27814b3c4a2b62645` exists in `nflverse/nfldata`, titled "Automated data update" |
+| Injury capture re-read against nfl.com/injuries/ | **54 of 98 rows identical** on position, injury, practice status and game status - no transcription error found. The remaining rows are later page updates, not bad copies |
+| Availability completeness | **IRREGULARITY**: the live page shows 21 Out designations in the 8 clubs re-read, the whole 28-club capture shows 8 |
+| Post-pin score register re-read against nfl.com/scores/2026/week-8 | **8 of 8 sampled games identical**; the one game that settled before the pin is correctly absent |
+| NFL Operations 90-minute rule | Verified: the Game Day Administration Report, containing each club's inactive list and C2P helmet designations, is exchanged 90 minutes before kickoff, and the roof/wall designation is fixed at the same mark |
+
+Two new irregularities were recorded and left for a decision: **IR-132E-01** (the scheduled
+availability capture runs before the Friday game designations post, so the deficiency table
+understates current unavailability) and **IR-132E-02** (`pipeline/fetch_injuries.py` writes
+`"sha256": null` for the news register, so one committed file changes on every build for no data
+reason). Neither was repaired here; repair is a decision for the owner, and the files belong to
+earlier sessions.
+
+**Decision unchanged:** keep the research engine, fund nothing, reward nothing. The merged
+registers make the decision easier to review, not different.
+
 ## Material audit corrections
 
 1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.

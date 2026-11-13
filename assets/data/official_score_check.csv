@@ -1,0 +1,10 @@
+game_id,matchup,committed_value,live_value,classification
+2026_08_ARI_DAL,ARI @ DAL,ARI 33 – 30 DAL (Final),ARI 33 – 30 DAL (Final),EXACT MATCH
+2026_08_ATL_TB,ATL @ TB,ATL 0 – 16 TB (Final),ATL 0 – 16 TB (Final),EXACT MATCH
+2026_08_BAL_BUF,BAL @ BUF,BAL 10 – 36 BUF (Final),BAL 10 – 36 BUF (Final),EXACT MATCH
+2026_08_CLE_PIT,CLE @ PIT,CLE 6 – 27 PIT (Final),CLE 6 – 27 PIT (Final),EXACT MATCH
+2026_08_IND_JAX,IND @ JAX,IND 7 – 42 JAX (Final),IND 7 – 42 JAX (Final),EXACT MATCH
+2026_08_LV_NYJ,LV @ NYJ,LV 38 – 33 NYJ (Final),LV 38 – 33 NYJ (Final),EXACT MATCH
+2026_08_MIN_DET,MIN @ DET,MIN 15 – 19 DET (Final),MIN 15 – 19 DET (Final),EXACT MATCH
+2026_08_TEN_CIN,TEN @ CIN,TEN 36 – 43 CIN (Final),TEN 36 – 43 CIN (Final),EXACT MATCH
+2026_08_CAR_GB,CAR @ GB,(not in the register),CAR 19 – 27 GB (Final),CORRECTLY ABSENT — settled before the 2026-11-02 pin

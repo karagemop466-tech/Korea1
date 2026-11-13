@@ -1,6 +1,8 @@
 page,data_rows,tables,rows_without_official_source,unverified_numeric_cells,broken_links,external_assets,V1_official_reference_every_row,V1b_unverified_metrics_blank,V2_internal_links,V3_no_missing_tokens,V4_all_tables_captioned,V5_snapshot_in_footer,V6_local_assets_only,passed
+answers.html,98,2,0,,,,True,True,True,True,True,True,True,True
 audit.html,84,7,0,,,,True,True,True,True,True,True,True,True
 availability.html,544,5,0,,,,True,True,True,True,True,True,True,True
+competition.html,52,6,0,,,,True,True,True,True,True,True,True,True
 correlations.html,12,2,0,,,,True,True,True,True,True,True,True,True
 decision-board.html,17,1,0,,,,True,True,True,True,True,True,True,True
 decision-readiness.html,50,3,0,,,,True,True,True,True,True,True,True,True
@@ -14,11 +16,13 @@ lines.html,190,3,0,,,,True,True,True,True,True,True,True,True
 lineup-deficiencies.html,64,6,0,,,,True,True,True,True,True,True,True,True
 lineups.html,7,1,0,,,,True,True,True,True,True,True,True,True
 live-verification.html,224,9,0,,,,True,True,True,True,True,True,True,True
-methodology.html,12,2,0,,,,True,True,True,True,True,True,True,True
+methodology.html,18,3,0,,,,True,True,True,True,True,True,True,True
 open-questions.html,20,1,0,,,,True,True,True,True,True,True,True,True
 props.html,17,3,0,,,,True,True,True,True,True,True,True,True
 questions.html,48,2,0,,,,True,True,True,True,True,True,True,True
+repo-review.html,560,5,0,,,,True,True,True,True,True,True,True,True
 requirements.html,26,1,0,,,,True,True,True,True,True,True,True,True
+review-queue.html,90,2,0,,,,True,True,True,True,True,True,True,True
 review.html,167,5,0,,,,True,True,True,True,True,True,True,True
 sources.html,38,2,0,,,,True,True,True,True,True,True,True,True
 strategies.html,23,2,0,,,,True,True,True,True,True,True,True,True

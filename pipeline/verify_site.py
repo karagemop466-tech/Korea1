@@ -64,7 +64,9 @@ def main():
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
               "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
-              "forward.html","live-verification.html","review.html"}
+              "forward.html","live-verification.html","review.html",
+              # X1-X4 (session arena/132e7ca2-korea1).
+              "review-queue.html","answers.html","competition.html","repo-review.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

@@ -1,0 +1,10 @@
+game_id,matchup,live_nfl_com_final,expected_in_register
+2026_08_ARI_DAL,ARI @ DAL,ARI 33 – 30 DAL (Final),present
+2026_08_ATL_TB,ATL @ TB,ATL 0 – 16 TB (Final),present
+2026_08_BAL_BUF,BAL @ BUF,BAL 10 – 36 BUF (Final),present
+2026_08_CLE_PIT,CLE @ PIT,CLE 6 – 27 PIT (Final),present
+2026_08_IND_JAX,IND @ JAX,IND 7 – 42 JAX (Final),present
+2026_08_LV_NYJ,LV @ NYJ,LV 38 – 33 NYJ (Final),present
+2026_08_MIN_DET,MIN @ DET,MIN 15 – 19 DET (Final),present
+2026_08_TEN_CIN,TEN @ CIN,TEN 36 – 43 CIN (Final),present
+2026_08_CAR_GB,CAR @ GB,CAR 19 – 27 GB (Final),absent-settled-before-pin

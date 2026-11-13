@@ -1,0 +1,99 @@
+team,player,position,injury,practice_status,game_status
+WAS,John Bates,TE,,Full Participation in Practice,
+WAS,Treylon Burks,WR,,Did Not Participate In Practice,
+WAS,Jayden Daniels,QB,,Full Participation in Practice,
+WAS,Matt Gulbin,C,,Full Participation in Practice,
+WAS,Chig Okonkwo,TE,,Full Participation in Practice,
+WAS,Lucas Patrick,C,Concussion,Did Not Participate In Practice,Out
+WAS,Amik Robertson,CB,,Limited Participation in Practice,
+WAS,Shy Tuttle,DT,,Full Participation in Practice,
+WAS,Colson Yankoff,TE,Knee,Did Not Participate In Practice,Out
+NYG,Abdul Carter,LB,,Full Participation in Practice,
+NYG,Jermaine Eluemunor,T,,Full Participation in Practice,
+NYG,Malik Harrison,LB,Groin,Limited Participation in Practice,Questionable
+NYG,Colton Hood,CB,,Full Participation in Practice,
+NYG,Theo Johnson,TE,,Full Participation in Practice,
+NYG,Charlie Jones,WR,,Full Participation in Practice,
+NYG,J.J. McCarthy,QB,,Full Participation in Practice,
+NYG,Darnell Mooney,WR,,Full Participation in Practice,
+NYG,Malik Nabers,WR,,Full Participation in Practice,
+NYG,Cam Skattebo,RB,,Full Participation in Practice,
+NYG,Andrew Thomas,T,,Full Participation in Practice,
+NE,Ben Brown,C,Knee,Did Not Participate In Practice,Out
+NE,A.J. Brown,WR,"Ankle, Knee",Limited Participation in Practice,Questionable
+NE,Kevin Byard,S,Chest,Full Participation in Practice,Questionable
+NE,Carlton Davis III,CB,Knee,Did Not Participate In Practice,Out
+NE,Reggie Gilliam,FB,Knee,Limited Participation in Practice,Questionable
+NE,TreVeyon Henderson,RB,Illness,Did Not Participate In Practice,Out
+NE,Hunter Henry,TE,,Limited Participation in Practice,
+NE,Cameron Latu,TE,Back,Limited Participation in Practice,Questionable
+NE,Drake Maye,QB,,Full Participation in Practice,
+NE,Morgan Moses,T,,Full Participation in Practice,
+NE,Walter Rouse,T,Concussion,Limited Participation in Practice,Questionable
+NE,Brenden Schooler,S,Hamstring,Limited Participation in Practice,Questionable
+NE,Rhamondre Stevenson,RB,Knee,Limited Participation in Practice,Questionable
+NE,Greg Van Roten,G,Hamstring,Full Participation in Practice,Questionable
+NE,Charles Woods,CB,Hamstring,Full Participation in Practice,Questionable
+DET,Brian Branch,S,,Full Participation in Practice,
+DET,Jared Goff,QB,,Full Participation in Practice,
+DET,Kerby Joseph,S,Knee,Did Not Participate In Practice,Out
+DET,Cade Mays,C,Ankle,Did Not Participate In Practice,Out
+DET,D.J. Reed,CB,Hip,Did Not Participate In Practice,Out
+DET,Jacob Saylors,RB,,Full Participation in Practice,
+DET,Amon-Ra St. Brown,WR,Rib,Limited Participation in Practice,Questionable
+DET,Sione Vaki,RB,Ankle,Limited Participation in Practice,Questionable
+DET,DJ Wonnum,DE,,Full Participation in Practice,
+KC,Jeffrey Bassa,LB,,Full Participation in Practice,
+KC,Mansoor Delane,CB,Shoulder,Full Participation in Practice,Questionable
+KC,Justin Fields,QB,,Full Participation in Practice,
+KC,Jaden Hicks,S,,Full Participation in Practice,
+KC,Travis Kelce,TE,,Full Participation in Practice,
+KC,Patrick Mahomes,QB,,Full Participation in Practice,
+KC,Jaylon Moore,T,Ankle,Did Not Participate In Practice,Out
+KC,Omarr Norman-Lott,DT,Knee,Limited Participation in Practice,Out
+KC,Jaydn Ott,RB,Hamstring,Limited Participation in Practice,Questionable
+KC,Rashee Rice,WR,,Full Participation in Practice,
+KC,Kenneth Walker III,RB,Groin,Did Not Participate In Practice,Questionable
+KC,Peter Woods,DT,Neck,Did Not Participate In Practice,Out
+KC,Xavier Worthy,WR,,Full Participation in Practice,
+ATL,Zachariah Branch,WR,Hamstring,Did Not Participate In Practice,Out
+ATL,Kendal Daniels,LB,,Full Participation in Practice,
+ATL,Divine Deablo,LB,Forearm,Did Not Participate In Practice,Doubtful
+ATL,Gervon Dexter Sr.,DT,Illness,Limited Participation in Practice,Questionable
+ATL,Jake Matthews,T,,Limited Participation in Practice,
+ATL,Liam McCullough,LS,,Did Not Participate In Practice,
+ATL,James Pearce Jr.,DE,Back,Limited Participation in Practice,Questionable
+ATL,Za'Darius Smith,DE,,Full Participation in Practice,
+ATL,Jawaan Taylor,T,,Limited Participation in Practice,
+ATL,Cameron Thomas,DE,,Full Participation in Practice,
+ATL,Josh Woods,LB,Ankle,Full Participation in Practice,Questionable
+MIN,Jordan Addison,WR,Thumb,Limited Participation in Practice,Questionable
+MIN,Blake Cashman,LB,Concussion,Limited Participation in Practice,Out
+MIN,Christian Darrisaw,T,,Did Not Participate In Practice,
+MIN,T.J. Hockenson,TE,"Wrist, Chest",Did Not Participate In Practice,Out
+MIN,Tyrion Ingram-Dawkins,DT,Ankle,Did Not Participate In Practice,Out
+MIN,Theo Jackson,S,,Full Participation in Practice,
+MIN,Jauan Jennings,WR,Calf,Did Not Participate In Practice,Out
+MIN,Josh Metellus,S,Shoulder,Limited Participation in Practice,Questionable
+MIN,Kyler Murray,QB,Hamstring,Did Not Participate In Practice,Out
+MIN,Harrison Smith,S,,Limited Participation in Practice,
+MIN,Kyle Van Noy,LB,Calf,Limited Participation in Practice,Questionable
+MIN,Jay Ward,S,,Full Participation in Practice,
+MIN,Carson Wentz,QB,,Full Participation in Practice,
+GB,Aaron Banks,G,,Limited Participation in Practice,
+GB,Chris Brooks,RB,Ankle,Limited Participation in Practice,Questionable
+GB,Javon Bullard,S,"Ankle, Knee",Limited Participation in Practice,Questionable
+GB,Zaire Franklin,LB,Shin,Did Not Participate In Practice,Doubtful
+GB,Travis Glover,G,Knee,Limited Participation in Practice,Questionable
+GB,Ty'Ron Hopper,LB,,Full Participation in Practice,
+GB,Josh Jacobs,RB,Finger,Did Not Participate In Practice,Out
+GB,Xavier McKinney,S,Foot,Limited Participation in Practice,Questionable
+GB,Bo Melton,WR,,Full Participation in Practice,
+GB,Skyy Moore,WR,Ankle,Limited Participation in Practice,Questionable
+GB,Micah Parsons,LB,"Knee, Illness",Limited Participation in Practice,Out
+GB,Sean Rhyan,C,Ankle,Did Not Participate In Practice,Out
+GB,Trey Smack,K,,Full Participation in Practice,
+GB,Lukas Van Ness,LB,Back,Limited Participation in Practice,Questionable
+GB,Josh Whyle,TE,Concussion,Did Not Participate In Practice,Out
+GB,Savion Williams,WR,,Limited Participation in Practice,
+GB,Kevin Zeitler,G,"Ankle, Triceps",Did Not Participate In Practice,Questionable

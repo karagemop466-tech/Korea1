@@ -1,0 +1,8 @@
+rule_id,rule,text
+R1,Entry,"A strategy enters by having its rule, market, data version, parameters and minimum-bet threshold frozen in the library before it is evaluated. A rule changed after evaluation is a new strategy with a new id."
+R2,Divisions,"S = single bets (spread, total, moneyline). P = parlays, built only from simultaneous-kickoff slates. X = player-prop combinations, which currently hold no verified price history."
+R3,Pre-registration,Lines and picks are hashed into an append-only ledger before kickoff. Grading is against official NFL finals only. A result that was not frozen before kickoff cannot earn a tier.
+R4,Ranking,"Rank on gates passed first, then on sample size. Profit alone never decides a rank: a leaderboard sorted by raw return ranks variance, not skill."
+R5,Reward,"Reward follows the ladder below. No tier above T3 can be awarded while gate G1 fails, because no authenticated executable price exists to measure the return against."
+R6,Anti-gaming,"Selective reporting, fabricated quotes, undisclosed rule changes, or deleting losing trials is disqualification (Tier DQ), permanently, for that strategy id."
+R7,Publication,"Every candidate is published, including failures and including this page's blank cells. A blank cell means the evidence is missing; it is never a zero."

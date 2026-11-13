@@ -55,6 +55,12 @@ site: injuries review reviewall
 	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/lineup_deficiencies.py
 	$(PY) pipeline/decision_readiness.py
+	# X1-X4 (session arena/132e7ca2-korea1), additive: repository review, merged
+	# suggestion / question registers, competition page. Every existing recipe step
+	# is unchanged and still runs first.
+	$(PY) pipeline/session_review.py
+	$(PY) pipeline/session_decide.py
+	$(PY) pipeline/session_competition.py
 	$(PY) pipeline/render_site.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	$(PY) pipeline/render_review.py
