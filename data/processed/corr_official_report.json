@@ -1,0 +1,11 @@
+{
+  "rows": 8,
+  "n_games": 30,
+  "min_n": 30,
+  "rows_meeting_min_n": 8,
+  "min_n_threshold": 10,
+  "intervals_excluding_zero": 3,
+  "policy": "every published correlation is computed only from official NFL.com results, and publishes n, its interval, its evidence class and its official source",
+  "policy_failures": 0,
+  "historical_estimates_note": "The project's historical correlation tables are computed from a community mirror and remain research estimates; they are not published here."
+}

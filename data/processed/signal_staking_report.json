@@ -1,0 +1,30 @@
+{
+  "strategies": 18,
+  "signal_gates": [
+    "G2_leakage",
+    "G3_power",
+    "G8_redundancy"
+  ],
+  "staking_gates": [
+    "G4_significance",
+    "G5_luck",
+    "G6_economic",
+    "G7_stability"
+  ],
+  "admissibility_gate": "G1_data",
+  "masking_rule": "A strategy whose staking gates pass while a signal gate fails is flagged as a lucky staking run: it cannot earn a reward tier and it cannot outrank a strategy with a sound signal.",
+  "masked_strategies": 0,
+  "reward_eligible_strategies": 0,
+  "signal_sound": 0,
+  "signal_weak": 0,
+  "staking_works": 0,
+  "signal_price_independent": true,
+  "signal_metrics": [
+    "hit rate",
+    "market implied win rate on the same selections",
+    "lift over that baseline",
+    "Brier score of the model probability",
+    "mean edge at pick time"
+  ],
+  "note": "The signal assessment never uses the price the bet was placed at; the staking assessment is the only part that does."
+}

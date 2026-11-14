@@ -326,6 +326,20 @@ def walk_forward(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
         # empirical_probs returns >, ==, < in that order: home win, tie, away win.
         pred["p_home_ml"], pred["p_tie"], pred["p_away_ml"] = ml.T
 
+        # T50 (arena/9eba7acb-korea1): the predictive-error samples used for each
+        # season are published so that the ordered origination pipeline
+        # (pipeline/origination.py) prices its moneyline from exactly the same
+        # error distribution as this model, instead of an approximation of it.
+        # This is additive: no published number above changes. The samples are
+        # returned to main() and written once, so repeated runs cannot
+        # duplicate rows.
+        residual_rows = []
+        for S, arr in oof_by_season.items():
+            residual_rows.extend((int(S), "margin", float(v)) for v in arr)
+        for S, arr in oof_t_by_season.items():
+            residual_rows.extend((int(S), "total", float(v)) for v in arr)
+        config["_residual_rows"] = residual_rows
+
     pred["fair_spread"] = pred["pred_margin_ensemble"]
     pred["fair_total"] = pred["pred_total_ensemble"]
     pred["originated_home_ml"] = [fair_american(p) for p in pred["p_home_ml"] / (pred["p_home_ml"] + pred["p_away_ml"])]
@@ -408,6 +422,12 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     rt = yt - ((predict_ridge(b_t, mu_t, sd_t, Xt) + b2t[0] + b2t[1] * df["exp_total"].to_numpy(float)) / 2.0)
     oof_m, oof_t = prior_oof_residuals(df, "margin"), prior_oof_residuals(df, "total")
     sm, st = float(np.std(oof_m, ddof=1)), float(np.std(oof_t, ddof=1))
+    # T50 (arena/9eba7acb-korea1): publish the full-history error sample used to
+    # price the scheduled games, so the ordered origination pipeline prices the
+    # same scheduled games from the same error distribution.
+    config["_future_residuals"] = (
+        [(int(df.season.max()) + 1, "margin", float(v)) for v in oof_m]
+        + [(int(df.season.max()) + 1, "total", float(v)) for v in oof_t])
 
     future = future.copy()
     future["fair_spread"] = ens_m
@@ -440,6 +460,15 @@ def main() -> None:
     pred.to_csv(PROC / "originated_lines.csv", index=False)
     fut_line.to_csv(PROC / "originated_upcoming.csv", index=False)
     metrics.to_csv(PROC / "model_metrics.csv", index=False)
+    # T50: collect the published error samples first — from every season's own
+    # prior-only sample plus the full-history sample used for the scheduled
+    # games — and pop them out of the config before it is written, so the
+    # internal keys never reach model_config.json and repeated runs cannot
+    # duplicate rows.
+    residual_rows = list(config.pop("_residual_rows", []))
+    residual_rows.extend(tuple(r) for r in config.pop("_future_residuals", []))
+    pd.DataFrame(residual_rows, columns=["season", "target", "residual"]).to_csv(
+        PROC / "model_residuals.csv", index=False)
     write_json(PROC / "model_config.json", config)
 
     print(f"originated_lines: {pred.shape}, seasons {pred.season.min()}–{pred.season.max()}")

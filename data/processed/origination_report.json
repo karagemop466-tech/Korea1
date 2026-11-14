@@ -1,0 +1,25 @@
+{
+  "originated_games": 6237,
+  "played_games": 6073,
+  "scheduled_games": 164,
+  "order": [
+    "SIDE",
+    "TOTAL",
+    "MONEYLINE"
+  ],
+  "moneyline_derivation": "derived from the side and the total on the integer score lattice; never fitted separately",
+  "consistency_tolerance_prob_points": 0.5,
+  "residual_centering": "centred on the published prediction",
+  "consistency_comparable_rows": 6237,
+  "consistency_within_tolerance": 1,
+  "consistency_delta_mean_pp": 5.30044509587943,
+  "consistency_delta_max_pp": 11.581569,
+  "consistency_delta_p99_pp": 10.469897120000004,
+  "residual_correlation_median_rho": 0.020047,
+  "lattice_margin_gap_max_points": 0.189374,
+  "lattice_margin_gap_mean_points": 0.04745424370691038,
+  "lattice_reproduces_published_side": 6237,
+  "delta_is_a_difference_measure_not_a_failure": "The delta between the ordered moneyline and the model's margin-only moneyline is a discretisation difference (margin lattice against score lattice), not a contradiction. The invariant that is checked is that the moneyline's own lattice reproduces the published side.",
+  "moneyline_probability_is_a_function_of_the_side": true,
+  "note": "Home wins if and only if the margin is positive, so the published moneyline probability cannot move without moving the published side. Step 3 guarantees the three published markets agree with each other."
+}

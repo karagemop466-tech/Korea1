@@ -1,0 +1,87 @@
+{
+  "states": [
+    "PAPER",
+    "LIVE",
+    "SUSPENDED"
+  ],
+  "entry_rule": "PAPER -> LIVE requires every entry gate to pass, including G1 (authenticated, timestamped, executable quotes), and a forward test on untouched games.",
+  "demotion_rule": "LIVE -> PAPER when a demotion trigger fires. A demoted strategy returns to PAPER only and must re-pass the entry gates and a fresh forward test to become LIVE again.",
+  "suspension_rule": "LIVE -> SUSPENDED when an integrity trigger fires. Suspension is permanent for that strategy id.",
+  "grace": "performance triggers need 2 consecutive failing evaluation windows of at least 50 bets; provenance, redundancy and integrity triggers fire immediately",
+  "min_window_bets": 50,
+  "grace_windows": 2,
+  "max_drawdown_units": 20.0,
+  "max_peer_overlap": 0.9,
+  "triggers": [
+    {
+      "code": "D1_signal_decay",
+      "name": "Signal decay",
+      "statistic": "the trailing signal lift (hit rate minus the market's implied probability on the same selections) is negative",
+      "rule": "two consecutive evaluation windows of at least 50 bets",
+      "kind": "performance"
+    },
+    {
+      "code": "D2_economic_failure",
+      "name": "Economic failure",
+      "statistic": "the trailing return on investment at the recorded price is negative",
+      "rule": "two consecutive evaluation windows of at least 50 bets",
+      "kind": "performance"
+    },
+    {
+      "code": "D3_stress_failure",
+      "name": "Adverse-price stress failure",
+      "statistic": "the trailing return under a five-cent adverse move per original leg is negative",
+      "rule": "two consecutive evaluation windows of at least 50 bets",
+      "kind": "performance"
+    },
+    {
+      "code": "D4_instability",
+      "name": "Instability",
+      "statistic": "the share of profitable seasons falls below the stability gate, or the most recent seasons lose money while the whole sample wins",
+      "rule": "evaluated on the whole sample and on the most recent seasons",
+      "kind": "performance"
+    },
+    {
+      "code": "D5_redundancy",
+      "name": "Redundancy",
+      "statistic": "the strategy's bets overlap another live strategy's bets by at least the redundancy threshold",
+      "rule": "maximum pairwise overlap of the bet selection keys",
+      "kind": "immediate"
+    },
+    {
+      "code": "D6_provenance_loss",
+      "name": "Quote provenance loss",
+      "statistic": "the share of bets with a verified, timestamped quote falls below one",
+      "rule": "quote coverage and quote-timestamp coverage on the live ledger",
+      "kind": "immediate"
+    },
+    {
+      "code": "D7_drawdown",
+      "name": "Drawdown",
+      "statistic": "the peak-to-trough drawdown of the cumulative profit exceeds the limit",
+      "rule": "cumulative unit profit over the live ledger",
+      "kind": "performance"
+    },
+    {
+      "code": "D8_integrity",
+      "name": "Integrity",
+      "statistic": "a leakage check fails, or the frozen rule changed without a new strategy id",
+      "rule": "the leakage test suite and the frozen rule registry",
+      "kind": "immediate"
+    }
+  ],
+  "live_strategies": 0,
+  "demotions_recorded": 0,
+  "suspensions_recorded": 0,
+  "dry_run_note": "No strategy is live, so the live register is empty. The register reports, for every candidate, which triggers would fire if it were live.",
+  "triggers_that_would_fire_counts": {
+    "D1_signal_decay": 3,
+    "D2_economic_failure": 11,
+    "D3_stress_failure": 11,
+    "D4_instability": 16,
+    "D5_redundancy": 0,
+    "D6_provenance_loss": 18,
+    "D7_drawdown": 16,
+    "D8_integrity": 0
+  }
+}

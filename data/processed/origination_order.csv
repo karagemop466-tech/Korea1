@@ -1,0 +1,4 @@
+step,market,model_input,model_output,market_line,difference_unit,consistency_check
+1,SIDE,"margin model (ensemble of ridge, match-up and Elo)","fair home margin, expressed as the home line",market spread line,points (model line minus market line),difference column is filled on every row; no imputation
+2,TOTAL,total model (ensemble of ridge and match-up),fair game total,market total line,points (model total minus market total),difference column is filled on every row; no imputation
+3,MONEYLINE,"steps 1 and 2 jointly, on the integer score lattice","P(home win), P(tie), P(away win) and the two-way fair price",market moneyline price (de-vigged),implied probability points (model minus market),consistency delta against the model's margin-only moneyline is published
