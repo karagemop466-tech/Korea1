@@ -304,6 +304,63 @@ def build_verification_log(inj: dict, score: dict) -> pd.DataFrame:
 
 
 IRREGULARITIES = [
+    # ---- T50-T57 (session arena/b13485ed-korea1) ---------------------------
+    dict(id="IR-B13485-02", severity="High · open", area="Injury capture",
+         finding="The league-wide official injury capture of 2026-11-14T17:10:05Z contains four rows that "
+                 "contradict themselves: JAX / BJ Green II, CIN / Jalen Davis, CIN / Andrei Iosivas and "
+                 "CIN / Brian Parker II each carry a game status of Out or Doubtful together with a practice "
+                 "status of Full Participation in Practice. A player who has been designated unavailable "
+                 "cannot also have taken part in a full practice session in the same report.",
+         consequence="Four published rows on availability.html and lineup-deficiencies.html carry a game "
+                     "status and a practice status that cannot both be true, so the deficiency severity "
+                     "computed from them is not reliable for those four players. All four are published in "
+                     "data/live/internal_consistency.csv rather than being silently corrected.",
+         next_action="Re-read the four rows against the official NFL.com injury report for the week they "
+                     "were captured, and record whether the contradiction is in the capture or in the "
+                     "parser. Do not edit the captured values by hand.",
+         owner_file="data/availability/injuries.csv, pipeline/fetch_availability.py",
+         ref_label="NFL injuries", ref_url="https://www.nfl.com/injuries/"),
+    dict(id="IR-B13485-03", severity="Medium · resolved in this pass", area="Test expectations",
+         finding="Two assertions in tests/test_live_verify.py were pinned to the 8-club injury sample of "
+                 "2026-11-12 (326 published rows, exactly one internal contradiction, DET / Kerby "
+                 "Joseph). The scheduled league-wide capture of 2026-11-14 replaced the published table "
+                 "with 345 rows over 28 clubs and a different set of contradictions, so both assertions "
+                 "failed on the untouched tree at the branch point 81836b6.",
+         consequence="The test suite did not pass on main before this session began, which would have "
+                     "blocked any pull request from passing CI.",
+         next_action="Done in this pass: both tests now read the fixture from the published table and "
+                     "assert the grader's logic - including a deliberately injected contradiction - "
+                     "rather than the numbers of a superseded snapshot. The underlying data findings "
+                     "are recorded as IR-B13485-02.",
+         owner_file="tests/test_live_verify.py",
+         ref_label="NFL injuries", ref_url="https://www.nfl.com/injuries/"),
+    dict(id="IR-B13485-04", severity="Medium · open", area="Price provenance",
+         finding="There is no official source for a betting line, an opening number, a closing number, a "
+                 "price or a bet limit. NFL.com publishes scores, schedules, injuries and rules; it "
+                 "publishes no market price. The price-snapshot store therefore holds two classes of "
+                 "number: the model line this project originates itself (class B) and a community mirror "
+                 "of the market's line (class C). The opening-line archive in the pinned upstream covers "
+                 "the spread and the total for the 2021 season only and carries no price at all, so the "
+                 "opening number is blank for every other game and for the moneyline everywhere.",
+         consequence="Every return computed in this repository is class D and is published as labelled "
+                     "research data with its n, never as a finding. Gate G1 fails closed for all 18 "
+                     "strategies and no strategy can reach a live tier.",
+         next_action="Capture an authenticated pre-kickoff quote with its timestamp, its operator and its "
+                     "limits, prospectively, as proposal S03 / MS-003 on the review queue describes. No "
+                     "historical price can be made official after the fact.",
+         owner_file="pipeline/price_snapshots.py, data/forward/price_snapshot_sources.csv",
+         ref_label="NFL scores", ref_url="https://www.nfl.com/scores/"),
+    dict(id="IR-B13485-05", severity="Medium · open", area="Official results coverage",
+         finding="The verified results feed holds 30 officially verified games. It is the only official "
+                 "number in the chain between a model line and a settlement, and it grows one game at a "
+                 "time by reading the official game page and recording the page URL and the verification "
+                 "time.",
+         consequence="The official-only correlation register is built on those 30 games, so every value "
+                     "it publishes is weak and is labelled weak with n attached.",
+         next_action="Extend the feed by continuing the per-game capture; the register, the return and "
+                     "the error tables all recompute from it.",
+         owner_file="pipeline/verified_results.py, data/forward/verified_results.csv",
+         ref_label="NFL scores", ref_url="https://www.nfl.com/scores/"),
     dict(id="IR-132E-01", severity="High · open", area="Availability capture",
          finding="The committed official injury capture is a faithful copy of the page as it stood at "
                  "2026-11-13T18:32:20Z, but the official page publishes Friday practice reports and game "

@@ -47,14 +47,14 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
 | T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **done** (PR #49, merged 2026-11-14T00:05Z) | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 | T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
-| T50 | **Price-snapshot store**: record opening and closing numbers for every market we originate (SPREAD / TOTAL / MONEYLINE, both sides), each cell carrying its own source and evidence class | **in progress** | `arena/b13485ed-korea1` | `pipeline/price_snapshots.py` (new), `data/forward/price_snapshots.csv` (new), `assets/data/price_snapshots.csv` (new) |
-| T51 | **Verified results feed**: join the official finals to the originated lines and to the price snapshot so that a backtest and an ROI can actually be computed; every cell that has no official price on record stays blank and is flagged | **in progress** | `arena/b13485ed-korea1` | `pipeline/verified_results.py` (new), `data/forward/verified_results.csv` (new), `assets/data/verified_results.csv` (new) |
-| T52 | **Origination order**: originate the side first, then the total, then the moneyline; the order is fixed in code and published as a manifest | **in progress** | `arena/b13485ed-korea1` | `pipeline/models.py` (origination order + manifest write), `data/processed/origination_manifest.json` (new) |
-| T53 | **Model fair line, market line and difference as three separate published columns** | **in progress** | `arena/b13485ed-korea1` | `pipeline/render_site.py` (`build_lines` only), `pipeline/render_prices.py` (new) |
-| T54 | **Separate "signal" from "staking"** in the leaderboard so a lucky staking run cannot mask a bad signal | **in progress** | `arena/b13485ed-korea1` | `pipeline/leaderboard_split.py` (new), `data/processed/leaderboard_signal_staking.csv` (new), `assets/data/leaderboard_signal_staking.csv` (new) |
-| T55 | **Demotion gate**: a live strategy that trips a defined condition is sent back to paper | **in progress** | `arena/b13485ed-korea1` | `pipeline/demotion.py` (new), `data/processed/demotion_gates.csv` (new), `assets/data/demotion_gates.csv` (new) |
-| T56 | **Depth of the replacement**, not just the fact of a replacement: populate the replacement tier in the deficiency register from the official club depth charts; leave it blank where the club publishes no order | **in progress** | `arena/b13485ed-korea1` | `pipeline/lineup_deficiencies.py` (replacement-tier block only), `data/processed/lineup_deficiency.csv` |
-| T57 | **Integration + publish**: new `prices.html`, navigation, index, executive summary, verifier/test wiring, then PR → `main` → GitHub Pages | **in progress** | `arena/b13485ed-korea1` | `pipeline/render_prices.py` (new), `prices.html` (new), `pipeline/render_site.py` (NAV + index + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py`, `tests/check_sources.py`, `tests/check_links.py`, `tests/test_price_store.py` (new), `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` (own section) |
+| T50 | **Price-snapshot store**: record opening and closing numbers for every market we originate (SPREAD / TOTAL / MONEYLINE, both sides), each cell carrying its own source and evidence class | **done** | `arena/b13485ed-korea1` | `pipeline/price_snapshots.py` (new), `data/forward/price_snapshots.csv` (new), `data/forward/price_snapshot_sources.csv` (new), `assets/data/price_snapshots.csv` (new) |
+| T51 | **Verified results feed**: join the official finals to the originated lines and to the price snapshot so that a backtest and an ROI can actually be computed; every cell that has no official price on record stays blank and is flagged | **done** | `arena/b13485ed-korea1` | `pipeline/verified_results.py` (new), `data/forward/verified_results.csv` (new), `data/forward/verified_summary.csv` (new), `data/forward/verified_roi.csv` (new), `assets/data/verified_results.csv` (new) |
+| T52 | **Origination order**: originate the side first, then the total, then the moneyline; the order is fixed in code and published as a manifest | **done** | `arena/b13485ed-korea1` | `pipeline/models.py` (origination order + manifest write), `data/processed/origination_manifest.json` (new) |
+| T53 | **Model fair line, market line and difference as three separate published columns** | **done** | `arena/b13485ed-korea1` | `pipeline/render_site.py` (`build_lines` only), `pipeline/render_prices.py` (new) |
+| T54 | **Separate "signal" from "staking"** in the leaderboard so a lucky staking run cannot mask a bad signal | **done** | `arena/b13485ed-korea1` | `pipeline/leaderboard_split.py` (new), `data/processed/leaderboard_signal_staking.csv` (new), `assets/data/leaderboard_signal_staking.csv` (new) |
+| T55 | **Demotion gate**: a live strategy that trips a defined condition is sent back to paper | **done** | `arena/b13485ed-korea1` | `pipeline/demotion.py` (new), `data/processed/demotion_gates.csv` (new), `data/processed/demotion_status.csv` (new), `assets/data/demotion_status.csv` (new) |
+| T56 | **Depth of the replacement**, not just the fact of a replacement: populate the replacement tier in the deficiency register from the official club depth charts; leave it blank where the club publishes no order | **done** | `arena/b13485ed-korea1` | `pipeline/replacement_depth.py` (new), `data/processed/replacement_depth.csv` (new), `assets/data/replacement_depth.csv` (new), `data/processed/lineup_deficiency.csv` |
+| T57 | **Integration + publish**: new `prices.html`, navigation, index, executive summary, verifier/test wiring, then PR → `main` → GitHub Pages | **done** | `arena/b13485ed-korea1` | `pipeline/render_prices.py` (new), `prices.html` (new), `pipeline/render_site.py` (NAV + index + lines + strategies + correlations + executive), `pipeline/render_summary.py`, `pipeline/official_correlations.py` (new), `pipeline/verify_site.py`, `tests/check_sources.py`, `tests/check_links.py`, `tests/test_price_store.py` (new), `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` (own section) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -2497,3 +2497,99 @@ fixed point — a second `make build` leaves `git status` empty — so this sess
 commits the regenerated outputs rather than leaving `main` in a state where `make build` fails
 `tests/check_rebuild.py`. The rows are **not** deleted from the flagged register; the flagged
 register keeps the earlier contradiction and this session adds the resolution beside it.
+
+
+### 2026-11-14 — completion (T50–T57)
+
+**Everything below was verified against the committed artifacts, and every published row
+carries the official reference it came from.** The verification commands and their results
+are at the end of this section.
+
+#### What was built
+
+| # | Task | What it is now |
+|---|---|---|
+| T50 | Price-snapshot store | `pipeline/price_snapshots.py` writes **37,926 rows** over 6,237 games: one row per originated market side — spread, total and moneyline, both sides of each — carrying the model number, the market number, the difference, the opening number, the closing number, the source id and the evidence class of every cell. 336 rows carry both an opening and a closing number; 35,266 are partial and 2,324 carry no number. Every snapshot id is unique and the origination sequence on every row is 1 (spread), 2 (total), 3 (moneyline). Outputs: `data/forward/price_snapshots.csv`, `data/forward/price_snapshot_sources.csv` (9 sources, each with its class and its rule for when it may be used), `assets/data/price_snapshots.csv`. |
+| T51 | Verified results feed | `pipeline/verified_results.py` joins the official finals to our own lines and to the price store: **180 rows over 30 officially verified games**. Every row carries the official game URL, the verification time and who verified it. The model settlement is 90 wins / 90 losses; the market settlement is 58 / 58; the 64 moneyline rows carry no line to settle against and say so. Outputs: `data/forward/verified_results.csv`, `data/forward/verified_summary.csv`, `data/forward/verified_roi.csv`, `assets/data/verified_results.csv`. |
+| T52 | Origination order | Fixed in `pipeline/models.py`: the side (spread) is originated first, then the total, then the moneyline, each stage consuming only what the earlier stage produced. The moneyline is a read-out of the stage-1 margin distribution, which is why it cannot come first. The order and what each stage consumes and produces are published in `data/processed/origination_manifest.json`, and `pipeline/price_snapshots.py` imports the order from the model instead of restating it, so the store cannot drift from the model. |
+| T53 | Three separate columns | `lines.html` and `prices.html` publish the model's fair line, the market's line and the difference in **three columns**, never merged into one "edge" figure. The model line is class B (our own line, frozen before kickoff) and is printed; the market line is class C and the difference class D, so both are blank and flagged. |
+| T54 | Signal and staking separated | `pipeline/leaderboard_split.py` publishes two scorecards per strategy. The signal scorecard measures the directional quality of the rule against the break-even rate each bet actually carried (a Wilson interval on the hit rate is published with it); the staking scorecard measures the money. **The leaderboard is ranked on the signal.** Six of the eighteen rules have a signal whose interval lies above zero (WIND_UNDER, ML_EDGE_5, FADE_BLOWOUT_ATS, SP_EDGE_3_0, SP_EDGE_2_0, DIV_UNDER). All eighteen returns are "insufficient sample — consistent with luck", because every one is short of the settled weeks its own power gate demands (SP_EDGE_1_0 needs 2,637 and has 413; PARLAY2_ML needs 181,824 and has 345). Two strategies have a positive return and a signal that is not positive — PARLAY2_ML at +10.9% and PARLAY3_EDGE at +0.5% — and both are labelled a **lucky staking run** and capped at paper. |
+| T55 | Demotion gate | `pipeline/demotion.py` defines eight conditions, each naming the data it needs, and evaluates them per strategy: D1 negative trailing return over eight settled weeks, D2 too few settled weeks, D3 a signal edge whose lower bound is not above zero, D4 a drawdown past −20 units, D5 a settled bet without a verified executable price, D6 a settled bet without an official final, D7 a failed leakage check or an undisclosed rule change, D8 a redundancy overlap at or above 90%. The gate **can only send a strategy down**; there is no promotion rule in it, and a condition that cannot be evaluated counts as not passed. No strategy is live, so every tier is PAPER and the conditions that would fire are published. |
+| T56 | Depth of the replacement | `pipeline/replacement_depth.py` joins the official injury report to the official club depth charts: **74 depth-chart slots** whose first-listed player is unavailable, of which **33 name a second-string replacement** and 3 publish no replacement at all. The deficiency register now carries the tier for 26 of its 154 rows, the evidence naming the slot, the player, the status and the replacement, the club's depth-chart URL, and a status that separates a published depth from a partial one. A club that publishes no machine-readable order contributes nothing: the tier stays blank and the row says why. The two clubs that label their own chart unofficial carry that caveat. |
+| T57 | Integration and publication | New `prices.html`; navigation entry; index cards; the three line columns; the origination order; the signal/staking split and the demotion gate on `strategies.html`; `n` published with every correlation plus an official-only correlation register; the 2026-11-14 addendum in `EXECUTIVE_SUMMARY.md` and `executive-summary.html`; the README section; the verifier and link-check page lists; the new test file. |
+
+#### The official-only correlation register (requirement 7)
+
+`pipeline/official_correlations.py` builds a register from the **officially verified finals and
+our own lines only**. The market's line is not used, because it is not an official observation.
+`n` is published with every value:
+
+| Relationship | phi | 95% interval | n |
+|---|---|---|---|
+| Our spread side covers & our moneyline favours the home team | 0.935414 | 0.86749 to 0.969097 | 30 |
+| Our spread side covers & the game goes over | −0.071429 | −0.420867 to 0.29647 | 30 |
+| The game goes over & our moneyline favours the home team | 0.000000 | −0.360269 to 0.360269 | 30 |
+
+The first pair is high **by construction** — both legs are read from the same margin
+distribution — and the note says so. The other two are genuine dependences between two separate
+model outputs. All three are weak: n = 30, and the interval assumes independent observations,
+which is the weakest assumption at this sample size. The register grows as the official feed
+grows.
+
+#### The registers (requirement 10)
+
+The suggestion and question registers were already merged and published by the previous
+integration pass (`review-queue.html`, `answers.html`). This pass adds the questions and
+suggestions that the new work raised — Q41 to Q46 and S23 to S28 — so the registers describe the
+current state rather than the previous one:
+
+| Id | What it registers |
+|---|---|
+| Q41 | Is there an official source for a betting line, an opening number or a closing number? **No** — and that is now the published answer with the consequence attached. |
+| Q42 | Can a return be computed now that the results are official? **Yes, and it is still not a finding**: the settlement is class A on class B, the entry price is class C, so the return is class D. |
+| Q43 | How many settled weeks does each strategy need before its return can be told apart from luck? **Every strategy is short.** |
+| Q44 | What sends a live strategy back to paper, and what stops a lucky run from being read as skill? **Eight conditions, and a positive return cannot promote a non-positive signal.** |
+| Q45 | How deep is the replacement behind an unavailable starter, and for which positions is it unknown? **74 slots; 33 name a second string; 3 publish none; 128 deficiency rows have no published order.** |
+| Q46 | What do the correlations look like when they are computed only from officially sourced numbers? **Three pairs, n = 30, published above.** |
+| S23–S28 | The six corresponding proposals: the price store, the official grading, the signal/staking split, the demotion conditions, the replacement depth and the official-only correlation register — each with its problem, its cost, its risk and its dependency. |
+
+The merged registers now hold **82 suggestions in 14 clusters** and **96 questions in 14
+clusters**, and the eight missing-information discovery blueprints are unchanged. Every row
+keeps its source register, its original id and its writing session.
+
+#### Files outside the claimed scope that were touched, and why (board rule 5)
+
+| File | Change | Why |
+|---|---|---|
+| `pipeline/decisions.py` | six new questions and six new suggestions appended to the `QUESTIONS` and `SUGGESTIONS` lists | The register is generated from this list, so a hand-edited CSV would be overwritten on the next build. The owning session (`arena/25460478-korea1`) is **done**, the master merge reads this register automatically, and the edit is purely additive: no existing entry changed. |
+| `pipeline/session_review.py` | four irregularities appended to the `IRREGULARITIES` list | Same reason: `data/integration/irregularities.csv` is regenerated by the build and printed on `repo-review.html` and `flagged.html`. The owning session (`arena/132e7ca2-korea1`) is **done**. |
+| `tests/test_live_verify.py` | two stale expectations rewritten | The test suite did not pass at the branch point; see IR-B13485-03 below. |
+
+#### Irregularities recorded by this pass
+
+| Id | Severity | Finding |
+|---|---|---|
+| IR-B13485-02 | High · open | The league-wide official injury capture of 2026-11-14T17:10:05Z contains **four self-contradictory rows**: JAX / BJ Green II, CIN / Jalen Davis, CIN / Andrei Iosivas and CIN / Brian Parker II each carry a game status of Out or Doubtful together with a practice status of Full Participation in Practice. All four are published in `data/live/internal_consistency.csv` rather than being silently corrected. The next action is to re-read them against the official page — not to edit the captured values by hand. |
+| IR-B13485-03 | Medium · resolved here | Two assertions in `tests/test_live_verify.py` were pinned to the 8-club injury sample of 2026-11-12 (326 rows, one contradiction, DET / Kerby Joseph). The scheduled league-wide capture of 2026-11-14 replaced the published table with 345 rows over 28 clubs, so both assertions **failed on the untouched tree at `81836b6`** — confirmed by running the suite in a clean worktree at that commit. Both tests now read the fixture from the published table and assert the grader's logic, including a deliberately injected contradiction. |
+| IR-B13485-04 | Medium · open | There is no official source for a betting line, an opening number, a closing number, a price or a bet limit. Every market number in the store is class C and every return is class D; gate G1 fails closed for all eighteen strategies. No historical price can be made official after the fact. |
+| IR-B13485-05 | Medium · open | The verified results feed holds 30 officially verified games. It is the only official number in the chain, and it grows one game at a time. |
+
+#### Verification
+
+| Command | Result |
+|---|---|
+| `make build` | 0 failing verifier checks across 43 pages (33 canonical); `tests/check_sources.py` → 33 canonical pages, 3,850 rows, strict official/primary reference check passed; `tests/check_links.py` → 42 pages, all internal links, anchors and assets resolve, no external dependencies |
+| `make build` (second run) | The tree is a fixed point: `git status` is empty after the second build |
+| `make test` / `pytest tests/` | **206 passed, 1 skipped** (18 of them the new `tests/test_price_store.py`) |
+| `git worktree` at `81836b6` | `tests/test_live_verify.py` fails there too — the two failures were pre-existing and are recorded as IR-B13485-03 |
+
+#### What this pass did not change, and why
+
+The blocking evidence is the same as it was on 2026-11-13. NFL.com publishes scores, schedules,
+injuries and rules; it publishes no betting line, price or limit, and no amount of local work
+changes that. Every market number in the price store is a community mirror (class C); every
+return computed from it is class D and is published as labelled research data with its `n`
+beside it, never as a finding. The official final is class A and our own line is class B, so
+the settlement between them is sound — which is exactly what the new
+[prices & results](prices.html) page shows. No strategy passes the eight gates, none holds a
+live tier, and no reward is funded.
