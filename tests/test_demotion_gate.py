@@ -1,152 +1,88 @@
-"""U2 (arena/fcba7eb5-korea1): the demotion gate sends a LIVE strategy back to PAPER.
-
-No strategy is LIVE today, so the real register cannot show a demotion. These tests build
-synthetic candidates and check that each trigger, on its own, demotes a LIVE strategy, that
-an unevaluable trigger is a failure (fail-closed), and that a PAPER strategy is never demoted.
-"""
-from __future__ import annotations
-
+"""Tests for pipeline/demotion_gate.py (added 2026-11-14, arena/b400d3ae-korea1)."""
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "pipeline"))
-
 import demotion_gate as dg  # noqa: E402
 
-GATES = ["G1_data", "G2_leakage", "G3_power", "G4_significance", "G5_luck",
-         "G6_economic", "G7_stability", "G8_redundancy"]
+
+def _ledger(n=120, seasons=3, pnl_mean=0.0, stress_shift=-0.05, seed=7, clv=None):
+    rng = np.random.default_rng(seed)
+    rows = []
+    for i in range(n):
+        pnl = float(rng.choice([0.909, -1.0], p=[0.5, 0.5])) + pnl_mean
+        rows.append(dict(status="OFFICIAL", outcome=1.0 if pnl > 0 else 0.0, pnl=pnl,
+                         pnl_stress=pnl + stress_shift, season=2023 + (i % seasons),
+                         week=1 + (i // seasons) % 18, freeze_before_kickoff=True,
+                         **({"clv": clv} if clv is not None else {})))
+    return pd.DataFrame(rows)
 
 
-def gates_row(name: str, fail: str | None = None) -> dict:
-    row = {"strategy": name}
-    for g in GATES:
-        row[g] = g != fail
-    return row
+def test_requires_columns():
+    try:
+        dg.evaluate(pd.DataFrame({"status": []}))
+    except ValueError as e:
+        assert "missing required columns" in str(e)
+    else:
+        raise AssertionError("missing columns must raise, not be imputed")
 
 
-def scoreboard_row(name: str, horizon: bool = True, f4: str = "PASS", f5: str = "PASS") -> dict:
-    return dict(strategy=name, horizon_reached=str(horizon), F4_skill=f4, F5_economics=f5)
+def test_small_sample_is_insufficient_not_pass():
+    r = dg.evaluate(_ledger(n=40, seasons=3))
+    assert r["verdict"] == dg.INSUFFICIENT
+    assert r["state_recommendation"] == "NO CHANGE"
 
 
-def registry_row(name: str, sha: str | None) -> dict:
-    d = dict(strategy=name, first_freeze_seq=1, registered_utc="2026-11-12T13:26:48Z")
-    if sha is not None:
-        d["rule_sha256"] = sha
-    return d
+def test_look_ahead_demotes_immediately_even_on_small_sample():
+    led = _ledger(n=10)
+    led.loc[3, "freeze_before_kickoff"] = False
+    r = dg.evaluate(led)
+    assert r["verdict"] == dg.DEMOTE
+    assert r["triggers"][0]["rule"] == "DG1"
 
 
-def one(gates_list, sb=None, reg=None, hashes=None, state=None) -> pd.Series:
-    out = dg.evaluate(pd.DataFrame(gates_list),
-                      pd.DataFrame(sb) if sb is not None else None,
-                      pd.DataFrame(reg) if reg is not None else None,
-                      live_hashes=hashes, live_state=state)
-    return out.set_index("strategy").loc[gates_list[0]["strategy"]]
+def test_settled_row_without_outcome_demotes_and_is_not_filled():
+    led = _ledger(n=10)
+    led.loc[2, "outcome"] = np.nan
+    r = dg.evaluate(led)
+    assert r["verdict"] == dg.DEMOTE
+    assert any(t["rule"] == "DG2" for t in r["triggers"])
 
 
-def healthy_live(name="LIVE_A", **kw):
-    base = dict(
-        gates_list=[gates_row(name)],
-        sb=[scoreboard_row(name)],
-        reg=[registry_row(name, "abc")],
-        hashes={name: "abc"},
-        state={name: dg.LIVE},
-    )
-    base.update(kw)
-    return base
+def test_losing_strategy_with_enough_sample_is_demoted_to_paper():
+    r = dg.evaluate(_ledger(n=150, seasons=3, pnl_mean=-0.30))
+    assert r["verdict"] == dg.DEMOTE
+    assert r["state_recommendation"] == "PAPER"
+    assert {t["rule"] for t in r["triggers"]} & {"DG4", "DG5"}
 
 
-def test_real_register_has_no_live_strategy_and_no_demotion():
-    gates = pd.read_csv(ROOT / "data" / "processed" / "strategy_gates.csv")
-    sb = pd.read_csv(ROOT / "data" / "forward" / "scoreboard.csv")
-    reg = pd.read_csv(ROOT / "data" / "forward" / "trial_registry.csv")
-    out = dg.evaluate(gates, sb, reg, live_state=dg.read_live_state())
-    assert len(out) == len(gates) == 18
-    assert (out.current_status == dg.PAPER).all()
-    assert not out.action.str.startswith("DEMOTE").any()
-    assert dg.summary(out)["live_now"] == 0
+def test_clear_winner_passes_and_is_not_demoted():
+    r = dg.evaluate(_ledger(n=300, seasons=3, pnl_mean=0.25, stress_shift=0.0), n_boot=2000)
+    assert r["verdict"] == dg.PASS
+    assert r["state_recommendation"] == "LIVE"
 
 
-def test_live_strategy_that_keeps_every_trigger_passing_stays_live():
-    r = one(**healthy_live())
-    assert r.next_status == dg.LIVE
-    assert r.failing_triggers == "none"
+def test_negative_clv_demotes_when_fully_covered():
+    r = dg.evaluate(_ledger(n=150, seasons=3, pnl_mean=0.25, stress_shift=0.0, clv=-0.5),
+                    n_boot=2000)
+    assert r["verdict"] == dg.DEMOTE
+    assert any(t["rule"] == "DG6" for t in r["triggers"])
 
 
-def test_paper_strategy_is_never_demoted_even_when_gates_fail():
-    r = one([gates_row("P", fail="G5_luck")], state={})
-    assert r.current_status == dg.PAPER
-    assert r.next_status == dg.PAPER
-    assert not r.action.startswith("DEMOTE")
+def test_partial_clv_coverage_does_not_trigger_dg6():
+    led = _ledger(n=150, seasons=3, pnl_mean=0.25, stress_shift=0.0, clv=-0.5)
+    led["clv"] = led["clv"].astype(object)
+    led.loc[0, "clv"] = np.nan
+    r = dg.evaluate(led, n_boot=2000)
+    assert not any(t["rule"] == "DG6" for t in r["triggers"])
 
 
-def test_D1_signal_gate_lost_demotes_a_live_strategy():
-    kw = healthy_live("LIVE_A")
-    kw["gates_list"] = [gates_row("LIVE_A", fail="G4_significance")]
-    r = one(**kw)
-    assert r.next_status == dg.PAPER
-    assert "D1" in r.failing_triggers
-    assert r.action.startswith("DEMOTE TO PAPER")
-
-
-def test_D2_execution_gate_lost_demotes_a_live_strategy():
-    kw = healthy_live("LIVE_A")
-    kw["gates_list"] = [gates_row("LIVE_A", fail="G6_economic")]
-    r = one(**kw)
-    assert r.next_status == dg.PAPER
-    assert "D2" in r.failing_triggers
-
-
-def test_D3_forward_failure_at_horizon_demotes_a_live_strategy():
-    kw = healthy_live("LIVE_A")
-    kw["sb"] = [scoreboard_row("LIVE_A", horizon=True, f4="FAIL")]
-    r = one(**kw)
-    assert r.next_status == dg.PAPER
-    assert "D3" in r.failing_triggers
-
-
-def test_D3_before_horizon_is_not_due_and_does_not_demote():
-    kw = healthy_live("LIVE_A")
-    kw["sb"] = [scoreboard_row("LIVE_A", horizon=False, f4="NOT EVALUATED", f5="NOT EVALUATED")]
-    r = one(**kw)
-    assert r.D3_forward_record == dg.NOT_DUE
-    assert r.next_status == dg.LIVE
-
-
-def test_D3_horizon_reached_but_forward_not_evaluated_is_a_failure():
-    kw = healthy_live("LIVE_A")
-    kw["sb"] = [scoreboard_row("LIVE_A", horizon=True, f4="NOT EVALUATED", f5="NOT EVALUATED")]
-    r = one(**kw)
-    assert r.next_status == dg.PAPER
-
-
-def test_D4_breach_demotes_a_live_strategy():
-    kw = healthy_live("LIVE_A")
-    kw["hashes"] = {"LIVE_A": "different"}
-    r = one(**kw)
-    assert r.D4_preregistration == dg.FAIL
-    assert r.next_status == dg.PAPER
-
-
-def test_D4_unevaluable_is_a_failure_for_a_live_strategy_fail_closed():
-    kw = healthy_live("LIVE_A")
-    kw["reg"] = [registry_row("LIVE_A", None)]          # no rule hash at freeze
-    kw["hashes"] = {}
-    r = one(**kw)
-    assert r.D4_preregistration == dg.NOT_EVAL
-    assert r.next_status == dg.PAPER
-
-
-def test_nothing_is_eligible_while_D4_cannot_be_evaluated():
-    r = one([gates_row("CAND")], sb=[scoreboard_row("CAND", horizon=False, f4="NOT EVALUATED")],
-            reg=[registry_row("CAND", None)], state={})
-    assert not r.action.startswith("ELIGIBLE")
-
-
-def test_candidate_with_all_gates_and_clean_triggers_is_listed_for_review_not_promoted():
-    r = one([gates_row("CAND")], sb=[scoreboard_row("CAND", horizon=False, f4="NOT EVALUATED")],
-            reg=[registry_row("CAND", "h")], hashes={"CAND": "h"}, state={})
-    assert r.action.startswith("ELIGIBLE")
-    assert r.next_status == dg.PAPER                    # promotion is an owner decision
+def test_drawdown_only_applies_when_owner_sets_a_limit():
+    led = _ledger(n=150, seasons=3, pnl_mean=0.25, stress_shift=0.0)
+    assert not any(t["rule"] == "DRAWDOWN" for t in dg.evaluate(led, n_boot=2000)["triggers"])
+    r = dg.evaluate(led, max_drawdown_units=0.5, n_boot=2000)
+    assert any(t["rule"] == "DRAWDOWN" for t in r["triggers"])

@@ -12,7 +12,7 @@ Outputs
   data/integration/reward_tiers.csv     the reward ladder
   data/integration/competition_rules.csv  the rules of the competition
   data/integration/leaderboard_master.csv  standings + gate facts per strategy
-  data/governance/demotion_gate.csv     demotion register (U2, 2026-11-14)
+  data/governance/demotion_register.csv     demotion register (U2, 2026-11-14)
   competition.html
 
 U1 (session arena/fcba7eb5-korea1, 2026-11-14): the standings are split into two blocks.
@@ -40,7 +40,7 @@ from render_site import layout, table  # noqa: E402
 from session_common import (  # noqa: E402
     BLANK, clean, clip, e, read_csv, ref_link, resolve_ref, write_csv,
 )
-import demotion_gate as dg  # noqa: E402
+import demotion_register as dg  # noqa: E402
 
 GATE_NAMES = ["G1_data", "G2_leakage", "G3_power", "G4_significance",
               "G5_luck", "G6_economic", "G7_stability", "G8_redundancy"]
@@ -174,7 +174,7 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
              text="LIVE is a recorded state, reached only by an explicit promotion once all eight gates pass and no "
                   "trigger is failing. A LIVE strategy returns to PAPER on any demotion trigger D1 to D4. A trigger "
                   "that cannot be evaluated counts as a failure for a LIVE strategy (fail-closed). Every decision is "
-                  "recorded in data/governance/demotion_gate.csv."),
+                  "recorded in data/governance/demotion_register.csv."),
     ])
     sb_path, reg_path = dg.FWD / "scoreboard.csv", dg.FWD / "trial_registry.csv"
     sb = pd.read_csv(sb_path) if sb_path.exists() else None
@@ -368,12 +368,12 @@ after all eight gates pass and no trigger is failing. A LIVE strategy returns to
 below (rule R9). A trigger that cannot be evaluated counts as a failure for a LIVE strategy. Today
 <strong>{n_live} of {len(demo)}</strong> candidates are LIVE, so <strong>{n_demoted}</strong> demotions have occurred,
 and <strong>{n_eligible}</strong> candidates are eligible for a promotion review. The gate is armed and tested:
-<code>tests/test_demotion_gate.py</code> demotes synthetic LIVE candidates on each trigger.</p>
+<code>tests/test_demotion_register.py</code> demotes synthetic LIVE candidates on each trigger.</p>
 {table(trig_rows, ["Trigger", "Name", "Condition", "Official reference"],
        caption="Demotion triggers: any one sends a LIVE strategy back to paper")}
 {table(demo_rows, ["Candidate", "Current status", "D1 signal gates", "D2 execution gates", "D3 forward record", "D4 pre-registration", "Next status", "Action", "Official reference"],
        caption="Demotion register: every candidate, every trigger, and the resulting status")}
-<p>The register is also published as <a href="data/governance/demotion_gate.csv">demotion_gate.csv</a>. The
+<p>The register is also published as <a href="data/governance/demotion_register.csv">demotion_register.csv</a>. The
 D4 trigger reports NOT EVALUATED because the trial registry holds no rule hash at first freeze. That is a gap to
 close before any candidate can be LIVE, not a pass.</p>
 </section>
@@ -410,7 +410,7 @@ def main() -> None:
     write_csv(standings, "leaderboard_master.csv")
     write_csv(tiers, "reward_tiers.csv")
     write_csv(rules, "competition_rules.csv")
-    extra["demo"].to_csv(ROOT / "data" / "governance" / "demotion_gate.csv", index=False)
+    extra["demo"].to_csv(ROOT / "data" / "governance" / "demotion_register.csv", index=False)
     (ROOT / "competition.html").write_text(build_page(standings, tiers, rules, extra), encoding="utf-8")
     print(f"  leaderboard_master.csv {len(standings)} rows")
     print(f"  reward_tiers.csv       {len(tiers)} rows")
