@@ -1,0 +1,161 @@
+team,player,position,unit,slot,depth_rank,game_status,matched,note
+WAS,Lucas Patrick,C,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+WAS,Colson Yankoff,TE,Offense,TE #8,2.0,Out,True,
+NYG,Malik Harrison,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NE,Ben Brown,C,Offense,C #4,2.0,Out,True,
+NE,A.J. Brown,WR,Offense,WR #1,1.0,Questionable,True,
+NE,Kevin Byard,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NE,Carlton Davis III,CB,Defense,CB #19,1.0,Out,True,
+NE,Reggie Gilliam,FB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NE,TreVeyon Henderson,RB,Offense,RB #10,2.0,Out,True,
+NE,Cameron Latu,TE,Offense,TE #7,3.0,Questionable,True,
+NE,Walter Rouse,T,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NE,Brenden Schooler,S,Defense,S #21,3.0,Questionable,True,
+NE,Rhamondre Stevenson,RB,Offense,RB #10,1.0,Questionable,True,
+NE,Greg Van Roten,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NE,Charles Woods,CB,Defense,CB #22,2.0,Questionable,True,
+DET,Kerby Joseph,S,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+DET,Cade Mays,C,Offense,C #5,1.0,Out,True,
+DET,D.J. Reed,CB,Defense,CB #19,1.0,Out,True,
+DET,Amon-Ra St. Brown,WR,Offense,WR #2,1.0,Questionable,True,
+DET,Sione Vaki,RB,Offense,RB #11,2.0,Questionable,True,
+KC,Mansoor Delane,CB,Defense,CB #20,1.0,Questionable,True,
+KC,Jaylon Moore,T,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+KC,Omarr Norman-Lott,DT,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+KC,Jaydn Ott,RB,Offense,RB #9,3.0,Questionable,True,
+KC,Kenneth Walker III,RB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+KC,Peter Woods,DT,Defense,DT #13,2.0,Out,True,
+ATL,Zachariah Branch,WR,Offense,WR #11,2.0,Out,True,
+ATL,Divine Deablo,LB,Defense,ILB #17,1.0,Doubtful,True,
+ATL,Gervon Dexter Sr.,DT,Defense,DL #14,2.0,Questionable,True,
+ATL,James Pearce Jr.,DE,Defense,DE #16,3.0,Questionable,True,
+ATL,Josh Woods,LB,Defense,ILB #17,3.0,Questionable,True,
+MIN,Jordan Addison,WR,Offense,WR #5,1.0,Questionable,True,
+MIN,Blake Cashman,LB,Defense,LB #18,1.0,Out,True,
+MIN,T.J. Hockenson,TE,Offense,TE #7,1.0,Out,True,
+MIN,Tyrion Ingram-Dawkins,DT,Defense,DL #16,1.0,Out,True,
+MIN,Jauan Jennings,WR,Offense,WR #6,1.0,Out,True,
+MIN,Josh Metellus,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+MIN,Kyler Murray,QB,Offense,QB #1,1.0,Out,True,
+MIN,Kyle Van Noy,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Chris Brooks,RB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Javon Bullard,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Zaire Franklin,LB,Defense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Travis Glover,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Josh Jacobs,RB,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Xavier McKinney,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Skyy Moore,WR,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Micah Parsons,LB,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Sean Rhyan,C,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Lukas Van Ness,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Josh Whyle,TE,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Kevin Zeitler,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+JAX,Jessie Bates,S,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+JAX,Jordan Davis,DT,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+JAX,BJ Green II,DE,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+JAX,Robert Hainsey,C,Offense,C #4,1.0,Questionable,True,
+TEN,Cody Barton,LB,Defense,LB #16,1.0,Out,True,
+TEN,Anthony Hill Jr.,LB,Defense,LB #18,1.0,Out,True,
+TEN,Peter Skoronski,G,Offense,LG #4,1.0,Out,True,
+TEN,Tyjae Spears,RB,Offense,RB #11,2.0,Questionable,True,
+TEN,Carnell Tate,WR,Offense,WR #9,1.0,Out,True,
+TEN,Tommy Townsend,P,Special Teams,P #26,1.0,Out,True,
+BUF,Christian Benford,CB,Defense,CB #19,1.0,Questionable,True,
+BUF,Spencer Brown,T,Offense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+BUF,Sam Franklin Jr.,S,Defense,S #22,2.0,Questionable,True,
+BUF,Jordan Hancock,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+BUF,Tyrell Shavers,WR,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NYJ,Jarvis Brownlee Jr.,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NYJ,Omar Cooper Jr.,WR,Offense,WR #1,2.0,Questionable,True,
+NYJ,Adonai Mitchell,WR,Offense,WR #9,1.0,Questionable,True,
+NYJ,Joseph Ossai,DE,Defense,EDGE #17,2.0,Questionable,True,
+NYJ,VJ Payne,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NYJ,Harrison Phillips,DT,Defense,DL #14,1.0,Questionable,True,
+NYJ,Trevin Wallace,LB,Defense,LB #18,2.0,Out,True,
+NYJ,Garrett Wilson,WR,Offense,WR #1,1.0,Questionable,True,
+NYJ,Nahshon Wright,CB,Defense,CB #22,2.0,Questionable,True,
+MIA,Darrell Baker Jr.,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+MIA,Chris Bell,WR,Offense,WR #12,1.0,Doubtful,True,
+MIA,Aaron Brewer,C,Offense,C #4,1.0,Out,True,
+MIA,Jared Wayne,WR,Offense,WR #1,2.0,Out,True,
+IND,Mo Alie-Cox,TE,Offense,TE #7,2.0,Out,True,
+IND,Jaylon Carlies,LB,Defense,WLB #16,1.0,Out,True,
+IND,Akeem Davis-Gaither,LB,Defense,MLB #17,1.0,Out,True,
+IND,Arden Key,DE,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+IND,Will Mallory,TE,Offense,TE #7,4.0,Questionable,True,
+IND,Luke Rhodes,LS,Special Teams,LS #26,1.0,Out,True,
+IND,Jerry Tillery,DT,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+IND,Jalen Travis,T,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CAR,Jonathon Brooks,RB,Offense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CAR,Brady Christensen,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CAR,Mike Jackson,CB,Defense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CAR,Will Lee III,CB,Defense,CB #20,1.0,Questionable,True,
+CAR,Xavier Legette,WR,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CAR,Bobby Okereke,LB,Defense,LB #17,1.0,Out,True,
+CAR,Jaelan Phillips,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NO,CJ Donaldson,RB,Offense,RB #11,3.0,Out,True,
+NO,Martin Emerson,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NO,Travis Etienne,RB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NO,Taliese Fuaga,T,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+NO,Erik McCoy,C,Offense,C #4,1.0,Out,True,
+NO,Christen Miller,DT,Defense,DL #14,2.0,Out,True,
+HOU,Azeez Al-Shaair,LB,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Will Anderson Jr.,DE,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Trent Brown,T,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Marvin Harrison Jr.,WR,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Jacob Hummel,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Danielle Hunter,DE,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Brevin Jordan,TE,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,David Montgomery,RB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Keylan Rutledge,G,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Jaylin Smith,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+HOU,Wyatt Teller,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CLE,Denzel Boston,WR,Offense,WR #7,1.0,Questionable,True,
+CLE,Michael Burton,FB,Offense,RB #9,3.0,Out,True,
+CLE,Ronnie Hickman Jr.,S,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LA,Davis Allen,TE,Offense,TE #2,1.0,Questionable,True,
+LA,Steve Avila,G,Offense,LG #4,1.0,Out,True,
+LA,Joe Cardona,LS,Special Teams,LS #26,1.0,Questionable,True,
+LA,Kam Curl,S,Defense,S #21,1.0,Questionable,True,
+LA,Terrance Ferguson,TE,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LA,Myles Garrett,LB,Defense,OLB #16,1.0,Questionable,True,
+LA,Trent McDuffie,CB,Defense,CB #19,1.0,Questionable,True,
+ARI,Zachary Carter,DT,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+ARI,Hjalte Froholdt,C,Offense,C #4,1.0,Out,True,
+ARI,Jon Gaines II,G,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+ARI,Hunter Long,TE,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+ARI,Roy Lopez,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+ARI,Max Melton,CB,Defense,CB #20,1.0,Questionable,True,
+ARI,Darius Robinson,DT,Defense,DT #12,2.0,Questionable,True,
+ARI,Jayden Williams,T,Offense,LT #2,1.0,Questionable,True,
+ARI,Andrew Wingard,S,Defense,S #22,1.0,Questionable,True,
+SEA,Charles Cross,T,Offense,LT #2,1.0,Out,True,
+SEA,Sam Darnold,QB,Offense,QB #9,1.0,Out,True,
+SEA,Quenton Nelson,G,Offense,LG #3,1.0,Out,True,
+SEA,Leonard Williams,DT,Defense,DT #12,1.0,Out,True,
+LV,Thomas Booker,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LV,Dont'e Thornton Jr.,WR,Offense,WR #1,3.0,Questionable,True,
+SF,Mike Evans,WR,Offense,WR #1,1.0,Out,True,
+SF,Renardo Green,CB,Defense,LCB #19,1.0,Questionable,True,
+SF,Dre Greenlaw,LB,Defense,WILL #18,1.0,Questionable,True,
+SF,Nate Hobbs,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+SF,Deommodore Lenoir,CB,Defense,RCB #20,1.0,Questionable,True,
+SF,Upton Stout,CB,Defense,NB #21,1.0,Questionable,True,
+SF,C.J. West,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+SF,Trent Williams,T,Offense,LT #2,1.0,Questionable,True,
+DAL,DaRon Bland,CB,Defense,CB #22,1.0,Questionable,True,
+DAL,Jonathan Bullard,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+DAL,Alijah Clark,S,Defense,S #24,2.0,Questionable,True,
+DAL,Donovan Ezeiruaku,LB,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+DAL,Jake Ferguson,TE,Offense,TE #7,1.0,Out,True,
+DAL,Tyler Goodson,RB,Offense,RB #11,2.0,Out,True,
+DAL,P.J. Locke,S,Defense,S #23,1.0,Out,True,
+DAL,Jonathan Mingo,WR,Offense,WR #9,2.0,Out,True,
+DAL,Devin Moore,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+DAL,Joey Porter Jr.,CB,Defense,CB #20,1.0,Questionable,True,
+DAL,Juanyeh Thomas,S,Defense,S #23,2.0,Doubtful,True,
+PIT,Derrick Harmon,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CIN,Jalen Davis,CB,Defense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CIN,Kyle Dugger,S,Defense,S #22,2.0,Out,True,
+CIN,Andrei Iosivas,WR,Offense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CIN,Brian Parker II,G,Offense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"

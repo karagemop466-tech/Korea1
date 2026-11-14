@@ -1,0 +1,4 @@
+market,market_label,originated_rows,games,open_line,close_line,open_price,close_price,both,model_only,official_rows,seasons
+SIDE,Side (spread),12146,6073,4630,6736,0,946,2916,3696,0,2004–2026
+TOTAL,Total,12146,6073,544,6736,0,946,0,4866,0,2004–2026
+MONEYLINE,Moneyline,12146,6073,0,6736,0,6736,0,12146,0,2004–2026
