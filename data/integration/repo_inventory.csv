@@ -261,10 +261,10 @@ data/live/depth_verification_summary.csv,under 1 KB,Data,SOURCE · read and cros
 data/live/depth_verification_summary.json,under 1 KB,Data,SOURCE · read and cross-checked,pipeline/live_verify_depth.py; pipeline/render_live.py; pipeline/render_site.py,NFL injuries,https://www.nfl.com/injuries/
 data/live/injury_field_verification.csv,100 KB-1 MB,Data,SOURCE · read and cross-checked,pipeline/live_verify.py; pipeline/render_live.py,NFL injuries,https://www.nfl.com/injuries/
 data/live/injury_verification_summary.csv,under 1 KB,Data,SOURCE · read and cross-checked,pipeline/live_verify.py; pipeline/render_live.py,NFL injuries,https://www.nfl.com/injuries/
-data/live/internal_consistency.csv,under 1 KB,Data,SOURCE · read and cross-checked,pipeline/live_verify.py; pipeline/render_live.py,NFL scores,https://www.nfl.com/scores/
+data/live/internal_consistency.csv,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/live_verify.py; pipeline/render_live.py,NFL scores,https://www.nfl.com/scores/
 data/live/lineup_claim_summary.json,under 1 KB,Data,SOURCE · read and cross-checked,pipeline/lineup_claims.py; pipeline/render_live.py; pipeline/render_site.py,NFL injuries,https://www.nfl.com/injuries/
 data/live/lineup_claim_verification.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/lineup_claims.py; pipeline/render_live.py,NFL injuries,https://www.nfl.com/injuries/
-data/live/official_capture_drift.csv,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/lineup_claims.py; pipeline/render_live.py,NFL scores,https://www.nfl.com/scores/
+data/live/official_capture_drift.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/lineup_claims.py; pipeline/render_live.py,NFL scores,https://www.nfl.com/scores/
 data/live/official_depth_extract_2026_11_13.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/lineup_claims.py; pipeline/live_verify_depth.py,NFL injuries,https://www.nfl.com/injuries/
 data/live/official_injury_extract_2026_reg10.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/lineup_claims.py; pipeline/live_verify.py,NFL injuries,https://www.nfl.com/injuries/
 data/live/questions_consolidated.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/render_live.py; pipeline/review_consolidated.py,NFL scores,https://www.nfl.com/scores/
