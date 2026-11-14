@@ -112,6 +112,44 @@ def block_indices(n_blocks: int, n_boot: int, mean_block: float = 4.0,
     return out
 
 
+def block_indices_fast(n_blocks: int, n_boot: int, mean_block: float = 4.0,
+                       seed: int = SEED) -> np.ndarray:
+    """The same circular stationary bootstrap as `block_indices`, vectorised.
+
+    `block_indices` walks the circle one column at a time in Python, which is fine
+    for a handful of calls but too slow for a rolling replay that needs thousands
+    of them. This version produces the same kind of resampling — circular blocks
+    with geometric continuation — with the same parameters; only the order in
+    which the random numbers are drawn differs, so the interval it produces is
+    the same procedure with a different random stream, not a different method.
+    """
+    if n_blocks < 1 or mean_block <= 0:
+        raise ValueError("invalid block count or mean block length")
+    rng = np.random.default_rng(seed)
+    p_continue = 1.0 - 1.0 / max(1.0, mean_block)
+    idx = np.empty((n_boot, n_blocks), dtype=int)
+    idx[:, 0] = rng.integers(0, n_blocks, size=n_boot)
+    restart = rng.random((n_boot, n_blocks)) < (1.0 - p_continue)
+    fresh = rng.integers(0, n_blocks, size=(n_boot, n_blocks))
+    for j in range(1, n_blocks):
+        pos = (idx[:, j - 1] + 1) % n_blocks
+        idx[:, j] = np.where(restart[:, j], fresh[:, j], pos)
+    return idx
+
+
+def bootstrap_mean_ci(returns: np.ndarray, n_boot: int = 1000,
+                      mean_block: float = 4.0, seed: int = SEED) -> dict:
+    """Percentile interval for the mean of a sample, by circular block bootstrap."""
+    x = np.asarray(returns, float)
+    if len(x) < 3 or not np.isfinite(x).all() or np.std(x, ddof=1) == 0:
+        return {k: float("nan") for k in ("ci_lo", "ci_hi", "mean")}
+    idx = block_indices_fast(len(x), n_boot, mean_block, seed)
+    means = x[idx].mean(axis=1)
+    return {"ci_lo": float(np.percentile(means, 2.5)),
+            "ci_hi": float(np.percentile(means, 97.5)),
+            "mean": float(x.mean())}
+
+
 def bootstrap_mean_test(returns: np.ndarray, n_boot: int = 5000,
                         mean_block: float = 4.0, seed: int = SEED) -> dict:
     """Centered null bootstrap and percentile CI for equal-week mean ROI.

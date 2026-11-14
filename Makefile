@@ -72,11 +72,24 @@ site: injuries review reviewall
 	$(PY) pipeline/price_annex.py
 	$(PY) pipeline/results_feed.py
 	$(PY) pipeline/origination_order.py
-	$(PY) pipeline/signal_staking.py
 	$(PY) pipeline/replacement_depth.py
 	$(PY) pipeline/corr_official.py
 	$(PY) pipeline/demotion_rules.py
 	$(PY) pipeline/session_20261114.py
+	# Session arena/d0bec048-korea1: the price-observation store, the official
+	# settlement and return, the per-slot replacement depth, the walk-forward
+	# probability calibration and the signal/staking split with its demotion
+	# gate. Every step reads committed data only (no network), and none of them
+	# writes a file another step owns.
+	$(PY) pipeline/price_store.py
+	$(PY) pipeline/official_settlement.py
+	$(PY) pipeline/replacement_slots.py
+	$(PY) pipeline/probability_alignment.py
+	$(PY) pipeline/leaderboard_split.py
+	# The signal/staking page reads the calibration and the split table, so it is
+	# rebuilt after them.
+	$(PY) pipeline/signal_staking.py
+	$(PY) pipeline/render_final.py
 	$(PY) pipeline/render_site.py
 	# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed
 	# originated lines and the forward cards only; no network.
@@ -105,7 +118,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py
+	$(PY) -m pytest -q tests/test_session_pipeline.py tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives
