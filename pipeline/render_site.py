@@ -54,12 +54,21 @@ NAV_GROUPS = [
     # registered in verify_site.py, tests/check_sources.py and tests/check_links.py.
     ("Prove it · results & evidence", [
         ("results-feed.html", "Verified results feed"),
+        # Session arena/d0bec048-korea1: the settlement side of the feed — the bets
+        # settled against an official NFL.com final, with the coverage they give.
+        ("official-roi.html", "Verified results & return"),
         ("correlation-official.html", "Correlations (n on every row)"),
         ("replacement-depth.html", "Replacement depth"),
+        # Session arena/d0bec048-korea1: who steps in for an unavailable starter, from
+        # which string, and how much depth is left behind them.
+        ("replacement-slots.html", "Depth of the replacement"),
     ]),
     ("Price it · origination", [
         ("origination.html", "Fair / market / difference"),
         ("price-annex.html", "Price-snapshot store"),
+        # Session arena/d0bec048-korea1: the append-only price-observation store, the
+        # open/close derivation and the origination order.
+        ("prices.html", "Price observations"),
     ]),
     ("Pick it · signal, staking, gates", [
         ("signal-staking.html", "Signal vs staking"),

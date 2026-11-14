@@ -63,6 +63,17 @@ SUGGESTION_REGISTERS = [
                   option_a="", option_b="", option_c="", recommended="how_to_verify",
                   effort="cost_risk", risk="evidence_missing", depends="linked_question", unblocks="",
                   status="status", ref_label="", ref_url="source_url")),
+    # Session arena/d0bec048-korea1: the probability-check and demotion-gate findings
+    # from this session's work, registered so they are reviewable like every other
+    # proposal (the "suggestion-review path" in the brief). Registered last so the
+    # master ids of the four earlier registers do not shift.
+    dict(key="session-d0bec048", path="data/integration/suggestions_d0bec048.csv",
+         register="Session register (2026-11-14, arena/d0bec048-korea1)",
+         page="signal-staking.html", session="arena/d0bec048-korea1",
+         map=dict(id="id", area="area", title="title", problem="problem", proposal="proposal",
+                  option_a="", option_b="", option_c="", recommended="recommendation",
+                  effort="effort", risk="risk", depends="depends_on", unblocks="unblocks",
+                  status="evidence_status", ref_label="official_reference", ref_url="")),
 ]
 
 QUESTION_REGISTERS = [

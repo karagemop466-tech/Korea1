@@ -204,6 +204,108 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame]:
     return out, pd.DataFrame(deciles)
 
 
+def probability_check_section() -> str:
+    """The probability check behind every published expected value.
+
+    The expected return on this board is built on a probability, so the
+    probability has to be checked before it is used: it must be the one that
+    belongs to the bet (the same side, the same line) and it must mean what it
+    says (calibration). This section is written by the session that added
+    `pipeline/probability_alignment.py`; if that module has not been run, the
+    section says so rather than disappearing.
+    """
+    align_path = ROOT / "data/integration/probability_alignment.csv"
+    split_path = ROOT / "data/integration/leaderboard_signal_staking.csv"
+    if not align_path.exists():
+        return ('<section><div class="section-head"><h2>4 · The probability check</h2></div>'
+                '<p class="flag warn">The probability check has not been built in this tree. '
+                'Run <code>python pipeline/probability_alignment.py</code> to produce it.</p>'
+                '</section>')
+    def num(v, d=3, signed=True):
+        try:
+            f = float(v)
+        except (TypeError, ValueError):
+            return BLANK
+        if not np.isfinite(f):
+            return BLANK
+        return f"{f:+.{d}f}" if signed else f"{f:.{d}f}"
+
+    def pct(v, signed=True):
+        try:
+            f = float(v)
+        except (TypeError, ValueError):
+            return BLANK
+        if not np.isfinite(f):
+            return BLANK
+        return f"{f:+.2%}" if signed else f"{f:.2%}"
+
+    align = pd.read_csv(align_path)
+    rows = []
+    for r in align.to_dict("records"):
+        rows.append([
+            f'{e(r["market"])} · {e(r["side"])}',
+            f'{int(r["n_bets"]):,}', f'{int(r["n_decided_games"]):,}',
+            num(r["model_mean_probability"], 4, signed=False),
+            num(r["calibrated_mean_probability"], 4, signed=False),
+            num(r["market_mean_probability"], 4, signed=False),
+            num(r["realised_win_rate"], 4, signed=False),
+            num(r["model_minus_realised"], 4),
+            num(r["calibrated_minus_realised"], 4),
+            num(r["brier_model"], 4, signed=False), num(r["brier_calibrated"], 4, signed=False),
+            clean(r["line_alignment"]), clean(r["side_alignment"]),
+            ref_link("NFL scores", URL_NFL),
+        ])
+    luck_rows = []
+    if split_path.exists():
+        split = pd.read_csv(split_path).sort_values("luck_gap_roi", ascending=False)
+        for r in split.to_dict("records"):
+            luck_rows.append([
+                f'<code>{e(r["strategy"])}</code>',
+                f'{int(r["n_bets"]):,}',
+                pct(r["signal_expected_roi_per_bet"]),
+                pct(r["signal_expected_roi_per_bet_calibrated"]),
+                pct(r["staking_realised_roi"]),
+                pct(r["luck_gap_roi"]),
+                pct(r["luck_gap_roi_uncalibrated"]),
+                ref_link("NFL scores", URL_NFL),
+            ])
+    return f"""
+<section>
+<div class="section-head"><h2>4 · The probability check behind every expected value</h2></div>
+<p>Two tests, and they are different questions. <strong>Alignment:</strong> the probability must be
+the one that belongs to the bet — the same side, and the same line the bet was taken at.
+<strong>Calibration:</strong> the probability must mean what it says; a model that claims 55% where
+the outcome happens 51% of the time produces an expected return that is only a measure of its own
+over-confidence.</p>
+<p>The alignment check passes for every market and side: each bet was taken at the line its
+probability was computed at, and each probability moves with the outcome it describes. The
+calibration check does <em>not</em> pass on the model's own numbers, so the expectation used in the
+luck gap below is computed from a <strong>walk-forward recalibration</strong>: the mapping is fitted
+only on earlier seasons and applied to the season in hand, with the market's de-vigged price as a
+second feature, because the model's error on longshots is far larger than its average error. No
+game is calibrated with knowledge of a later result.</p>
+{table(rows, ["Market · side", "Bets", "Decided games", "Model's mean probability",
+              "Calibrated mean probability", "Market's mean probability", "Realised win rate",
+              "Model − realised", "Calibrated − realised", "Brier (model)", "Brier (calibrated)",
+              "Line alignment", "Side alignment", "Official source"],
+       caption="Alignment and calibration for every probability the leaderboard uses")}
+<p><strong>The luck gap.</strong> The gap between the realised return and the return the signal said
+to expect. A large positive gap is a strategy that got lucky; a large negative gap is a strategy
+whose edge was real and was not paid. The gap against the <em>uncalibrated</em> expectation is
+published beside it, and it is far larger — an expectation built from an over-confident probability
+reports the over-confidence rather than the luck, which is exactly the mistake this check exists to
+catch.</p>
+{table(luck_rows or [["—"] * 8],
+       ["Strategy", "Bets", "Expected return (model)", "Expected return (calibrated)",
+        "Realised return", "Luck gap (calibrated)", "Luck gap (model)", "Official source"],
+       caption="The luck gap per strategy: the realised return against the calibrated expectation")}
+<p><a href="assets/data/probability_alignment.csv">probability_alignment.csv</a> ·
+<a href="assets/data/bet_expectations.csv">bet_expectations.csv</a> ·
+<a href="assets/data/leaderboard_signal_staking.csv">leaderboard_signal_staking.csv</a></p>
+</section>
+"""
+
+
 def build_page(out: pd.DataFrame, dec: pd.DataFrame) -> str:
     def pct(v):
         return BLANK if not np.isfinite(v) else f"{v:+.2%}"
@@ -247,6 +349,7 @@ def build_page(out: pd.DataFrame, dec: pd.DataFrame) -> str:
         f'<div class="card bad">{n_luck}<div class="card-label">positive ROI with no signal evidence</div>'
         f'<div class="card-note">a lucky staking run: ranked below every real signal</div></div>'
         "</div>")
+    probability_check = probability_check_section()
     body = f"""
 <p class="flag info"><strong>What this page is.</strong> Requirement 5 of the 2026-11-14 brief: the
 leaderboard now has <strong>two independent tests</strong> and two verdicts. The <em>signal</em>
@@ -296,8 +399,9 @@ if it survives on data the test has never seen — which is what the forward led
 demotion gate on <a href="demotion.html">Demotion &amp; promotion</a> sends a strategy back to paper
 when its live signal evidence disappears.</p>
 </section>
+{probability_check}
 <section>
-<div class="section-head"><h2>4 · Downloads</h2></div>
+<div class="section-head"><h2>5 · Downloads</h2></div>
 <ul>
 <li><a href="assets/data/signal_staking.csv">signal_staking.csv</a> — both tests, both verdicts.</li>
 <li><a href="assets/data/signal_deciles.csv">signal_deciles.csv</a> — the decile table for every

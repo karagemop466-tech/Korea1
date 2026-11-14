@@ -1,0 +1,4 @@
+step,market,label,depends_on,description,published_as
+1,SPREAD,the side,predicted home margin (ensemble),"The side is originated first: the ensemble's home margin is mapped to a handicap through the same empirical residual distribution that prices pushes, so the spread is the first number a board can show.","fair_spread, market_spread, difference"
+2,TOTAL,the total,predicted game total (ensemble),"The total is originated second and independently of the side: it is a separate two-member ensemble over the same walk-forward training windows, so no information from the spread leaks into it.","fair_total, market_total, difference"
+3,MONEYLINE,the moneyline,step 1 — the same home-margin prediction,"The moneyline is originated third because it is priced from the side's margin prediction: the win/tie/loss probabilities come from the margin distribution at zero, and the two-way quote adds the modelled hold.","originated odds, market odds, probability difference"
