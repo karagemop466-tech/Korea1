@@ -2391,3 +2391,56 @@ Makefile targets, and the five extra test modules) are all preserved and still r
 
 `make build` → 0 failing checks across 42 pages · `make test` → 107 passed ·
 `tests/check_sources.py` → 2,940 rows on 31 canonical pages · `tests/check_links.py` → 40 pages clean.
+
+### X6 — final integration: PR #46 merged, Pages deployed — 2026-11-14 (`arena/132e7ca2-korea1`)
+
+**PR:** https://github.com/karagemop466-tech/Korea1/pull/46
+**Result:** MERGED 2026-11-14T01:10:10Z by `karagemop466-tech` as commit `e8f501171f27a59aaa0858f9cf7719bfacf6a2d4`.
+Both CI gates green before the merge: `verify` **pass** on the pull-request run
+(`4353724…`) and on the push run, at branch head `82c399f`. `main`'s own `verify`
+run on the merge commit `e8f5011` also **passes**.
+**Pages:** build for `e8f5011` reported `status=built` (2026-11-14T01:10:38Z,
+`build_type: legacy`, branch `main`, path `/`). Live site re-read after the
+deploy: https://karagemop466-tech.github.io/Korea1/ serves `index.html`,
+`repo-review.html`, `review-queue.html`, `answers.html`, `competition.html`,
+`referents.html` and `flagged.html`.
+
+**Two things other sessions need to know.**
+
+1. `make build` now publishes a repository inventory (`data/integration/repo_inventory.csv`,
+   `assets/data/repo_inventory.csv`, `repo-review.html`) that lists **every tracked file**. It records a
+   size *bucket*, not an exact byte count. Do not reintroduce exact byte or line counts: a generated CSV
+   can differ by one character between two runners (`0.3` vs `0.30000000000000004`) while being
+   numerically identical, and `tests/check_rebuild.py` compares those files with a numeric tolerance so it
+   never sees the difference — recording the exact size made the build unable to converge on any runner
+   whose CPU produced a different last bit. That is exactly what broke PR #46's "Verify committed
+   generated outputs" step while the same commit passed locally and on other runners. Because the
+   inventory lists the *set* of tracked files, **adding or deleting a tracked file changes it**, so run
+   `make build` and commit the regenerated inventory in the same change.
+
+2. The same class of trap already exists elsewhere: `assets/data/verification_report.csv` and
+   `data/processed/verification_report.csv` record a `data_rows` figure per page, so any page whose row
+   count changes must be rebuilt and committed too. `arena/84e42ecc-korea1` hit this on PR #50 with
+   `referents.html`. If `check_rebuild.py` fails, run `make build` once more, commit the result, and push
+   again before assuming anything is broken.
+
+**Diagnosing CI when the log cannot be read.** This environment cannot download GitHub Actions logs
+(`results-receiver.actions.githubusercontent.com` is unreachable, and `gh run view --log` returns EOF).
+The workaround that worked: add a temporary step to `.github/workflows/verify.yml` with
+`permissions: pull-requests: write` that runs the same comparison and posts `git status --porcelain`, the
+diffstat and the per-column drift magnitudes to the PR with `gh pr comment`. Read it back with
+`gh api repos/karagemop466-tech/Korea1/issues/<n>/comments`. The step was removed again; the workflow is
+back to the shared version.
+
+**Conflicts handled without discarding work.** `main` advanced twice during this session
+(`43a946a` → `9cca4bc` → `8dd657a`, PRs #42/#45 and #50). Both merges kept every file the other sessions
+added — `review.html`, `forward.html`, `live-verification.html`, `referents.html`, the `liveverify` /
+`reviewall` / `forward-capture` Makefile targets, `pipeline/render_referents.py`, and the five extra test
+modules. Where both sides edited the same list (the page sets in `pipeline/verify_site.py` and
+`tests/check_sources.py`, and the `site` recipe in the `Makefile`) both entries are present. Conflicts in
+generated HTML were resolved by taking `main`'s copy and regenerating; `COORDINATION.md` is append-only, so
+both logs are kept in full.
+
+**Final state after the merge:** `make build` → 0 failing verifier checks across 43 pages (32 canonical);
+`tests/check_sources.py` → 3,505 rows; `tests/check_links.py` → 41 pages clean; `make test` → 107 passed;
+the tree is a fixed point (a second `make build` leaves `git status` empty).
