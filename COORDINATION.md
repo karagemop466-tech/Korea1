@@ -2444,3 +2444,46 @@ both logs are kept in full.
 **Final state after the merge:** `make build` → 0 failing verifier checks across 43 pages (32 canonical);
 `tests/check_sources.py` → 3,505 rows; `tests/check_links.py` → 41 pages clean; `make test` → 107 passed;
 the tree is a fixed point (a second `make build` leaves `git status` empty).
+
+---
+
+## 2026-11-14 — Session `arena/1f7d4b84-korea1` — P1–P8: origination stack, verified results, signal/staking split, demotion gate
+
+**Board read first (2026-11-14).** `origin/main` tip at claim time is `81836b63edb768f6b13e4512c6827c3b256a66b8`
+("availability: official snapshot 2026-11-14T17:10Z"). Every board row above is `done` except three rows that
+are **stale labels on branches that were merged** (T8, T11 by `arena/592a2d62-korea1`/`arena/92019668-korea1`;
+T24 by `arena/beafe2ae-korea1`, PR #40) and the `in progress` rows for FW1–FW5 (`arena/9e3e144b-korea1`,
+merged by PR #34) and G1–G6 (`arena/d6b3fd34-korea1`, merged by PR #33). Those rows are left exactly as their
+owners wrote them; nothing is renumbered.
+
+**Open pull requests at claim time, none touched:** #19 (`arena/5b3f0799-korea1`), #24 (`arena/3e57f750-korea1`),
+#30 (`arena/f115e6a2-korea1`), #38 (`arena/d58198fc-korea1`), #47 (`arena/534e771f-korea1`), #48
+(`arena/beafe2ae-korea1`). All are stale (no commit since 2026-11-02/13) or their content is already merged
+by another branch. This session does not close, rebase, force-push or merge any of them; the staleness is
+recorded here instead, per board rule 3.
+
+**Protocol deviation, recorded.** The Arena platform pins this session to `arena/1f7d4b84-korea1`; it cannot
+create a `session-<id>/<task>` branch. This branch is therefore both the task branch and the final
+integration branch, the same convention every earlier session recorded.
+
+**Why this session exists.** The brief asks for eight concrete features. The repository already contains most
+of the surrounding machinery, but a line-by-line read of the merged tree shows the eight items below are
+**not** yet present in the shipped build, and three of them are prerequisites for the others. This session
+adds them additively, in non-colliding paths, and then integrates them.
+
+| # | Task | Status | Owner (session ID) | File scope (all new unless stated) |
+|---|------|--------|--------------------|------------------------------------|
+| P1 | **Verified results feed** — the authoritative settlement source: every final score transcribed from an official NFL.com page with the page URL, the capture timestamp and the quoted heading; reconciliation against the pinned mirror; per-week coverage | in progress | `arena/1f7d4b84-korea1` | `pipeline/results_feed.py`, `data/processed/verified_results.csv`, `data/processed/verified_results_coverage.csv`, `data/evidence/official_results/**`, `results.html`, `pipeline/render_new_pages.py` |
+| P2 | **Price-snapshot store** — opening *and* closing numbers for every market we originate (spread, total, moneyline), with the provenance class of each number | in progress | `arena/1f7d4b84-korea1` | `pipeline/price_snapshots.py`, `data/processed/price_snapshots.csv`, `data/processed/price_snapshot_coverage.csv`, `prices.html` |
+| P3 | **Origination order** — side first, then total, then moneyline, enforced in code; fair line, market line and difference published as three separate columns | in progress | `arena/1f7d4b84-korea1` | `pipeline/origination.py`, `data/processed/origination_board.csv`, `pipeline/models.py` (three explicit stages; the arithmetic is unchanged) |
+| P4 | **Signal vs staking** — two separate leaderboards so a lucky staking run cannot mask a bad signal | in progress | `arena/1f7d4b84-korea1` | `pipeline/leaderboard.py`, `data/processed/{signal_leaderboard,staking_leaderboard,leaderboard_divergence}.csv` |
+| P5 | **Demotion gate** — a live strategy that trips a demotion trigger returns to paper | in progress | `arena/1f7d4b84-korea1` | `pipeline/demotion.py`, `data/processed/{demotion_policy,demotion_gates}.csv` |
+| P6 | **Depth of the replacement** — for each official absence, the *string level* of the replacement from the club's own published depth chart, not only the fact of the absence | in progress | `arena/1f7d4b84-korea1` | `pipeline/replacement_depth.py`, `data/processed/replacement_depth.csv` |
+| P7 | **Correlations from officially sourced numbers only**, with `n` published next to every value | in progress | `arena/1f7d4b84-korea1` | `pipeline/official_correlations.py`, `data/processed/corr_official_only.csv` |
+| P8 | **Final integration** — nav, index cards, executive summary, requirements rows, flagged rows, verifier/link wiring, PR → `main`, merge, Pages deploy, record | in progress | `arena/1f7d4b84-korea1` | `pipeline/render_site.py` (NAV/index/exec/requirements/flagged only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (page set only), `tests/check_links.py` (page set only), `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md` (generated), `COORDINATION.md` (own section), root `*.html` (generated) |
+
+**Not claimed and not edited by this session:** `data/processed/**` owned by T1–T5 (read only), `data/availability/**`,
+`data/forward/**`, `data/review/**`, `data/governance/**`, `data/live/**`, `data/evidence/nfl_injuries/**`,
+`data/lab/**`, `assets/**` (except generated copies written by the site renderer), `lab/**`, `scripts/**`,
+`analysis/**`, `research/**`, `archive/**`, `.github/workflows/**`, and every root `*.html` that is not generated
+by the renderers this session touches.
