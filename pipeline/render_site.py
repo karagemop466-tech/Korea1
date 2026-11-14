@@ -49,6 +49,11 @@ NAV_GROUPS = [
         ("executive-summary.html", "Executive summary"),
     ]),
     ("Decide", [
+        # R7-09 (session arena/7da09b4d-korea1): the decision surface for this
+        # session's proposals, and the register of questions that must be settled
+        # before a path is chosen.
+        ("suggestions-hub.html", "Suggestions hub"),
+        ("decision-questions-2026-11-14.html", "Decision questions"),
         ("review.html", "Review & choose a path"),
         # X2/X3 (session arena/132e7ca2-korea1): a second, independent merge of the same
         # registers - clustered, with the source register on every row.
@@ -62,6 +67,12 @@ NAV_GROUPS = [
         ("flagged.html", "Flagged for review"),
     ]),
     ("Lines & strategies", [
+        # R7-01 … R7-08 (session arena/7da09b4d-korea1): one page per requirement.
+        ("prices.html", "Price snapshots"),
+        ("results.html", "Verified results"),
+        ("three-columns.html", "Order & three columns"),
+        ("signal-staking.html", "Signal vs staking"),
+        ("demotion.html", "Demotion gate"),
         ("lines.html", "Originated lines"),
         ("strategies.html", "Leaderboard"),
         ("forward.html", "Forward test record"),
@@ -69,9 +80,13 @@ NAV_GROUPS = [
         ("competition.html", "Competition & rewards"),
         ("validation.html", "Validation gates"),
         ("correlations.html", "Correlations"),
+        # R7-07 (session arena/7da09b4d-korea1).
+        ("official-correlations.html", "Official correlations"),
         ("props.html", "Player props"),
     ]),
     ("Availability", [
+        # R7-06 (session arena/7da09b4d-korea1).
+        ("replacement-depth.html", "Replacement depth"),
         ("availability.html", "Injuries & depth · all clubs"),
         ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
         ("injuries.html", "Injury source audit"),

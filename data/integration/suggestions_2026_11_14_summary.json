@@ -1,0 +1,11 @@
+{
+  "proposals": 10,
+  "by_path": {
+    "A": 4,
+    "B": 3,
+    "D": 2,
+    "C": 1
+  },
+  "implemented": 0,
+  "note": "Every proposal is a proposal. The measurement behind it is done; the change is not."
+}

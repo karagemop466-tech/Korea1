@@ -1,0 +1,93 @@
+{
+  "rows": 17549,
+  "games": 6073,
+  "seasons": [
+    2004,
+    2026
+  ],
+  "rows_by_market": {
+    "SIDE": 6073,
+    "TOTAL": 6073,
+    "MONEYLINE": 5403
+  },
+  "rows_with_a_market_line": 17549,
+  "rows_fair_only": 0,
+  "difference_recomputed_ok": true,
+  "max_recompute_error": 0.0,
+  "sign_convention": "difference = fair_line − market_line. SIDE and TOTAL are in points on the home handicap / combined-score scale. MONEYLINE is in probability points, because two American prices cannot be subtracted across the vig.",
+  "columns": [
+    {
+      "column": "fair_line",
+      "market": "SIDE",
+      "definition": "model home handicap = − (predicted home margin)",
+      "units": "points",
+      "status": "MODEL ESTIMATE",
+      "who_computes_it": "pipeline/models.py"
+    },
+    {
+      "column": "market_line",
+      "market": "SIDE",
+      "definition": "archived home handicap for the same game",
+      "units": "points",
+      "status": "ARCHIVE PRICE · UNVERIFIED",
+      "who_computes_it": "nflverse/nfldata games.csv spread_line, sign inverted to the home handicap"
+    },
+    {
+      "column": "difference",
+      "market": "SIDE",
+      "definition": "fair_line − market_line; positive = model likes the HOME side more than the market",
+      "units": "points",
+      "status": "DERIVED · recomputed at build",
+      "who_computes_it": "this module"
+    },
+    {
+      "column": "fair_line",
+      "market": "TOTAL",
+      "definition": "model expected combined score",
+      "units": "points",
+      "status": "MODEL ESTIMATE",
+      "who_computes_it": "pipeline/models.py"
+    },
+    {
+      "column": "market_line",
+      "market": "TOTAL",
+      "definition": "archived total for the same game",
+      "units": "points",
+      "status": "ARCHIVE PRICE · UNVERIFIED",
+      "who_computes_it": "nflverse/nfldata games.csv total_line"
+    },
+    {
+      "column": "difference",
+      "market": "TOTAL",
+      "definition": "fair_line − market_line; positive = model expects more points than the market",
+      "units": "points",
+      "status": "DERIVED · recomputed at build",
+      "who_computes_it": "this module"
+    },
+    {
+      "column": "fair_line",
+      "market": "MONEYLINE",
+      "definition": "model no-tie home win probability",
+      "units": "probability",
+      "status": "MODEL ESTIMATE",
+      "who_computes_it": "pipeline/models.py"
+    },
+    {
+      "column": "market_line",
+      "market": "MONEYLINE",
+      "definition": "de-vigged home win probability implied by the archived two-way moneyline",
+      "units": "probability",
+      "status": "ARCHIVE PRICE · UNVERIFIED",
+      "who_computes_it": "multiplicative de-vig of games.csv home/away moneyline"
+    },
+    {
+      "column": "difference",
+      "market": "MONEYLINE",
+      "definition": "fair_line − market_line; positive = model rates the home team higher than the market",
+      "units": "probability points",
+      "status": "DERIVED · recomputed at build",
+      "who_computes_it": "this module"
+    }
+  ],
+  "boundary": "A fair line is a model estimate and a market line from this archive is an undated community value. The difference is arithmetic over the two; it is not an edge, because an edge requires an authenticated executable price."
+}

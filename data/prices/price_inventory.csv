@@ -1,0 +1,78 @@
+season,market,games_undated,games_initial,games_closing,games_with_price_any_kind,initial_vs_closing_overlap,undated_vs_closing_overlap,initial_to_closing_pairs,initial_to_closing_mean_move,initial_to_closing_sd_move,undated_vs_closing_disagreements,undated_vs_closing_median_abs_gap,movement_status
+1999,SPREAD,259,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+1999,TOTAL,259,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2000,SPREAD,259,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2000,TOTAL,259,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2001,SPREAD,259,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2001,TOTAL,259,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2002,SPREAD,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2002,TOTAL,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2003,SPREAD,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2003,TOTAL,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2004,SPREAD,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2004,TOTAL,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2005,SPREAD,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2005,TOTAL,267,0,0,0,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2006,MONEYLINE,220,0,267,267,0,220,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2006,SPREAD,267,0,267,220,0,267,0,,,206,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2006,TOTAL,267,0,267,217,0,267,0,,,278,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2007,MONEYLINE,266,0,266,267,0,265,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2007,SPREAD,267,0,266,266,0,266,0,,,208,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2007,TOTAL,267,0,266,266,0,266,0,,,282,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2008,MONEYLINE,194,0,265,267,0,192,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2008,SPREAD,267,0,265,194,0,265,0,,,186,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2008,TOTAL,267,0,265,194,0,265,0,,,216,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2009,MONEYLINE,253,0,265,267,0,251,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2009,SPREAD,267,0,265,253,0,265,0,,,236,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2009,TOTAL,267,0,265,253,0,265,0,,,206,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2010,MONEYLINE,267,0,262,267,0,262,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2010,SPREAD,267,0,262,267,0,262,0,,,196,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2010,TOTAL,267,0,262,267,0,262,0,,,182,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2011,MONEYLINE,267,0,265,267,0,265,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2011,SPREAD,267,0,265,267,0,265,0,,,184,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2011,TOTAL,267,0,265,267,0,265,0,,,192,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2012,MONEYLINE,267,0,266,267,0,266,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2012,SPREAD,267,0,266,267,0,266,0,,,198,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2012,TOTAL,267,0,266,267,0,266,0,,,242,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2013,MONEYLINE,267,0,265,267,0,265,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2013,SPREAD,267,0,265,267,0,265,0,,,238,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2013,TOTAL,267,0,265,267,0,265,0,,,318,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2014,MONEYLINE,267,0,263,267,0,263,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2014,SPREAD,267,0,263,267,0,263,0,,,220,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2014,TOTAL,267,0,263,267,0,263,0,,,276,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2015,MONEYLINE,267,0,263,267,0,263,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2015,SPREAD,267,0,263,267,0,263,0,,,172,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2015,TOTAL,267,0,263,267,0,263,0,,,208,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2016,MONEYLINE,267,0,248,267,0,248,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2016,SPREAD,267,0,248,267,0,248,0,,,148,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2016,TOTAL,267,0,248,267,0,248,0,,,168,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2017,MONEYLINE,266,0,249,267,0,248,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2017,SPREAD,267,0,249,267,0,249,0,,,6,1.0,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2017,TOTAL,267,0,249,267,0,249,0,,,4,1.0,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2018,MONEYLINE,267,0,224,267,0,224,0,,,0,,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2018,SPREAD,267,0,224,267,0,224,0,,,4,0.75,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2018,TOTAL,267,0,224,267,0,224,0,,,8,0.5,BLANK — movement needs two named instruments; only an undated and a closing series exist
+2019,MONEYLINE,267,0,0,267,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2019,SPREAD,267,0,0,267,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2019,TOTAL,267,0,0,267,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2020,MONEYLINE,269,0,0,269,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2020,SPREAD,269,0,0,269,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2020,TOTAL,269,0,0,269,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2021,MONEYLINE,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2021,SPREAD,285,272,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2021,TOTAL,285,272,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2022,MONEYLINE,284,0,0,284,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2022,SPREAD,284,0,0,284,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2022,TOTAL,284,0,0,284,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2023,MONEYLINE,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2023,SPREAD,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2023,TOTAL,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2024,MONEYLINE,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2024,SPREAD,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2024,TOTAL,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2025,MONEYLINE,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2025,SPREAD,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2025,TOTAL,285,0,0,285,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2026,MONEYLINE,136,0,0,136,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2026,SPREAD,136,0,0,136,0,0,0,,,0,,BLANK — no second instrument covers this season at all
+2026,TOTAL,136,0,0,136,0,0,0,,,0,,BLANK — no second instrument covers this season at all

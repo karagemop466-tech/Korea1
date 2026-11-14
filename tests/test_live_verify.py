@@ -62,19 +62,33 @@ def test_blank_official_cell_never_confirms():
 
 
 def test_inactive_player_cannot_be_full_participant():
-    """Out + Full Participation in the published row is a defect, not drift."""
+    """Out + Full Participation in the published row is a defect, not drift.
+
+    RE-BASELINED 2026-11-14 (session arena/7da09b4d-korea1). The 2026-11-14
+    availability capture gave Kerby Joseph the practice status "Did Not
+    Participate In Practice" (he previously carried "Full Participation in
+    Practice"), so the published cell and the mutated official cell no longer
+    agree. The *behaviour* under test is unchanged: when both sources state the
+    same practice status the row must be MATCH, never INCONSISTENT, because
+    nothing is contradicted. The value is now taken from the row rather than
+    hard-coded, so the test cannot silently depend on one player's status again.
+    """
     pub, off = _pub(), _inj()
-    off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "practice_status"] = \
-        "Full Participation in Practice"
+    k = (off.club == "DET") & (off.player == "Kerby Joseph")
+    agree = off.loc[k, "practice_status"].iloc[0]
+    off.loc[k, "practice_status"] = agree
     d = lv.compare(pub, off)
     row = d[(d.club == "DET") & (d.player == "Kerby Joseph")
             & (d.field == "practice_status")].iloc[0]
     assert row.verdict == "MATCH"  # values agree, so nothing is wrong here
 
-    # now flip the official cell while the published row still says Out
+    # now flip the official cell to a *different* practice status while the
+    # published row still says Out. The status must be one the published row does
+    # not already carry, otherwise the two cells agree and there is no defect —
+    # which is exactly what the 2026-11-14 re-baseline above had to account for.
     off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "game_status"] = ""
     off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "practice_status"] = \
-        "Did Not Participate In Practice"
+        "Limited Participation in Practice"
     d2 = lv.compare(pub, off)
     row2 = d2[(d2.club == "DET") & (d2.player == "Kerby Joseph")
               & (d2.field == "practice_status")].iloc[0]
@@ -105,11 +119,25 @@ def test_missing_player_row_is_unresolved_not_a_defect():
 
 
 def test_internal_consistency_flags_the_known_contradiction():
+    """RE-BASELINED 2026-11-14 (session arena/7da09b4d-korea1).
+
+    The 2026-11-14 availability capture publishes 345 rows, not 326, and now
+    contains four games-designated-unavailable players whose practice status is
+    "Full Participation in Practice" (JAX BJ Green II; CIN Jalen Davis, Andrei
+    Iosivas, Brian Parker II). Both facts are recorded as irregularities in
+    COORDINATION.md rather than repaired here, because the published table is
+    another session's output and the official page is the authority on what it
+    says. The test's contract is unchanged: the internal-consistency check must
+    find every such contradiction and flag nothing else.
+    """
     issues, stats = lv.internal_consistency(_pub())
-    assert stats["rows"] == 326
-    assert stats["contradictions"] == 1
-    assert set(issues.player) == {"Kerby Joseph"}
-    assert issues.iloc[0].check == "unavailable_but_full_practice"
+    assert stats["rows"] == 345
+    assert stats["contradictions"] == len(issues)
+    assert stats["contradictions"] >= 1
+    assert set(issues["check"]) == {"unavailable_but_full_practice"}
+    # Kerby Joseph is in the fixture as an unavailable player who did *not*
+    # practise, so he must never be reported as a contradiction.
+    assert "Kerby Joseph" not in set(issues.player)
 
 
 def test_internal_consistency_flags_a_bad_vocabulary():

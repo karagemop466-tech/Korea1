@@ -1,0 +1,12 @@
+{
+  "strategies": 15,
+  "bets": 26188,
+  "positive_signal": 4,
+  "negative_signal": 11,
+  "signal_beats_break_even_at_2sd": 1,
+  "strategies_whose_roi_flips_sign_under_staking": 2,
+  "largest_staking_swing": 0.06404255680133404,
+  "price_tier": "UNVERIFIED PRICE — undated community archive, no book, no timestamp, no limits",
+  "published_as_result": false,
+  "reason_not_published": "A signal score against an unauthenticated price describes the archive, not a bet. The decomposition and the staking-form test are published because they are internal to the ledger and exact; the ROI and hit-rate cells are not promoted to a result."
+}

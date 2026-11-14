@@ -1,0 +1,16 @@
+strategy,gates_passed,gates_total,tickets,price_tier,flat_roi_archive,signal_z,sign_flips_with_staking,promotion_failures,triggers,state,review_due
+BUY_LOW_ATS,0,0,1349,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.010686568551500858,-0.4287328143109552,False,"P3, P4",D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+COLD_UNDER,0,0,278,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.1131379078502613,-1.9678196116479476,False,"P3, P4","D1: no authenticated quote exists for any ticket, D5: signal z = -1.97",DEMOTED TO PAPER,immediately
+DIV_UNDER,0,0,1908,UNAUTHENTICATED COMMUNITY ARCHIVE,0.011154480208537418,0.45341402764898114,False,P4,D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+FADE_BLOWOUT_ATS,0,0,922,UNAUTHENTICATED COMMUNITY ARCHIVE,0.018030964766028744,0.568677389626193,False,P4,D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+HOME_DOG_ATS,0,0,1939,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.0215814251685637,-1.0251890172969726,False,"P3, P4","D1: no authenticated quote exists for any ticket, D5: signal z = -1.03",DEMOTED TO PAPER,immediately
+ML_EDGE_10,0,0,1753,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.03198499612799093,-0.473455862867573,False,"P3, P4",D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+ML_EDGE_5,0,0,3155,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.021932914726256445,-0.04040237735901227,True,"P3, P4, P5","D1: no authenticated quote exists for any ticket, D6: flat ROI and adaptive-stake ROI disagree in sign",DEMOTED TO PAPER,immediately
+REST_ADV_ATS,0,0,515,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.02215706252237688,-0.5023032089852251,False,"P3, P4",D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+ROAD_FAV_ATS,0,0,1939,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.029386656043374593,-1.37633845565521,True,"P3, P4, P5","D1: no authenticated quote exists for any ticket, D5: signal z = -1.38, D6: flat ROI and adaptive-stake ROI disagree in sign",DEMOTED TO PAPER,immediately
+SP_EDGE_1_0,0,0,3941,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.01877619475154744,-1.2939653230882202,False,"P3, P4","D1: no authenticated quote exists for any ticket, D5: signal z = -1.29",DEMOTED TO PAPER,immediately
+SP_EDGE_2_0,0,0,2685,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.0010432310595477879,-0.09792523404648398,False,"P3, P4",D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+SP_EDGE_3_0,0,0,1692,UNAUTHENTICATED COMMUNITY ARCHIVE,0.013951034226010503,0.5358651259141333,False,P4,D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+TOT_EDGE_2_0,0,0,2522,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.013074428566703157,-0.6997950234626017,False,"P3, P4",D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+TOT_EDGE_3_5,0,0,1134,UNAUTHENTICATED COMMUNITY ARCHIVE,-0.02394433587372446,-0.8448470262081886,False,"P3, P4",D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately
+WIND_UNDER,0,0,456,UNAUTHENTICATED COMMUNITY ARCHIVE,0.09150603506087637,2.0615859704362425,False,P4,D1: no authenticated quote exists for any ticket,DEMOTED TO PAPER,immediately

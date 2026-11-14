@@ -1,0 +1,13 @@
+id,name,definition,fail_closed_condition,action
+P1,All eight validation gates,G1..G8 must all be true,a failing gate keeps the strategy on paper,
+P2,Prospective sample,at least 100 settled tickets across at least 8 distinct weeks,"a short, dense sample cannot be distinguished from a lucky run",
+P3,Flat ROI,> 0.00% on the prospective sample,the neutral stake must already be profitable,
+P4,Bootstrap bound,stationary-bootstrap lower bound > 0.00,"the interval, not the point estimate, decides",
+P5,Survives both staking rules,flat and past-only adaptive stake must agree in sign,requirement R7-05: a sign flip under staking is an artefact,
+D1,Evidence tier,"LIVE requires an authenticated, timestamped quote for every ticket",price tier must equal AUTHENTICATED,Demote immediately if any settled ticket lacks an authenticated quote.
+D2,Drawdown,Cumulative loss measured in flat 1-unit stakes since promotion,drawdown > 15 units,Demote on the ticket that breaches the limit.
+D3,Loss streak,Consecutive settled losing tickets,> 12 in a row,Demote on the last loss of the run.
+D4,Recency,Flat-stake ROI over the trailing 25 settled tickets,< -3%,Demote when the trailing window closes below the floor.
+D5,Signal,"Hit rate minus break-even rate, in standard errors",z < -1.00,Demote when the price-free signal turns significantly negative.
+D6,Staking fragility,ROI under a past-only adaptive stake against the flat stake,sign of the flat ROI differs from the adaptive ROI over the same tickets,Demote: a result that only exists at one stake size is a staking artefact.
+D7,Sample decay,Tickets settled since the last rule or data change,fewer than 25 tickets since the last change,Return to PAPER and re-qualify; a changed rule is a new entrant.

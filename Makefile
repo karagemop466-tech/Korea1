@@ -72,6 +72,26 @@ site: injuries review reviewall
 	$(PY) pipeline/render_summary.py
 	$(PY) pipeline/render_readiness.py
 	$(PY) pipeline/render_annex.py
+	# R7-01 … R7-09 (session arena/7da09b4d-korea1), additive. Each requirement has
+	# its own module and its own page; no existing recipe step is changed. The order
+	# matters only in that the modules run before the renderers that read them.
+	$(PY) pipeline/price_snapshots.py
+	$(PY) pipeline/results_feed.py
+	$(PY) pipeline/origination_order.py
+	$(PY) pipeline/three_columns.py
+	$(PY) pipeline/signal_staking.py
+	$(PY) pipeline/replacement_depth.py
+	$(PY) pipeline/official_correlations.py
+	$(PY) pipeline/demotion_gate.py
+	$(PY) pipeline/render_prices.py
+	$(PY) pipeline/render_results.py
+	$(PY) pipeline/render_three_columns.py
+	$(PY) pipeline/render_signal_staking.py
+	$(PY) pipeline/render_replacement.py
+	$(PY) pipeline/render_official_corr.py
+	$(PY) pipeline/render_demotion.py
+	$(PY) pipeline/render_suggestions_hub.py
+	$(PY) pipeline/render_decision_questions.py
 
 # T40 (arena/84e42ecc-korea1): resolve every external URL printed on the site.
 # Needs outbound network access to NFL/club/publisher domains, so `make build` does NOT
@@ -91,7 +111,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_price_snapshots.py tests/test_results_feed.py tests/test_three_columns.py tests/test_signal_staking.py tests/test_replacement_depth.py tests/test_official_correlations.py tests/test_demotion_gate.py tests/test_r7_governance.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives
@@ -105,6 +125,26 @@ forward-capture:
 annex:
 	bash scripts/run_all.sh
 	$(PY) pipeline/render_annex.py
+	# R7-01 … R7-09 (session arena/7da09b4d-korea1), additive. Each requirement has
+	# its own module and its own page; no existing recipe step is changed. The order
+	# matters only in that the modules run before the renderers that read them.
+	$(PY) pipeline/price_snapshots.py
+	$(PY) pipeline/results_feed.py
+	$(PY) pipeline/origination_order.py
+	$(PY) pipeline/three_columns.py
+	$(PY) pipeline/signal_staking.py
+	$(PY) pipeline/replacement_depth.py
+	$(PY) pipeline/official_correlations.py
+	$(PY) pipeline/demotion_gate.py
+	$(PY) pipeline/render_prices.py
+	$(PY) pipeline/render_results.py
+	$(PY) pipeline/render_three_columns.py
+	$(PY) pipeline/render_signal_staking.py
+	$(PY) pipeline/render_replacement.py
+	$(PY) pipeline/render_official_corr.py
+	$(PY) pipeline/render_demotion.py
+	$(PY) pipeline/render_suggestions_hub.py
+	$(PY) pipeline/render_decision_questions.py
 
 build: data model backtest props injuries site verify
 	@echo "build complete — site in repository root/, verification passed"

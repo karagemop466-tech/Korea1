@@ -1,0 +1,43 @@
+{
+  "injury_rows": 376,
+  "teams_in_injury_report": 28,
+  "teams_with_chart": 31,
+  "joined_to_chart": 311,
+  "not_on_chart": 65,
+  "out": 75,
+  "doubtful": 10,
+  "questionable": 87,
+  "no_game_status": 204,
+  "distinct_players_out": 66,
+  "out_with_backup_listed": 44,
+  "out_with_no_listed_backup": 16,
+  "distinct_players_out_with_no_listed_backup": 14,
+  "out_at_depth_1": 38,
+  "out_at_depth_2": 19,
+  "out_at_depth_3": 3,
+  "out_at_depth_4": 0,
+  "affected_slots": 115,
+  "slots_with_top_man_out": 59,
+  "slots_with_a_charted_rank_tie": 5,
+  "slots_where_the_next_man_shares_the_top_rank": 3,
+  "replacement_depth_counts": {
+    "1st string": 23,
+    "2nd string": 33,
+    "3rd string": 0,
+    "4th string": 0,
+    "5th string": 0,
+    "NOBODY LISTED": 3
+  },
+  "deep_replacement_cases": 0,
+  "slots_needing_a_3rd_string_or_deeper": 0,
+  "teams_missing_from_chart": [
+    "HOU"
+  ],
+  "injury_capture_utc": [
+    "2026-11-14T17:10:05Z"
+  ],
+  "depth_capture_utc": [
+    "2026-11-14T17:10:05Z"
+  ],
+  "boundary": "A chart rank is a published position, not evidence of a snap. Both sources are undated snapshots captured at the time shown; neither states a kickoff-relative time, so no row asserts who will start."
+}

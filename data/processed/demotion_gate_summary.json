@@ -1,0 +1,35 @@
+{
+  "registered_utc": "2026-11-14T20:15Z",
+  "thresholds": {
+    "PROMOTE_MIN_TICKETS": 100,
+    "PROMOTE_MIN_WEEKS": 8,
+    "PROMOTE_MIN_FLAT_ROI": 0.0,
+    "PROMOTE_BOOT_LO": 0.0,
+    "DEMOTE_MAX_DRAWDOWN_UNITS": 15.0,
+    "DEMOTE_MAX_LOSS_STREAK": 12,
+    "DEMOTE_MIN_ROI_RECENCY": -0.03,
+    "DEMOTE_SIGNAL_Z_FLOOR": -1.0,
+    "DEMOTE_PRICE_TIER": "AUTHENTICATED"
+  },
+  "strategies": 15,
+  "live": 0,
+  "demoted": 15,
+  "paper": 0,
+  "trigger_counts": {
+    "D1": 15,
+    "D2": 0,
+    "D3": 0,
+    "D4": 0,
+    "D5": 4,
+    "D6": 2,
+    "D7": 0
+  },
+  "promotion_failures": {
+    "P1": 0,
+    "P2": 0,
+    "P3": 11,
+    "P4": 15,
+    "P5": 2
+  },
+  "unreachable": "P4 requires a stationary-bootstrap bound over authenticated prices. No authenticated price exists in this project, so P4 is false for every strategy and the LIVE state is unreachable by construction."
+}

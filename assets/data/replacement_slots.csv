@@ -1,0 +1,116 @@
+team,unit,chart_slot,chart_position,chart_slot_size,out,doubtful_or_questionable,top_out_rank,highest_listed_available_rank,listed_available,backup_man_is_depth,next_man_listed,chart_has_rank_tie,next_man_shares_top_rank,depth_chart_url,injury_report_url
+ARI,Defense,ARI Defense slot 12 DT,DT,2,0,1,,1,2,1st string,Dante Stills,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ARI,Defense,ARI Defense slot 13 NT,NT,2,0,1,,1,2,1st string,Roy Lopez,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ARI,Defense,ARI Defense slot 20 CB,CB,2,0,1,,1,2,1st string,Max Melton,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ARI,Defense,ARI Defense slot 22 S,S,2,0,1,,1,2,1st string,Andrew Wingard,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ARI,Offense,ARI Offense slot 2 LT,LT,2,0,1,,1,2,1st string,Jayden Williams,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ARI,Offense,ARI Offense slot 4 C,C,2,1,0,1.0,2,1,2nd string,Kingsley Eguakun,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ARI,Offense,ARI Offense slot 5 RG,RG,2,1,0,2.0,1,1,1st string,Isaiah Adams,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ARI,Special Teams,ARI Special Teams slot 28 KR,KR,3,0,1,,1,3,1st string,Devin Duvernay,False,False,https://www.azcardinals.com/team/depth-chart,https://www.azcardinals.com/team/depth-chart
+ATL,Defense,ATL Defense slot 14 DL,DL,2,0,1,,1,2,1st string,Maason Smith,False,False,https://www.atlantafalcons.com/team/depth-chart,https://www.atlantafalcons.com/team/depth-chart
+ATL,Defense,ATL Defense slot 16 DE,DE,3,0,1,,1,3,1st string,Brandon Dorlus,False,False,https://www.atlantafalcons.com/team/depth-chart,https://www.atlantafalcons.com/team/depth-chart
+ATL,Defense,ATL Defense slot 17 ILB,ILB,3,0,2,,1,3,1st string,Divine Deablo,False,False,https://www.atlantafalcons.com/team/depth-chart,https://www.atlantafalcons.com/team/depth-chart
+ATL,Offense,ATL Offense slot 11 WR,WR,2,1,0,2.0,1,1,1st string,Olamide Zaccheaus,False,False,https://www.atlantafalcons.com/team/depth-chart,https://www.atlantafalcons.com/team/depth-chart
+ATL,Special Teams,ATL Special Teams slot 27 PR,PR,3,1,0,1.0,2,2,2nd string,Olamide Zaccheaus,False,False,https://www.atlantafalcons.com/team/depth-chart,https://www.atlantafalcons.com/team/depth-chart
+ATL,Special Teams,ATL Special Teams slot 28 KR,KR,3,1,0,2.0,1,2,1st string,Olamide Zaccheaus,False,False,https://www.atlantafalcons.com/team/depth-chart,https://www.atlantafalcons.com/team/depth-chart
+BUF,Defense,BUF Defense slot 19 CB,CB,2,0,1,,1,2,1st string,Christian Benford,False,False,https://www.buffalobills.com/team/depth-chart,https://www.buffalobills.com/team/depth-chart
+BUF,Defense,BUF Defense slot 22 S,S,2,0,1,,1,2,1st string,Damar Hamlin,False,False,https://www.buffalobills.com/team/depth-chart,https://www.buffalobills.com/team/depth-chart
+BUF,Offense,BUF Offense slot 6 RT,RT,2,0,1,,1,2,1st string,Spencer Brown,False,False,https://www.buffalobills.com/team/depth-chart,https://www.buffalobills.com/team/depth-chart
+CAR,Defense,CAR Defense slot 17 LB,LB,2,1,0,1.0,2,1,2nd string,Tyrel Dodson,False,False,https://www.panthers.com/team/depth-chart,https://www.panthers.com/team/depth-chart
+CAR,Defense,CAR Defense slot 18 OLB,OLB,2,0,1,,1,2,1st string,Jaelan Phillips,False,False,https://www.panthers.com/team/depth-chart,https://www.panthers.com/team/depth-chart
+CAR,Defense,CAR Defense slot 20 CB,CB,1,0,1,,1,1,1st string,Will Lee III,False,False,https://www.panthers.com/team/depth-chart,https://www.panthers.com/team/depth-chart
+CIN,Defense,CIN Defense slot 22 S,S,3,1,0,2.0,1,2,1st string,Jordan Battle,False,False,https://www.bengals.com/team/depth-chart,https://www.bengals.com/team/depth-chart
+CLE,Offense,CLE Offense slot 7 WR,WR,2,0,1,,1,2,1st string,Denzel Boston,False,False,https://www.clevelandbrowns.com/team/depth-chart,https://www.clevelandbrowns.com/team/depth-chart
+CLE,Offense,CLE Offense slot 9 RB,RB,4,1,0,3.0,1,3,1st string,Quinshon Judkins,False,False,https://www.clevelandbrowns.com/team/depth-chart,https://www.clevelandbrowns.com/team/depth-chart
+CLE,Special Teams,CLE Special Teams slot 27 PR,PR,2,0,1,,1,2,1st string,KC Concepcion Jr.,False,False,https://www.clevelandbrowns.com/team/depth-chart,https://www.clevelandbrowns.com/team/depth-chart
+DAL,Defense,DAL Defense slot 16 OLB,OLB,3,1,0,1.0,2,2,2nd string,James Houston,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Defense,DAL Defense slot 20 CB,CB,3,0,1,,1,3,1st string,Joey Porter Jr.,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Defense,DAL Defense slot 22 CB,CB,2,0,1,,1,2,1st string,DaRon Bland,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Defense,DAL Defense slot 23 S,S,3,1,1,1.0,1,2,1st string,Markquese Bell,True,True,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Defense,DAL Defense slot 24 S,S,2,0,1,,1,2,1st string,Malik Hooker,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Offense,DAL Offense slot 11 RB,RB,2,1,0,2.0,1,1,1st string,Javonte Williams,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Offense,DAL Offense slot 7 TE,TE,3,1,0,1.0,1,2,1st string,Brevyn Spann-Ford,True,True,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Offense,DAL Offense slot 9 WR,WR,2,1,0,2.0,1,1,1st string,CeeDee Lamb,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Special Teams,DAL Special Teams slot 29 KR,KR,3,2,0,2.0,1,1,1st string,KaVontae Turpin,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DAL,Special Teams,DAL Special Teams slot 30 PR,PR,3,1,0,2.0,1,2,1st string,KaVontae Turpin,False,False,https://www.dallascowboys.com/team/depth-chart,https://www.dallascowboys.com/team/depth-chart
+DET,Defense,DET Defense slot 19 CB,CB,4,1,0,1.0,2,3,2nd string,Rock Ya-Sin,False,False,https://www.detroitlions.com/team/depth-chart,https://www.detroitlions.com/team/depth-chart
+DET,Offense,DET Offense slot 11 RB,RB,3,0,1,,1,3,1st string,Jahmyr Gibbs,False,False,https://www.detroitlions.com/team/depth-chart,https://www.detroitlions.com/team/depth-chart
+DET,Offense,DET Offense slot 2 WR,WR,2,0,1,,1,2,1st string,Amon-Ra St. Brown,False,False,https://www.detroitlions.com/team/depth-chart,https://www.detroitlions.com/team/depth-chart
+DET,Offense,DET Offense slot 5 C,C,2,1,0,1.0,2,1,2nd string,Juice Scruggs,False,False,https://www.detroitlions.com/team/depth-chart,https://www.detroitlions.com/team/depth-chart
+GB,Defense,GB Defense slot 14 EDGE,EDGE,2,0,1,,1,2,1st string,Lukas Van Ness,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+GB,Defense,GB Defense slot 15 LB,LB,3,0,1,,1,3,1st string,Zaire Franklin,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+GB,Defense,GB Defense slot 20 S,S,2,0,1,,1,2,1st string,Xavier McKinney,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+GB,Defense,GB Defense slot 22 NB,NB,2,0,1,,1,2,1st string,Javon Bullard,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+GB,Offense,GB Offense slot 11 RB,RB,3,1,0,1.0,2,2,2nd string,MarShawn Lloyd,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+GB,Offense,GB Offense slot 4 LG,LG,3,0,1,,1,3,1st string,Aaron Banks,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+GB,Offense,GB Offense slot 5 C,C,2,1,0,1.0,2,1,2nd string,Jager Burton,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+GB,Offense,GB Offense slot 6 RG,RG,2,0,1,,1,2,1st string,Laken Tomlinson,False,False,https://www.packers.com/team/depth-chart,https://www.packers.com/team/depth-chart
+IND,Defense,IND Defense slot 14 NT,NT,3,1,0,2.0,1,2,1st string,Grover Stewart,False,False,https://www.colts.com/team/depth-chart,https://www.colts.com/team/depth-chart
+IND,Defense,IND Defense slot 16 WLB,WLB,3,1,0,1.0,2,2,2nd string,Bryce Boettcher,False,False,https://www.colts.com/team/depth-chart,https://www.colts.com/team/depth-chart
+IND,Defense,IND Defense slot 17 MLB,MLB,3,1,0,1.0,2,2,2nd string,CJ Allen,False,False,https://www.colts.com/team/depth-chart,https://www.colts.com/team/depth-chart
+IND,Offense,IND Offense slot 6 RT,RT,2,1,0,1.0,2,1,2nd string,Luke Tenuta,False,False,https://www.colts.com/team/depth-chart,https://www.colts.com/team/depth-chart
+IND,Offense,IND Offense slot 7 TE,TE,5,1,1,2.0,1,4,1st string,Tyler Warren,True,False,https://www.colts.com/team/depth-chart,https://www.colts.com/team/depth-chart
+IND,Special Teams,IND Special Teams slot 26 LS,LS,1,1,0,1.0,,0,NOBODY LISTED,,False,False,https://www.colts.com/team/depth-chart,https://www.colts.com/team/depth-chart
+JAX,Defense,JAX Defense slot 12 NT,NT,3,1,0,1.0,2,2,2nd string,Davon Godchaux,False,False,https://www.jaguars.com/team/depth-chart,https://www.jaguars.com/team/depth-chart
+JAX,Offense,JAX Offense slot 4 C,C,2,0,1,,1,2,1st string,Robert Hainsey,False,False,https://www.jaguars.com/team/depth-chart,https://www.jaguars.com/team/depth-chart
+KC,Defense,KC Defense slot 13 DT,DT,3,1,0,2.0,1,2,1st string,Chris Jones,False,False,https://www.chiefs.com/team/depth-chart,https://www.chiefs.com/team/depth-chart
+KC,Defense,KC Defense slot 20 CB,CB,3,0,1,,1,3,1st string,Mansoor Delane,False,False,https://www.chiefs.com/team/depth-chart,https://www.chiefs.com/team/depth-chart
+KC,Offense,KC Offense slot 6 RT,RT,2,1,0,1.0,2,1,2nd string,Joshua Ezeudu,False,False,https://www.chiefs.com/team/depth-chart,https://www.chiefs.com/team/depth-chart
+KC,Offense,KC Offense slot 9 RB,RB,3,0,1,,1,3,1st string,Kenneth Walker,False,False,https://www.chiefs.com/team/depth-chart,https://www.chiefs.com/team/depth-chart
+LA,Defense,LA Defense slot 16 OLB,OLB,3,0,1,,1,3,1st string,Myles Garrett,False,False,https://www.therams.com/team/depth-chart,https://www.therams.com/team/depth-chart
+LA,Defense,LA Defense slot 19 CB,CB,2,0,1,,1,2,1st string,Trent McDuffie,False,False,https://www.therams.com/team/depth-chart,https://www.therams.com/team/depth-chart
+LA,Defense,LA Defense slot 21 S,S,2,0,1,,1,2,1st string,Kam Curl,False,False,https://www.therams.com/team/depth-chart,https://www.therams.com/team/depth-chart
+LA,Offense,LA Offense slot 2 TE,TE,2,0,1,,1,2,1st string,Davis Allen,True,True,https://www.therams.com/team/depth-chart,https://www.therams.com/team/depth-chart
+LA,Offense,LA Offense slot 4 LG,LG,2,1,0,1.0,2,1,2nd string,Bill Murray,False,False,https://www.therams.com/team/depth-chart,https://www.therams.com/team/depth-chart
+LA,Special Teams,LA Special Teams slot 26 LS,LS,1,0,1,,1,1,1st string,Joe Cardona,False,False,https://www.therams.com/team/depth-chart,https://www.therams.com/team/depth-chart
+LV,Offense,LV Offense slot 1 WR,WR,3,0,1,,1,3,1st string,Jalen Nailor,False,False,https://www.raiders.com/team/depth-chart,https://www.raiders.com/team/depth-chart
+MIA,Offense,MIA Offense slot 1 WR,WR,2,1,0,2.0,1,1,1st string,Caleb Douglas,False,False,https://www.miamidolphins.com/team/depth-chart,https://www.miamidolphins.com/team/depth-chart
+MIA,Offense,MIA Offense slot 12 WR,WR,2,0,1,,1,2,1st string,Chris Bell,False,False,https://www.miamidolphins.com/team/depth-chart,https://www.miamidolphins.com/team/depth-chart
+MIA,Offense,MIA Offense slot 4 C,C,2,1,0,1.0,2,1,2nd string,Andrew Meyer,False,False,https://www.miamidolphins.com/team/depth-chart,https://www.miamidolphins.com/team/depth-chart
+MIN,Defense,MIN Defense slot 13 OLB,OLB,3,0,1,,1,3,1st string,Dallas Turner,False,False,https://www.vikings.com/team/depth-chart,https://www.vikings.com/team/depth-chart
+MIN,Defense,MIN Defense slot 16 DL,DL,2,1,0,1.0,2,1,2nd string,Elijah Williams,False,False,https://www.vikings.com/team/depth-chart,https://www.vikings.com/team/depth-chart
+MIN,Defense,MIN Defense slot 18 LB,LB,2,1,0,1.0,2,1,2nd string,Ivan Pace Jr.,False,False,https://www.vikings.com/team/depth-chart,https://www.vikings.com/team/depth-chart
+MIN,Offense,MIN Offense slot 1 QB,QB,4,1,0,1.0,2,3,2nd string,Carson Wentz,False,False,https://www.vikings.com/team/depth-chart,https://www.vikings.com/team/depth-chart
+MIN,Offense,MIN Offense slot 5 WR,WR,1,0,1,,1,1,1st string,Jordan Addison,False,False,https://www.vikings.com/team/depth-chart,https://www.vikings.com/team/depth-chart
+MIN,Offense,MIN Offense slot 6 WR,WR,2,1,0,1.0,2,1,2nd string,Myles Price,False,False,https://www.vikings.com/team/depth-chart,https://www.vikings.com/team/depth-chart
+MIN,Offense,MIN Offense slot 7 TE,TE,2,1,0,1.0,2,1,2nd string,Gavin Bartholomew,False,False,https://www.vikings.com/team/depth-chart,https://www.vikings.com/team/depth-chart
+NE,Defense,NE Defense slot 19 CB,CB,2,1,0,1.0,2,1,2nd string,Channing Canada,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Defense,NE Defense slot 21 S,S,3,0,1,,1,3,1st string,Kevin Byard III,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Defense,NE Defense slot 22 CB,CB,2,0,1,,1,2,1st string,Marcus Jones,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Offense,NE Offense slot 1 WR,WR,2,0,1,,1,2,1st string,A.J. Brown,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Offense,NE Offense slot 10 RB,RB,4,1,1,2.0,1,3,1st string,Rhamondre Stevenson,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Offense,NE Offense slot 3 LG,LG,2,1,1,1.0,2,1,2nd string,Walter Rouse,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Offense,NE Offense slot 4 C,C,2,1,0,2.0,1,1,1st string,Jared Wilson,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Offense,NE Offense slot 5 RG,RG,2,0,1,,1,2,1st string,Matt Pryor,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NE,Offense,NE Offense slot 7 TE,TE,3,0,1,,1,3,1st string,Hunter Henry,False,False,https://www.patriots.com/team/depth-chart,https://www.patriots.com/team/depth-chart
+NO,Defense,NO Defense slot 14 DL,DL,2,1,0,2.0,1,1,1st string,Khristian Boyd,False,False,https://www.neworleanssaints.com/team/depth-chart,https://www.neworleanssaints.com/team/depth-chart
+NO,Offense,NO Offense slot 11 RB,RB,3,1,0,3.0,1,2,1st string,Alvin Kamara,False,False,https://www.neworleanssaints.com/team/depth-chart,https://www.neworleanssaints.com/team/depth-chart
+NO,Offense,NO Offense slot 4 C,C,2,1,0,1.0,2,1,2nd string,William Sherman,False,False,https://www.neworleanssaints.com/team/depth-chart,https://www.neworleanssaints.com/team/depth-chart
+NO,Offense,NO Offense slot 6 RT,RT,2,1,0,1.0,2,1,2nd string,Mason Murphy,False,False,https://www.neworleanssaints.com/team/depth-chart,https://www.neworleanssaints.com/team/depth-chart
+NYJ,Defense,NYJ Defense slot 14 DL,DL,2,0,1,,1,2,1st string,Harrison Phillips,False,False,https://www.newyorkjets.com/team/depth-chart,https://www.newyorkjets.com/team/depth-chart
+NYJ,Defense,NYJ Defense slot 17 EDGE,EDGE,3,0,1,,1,3,1st string,David Bailey,False,False,https://www.newyorkjets.com/team/depth-chart,https://www.newyorkjets.com/team/depth-chart
+NYJ,Defense,NYJ Defense slot 18 LB,LB,2,1,0,2.0,1,1,1st string,Jamien Sherwood,False,False,https://www.newyorkjets.com/team/depth-chart,https://www.newyorkjets.com/team/depth-chart
+NYJ,Defense,NYJ Defense slot 20 NB,NB,2,0,1,,1,2,1st string,Jarvis Brownlee Jr.,False,False,https://www.newyorkjets.com/team/depth-chart,https://www.newyorkjets.com/team/depth-chart
+NYJ,Defense,NYJ Defense slot 22 CB,CB,2,0,1,,1,2,1st string,Azareye'h Thomas,False,False,https://www.newyorkjets.com/team/depth-chart,https://www.newyorkjets.com/team/depth-chart
+NYJ,Offense,NYJ Offense slot 1 WR,WR,3,0,2,,1,3,1st string,Garrett Wilson,False,False,https://www.newyorkjets.com/team/depth-chart,https://www.newyorkjets.com/team/depth-chart
+NYJ,Offense,NYJ Offense slot 9 WR,WR,3,0,1,,1,3,1st string,Adonai Mitchell,False,False,https://www.newyorkjets.com/team/depth-chart,https://www.newyorkjets.com/team/depth-chart
+SEA,Defense,SEA Defense slot 12 DT,DT,2,1,0,1.0,2,1,2nd string,Rylie Mills,False,False,https://www.seahawks.com/team/depth-chart,https://www.seahawks.com/team/depth-chart
+SEA,Offense,SEA Offense slot 2 LT,LT,2,1,0,1.0,2,1,2nd string,Josh Jones,False,False,https://www.seahawks.com/team/depth-chart,https://www.seahawks.com/team/depth-chart
+SEA,Offense,SEA Offense slot 3 LG,LG,2,1,0,1.0,2,1,2nd string,Anthony Bradford,False,False,https://www.seahawks.com/team/depth-chart,https://www.seahawks.com/team/depth-chart
+SEA,Offense,SEA Offense slot 9 QB,QB,3,1,0,1.0,2,2,2nd string,Drew Lock,False,False,https://www.seahawks.com/team/depth-chart,https://www.seahawks.com/team/depth-chart
+SF,Defense,SF Defense slot 18 WILL,WILL,2,0,1,,1,2,1st string,Dre Greenlaw,False,False,https://www.49ers.com/team/depth-chart,https://www.49ers.com/team/depth-chart
+SF,Defense,SF Defense slot 19 LCB,LCB,1,0,1,,1,1,1st string,Renardo Green,False,False,https://www.49ers.com/team/depth-chart,https://www.49ers.com/team/depth-chart
+SF,Defense,SF Defense slot 20 RCB,RCB,2,0,1,,1,2,1st string,Deommodore Lenoir,False,False,https://www.49ers.com/team/depth-chart,https://www.49ers.com/team/depth-chart
+SF,Defense,SF Defense slot 21 NB,NB,1,0,1,,1,1,1st string,Upton Stout,False,False,https://www.49ers.com/team/depth-chart,https://www.49ers.com/team/depth-chart
+SF,Offense,SF Offense slot 1 WR,WR,3,1,0,1.0,2,2,2nd string,Jordan Watkins,False,False,https://www.49ers.com/team/depth-chart,https://www.49ers.com/team/depth-chart
+SF,Offense,SF Offense slot 2 LT,LT,3,0,1,,1,3,1st string,Trent Williams,False,False,https://www.49ers.com/team/depth-chart,https://www.49ers.com/team/depth-chart
+TEN,Defense,TEN Defense slot 16 LB,LB,1,1,0,1.0,,0,NOBODY LISTED,,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Defense,TEN Defense slot 18 LB,LB,2,1,0,1.0,2,1,2nd string,Dorian Mausi,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Offense,TEN Offense slot 11 RB,RB,5,0,1,,1,5,1st string,Tony Pollard,True,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Offense,TEN Offense slot 4 LG,LG,1,1,0,1.0,,0,NOBODY LISTED,,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Offense,TEN Offense slot 9 WR,WR,2,1,0,1.0,2,1,2nd string,Elic Ayomanor,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Special Teams,TEN Special Teams slot 24 K,K,2,1,0,2.0,1,1,1st string,Joey Slye,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Special Teams,TEN Special Teams slot 25 KO,KO,2,1,0,2.0,1,1,1st string,Joey Slye,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Special Teams,TEN Special Teams slot 26 P,P,2,1,0,1.0,2,1,2nd string,Joey Slye,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+TEN,Special Teams,TEN Special Teams slot 27 H,H,2,1,0,1.0,2,1,2nd string,Mitchell Trubisky,False,False,https://www.tennesseetitans.com/team/depth-chart,https://www.tennesseetitans.com/team/depth-chart
+WAS,Offense,WAS Offense slot 8 TE,TE,2,1,0,2.0,1,1,1st string,John Bates,False,False,https://www.commanders.com/team/depth-chart,https://www.commanders.com/team/depth-chart

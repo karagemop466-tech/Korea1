@@ -1,0 +1,17 @@
+{
+  "official_games": 31,
+  "seasons": [
+    2014,
+    2026
+  ],
+  "weeks": [
+    8,
+    9,
+    10,
+    15
+  ],
+  "pairs_published": 3,
+  "pairs_blank": 6,
+  "min_n": 10,
+  "rule": "A correlation is published only with n, a 95% interval and the official URL of every input. Pairs that need a market line, a prop price or a joint ticket quote are blank by construction, because those are not official NFL numbers."
+}

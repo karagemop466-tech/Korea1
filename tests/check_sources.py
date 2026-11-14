@@ -10,7 +10,11 @@ PAGES=["index.html","executive-summary.html","lines.html","strategies.html","val
        "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
        "referents.html", "forward.html", "live-verification.html", "review.html",
        # X1-X4 (session arena/132e7ca2-korea1).
-       "review-queue.html", "answers.html", "competition.html", "repo-review.html"]
+       "review-queue.html", "answers.html", "competition.html", "repo-review.html",
+       # R7-01 … R7-09 (session arena/7da09b4d-korea1).
+       "prices.html", "results.html", "three-columns.html", "signal-staking.html",
+       "replacement-depth.html", "official-correlations.html", "demotion.html",
+       "suggestions-hub.html", "decision-questions-2026-11-14.html"]
 def main():
     problems=[]; total=0
     for name in PAGES:

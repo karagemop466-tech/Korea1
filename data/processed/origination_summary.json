@@ -1,0 +1,11 @@
+{
+  "games_tested": 6073,
+  "tolerance": 1e-09,
+  "max_side_partition_violation": 1.1102230246251565e-16,
+  "max_ml_partition_violation": 1.1102230246251565e-16,
+  "max_conditioning_violation": 1.1102230246251565e-16,
+  "games_inside_tolerance": 6073,
+  "verdict": "PASS — all three markets partition to one at machine precision, so they are evaluations of a single distribution rather than three independent fits",
+  "moneyline_is_derived": true,
+  "note": "The identity tested here is internal consistency. It does not test whether the distribution is calibrated against outcomes; that is the job of the validation gates and needs authenticated prices."
+}

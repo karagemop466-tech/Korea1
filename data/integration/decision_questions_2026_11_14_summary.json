@@ -1,0 +1,11 @@
+{
+  "questions": 14,
+  "answered": 4,
+  "open": 10,
+  "by_kind": {
+    "OWNER": 5,
+    "FACT": 5,
+    "EXTERNAL": 3,
+    "UNKNOWN": 1
+  }
+}

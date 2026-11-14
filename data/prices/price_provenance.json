@@ -1,0 +1,77 @@
+{
+  "generated_by": "pipeline/price_snapshots.py",
+  "pin_commit": "a270278f3ac4e937295fe6a27814b3c4a2b62645",
+  "sources": {
+    "games_csv": {
+      "file": "games.csv",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv",
+      "local": "data/raw/games.csv",
+      "claims_kind": "UNDATED",
+      "timestamp_field": null,
+      "documented_columns": [],
+      "note": "Carries spread_line, total_line, the two moneylines and the four price columns. The pinned data dictionary DATASETS.md documents none of them: it stops at stadium/referee fields. No capture time exists in the file, so the snapshot kind cannot be established from the data. Treated as UNDATED and never described as an opening or a closing price."
+    },
+    "initial_lines_csv": {
+      "file": "initial_lines.csv",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/initial_lines.csv",
+      "local": "data/raw/initial_lines.csv",
+      "claims_kind": "INITIAL",
+      "timestamp_field": null,
+      "documented_columns": [
+        "season",
+        "sportsbook",
+        "type",
+        "about",
+        "side",
+        "line"
+      ],
+      "note": "Filename and content both state 'initial'. 2021 season only, one sportsbook (WSGT). Supplies a line but no price for either side."
+    },
+    "closing_lines_csv": {
+      "file": "closing_lines.csv",
+      "url": "https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv",
+      "local": "data/raw/closing_lines.csv",
+      "claims_kind": "CLOSING",
+      "timestamp_field": null,
+      "documented_columns": [
+        "game_id",
+        "alt_game_id",
+        "type",
+        "side",
+        "line",
+        "odds",
+        "outcome"
+      ],
+      "note": "Filename states 'closing'. No timestamp field. Provides per-side odds for 2017-2018 only; spread and total odds are empty for 2006-2016."
+    }
+  },
+  "snapshot_kinds": [
+    "UNDATED",
+    "INITIAL",
+    "CLOSING"
+  ],
+  "facts": {
+    "games_rows": 7548,
+    "games_altid_unique": true,
+    "initial_unmatched_rows": 0,
+    "closing_unmatched_rows": 282,
+    "rows": 61806,
+    "rows_by_kind": {
+      "UNDATED": 40510,
+      "CLOSING": 20208,
+      "INITIAL": 1088
+    },
+    "games_by_kind": {
+      "UNDATED": 7412,
+      "INITIAL": 272,
+      "CLOSING": 3368
+    },
+    "markets": [
+      "MONEYLINE",
+      "SPREAD",
+      "TOTAL"
+    ],
+    "capture_time_rows": 0
+  },
+  "rule": "One row per game x market x side x snapshot_kind. A snapshot kind is only asserted when the source itself asserts it. No capture time is invented: when the source has no timestamp field the row records an empty captured_utc and capture_time_known=false."
+}

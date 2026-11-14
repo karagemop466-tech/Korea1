@@ -1,0 +1,21 @@
+{
+  "games_played_in_archive": 7384,
+  "rows": 7413,
+  "verified": 31,
+  "unverified": 7382,
+  "settleable": 31,
+  "settled_after_the_pin": 29,
+  "settled_before_the_pin": 2,
+  "by_tier": {
+    "OFFICIAL_GAME_BOOK": 3,
+    "OFFICIAL_GAME_CENTER": 0,
+    "OFFICIAL_SCORES_PAGE": 0,
+    "VERIFIED_PRIOR_SESSION": 28,
+    "UNVERIFIED": 7382
+  },
+  "seasons_verified": [
+    2014,
+    2026
+  ],
+  "note": "A results feed is not a backtest. It supplies the settled outcome; a backtest additionally needs the price that was available at decision time, which is the object of R7-01 and remains unauthenticated."
+}
