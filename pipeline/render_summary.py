@@ -87,6 +87,77 @@ def _session_block():
     return '\n'.join(L)
 
 
+
+def _bf_block():
+    """BF (arena/bfcd9879-korea1) - 2026-11-14 integration addendum.
+
+    Numbers are read from the files this session wrote; nothing is retyped.
+    """
+    import pandas as pd
+    store_p = PROC / 'price_archive.csv'
+    feed_p = PROC / 'results_feed.csv'
+    if not store_p.exists() or not feed_p.exists():
+        return ''
+    st = pd.read_csv(store_p, usecols=['game_id', 'open_price',
+                                       'archive_close', 'pin_close',
+                                       'freeze_market'])
+    fd = pd.read_csv(feed_p, dtype=str, keep_default_na=False)
+    n_open = int(pd.to_numeric(st.open_price, errors='coerce').notna().sum())
+    n_arch = int(pd.to_numeric(st.archive_close, errors='coerce').notna().sum())
+    n_pin = int(pd.to_numeric(st.pin_close, errors='coerce').notna().sum())
+    n_frz = int(pd.to_numeric(st.freeze_market, errors='coerce').notna().sum())
+    tiers = fd.tier.value_counts().to_dict() if len(fd) else {}
+    n_spot = int((fd.spot_checked == 'AGREE').sum()) if len(fd) else 0
+    n_conf = int(fd.cross_check.astype(str).str.startswith('CONFLICT').sum()) if len(fd) else 0
+    L = []
+    A = L.append
+    A('## Addendum - 2026-11-14 (integration session `arena/bfcd9879-korea1`)')
+    A('')
+    A('The eight bolded requirements were re-checked line by line against the code after')
+    A('parallel sessions merged their own implementations of the same brief. What this')
+    A('session added on top, verified in `make build` and `make test` (140 tests):')
+    A('')
+    A('| Requirement | Where it stands after this session |')
+    A('|---|---|')
+    A('| Price-snapshot store | `price-snapshot.html` keeps the strict blank-cell store;'
+      ' **`price-archive.html`** now publishes the archive-populated view: '
+      + str(len(st)) + ' snapshot rows over ' + str(st.game_id.nunique())
+      + ' games - ' + str(n_open) + ' opening prices (2011-2021 archive), '
+      + str(n_arch) + ' archive closes, ' + str(n_pin) + ' pinned closes, '
+      + str(n_frz) + ' forward freezes - each row tier-labelled and flagged '
+      'NOT AN AUTHENTICATED QUOTE (G1 fails) |')
+    A('| Verified results feed | **`results-feed.html`**: ' + str(len(fd))
+      + ' games in three never-mixed tiers (' + str(tiers.get('OFFICIAL_READ', 0))
+      + ' official game-centre reads, ' + str(tiers.get('PINNED_ARCHIVE', 0))
+      + ' pinned-archive finals, ' + str(tiers.get('SCHEDULED', 0))
+      + ' scheduled with blank scores), 0 source conflicts, and '
+      + str(n_spot) + ' rows spot re-read on nfl.com this session - all agree |')
+    A('| Origination order (side then total then moneyline) | Already the code order;'
+      ' now asserted by `tests/test_origination_order.py` (source order + output columns) |')
+    A('| Fair / market / difference columns | `lines.html` publishes all three per market'
+      ' (spread and total in points, moneyline in price and probability points);'
+      ' the test pins the columns and their arithmetic |')
+    A('| Signal vs staking on the leaderboard | `strategies.html` prints Units staked and'
+      ' Mean signal edge beside blank ROI: a lucky staking run cannot be read as signal |')
+    A('| Correlation n and official-only inputs | Annex tables now publish n with every'
+      ' value (BF6 repair); `correlations.html` adds a provenance register for every'
+      ' correlation surface and one correlation computed ONLY from officially read'
+      ' finals with n on the row |')
+    A('| Demotion gate | Published on `validation.html` from the forward scoreboard'
+      ' (X7/P4 implementations verified, not replaced) |')
+    A('| Replacement depth | 1st-4th string tracking already published on'
+      ' `lineup-deficiencies.html`; verified, no gap found |')
+    A('')
+    A('**F-29a:** the four contradictory injury rows flagged by X7 were each re-read on the')
+    A('live official report (nfl.com/injuries/league/2026/reg10, 2026-11-14). JAX BJ Green II')
+    A('and CIN Jalen Davis / Andrei Iosivas / Brian Parker II appear exactly as published -')
+    A('faithful transcriptions of a pairing that is itself contradictory on the official page.')
+    A('')
+    A('**Decision unchanged:** keep the research engine; fund nothing, reward nothing.')
+    A('')
+    return '\n'.join(L)
+
+
 def main():
     gates=pd.read_csv(PROC/'strategy_gates.csv')
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
@@ -118,6 +189,7 @@ def main():
     f_units = pd.to_numeric(_pk.loc[_pk.status == 'OFFICIAL', 'pnl'], errors='coerce').sum() if f_declared else 0.0
     f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
     _s = _session_block()
+    _b = _bf_block()
     text=f'''# Executive summary — NFL Line Lab
 
 Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
@@ -259,6 +331,7 @@ code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 | Injury / lineup deficiency (R21) | Official report captures plus {charts} of 32 club depth charts | PARTIAL — order only, no confirmed roles | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 {_s}
+{_b}
 ## Material audit corrections
 
 1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.

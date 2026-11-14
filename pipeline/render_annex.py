@@ -49,11 +49,18 @@ def main():
     cr=[]
     for p in corr.get('binary_leg_pairs',[]):
         label=p.get('label',p.get('pair',str(p.get('leg_a',''))+' / '+str(p.get('leg_b',''))))
-        cr.append([E(label),BLANK,BLANK,'UNVERIFIED',link(NFL)])
-    if not cr: cr=[['Market / player leg dependence',BLANK,BLANK,'UNVERIFIED',link(NFL)]]
-    page('correlation.html','Historical correlation research',table(['Relationship','Correlation','Joint probability','Status','Source'],cr,'Community-market estimates are not official observations')+'<p>Phi is not a Gaussian-copula parameter. Actual joint ticket quotes are required. '+link(FD,'Operator push rules')+'</p><p><a href="../data/lab/correlations.json">Download historical calculations (UNVERIFIED JSON)</a></p>')
-    pr=[[E(p.get('label',p.get('pair',str(p.get('a',''))+' / '+str(p.get('b',''))))),BLANK,BLANK,'UNVERIFIED',link('https://www.nfl.com/injuries/')] for p in props.get('pairs',[])]
-    page('props.html','Historical player-prop research',table(['Pair','Raw correlation','Within-player correlation','Status','Source'],pr,'No authenticated prop prices or joint SGP quotes')+'<p><a href="../data/lab/props.json">Download historical player-stat calculations (UNVERIFIED JSON)</a></p>')
+        # BF6 (arena/bfcd9879-korea1): publish n with every correlation value.
+        n=p.get('n')
+        cr.append([E(label),E(f'{int(n):,}') if n else BLANK,BLANK,BLANK,'UNVERIFIED',link(NFL)])
+    if not cr: cr=[['Market / player leg dependence',BLANK,BLANK,BLANK,'UNVERIFIED',link(NFL)]]
+    page('correlation.html','Historical correlation research',table(['Relationship','n','Correlation','Joint probability','Status','Source'],cr,'Community-market estimates are not official observations · sample size published with every row')+'<p>Phi is not a Gaussian-copula parameter. Actual joint ticket quotes are required. '+link(FD,'Operator push rules')+'</p><p><a href="../data/lab/correlations.json">Download historical calculations (UNVERIFIED JSON)</a></p>')
+    pr=[]
+    for p in props.get('pairs',[]):
+        # BF6 (arena/bfcd9879-korea1): publish the sample size with every correlation.
+        n=p.get('n_player_games')
+        pr.append([E(p.get('label',p.get('pair',str(p.get('a',''))+' / '+str(p.get('b',''))))),
+                   E(f'{int(n):,}') if n else BLANK,BLANK,BLANK,'UNVERIFIED',link('https://www.nfl.com/injuries/')])
+    page('props.html','Historical player-prop research',table(['Pair','n (player-games)','Raw correlation','Within-player correlation','Status','Source'],pr,'No authenticated prop prices or joint SGP quotes · sample size published with every row')+'<p><a href="../data/lab/props.json">Download historical player-stat calculations (UNVERIFIED JSON)</a></p>')
     vr=[[E(k),E(v.get('name',k)) if isinstance(v,dict) else E(v),BLANK,'UNVERIFIED',link(WHITE)] for k,v in validation['gates'].items()]
     page('validation.html','Historical validation',table(['Gate','Definition','Pass count','Status','Source'],vr,'Historical gate implementation; superseded by the canonical final gates')+'<p><a href="../data/lab/validation.json">Download historical validation (UNVERIFIED JSON)</a></p>')
     page('leaderboard.html','Historical leaderboard design',table(['ID','Strategy','LASS','ROI','Tier','Reward','Source'],[[E(s['id']),E(s['name']),BLANK,BLANK,'UNVERIFIED','Unawarded',link(DSR)] for s in strategies],'No historical score is promoted to a current reward')+'<p><a href="../data/lab/leaderboard.json">Download historical leaderboard (UNVERIFIED JSON)</a></p>')

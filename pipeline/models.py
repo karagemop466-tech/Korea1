@@ -18,6 +18,25 @@ out-of-sample.
 The models never see the market. The market is carried alongside purely as the
 benchmark to beat.
 
+**Origination order (BF3, asserted by ``tests/test_origination_order.py``): the
+side first, then the total, then the moneyline.** In both ``walk_forward`` and
+``originate_future`` the spread probabilities and fair handicap are computed
+before the total probabilities and fair total, and the moneyline probabilities
+and fair moneyline price are computed after both — the moneyline is derived
+from the side model at line 0.0, so it cannot be originated before the side
+exists.
+
+**Fair / market / difference columns (BF4, P2 on the board).** Every market
+publishes three separate column groups: the model's fair line (``fair_spread``,
+``fair_total``, ``ml_fair_home_ml`` / ``ml_fair_away_ml`` with
+``ml_fair_home_prob``), the market line (``market_spread``, ``market_total``,
+``ml_market_home_ml`` / ``ml_market_away_ml`` with ``ml_market_home_prob``),
+and the difference (``edge_spread`` / ``edge_total`` in points,
+``ml_diff_home_cents`` / ``ml_diff_away_cents`` in American-odds cents, and
+``ml_prob_diff_home`` in probability points — fair P(home | no tie) minus the
+de-vigged market-implied P(home); positive means the model likes the home side
+more than the market).
+
 Probability mapping uses prior-season out-of-fold empirical residuals. This
 retains discrete NFL scoring mass without claiming a normal approximation prices
 key numbers correctly. All probabilities remain unverified model estimates.

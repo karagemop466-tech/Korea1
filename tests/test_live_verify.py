@@ -140,6 +140,12 @@ def test_internal_consistency_flags_a_planted_contradiction():
     change is worth noticing; the contradiction check is now a positive control.
     """
     pub = _pub()
+    # Integration note (arena/bfcd9879-korea1): the four contradictions that remain
+    # in this capture (JAX BJ Green II; CIN Jalen Davis, Andrei Iosivas,
+    # Brian Parker II) were each re-read against the live official page
+    # https://www.nfl.com/injuries/league/2026/reg10 on 2026-11-14 and are
+    # faithful transcriptions of a pairing that is contradictory on the
+    # official page itself; they are flagged as F-29 / F-29a, not corrected here.
     issues, stats = lv.internal_consistency(pub)
     assert stats["rows"] == len(pub) == 345
     planted = pub.copy()

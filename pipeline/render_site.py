@@ -85,6 +85,8 @@ NAV_GROUPS = [
         ("lines.html", "Originated lines"),
         # P1 (arena/a6bbbf24-korea1): opening and closing numbers for every originated market.
         ("price-snapshot.html", "Price snapshot"),
+        # BF1 (arena/bfcd9879-korea1): the archive-populated view — SBR opens/closes, pin closes, freezes.
+        ("price-archive.html", "Price archive"),
         ("strategies.html", "Leaderboard"),
         ("forward.html", "Forward test record"),
         # X4 (session arena/132e7ca2-korea1): rules, reward ladder and standings.
@@ -887,6 +889,72 @@ def build_correlations(d):
              "Distinct-game margins", "Distinct-game totals", "QB passing yards ↔ receiver yards",
              "Two receivers' yards", "QB passing ↔ rushing yards"]
     rows = [[p, BLANK, BLANK, BLANK, "UNVERIFIED", official("NFL scores") if i < 5 else official("NFL injuries")] for i,p in enumerate(pairs)]
+    # BF6 (session arena/bfcd9879-korea1): one correlation computed ONLY from
+    # officially read scores, with n published on the row. The inputs are the
+    # game-centre reads in data/forward/official_results.csv — no community
+    # price and no un-read archive row enters this number.
+    official_corr_rows = []
+    _off_path = ROOT / "data" / "forward" / "official_results.csv"
+    if _off_path.exists():
+        _o = pd.read_csv(_off_path, dtype=str, keep_default_na=False)
+        _fin = _o[_o.status_on_page.str.lower() == "final"]
+        try:
+            _hm = _fin.home_score.astype(float).to_numpy()
+            _am = _fin.away_score.astype(float).to_numpy()
+        except ValueError:
+            _hm, _am = np.array([]), np.array([])
+        _n = len(_hm)
+        if _n >= 5:
+            _m, _t = _hm - _am, _hm + _am
+            _r = float(np.corrcoef(_m, _t)[0, 1])
+            _z = np.arctanh(np.clip(_r, -0.999999, 0.999999))
+            _se = 1.0 / np.sqrt(_n - 3)
+            _lo, _hi = float(np.tanh(_z - 1.96 * _se)), float(np.tanh(_z + 1.96 * _se))
+            official_corr_rows = [[
+                "Home margin \u2194 game total (official finals only)",
+                f"{_r:+.3f}", f"[{_lo:+.3f}, {_hi:+.3f}]", str(_n),
+                "COMPUTED FROM OFFICIAL SCORES ONLY \u00b7 every input is a "
+                "game-centre read with its URL and read time \u00b7 n is published "
+                "with the value \u00b7 exploratory: one block of weeks, small n",
+                official("NFL scores")]]
+    provenance_rows = [
+        ["Market correlations on official pages (correlation-official.html, T43)",
+         "Spearman associations from pinned closing numbers against on-record finals",
+         "PINNED CLOSING NUMBER + ON-RECORD FINAL (T43 definition), weekly-block bootstrap",
+         "yes \u2014 n and n_weeks printed on every row", "correlation-official.html",
+         official("NFL scores")],
+        ["Outcome correlation on official reads (above)",
+         "Association between final margin and final total",
+         "OFFICIAL \u2014 game-centre reads, data/forward/official_results.csv",
+         "yes \u2014 n on the row above", "This page",
+         official("NFL scores")],
+        ["Same-game and cross-game registers (corr_same_game, corr_cross_game)",
+         "Leg dependence inside one game and across a slate",
+         "PINNED COMMUNITY ARCHIVE \u2014 not officially verified row by row",
+         "yes \u2014 n_pairs and n_slates columns in the CSVs",
+         "Blank on this page; download carries n",
+         official("NFL scores")],
+        ["Market register (corr_market)",
+         "Continuous margin-versus-total association",
+         "PINNED COMMUNITY ARCHIVE",
+         "yes \u2014 n column", "data/processed/corr_market.csv",
+         official("NFL scores")],
+        ["Prop correlations (prop_correlations)",
+         "QB/WR and receiver-yard dependence",
+         "COMMUNITY PLAY-BY-PLAY \u2014 research tier",
+         "yes \u2014 n column", "data/processed/prop_correlations.csv",
+         official("NFL injuries")],
+        ["Annex estimates (lab/correlation.html, lab/props.html)",
+         "Historical community-market estimates",
+         "COMMUNITY ARCHIVE \u2014 flagged UNVERIFIED in the annex",
+         "yes \u2014 n column added 2026-11-14 (BF6 repair)",
+         "Research annex", official("NFL scores")],
+        ["Market-line correlations (cover \u2194 moneyline win, over \u2194 cover, \u2026)",
+         "Pricing dependence between markets",
+         "NO OFFICIAL SOURCE \u2014 the NFL publishes no odds; gate G1 fails",
+         "not computable from official inputs until G1 passes",
+         "Blank here by rule", official("NFL scores")],
+    ]
     rules = [
         ["Standard parlay push", "Pushed leg removed; remaining legs repriced in the cited operator example.", "Verified operator help page; not universal house rules.", official("FanDuel push settlement rules")],
         ["Same-game parlay", "Joint distribution and actual ticket quote required; standalone-price multiplication is not sufficient.", "No verified SGP quote history.", official("FanDuel push settlement rules")],
@@ -904,6 +972,23 @@ Phi = [P(A ∩ B) − P(A)P(B)] / √[P(A)(1−P(A))P(B)(1−P(B))]
 Fair parlay EV = Σ joint-outcome probability × net payout</pre>
 {table(rows, ["Relationship", "Estimate", "95% interval", "Sample", "Status", "Official context"], caption="Required correlation register; unknown values remain blank")}
 <p><a href="lab/correlation.html">Unverified community-market estimates</a> · <a href="lab/props.html">Historical player-stat research</a></p></section>
+<section><h2>Correlation from officially sourced numbers only</h2>
+<p>The brief allows correlation values to be computed only from officially
+sourced numbers. One such value exists today: the association between final
+margin and final total across the games whose scores were read on the official
+game centre (every input carries its URL and read time on
+<a href="results-feed.html">the results feed</a>). The sample size is printed
+with the value. Market-line correlations cannot be computed under this rule at
+all — the NFL publishes no odds — so they stay blank until gate G1 passes.</p>
+{table(official_corr_rows, ["Relationship", "Estimate", "95% interval", "Sample", "Status", "Official context"], caption="Correlation computed only from officially read finals; n published with the value") if official_corr_rows else "<p>No officially read finals yet — the value stays blank.</p>"}
+</section>
+<section><h2>Correlation provenance register: where every published value comes from and whether its n is published</h2>
+<p>Every correlation this repository publishes, its input tier, and whether
+the sample size travels with the value. The n columns of the research CSVs
+were audited on 2026-11-14; the annex tables were missing n and were repaired
+in this pass (BF6).</p>
+{table(provenance_rows, ["Dataset", "What it measures", "Input source tier", "n published?", "Where it is published", "Official context"], caption="Provenance and sample-size audit for every correlation surface")}
+</section>
 <section><h2>Settlement and interpretation</h2>{table(rules, ["Case", "Rule", "Limit", "Source"], caption="Do not generalize one operator's terms to every ticket")}</section>
 <section><h2>Parlay validation checklist</h2><ol class="findings">
 <li>Use distinct selection identities; never count the same leg twice.</li><li>Use a common decision time and simultaneous or otherwise available quotes.</li>
@@ -1039,8 +1124,9 @@ def build_flagged(d):
         ["F-18", "High · open", "Houston Texans: the automated depth-chart tracker returned 0 rows on both the 2026-11-12 and 2026-11-13 captures (the chart is not in the published table). The club page labels its chart 'Unofficial Depth Chart' and the page text retrieved on 2026-11-13 carries no ordered rows. Houston is left blank and unverified; no Houston role is inferred.", official("Texans club depth chart")],
         ["F-19", "Medium · open", "Club depth-chart labels differ: the Arizona page reads 'Arizona Cardinals Official Depth Chart', the Houston page reads 'Unofficial Depth Chart', and the Washington page carries no label. The published tables treat all club charts alike; the label is recorded here, not used to rank sources.", official("Arizona club depth chart")],
         ["F-29", "High · open", "The 2026-11-14 17:10Z official-data snapshot of the published injury table has four rows that read Out or Doubtful together with Full Participation in Practice: JAX BJ Green II; CIN Jalen Davis, Andrei Iosivas and Brian Parker II. The official page for JAX and CIN is not in the transcribed extract, so neither cell is confirmed or corrected here. The internal-consistency check flags them and is kept active; the owner should compare them with the NFL injury report and the club pages before any use.", official("NFL injuries")],
+        ["F-29a", "Info · resolved 2026-11-14", "F-29 verification performed: all four rows were re-read on the live official injury report (nfl.com/injuries/league/2026/reg10) on 2026-11-14 by the integration session. JAX BJ Green II (Forearm · Full Participation · Out) and CIN Jalen Davis (Hamstring · Full Participation · Doubtful), Andrei Iosivas (Thumb · Full Participation · Doubtful), Brian Parker II (Knee · Full Participation · Doubtful) appear on the official page exactly as published. The pairings are faithful transcriptions of the official page itself, not capture errors; the rows stay flagged because the pairing is internally contradictory wherever it came from.", official("NFL injury report (2026 week 10)")],
         ["F-20", "Low · repaired", "The official injury-evidence manifest recorded the news register with no SHA-256 (the hash loop only set a default). The loop now hashes every staged file; the value was checked with sha256sum.", official("NFL injuries")],
-        ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],        ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
+        ["F-17", "Medium · open", "assets/data/prop_inputs.csv still says player game logs are unreachable while the same build ships 21,033 player-games and a prop report. The page text is correct; the artefact is stale and is queued as S03.", official("NFL injuries")],
         # ---- T40 referent audit (arena/84e42ecc-korea1, 2026-11-13) -----------------
         ["F-21", "High · open", "Eleven external URLs printed as citations on the site do not resolve (404 / 403 / 302 that could not be followed). They are published with their exact status, the pages that print them and the fetch time on the <a href='referents.html'>referent register</a>. No URL has been silently removed or replaced.", official("NFL rules")],
         ["F-22", "High · open", "Two NFL Football Operations policy URLs return '404 - FLAG ON THE PLAY': the 2017 injury-report policy and the player-protections page (each printed on three pages). They were already recorded as N-05 on 2026-11-12 and are still printed; they are not policy evidence and no replacement official page has been confirmed.", official("NFL Operations pregame 90m rule")],

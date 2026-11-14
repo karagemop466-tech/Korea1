@@ -26,8 +26,13 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
+- `price-archive.html` — opening and closing numbers we actually hold: 2011–2021 archive opens,
+  archive and pinned closes, forward-ledger freezes — each row tier-labelled, each blank explained (added 2026-11-14)
 - `strategies.html` — complete candidate library and competition rules
 - `forward.html` — **forward test**: picks frozen before kickoff, settled only against official NFL.com finals (4 of 65 settled; no verdicts, no rewards)
+- `results-feed.html` — **one joinable table of graded outcomes**: official game-centre reads, the
+  hash-verified pinned archive (flagged not re-read per row), scheduled games blank by design; 0 source
+  conflicts, 18 rows spot re-read on nfl.com (added 2026-11-14)
 - `validation.html` — eight fail-closed gates
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `referents.html` — every citation on the site, resolved against the live page it points at
