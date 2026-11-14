@@ -63,6 +63,9 @@ NAV_GROUPS = [
     ]),
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
+        # T50/T51 (session arena/b13485ed-korea1): the price-snapshot store and the
+        # verified results feed - the two artifacts a return is computed from.
+        ("prices.html", "Prices & results"),
         ("strategies.html", "Leaderboard"),
         ("forward.html", "Forward test record"),
         # X4 (session arena/132e7ca2-korea1): rules, reward ladder and standings.
@@ -185,6 +188,17 @@ def load():
         d[name] = read_json(PROC / f"{name}.json")
     d["sources"] = SRC
     d["official_scores"] = pd.read_csv(ROOT / "data/audit/nfl_com_score_audit.csv")
+    # T50/T51/T54/T55/T57 (session arena/b13485ed-korea1): the price-snapshot store,
+    # the verified results feed, the signal/staking split, the demotion gate and the
+    # official-only correlation register.
+    for name in ["leaderboard_signal_staking", "demotion_status", "demotion_gates",
+                 "corr_official", "replacement_depth"]:
+        f = PROC / f"{name}.csv"
+        d[name] = pd.read_csv(f, dtype=str).fillna("") if f.exists() else pd.DataFrame()
+    _fwd = ROOT / "data" / "forward"
+    for name in ["price_snapshots", "verified_results", "verified_summary"]:
+        f = _fwd / f"{name}.csv"
+        d[name] = pd.read_csv(f, dtype=str).fillna("") if f.exists() else pd.DataFrame()
     # T16 merge: session arena/425336fc-korea1's full league week-10 capture, rendered verbatim.
     _inj = PROC / "injuries_week10.csv"
     d["injuries"] = pd.read_csv(_inj) if _inj.exists() else pd.DataFrame()
@@ -332,6 +346,7 @@ def build_index(d):
   <p>A reproducible research workspace for single bets, parlays and player-prop combinations.
   The current evidence does <strong>not</strong> support a validated betting strategy or a prize award.</p>
   <div class="actions"><a class="btn primary" href="executive-summary.html">Read the executive summary</a>
+  <a class="btn" href="prices.html">Price store &amp; results</a>
   <a class="btn" href="strategies.html">Explore the leaderboard</a>
   <a class="btn" href="suggestions-review.html">Review &amp; choose a path</a>
   <a class="btn" href="review-queue.html">Review suggestions first</a>
@@ -354,6 +369,7 @@ it means the evidence is insufficient. Search or sort the table without changing
 </section>
 <section><h2>Explore the research</h2><div class="cards smallcards">
 <a class="minicard" href="lines.html"><strong>Originated lines</strong><span>Market-free models, paired benchmarks and upcoming research lines.</span></a>
+<a class="minicard" href="prices.html"><strong>Prices &amp; results</strong><span>The price-snapshot store, the verified results feed and the return they support - every originated market side, with its opening and closing number.</span></a>
 <a class="minicard" href="validation.html"><strong>Validation gates</strong><span>Leakage, power, multiplicity, costs and replication.</span></a>
 <a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
 <a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
@@ -595,6 +611,50 @@ def build_lines(d):
         future_rows.append([e(r.gameday), e(r.week), f"{e(r.away_team)} @ {e(r.home_team)}",
                             BLANK, BLANK, BLANK, BLANK, "UNVERIFIED · research only", official("NFL schedule")])
     features = [[e(r.feature), e(r.definition), e(r.used_in), official("NFL scores")] for r in d["feature_dict"].itertuples()]
+
+    # T53 (session arena/b13485ed-korea1): the model's fair line, the market line
+    # and the difference are published as three separate columns, never merged into
+    # one "edge" figure. The model line for a game this project published is a
+    # class B value (our own line, frozen before kickoff) and is printed; the
+    # market line is class C and the difference class D, so both are blank here
+    # and flagged. The official final and whether our own line covered are
+    # printed, because they rest on the official page.
+    three_col_rows = []
+    store = d.get("price_snapshots", pd.DataFrame())
+    feed = d.get("verified_results", pd.DataFrame())
+    if len(store) and len(feed):
+        finals = feed[feed.market == "SPREAD"].drop_duplicates("game_id").set_index("game_id")
+        pub = store[(store.scope == "forward_published") & (store.market == "SPREAD")
+                    & (store.side == "home") & (store.set == "D")]
+        for r in pub.sort_values(["week", "game_id"]).itertuples(index=False):
+            fin = finals.loc[r.game_id] if r.game_id in finals.index else None
+            margin = fin.actual_margin if fin is not None else ""
+            covered = fin.model_outcome if fin is not None else ""
+            three_col_rows.append([
+                e(f"{r.away_team} @ {r.home_team}"), e(r.week),
+                e(r.model_line) if r.model_line else BLANK,
+                BLANK,
+                BLANK,
+                e(margin) if margin != "" else BLANK,
+                e(covered) if covered != "" else BLANK,
+                '<span class="pill unverified">UNVERIFIED</span>',
+                src_link(fin.official_url, "official game page") if fin is not None
+                else official("NFL scores"),
+            ])
+    order_rows = []
+    _man = ROOT / "data" / "processed" / "origination_manifest.json"
+    if _man.exists():
+        _m = read_json(_man)
+        for market in _m.get("origination_order", []):
+            st = _m.get("stages", {}).get(market, {})
+            order_rows.append([
+                e(st.get("seq", "")), e(st.get("label", market)),
+                "<br>".join(e(x) for x in st.get("consumes", [])) or "-",
+                "<br>".join(e(x) for x in st.get("produces", [])) or "-",
+                e(st.get("why_first") or st.get("why_second") or st.get("why_third") or ""),
+                official("NFL scores"),
+            ])
+
     body = f"""{notice()}
 <section><h2>How a line is originated</h2><p>The model predicts home margin and game total from prior results,
 rolling team scoring, Elo and rest. Ridge regularization is selected inside each historical training window.
@@ -616,7 +676,24 @@ Some listed games may already have finished. Schedule and availability must be r
 Model values are blank here because the inputs and current game state have not been officially verified for every row.</p>
 {table(future_rows, ["Archive date", "Week", "Matchup", "Home handicap", "Total", "Home ML", "Away ML", "Status", "Official schedule"], caption="All scheduled rows in the pinned archive; no results or current prices inferred")}
 <p><a href="assets/data/originated_upcoming.csv">Download unverified model estimates</a></p></section>
-<section><h2>Feature dictionary</h2>{table(features, ["Feature", "Definition", "Use", "Official context"], caption="Inputs and exclusions; no missing observation is filled")}</section>"""
+<section><h2>Feature dictionary</h2>{table(features, ["Feature", "Definition", "Use", "Official context"], caption="Inputs and exclusions; no missing observation is filled")}</section>
+<section id="three-columns"><div class="section-head"><h2>The model's line, the market's line and the difference - three separate columns</h2>
+<a href="prices.html">Price store &amp; verified results -&gt;</a></div>
+<p>The three numbers are published in three columns and are never merged into a single
+"edge" figure, because they answer different questions and carry different evidence.
+The model's fair line is our own forecast. The market's line is what the market quoted.
+The difference is what the model thinks the market is wrong by.</p>
+{table(three_col_rows, ["Matchup", "Week", "Model line (fair)", "Market line", "Difference (model - market)",
+                        "Official final margin", "Our line covered?", "Status", "Official reference"],
+       caption="Our published line beside the official final; the market's line is a community mirror and stays blank")}
+<p>The full price-snapshot store - every originated market side, with the opening and the
+closing number and the evidence class of each - is on the
+<a href="prices.html">prices &amp; results</a> page.</p></section>
+<section id="origination-order"><h2>The origination order: the side, then the total, then the moneyline</h2>
+<p>The order is fixed in the model code and published in a manifest, so it cannot drift
+between the backtest and the board.</p>
+{table(order_rows, ["Order", "Stage", "What it consumes", "What it produces", "Why it sits here", "Official context"],
+       caption="The origination order as published in data/processed/origination_manifest.json")}</section>"""
     return layout("lines.html", "Originated lines", "A market-free model with explicit estimation and verification boundaries.", body, wide=True)
 
 
@@ -635,6 +712,41 @@ def build_strategies(d):
         ("Replicated", "All eight gates pass on untouched prospective observations."),
         ("Disqualified", "Leakage, selective reporting, fabricated quotes or undisclosed rule changes."),
         ("Unawarded", "No verified prize pool, sponsor, custody or payout obligation exists.")]]
+    # T54/T55 (session arena/b13485ed-korea1): the signal scorecard and the
+    # staking scorecard are published side by side and never merged, and the
+    # demotion gate says what sends a live strategy back to paper.
+    split = d.get("leaderboard_signal_staking", pd.DataFrame())
+    signal_rows = []
+    for r in split.itertuples(index=False):
+        signal_rows.append([
+            e(r.signal_rank), e(r.strategy), e(r.name),
+            e(r.signal_bets), e(r.signal_decided_bets),
+            BLANK, BLANK, BLANK,
+            e(r.signal_verdict),
+            BLANK,
+            e(r.staking_verdict),
+            e(r.combined_verdict),
+            official("White (2000), Econometric Society"),
+        ])
+
+    dem = d.get("demotion_status", pd.DataFrame())
+    dem_rows = []
+    for r in dem.itertuples(index=False):
+        dem_rows.append([
+            e(r.strategy), e(r.current_tier), e(r.resulting_tier),
+            e(r.gates_fired), e(r.D2_weeks_observed), e(r.D2_weeks_required),
+            e(r.D5_quote_coverage), e(r.D6_result_coverage),
+            official("White (2000), Econometric Society"),
+        ])
+    dem_gates = d.get("demotion_gates", pd.DataFrame())
+    dem_rule_rows = []
+    for r in dem_gates.itertuples(index=False):
+        dem_rule_rows.append([
+            e(r.gate_id), e(r.name), e(r.scope), e(r.condition),
+            e(r.threshold), e(r.window), e(r.action), e(r.data_required),
+            official("NFL scores"),
+        ])
+
     body = f"""{notice()}
 <section><h2>Competition, not a tipping service</h2><p>Every candidate is published, including failures.
 Ranking by raw profit alone rewards variance. Eligibility comes first; risk-adjusted, selection-adjusted,
@@ -648,6 +760,40 @@ cost-adjusted evidence comes second. The current public leaderboard has no funde
 <li><strong>Parlays:</strong> multiplying standalone prices does not establish an executable correlated ticket. Distinct games can share latent slate effects.</li>
 <li><strong>Player props:</strong> opportunity, role and game-script dependence matter, but no verified price history means no validated prop strategy.</li>
 <li><strong>Closing-line value:</strong> a useful prospective diagnostic only with genuine entry timestamps and comparable bookmaker closing quotes; it is not a guarantee of profit.</li></ul></section>
+<section id="signal-vs-staking"><div class="section-head"><h2>Signal and staking, separated</h2>
+<a href="assets/data/leaderboard_signal_staking.csv">Download both scorecards →</a></div>
+<p>A leaderboard sorted on money ranks luck. So the two questions are measured apart and
+published apart. The <strong>signal</strong> scorecard asks whether the rule is right: how
+often its direction was correct, against the rate it had to reach to pay for itself at the
+price each bet actually carried. The <strong>staking</strong> scorecard asks whether the money
+worked: the realised return, its spread and its drawdown. The leaderboard is ranked on the
+signal; the money columns are shown beside it and never order it.</p>
+<p>The rule that makes the separation bite: a positive return may never promote a strategy
+whose signal is not positive. Such a strategy is labelled a lucky staking run and is capped
+at paper, whatever its position on the money table.</p>
+{table(signal_rows, ["Signal rank", "Strategy", "Name", "Signal bets", "Decided bets",
+                     "Signal hit rate", "Break-even rate", "Signal edge",
+                     "Signal verdict", "Staking ROI", "Staking verdict", "Combined verdict", "Reference"],
+       caption="The two scorecards side by side; the numeric estimates are blank until their inputs are verified")}
+<p>The numbers behind these verdicts are research estimates computed from a community price
+mirror, so they are blank in this strict view and are downloadable as research data. What is
+a fact and is published: six of the eighteen rules have a signal whose interval lies above
+zero, and <strong>every one of the eighteen returns is indistinguishable from luck at the
+sample size available</strong>, because none has the number of settled weeks its own power
+gate demands.</p></section>
+<section id="demotion-gate"><div class="section-head"><h2>The demotion gate: a live strategy that trips a condition goes back to paper</h2>
+<a href="assets/data/demotion_status.csv">Download the evaluation →</a></div>
+<p>The reward ladder says how a strategy is promoted. This is what happens when one stops
+working. The gate can only send a strategy down: there is no condition here that promotes
+anything, and an unevaluable condition is treated as not passed.</p>
+{table(dem_rule_rows, ["Gate", "Name", "Scope", "Condition", "Threshold", "Window", "Action", "Data required", "Reference"],
+       caption="The demotion conditions, in the order they are evaluated")}
+{table(dem_rows, ["Strategy", "Current tier", "Resulting tier", "Conditions fired",
+                  "Weeks observed", "Weeks required", "Verified price coverage", "Official result coverage", "Reference"],
+       caption="The evaluation per strategy; no strategy is live, so every tier is PAPER")}
+<p>Nothing is live: no strategy passes the eight gates, and gate G1 - an authenticated
+executable quote - is open for all eighteen. The gate is armed and there is nothing yet to
+demote.</p></section>
 <section><h2>Reward and anti-gaming rules</h2>{table(rewards, ["Tier", "Requirement", "Payout status", "Reference"], caption="Proposed recognition framework—not an existing financial promotion")}
 <ol class="findings"><li>Register the complete rule, data version, parameters and every trial before evaluation.</li>
 <li>One-unit flat staking for comparison; no leverage-based ranking.</li><li>Keep all selections and all no-bet weeks; no cherry-picked subsets.</li>
@@ -696,7 +842,44 @@ def build_correlations(d):
     pairs = ["Same-team spread cover ↔ moneyline win", "Same-team cover ↔ game over", "Game over ↔ moneyline win",
              "Distinct-game margins", "Distinct-game totals", "QB passing yards ↔ receiver yards",
              "Two receivers' yards", "QB passing ↔ rushing yards"]
-    rows = [[p, BLANK, BLANK, BLANK, "UNVERIFIED", official("NFL scores") if i < 5 else official("NFL injuries")] for i,p in enumerate(pairs)]
+    # T57 (session arena/b13485ed-korea1): n is published with every value, and the
+    # correlations that could be computed from officially sourced numbers only are
+    # published separately from the ones that rest on a community mirror.
+    ns = []
+    _sg = d.get("corr_same_game", pd.DataFrame())
+    _cg = d.get("corr_cross_game", pd.DataFrame())
+    _pc_path = PROC / "prop_correlation_summary.csv"
+    _pc = pd.read_csv(_pc_path) if _pc_path.exists() else pd.DataFrame()
+    def _n_same(label):
+        if len(_sg) and label in set(_sg.pair):
+            return f"{int(_sg[_sg.pair == label].n.iloc[0]):,} games"
+        return ""
+    def _n_cross(label):
+        if len(_cg) and label in set(_cg.quantity):
+            r = _cg[_cg.quantity == label].iloc[0]
+            return f"{int(r.n_pairs):,} pairs in {int(r.n_slates):,} slates"
+        return ""
+    def _n_prop(label):
+        if len(_pc) and label in set(_pc.pair):
+            return f"{int(_pc[_pc.pair == label].n.iloc[0]):,} player-games"
+        return ""
+    ns = [
+        _n_same("Home −line & Home ML"), _n_same("Home −line & Over"),
+        _n_same("Over & Home ML"), _n_cross("margin"), _n_cross("total"),
+        _n_prop("QB pass yds ↔ own WR1 rec yds"),
+        _n_prop("WR1 rec yds ↔ WR2 rec yds (same team)"),
+        _n_prop("QB pass yds ↔ own RB1 rush yds"),
+    ]
+    rows = [[p, BLANK, BLANK, n, "UNVERIFIED", official("NFL scores") if i < 5 else official("NFL injuries")]
+            for i, (p, n) in enumerate(zip(pairs, ns))]
+
+    off = d.get("corr_official", pd.DataFrame())
+    off_rows = []
+    for r in off.itertuples(index=False):
+        off_rows.append([
+            e(r.pair), e(r.phi), f"{e(r.ci_lo)} to {e(r.ci_hi)}", e(r.n),
+            e(r.evidence_class), official("NFL scores"),
+        ])
     rules = [
         ["Standard parlay push", "Pushed leg removed; remaining legs repriced in the cited operator example.", "Verified operator help page; not universal house rules.", official("FanDuel push settlement rules")],
         ["Same-game parlay", "Joint distribution and actual ticket quote required; standalone-price multiplication is not sufficient.", "No verified SGP quote history.", official("FanDuel push settlement rules")],
@@ -712,8 +895,18 @@ have not been officially verified row by row. Earlier community-data estimates a
 <pre class="math">Lift = P(A ∩ B) / [P(A) P(B)]
 Phi = [P(A ∩ B) − P(A)P(B)] / √[P(A)(1−P(A))P(B)(1−P(B))]
 Fair parlay EV = Σ joint-outcome probability × net payout</pre>
-{table(rows, ["Relationship", "Estimate", "95% interval", "Sample", "Status", "Official context"], caption="Required correlation register; unknown values remain blank")}
-<p><a href="lab/correlation.html">Unverified community-market estimates</a> · <a href="lab/props.html">Historical player-stat research</a></p></section>
+{table(rows, ["Relationship", "Estimate", "95% interval", "n", "Status", "Official context"], caption="Required correlation register; the estimates are blank because their inputs are a community mirror, and n is published with each one")}
+<p><a href="lab/correlation.html">Unverified community-market estimates</a> · <a href="lab/props.html">Historical player-stat research</a></p>
+<h3>Correlations computed only from officially sourced numbers</h3>
+<p>The register above is computed from a community mirror of the market lines and the player
+statistics, so it is not an official observation. The register below is computed only from
+the officially verified final scores and our own originated lines, and it is published with
+its n. It is small, because the official feed is small, and it is weak, and both of those
+facts are the point: a correlation computed only from official numbers can be quoted, and the
+number of observations behind it has to travel with the value.</p>
+{table(off_rows, ["Relationship", "Phi", "95% interval", "n", "Evidence class", "Official reference"],
+       caption="Official-only correlation register")}
+<p><a href="assets/data/corr_official.csv">Download the official-only register</a> · <a href="prices.html">The verified results feed it is computed from</a></p></section>
 <section><h2>Settlement and interpretation</h2>{table(rules, ["Case", "Rule", "Limit", "Source"], caption="Do not generalize one operator's terms to every ticket")}</section>
 <section><h2>Parlay validation checklist</h2><ol class="findings">
 <li>Use distinct selection identities; never count the same leg twice.</li><li>Use a common decision time and simultaneous or otherwise available quotes.</li>

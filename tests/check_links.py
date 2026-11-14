@@ -26,6 +26,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
 "decision-readiness.html", "lineup-deficiencies.html", "referents.html",
          "forward.html",
          "live-verification.html", "review.html",
+         # T50/T51 (session arena/b13485ed-korea1).
+         "prices.html",
          # X1-X4 (session arena/132e7ca2-korea1).
          "review-queue.html", "answers.html", "competition.html", "repo-review.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",

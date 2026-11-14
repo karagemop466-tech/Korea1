@@ -3,7 +3,7 @@ answers.html,98,2,0,,,,True,True,True,True,True,True,True,True
 audit.html,84,7,0,,,,True,True,True,True,True,True,True,True
 availability.html,581,5,0,,,,True,True,True,True,True,True,True,True
 competition.html,52,6,0,,,,True,True,True,True,True,True,True,True
-correlations.html,12,2,0,,,,True,True,True,True,True,True,True,True
+correlations.html,15,3,0,,,,True,True,True,True,True,True,True,True
 decision-board.html,17,1,0,,,,True,True,True,True,True,True,True,True
 decision-readiness.html,50,3,0,,,,True,True,True,True,True,True,True,True
 decisions.html,28,3,0,,,,True,True,True,True,True,True,True,True
@@ -12,12 +12,13 @@ flagged.html,71,6,0,,,,True,True,True,True,True,True,True,True
 forward.html,39,5,0,,,,True,True,True,True,True,True,True,True
 index.html,34,4,0,,,,True,True,True,True,True,True,True,True
 injuries.html,316,7,0,,,,True,True,True,True,True,True,True,True
-lines.html,190,3,0,,,,True,True,True,True,True,True,True,True
-lineup-deficiencies.html,64,6,0,,,,True,True,True,True,True,True,True,True
+lines.html,221,5,0,,,,True,True,True,True,True,True,True,True
+lineup-deficiencies.html,138,7,0,,,,True,True,True,True,True,True,True,True
 lineups.html,7,1,0,,,,True,True,True,True,True,True,True,True
 live-verification.html,197,8,0,,,,True,True,True,True,True,True,True,True
 methodology.html,18,3,0,,,,True,True,True,True,True,True,True,True
 open-questions.html,20,1,0,,,,True,True,True,True,True,True,True,True
+prices.html,77,6,0,,,,True,True,True,True,True,True,True,True
 props.html,17,3,0,,,,True,True,True,True,True,True,True,True
 questions.html,48,2,0,,,,True,True,True,True,True,True,True,True
 referents.html,546,5,0,,,,True,True,True,True,True,True,True,True
@@ -26,7 +27,7 @@ requirements.html,26,1,0,,,,True,True,True,True,True,True,True,True
 review-queue.html,90,2,0,,,,True,True,True,True,True,True,True,True
 review.html,167,5,0,,,,True,True,True,True,True,True,True,True
 sources.html,38,2,0,,,,True,True,True,True,True,True,True,True
-strategies.html,23,2,0,,,,True,True,True,True,True,True,True,True
+strategies.html,67,5,0,,,,True,True,True,True,True,True,True,True
 suggestions-review.html,16,2,0,,,,True,True,True,True,True,True,True,True
 suggestions.html,34,3,0,,,,True,True,True,True,True,True,True,True
 validation.html,26,2,0,,,,True,True,True,True,True,True,True,True

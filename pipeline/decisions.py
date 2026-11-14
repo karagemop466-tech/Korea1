@@ -440,6 +440,96 @@ QUESTIONS = [
       "project, not a pull request.",
       "", "Closed; budget it explicitly in Path B.",
       "GitHub Pages documentation", [("integration record", "COORDINATION.md")], "S"),
+    # ---- T50-T57 (session arena/b13485ed-korea1): the price store, the verified
+    # results feed, the signal/staking split and the demotion gate.
+    q("Q41", AREAS[1],
+      "Is there an official source for a betting line, an opening number or a closing number?",
+      "Every return, every correlation built on a market line, and gate G1.",
+      "ANSWERED",
+      "No. NFL.com publishes scores, schedules, injuries and rules; it publishes no betting line, "
+      "opening number, closing number, price or limit. The price-snapshot store therefore records "
+      "two classes of number: the model line we originate ourselves (class B) and a community mirror "
+      "of the market's line (class C). The opening-line archive in the pinned upstream covers the "
+      "spread and the total for the 2021 season and carries no price at all, so the opening number "
+      "is blank for every other game and for the moneyline everywhere. The official results feed is "
+      "the only official number in the chain.",
+      "", "Closed. The class is recorded on every cell; nothing is promoted to an official class.",
+      "NFL scores",
+      [("price store", "prices.html"),
+       ("price-snapshot source register", "data/forward/price_snapshot_sources.csv")], "S"),
+    q("Q42", AREAS[1],
+      "Can a return be computed now that the results are official?",
+      "Whether any strategy can be said to have made money.",
+      "ANSWERED",
+      "Yes, and the answer is that it is still not a finding. The official finals are class A and our "
+      "own line is class B, so the settlement is sound; but the entry price is class C, so the return "
+      "is class D and stays blank in the strict view. Over the 30 officially verified games, "
+      "DIV_UNDER and SP_EDGE_1_0 are -1.0 units, and TOT_EDGE_2_0 and TOT_EDGE_3_5 are +0.847 "
+      "units. Those numbers are computed from a community price mirror and are published as research "
+      "estimates with n attached, never as an official result.",
+      "", "Closed. The computation exists and its evidence class is published beside it.",
+      "NFL scores",
+      [("verified results feed", "data/forward/verified_results.csv"),
+       ("return register", "data/forward/verified_roi.csv")], "S"),
+    q("Q43", AREAS[3],
+      "How many settled weeks does each strategy need before its return can be told apart from luck?",
+      "Whether any strategy may hold a live tier, and whether any return may be published as skill.",
+      "ANSWERED",
+      "The power gate already computes it, and the answer is decisive: every one of the eighteen "
+      "strategies is short of the number of settled weeks its own power gate demands. The smallest "
+      "requirement is 2,637 weeks (SP_EDGE_1_0, which has 413); the largest is 181,824 weeks "
+      "(PARLAY2_ML, which has 345). No staking result in this repository can presently be "
+      "distinguished from luck, which is why the leaderboard separates the signal from the staking "
+      "and why no strategy is live.",
+      "", "Closed. The requirement and the observation are published side by side.",
+      "White (2000), Econometric Society",
+      [("signal and staking split", "assets/data/leaderboard_signal_staking.csv"),
+       ("demotion gate", "assets/data/demotion_status.csv")], "S"),
+    q("Q44", AREAS[3],
+      "What sends a live strategy back to paper, and what stops a lucky run from being read as skill?",
+      "Whether an allocation given to a strategy can be withdrawn when the strategy stops working.",
+      "ANSWERED",
+      "Eight demotion conditions are defined in code and evaluated per strategy: a negative trailing "
+      "return over eight settled weeks, too few settled weeks, a signal edge whose lower bound is not "
+      "above zero, a drawdown past -20 units, a settled bet without a verified executable price, a "
+      "settled bet without an official final, a failed leakage check, and a redundancy overlap at or "
+      "above 90%. The gate can only send a strategy down; there is no rule in it that promotes one, "
+      "and a condition that cannot be evaluated counts as not passed. Separately, a positive return "
+      "may never promote a strategy whose signal is not positive: PARLAY2_ML has the highest return "
+      "in the book (+10.9%) and a signal whose lower bound is below zero, so it is labelled a lucky "
+      "staking run and is capped at paper.",
+      "", "Closed. The conditions, the thresholds and the evaluation are published.",
+      "White (2000), Econometric Society",
+      [("demotion conditions", "data/processed/demotion_gates.csv"),
+       ("strategies page", "strategies.html")], "S"),
+    q("Q45", AREAS[4],
+      "How deep is the replacement behind an unavailable starter, and for which positions is it unknown?",
+      "Whether a starter's absence is a first-string, second-string or third-string problem.",
+      "ANSWERED",
+      "For the 74 depth-chart slots whose first-listed player is unavailable, the club's own published "
+      "order names a second-string replacement in 33 and no replacement at all in 3. The deficiency "
+      "register carries the tier for 26 of its 154 rows; the rest say why it is blank. The blank "
+      "cases are clubs that publish no machine-readable order, and they are not read as a first-string "
+      "replacement. Two of the clubs in the capture label their own chart unofficial, and that "
+      "caveat travels with the number.",
+      "", "Closed for the clubs in the capture. Extend the capture to the remaining clubs to close it further.",
+      "NFL injury report (2026 week 10)",
+      [("replacement depth", "assets/data/replacement_depth.csv"),
+       ("lineup deficiencies", "lineup-deficiencies.html")], "S"),
+    q("Q46", AREAS[3],
+      "What do the correlations look like when they are computed only from officially sourced numbers?",
+      "Whether a same-game ticket can be priced on the strength of a correlation.",
+      "ANSWERED",
+      "Over the 30 officially verified games: our spread side covers and our moneyline favours the "
+      "home team are correlated at phi = 0.935, which is expected by construction because both legs "
+      "are read from the same margin distribution; our spread side covers and the game goes over "
+      "correlate at phi = -0.071; the total and the moneyline correlate at phi = 0.000. All three "
+      "carry n = 30, which is published with the values. These are weak estimates on a small sample "
+      "and are labelled as such.",
+      "", "Closed. The register grows as the official feed is extended.",
+      "NFL scores",
+      [("official-only correlation register", "assets/data/corr_official.csv"),
+       ("correlations page", "correlations.html")], "S"),
 ]
 
 
@@ -616,6 +706,87 @@ SUGGESTIONS = [
       "Q36, Q38", "S", "High", "Delivered: DECISIONS.md created in this build",
       "Delivered in this build", "A log that is not linked from the review page will be ignored.",
       "GitHub Pages documentation", depends=["Q36"]),
+
+    # ---- T50-T57 (session arena/b13485ed-korea1)
+    s("S23", "Record a price snapshot for every market we originate, with its opening and closing number",
+      AREAS[1],
+      "One row per originated market side - spread, total and moneyline, both sides - carrying the "
+      "model number, the market number, the difference, the opening number, the closing number and "
+      "the source id and evidence class of each cell. The store is published and re-runnable.",
+      "Without it, a published line has no price history attached to it, and the question 'what did "
+      "the market say when we originated this?' cannot be answered for any game.",
+      "Q41", "M", "High", "Delivered in this build",
+      "Adopt now",
+      "The store is large. It is kept as one file with an explicit set column so that a published set "
+      "can be told from a backtest set.",
+      ref="NFL scores",
+      depends=["Q41"]),
+    s("S24", "Grade every settled pick against an official final instead of a mirror",
+      AREAS[0],
+      "Join the official finals to our own originated lines and to the price snapshot, so that a "
+      "settlement, a backtest and a return all rest on the same official page, with the URL and the "
+      "verification time recorded on every row.",
+      "A settlement read from a community mirror is a settlement nobody can check. The official feed "
+      "is the one part of the chain that can be verified end to end today.",
+      "Q42", "M", "High", "Delivered in this build",
+      "Adopt now",
+      "The feed grows one game at a time, and a row without an official final stays open rather than "
+      "being graded provisionally.",
+      ref="NFL scores",
+      depends=["Q42"]),
+    s("S25", "Publish the signal scorecard and the staking scorecard apart, and rank on the signal",
+      AREAS[3],
+      "Measure the directional quality of a rule against the break-even rate each bet actually "
+      "carried, measure the money separately, and order the leaderboard by the signal. A positive "
+      "return may never promote a strategy whose signal is not positive.",
+      "A leaderboard sorted on money ranks luck. PARLAY2_ML has the best return in the book and a "
+      "signal whose lower bound is below zero; on a money-sorted board it would read as the best "
+      "strategy here.",
+      "Q43, Q44", "M", "High", "Delivered in this build",
+      "Adopt now",
+      "Two scorecards are harder to read than one. The combined verdict column states the "
+      "conclusion in words so the reader does not have to derive it.",
+      ref="White (2000), Econometric Society",
+      depends=["Q43"]),
+    s("S26", "Define the demotion conditions and evaluate them every release",
+      AREAS[3],
+      "Eight conditions that can only send a strategy down, each naming the data it needs, each "
+      "evaluated against the settled record, with an unevaluable condition counted as not passed.",
+      "The reward ladder described how a strategy is promoted and said nothing about what happens "
+      "when it stops working, so a decaying strategy would have kept its allocation.",
+      "Q44", "S", "High", "Delivered in this build",
+      "Adopt now",
+      "No strategy is live, so the gate has nothing to demote yet. That is the honest state of it "
+      "and the page says so.",
+      ref="White (2000), Econometric Society",
+      depends=["Q44"]),
+    s("S27", "Publish the replacement depth, not only the fact of a replacement",
+      AREAS[4],
+      "Join the official injury report to the official club depth charts and record, for every slot "
+      "whose first-listed player is unavailable, which string replaces him, with the club's caveat "
+      "and the independent re-read verdict.",
+      "A starter being out is a fact about one player. Which string plays in his place is the fact "
+      "that moves a line, and the register recorded only the first.",
+      "Q45", "M", "Medium-high", "Delivered in this build",
+      "Adopt now",
+      "Clubs that publish no machine-readable order contribute nothing. Their tier stays blank and "
+      "says why, and a blank is never read as a first-string replacement.",
+      ref="NFL injury report (2026 week 10)",
+      depends=["Q45"]),
+    s("S28", "Compute the correlation register from official numbers only, and publish n with it",
+      AREAS[3],
+      "A second correlation register built only from the officially verified finals and our own "
+      "lines, with the observation count published beside every value, alongside the existing "
+      "community-mirror register.",
+      "A correlation without its n is a claim; a correlation computed from a mirror is not an "
+      "official observation. Neither was true of the register as it stood.",
+      "Q46", "S", "High", "Delivered in this build",
+      "Adopt now",
+      "With n = 30 the estimates are weak. They are published as weak, with n attached, so the "
+      "weakness is visible rather than hidden.",
+      ref="NFL scores",
+      depends=["Q46"]),
+
 ]
 
 PATHS = [

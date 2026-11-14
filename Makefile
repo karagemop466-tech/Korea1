@@ -66,7 +66,18 @@ site: injuries review reviewall
 	$(PY) pipeline/session_review.py
 	$(PY) pipeline/session_decide.py
 	$(PY) pipeline/session_competition.py
+	# T50/T51/T54/T55/T56/T57 (session arena/b13485ed-korea1): the price-snapshot store,
+	# the verified results feed, the signal/staking split, the demotion gate, the
+	# replacement depth and the official-only correlation register. Every step is
+	# additive and runs before render_site.py, which publishes them.
+	$(PY) pipeline/price_snapshots.py
+	$(PY) pipeline/verified_results.py
+	$(PY) pipeline/leaderboard_split.py
+	$(PY) pipeline/demotion.py
+	$(PY) pipeline/replacement_depth.py
+	$(PY) pipeline/official_correlations.py
 	$(PY) pipeline/render_site.py
+	$(PY) pipeline/render_prices.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	$(PY) pipeline/render_review.py
 	$(PY) pipeline/render_summary.py

@@ -71,6 +71,9 @@ def main():
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
               "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
               "referents.html",
+              # T50/T51 (session arena/b13485ed-korea1): the price-snapshot store and
+              # the verified results feed.
+              "prices.html",
               "forward.html","live-verification.html","review.html",
               # X1-X4 (session arena/132e7ca2-korea1).
               "review-queue.html","answers.html","competition.html","repo-review.html"}

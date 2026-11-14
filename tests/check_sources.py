@@ -9,6 +9,8 @@ PAGES=["index.html","executive-summary.html","lines.html","strategies.html","val
        "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
        "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
        "referents.html", "forward.html", "live-verification.html", "review.html",
+       # T50/T51 (session arena/b13485ed-korea1).
+       "prices.html",
        # X1-X4 (session arena/132e7ca2-korea1).
        "review-queue.html", "answers.html", "competition.html", "repo-review.html"]
 def main():

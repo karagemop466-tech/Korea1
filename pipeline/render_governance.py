@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import ROOT, read_json  # noqa: E402
+from common import PROC, ROOT, read_json  # noqa: E402
 
 GOV_DIR = ROOT / "data" / "governance"
 LIN_DIR = ROOT / "data" / "lineups"
@@ -272,6 +272,42 @@ def build_decision_readiness_page(layout, table, card, kpi_grid, flag, src_link)
     )
 
 
+def _replacement_rows() -> str:
+    """The all-club replacement-depth table (T56, session arena/b13485ed-korea1)."""
+    import pandas as _pd
+    path = PROC / "replacement_depth.csv"
+    if not path.exists():
+        return ("<p class=\"muted\">The replacement-depth register has not been built in this "
+                "run.</p>")
+    df = _pd.read_csv(path, dtype=str).fillna("")
+    if df.empty:
+        return ("<p class=\"muted\">No depth-chart slot in the current capture has an "
+                "unavailable first-listed player.</p>")
+    rows = []
+    for r in df.sort_values(["team", "unit", "slot"]).itertuples(index=False):
+        depth = r.replacement_depth_label or "not published"
+        who = r.replacement_player or "no replacement published"
+        src = (f'<a href="{_e(r.depth_source_url)}" target="_blank" rel="noopener">club depth chart</a>'
+               + " · " +
+               (f'<a href="{_e(r.injury_source_url)}" target="_blank" rel="noopener">NFL injury report</a>'
+                if r.injury_source_url else "NFL injury report"))
+        rows.append([
+            f'<strong>{_e(r.team)}</strong><br><span class="muted">{_e(r.club)} · {_e(r.unit)} '
+            f'slot {_e(r.slot)}</span>',
+            _e(r.position_group),
+            f'<strong>{_e(r.first_listed)}</strong><br><span class="small">{_e(r.flag)}</span>',
+            f'<strong>{_e(who)}</strong><br><span class="small">{_e(depth)}</span>',
+            _e(r.depth_order_verdict),
+            src,
+        ])
+    return ("<div class=\"tablewrap\"><table><caption>Every depth-chart slot whose first-listed "
+            "player is unavailable, with the replacement the club itself publishes and the "
+            "independent re-read verdict</caption><thead><tr><th>Club &amp; slot</th><th>Position "
+            "group</th><th>First-listed player &amp; status</th><th>Replacement &amp; depth</th>"
+            "<th>Re-read verdict</th><th>Official sources</th></tr></thead><tbody>"
+            + "".join("<tr>" + "".join(f"<td>{c}</td>" for c in row) + "</tr>" for row in rows)
+            + "</tbody></table></div>")
+
 def build_lineups_page(layout, table, card, kpi_grid, flag, src_link) -> str:
     g = load_governance_data()
     wk = g["wk10_lineups"]
@@ -394,6 +430,20 @@ def build_lineups_page(layout, table, card, kpi_grid, flag, src_link) -> str:
   {table(_unit_rows(off_df),
          ["Club & game", "Position", "Tracked offensive player & role", "Official NFL.com status", "1st string (starter)", "2nd string", "3rd string", "4th string", "Replacement & deficiency diagnosis", "Official sources"],
          caption="Verified Week 10 2026 offensive injuries mapped across 1st, 2nd, 3rd, and 4th depth-chart strings")}
+</section>
+
+<section id="replacement-depth">
+  <div class="section-head">
+    <h2>Replacement depth across every club with a published depth chart</h2>
+    <a href="assets/data/replacement_depth.csv">Download replacement depth CSV →</a>
+  </div>
+  <p>Knowing that a starter is out is a fact about one player. Knowing <em>which string replaces
+  him</em> is a fact about the depth behind him, and it is the fact that moves a line. The table
+  below joins the official NFL injury report to the official club depth charts and records, for
+  every depth-chart slot whose first-listed player is unavailable, the replacement the club
+  itself publishes. A club that publishes no machine-readable order contributes nothing: the
+  cell stays blank and says why. A blank tier is never read as a first-string replacement.</p>
+  {_replacement_rows()}
 </section>
 
 <section id="historical-backup-research">
