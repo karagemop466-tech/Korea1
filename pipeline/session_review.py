@@ -107,11 +107,6 @@ def tracked_files() -> list[Path]:
         parts = set(Path(line).parts)
         if parts & SKIP_DIRS or any(line.startswith(s + "/") for s in SKIP_DIRS):
             continue
-        # The inventory lists itself, and listing itself changes its own byte and
-        # line counts, which changes the file, which changes the counts again.
-        # Excluding the two copies of the inventory makes the build a fixed point.
-        if line in ("data/integration/repo_inventory.csv", "assets/data/repo_inventory.csv"):
-            continue
         if p.is_file():
             files.append(p)
     return sorted(files)
@@ -124,6 +119,28 @@ def find_producers(rel: str, sources: dict[str, str]) -> str:
     if not hits:
         return "—"
     return "; ".join(sorted(hits)[:3])
+
+
+def size_band(n: int) -> str:
+    """A coarse size bucket, not an exact byte count.
+
+    Exact byte counts are not reproducible across machines: a generated CSV can
+    differ by a single character (0.3 vs 0.30000000000000004) while being
+    numerically identical, and `tests/check_rebuild.py` compares those files with
+    a numeric tolerance, so it never sees the difference. Publishing the exact
+    size turned that invisible difference into a build that does not converge.
+    A bucket is stable for any file whose size is not sitting exactly on a
+    boundary, and it is still enough for a human to see what kind of file it is.
+    """
+    if n < 1_024:
+        return "under 1 KB"
+    if n < 10_240:
+        return "1-10 KB"
+    if n < 102_400:
+        return "10-100 KB"
+    if n < 1_048_576:
+        return "100 KB-1 MB"
+    return "over 1 MB"
 
 
 def build_inventory() -> pd.DataFrame:
@@ -143,7 +160,7 @@ def build_inventory() -> pd.DataFrame:
         except OSError:
             lines = 0
         label, url = resolve_ref(_rule(rel.lower(), REF_RULES))
-        rows.append(dict(path=rel, bytes=p.stat().st_size, lines=lines,
+        rows.append(dict(path=rel, size_band=size_band(p.stat().st_size),
                          kind=_rule(rel, KIND_RULES),
                          verification=_rule(rel, VERIFY_RULES),
                          produced_by=find_producers(rel, sources),
@@ -354,7 +371,7 @@ def build_page(inv, vlog, irr, inj_check, score_check, inj, score) -> str:
     ref_nfl = ref_link(*resolve_ref("NFL scores"))
     inv_rows = []
     for _, r in inv.iterrows():
-        inv_rows.append([f'<code>{e(r.path)}</code>', f'{int(r.bytes):,}', f'{int(r.lines):,}',
+        inv_rows.append([f'<code>{e(r.path)}</code>', e(r.size_band),
                          e(r.kind), e(r.verification), e(r.produced_by),
                          ref_link(r.ref_label, r.ref_url)])
 
@@ -443,11 +460,13 @@ confirms the register is a census of games that were <em>upcoming</em> at the pi
 <p>One row per tracked file. <em>Produced by</em> is answered mechanically: every pipeline and script source is
 searched for the file name. The official source column is a provenance anchor — the official page the artefact is
 derived from or about — not a claim that the organisation published the file. The two copies of this inventory
-(<code>data/integration/repo_inventory.csv</code> and its <code>assets/data/</code> download) are the only tracked
-files excluded, because a file that lists itself never stops changing.</p>
+is now complete: it lists every tracked file, including its own two copies. <em>Size</em> is a bucket rather than
+an exact byte count, because a generated CSV can differ from one machine to the next by a single character
+(<code>0.3</code> against <code>0.30000000000000004</code>) while being numerically identical — recording exact
+sizes made the build unable to converge even though nothing had actually changed.</p>
 <div class="table-tools"><label>Search <input class="filter" type="search" placeholder="Try pipeline/, injuries, .html…"></label>
 <span class="small">Click a column heading to sort</span></div>
-{table(inv_rows, ["Path", "Bytes", "Lines", "Kind", "Verification", "Produced by", "Official source"],
+{table(inv_rows, ["Path", "Size", "Kind", "Verification", "Produced by", "Official source"],
        caption="Complete inventory of tracked files with kind, verification status, producer and provenance anchor")}
 <p><a href="assets/data/repo_inventory.csv">Download the inventory</a></p>
 </section>

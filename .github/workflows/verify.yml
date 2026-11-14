@@ -26,9 +26,6 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
@@ -42,64 +39,3 @@ jobs:
         run: make test
       - name: Verify committed generated outputs
         run: python tests/check_rebuild.py
-      - name: TEMP DIAGNOSTIC report rebuild drift
-        if: failure()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python - <<'PY' > /tmp/drift.md
-          import io, json, subprocess, math, os, hashlib, difflib
-          import pandas as pd
-          names = subprocess.check_output(["git","diff","--name-only","HEAD"],text=True).splitlines()
-          targets = [n for n in names if n.startswith(("assets/","data/processed/","data/integration/"))
-                     or n in ("data/sources_pbp.json","EXECUTIVE_SUMMARY.md") or n.endswith(".html")]
-          print("### TEMP DIAGNOSTIC: rebuild drift")
-          print("event:", os.environ.get("GITHUB_EVENT_NAME"))
-          print("sha:", subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip())
-          print("nproc:", os.cpu_count())
-          print("n drifted:", len(targets))
-          print("```")
-          print("--- upstream inputs under data/raw (sha256) ---")
-          for root,_,fs in os.walk("data/raw"):
-              for f in sorted(fs):
-                  p=os.path.join(root,f)
-                  print("  ", p, hashlib.sha256(open(p,'rb').read()).hexdigest()[:16], os.path.getsize(p))
-          print("--- data/sources.json ---")
-          print(open("data/sources.json").read()[:400])
-          for name in targets[:14]:
-              old = subprocess.run(["git","show",f"HEAD:{name}"],capture_output=True).stdout
-              new = open(name,"rb").read()
-              if name.endswith(".json"):
-                  a,b = json.loads(old), json.loads(new)
-                  print(f"JSON {name}:")
-                  for k in a:
-                      if a[k]!=b.get(k): print(f"    {k}: {a[k]!r} -> {b.get(k)!r}")
-                  continue
-              if name.endswith(".html") or name.endswith(".md"):
-                  d=[l for l in difflib.unified_diff(old.decode().splitlines(),new.decode().splitlines(),lineterm="",n=0)][:12]
-                  print(f"TEXT {name}: {'SAME' if not d else 'DRIFT'}")
-                  for l in d: print("    ", l[:200])
-                  continue
-              try:
-                  A=pd.read_csv(io.BytesIO(old)); B=pd.read_csv(io.BytesIO(new))
-              except Exception as exc:
-                  print(f"{name}: unreadable {exc}"); continue
-              if list(A.columns)!=list(B.columns) or len(A)!=len(B):
-                  print(f"{name}: SCHEMA/ROWS {len(A)}->{len(B)}"); continue
-              out=[]
-              for c in A.columns:
-                  ma=mr=0.0; ex=None
-                  for x,y in zip(A[c].tolist(),B[c].tolist()):
-                      try: fx,fy=float(x),float(y)
-                      except (TypeError,ValueError):
-                          if str(x)!=str(y): out.append((c,"TEXT",f"{x!r} -> {y!r}")); break
-                          continue
-                      if math.isnan(fx) and math.isnan(fy): continue
-                      d=abs(fx-fy); rel=d/max(abs(fx),abs(fy),1e-300)
-                      if d>ma: ma,mr,ex=d,rel,(x,y)
-                  if ma>0: out.append((c,f"maxabs={ma:.3e} maxrel={mr:.3e}",f"{ex[0]!r} -> {ex[1]!r}"))
-              print(f"CSV {name}: rows={len(A)}")
-              for w in out[:6]: print(f"    {w[0]}: {w[1]}  e.g. {w[2][:100]}")
-          print("```")
-          PY
-          gh pr comment 46 --body-file /tmp/drift.md
