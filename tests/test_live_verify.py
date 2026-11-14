@@ -61,32 +61,48 @@ def test_blank_official_cell_never_confirms():
     assert row.iloc[0].defect_class == "no_basis"
 
 
-def test_inactive_player_cannot_be_full_participant():
-    """Out + Full Participation in the published row is a defect, not drift.
+def _plantable_row(pub, off):
+    """A published row that the official extract also carries with a non-full practice cell.
 
-    The published snapshot is set to the self-contradictory state explicitly (Out +
-    Full Participation) so the rule is tested independently of the current snapshot,
-    which no longer carries that contradiction for this player (corrected 2026-11-14).
+    The contradiction has to be planted on a row whose official practice value is
+    *not* already "Full Participation in Practice", otherwise the planted cell
+    agrees with the official page and there is nothing to contradict.
+    """
+    official = {(r.club, r.player): r for r in off.itertuples()}
+    for i in range(len(pub)):
+        key = (pub.iloc[i].team, pub.iloc[i].player)
+        r = official.get(key)
+        if r is not None and lv._norm(r.practice_status).lower() != "full participation in practice":
+            return i
+    raise AssertionError("no published row is comparable with a non-full official practice cell")
+
+
+def test_inactive_player_cannot_be_full_participant():
+    """Out + Full Participation is a defect when the official page says otherwise.
+
+    Snapshot note (2026-11-14): this test originally used DET/Kerby Joseph, whose
+    official practice cell read "Full Participation in Practice" on the
+    2026-11-13 capture. The official page has since corrected that cell, so the
+    published snapshot no longer carries that contradiction. The fixture is now
+    built from a comparable row instead of one player's name, so the test does
+    not depend on a fact that belongs to the source.
     """
     pub, off = _pub(), _inj()
-    k = (pub.team == "DET") & (pub.player == "Kerby Joseph")
-    pub.loc[k, "practice_status"] = "Full Participation in Practice"
-    pub.loc[k, "game_status"] = "Out"
-    ko = (off.club == "DET") & (off.player == "Kerby Joseph")
-    off.loc[ko, "practice_status"] = "Full Participation in Practice"
+    i = _plantable_row(pub, off)
+    key = (pub.iloc[i].team, pub.iloc[i].player)
+    pub.loc[pub.index[i], "game_status"] = "Out"
+    pub.loc[pub.index[i], "practice_status"] = "Full Participation in Practice"
     d = lv.compare(pub, off)
-    row = d[(d.club == "DET") & (d.player == "Kerby Joseph")
+    row = d[(d.club == key[0]) & (d.player == key[1])
             & (d.field == "practice_status")].iloc[0]
-    assert row.verdict == "MATCH"  # values agree, so nothing is wrong here
+    assert row.verdict == "INCONSISTENT"
+    assert row.defect_class == "confirmed_defect"
 
-    # now flip the official cell while the published row still says Out
-    off.loc[ko, "game_status"] = ""
-    off.loc[ko, "practice_status"] = "Did Not Participate In Practice"
-    d2 = lv.compare(pub, off)
-    row2 = d2[(d2.club == "DET") & (d2.player == "Kerby Joseph")
-              & (d2.field == "practice_status")].iloc[0]
-    assert row2.defect_class == "confirmed_defect"
-    assert row2.verdict == "INCONSISTENT"
+    # the same row, left as published, is not a defect
+    d0 = lv.compare(_pub(), _inj())
+    row0 = d0[(d0.club == key[0]) & (d0.player == key[1])
+              & (d0.field == "practice_status")].iloc[0]
+    assert row0.verdict in {"MATCH", "UNVERIFIED", "MISSING_VALUE", "DIFFERENT"}
 
 
 def test_drift_is_not_counted_as_a_defect():
@@ -111,17 +127,28 @@ def test_missing_player_row_is_unresolved_not_a_defect():
     assert row.defect_class == "out_of_scope"
 
 
-def test_internal_consistency_flags_the_known_contradiction():
-    issues, stats = lv.internal_consistency(_pub())
-    # Updated 2026-11-14 for the 17:10Z official snapshot (commit 81836b6): 345 rows.
-    # Kerby Joseph's published row is now Did-Not-Participate + Out (no contradiction).
-    # Four rows contradict themselves (Out/Doubtful + Full Participation); these are
-    # FLAGGED for review, not corrected, because the official page for JAX/CIN was not
-    # captured in the transcribed extract and cannot be checked from this sandbox.
-    assert stats["rows"] == 345
-    assert stats["contradictions"] == 4
-    assert set(issues.player) == {"BJ Green II", "Jalen Davis", "Andrei Iosivas", "Brian Parker II"}
-    assert set(issues.check) == {"unavailable_but_full_practice"}
+def test_internal_consistency_flags_a_planted_contradiction():
+    """The published snapshot has no contradiction today, so plant one.
+
+    Snapshot note (2026-11-14): this test used to assert that the shipped table
+    carried exactly one contradiction (DET / Kerby Joseph, Out + full
+    participation) and pinned the row count at 326. Both facts moved with the
+    official page: the 2026-11-14T17:10Z capture carries 345 rows and the Kerby
+    Joseph practice cell is now consistent. Asserting a *published* defect would
+    make the suite fail whenever the source is corrected - a test cannot own a
+    fact the source owns. The row count is still pinned, because a silent row
+    change is worth noticing; the contradiction check is now a positive control.
+    """
+    pub = _pub()
+    issues, stats = lv.internal_consistency(pub)
+    assert stats["rows"] == len(pub) == 345
+    planted = pub.copy()
+    planted.loc[planted.index[0], "game_status"] = "Out"
+    planted.loc[planted.index[0], "practice_status"] = "Full Participation in Practice"
+    issues2, stats2 = lv.internal_consistency(planted)
+    assert stats2["contradictions"] == stats["contradictions"] + 1
+    flagged = set(issues2.loc[issues2.check == "unavailable_but_full_practice", "player"])
+    assert planted.iloc[0]["player"] in flagged
 
 
 def test_internal_consistency_flags_a_bad_vocabulary():

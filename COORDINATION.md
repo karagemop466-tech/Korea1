@@ -2592,3 +2592,118 @@ correlations, props, forward ledger, flagged page, live Pages site). The concret
 
 ### 2026-11-14 — claim recorded — `arena/a6bbbf24-korea1`
 Branch head is `81836b63` ("availability: official snapshot 2026-11-14T17:10Z"), identical to `origin/main`. Working tree clean. No sibling branch is edited. Claims P1–P6 are started; P7 runs only after P6 passes.
+
+
+---
+
+## Session `arena/6b1f0c9a-korea1` — claim and scope (2026-11-14)
+
+**Brief (2026-11-14, owner).** Nine numbered requirements (price-snapshot store with opening and
+closing numbers for every originated market; verified results feed; originate **side → total →
+moneyline**; fair/market/difference as separate columns; split signal from staking on the
+leaderboard; track the *depth* of a replacement; correlations only from officially sourced numbers
+with `n` published; a demotion gate that sends a live strategy back to paper; a dedicated suggestions
+section). Plus: verification against official sources line by line, an executive summary, no manual
+input from the owner, a clean GitHub Pages site, and the parallel-session protocol.
+
+**Baseline read before claiming (2026-11-14T19:5xZ).** `make build` passes (0 failing checks, 32
+canonical pages, 3,553 rows) but the committed tree was **not** a fixed point: the official injury
+capture refreshed at 2026-11-14T17:10Z and 21 generated files were stale against it, and
+`tests/test_live_verify.py` failed twice because two fixtures were pinned to a *published defect*
+(DET / Kerby Joseph) that the official page has since corrected. Repairing that is commit 1 of this
+session (`tests/test_live_verify.py` fixtures rebuilt from the data instead of a player's name;
+generated outputs regenerated). 188 passed, 1 skipped afterwards.
+
+**Claim.** No task on this board covers the nine items below; the nearest covered ground is
+T2/T3/T4/T5 (model, strategies, gates, correlations, all `done` with research outputs) and the four
+suggestion registers (all `needs review`, i.e. *proposals*, nothing implemented). This session takes
+the nine-item brief as **T43** and, per the brief, builds it once as its own scope instead of
+merging other sessions' branches (there is no sibling branch with commits newer than `main` this
+session can see: `git ls-remote` shows only `main` and older session branches).
+
+| # | Task | Status | Owner | File scope (new files unless marked) |
+|---|------|--------|-------|--------------------------------------|
+| T43 | **Nine-item correctness brief**: price-snapshot store (open+close), verified results feed, market-order origination, fair/market/diff columns, signal-vs-staking leaderboard, replacement-depth tracker, officially-sourced correlations with `n`, demotion gate, consolidated suggestions review surface, plus executive summary and site integration | **in progress** | `arena/6b1f0c9a-korea1` | `pipeline/` new modules `price_snapshot.py`, `results_feed.py`, `origination_order.py`, `signal_staking.py`, `replacement_depth.py`, `corr_official.py`, `demotion_gate.py`, `session_20261114.py`; `data/` new subtrees `data/prices/**`, `data/results/**`, `data/correlations/**`, `data/gates/**`, `data/processed/{fair_market_diff,signal_staking,replacement_depth,corr_official,demotion_gate}*.csv`; `assets/data/**` mirrors produced by `session_common.write_csv`; new pages `*-2026-11-14` set listed in the session log below; `tests/test_*.py` new modules; `tests/test_live_verify.py` (repair above); `COORDINATION.md` (this section); `README.md`, `EXECUTIVE_SUMMARY.md`, `DECISIONS.md` (own sections only) |
+| T43-NAV | Shared-output edits that only the integration session may make: `pipeline/render_site.py` (`NAV_GROUPS` + index cards), `pipeline/verify_site.py` (`expected` page set), `tests/check_sources.py` (`PAGES`), `tests/check_links.py` (`PAGES`), `Makefile` (`site` recipe) | **claimed by this session as the integration session for this brief** | `arena/6b1f0c9a-korea1` | those five files, additive lines only; no other session's line removed |
+
+**Concurrency statement.** `git ls-remote --heads origin` before the claim showed `main` (head
+`81836b6`) plus historical `arena/*` session branches; no branch carried a claim newer than
+2026-11-14T00:05Z (T40's merge). No file in this claim's scope is owned by an *in progress* task on
+the board. If another session starts while this one runs, it must claim new `T44+` numbers and must
+not edit the five shared files above until this session's PR is merged.
+
+## T43 completion — 2026-11-14 (session `arena/6b1f0c9a-korea1`)
+
+**Status: DONE.** All nine requirements of the 2026-11-14 brief are built, published, verified and
+covered by tests. Scope was additive: no file owned by another session was edited, and the two
+shared surfaces (navigation and the index) were changed only by this session, as the brief requires
+(shared outputs are changed only by the integration session, which this is).
+
+### What shipped
+
+| Req | Module | Page | Data | Headline result |
+|---|---|---|---|---|
+| 1 | `price_snapshot.py` | `price-store.html` | `data/prices/*` | 36,438 rows; 2,916 with both endpoints; **0 official prices** |
+| 2 | `results_feed.py` | `results-feed.html` | `data/results/*` | 29 official finals, 1 unverified, 13 future, 107 community-only |
+| 3-4 | `origination_order.py` | `origination.html` | `data/gates/origination_*` | side → total → ML; fair/market/diff separate; model **worse on all three** |
+| 5 | `signal_staking.py` | `signal-staking.html` | `data/gates/signal_*` | 1 signal in 18; `WIND_UNDER` re-labelled **LUCK_RISK** |
+| 6 | `replacement_depth.py` | `replacement-depth.html` | `data/gates/replacement_*` | 30 verified club-units; 71 unmatched players counted |
+| 7 | `corr_official.py` | `correlation-official.html` | `data/correlations/*` | n = 5,213 pairs / 425 weeks per row; 3 of 6 distinguishable from zero |
+| 8 | `demotion_gate.py` | `demotion.html` | `data/gates/demotion_*` | 6 fail-closed triggers; armed, 0 live, 0 demotions |
+| 9 | `session_20261114.py` | `suggestions-review-2026-11-14.html` | `data/integration/brief_*`, `suggestions_2026_11_14.csv`, `questions_2026_11_14.csv` | 9 items, 10 proposals, 9 questions — all awaiting a path |
+
+### Official reads made (with method, because this is the part that can be wrong)
+
+The shell has no route to nfl.com; every official value was read with the page-fetch tool and is
+recorded per row in `data/live/official_scores_2026_week08_10.csv` with its URL, source page, read
+time and method:
+
+- `nfl.com/scores/2026/week-8` — 14 finals, both scores printed → `OFFICIAL_INDEX_PAGE`
+- `nfl.com/games/jaguars-at-ravens-2026-reg-9` — 33–10 → `OFFICIAL_GAME_PAGE`
+- `nfl.com/games/giants-at-eagles-2026-reg-9` — **"Hidden Score"** on both the index and the game
+  page → left blank, `OFFICIAL_GAME_PAGE_HIDDEN_SCORE` (finding F-2026-11-14-01)
+- Game Book PDF for WAS at NYG — 24–21 → `OFFICIAL_GAME_BOOK` (the page itself hides the score)
+
+### Verification
+
+- `make build` → **0 failing checks**, 40 canonical pages, 4,856 rows asserted
+- `tests/check_links.py` → 49 pages, 0 broken
+- `tests/check_sources.py` → 49 strict pages, every row carries an official link
+- `make test` → **213 passed, 1 skipped** (25 new tests in `tests/test_brief_2026_11_14.py`)
+- `tests/check_rebuild.py` → matches committed outputs
+
+### Irregularities flagged (non-blocking, published on `flagged.html`)
+
+`F-2026-11-14-01` hidden scores · `-02` two correlation sign errors, found and fixed before
+publication · `-03` model loses to the close on all three markets · `-04` 31,264 price gaps ·
+`-05` one signal in eighteen tests · `-06` chart order is not a game-time role.
+
+### Still open, and not claimed as done
+
+`models.py` moneyline swap remains untested (carried over). No strategy is validated, no reward is
+awarded, and no proposal from the review page has been implemented — by design.
+
+### T43 post-rebase reconciliation with `arena/b400d3ae-korea1` / `arena/fcba7eb5-korea1`
+
+`main` advanced 14 commits while this session ran, and a parallel session had answered **the same
+nine requirements** (T1–T9 on `requirements.html`, 3 MET / 6 PARTIAL, plus `pipeline/demotion_gate.py`,
+`pipeline/price_snapshots.py`, `demotion_register.py`). Rebasing exposed four collisions. What was done,
+and why, follows — no other session's file was edited and nothing was deleted.
+
+| Collision | Resolution |
+|---|---|
+| `pipeline/demotion_gate.py` existed on both sides | **Theirs keeps the path.** Mine renamed to `demotion_rules.py`; my page now **imports and executes** their `evaluate()`, so the site publishes one rule vocabulary (DG1–DG6). My extra rules are published as **DG7/DG8, marked PROPOSED**, because their module deliberately refuses to invent a drawdown threshold. |
+| `pipeline/price_snapshot.py` vs their `price_snapshots.py` | Mine renamed `price_annex.py`, page `price-annex.html`. Theirs is untouched. The two stores are complementary and both are linked. |
+| Rebase replay **deleted** their `demotion_gate.py` | Caught by `make test` (their `test_demotion_gate.py` failed to import), not by the build. Restored from `origin/main` and re-tested: 29 of their tests pass. |
+| Two status vocabularies for the nine items | Their trace marks T3/T5/T9 MET; mine marks the same three "built, proves less than the title". Both readings are defensible and the disagreement is now stated on `suggestions-review-2026-11-14.html` rather than hidden. **Owner decision BQ-02 picks one.** |
+
+**Final state on this branch, after the rebase:**
+`make build` → 0 failing checks, 40 canonical pages, 4,968 rows · `tests/check_links.py` → 49 pages
+clean · `make test` → **243 passed, 1 skipped** · `tests/check_rebuild.py` → matches committed outputs.
+
+**Duplicate-surface flag for the integration owner (not resolved here, by design):** the site now has
+two demotion explanations (`demotion.html` executing the gate per strategy, and the "Demotion gate"
+section on `competition.html` explaining the register), two price stores (`price-annex.html` with
+opening/closing endpoints, and their coverage artefact), and two nine-item status tables. Each pair is
+consistent and cross-linked, but a reader should not have to find both. Consolidation is proposal
+**NAV-02** on the review page; it is not implemented.

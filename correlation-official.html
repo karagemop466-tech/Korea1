@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Correlations, officially sourced</title>
+<meta name="description" content="Dependence estimates from officially sourced values only, with n and a week-block interval on every row.">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<div class="shell">
+<header class="side">
+  <a class="brand" href="index.html"><span class="mark" aria-hidden="true">NFL</span> Line Lab</a>
+  <nav aria-label="Main navigation"><div class="navgroup"><span class="navhead">Overview</span><a class="navlink" href="index.html">Dashboard</a><a class="navlink" href="executive-summary.html">Executive summary</a></div><div class="navgroup"><span class="navhead">Prove it · results &amp; evidence</span><a class="navlink" href="results-feed.html">Verified results feed</a><a class="navlink active" href="correlation-official.html" aria-current=page>Correlations (n on every row)</a><a class="navlink" href="replacement-depth.html">Replacement depth</a></div><div class="navgroup"><span class="navhead">Price it · origination</span><a class="navlink" href="origination.html">Fair / market / difference</a><a class="navlink" href="price-annex.html">Price-snapshot store</a></div><div class="navgroup"><span class="navhead">Pick it · signal, staking, gates</span><a class="navlink" href="signal-staking.html">Signal vs staking</a><a class="navlink" href="demotion.html">Demotion gate</a></div><div class="navgroup"><span class="navhead">Brief review (2026-11-14)</span><a class="navlink" href="suggestions-review-2026-11-14.html">Suggestions review · this brief</a></div><div class="navgroup"><span class="navhead">Decide</span><a class="navlink" href="review.html">Review &amp; choose a path</a><a class="navlink" href="review-queue.html">Suggestions queue (2nd)</a><a class="navlink" href="answers.html">Questions &amp; answers</a><a class="navlink" href="suggestions-review.html">Path selector</a><a class="navlink" href="suggestions.html">Suggestions &amp; paths</a><a class="navlink" href="decision-readiness.html">Q&amp;A + Week 8–9 audit</a><a class="navlink" href="questions.html">Open questions</a><a class="navlink" href="decisions.html">Decision readiness</a><a class="navlink" href="flagged.html">Flagged for review</a></div><div class="navgroup"><span class="navhead">Lines &amp; strategies</span><a class="navlink" href="lines.html">Originated lines</a><a class="navlink" href="price-snapshot.html">Price snapshot</a><a class="navlink" href="strategies.html">Leaderboard</a><a class="navlink" href="forward.html">Forward test record</a><a class="navlink" href="competition.html">Competition &amp; rewards</a><a class="navlink" href="validation.html">Validation gates</a><a class="navlink" href="correlations.html">Correlations</a><a class="navlink" href="props.html">Player props</a></div><div class="navgroup"><span class="navhead">Availability</span><a class="navlink" href="availability.html">Injuries &amp; depth · all clubs</a><a class="navlink" href="lineup-deficiencies.html">Matchup 1st–4th strings</a><a class="navlink" href="injuries.html">Injury source audit</a><a class="navlink" href="lineups.html">Lineup sample</a></div><div class="navgroup"><span class="navhead">Parallel registers</span><a class="navlink" href="decision-board.html">Decision board (2nd)</a><a class="navlink" href="open-questions.html">Open questions (2nd)</a></div><div class="navgroup"><span class="navhead">Evidence</span><a class="navlink" href="methodology.html">Methodology</a><a class="navlink" href="requirements.html">Requirements</a><a class="navlink" href="sources.html">Sources</a><a class="navlink" href="referents.html">Referent register</a><a class="navlink" href="audit.html">Independent audit</a><a class="navlink" href="live-verification.html">Live verification</a><a class="navlink" href="repo-review.html">Repository review</a><a class="navlink" href="verification.html">Reproducibility</a><a class="navlink" href="lab/index.html">Replication annex</a></div></nav>
+</header>
+<main id="main-content" class="wrap wide">
+  <h1>Correlations, officially sourced</h1>
+  <p class="lede">Dependence estimates from officially sourced values only, with n and a week-block interval on every row.</p>
+  
+<p class="flag info"><strong>What this page is.</strong> Requirement 7 of the 2026-11-14 brief:
+correlations computed <strong>only from officially sourced numbers</strong>, with <code>n</code>
+published beside every value. The definition used here is narrow and applied in code — see §1 — and
+a relationship that cannot be told apart from zero is published as a null result rather than dropped.</p>
+<div class="cards"><div class="card">6<div class="card-label">relationships tested</div><div class="card-note">every row prints its own n and week count</div></div><div class="card good">3<div class="card-label">distinguishable from zero</div><div class="card-note">the block-bootstrap interval excludes zero</div></div><div class="card">3<div class="card-label">indistinguishable from zero</div><div class="card-note">published as a null result, not omitted</div></div><div class="card">5,213<div class="card-label">smallest paired sample</div><div class="card-note">below 200 pairs or 20 weeks a row is marked underpowered</div></div></div>
+<section>
+<div class="section-head"><h2>1 · What counts as an officially sourced observation</h2></div>
+<p>Both halves of every pair must come from the same game and the same pinned archive row:</p>
+<ol>
+<li>the <strong>market number</strong> is the closing number the archive carries for that game and
+market (<a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">closing_lines.csv</a>), and</li>
+<li>the <strong>outcome</strong> is that game's final score on record
+(<a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">games.csv</a>).</li>
+</ol>
+<p>A pair missing either half is dropped, not imputed. The count of surviving pairs is the
+<code>n</code> on every row. Weeks are counted separately because a slate's games share conditions,
+so all intervals resample <em>whole weeks</em>, never individual games.</p>
+<p class="flag warn"><strong>What this does not claim.</strong> The archive is a community mirror of
+the league's own numbers, so the label here is <em>officially sourced values</em>, not <em>read from
+nfl.com</em>. A correlation computed from nfl.com reads alone would need every game page read; that is
+what the results feed is for, and the reason the forward test settles only against nfl.com.</p>
+</section>
+<section>
+<div class="section-head"><h2>2 · The register</h2></div>
+<div class="tablewrap"><table class=""><caption>Official-sourced correlations with n and week count on every row; null results are published</caption><thead><tr><th>Relationship</th><th>Kind</th><th>n</th><th>Weeks</th><th>Spearman ρ</th><th>95% block interval</th><th>Zero in interval</th><th>Verdict</th><th>What it measures</th><th>Sign convention</th><th>Official source</th><th>Archive input</th></tr></thead><tbody><tr><td>margin vs total</td><td>continuous</td><td>5,213</td><td>425</td><td>+0.014</td><td>[-0.013, +0.041]</td><td>yes</td><td>Not Distinguishable From Zero</td><td>the same game&#x27;s margin and its total points</td><td>none (both variables are outcomes)</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">archive</a></td></tr><tr><td>home covers vs over</td><td>binary</td><td>5,213</td><td>425</td><td>-0.002</td><td>[-0.029, +0.026]</td><td>yes</td><td>Not Distinguishable From Zero</td><td>does the side result move with the total result</td><td>none (both variables are outcomes)</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">archive</a></td></tr><tr><td>home covers vs home ML win</td><td>binary</td><td>5,213</td><td>425</td><td>+0.806</td><td>[+0.789, +0.821]</td><td>no</td><td>Reported</td><td>the same game seen as a handicap and as a winner</td><td>none (both variables are outcomes)</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">archive</a></td></tr><tr><td>spread line vs total line</td><td>continuous</td><td>5,213</td><td>425</td><td>-0.002</td><td>[-0.030, +0.027]</td><td>yes</td><td>Not Distinguishable From Zero</td><td>does the market&#x27;s own handicap move with its total</td><td>both are HOME quantities in the same direction</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">archive</a></td></tr><tr><td>moneyline reveals margin</td><td>continuous</td><td>5,213</td><td>425</td><td>-0.441</td><td>[-0.462, -0.419]</td><td>no</td><td>Reported</td><td>the market&#x27;s own home price against the realised margin</td><td>both variables are HOME-favourable, so a positive rho means they move together</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/closing_lines.csv" target="_blank" rel="noopener">archive</a></td></tr><tr><td>signed model edge vs realised margin</td><td>continuous</td><td>5,213</td><td>425</td><td>+0.178</td><td>[+0.150, +0.206]</td><td>no</td><td>Reported</td><td>does the model&#x27;s disagreement point the right way</td><td>market HOME handicap is negative when home is favoured; a positive signed edge means the model likes home more than the market</td><td><a href="https://www.nfl.com/scores/" target="_blank" rel="noopener">NFL scores</a></td><td><a href="https://github.com/nflverse/nfldata/blob/a270278f3ac4e937295fe6a27814b3c4a2b62645/data/games.csv" target="_blank" rel="noopener">archive</a></td></tr></tbody></table></div>
+</section>
+<section>
+<div class="section-head"><h2>3 · How to read a row</h2></div>
+<ul>
+<li><strong>REPORTED</strong> — the interval excludes zero. The <em>sign and size</em> are what the
+data supports; the causal story is not.</li>
+<li><strong>NOT DISTINGUISHABLE FROM ZERO</strong> — the interval contains zero. This is a real
+finding: for two-leg parlay pricing it means the legs can be treated as close to independent on this
+evidence, and no correlation credit can be claimed either way.</li>
+<li><strong>UNDERPOWERED</strong> — fewer than 200 pairs or 20 weeks. The number is
+withheld, not printed as small.</li>
+<li><strong>n changes the meaning.</strong> A ρ of 0.02 on 5,000 pairs and a ρ of 0.02 on 250 pairs are
+different statements; that is why the column exists rather than a footnote.</li>
+</ul>
+<p>Download: <a href="assets/data/official_correlations.csv">official_correlations.csv</a>.
+Rebuild: <code>python pipeline/corr_official.py</code> (seed 20261114, 2000 weekly-block draws).</p>
+</section>
+
+  <footer>
+    <p>Research snapshot <code>a270278f3ac4</code> · source register generated 2026-11-02T17:26:06Z.
+    Official observations and unverified research estimates are distinguished on every page.
+    <a href="sources.html">Sources</a> · <a href="flagged.html">Evidence limitations</a>.</p>
+    <p>Research and education only. No guaranteed returns, betting recommendations or funded prize pool.</p>
+  </footer>
+</main>
+</div>
+</body>
+</html>

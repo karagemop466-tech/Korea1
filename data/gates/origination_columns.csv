@@ -1,0 +1,10 @@
+column,market,kind,meaning,sign_rule
+side_fair,SIDE,FAIR,home handicap in points; negative = home favoured,home handicap in points
+side_market,SIDE,MARKET,home handicap in points; negative = home favoured,home handicap in points
+side_diff,SIDE,DIFFERENCE,fair − market,diff = fair − market. Positive means the model makes the home side stronger than the market does.
+total_fair,TOTAL,FAIR,combined points,points
+total_market,TOTAL,MARKET,combined points,points
+total_diff,TOTAL,DIFFERENCE,fair − market,diff = fair − market. Positive means the model expects a higher-scoring game than the market.
+ml_fair_prob_home,MONEYLINE,FAIR,hold-free implied probability of a home win from the model's fair price,probability
+ml_market_prob_home,MONEYLINE,MARKET,hold-free implied probability of a home win from the market's two-way price,probability
+ml_diff_prob,MONEYLINE,DIFFERENCE,market probability − fair probability,"diff = market probability − fair probability, so a positive diff means the market prices the home side more generously than the model does. American prices are not linear, so the comparison is on hold-free implied probability and the printed diff is in probability points."

@@ -28,6 +28,10 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "live-verification.html", "review.html",
          # X1-X4 (session arena/132e7ca2-korea1).
          "review-queue.html", "answers.html", "competition.html", "repo-review.html",
+         # T43 (session arena/6b1f0c9a-korea1)
+         "results-feed.html", "correlation-official.html", "replacement-depth.html",
+         "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
+         "suggestions-review-2026-11-14.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]
