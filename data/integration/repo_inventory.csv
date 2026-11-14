@@ -394,6 +394,7 @@ pipeline/correlations.py,10-100 KB,Source code,SOURCE · executed by make build 
 pipeline/current_snapshot_audit.py,10-100 KB,Source code,SOURCE · executed by make build / make test,pipeline/current_snapshot_audit.py,NFL scores,https://www.nfl.com/scores/
 pipeline/decision_readiness.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile,NFL scores,https://www.nfl.com/scores/
 pipeline/decisions.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile; pipeline/decisions.py; pipeline/render_decisions.py,NFL scores,https://www.nfl.com/scores/
+pipeline/demotion_gate.py,1-10 KB,Source code,SOURCE · executed by make build / make test,Makefile,"White (2000), Econometric Society",https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping
 pipeline/depth_status.py,1-10 KB,Source code,SOURCE · executed by make build / make test,Makefile; pipeline/current_snapshot_audit.py,NFL injuries,https://www.nfl.com/injuries/
 pipeline/executive_summary_addendum.md,1-10 KB,Source code,SOURCE · executed by make build / make test,—,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/fetch_availability.py,10-100 KB,Source code,SOURCE · executed by make build / make test,pipeline/current_snapshot_audit.py; pipeline/depth_status.py; pipeline/forward_fetch_official.py,NFL injuries,https://www.nfl.com/injuries/
@@ -489,6 +490,7 @@ tests/check_sources.py,1-10 KB,Test,SOURCE · executed by make build / make test
 tests/test_availability_tracker.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL injuries,https://www.nfl.com/injuries/
 tests/test_current_snapshot_audit.py,1-10 KB,Test,SOURCE · executed by make build / make test,—,NFL scores,https://www.nfl.com/scores/
 tests/test_decisions.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/render_decisions.py,NFL scores,https://www.nfl.com/scores/
+tests/test_demotion_gate.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,"White (2000), Econometric Society",https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping
 tests/test_evidence_integrity.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/render_forward.py; pipeline/render_site.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_forward_capture.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL schedule,https://www.nfl.com/schedules/
 tests/test_forward_ledger.py,10-100 KB,Test,SOURCE · executed by make build / make test,pipeline/render_forward.py,NFL schedule,https://www.nfl.com/schedules/
