@@ -2561,3 +2561,12 @@ estimate), T8 demotion (no LIVE strategy; D4 unevaluable).
 **Still open.** Four contradictory availability rows (F-29); depth chart for Houston (F-18, F-34); demotion D4
 (F-35); correlation research CSVs carry community-data values (F-33). Board rows X1–X6, F1–F3, T24, T41, FW1–FW5 still
 read "in progress" though merged or superseded; not edited here.
+
+### 2026-11-14 — arena/fcba7eb5-korea1 — result: PR #53 merged, deploy verified
+
+- **PR #53** (`arena/fcba7eb5-korea1` → `main`) merged with `gh pr merge 53 --merge` at 2026-11-14T20:18:39Z; merge commit `1cbffb2`. No auto-merge.
+- **Verify site** on `1cbffb2`: success. **pages build and deployment** on `1cbffb2`: success.
+- **Live check:** `https://karagemop466-tech.github.io/Korea1/requirements.html` serves the nine-point trace (3 MET, 6 PARTIAL) with the links resolved.
+- **Before merge:** `make test` 136 passed; `make build` exit 0 and a fixed point; `tests/check_rebuild.py` passes.
+- **Process incident, disclosed.** A `git pull --rebase` on this branch stopped on X7's commit `d00a264`, because the branch's merge with `origin/main` was replayed as a flat history. The rebase was then aborted, and the branch and remote are both at `aa4e8ec`. The push during the stopped rebase sent `aa4e8ec`, the pre-rebase tip, which was a fast-forward of `72e9b1b`. No history was rewritten and no commit was lost. Future pulls on this branch will use `git pull --ff-only` or `git merge origin/main`, not `--rebase`, because the branch contains a merge commit.
+- **Still open, logged above:** F-29 (four contradictory injury rows, X7), F-29a, F-33 to F-36. Shared-output integration (`flagged.html`, index, nav) is not done and needs an owner.
