@@ -69,17 +69,26 @@ def test_inactive_player_cannot_be_full_participant():
     d = lv.compare(pub, off)
     row = d[(d.club == "DET") & (d.player == "Kerby Joseph")
             & (d.field == "practice_status")].iloc[0]
-    assert row.verdict == "MATCH"  # values agree, so nothing is wrong here
+    # The official cell now differs from the published "Did Not Participate" while the
+    # published row says Out. That is the defect class this test documents, so the
+    # verdict must be INCONSISTENT (confirmed_defect), not MATCH. Corrected 2026-11-14
+    # (arena/fcba7eb5-korea1, U6): the earlier MATCH assertion contradicted its own
+    # docstring and the values it set.
+    assert row.verdict == "INCONSISTENT"
+    assert row.defect_class == "confirmed_defect"
 
-    # now flip the official cell while the published row still says Out
-    off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "game_status"] = ""
+    # Agreement is not a defect. When the official practice cell equals the published
+    # one, the row is MATCH with no defect class, even though the published row says Out.
+    # (Corrected 2026-11-14, U6: the earlier second half asserted a defect for a cell
+    # whose values agreed.) A contradiction inside one published row is caught by
+    # internal_consistency(), tested separately.
     off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "practice_status"] = \
         "Did Not Participate In Practice"
     d2 = lv.compare(pub, off)
     row2 = d2[(d2.club == "DET") & (d2.player == "Kerby Joseph")
               & (d2.field == "practice_status")].iloc[0]
-    assert row2.defect_class == "confirmed_defect"
-    assert row2.verdict == "INCONSISTENT"
+    assert row2.verdict == "MATCH"
+    assert row2.defect_class == ""
 
 
 def test_drift_is_not_counted_as_a_defect():
@@ -105,11 +114,20 @@ def test_missing_player_row_is_unresolved_not_a_defect():
 
 
 def test_internal_consistency_flags_the_known_contradiction():
-    issues, stats = lv.internal_consistency(_pub())
-    assert stats["rows"] == 326
-    assert stats["contradictions"] == 1
-    assert set(issues.player) == {"Kerby Joseph"}
-    assert issues.iloc[0].check == "unavailable_but_full_practice"
+    """Checks the committed published table against an independent recount, not a
+    hard-coded snapshot size. The 2026-11-14 17:10Z capture has 345 rows and four
+    Out/Doubtful-with-full-practice contradictions (JAX, CIN x3), which is an open
+    irregularity for review; the earlier single Kerby Joseph case is no longer in the
+    table. The recount below must agree with the module for any future capture too."""
+    pub = _pub()
+    issues, stats = lv.internal_consistency(pub)
+    assert stats["rows"] == len(pub)
+    status = pub.game_status.str.strip().str.lower()
+    practice = pub.practice_status.str.strip().str.lower()
+    expected = pub[status.isin(["out", "doubtful"]) & (practice == "full participation in practice")]
+    assert stats["contradictions"] == len(expected)
+    assert set(issues.player) == set(expected.player)
+    assert set(issues.check) <= {"unavailable_but_full_practice"}
 
 
 def test_internal_consistency_flags_a_bad_vocabulary():

@@ -910,6 +910,48 @@ def build_sources(d):
     return layout("sources.html", "Sources & downloads", "Official references, primary methods and hash-pinned research inputs.", body, wide=True)
 
 
+def build_nine_point_trace():
+    """U5 (arena/fcba7eb5-korea1, 2026-11-14): the nine-point brief, each with status, evidence and gap.
+
+    Read from data/governance/requirements_trace_2026_11_14.csv. Status words are fixed to
+    MET / PARTIAL / BLOCKED; anything else is an error, so a typo cannot publish silently.
+    """
+    t = pd.read_csv(ROOT / "data" / "governance" / "requirements_trace_2026_11_14.csv",
+                    dtype=str, keep_default_na=False)
+    bad = set(t["status"]) - {"MET", "PARTIAL", "BLOCKED"}
+    if bad:
+        raise SystemExit(f"requirements trace: unknown status {sorted(bad)}")
+    pill = {"MET": "skill", "PARTIAL": "unverified", "BLOCKED": "unverified"}
+    rows = []
+    for r in t.to_dict("records"):
+        rows.append([
+            e(r["id"]),
+            f"<strong>{e(r['brief_item'])}</strong>",
+            f'<span class="pill {pill[r["status"]]}">{e(r["status"])}</span>',
+            e(r["what_exists_now"]),
+            e(r["evidence_paths"]),
+            e(r["remaining_gap"]),
+            e(r["what_unblocks_it"]),
+            official(r["official_reference"]),
+        ])
+    n_met = int((t.status == "MET").sum())
+    flags = pd.read_csv(ROOT / "data" / "governance" / "flagged_2026_11_14.csv", dtype=str, keep_default_na=False)
+    flag_rows = [[e(r["id"]), e(r["severity"]), e(r["area"]), e(r["finding"]), e(r["next_action"]),
+                  src_link(r["ref_url"], r["ref_label"])] for r in flags.to_dict("records")]
+    return (f'<section><h2>The nine-point brief: status, evidence and remaining gap</h2>'
+            f'<p><strong>{n_met} of {len(t)}</strong> points are MET (software and rule). The rest are PARTIAL: the '
+            f'evidence for them is incomplete, and each gap is named in the table. Every status cites a repository path. '
+            f'Dated register in the repository: <code>data/governance/requirements_trace_2026_11_14.csv</code>.</p>'
+            + table(rows, ["ID", "Brief item", "Status", "What exists now", "Evidence (repository paths)",
+                           "Remaining gap", "What unblocks it", "Official reference"],
+                    caption="Nine-point brief traced to evidence; PARTIAL marks the gap, never a filled value")
+            + '<h3>Flagged for review from this session</h3>'
+            + '<p>These items do not block the merge. They are listed here until the integration session adds them to the Flagged for Review page.</p>'
+            + table(flag_rows, ["ID", "Severity", "Area", "Finding", "Next action", "Official source"],
+                    caption="Items flagged for review (2026-11-14, arena/fcba7eb5-korea1)")
+            + "</section>")
+
+
 def build_requirements(d):
     requirements = [
         ("R01", "Collect and organize requirements", "Implemented", "This matrix and the shared task board.", "GitHub Pages documentation"),
@@ -943,6 +985,7 @@ def build_requirements(d):
     body = f"""{notice()}<section><h2>Complete requirements matrix</h2><p>“Implemented” describes software,
 not proof of a betting edge. Blocked evidence is published rather than fabricated.</p>
 {table(rows, ["ID", "Requirement", "Status", "Delivery / limitation", "Reference"], caption="Line-by-line coverage of the requested work")}</section>"""
+    body += build_nine_point_trace()
     return layout("requirements.html", "Requirements", "Requested work mapped to delivered artifacts and explicit evidence gaps.", body, wide=True)
 
 
