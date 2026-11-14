@@ -326,6 +326,44 @@ def _session_counts():
     return out
 
 
+def r7_landing_cards() -> str:
+    """R7 (session arena/7da09b4d-korea1): six cards, one per measured limit.
+
+    Read from the artefacts so the landing page cannot drift from the pages it
+    links to. A missing artefact degrades to an empty string rather than a guess.
+    """
+    import json
+    from common import ROOT
+    base = ROOT / "data" / "prices"
+    proc = ROOT / "data" / "processed"
+    if not (base / "price_provenance.json").exists():
+        return ""
+
+    def j(p):
+        return json.loads(Path(p).read_text()) if Path(p).exists() else {}
+
+    pr = j(base / "price_provenance.json").get("facts", {})
+    res = j(proc / "results_summary.json")
+    sst = j(proc / "signal_staking_summary.json")
+    dep = j(proc / "replacement_summary.json").get("replacement_depth_counts", {})
+    cor = j(proc / "official_corr_summary.json")
+    dem = j(proc / "demotion_gate_summary.json")
+    return kpi_grid([
+        card(f"{pr.get('rows', 0):,}", "price rows stored",
+             f"{pr.get('capture_time_rows', 0)} carry a capture time", "bad"),
+        card(str(res.get("settleable", 0)), "games settleable officially",
+             "every other result stays unverifiable", ""),
+        card(str(sst.get("strategies_whose_roi_flips_sign_under_staking", 0)),
+             "strategies flipped by staking", "same bets, different stake", "bad"),
+        card(str(dep.get("2nd string", 0)), "replacements at 2nd string",
+             f"{dep.get('3rd string', 0)} at 3rd string or deeper", ""),
+        card(str(cor.get("pairs_published", 0)), "official-source correlations",
+             f"{cor.get('pairs_blank', 0)} left blank with a reason", ""),
+        card(str(dem.get("live", 0)), "strategies live",
+             "the live state is unreachable by construction", "bad"),
+    ])
+
+
 def build_index(d):
     _c = _session_counts()
     n_sug, n_clu, n_await, n_reg = _c["sug"], _c["clu"], _c["await"], _c["reg"]
@@ -348,8 +386,8 @@ def build_index(d):
   The current evidence does <strong>not</strong> support a validated betting strategy or a prize award.</p>
   <div class="actions"><a class="btn primary" href="executive-summary.html">Read the executive summary</a>
   <a class="btn" href="strategies.html">Explore the leaderboard</a>
-  <a class="btn" href="suggestions-review.html">Review &amp; choose a path</a>
-  <a class="btn" href="review-queue.html">Review suggestions first</a>
+  <a class="btn" href="suggestions-hub.html">Review &amp; choose a path</a>
+  <a class="btn" href="decision-questions-2026-11-14.html">Decision questions</a>
   <a class="btn" href="competition.html">See the competition</a></div>
   <a class="btn" href="referents.html">Check every citation</a></div>
   <div class="hero-status"><span class="status-dot"></span> Research only<br><strong>No validated edge</strong><small>Official quote coverage is incomplete.</small></div>
@@ -361,6 +399,7 @@ def build_index(d):
            card("8", "fail-closed gates", "All must pass before recognition", ""),
            card(str(n_sug), "proposals to review", f"{n_clu} clusters · {n_await} awaiting a path", ""),
            card(str(n_q), "questions registered", f"{n_unanswered} without an answer on record", "")])}
+{r7_landing_cards()}
 <section><div class="section-head"><h2>Strategy leaderboard</h2><a href="strategies.html">Full competition rules →</a></div>
 <p>Unverified performance cells are intentionally blank. “Unverified” is not a finding of zero edge;
 it means the evidence is insufficient. Search or sort the table without changing its evidence status.</p>
@@ -529,6 +568,8 @@ every build and carried <code>"sha256": null</code> for one of the two files it 
 <li>A frozen prospective registry of all strategy trials, followed by untouched paper-trading replication.</li>
 <li>Joint prop outcomes and actual SGP prices to test correlation rather than assume independence.</li>
 </ol><p><a class="btn" href="requirements.html">See the complete requirements matrix →</a></p></section>"""
+    from exec_r7 import section as _r7
+    body += _r7()
     body += _exec_verification_section()
     return layout("executive-summary.html", "Executive summary", "The decision, the evidence and the limits—without a promised betting edge.", body)
 
@@ -874,6 +915,21 @@ def build_flagged(d):
         ["F-26", "Low · needs review", "Eight URLs resolve only through a redirect, including operations.nfl.com/the-rules/nfl-rulebook (to the 2026 rulebook) and /scores/2026/REG8 and REG9 (to week-8 and week-9). They work today; the printed paths are stale and should be updated to the final paths.", official("NFL week 8 scores")],
         ["F-27", "Low · needs review", "Two GitHub links 404: the nfl-dbt play-by-play path uses /tree/main/ but that repository's default branch is master (the master paths used in data/sources_pbp.json do resolve), and data/processed/audit.json does not exist on main. Both need a corrected path; neither affects a published number.", official("GitHub Pages documentation")],
         ["F-28", "Medium · open", "The landing page still presents WAS @ NYG with a 2026-11-12 kickoff as a forward-looking lineup-deficiency matchup, but the official Week 10 schedule shows it FINAL (Commanders 24, Giants 21, 12 November 2026). This is the availability page's scope (session arena/18c4acce-korea1) and was not repaired here.", official("NFL week 10 schedule")],
+
+        # ---- R7 requirement pass (session arena/7da09b4d-korea1, 2026-11-14) ------
+        ["F-R7-01", "High · open", "The pinned archive's undated price column and its file named closing_lines.csv state different handicaps for more than half of all games in every season 2006–2016 (206/267 in 2006, 238/265 in 2013), while agreeing on under 3% in 2017–2018 and on every moneyline in every season. Exactly one of the two can be the closing line for that decade. Neither the book, the timestamp nor the snapshot kind of either file is documented in the pinned data dictionary, so this build names neither an open nor a close and labels the undated file UNDATED.", official("NFL scores")],
+        ["F-R7-02", "High · open", "Opening-to-closing movement is structurally unmeasurable in this pin: initial_lines.csv covers 2021 only (272 games, one book, WSGT) and closing_lines.csv covers 2006–2018 only, so no single game carries two instruments of known, different kind. Every movement cell on prices.html is therefore blank with that reason rather than showing a zero.", official("NFL scores")],
+        ["F-R7-03", "Medium · open", "The code and four published pages (answers, audit, decision-board, decision-readiness) label the undated games.csv price as 'closing'. Given F-R7-01 the label is false for 2006–2016 and true only for 2017–2018. The label is left as its owners wrote it and flagged here rather than silently rewritten.", official("NFL scores")],
+        ["F-R7-04", "Medium · repaired", "The results audit reported 29 false score conflicts because a real official score was compared against a blank archive cell and the comparison returned DIFFERENT. A blank archive cell is now labelled ARCHIVE BLANK and never counted as a disagreement; a regression test asserts that no DIFFERENT row can carry a blank archive value.", official("NFL scores")],
+        ["F-R7-05", "Medium · open", "29 verified results (all 2026 weeks 8–10) settled after the pinned snapshot, so the archive holds no score for them and can never corroborate them until the pin is refreshed. They are published with a beyond_pin flag and an official document link rather than dropped from the feed.", official("NFL week 8 scores")],
+        ["F-R7-06", "High · open", "Official Game Center pages render 'Hidden Score' client-side for some games (2026 week 10 WAS at NYG; 2014 week 15 ARI at STL), so page text is not a usable score citation for every game. The score is read from the linked NFL Game Book PDF instead. Any future automated scrape that reads page text will silently publish 'Hidden Score'.", official("NFL game centre (WAS at NYG)")],
+        ["F-R7-07", "Medium · repaired", "The first cut of the replacement-depth module computed 'who is left at this slot' from the injured players alone, so a 3-deep slot with its top man out reported NOBODY LISTED while two healthy names sat behind him on the chart. Slot availability is now read from the chart itself. A second defect in the same module ignored that Green Bay prefixes every one of its charted names with a jersey number, which failed 100% of Green Bay joins and 0% of everyone else's.", official("NFL injuries")],
+        ["F-R7-08", "Medium · open", "Four players carry both an unavailable game designation and 'Full Participation in Practice' in the 2026-11-14 official injury capture: JAX BJ Green II (Out), CIN Jalen Davis, Andrei Iosivas and Brian Parker II (all Doubtful). These are contradictions inside the official report itself. They are published as-is and counted by the internal-consistency check; no value was inferred to resolve them.", official("NFL injuries")],
+        ["F-R7-09", "Medium · open", "The 2026-11-14 availability capture publishes 345 injury rows, not the 326 the live-verification test expected. The test is re-baselined to 345 and to the four contradictions above rather than being weakened; both facts are recorded here so the change in expected values is auditable.", official("NFL injuries")],
+        ["F-R7-10", "Low · open", "Houston publishes no parseable ordered depth chart on any capture to date. Its 16 injured players are published as NOT ON CHART with no depth and no replacement, rather than fuzzy-matched to a nearby name; a wrong match would mis-state a man's depth.", official("Texans club depth chart")],
+        ["F-R7-11", "Medium · open", "Six of the nine correlations requested by the brief cannot be computed from official numbers at all — spread-cover vs moneyline, over vs home win, two prop pairs and the same-game-parlay pair each require a market line, a player-level price or a joint ticket quote, none of which is an official NFL number. They are published blank with the exact missing input named, not approximated from the community mirror.", official("NFL injuries")],
+        ["F-R7-12", "Low · open", "The demotion gate's live state is unreachable by construction: promotion rule P4 requires a bootstrap lower bound computed over authenticated prices, and this project holds none. Every strategy therefore sits on paper with its demotion trigger recorded, and the competition awards nothing.", official("NFL scores")]
+
     ]
     from render_review import flagged_rows
     review = flagged_rows()
