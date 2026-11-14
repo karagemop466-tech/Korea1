@@ -47,6 +47,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
 | T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **done** (PR #49, merged 2026-11-14T00:05Z) | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 | T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
+| T50 | **Origination order, price snapshots, verified results feed, signal/staking split, demotion gate, official-only correlations** (2026-11-14) | **in progress** | `arena/9eba7acb-korea1` | `pipeline/price_snapshots.py`, `pipeline/origination.py`, `pipeline/results_feed.py`, `pipeline/official_correlations.py`, `pipeline/signal_staking.py`, `pipeline/demotion.py`, `pipeline/render_market_data.py` (all new), `data/processed/{price_snapshots,price_snapshot_summary,origination_lines,origination_order,results_feed,corr_official,signal_staking_split,demotion_gate}.csv` (new), `data/processed/demotion_policy.json` (new), `price-snapshots.html`, `results-feed.html` (new), `tests/test_market_data.py` (new); integration-only edits to shared outputs: `pipeline/render_site.py` (NAV + lines.html + correlations.html), `pipeline/session_competition.py` (standings columns), `pipeline/verify_site.py` (page registration), `tests/check_sources.py`, `tests/check_links.py` (page registration), `Makefile` (site recipe), `README.md`, `EXECUTIVE_SUMMARY.md`, `DECISIONS.md`, `COORDINATION.md` (own rows + log) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -2444,3 +2445,35 @@ both logs are kept in full.
 **Final state after the merge:** `make build` → 0 failing verifier checks across 43 pages (32 canonical);
 `tests/check_sources.py` → 3,505 rows; `tests/check_links.py` → 41 pages clean; `make test` → 107 passed;
 the tree is a fixed point (a second `make build` leaves `git status` empty).
+
+---
+
+## Session `arena/9eba7acb-korea1` — T50 origination order, price snapshots, results feed, signal/staking split, demotion gate
+
+### 2026-11-14T19:55Z — claim
+
+Board read first (this file, 2,446 lines at claim time). Every task row above is `done` except three
+stale `in progress` labels (T8, T11, T24) whose work was merged as PRs #46, #50 and #40; they are left
+as written by their owners. Open PRs #38, #47 and #48 belong to sessions idle since 2026-11-13; they are
+not touched. `git ls-remote --heads origin` shows no branch with commits after 2026-11-14T17:10Z (the
+scheduled availability capture), so this session is the only one with a live claim. The platform pins
+this session to `arena/9eba7acb-korea1`; that branch is the only branch used.
+
+**Gap audit against the eight standing requirements** (each verified against the code and the published
+pages, not assumed):
+
+| # | Requirement | State found at claim | Action in T50 |
+|---|---|---|---|
+| 1 | Price-snapshot store: opening and closing numbers for every market originated | **Absent.** `data/forward/published_lines.csv` holds a pin-time/close pair for 18 forward games only; there is no store, no open number for the historical archive, no moneyline open, no page | Build `pipeline/price_snapshots.py` → `data/processed/price_snapshots.csv`; publish `price-snapshots.html` |
+| 2 | Verified results feed so backtests and ROI can be computed | **Partial.** `data/forward/official_results.csv` holds 30 NFL.com finals but is consumed only by the forward ledger; it is not published as a feed and is not wired to the correlation layer | Build `pipeline/results_feed.py` → `data/processed/results_feed.csv`; publish `results-feed.html`; use the feed as the only input to officially sourced correlations |
+| 3 | Originate the side first, then the total, then the moneyline | **Absent.** `pipeline/models.py` publishes `fair_spread`, `fair_total` and a moneyline derived from the margin path alone; no ordered derivation and no consistency check | Build `pipeline/origination.py`: step 1 side, step 2 total, step 3 moneyline derived from steps 1–2 jointly, with the delta against the model's own path |
+| 4 | Publish fair line, market line and difference as separate columns | **Partial.** `originated_lines.csv` carries the three columns for spread and total; `lines.html` publishes none of them | Publish the ordered origination board with fair / market / difference columns for all three markets |
+| 5 | Separate 'signal' from 'staking' in the leaderboard | **Absent.** `leaderboard_master.csv` ranks on `gates_passed`; a profitable staking run and a sound signal are one number | Build `pipeline/signal_staking.py`; split the gates into a price-free signal assessment and a price-dependent staking assessment; add the masking rule to the standings |
+| 6 | Track the depth of the replacement, not only the fact of a replacement | **Present.** `data/processed/lineup_deficiency.csv` carries `expected_backup_tier` and `roster_tier`; `lineup-deficiencies.html` publishes 1st–4th string entries | Verify and leave unchanged; record the check |
+| 7 | Correlations only from officially sourced numbers, with n on each value | **Partial.** `n` is published on every historical row, but every value comes from the community mirror; the public page leaves all required rows UNVERIFIED and the annex holds the numbers | Build `pipeline/official_correlations.py` from the official results feed only; publish with n and the official source per row |
+| 8 | Demotion gate sending a live strategy back to paper | **Absent.** `grep -ri "demot" --include=*.py --include=*.csv` returns nothing | Build `pipeline/demotion.py`: the rule set, the trigger statistics, the state transition and a dry run over the research ledgers |
+
+Claim scope is exactly the file list in the T50 row above. The shared outputs (site navigation, index,
+table data) are touched by this session only in its integration role, after the new modules exist and
+have been verified; every shared edit is additive and is recorded here before the pull request.
+
