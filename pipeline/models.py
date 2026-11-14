@@ -28,6 +28,7 @@ data/processed/originated_lines.csv    played games, model vs market
 data/processed/originated_upcoming.csv scheduled games (lines we originate now)
 data/processed/model_metrics.csv       per-season and overall accuracy by family
 data/processed/model_config.json       hyper-parameters actually used
+data/processed/origination_manifest.json  the origination order and what each stage produces
 """
 from __future__ import annotations
 
@@ -38,9 +39,87 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+# ---------------------------------------------------------------------------
+# The origination order (T52, session arena/b13485ed-korea1).
+#
+# The side is originated first, then the total, then the moneyline. The order
+# is a property of the model, not a presentation choice:
+#
+#   1. SPREAD (the side). The margin distribution is the model's primary
+#      output: the ridge, matchup and Elo families are all fitted on the
+#      home margin, and the ensemble is their average.
+#   2. TOTAL. The game total is an independent target, but it is priced after
+#      the side so that both published lines come from one fit of one training
+#      window and one set of out-of-fold residuals.
+#   3. MONEYLINE. The moneyline is *derived from the side*: its win
+#      probabilities are read off the same margin distribution that priced the
+#      spread. It cannot be originated before the side, because there is no
+#      margin distribution yet.
+#
+# `ORIGINATION_STAGES` records, for each stage, what it consumes and what it
+# produces. The manifest is written to
+# data/processed/origination_manifest.json so that the order is published
+# rather than only implied by the code.
+# ---------------------------------------------------------------------------
+ORIGINATION_ORDER = ("SPREAD", "TOTAL", "MONEYLINE")
+
+ORIGINATION_STAGES = {
+    "SPREAD": {
+        "seq": 1,
+        "label": "The side (spread)",
+        "consumes": ["home margin distribution from the ridge, matchup and Elo "
+                     "families", "prior-season out-of-fold margin residuals",
+                     "the market line, as the benchmark only"],
+        "produces": ["fair_spread", "p_home_cover", "p_push_spread",
+                     "p_home_fail_cover", "edge_spread"],
+        "why_first": ("The moneyline is derived from this distribution, so this "
+                      "stage has to exist before the moneyline can be quoted."),
+    },
+    "TOTAL": {
+        "seq": 2,
+        "label": "The total",
+        "consumes": ["game-total distribution from the ridge and matchup families",
+                     "prior-season out-of-fold total residuals",
+                     "the market total, as the benchmark only"],
+        "produces": ["fair_total", "p_over", "p_push_total", "p_under",
+                     "edge_total"],
+        "why_second": ("An independent target, priced after the side so that both "
+                       "published lines come from the same fit and the same "
+                       "training window."),
+    },
+    "MONEYLINE": {
+        "seq": 3,
+        "label": "The moneyline",
+        "consumes": ["the margin distribution from stage 1",
+                     "prior-season out-of-fold margin residuals"],
+        "produces": ["p_home_ml", "p_tie", "p_away_ml", "originated_home_ml",
+                     "originated_away_ml", "posted_home_ml", "posted_away_ml"],
+        "why_third": ("It is a read-out of the side's distribution, so it is "
+                      "originated after the side and never before it."),
+    },
+}
+
+
+def _origination_manifest(upcoming_rows: int, played_rows: int) -> dict:
+    """The published description of the origination order."""
+    from common import read_json as _rj
+    sha = _rj(ROOT / "data" / "sources.json")["upstream"]["commit_sha"]
+    return {
+        "origination_order": list(ORIGINATION_ORDER),
+        "rule": ("The side (spread) is originated first, then the total, then the "
+                 "moneyline."),
+        "stages": {k: dict(v) for k, v in ORIGINATION_STAGES.items()},
+        "rows": {"played_games_originated": played_rows,
+                 "scheduled_games_originated": upcoming_rows},
+        "upstream_commit": sha,
+        "note": ("Every stage is fitted walk-forward: for test season S only "
+                 "seasons < S are used. The market is never an input to a "
+                 "prediction; it is carried only as the benchmark."),
+    }
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_datasets import FEATURES_MARGIN, FEATURES_TOTAL, franchise  # noqa: E402
-from common import PROC, write_json, novig_probs  # noqa: E402
+from common import PROC, ROOT, write_json, novig_probs  # noqa: E402
 
 ALPHAS = [3.0, 10.0, 30.0, 100.0, 300.0]
 FIRST_TEST_SEASON = 2004          # predictions from here
@@ -306,28 +385,38 @@ def walk_forward(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
 
     pred = pd.concat(out, ignore_index=True)
 
-    # probabilities + originated prices from the ensemble (the published line)
+    # --- the origination order: the side first, then the total, then the moneyline ---
+    # Each stage is written and evaluated in that order, and each stage consumes
+    # only what the earlier stages produced. The order is recorded in
+    # ORIGINATION_ORDER and published in data/processed/origination_manifest.json.
     for tag in ["ensemble"]:
         m, s = pred[f"pred_margin_{tag}"], pred[f"sigma_margin_{tag}"]
+
+        # Stage 1 — SPREAD (the side). The margin distribution is the primary
+        # output; everything downstream is read off it.
         sp = pred["market_spread"]
         oof_by_season = {int(S): prior_oof_residuals(df[df.season < S], "margin")
                          for S in pred.season.unique()}
         probs = np.array([empirical_probs(a, oof_by_season[int(S)], c)
                           for a, c, S in zip(m, sp, pred.season)])
         pred["p_home_cover"], pred["p_push_spread"], pred["p_home_fail_cover"] = probs.T
+        pred["fair_spread"] = pred["pred_margin_ensemble"]
+
+        # Stage 2 — TOTAL. An independent target, priced from the same fit.
         mt, st = pred[f"pred_total_{tag}"], pred[f"sigma_total_{tag}"]
         oof_t_by_season = {int(S): prior_oof_residuals(df[df.season < S], "total")
                            for S in pred.season.unique()}
         tprobs = np.array([empirical_probs(a, oof_t_by_season[int(S)], c)
                            for a, c, S in zip(mt, pred["market_total"], pred.season)])
         pred["p_over"], pred["p_push_total"], pred["p_under"] = tprobs.T
+        pred["fair_total"] = pred["pred_total_ensemble"]
+
+        # Stage 3 — MONEYLINE. Derived from the stage-1 margin distribution.
         ml = np.array([empirical_probs(a, oof_by_season[int(S)], 0.0)
                        for a, S in zip(m, pred.season)])
         # empirical_probs returns >, ==, < in that order: home win, tie, away win.
         pred["p_home_ml"], pred["p_tie"], pred["p_away_ml"] = ml.T
 
-    pred["fair_spread"] = pred["pred_margin_ensemble"]
-    pred["fair_total"] = pred["pred_total_ensemble"]
     pred["originated_home_ml"] = [fair_american(p) for p in pred["p_home_ml"] / (pred["p_home_ml"] + pred["p_away_ml"])]
     pred["originated_away_ml"] = [fair_american(p) for p in pred["p_away_ml"] / (pred["p_home_ml"] + pred["p_away_ml"])]
     pairs = [american_with_hold(h / (h + a), 0.045) for h, a in zip(pred["p_home_ml"], pred["p_away_ml"])]
@@ -410,20 +499,26 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     sm, st = float(np.std(oof_m, ddof=1)), float(np.std(oof_t, ddof=1))
 
     future = future.copy()
-    future["fair_spread"] = ens_m
-    future["fair_total"] = ens_t
     future["sigma_margin"] = sm
     future["sigma_total"] = st
+
+    # --- stage 1: SPREAD (the side) -----------------------------------------
+    future["fair_spread"] = ens_m
+    sp = np.array([empirical_probs(m, oof_m, line) for m, line in zip(ens_m, future.market_spread)])
+    future["p_home_cover"], future["p_push_spread"], future["p_home_fail_cover"] = sp.T
+    future["edge_spread"] = future["fair_spread"] - future["market_spread"]
+
+    # --- stage 2: TOTAL ------------------------------------------------------
+    future["fair_total"] = ens_t
+    tp = np.array([empirical_probs(m, oof_t, line) for m, line in zip(ens_t, future.market_total)])
+    future["p_over"], future["p_push_total"], future["p_under"] = tp.T
+    future["edge_total"] = future["fair_total"] - future["market_total"]
+
+    # --- stage 3: MONEYLINE (derived from the stage-1 distribution) -----------
     ml = np.array([empirical_probs(a, oof_m, 0.0) for a in ens_m])
     future["p_home_ml"], future["p_tie"], future["p_away_ml"] = ml.T
     future["originated_home_ml"] = [fair_american(h / (h+a)) for h, a in zip(future.p_home_ml, future.p_away_ml)]
     future["originated_away_ml"] = [fair_american(a / (h+a)) for h, a in zip(future.p_home_ml, future.p_away_ml)]
-    sp = np.array([empirical_probs(m, oof_m, line) for m, line in zip(ens_m, future.market_spread)])
-    future["p_home_cover"], future["p_push_spread"], future["p_home_fail_cover"] = sp.T
-    tp = np.array([empirical_probs(m, oof_t, line) for m, line in zip(ens_t, future.market_total)])
-    future["p_over"], future["p_push_total"], future["p_under"] = tp.T
-    future["edge_spread"] = future["fair_spread"] - future["market_spread"]
-    future["edge_total"] = future["fair_total"] - future["market_total"]
     config.setdefault("future_fit", {})["alpha_margin"] = a_m
     config["future_fit"]["alpha_total"] = a_t
     config["future_fit"]["sigma_margin"] = sm
@@ -441,11 +536,14 @@ def main() -> None:
     fut_line.to_csv(PROC / "originated_upcoming.csv", index=False)
     metrics.to_csv(PROC / "model_metrics.csv", index=False)
     write_json(PROC / "model_config.json", config)
+    write_json(PROC / "origination_manifest.json",
+               _origination_manifest(len(fut_line), len(pred)))
 
     print(f"originated_lines: {pred.shape}, seasons {pred.season.min()}–{pred.season.max()}")
     allrows = metrics[metrics.season == "ALL"]
     print(allrows.pivot(index="model", columns="market", values="mae").round(3).to_string())
     print(f"\nupcoming priced: {len(fut_line)} games, {fut_line.market_spread.notna().sum()} with a market line")
+    print(f"origination order: {' -> '.join(ORIGINATION_ORDER)}")
 
 
 if __name__ == "__main__":

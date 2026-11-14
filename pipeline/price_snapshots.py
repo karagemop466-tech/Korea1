@@ -63,12 +63,10 @@ FWD = ROOT / "data" / "forward"
 RAW = ROOT / "data" / "raw"
 SITE_DATA = ROOT / "assets" / "data"
 
-# The origination order required by the brief: the side first, then the total,
-# then the moneyline. The moneyline is derived from the margin distribution the
-# side is priced from, so it cannot be originated before the side; the total is
-# an independent target but is priced after the side so that the two lines a
-# reader compares come from the same fit.
-ORIGINATION_ORDER = ("SPREAD", "TOTAL", "MONEYLINE")
+# The origination order is defined once, in the module that does the
+# originating, and imported here so the store cannot drift from the model.
+from models import ORIGINATION_ORDER  # noqa: E402
+
 ORIGINATION_SEQ = {m: i + 1 for i, m in enumerate(ORIGINATION_ORDER)}
 MARKET_SIDES = {
     "SPREAD": ("home", "away"),
