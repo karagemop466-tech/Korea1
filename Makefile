@@ -75,7 +75,7 @@ site: injuries review reviewall
 	$(PY) pipeline/signal_staking.py
 	$(PY) pipeline/replacement_depth.py
 	$(PY) pipeline/corr_official.py
-	$(PY) pipeline/demotion_eval.py
+	$(PY) pipeline/demotion_rules.py
 	$(PY) pipeline/session_20261114.py
 	$(PY) pipeline/render_site.py
 	# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed

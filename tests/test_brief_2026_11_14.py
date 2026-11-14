@@ -16,7 +16,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "pipeline"))
 
 import corr_official as co  # noqa: E402
-import demotion_eval as dg  # noqa: E402
+import demotion_rules as dg  # noqa: E402
 import origination_order as oo  # noqa: E402
 import price_annex as ps  # noqa: E402
 import replacement_depth as rd  # noqa: E402
@@ -229,7 +229,7 @@ def test_demotion_triggers_are_fail_closed():
 
 def test_gate_cannot_promote():
     """Promotion is an owner decision; the gate module must contain no promotion path."""
-    src = (ROOT / "pipeline" / "demotion_eval.py").read_text()
+    src = (ROOT / "pipeline" / "demotion_rules.py").read_text()
     assert "DEMOTE_TO_PAPER" in src
     assert "PROMOTE" not in src.replace("PROMOTION", "").replace("promotion", "")
 

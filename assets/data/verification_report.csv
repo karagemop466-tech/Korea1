@@ -2,7 +2,7 @@ page,data_rows,tables,rows_without_official_source,unverified_numeric_cells,brok
 answers.html,98,2,0,,,,True,True,True,True,True,True,True,True
 audit.html,84,7,0,,,,True,True,True,True,True,True,True,True
 availability.html,581,5,0,,,,True,True,True,True,True,True,True,True
-competition.html,52,6,0,,,,True,True,True,True,True,True,True,True
+competition.html,94,9,0,,,,True,True,True,True,True,True,True,True
 correlation-official.html,6,1,0,,,,True,True,True,True,True,True,True,True
 correlations.html,12,2,0,,,,True,True,True,True,True,True,True,True
 decision-board.html,17,1,0,,,,True,True,True,True,True,True,True,True
@@ -10,8 +10,8 @@ decision-readiness.html,50,3,0,,,,True,True,True,True,True,True,True,True
 decisions.html,28,3,0,,,,True,True,True,True,True,True,True,True
 demotion.html,24,2,0,,,,True,True,True,True,True,True,True,True
 executive-summary.html,35,5,0,,,,True,True,True,True,True,True,True,True
-flagged.html,77,6,0,,,,True,True,True,True,True,True,True,True
-forward.html,39,5,0,,,,True,True,True,True,True,True,True,True
+flagged.html,78,6,0,,,,True,True,True,True,True,True,True,True
+forward.html,76,7,0,,,,True,True,True,True,True,True,True,True
 index.html,34,4,0,,,,True,True,True,True,True,True,True,True
 injuries.html,316,7,0,,,,True,True,True,True,True,True,True,True
 lines.html,190,3,0,,,,True,True,True,True,True,True,True,True
@@ -21,13 +21,13 @@ live-verification.html,197,8,0,,,,True,True,True,True,True,True,True,True
 methodology.html,18,3,0,,,,True,True,True,True,True,True,True,True
 open-questions.html,20,1,0,,,,True,True,True,True,True,True,True,True
 origination.html,120,3,0,,,,True,True,True,True,True,True,True,True
-price-store.html,711,3,0,,,,True,True,True,True,True,True,True,True
+price-annex.html,711,3,0,,,,True,True,True,True,True,True,True,True
 props.html,17,3,0,,,,True,True,True,True,True,True,True,True
 questions.html,48,2,0,,,,True,True,True,True,True,True,True,True
 referents.html,546,5,0,,,,True,True,True,True,True,True,True,True
 replacement-depth.html,151,3,0,,,,True,True,True,True,True,True,True,True
-repo-review.html,681,5,0,,,,True,True,True,True,True,True,True,True
-requirements.html,26,1,0,,,,True,True,True,True,True,True,True,True
+repo-review.html,696,5,0,,,,True,True,True,True,True,True,True,True
+requirements.html,40,3,0,,,,True,True,True,True,True,True,True,True
 results-feed.html,151,2,0,,,,True,True,True,True,True,True,True,True
 review-queue.html,90,2,0,,,,True,True,True,True,True,True,True,True
 review.html,167,5,0,,,,True,True,True,True,True,True,True,True

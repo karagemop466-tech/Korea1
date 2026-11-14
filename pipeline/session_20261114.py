@@ -135,7 +135,8 @@ BRIEF = [
      "pre-decision questions, each cross-referenced to the existing registers.",
      "suggestions-review-2026-11-14.html",
      "Nothing on this page is implemented. The new proposals are checked against the 76 existing "
-     "titles and the overlaps are listed rather than duplicated.",
+     "titles and the overlaps are listed rather than duplicated. Requirements.html, from the "
+     "parallel session, marks the same three items MET rather than delivered-with-a-caveat.",
      "A path has to be chosen before any of the proposals runs. That is the owner's decision."),
 ]
 
@@ -369,6 +370,16 @@ def build_page(brief: pd.DataFrame, sug: pd.DataFrame, qs: pd.DataFrame) -> str:
         f'<div class="card-note">every row is awaiting a path selection</div></div>'
         "</div>")
     body = f"""
+<p class="flag info"><strong>Read this beside <code>requirements.html</code>, not instead of it.</strong>
+A parallel session (<code>arena/fcba7eb5-korea1</code>) also answered the nine requirements, and its
+trace — 3 MET and 6 PARTIAL — is published on <a href="requirements.html">Requirements</a> and merged
+on <code>main</code> before this page existed. The two pages agree on every substantive point and
+differ in one place worth knowing: that trace marks T3, T5 and T9 MET, on the grounds that the
+sequence, the split and the review surface exist in the software. This page keeps those three at
+"built, and it proves less than the title suggests", because a delivered mechanism is not the same
+claim as a validated one — T3's ordering is a computation order with no timestamped record behind it,
+and T5's 18 strategies produce exactly one signal. Both readings are defensible; the owner should
+pick one and the other page should follow, rather than the site publishing two status vocabularies.</p>
 <p class="flag info"><strong>What this page is.</strong> The dedicated review surface for the
 2026-11-14 brief (requirement 9). It lists the nine requirements and what each one actually proved,
 the new proposals this session's evidence produced, and the questions that must be answered before a
