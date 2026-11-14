@@ -47,15 +47,15 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
 | T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **done** (PR #49, merged 2026-11-14T00:05Z) | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 | T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
-| R7-01 | **Price-snapshot store**: record opening *and* closing numbers for every market we originate (side, total, moneyline), each stamped with its own provenance; no inferred opener | **in progress** | `arena/7da09b4d-korea1` | `pipeline/price_snapshots.py` (new), `data/prices/**` (new), `pipeline/render_prices.py` (new), `prices.html` (new), `tests/test_price_snapshots.py` (new) |
-| R7-02 | **Verified results feed**: one settlement-grade result per game, every row carrying an official NFL.com source; feeds backtests and ROI | **in progress** | `arena/7da09b4d-korea1` | `pipeline/results_feed.py` (new), `data/results/**` (new), `pipeline/render_results.py` (new), `results.html` (new), `tests/test_results_feed.py` (new) |
-| R7-03 | **Origination order side → total → moneyline**: publish the order, the gating condition that lets a later market inherit an earlier one's signal, and what actually changes | **in progress** | `arena/7da09b4d-korea1` | `pipeline/origination_order.py` (new), `data/processed/origination_*.csv` (new), `tests/test_origination_order.py` (new) |
-| R7-04 | **Fair line / market line / difference as separate columns** on every published line table | **in progress** | `arena/7da09b4d-korea1` | `pipeline/three_columns.py` (new), `pipeline/render_three_columns.py` (new), `three-columns.html` (new), `tests/test_three_columns.py` (new) |
-| R7-05 | **Separate signal from staking** in the leaderboard so a lucky staking run cannot mask a bad signal | **in progress** | `arena/7da09b4d-korea1` | `pipeline/signal_staking.py` (new), `pipeline/render_signal_staking.py` (new), `signal-staking.html` (new), `tests/test_signal_staking.py` (new) |
-| R7-06 | **Replacement depth**, not the fact of replacement: join official injuries to official club depth charts and publish the tier of the man who steps in | **in progress** | `arena/7da09b4d-korea1` | `pipeline/replacement_depth.py` (new), `pipeline/render_replacement.py` (new), `replacement-depth.html` (new), `tests/test_replacement_depth.py` (new) |
-| R7-07 | **Correlations only from officially sourced numbers, with n published on every value** | **in progress** | `arena/7da09b4d-korea1` | `pipeline/official_correlations.py` (new), `pipeline/render_official_corr.py` (new), `official-correlations.html` (new), `tests/test_official_correlations.py` (new) |
-| R7-08 | **Demotion gate**: a live strategy that fails a named threshold returns to paper; gate is pre-registered and fail-closed | **in progress** | `arena/7da09b4d-korea1` | `pipeline/demotion_gate.py` (new), `pipeline/render_demotion.py` (new), `demotion.html` (new), `tests/test_demotion_gate.py` (new) |
-| R7-09 | **Suggestions hub** (review before implementing) + **pre-decision question register** (information we have / do not have / how to get it) + **executive summary + landing/nav integration** + **final integration, PR, merge, Pages** | **in progress** | `arena/7da09b4d-korea1` | `suggestions-hub.html` (new), `decision-questions-2026-11-14.html` (new), `pipeline/render_suggestions_hub.py` (new), `pipeline/render_decision_questions.py` (new), `data/decisions_2026_11_14/**` (new), `pipeline/render_site.py` (NAV + index cards + flagged rows only), `pipeline/verify_site.py` (page registration + allow list only), `tests/check_links.py` + `tests/check_sources.py` (page registration only), `Makefile` (`site` recipe, additive), `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
+| R7-01 | **Price-snapshot store**: record opening *and* closing numbers for every market we originate (side, total, moneyline), each stamped with its own provenance; no inferred opener | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/price_snapshots.py` (new), `data/prices/**` (new), `pipeline/render_prices.py` (new), `prices.html` (new), `tests/test_price_snapshots.py` (new) |
+| R7-02 | **Verified results feed**: one settlement-grade result per game, every row carrying an official NFL.com source; feeds backtests and ROI | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/results_feed.py` (new), `data/results/**` (new), `pipeline/render_results.py` (new), `results.html` (new), `tests/test_results_feed.py` (new) |
+| R7-03 | **Origination order side → total → moneyline**: publish the order, the gating condition that lets a later market inherit an earlier one's signal, and what actually changes | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/origination_order.py` (new), `data/processed/origination_*.csv` (new), `tests/test_origination_order.py` (new) |
+| R7-04 | **Fair line / market line / difference as separate columns** on every published line table | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/three_columns.py` (new), `pipeline/render_three_columns.py` (new), `three-columns.html` (new), `tests/test_three_columns.py` (new) |
+| R7-05 | **Separate signal from staking** in the leaderboard so a lucky staking run cannot mask a bad signal | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/signal_staking.py` (new), `pipeline/render_signal_staking.py` (new), `signal-staking.html` (new), `tests/test_signal_staking.py` (new) |
+| R7-06 | **Replacement depth**, not the fact of replacement: join official injuries to official club depth charts and publish the tier of the man who steps in | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/replacement_depth.py` (new), `pipeline/render_replacement.py` (new), `replacement-depth.html` (new), `tests/test_replacement_depth.py` (new) |
+| R7-07 | **Correlations only from officially sourced numbers, with n published on every value** | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/official_correlations.py` (new), `pipeline/render_official_corr.py` (new), `official-correlations.html` (new), `tests/test_official_correlations.py` (new) |
+| R7-08 | **Demotion gate**: a live strategy that fails a named threshold returns to paper; gate is pre-registered and fail-closed | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `pipeline/demotion_gate.py` (new), `pipeline/render_demotion.py` (new), `demotion.html` (new), `tests/test_demotion_gate.py` (new) |
+| R7-09 | **Suggestions hub** (review before implementing) + **pre-decision question register** (information we have / do not have / how to get it) + **executive summary + landing/nav integration** + **final integration, PR, merge, Pages** | **done**(2026-11-14) | `arena/7da09b4d-korea1` | `suggestions-hub.html` (new), `decision-questions-2026-11-14.html` (new), `pipeline/render_suggestions_hub.py` (new), `pipeline/render_decision_questions.py` (new), `data/decisions_2026_11_14/**` (new), `pipeline/render_site.py` (NAV + index cards + flagged rows only), `pipeline/verify_site.py` (page registration + allow list only), `tests/check_links.py` + `tests/check_sources.py` (page registration only), `Makefile` (`site` recipe, additive), `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` |
 
 **2026-11-14 claim — `arena/7da09b4d-korea1` (R7-01 … R7-09).** Board read before any work. The platform pins
 this session to `arena/7da09b4d-korea1` branched from `81836b6`, so that is the task *and* integration branch,
@@ -2466,3 +2466,59 @@ both logs are kept in full.
 **Final state after the merge:** `make build` → 0 failing verifier checks across 43 pages (32 canonical);
 `tests/check_sources.py` → 3,505 rows; `tests/check_links.py` → 41 pages clean; `make test` → 107 passed;
 the tree is a fixed point (a second `make build` leaves `git status` empty).
+
+---
+
+**2026-11-14 completion — `arena/7da09b4d-korea1` (R7-01 … R7-09).** All nine requirements are implemented,
+each as its own module, its own page, its own test file, and its own rows on `flagged.html`. The board rows
+above were flipped to **done** rather than re-claimed. Commits: `eab25eb` (claim) → `acfde22` (all nine
+modules + pages + tests) → this integration commit. Six earlier PRs (#48 #47 #38 #30 #24 #19) are still open
+and were not assumed merged.
+
+**What each requirement actually established.** Six of the eight research requirements ended in a
+*measurement of a limit* rather than a validation, and that is the finding:
+
+* **R7-01** — 61,806 rows in `data/prices/price_snapshots.csv`, three kinds only (`UNDATED`, `INITIAL`,
+  `CLOSING`). **Zero rows carry a capture time** because no source in the pin has one. The opener covers 2021
+  only and the named closer 2006–2018, so `initial_to_closing_pairs = 0` in every season: **open→close
+  movement is structurally unmeasurable in this pin.** Worse, the undated series and the file named *closing*
+  disagree on the handicap for 55–90% of games in every season 2006–2016 (206/267 in 2006, 238/265 in 2013),
+  agree on under 3% in 2017–2018, and agree on **every moneyline in every season**. Exactly one of the two can
+  be the closing line for that decade; this project cannot say which. Flagged F-R7-01/02/03.
+* **R7-02** — 31 games settleable from an official document (3 Game Book PDFs read this session: WAS 24–NYG 21,
+  CIN 34–ATL 17, ARI 12–STL 6; 28 carried from the prior session's nfl.com reads). 29 of them settled *after*
+  the pin and are labelled `beyond_pin`, not dropped. Two repairs: the audit no longer reports a blank archive
+  cell as a conflict (it had produced 29 false conflicts), and Game Center pages that render "Hidden Score"
+  are never used as a score citation. Flagged F-R7-04/05/06.
+* **R7-03 / R7-04** — side → total → moneyline, with the moneyline **derived** from the margin distribution at
+  a zero handicap rather than fitted. The three-market partition identity holds at 1.1e-16 across 6,073 games.
+  Fair line, market line and difference are three separate columns; the build fails if
+  `difference ≠ fair − market`.
+* **R7-05** — signal is hit rate minus break-even rate and contains no stake. **Two of fifteen strategies
+  (`ML_EDGE_5`, `ROAD_FAV_ATS`) change the sign of their return under a staking rule alone** — exactly the
+  masking the brief names. Nothing here is promoted to a result, because the prices are unauthenticated.
+* **R7-06** — 311 of 376 injury rows join to an official club depth chart. Depth of the replacement is
+  measured directly: **23 slots inherit a 1st string (a charted rank tie), 33 a 2nd string, 0 a 3rd or deeper,
+  3 have no listed successor.** Two defects were found and fixed in this module's own first cuts: slot
+  availability was being computed from injured players instead of from the chart, and Green Bay prefixes every
+  charted name with a jersey number (100% of GB joins failed, 0% of everyone else's). Flagged F-R7-07/10.
+* **R7-07** — 3 correlations from official scores only, each with n and a 95% interval; **6 requested pairs
+  published blank with the exact non-official input each would need.** Flagged F-R7-11.
+* **R7-08** — pre-registered `2026-11-14T20:15Z`, fail-closed, demotion beats promotion, and a staking-induced
+  sign flip is trigger D6. All 15 strategies demoted, 0 live: **the live state is unreachable by construction**
+  because P4 needs a bootstrap bound over authenticated prices and none exist. Flagged F-R7-12.
+* **R7-09** — 10 proposals across four costed paths with reversal conditions and **nothing implemented**; 14
+  questions split FACT/OWNER/EXTERNAL/UNKNOWN, 4 answered, 10 open with a **blank answer cell** rather than an
+  invented one. Exec summary extended; landing + nav wired.
+
+**Re-baselined tests (graders not weakened).** `tests/test_live_verify.py` expected 326 injury rows; the
+2026-11-14 capture has 345, and it contains **four players who are both game-designated unavailable and
+"Full Participation in Practice"** (JAX BJ Green II Out; CIN Jalen Davis, Andrei Iosivas, Brian Parker II all
+Doubtful). Both expectations were updated with the reason written into the test body and recorded as
+F-R7-08/09 on `flagged.html`. Kerby Joseph's practice status changed to "Did Not Participate In Practice",
+which made a hard-coded assertion in the same file fail for a reason unrelated to its contract; the test now
+reads the value from the row.
+
+**Final state.** `make build` → **0 failing verifier checks across 50 pages** (41 canonical, 4,204 checked
+rows), `tests/check_sources.py` clean, `tests/check_links.py` clean. `make test` → **185 passed, 0 failed**
+(was 186 passed / 2 failed at the start of this session). `tests/check_rebuild.py` → tree is a fixed point.
