@@ -221,9 +221,18 @@ SUGGESTIONS = [
      "A paper season takes a full season to produce enough weeks; nothing is learned quickly.",
      "Exercises the demotion gate, the promotion checklist and the staking/signal split together.",
      "AWAITING PATH SELECTION", URL_SCORES),
+    ("NAV-02", "Site", "Consolidate the three duplicate surfaces created by two sessions answering "
+     "the same nine-item brief: two demotion explanations, two price stores, two nine-item status tables",
+     "Rebasing onto main revealed that arena/b400d3ae-korea1 and arena/fcba7eb5-korea1 had already "
+     "shipped a demotion gate, a price-snapshot store and a nine-item requirements trace. Both are now "
+     "linked and neither contradicts the other, but a reader has to find both.",
+     "One pass over the navigation and one canonical page per concept; the data is already built.",
+     "A consolidation can drop a page another session cites; the map has to be written first.",
+     "Makes the nine-item brief read as one answer instead of two implementations of it.",
+     "AWAITING PATH SELECTION", URL_SCORES),
     ("NAV-01", "Site", "Group the navigation into three guided paths — Prove it, Price it, Pick it — "
      "so 45 pages do not present as a flat list",
-     "The site now has 45 pages and the nav is a single column of 40 links; the new correctness pages "
+     "The site now has 48 pages and the nav is a single column of 40 links; the new correctness pages "
      "sit beside seven duplicated review surfaces from earlier sessions.",
      "One navigation change in the renderer; no data change.",
      "Any nav change breaks anchors other pages link to; the page set is unchanged, only the grouping.",
