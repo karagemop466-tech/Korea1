@@ -39,6 +39,8 @@ NFL_INJURIES = "https://www.nfl.com/injuries/"
 GH_ACTIVITY = "https://github.com/karagemop466-tech/Korea1/activity?ref=refs/heads/arena/9e3e144b-korea1"
 
 DASH = "—"
+UNV_BLANK = '<span class="pill unverified">UNVERIFIED · blank</span>'
+NFL_SCHEDULES = "https://www.nfl.com/schedules/"       # resolves; used as the per-row official reference
 
 
 def _csv(name: str) -> pd.DataFrame:
@@ -158,7 +160,7 @@ def render() -> dict[str, str]:
             crow = [[
                 e(c.game_id), e(f"{c.away_team} at {c.home_team}"),
                 f"{_num(c.fair_spread)} / {_num(c.fair_total)}",
-                f"{_num(c.mirror_spread_frozen)} / {_num(c.mirror_total_frozen)}",
+                UNV_BLANK,
                 f"{c.away_team} {_int(c.official_away_score)} – {c.home_team} {_int(c.official_home_score)}",
                 _num(c.abs_err_spread), _num(c.abs_err_total),
                 e(c.status),
@@ -176,9 +178,66 @@ def render() -> dict[str, str]:
                      f"{_num(abs(float(c.fair_spread)))} points; {e(dog)} won by {abs(margin)} "
                      f"(absolute error {_num(c.abs_err_spread)}). The originated total was "
                      f"{_num(c.fair_total)} against an actual {points} (absolute error "
-                     f"{_num(c.abs_err_total)}). The closing market was closer on the spread "
-                     f"({_num(c.mirror_abs_err_spread_frozen)}). One game settles nothing: with n = 1 the "
-                     f"standard error of a spread error is far larger than the difference between the two.</p>")
+                     f"{_num(c.abs_err_total)}). A closing-market comparison is not printed: the closing value is a "
+                     f"community-mirror figure, so under the verification rule it stays blank until an official or "
+                     f"operator-timestamped close exists. One game settles nothing either way.</p>")
+    body += "</section>"
+
+    # ---------------------------------------------------------------- fair vs market, separately (U4)
+    body += "<section><h2>Fair line, market line and difference — separate columns</h2>"
+    body += ("<p>Origination order is fixed: <strong>1 side</strong> (spread) is originated first, then "
+             "<strong>2 total</strong>, then <strong>3 moneyline</strong>, which is derived from the same margin "
+             "distribution. The <em>fair</em> columns are the model's own output at freeze. The <em>market</em> "
+             "columns are community-mirror figures (nflverse, pinned at freeze), not official NFL or operator numbers, "
+             "so they and the <em>difference</em> columns stay blank until an official or operator-timestamped line "
+             "exists. Spread convention: positive means the home side is favoured.</p>")
+    fwd_cards = _csv("cards.csv")
+    sched_urls = {g["game_id"]: g["official_url"] for g in _csv("official_schedule.csv").to_dict("records")}
+    frows = []
+    for c in fwd_cards.to_dict("records") if len(fwd_cards) else []:
+        frows.append([
+            e(c["game_id"]), e(f"{c['away_team']} at {c['home_team']}"),
+            _num(c["fair_spread"]), UNV_BLANK, UNV_BLANK,
+            _num(c["fair_total"]), UNV_BLANK, UNV_BLANK,
+            f"{_int(c['originated_home_ml'])} / {_int(c['originated_away_ml'])}", UNV_BLANK,
+            src_link(sched_urls.get(c["game_id"], NFL_SCHEDULE10), "NFL.com game page"),
+        ])
+    if frows:
+        body += table(frows, ["Game", "Matchup", "Fair spread (model)", "Market spread", "Spread difference (fair − market)",
+                              "Fair total (model)", "Market total", "Total difference (fair − market)",
+                              "Fair moneyline home / away (model)", "Market moneyline", "Official source"],
+                      caption="Every frozen game: fair line, market line and difference as separate columns; market-derived cells blank under the verification rule")
+    body += "</section>"
+
+    # ---------------------------------------------------------------- price-snapshot store (U3)
+    body += "<section><h2>Price-snapshot store — opening and closing coverage</h2>"
+    body += ("<p>Every market the engine originates is recorded in <code>data/forward/price_snapshots.csv</code>: one row "
+             "per game and market, in the order side, total, moneyline. An opening or closing cell is filled only from an "
+             "official or operator-timestamped quote. The repository holds none, so those cells are blank and marked "
+             "UNVERIFIED. The community closing values are counted below and are <em>not</em> copied into the store. "
+             "A frozen game's originated value carries its ledger freeze time and hash; the rest were reconstructed after the "
+             "event and say so.</p>")
+    cov_path = ROOT / "data" / "governance" / "price_snapshot_coverage.csv"
+    if cov_path.exists():
+        cov = pd.read_csv(cov_path, dtype=str, keep_default_na=False)
+        crow = []
+        for r in cov.to_dict("records"):
+            crow.append([e(r["season"]), _int(r["games_originated"]), _int(r["markets_originated"]),
+                         _int(r["frozen_before_kickoff"]),
+                         '<span class="pill unverified">UNVERIFIED · 0</span>' if r["opening_verified"] == "0"
+                         else _int(r["opening_verified"]),
+                         '<span class="pill unverified">UNVERIFIED · 0</span>' if r["closing_verified"] == "0"
+                         else _int(r["closing_verified"]),
+                         _int(r["community_close_present_games"]),
+                         src_link(NFL_SCHEDULES, "NFL.com schedules")])
+        body += table(crow, ["Season", "Games originated", "Markets (3 per game)", "Frozen before kickoff",
+                             "Opening verified", "Closing verified", "Community close present (not copied)",
+                             "Official source"],
+                      caption="Opening and closing coverage per season: zero verified, every market recorded")
+        body += ("<p class=\"muted\">Full store: <a href=\"data/forward/price_snapshots.csv\">price_snapshots.csv</a> · "
+                 "Coverage: <a href=\"data/governance/price_snapshot_coverage.csv\">price_snapshot_coverage.csv</a>. "
+                 "Community close is the pinned nflverse value present for that game. It is not an official or operator "
+                 "quote and is never used as one.</p>")
     body += "</section>"
 
     # ---------------------------------------------------------------- settled tickets

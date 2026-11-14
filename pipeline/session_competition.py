@@ -12,7 +12,17 @@ Outputs
   data/integration/reward_tiers.csv     the reward ladder
   data/integration/competition_rules.csv  the rules of the competition
   data/integration/leaderboard_master.csv  standings + gate facts per strategy
+  data/governance/demotion_register.csv     demotion register (U2, 2026-11-14)
   competition.html
+
+U1 (session arena/fcba7eb5-korea1, 2026-11-14): the standings are split into two blocks.
+  SIGNAL (ranks)              G2 leakage, G3 power, G4 significance, G5 luck, G7 stability,
+                              G8 redundancy. Rank = signal gates passed, then sample size.
+  STAKING & EXECUTION (never ranks)  G1 quote provenance and G6 economic reality, plus the stake
+                              rule and every profit figure. These only decide whether a tier may
+                              be awarded; they cannot move a candidate up the standings. Before
+                              this change the rank counted all eight gates, so the G6 economic pass
+                              alone put PARLAY2_ML and WIND_UNDER near the top.
 
 Run:  python pipeline/session_competition.py
 """
@@ -30,9 +40,13 @@ from render_site import layout, table  # noqa: E402
 from session_common import (  # noqa: E402
     BLANK, clean, clip, e, read_csv, ref_link, resolve_ref, write_csv,
 )
+import demotion_register as dg  # noqa: E402
 
 GATE_NAMES = ["G1_data", "G2_leakage", "G3_power", "G4_significance",
               "G5_luck", "G6_economic", "G7_stability", "G8_redundancy"]
+SIGNAL_GATES = dg.SIGNAL_GATES                 # ranks the standings
+STAKING_GATES = dg.EXEC_GATES                  # G1 + G6: can block a tier, never rank
+STAKE_RULE = "Flat 1 unit per bet (the only staking rule in the library)"
 
 GATE_DETAIL = [
     ("G1", "Data provenance", "Authenticated, timestamped, executable quotes with limits",
@@ -92,6 +106,10 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
     for _, r in gates.sort_values("strategy").iterrows():
         passed = [g for g in GATE_NAMES if bool(r[g])]
         failed = [g for g in GATE_NAMES if not bool(r[g])]
+        sig_pass = [g for g in SIGNAL_GATES if bool(r[g])]
+        sig_fail = [g for g in SIGNAL_GATES if not bool(r[g])]
+        stk_pass = [g for g in STAKING_GATES if bool(r[g])]
+        stk_fail = [g for g in STAKING_GATES if not bool(r[g])]
         m = meta.get(r["strategy"], {})
         div = {"parlay": "P · Parlays"}.get(m.get("family", ""), "S · Single bets")
         standings.append(dict(
@@ -103,16 +121,22 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
             bets=int(r["n"]),
             weeks_observed=int(r["n_weeks"]),
             weeks_required_power=int(round(float(r["required_n_weeks"]))),
+            signal_passed=len(sig_pass),
+            signal_failed="; ".join(x.split("_")[0] for x in sig_fail) or "none",
+            staking_passed=len(stk_pass),
+            staking_failed="; ".join(x.split("_")[0] for x in stk_fail) or "none",
+            stake_rule=STAKE_RULE,
             gates_passed=len(passed),
             gates_failed="; ".join(x.split("_")[0] for x in failed) or "none",
             verdict=str(r["verdict"]),
             reward=str(r["reward"]),
         ))
     standings = pd.DataFrame(standings).sort_values(
-        ["gates_passed", "bets"], ascending=[False, False]).reset_index(drop=True)
+        ["signal_passed", "bets"], ascending=[False, False]).reset_index(drop=True)
     standings.insert(0, "rank", range(1, len(standings) + 1))
-    # Ties are declared, not broken silently: same gate count and same bet count => equal rank.
-    standings["rank"] = standings.groupby(["gates_passed", "bets"], sort=False)["rank"].transform("min")
+    # Ties are declared, not broken silently: same signal count and same bet count => equal rank.
+    # Staking and execution columns are not part of the rank key (rule R8).
+    standings["rank"] = standings.groupby(["signal_passed", "bets"], sort=False)["rank"].transform("min")
 
     tiers = pd.DataFrame([
         dict(tier=t, name=nm, requirement=req, points=pts, reward=rw, payout_status=st, note=note)
@@ -129,9 +153,10 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
         dict(rule_id="R3", rule="Pre-registration",
              text="Lines and picks are hashed into an append-only ledger before kickoff. Grading is against "
                   "official NFL finals only. A result that was not frozen before kickoff cannot earn a tier."),
-        dict(rule_id="R4", rule="Ranking",
-             text="Rank on gates passed first, then on sample size. Profit alone never decides a rank: a "
-                  "leaderboard sorted by raw return ranks variance, not skill."),
+        dict(rule_id="R4", rule="Ranking (revised 2026-11-14, U1)",
+             text="Rank on signal gates passed (of six: G2, G3, G4, G5, G7, G8), then on sample size. Profit alone "
+                  "never decides a rank: a leaderboard sorted by raw return ranks variance, not skill. The earlier "
+                  "rule counted all eight gates; its published ordering is preserved in git history."),
         dict(rule_id="R5", rule="Reward",
              text="Reward follows the ladder below. No tier above T3 can be awarded while gate G1 fails, because "
                   "no authenticated executable price exists to measure the return against."),
@@ -141,8 +166,21 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
         dict(rule_id="R7", rule="Publication",
              text="Every candidate is published, including failures and including this page's blank cells. "
                   "A blank cell means the evidence is missing; it is never a zero."),
+        dict(rule_id="R8", rule="Signal and staking are separate",
+             text="Staking and execution (G1 quote provenance, G6 economic reality, the stake rule and every profit "
+                  "figure) cannot change a rank. A lucky staking run therefore cannot lift a candidate whose signal "
+                  "gates fail. Staking and execution can only block a reward tier, never raise a rank."),
+        dict(rule_id="R9", rule="Demotion",
+             text="LIVE is a recorded state, reached only by an explicit promotion once all eight gates pass and no "
+                  "trigger is failing. A LIVE strategy returns to PAPER on any demotion trigger D1 to D4. A trigger "
+                  "that cannot be evaluated counts as a failure for a LIVE strategy (fail-closed). Every decision is "
+                  "recorded in data/governance/demotion_register.csv."),
     ])
-    return standings, tiers, rules, dict(cfg=cfg, rc=rc, gates=gates)
+    sb_path, reg_path = dg.FWD / "scoreboard.csv", dg.FWD / "trial_registry.csv"
+    sb = pd.read_csv(sb_path) if sb_path.exists() else None
+    reg = pd.read_csv(reg_path) if reg_path.exists() else None
+    demo = dg.evaluate(gates, sb, reg)
+    return standings, tiers, rules, dict(cfg=cfg, rc=rc, gates=gates, demo=demo)
 
 
 def build_page(standings, tiers, rules, extra) -> str:
@@ -176,16 +214,42 @@ def build_page(standings, tiers, rules, extra) -> str:
             str(r["rank"]),
             f'<strong>{e(r["strategy"])}</strong><br><span class="small">{clip(r["name"], 60)}</span>',
             e(r["division"]), e(r["market"]),
-            f'{r["gates_passed"]} / 8',
-            e(r["gates_failed"]),
+            f'{r["signal_passed"]} / {len(SIGNAL_GATES)}',
+            e(r["signal_failed"]),
             str(r["seasons"]), f'{int(r["bets"]):,}',
             f'{int(r["weeks_observed"]):,}',
             f'{int(r["weeks_required_power"]):,}',
-            BLANK, BLANK,
             '<span class="pill unverified">UNVERIFIED</span>' if r["verdict"] != "VALIDATED" else '<span class="pill skill">VALIDATED</span>',
-            e(r["reward"]),
             f'{S}<br>{W}',
         ])
+    stak_rows = []
+    for _, r in standings.iterrows():
+        failed_stk = [x.strip() for x in str(r["staking_failed"]).split(";")]
+        g1 = "G1" not in failed_stk
+        g6 = "G6" not in failed_stk
+        stak_rows.append([
+            f'<strong>{e(r["strategy"])}</strong>',
+            e(r["stake_rule"]),
+            f'{r["staking_passed"]} / {len(STAKING_GATES)}',
+            '<span class="pill skill">PASS</span>' if g1 else '<span class="pill unverified">FAIL</span>',
+            '<span class="pill skill">PASS</span>' if g6 else '<span class="pill unverified">FAIL</span>',
+            BLANK, BLANK,
+            f'{r["gates_passed"]} / 8 · {e(r["reward"])}',
+            f'{S}<br>{W}',
+        ])
+    demo = extra["demo"]
+    demo_rows = []
+    for _, d in demo.iterrows():
+        demo_rows.append([
+            f'<strong>{e(d["strategy"])}</strong>',
+            f'<span class="pill unverified">{e(d["current_status"])}</span>',
+            e(d["D1_signal_gates"]), e(d["D2_execution_gates"]), e(d["D3_forward_record"]),
+            e(d["D4_preregistration"]), e(d["next_status"]), e(d["action"]), f'{S}',
+        ])
+    n_live = int((demo.current_status == dg.LIVE).sum())
+    n_demoted = int(demo.action.str.startswith("DEMOTE").sum())
+    n_eligible = int(demo.action.str.startswith("ELIGIBLE").sum())
+    trig_rows = [[f"<strong>{tid}</strong>", e(name), e(text), S] for tid, name, text in dg.TRIGGERS]
 
     ladder_rows = []
     counts = {t: 0 for t in tiers["tier"]}
@@ -279,15 +343,39 @@ terms · <a href="validation.html">the full gate configuration</a> ·
 <a href="correlations.html">correlation and parlay settlement</a>.</p>
 </section>
 
-<section><div class="section-head"><h2>Standings</h2>
-<span class="small">ranked on gates passed, then sample size — never on raw profit</span></div>
+<section><div class="section-head"><h2>Signal ranking</h2>
+<span class="small">ranked on signal gates passed (of six), then sample size — staking and profit never rank</span></div>
 <div class="table-tools"><label>Search <input class="filter" type="search" placeholder="Try parlay, spread, wind…"></label>
 <span class="small">Click a column heading to sort</span></div>
-{table(stand_rows, ["Rank", "Candidate", "Division", "Market", "Gates", "Failing", "Seasons", "Bets", "Weeks seen", "Weeks needed", "ROI", "Adjusted p", "Verdict", "Reward", "Official reference"],
-       caption="Competition standings: gate outcomes and sample facts; unverified performance cells are blank")}
-<p>Ties are declared rather than broken silently: candidates with the same gate count and the same number of bets
+{table(stand_rows, ["Rank", "Candidate", "Division", "Market", "Signal gates", "Failing signal gates", "Seasons", "Bets", "Weeks seen", "Weeks needed", "Verdict", "Official reference"],
+       caption="Signal standings: signal gate outcomes and sample facts; unverified performance cells are blank")}
+<p>Ties are declared rather than broken silently: candidates with the same signal count and the same number of bets
 share a rank. <a href="assets/data/leaderboard_master.csv">Download the standings</a> ·
 <a href="assets/data/strategy_gates.csv">Download the calculated gate results</a></p>
+</section>
+
+<section><h2>Staking and execution — shown separately, cannot move a rank</h2>
+<p>Staking is flat: every candidate risks one unit per bet, so no staking choice can make a candidate look better
+than its signal. Price provenance (G1) and economic reality (G6) decide only whether a reward tier may be awarded
+(rule R8). The ROI and adjusted-p cells are blank because they need authenticated executable quotes, which do not exist.</p>
+{table(stak_rows, ["Candidate", "Stake rule", "Execution gates", "G1 quote provenance", "G6 economic reality", "ROI", "Adjusted p", "Gates (all eight) · reward", "Official reference"],
+       caption="Staking and execution block: the stake rule and the execution gates; performance cells are blank, not zero")}
+</section>
+
+<section><h2>Demotion gate — sending a live strategy back to paper</h2>
+<p>LIVE is a recorded state (<code>data/governance/live_status.csv</code>), reached only by an explicit promotion
+after all eight gates pass and no trigger is failing. A LIVE strategy returns to <strong>PAPER</strong> on any trigger
+below (rule R9). A trigger that cannot be evaluated counts as a failure for a LIVE strategy. Today
+<strong>{n_live} of {len(demo)}</strong> candidates are LIVE, so <strong>{n_demoted}</strong> demotions have occurred,
+and <strong>{n_eligible}</strong> candidates are eligible for a promotion review. The gate is armed and tested:
+<code>tests/test_demotion_register.py</code> demotes synthetic LIVE candidates on each trigger.</p>
+{table(trig_rows, ["Trigger", "Name", "Condition", "Official reference"],
+       caption="Demotion triggers: any one sends a LIVE strategy back to paper")}
+{table(demo_rows, ["Candidate", "Current status", "D1 signal gates", "D2 execution gates", "D3 forward record", "D4 pre-registration", "Next status", "Action", "Official reference"],
+       caption="Demotion register: every candidate, every trigger, and the resulting status")}
+<p>The register is also published as <a href="data/governance/demotion_register.csv">demotion_register.csv</a>. The
+D4 trigger reports NOT EVALUATED because the trial registry holds no rule hash at first freeze. That is a gap to
+close before any candidate can be LIVE, not a pass.</p>
 </section>
 
 <section><h2>Correlation and dependence register</h2>
@@ -322,6 +410,7 @@ def main() -> None:
     write_csv(standings, "leaderboard_master.csv")
     write_csv(tiers, "reward_tiers.csv")
     write_csv(rules, "competition_rules.csv")
+    extra["demo"].to_csv(ROOT / "data" / "governance" / "demotion_register.csv", index=False)
     (ROOT / "competition.html").write_text(build_page(standings, tiers, rules, extra), encoding="utf-8")
     print(f"  leaderboard_master.csv {len(standings)} rows")
     print(f"  reward_tiers.csv       {len(tiers)} rows")

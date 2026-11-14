@@ -67,6 +67,9 @@ site: injuries review reviewall
 	$(PY) pipeline/session_decide.py
 	$(PY) pipeline/session_competition.py
 	$(PY) pipeline/render_site.py
+	# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed
+	# originated lines and the forward cards only; no network.
+	$(PY) pipeline/price_snapshots.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	$(PY) pipeline/render_review.py
 	$(PY) pipeline/render_summary.py
@@ -91,7 +94,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives

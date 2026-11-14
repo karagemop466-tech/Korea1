@@ -2475,3 +2475,89 @@ the tree is a fixed point (a second `make build` leaves `git status` empty).
 - **IRR-X7-5:** `tests/check_rebuild.py` compares committed outputs with regenerated ones; the regenerated outputs and the repo inventory had to be committed in this change to converge.
 
 - **IRR-X7-6 (process, 2026-11-14):** `make build` on `81836b6` (the 17:10Z availability snapshot, already on `main`) regenerates 22 committed files that were not regenerated in that commit (`data/live/*`, `assets/data/*`, `executive-summary.html`, `live-verification.html`, `repo-review.html`, `EXECUTIVE_SUMMARY.md`). `verify.yml`'s final step (`tests/check_rebuild.py`) therefore fails on `main`'s own content, and PR #52 failed the same way. Resolved on this branch by rebuilding and committing the regenerated outputs (fixed point confirmed: a second `make build` leaves `git status` empty). Pre-existing on `main`; not caused by X7's logic. Owner should confirm the new contradiction rows (F-29) against the official pages.
+
+## Session `arena/fcba7eb5-korea1` — 2026-11-14 claim: nine-requirement gap closure + integration
+
+**Board read first (2026-11-14).** `main` = `81836b6` = this branch's base. Open PRs #19, #24, #30, #38, #47, #48
+belong to other sessions and are **not touched**. Every earlier task row is `done`, `needs review`, or
+`in progress` on a branch whose PR is merged or stale; no sibling session holds a live claim on the
+files below. Protocol followed: claim committed and pushed before any file in scope is changed.
+
+**Gap check against the nine-point brief (what exists before this session):**
+
+| # | Requirement | State on `main` before this session |
+|---|---|---|
+| 1 | Price-snapshot store, opening + closing for every originated market | **Missing.** No opening-line source exists in the repo; closing exists only as pinned community mirror values (`published_lines.csv`, nflverse). No store. |
+| 2 | Verified results feed for backtest / ROI | **Partial.** `data/forward/official_results.csv` (30 official finals, NFL.com) exists; ROI cells blank because no executable price exists. |
+| 3 | Origination order: side → total → moneyline | **Partial.** Code path in `pipeline/models.py` / `forward_ledger.py`; not stated or evidenced as an order on any page. |
+| 4 | Fair line, market line and difference as separate columns | **Partial.** `forward.html` shows "Originated line" and "Market line" as combined spread/total cells and no difference column. |
+| 5 | Signal separated from staking on the leaderboard | **Missing.** Standings rank on gate counts (no staking leak), but the page has no explicit signal vs staking split and no rule that forbids staking from changing rank. |
+| 6 | Replacement depth, not just replacement | **Present.** `lineup-deficiencies.html` / `data/availability/slot_status.csv` carry 1st–4th string slots. Re-checked here, not re-built. |
+| 7 | Correlations only from official numbers, `n` published | **Present.** `correlations.html` publishes `Sample` per row and leaves official-input estimates blank. |
+| 8 | Demotion gate that sends a live strategy back to paper | **Missing.** No code, rule, or page defines it. |
+| 9 | Suggestions section, reviewed before change | **Present.** `suggestions.html`, `decision-board.html`, `review-queue.html`, `decisions.html`. Nothing implemented without a path choice. |
+
+**Claimed work (this session only):**
+
+| ID | Task | Owner | File scope |
+|---|---|---|---|
+| U1 | Signal vs staking split on the leaderboard + rule R8 (staking can never change rank) | `arena/fcba7eb5-korea1` | `pipeline/session_competition.py`, `data/integration/leaderboard_master.csv`, `data/integration/competition_rules.csv`, `competition.html` |
+| U2 | Demotion gate: explicit triggers, pure function, register of current live strategies (none) | `arena/fcba7eb5-korea1` | `pipeline/demotion_gate.py` (new), `data/governance/demotion_gate.csv` (new), `tests/test_demotion_gate.py` (new), `competition.html` (section via `session_competition.py` only) |
+| U3 | Price-snapshot store: one row per originated market, opening/closing columns filled only from an official or operator-timestamped source (none exists → blank, flagged) | `arena/fcba7eb5-korea1` | `pipeline/price_snapshots.py` (new), `data/forward/price_snapshots.csv` (new), `tests/test_price_snapshots.py` (new) |
+| U4 | Forward page: separate fair line / market line / difference columns; origination order stated | `arena/fcba7eb5-korea1` | `pipeline/render_forward.py`, `forward.html` |
+| U5 | Requirements trace for the nine points, each with evidence path and status | `arena/fcba7eb5-korea1` | `data/governance/requirements_trace_2026_11_14.csv` (new), `pipeline/render_requirements.py`, `requirements.html` |
+| U6 | Repair two pre-existing failing tests in `tests/test_live_verify.py` (stale row count; assertion contradicting its own docstring) — only after verifying which side is wrong | `arena/fcba7eb5-korea1` | `tests/test_live_verify.py` |
+| U7 | Integration: Makefile recipe lines, `verify_site.py` / `check_*` page registration if a new page is added, README + EXECUTIVE_SUMMARY section, PR → `main`, merge, Pages check, record | `arena/fcba7eb5-korea1` | `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV only if needed), `pipeline/verify_site.py`, `tests/check_*.py`, `COORDINATION.md` (this section) |
+
+**Baseline before any change (recorded, not hidden).** `make test` on `81836b6` → **105 passed, 2 failed**
+(`tests/test_live_verify.py::test_inactive_player_cannot_be_full_participant`,
+`::test_internal_consistency_flags_the_known_contradiction`). Cause logged under U6. Python 3.11.2 with the
+pinned `requirements.txt` in a gitignored `.venv`. `make build`'s first recipe lines fetch network data, so this
+session regenerates with the offline targets (`model`-free `site` + `verify`), which read committed inputs only.
+
+### 2026-11-14 — arena/fcba7eb5-korea1 — nine-requirement gap closure: log, overlap with X7, decisions
+
+**Overlap with X7 (`arena/b400d3ae-korea1`, PR #52, merged to `main`) — resolved, nothing discarded.**
+X7 merged `pipeline/demotion_gate.py` (DG1–DG6 ledger rules), `tests/test_demotion_gate.py`, a repair of
+`tests/test_live_verify.py`, and flagged row F-29. This session had claimed the same demotion gate (U2) and the same
+test repair (U6) on its own branch. Resolution, taken on merge of `origin/main` into this branch:
+1. X7's `pipeline/demotion_gate.py` and `tests/test_demotion_gate.py` are kept unchanged and remain canonical.
+2. This session's strategy-level register is renamed `pipeline/demotion_register.py`, `tests/test_demotion_register.py`
+   and `data/governance/demotion_register.csv`. It adds D1–D4 triggers, the recorded LIVE state
+   (`data/governance/live_status.csv`) and the competition-page section. It does not reimplement DG1–DG6.
+3. `tests/test_live_verify.py`: X7's version kept. Both branches made the same two-assertion repair.
+4. Flag IDs: X7's F-29 is kept. This session's flags are F-29a (verification note on F-29), F-33, F-34, F-35, F-36.
+   F-28 is withdrawn as a duplicate of F-29.
+
+**Verification of F-29 against the official page (2026-11-14).** `https://www.nfl.com/injuries/league/2026/reg10`
+was reachable from this session. BJ Green II (JAX) reads Full Participation in Practice with game status Out.
+Jalen Davis, Andrei Iosivas and Brian Parker II (CIN) read Full Participation in Practice with game status Doubtful.
+The committed rows reproduce the page. Whether the combination is valid is an NFL convention question, left open.
+
+**U6 decision (logged as requested).** `tests/test_live_verify.py`: the code was right and the tests were wrong on
+both counts. The inactive-player test asserted a defect against a published cell that matched the official page; the
+contradiction test expected the pre-17:10Z row count. Tests corrected; the code was not changed.
+
+**Stale live-verification outputs on `main` (IRR-X7-6, now repaired).** The committed `data/live/*` summary on
+`81836b6` recorded a Kerby Joseph defect, which the committed availability table already corrects. A fresh
+`make build` on the committed inputs gives 392 MATCH, 0 confirmed defects, 0 unresolved, 247 out of scope. The
+regenerated outputs are committed. This is a refresh, not a new official value. Flag F-36, needs review.
+
+**Integration role (U7, open question resolved for this session).** No board entry assigns integration to this
+session, so shared outputs were not edited: no index, nav, `flagged.html` or `verify_site.py` change. The flags
+F-29a and F-33 to F-36 are published on `requirements.html` (section "Flagged for review from this session").
+The integration session must add them to `flagged.html` through `pipeline/session_review.py` (IRREGULARITIES),
+which owns that register.
+
+**Branch-name convention.** The board's `session-<id>/<task>` convention differs from the repo's
+`arena/<id>-korea1` practice and the platform-pinned branch. This session keeps `arena/fcba7eb5-korea1`.
+
+**Requirement status after this session (`data/governance/requirements_trace_2026_11_14.csv`).**
+MET: T3 origination order (code sequence, `models.py` lines 329–332), T5 signal vs staking split, T9 suggestions.
+PARTIAL: T1 price store (0 of 18,711 opening/closing verified), T2 results feed, T4 fair/market/difference
+(market and difference blank), T6 depth (31 of 32 charts, first and next listed only), T7 correlations (no official
+estimate), T8 demotion (no LIVE strategy; D4 unevaluable).
+
+**Still open.** Four contradictory availability rows (F-29); depth chart for Houston (F-18, F-34); demotion D4
+(F-35); correlation research CSVs carry community-data values (F-33). Board rows X1–X6, F1–F3, T24, T41, FW1–FW5 still
+read "in progress" though merged or superseded; not edited here.
