@@ -30,7 +30,7 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "review-queue.html", "answers.html", "competition.html", "repo-review.html",
          # T43 (session arena/6b1f0c9a-korea1)
          "results-feed.html", "correlation-official.html", "replacement-depth.html",
-         "origination.html", "price-store.html", "signal-staking.html", "demotion.html",
+         "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
          "suggestions-review-2026-11-14.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",

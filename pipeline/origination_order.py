@@ -3,7 +3,7 @@ publish the model's fair line, the market line and the difference as **separate 
 
 What this module adds
 ---------------------
-`price-store.html` records what the market did. This module records what the model *says*, in the
+`price-annex.html` records what the market did. This module records what the model *says*, in the
 order the brief asks for, and keeps the three numbers apart so a reader can see — without arithmetic
 of their own — where the model disagrees with the market and by how much.
 

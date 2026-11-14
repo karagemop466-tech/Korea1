@@ -46,7 +46,7 @@ Sources, and exactly what each one can support
 The three archive files overlap only in 2013–2018 and only for the spread, so the honest statement
 is not "we have open and close for every market". It is: **every originated market has a snapshot
 row**, and each row says which of its two endpoints is populated, from which file, and at what
-price coverage. The page `price-store.html` prints those counts, and the gaps are listed on
+price coverage. The page `price-annex.html` prints those counts, and the gaps are listed on
 `flagged.html`.
 
 Outputs
@@ -54,9 +54,9 @@ Outputs
   data/prices/price_snapshot_coverage.csv  per market: endpoint and price coverage
   data/prices/price_snapshot_gaps.csv    every originated market with a missing endpoint
   assets/data/ mirrors of all three
-  price-store.html
+  price-annex.html
 
-Run:  python pipeline/price_snapshot.py
+Run:  python pipeline/price_annex.py
 """
 from __future__ import annotations
 
@@ -490,7 +490,7 @@ under <code>data/raw/</code>).</li>
 </ul>
 </section>
 """
-    return layout("price-store.html", "Price-snapshot store",
+    return layout("price-annex.html", "Price-snapshot store",
                   "Opening and closing numbers for every originated market, with the evidence class of each value.",
                   body, wide=True)
 
@@ -505,7 +505,7 @@ def main() -> None:
     (OUT / "price_snapshots.csv").write_text(d.to_csv(index=False), encoding="utf-8")
     (OUT / "price_snapshot_coverage.csv").write_text(cov.to_csv(index=False), encoding="utf-8")
     (OUT / "price_snapshot_gaps.csv").write_text(gap.to_csv(index=False), encoding="utf-8")
-    (ROOT / "price-store.html").write_text(build_page(d, cov, gap), encoding="utf-8")
+    (ROOT / "price-annex.html").write_text(build_page(d, cov, gap), encoding="utf-8")
     print(f"  price_snapshots.csv          {len(d):,} rows")
     print(f"  price_snapshot_coverage.csv  {len(cov)} markets")
     print(f"  price_snapshot_gaps.csv      {len(gap):,} rows")

@@ -59,7 +59,7 @@ BRIEF = [
     ("R1", "Price-snapshot store: open + close for every market",
      "Built. One row per game / market / side with an opening and a closing endpoint, each naming the "
      "pinned file it came from and its evidence class.",
-     "price-store.html; data/prices/price_snapshots.csv (36,438 rows)",
+     "price-annex.html; data/prices/price_snapshots.csv (36,438 rows)",
      "Every originated market HAS a snapshot row (requirement met literally). Only 2,916 rows carry "
      "BOTH endpoints, all of them the spread in 2013–2018. The total has an opener only in 2021; the "
      "moneyline has no opener anywhere in the archive.",

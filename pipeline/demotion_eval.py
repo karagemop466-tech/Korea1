@@ -46,7 +46,7 @@ Outputs
   assets/data/ mirrors
   demotion.html
 
-Run:  python pipeline/demotion_gate.py
+Run:  python pipeline/demotion_eval.py
 """
 from __future__ import annotations
 
