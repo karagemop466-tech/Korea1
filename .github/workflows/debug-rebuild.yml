@@ -1,0 +1,47 @@
+# TEMPORARY DIAGNOSTIC — session arena/132e7ca2-korea1. Deleted before merge.
+# check_rebuild.py exits 1 in GitHub Actions but the runner log cannot be
+# downloaded from this environment, so the drift is posted as a PR comment
+# where it can be read.
+name: Debug rebuild drift
+
+on:
+  push:
+    branches: [arena/132e7ca2-korea1]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Rebuild
+        run: make build
+      - name: Report drift
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "### rebuild drift diagnostic"
+            echo "event: ${{ github.event_name }}"
+            echo "sha: $(git rev-parse HEAD)"
+            echo '```'
+            echo "--- git status --porcelain ---"
+            git status --porcelain | head -60
+            echo "--- git diff --stat ---"
+            git diff --stat | tail -40
+            f=$(git diff --name-only | head -1)
+            echo "--- first diff: $f ---"
+            git diff -- "$f" | head -100
+            echo '```'
+          } > /tmp/drift.md
+          gh pr comment 46 --body-file /tmp/drift.md
