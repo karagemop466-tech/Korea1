@@ -56,7 +56,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | BF6 | **Correlation provenance + n audit**: confirm every correlation value publishes its n and its source status; repair any gap | **done** (2026-11-14, see session log) | `arena/bfcd9879-korea1` | `pipeline/render_site.py` (build_correlations only) if a gap is found, otherwise verification record only |
 | BF7 | **Demotion gate**: explicit rule that sends a live strategy back to paper (gate re-failure, provenance break, forward-drawdown limit), published with current status | **done** (2026-11-14, see session log) | `arena/bfcd9879-korea1` | `pipeline/demotion_gate.py` (new), `data/processed/demotion_gate.csv` (new), `demotion.html` (new) |
 | BF8 | **Replacement-depth verification**: confirm 1st/2nd/3rd/4th-string replacement depth is tracked and published; record evidence (no edit unless a gap is found) | **done** (2026-11-14, see session log) | `arena/bfcd9879-korea1` | verification record in `COORDINATION.md` (own section) |
-| BF9 | **Final integration + publish**: nav, page lists (verify_site/check_sources/check_links), Makefile wiring, executive-summary line, `make build` + `make test`, PR → `main`, merge, Pages deploy, record | **in progress** (build+test green; PR after this push) | `arena/bfcd9879-korea1` | `pipeline/render_site.py` (NAV + page registration only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe additions only), `EXECUTIVE_SUMMARY.md` (own section), `README.md` (one link), `COORDINATION.md`, branch `arena/bfcd9879-korea1` → `main` |
+| BF9 | **Final integration + publish**: nav, page lists (verify_site/check_sources/check_links), Makefile wiring, executive-summary line, `make build` + `make test`, PR → `main`, merge, Pages deploy, record | **done** (PR #59 merged 2026-11-14T21:49:08Z; CI fix PR #60 merged 2026-11-14T22:09:39Z; Verify site green on `main`; GitHub Pages redeployed and live) | `arena/bfcd9879-korea1` | `pipeline/render_site.py` (NAV + page registration only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe additions only), `EXECUTIVE_SUMMARY.md` (own section), `README.md` (one link), `COORDINATION.md`, branch `arena/bfcd9879-korea1` → `main` |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -2840,3 +2840,24 @@ adds data or evidence they do not have:
 5. Generated files conflicted in the rebase were taken from `main` and re-converged by
    rebuilding; final state: **`make build` green twice (fixed point), 52 pages checked,
    0 failing checks, `make test` 166 passed**.
+
+### Final publish record — `arena/bfcd9879-korea1` (2026-11-14)
+
+- **PR #59** — https://github.com/karagemop466-tech/Korea1/pull/59 — merged `2026-11-14T21:49:08Z`
+  (change/source/irregularity summary in the PR body; all eight bolded requirements mapped).
+- **CI failure after #59 and its fix:** the `Verify site` workflow's `tests/check_rebuild.py`
+  step failed on `main` because `pipeline/results_feed_history.py` had been built while still
+  untracked, and the inventory is generated from `git ls-files` — the committed inventory
+  lacked its row (609 vs 610), shifting `EXECUTIVE_SUMMARY.md`, `repo-review.html` rows and
+  `verification_report.csv` `data_rows`. Reproduced on a clean clone, rebuilt with the file
+  tracked, and verified by full CI simulation on a fresh clone (build green, **166 tests
+  passed**, check_rebuild 0 changed files).
+- **PR #60** — https://github.com/karagemop466-tech/Korea1/pull/60 — verify check green on the
+  PR itself, merged `2026-11-14T22:09:39Z`.
+- **Main after #60:** `Verify site` **success** (run 43646604810); `pages build and deployment`
+  **success** (run 43646604402).
+- **Pages live:** https://karagemop466-tech.github.io/Korea1/ — confirmed serving
+  `price-archive.html` (coverage-by-season, week-10 freeze table, downloads) and
+  `results-feed.html` (T43 sections + this session's section 5 with the 18-row live spot
+  re-read table) on 2026-11-14.
+- **Session state:** all BF1–BF9 rows above `done`. Nothing in this session's scope remains open.
