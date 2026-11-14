@@ -2475,3 +2475,11 @@ the tree is a fixed point (a second `make build` leaves `git status` empty).
 - **IRR-X7-5:** `tests/check_rebuild.py` compares committed outputs with regenerated ones; the regenerated outputs and the repo inventory had to be committed in this change to converge.
 
 - **IRR-X7-6 (process, 2026-11-14):** `make build` on `81836b6` (the 17:10Z availability snapshot, already on `main`) regenerates 22 committed files that were not regenerated in that commit (`data/live/*`, `assets/data/*`, `executive-summary.html`, `live-verification.html`, `repo-review.html`, `EXECUTIVE_SUMMARY.md`). `verify.yml`'s final step (`tests/check_rebuild.py`) therefore fails on `main`'s own content, and PR #52 failed the same way. Resolved on this branch by rebuilding and committing the regenerated outputs (fixed point confirmed: a second `make build` leaves `git status` empty). Pre-existing on `main`; not caused by X7's logic. Owner should confirm the new contradiction rows (F-29) against the official pages.
+
+### X7 — PR and merge record (2026-11-14, `arena/b400d3ae-korea1`)
+
+- **PR:** https://github.com/karagemop466-tech/Korea1/pull/52
+- **Result:** MERGED 2026-11-14T20:08:24Z as merge commit `dd80e6ad6b25a07aa1dc0a77a42853ccfefcf918` (`gh pr merge 52 --merge`, after `verify` = pass on the PR run).
+- **Pages:** `gh api .../pages/builds/latest` → `built` for `dd80e6a` at 2026-11-14T20:08:48Z; site root https://karagemop466-tech.github.io/Korea1/ (this sandbox cannot reach github.io directly, so the live page itself was not fetched here).
+- **main `verify` on the merge commit:** success.
+- **Status:** X7 stays `needs review` on the board: F-29 (four contradictory injury rows) and the owner decision on a drawdown limit are open. Nothing else is blocked.
