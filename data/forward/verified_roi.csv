@@ -1,0 +1,5 @@
+strategy,settled_picks,wins,losses,pushes,unit_profit,roi,roi_class,price_class,games,note
+DIV_UNDER,1,0,1,0,-1.0,-1.0,D,C,2026_10_WAS_NYG,"Return uses the official final score; the entry price is a community mirror, so the return is a research estimate and not an official observation."
+SP_EDGE_1_0,1,0,1,0,-1.0,-1.0,D,C,2026_10_WAS_NYG,"Return uses the official final score; the entry price is a community mirror, so the return is a research estimate and not an official observation."
+TOT_EDGE_2_0,1,1,0,0,0.8475,0.847458,D,C,2026_10_WAS_NYG,"Return uses the official final score; the entry price is a community mirror, so the return is a research estimate and not an official observation."
+TOT_EDGE_3_5,1,1,0,0,0.8475,0.847458,D,C,2026_10_WAS_NYG,"Return uses the official final score; the entry price is a community mirror, so the return is a research estimate and not an official observation."

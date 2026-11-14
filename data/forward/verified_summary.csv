@@ -1,0 +1,4 @@
+market,games,rows,model_mae,model_mae_n,model_mae_class,market_mae,market_mae_n,market_mae_class,error_gap,error_gap_class,model_wins,model_losses,model_pushes,note
+MONEYLINE,30,60,,0,B,,0,D,,,30,30,0,Absolute error of the line against the official final. A positive gap means the market line landed further from the final than our line did.
+SPREAD,30,60,10.7394,60,B,10.1379,58,D,-0.6014,D,30,30,0,Absolute error of the line against the official final. A positive gap means the market line landed further from the final than our line did.
+TOTAL,30,60,11.2538,60,B,11.0517,58,D,-0.2021,D,30,30,0,Absolute error of the line against the official final. A positive gap means the market line landed further from the final than our line did.
