@@ -220,8 +220,12 @@ def test_null_results_are_published_not_dropped():
 # R8 demotion gate
 # --------------------------------------------------------------------------- #
 def test_demotion_triggers_are_fail_closed():
+    """DG1-DG6 are the authoritative gate's names; DG7-DG8 are proposals and must stay marked."""
     outs, rules = dg.build()
-    assert list(rules.code) == ["D1", "D2", "D3", "D4", "D5", "D6"]
+    assert list(rules.code) == ["DG1", "DG2", "DG3", "DG4", "DG5", "DG6", "DG7", "DG8"]
+    assert rules[rules.code.isin(["DG7", "DG8"])].name.str.contains("PROPOSED").all()
+    assert not rules[rules.code.isin(["DG1", "DG2", "DG3", "DG4", "DG5", "DG6"])].name.str.contains(
+        "PROPOSED").any()
     # no strategy is live, so the correct answer is no action - not a pass
     assert (outs.decision == "NO_ACTION").all()
     assert outs.state.isin(["PAPER", "LIVE", "DEMOTED", "RETIRED"]).all()
@@ -238,8 +242,15 @@ def test_gate_reports_not_computable_instead_of_passing():
     d = pd.read_csv(GATES / "demotion_gate.csv", dtype=str, keep_default_na=False)
     live = d[d.live_settled.apply(lambda x: x not in ("", "0"))]
     assert len(live) > 0
-    assert live.d1.str.startswith("not computable").any() or live.d2.str.startswith(
+    assert live.dg7.str.startswith("not computable").any() or live.dg8.str.startswith(
         "not computable").any()
+
+
+def test_the_page_executes_the_authoritative_gate():
+    """The page must not carry a second, competing rule vocabulary: it runs demotion_gate.evaluate."""
+    d = pd.read_csv(GATES / "demotion_gate.csv", dtype=str, keep_default_na=False)
+    live = d[d.live_settled.apply(lambda x: x not in ("", "0"))]
+    assert live.reason.str.contains("authoritative gate verdict").all()
 
 
 # --------------------------------------------------------------------------- #

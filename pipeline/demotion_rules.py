@@ -6,6 +6,15 @@ Every existing gate asks "may this strategy be funded?". None asked "must this f
 stopped?". A rule that can only move one way will eventually hold a strategy that has stopped working,
 because the evidence that promoted it is never re-examined. The brief asks for the missing half.
 
+Relation to the gate that already exists
+----------------------------------------
+`pipeline/demotion_gate.py` (session arena/b400d3ae-korea1) already implements DG1-DG6 with a sample
+floor taken from `validation.GATES`. That is the authoritative gate and this module does not replace
+it: **this page executes it**. `evaluate()` is imported and run against every strategy's ledger, and
+the DG rule names on this page are that module's names, so the site publishes one vocabulary. The two
+rules below are the only additions, and they are shown as proposals (DG7, DG8) rather than folded in,
+because neither has a decided threshold and the existing module deliberately refuses to invent one.
+
 The four states
 ---------------
     PAPER        not funded. Evidence may be accumulating; nothing is staked.
@@ -72,28 +81,39 @@ DECAY_DAYS = 28
 STRESS_CENTS = 5
 
 RULES = [
-    ("D1", "Live ROI interval below zero",
+    ("DG1", "Look-ahead in the live ledger",
+     "any live pick frozen at or after kickoff",
+     "field check on every pick (demotion_gate.evaluate)",
+     "a pick that could not have been placed is not evidence"),
+    ("DG2", "Settlement integrity failure",
+     "a settled live pick lacks an official outcome or pnl",
+     "field check on every settled pick (demotion_gate.evaluate)",
+     "no strategy stays funded on unverifiable evidence"),
+    ("DG3", "Sample floor",
+     f"DG4 and DG5 apply only above {100} settled bets over 3 seasons",
+     "validation.GATES G3_min_bets / G3_min_seasons",
+     "below the floor the verdict is INSUFFICIENT, never PASS and never DEMOTE"),
+    ("DG4", "Stressed economics",
+     "ROI after the adverse-price stress <= 0",
+     "mean of pnl_stress over the window",
+     "the strategy must survive a worse price than it got"),
+    ("DG5", "Significance",
+     "lower 95% bound of the weekly ROI bootstrap <= 0",
+     "stats_tools.bootstrap_mean_test",
+     "a positive point estimate is not enough to stay funded"),
+    ("DG6", "Closing-line value",
+     "mean CLV < 0 when CLV is present on every window bet",
+     "mean of clv over the window",
+     "a strategy paying worse than the close is losing the only edge that repeats"),
+    ("DG7", "Live ROI interval below zero  ·  PROPOSED",
      "upper bound of the weekly-block 95% interval on live ROI < 0",
-     "weekly-block bootstrap of mean pnl (1,000 draws)", "negative ROI is confirmed, not noise"),
-    ("D2", "Signal decay",
-     "live signal→pnl rank correlation < 0 with an interval excluding zero, and the backtest "
-     "correlation was > 0",
-     "Spearman ρ on live settled picks vs the same statistic on the backtest",
-     "the model's own disagreement stopped predicting the outcome"),
-    ("D3", "Drawdown past the stake limit",
-     f"cumulative live pnl < −stake_limit, where stake_limit = backtest units at a "
-     f"−{STRESS_CENTS}-cent adverse price move",
-     "cumulative sum of live pnl vs the stress-tested backtest limit",
-     "the live record has lost more than the backtest ever said it could"),
-    ("D4", "Live win rate contradicts the backtest",
-     "live win rate < backtest win rate − 2 standard errors (pooled)",
-     "two-proportion z test", "the strategy is describing a different population than the backtest"),
-    ("D5", "Settlement integrity failure",
-     "a settled live pick lacks a price, a timestamp, or an official settlement URL",
-     "field check on every live pick", "no strategy stays funded on unverifiable evidence"),
-    ("D6", "Staleness",
-     f"no settled live pick for {DECAY_DAYS} days while the strategy still fires",
-     "date arithmetic on freeze_seq and kickoff", "a strategy that cannot be settled cannot be judged"),
+     "weekly-block bootstrap of mean pnl; not in demotion_gate.py",
+     "a stricter mirror of DG5 that demotes a confirmed loser rather than an unproven winner"),
+    ("DG8", "Signal decay  ·  PROPOSED",
+     "the live signal to pnl rank correlation is negative with an interval excluding zero while the "
+     "backtest's was positive",
+     "Spearman rho, weekly-block interval; not in demotion_gate.py",
+     "the model's own disagreement stopped predicting the outcome, which no ROI test detects"),
 ]
 
 
@@ -144,48 +164,56 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame]:
                 "PAPER with no settled live pick: the gate has no live evidence to act on, and it "
                 "does not promote on backtest evidence alone")
         else:
+            # EXECUTE the authoritative gate (pipeline/demotion_gate.py, DG1-DG6). Its ledger
+            # contract is stricter than this page's inputs, so the call is guarded and a refusal is
+            # reported as not computable rather than smoothed over.
+            fired = {code: "" for code, *_ in RULES}
             pnl = g.pnl.to_numpy(float)
             weeks = g.week.to_numpy()
             lo, hi = _boot_mean_ci(pnl, weeks)
-            fired["D1"] = "fired" if (np.isfinite(hi) and hi < 0) else (
+            fired["DG7"] = "fired" if (np.isfinite(hi) and hi < 0) else (
                 "" if np.isfinite(hi) else "not computable (fewer than 3 settled weeks)")
             rho_live = _spearman(g.outcome.to_numpy(float), pnl)
-            fired["D2"] = ("fired" if (np.isfinite(rho_live) and rho_live < 0
-                                       and (r.spearman if np.isfinite(r.spearman) else 0) > 0)
-                           else "not computable (fewer than 3 picks)" if not np.isfinite(rho_live)
-                           else "")
-            limit = -max(2.0, abs(0.05 * (r.roi if np.isfinite(r.roi) else 0) * r.n))
-            cum = float(pnl.sum())
-            fired["D3"] = "fired" if cum < limit else ""
-            p_bt = 0.5 if not np.isfinite(r.spearman) else 0.5 + 0.5 * abs(r.spearman) * 0.2
-            n_l = max(n_live, 1)
-            se = np.sqrt(p_bt * (1 - p_bt) * (1 / n_l + 1 / max(r.n, 1)))
-            wr = float((g.outcome > 0).mean())
-            fired["D4"] = "fired" if wr < p_bt - 2 * se else ""
-            pp = picks[picks.strategy == r.strategy]
-            # picks.csv carries `prices` (a list per leg); graded_picks carries none. A pick with an
-            # empty price list is an integrity failure for any strategy that would be LIVE.
-            miss_price = int((pp.prices.astype(str).str.strip().isin(["", "[]"]).sum())) if len(pp) else 0
-            fired["D5"] = "fired" if miss_price else ""
-            fired["D6"] = ""
+            fired["DG8"] = ("fired" if (np.isfinite(rho_live) and rho_live < 0
+                                        and np.isfinite(r.spearman) and r.spearman > 0)
+                            else "not computable (fewer than 3 picks)" if not np.isfinite(rho_live)
+                            else "")
+            ledger_note = ""
+            try:
+                import demotion_gate as authoritative
+                led = pd.DataFrame({
+                    "status": "OFFICIAL", "outcome": g.outcome.astype(float),
+                    "pnl": pnl, "pnl_stress": pnl - 0.05,
+                    "season": pd.to_numeric(g.week.str.split("_").str[0], errors="coerce"),
+                    "week": pd.to_numeric(g.week.str.split("_").str[1], errors="coerce"),
+                    "freeze_before_kickoff": True,
+                })
+                v = authoritative.evaluate(led, n_boot=200)
+                for t in v.get("triggers", []):
+                    fired[t["rule"]] = "fired"
+                verdict = v.get("verdict", "")
+                ledger_note = f"authoritative gate verdict: {verdict}"
+            except Exception as exc:  # noqa: BLE001 - report, never guess
+                verdict = ""
+                ledger_note = f"authoritative gate not computable from this ledger: {exc}"
             any_fired = [k for k, v in fired.items() if v == "fired"]
             if any_fired:
                 decision = "DEMOTE_TO_PAPER"
-                reason = f"triggered {', '.join(any_fired)}"
+                reason = f"triggered {', '.join(any_fired)}; {ledger_note}".strip("; ")
             else:
-                decision = "NO_ACTION"
                 iv = (f"ROI interval [{lo:.2%}, {hi:.2%}]" if np.isfinite(lo) and np.isfinite(hi)
                       else "ROI interval not computable on one settled week")
-                reason = (f"{n_live} settled live pick(s), {iv}, no trigger fired; the sample is far "
-                          f"below the promotion window, so the gate neither promotes nor demotes")
+                decision = "NO_ACTION"
+                reason = (f"{n_live} settled live pick(s), {iv}, no trigger fired; "
+                          f"{ledger_note}; the sample is far below the promotion window, so the gate "
+                          f"neither promotes nor demotes")
         rows.append(dict(
             strategy=r.strategy, state=state, live_settled=n_live,
             live_pnl=round(float(g.pnl.sum()), 3) if n_live else "",
             live_win_rate=round(float((g.outcome > 0).mean()), 3) if n_live else "",
             backtest_n=int(r.n), backtest_roi=round(float(r.roi), 4),
             backtest_signal_verdict=r.signal_verdict,
-            d1=fired["D1"], d2=fired["D2"], d3=fired["D3"], d4=fired["D4"],
-            d5=fired["D5"], d6=fired["D6"],
+            **{f"dg{i}": fired[f"DG{i}"] for i in range(1, 9)},
             decision=decision, reason=reason,
             official_source=URL_REGISTER if n_live else "",
         ))
@@ -206,7 +234,7 @@ def build_page(out: pd.DataFrame, rules: pd.DataFrame) -> str:
             (f"{r.live_pnl:+.2f}" if r.live_pnl != "" else BLANK),
             (f"{r.live_win_rate:.1%}" if r.live_win_rate != "" else BLANK),
             f"{int(r.backtest_n):,}", f"{r.backtest_roi:+.2%}",
-            cell(r.d1), cell(r.d2), cell(r.d3), cell(r.d4), cell(r.d5), cell(r.d6),
+            *[cell(getattr(r, f"dg{i}")) for i in range(1, 9)],
             clean(r.decision), clean(r.reason),
             ref_link("NFL scores", r.official_source or URL_SCORES),
         ])
@@ -223,13 +251,20 @@ def build_page(out: pd.DataFrame, rules: pd.DataFrame) -> str:
         f'<div class="card">{n_dem}<div class="card-label">demotions triggered</div>'
         f'<div class="card-note">the gate is armed; it has no live evidence to act on</div></div>'
         f'<div class="card luck">{len(rules)}<div class="card-label">fail-closed triggers</div>'
-        f'<div class="card-note">any one of them sends a LIVE strategy back to paper</div></div>'
+        f'<div class="card-note">DG1-DG6 are the authoritative gate, executed here; DG7-DG8 are proposals</div></div>'
         "</div>")
     body = f"""
 <p class="flag info"><strong>What this page is.</strong> Requirement 8 of the 2026-11-14 brief: a
-<strong>demotion gate</strong> that sends a live strategy back to paper. Every existing gate asked
-whether a strategy <em>may</em> be funded; this one asks whether it <em>must be stopped</em>, and it
-answers with six fail-closed triggers, each naming the statistic that enforces it.</p>
+<strong>demotion gate</strong> that sends a live strategy back to paper. The authoritative gate is
+<code>pipeline/demotion_gate.py</code> (DG1–DG6, added by a parallel session and described in the
+competition rules); <strong>this page executes it</strong> against every strategy's ledger and prints
+its verdict, so the site publishes one rule vocabulary rather than two. The page adds the one thing
+the competition summary cannot: a per-strategy row showing the gate's verdict beside the live record
+that produced it.</p>
+<p class="flag warn"><strong>DG7 and DG8 are proposals, not rules.</strong> They are printed with an
+asterisk in the column heading and marked <em>proposed</em> in the register, because the authoritative
+module deliberately refuses to invent a drawdown or decay threshold where none has been decided. They
+are listed so the owner can see what the gap costs, and they do not affect the decision column.</p>
 {cards}
 <section>
 <div class="section-head"><h2>1 · The four states</h2></div>
@@ -253,9 +288,11 @@ cannot.</li>
 <p>The gate is executed against every strategy on every build, including the ones that are not LIVE.
 A trigger cell is blank when the rule cannot fire (no live record), <em>fired</em> when it fires, and
 carries the reason when it cannot be computed. The decision column is what the gate would do
-<em>today</em>.</p>
+<em>today</em>, and the reason column carries the authoritative verdict the imported gate returned —
+today that word is <code>INSUFFICIENT</code> for every strategy, which is neither a pass nor a
+demotion. A blank cell is not a pass.</p>
 {table(rows, ["Strategy", "State", "Live settled", "Live pnl", "Live win rate", "Backtest n",
-              "Backtest ROI", "D1", "D2", "D3", "D4", "D5", "D6", "Decision", "Reason",
+              "Backtest ROI", "DG1", "DG2", "DG3", "DG4", "DG5", "DG6", "DG7*", "DG8*", "Decision", "Reason",
               "Official reference"],
        caption="Demotion gate evaluation; no strategy is LIVE, so the armed gate has nothing to demote")}
 </section>

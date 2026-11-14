@@ -1,7 +1,9 @@
 code,name,test,statistic,why
-D1,Live ROI interval below zero,upper bound of the weekly-block 95% interval on live ROI < 0,"weekly-block bootstrap of mean pnl (1,000 draws)","negative ROI is confirmed, not noise"
-D2,Signal decay,"live signal→pnl rank correlation < 0 with an interval excluding zero, and the backtest correlation was > 0",Spearman ρ on live settled picks vs the same statistic on the backtest,the model's own disagreement stopped predicting the outcome
-D3,Drawdown past the stake limit,"cumulative live pnl < −stake_limit, where stake_limit = backtest units at a −5-cent adverse price move",cumulative sum of live pnl vs the stress-tested backtest limit,the live record has lost more than the backtest ever said it could
-D4,Live win rate contradicts the backtest,live win rate < backtest win rate − 2 standard errors (pooled),two-proportion z test,the strategy is describing a different population than the backtest
-D5,Settlement integrity failure,"a settled live pick lacks a price, a timestamp, or an official settlement URL",field check on every live pick,no strategy stays funded on unverifiable evidence
-D6,Staleness,no settled live pick for 28 days while the strategy still fires,date arithmetic on freeze_seq and kickoff,a strategy that cannot be settled cannot be judged
+DG1,Look-ahead in the live ledger,any live pick frozen at or after kickoff,field check on every pick (demotion_gate.evaluate),a pick that could not have been placed is not evidence
+DG2,Settlement integrity failure,a settled live pick lacks an official outcome or pnl,field check on every settled pick (demotion_gate.evaluate),no strategy stays funded on unverifiable evidence
+DG3,Sample floor,DG4 and DG5 apply only above 100 settled bets over 3 seasons,validation.GATES G3_min_bets / G3_min_seasons,"below the floor the verdict is INSUFFICIENT, never PASS and never DEMOTE"
+DG4,Stressed economics,ROI after the adverse-price stress <= 0,mean of pnl_stress over the window,the strategy must survive a worse price than it got
+DG5,Significance,lower 95% bound of the weekly ROI bootstrap <= 0,stats_tools.bootstrap_mean_test,a positive point estimate is not enough to stay funded
+DG6,Closing-line value,mean CLV < 0 when CLV is present on every window bet,mean of clv over the window,a strategy paying worse than the close is losing the only edge that repeats
+DG7,Live ROI interval below zero  ·  PROPOSED,upper bound of the weekly-block 95% interval on live ROI < 0,weekly-block bootstrap of mean pnl; not in demotion_gate.py,a stricter mirror of DG5 that demotes a confirmed loser rather than an unproven winner
+DG8,Signal decay  ·  PROPOSED,the live signal to pnl rank correlation is negative with an interval excluding zero while the backtest's was positive,"Spearman rho, weekly-block interval; not in demotion_gate.py","the model's own disagreement stopped predicting the outcome, which no ROI test detects"

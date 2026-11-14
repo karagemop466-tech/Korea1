@@ -2682,3 +2682,28 @@ publication · `-03` model loses to the close on all three markets · `-04` 31,2
 
 `models.py` moneyline swap remains untested (carried over). No strategy is validated, no reward is
 awarded, and no proposal from the review page has been implemented — by design.
+
+### T43 post-rebase reconciliation with `arena/b400d3ae-korea1` / `arena/fcba7eb5-korea1`
+
+`main` advanced 14 commits while this session ran, and a parallel session had answered **the same
+nine requirements** (T1–T9 on `requirements.html`, 3 MET / 6 PARTIAL, plus `pipeline/demotion_gate.py`,
+`pipeline/price_snapshots.py`, `demotion_register.py`). Rebasing exposed four collisions. What was done,
+and why, follows — no other session's file was edited and nothing was deleted.
+
+| Collision | Resolution |
+|---|---|
+| `pipeline/demotion_gate.py` existed on both sides | **Theirs keeps the path.** Mine renamed to `demotion_rules.py`; my page now **imports and executes** their `evaluate()`, so the site publishes one rule vocabulary (DG1–DG6). My extra rules are published as **DG7/DG8, marked PROPOSED**, because their module deliberately refuses to invent a drawdown threshold. |
+| `pipeline/price_snapshot.py` vs their `price_snapshots.py` | Mine renamed `price_annex.py`, page `price-annex.html`. Theirs is untouched. The two stores are complementary and both are linked. |
+| Rebase replay **deleted** their `demotion_gate.py` | Caught by `make test` (their `test_demotion_gate.py` failed to import), not by the build. Restored from `origin/main` and re-tested: 29 of their tests pass. |
+| Two status vocabularies for the nine items | Their trace marks T3/T5/T9 MET; mine marks the same three "built, proves less than the title". Both readings are defensible and the disagreement is now stated on `suggestions-review-2026-11-14.html` rather than hidden. **Owner decision BQ-02 picks one.** |
+
+**Final state on this branch, after the rebase:**
+`make build` → 0 failing checks, 40 canonical pages, 4,968 rows · `tests/check_links.py` → 49 pages
+clean · `make test` → **243 passed, 1 skipped** · `tests/check_rebuild.py` → matches committed outputs.
+
+**Duplicate-surface flag for the integration owner (not resolved here, by design):** the site now has
+two demotion explanations (`demotion.html` executing the gate per strategy, and the "Demotion gate"
+section on `competition.html` explaining the register), two price stores (`price-annex.html` with
+opening/closing endpoints, and their coverage artefact), and two nine-item status tables. Each pair is
+consistent and cross-linked, but a reader should not have to find both. Consolidation is proposal
+**NAV-02** on the review page; it is not implemented.
