@@ -1,0 +1,9 @@
+register,label,page,file,rows,mapped,unmapped,unmapped_ids,reference_label,reference_url
+S,Suggestions register (S01–S22),suggestions.html,data/processed/suggestions.csv,22,22,0,,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+DB,Decision board (DB-01–DB-17),decision-board.html,data/review/suggestions.csv,17,17,0,,"White (2000), Econometric Society",https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping
+SR,Review register (S-01–S-25),research/suggestions-register.md,data/processed/review_suggestions.csv,25,25,0,,NFL scores,https://www.nfl.com/scores/
+SUG,Staged improvements (SUG-01–SUG-12),suggestions-review.html,pipeline/render_governance.py,12,12,0,,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+Q,Open questions (Q01–Q40),questions.html,data/processed/questions.csv,40,40,0,,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+OQ,Open questions (OQ-01–OQ-20),open-questions.html,data/review/questions.csv,20,20,0,,"White (2000), Econometric Society",https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping
+DQ,Decision questions (DQ-01–DQ-14),decisions.html,data/governance/decision_questions.csv,14,14,0,,"White (2000), Econometric Society",https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping
+QR,Review questions (Q-01–Q-16),research/open-questions-register.md,data/processed/review_questions.csv,16,16,0,,NFL scores,https://www.nfl.com/scores/

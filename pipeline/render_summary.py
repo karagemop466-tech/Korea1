@@ -25,11 +25,31 @@ def main():
     from collections import Counter
     sig = Counter(s["status"] for s in av.SIGNALS)
     sig_line = f"{len(av.SIGNALS)} availability signals assessed: {sig['AVAILABLE']} available, {sig['PILOT ONLY']} pilot-only, {sig['OPEN']} open, {sig['BLOCKED']} blocked"
+    # T34 (2026-11-13): read this session's outputs rather than retyping any of them.
+    import csv as _csv
+    def _rows(p_):
+        with open(ROOT / p_, newline="", encoding="utf-8") as fh:
+            return list(_csv.DictReader(fh))
+    def _json(p_):
+        return json.loads((ROOT / p_).read_text())
+    import json
+    hub = _json('data/review/hub_summary.json')
+    gameday = _json('data/review/gameday_summary.json')
+    fwd = _json('data/review/forward_summary.json')
+    imp = _rows('data/review/improvements.csv')
+    imp_built = sum(1 for r in imp if r['status'].startswith('Implemented this session'))
+    imp_part = sum(1 for r in imp if r['status'].startswith('Partly implemented'))
+    imp_prop = len(imp) - imp_built - imp_part
+    gd = gameday['tier_counts']
+    drift = len(_rows('data/review/capture_drift.csv'))
+    verify = _json('data/audit/official_review_2026_11_13.json')
+    out_backup = gd.get('Out 2nd\u20134th string', 0)
+
     # T41 (arena/8a322b62-korea1): forward-test settlement, read from data/forward/ so the
     # executive summary cannot drift from forward.html. Nothing here is retyped.
-    fwd = ROOT/'data'/'forward'
-    _pk = pd.read_csv(fwd/'graded_picks.csv', dtype=str, keep_default_na=False) if (fwd/'graded_picks.csv').exists() else pd.DataFrame()
-    _sb = pd.read_csv(fwd/'scoreboard.csv', dtype=str, keep_default_na=False) if (fwd/'scoreboard.csv').exists() else pd.DataFrame()
+    fwdir = ROOT/'data'/'forward'
+    _pk = pd.read_csv(fwdir/'graded_picks.csv', dtype=str, keep_default_na=False) if (fwdir/'graded_picks.csv').exists() else pd.DataFrame()
+    _sb = pd.read_csv(fwdir/'scoreboard.csv', dtype=str, keep_default_na=False) if (fwdir/'scoreboard.csv').exists() else pd.DataFrame()
     f_declared = len(_pk)
     f_settled = int((_pk.status == 'OFFICIAL').sum()) if f_declared else 0
     f_open = int((_pk.status == 'OPEN').sum()) if f_declared else 0
@@ -38,7 +58,7 @@ def main():
     f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
     text=f'''# Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
+Final integration: 2026-11-13. Research snapshot: `{src['upstream']['commit_sha']}`.
 
 ## Decision
 
@@ -115,6 +135,31 @@ nothing about the strategy library has been demonstrated.
 dirty after each build. Every declared file is now hashed, a missing file raises, and
 `tests/test_evidence_integrity.py` fails on a null or mismatched digest (verified by restoring the old
 code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
+
+## Update of 2026-11-13 — one hub, first measured notions, first prospective result
+
+Six sessions each wrote their own suggestion and question register. The site arrived at **{hub['registers']}
+machine-readable registers plus {len(hub['prose_registers'])} prose registers covering the same ground**, and a
+reviewer could not tell which to read or whether anything had been dropped. This session consolidated them
+without deleting any of them:
+
+| Deliverable | What it is | Why it matters |
+|---|---|---|
+| `decision-hub.html` | **{hub['canonical_decisions']} canonical decisions** (DH-01–DH-16) replacing six overlapping registers, mapped to all **{hub['register_rows_total']} source rows** across {hub['registers']} registers | One place to choose a path. `build_hub.py` fails the build if any register row is unmapped, mapped twice, or mapped to a row that does not exist |
+| `improvements.html` | {len(imp)} improvements: {imp_built} built this session, {imp_part} partly built, {imp_prop} proposed with the owner question each one needs | The dedicated section for reviewing suggestions before implementing changes |
+| `gameday-deficiencies.html` | **{gameday['deficiency_rows']} rows across {gameday['teams']} clubs**: {gameday['out_1st']} first-string Out, {gameday['out_deeper']} second-to-fourth string Out, {gameday['doubtful']} doubtful, {gameday['questionable']} questionable, {gameday['next_also_out']} compounded | The 1st–4th string deficiency register now covers all 26 reporting clubs, offense and defense, never just four matchups |
+| Capture drift | **{drift} differing cells** between two reads of the same official page 90 minutes apart | Measures how fast the injury input moves; it is why a designation without T-90m inactives is not a confirmation |
+| Forward ledger | First prospective result: **{fwd['wins']}W {fwd['losses']}L {fwd['pushes']}P, net {fwd['net_units']:.4f} units** on {fwd['picks_settled']} picks; {fwd['picks_still_open']} still open | The only mechanism in the repository that removes hindsight. Nothing in it is awarded |
+| 2026-11-13 verification pass | **{verify['claims_checked']} claims checked** against official pages: {verify['verified_clean']} clean, {verify['verified_with_defect']} revealing {len(verify['irregularities'])} irregularities (IR-01–IR-0{len(verify['irregularities'])}) | Recorded in `research/verification-2026-11-13.md` and on `flagged.html`, each with its official link |
+| Determinism repair | `fetch_injuries.py` now hashes every committed file and writes the manifest only on change | A clean build is byte-identical again; the manifest no longer carries a null digest |
+
+Three of these came from ideas six separate sessions had already filed and none could build alone: an
+all-club deficiency register (S03/SR-04/SUG-06), a single canonical question surface (DB-01/S05/SR-01),
+and prospective grading of the forward ledger (DB-03/S07/SR-03).
+
+**What to decide first:** DH-02 (price provenance) and DH-04 (data freshness). Both are cheap to answer
+and both block the money question. Do not relax a validation gate to produce a winner — that produces a
+winner, not evidence (DH-15).
 
 ## What was delivered
 

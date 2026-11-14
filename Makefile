@@ -58,6 +58,17 @@ site: injuries review reviewall
 	$(PY) pipeline/render_site.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	$(PY) pipeline/render_review.py
+# 2026-11-13 (arena/534e771f-korea1, T30-T32): verified capture, 1st-4th string deficiency
+# join, forward-ledger grading, decision hub and improvements register. build_hub must run
+# after render_review (it indexes the registers render_review writes) and render_summary must
+# run after all three, because it quotes their result files instead of retyping them.
+	$(PY) pipeline/gameday_deficiency.py
+	$(PY) pipeline/forward_settle.py
+	$(PY) pipeline/build_hub.py
+	$(PY) pipeline/render_gameday.py
+	$(PY) pipeline/render_hub.py
+	$(PY) pipeline/render_improvements.py
+	$(PY) pipeline/official_review.py
 	$(PY) pipeline/render_summary.py
 	$(PY) pipeline/render_readiness.py
 	$(PY) pipeline/render_annex.py
@@ -68,7 +79,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_hub.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives

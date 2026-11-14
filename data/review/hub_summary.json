@@ -1,0 +1,137 @@
+{
+  "generated_utc": "2026-11-14T00:02Z",
+  "canonical_decisions": 16,
+  "mapped_rows": 166,
+  "registers": 8,
+  "register_rows_total": 166,
+  "register_rows_mapped": 166,
+  "prose_registers": [
+    [
+      "Suggestions for review (8 items)",
+      "decisions.html",
+      "session arena/03f66e17-korea1, embedded in the decision-readiness page"
+    ],
+    [
+      "Lineup deficiency / injury notes",
+      "research/injuries.md",
+      "session arena/03f66e17-korea1, markdown annex"
+    ]
+  ],
+  "per_decision": {
+    "DH-01": 6,
+    "DH-02": 11,
+    "DH-03": 19,
+    "DH-04": 9,
+    "DH-05": 26,
+    "DH-06": 13,
+    "DH-07": 2,
+    "DH-08": 11,
+    "DH-09": 5,
+    "DH-10": 10,
+    "DH-11": 5,
+    "DH-12": 6,
+    "DH-13": 7,
+    "DH-14": 5,
+    "DH-15": 16,
+    "DH-16": 15
+  },
+  "coverage": [
+    {
+      "register": "S",
+      "label": "Suggestions register (S01–S22)",
+      "page": "suggestions.html",
+      "file": "data/processed/suggestions.csv",
+      "rows": 22,
+      "mapped": 22,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "GitHub Pages documentation",
+      "reference_url": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
+    },
+    {
+      "register": "DB",
+      "label": "Decision board (DB-01–DB-17)",
+      "page": "decision-board.html",
+      "file": "data/review/suggestions.csv",
+      "rows": 17,
+      "mapped": 17,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "White (2000), Econometric Society",
+      "reference_url": "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping"
+    },
+    {
+      "register": "SR",
+      "label": "Review register (S-01–S-25)",
+      "page": "research/suggestions-register.md",
+      "file": "data/processed/review_suggestions.csv",
+      "rows": 25,
+      "mapped": 25,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "NFL scores",
+      "reference_url": "https://www.nfl.com/scores/"
+    },
+    {
+      "register": "SUG",
+      "label": "Staged improvements (SUG-01–SUG-12)",
+      "page": "suggestions-review.html",
+      "file": "pipeline/render_governance.py",
+      "rows": 12,
+      "mapped": 12,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "GitHub Pages documentation",
+      "reference_url": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
+    },
+    {
+      "register": "Q",
+      "label": "Open questions (Q01–Q40)",
+      "page": "questions.html",
+      "file": "data/processed/questions.csv",
+      "rows": 40,
+      "mapped": 40,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "GitHub Pages documentation",
+      "reference_url": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
+    },
+    {
+      "register": "OQ",
+      "label": "Open questions (OQ-01–OQ-20)",
+      "page": "open-questions.html",
+      "file": "data/review/questions.csv",
+      "rows": 20,
+      "mapped": 20,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "White (2000), Econometric Society",
+      "reference_url": "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping"
+    },
+    {
+      "register": "DQ",
+      "label": "Decision questions (DQ-01–DQ-14)",
+      "page": "decisions.html",
+      "file": "data/governance/decision_questions.csv",
+      "rows": 14,
+      "mapped": 14,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "White (2000), Econometric Society",
+      "reference_url": "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping"
+    },
+    {
+      "register": "QR",
+      "label": "Review questions (Q-01–Q-16)",
+      "page": "research/open-questions-register.md",
+      "file": "data/processed/review_questions.csv",
+      "rows": 16,
+      "mapped": 16,
+      "unmapped": 0,
+      "unmapped_ids": "",
+      "reference_label": "NFL scores",
+      "reference_url": "https://www.nfl.com/scores/"
+    }
+  ],
+  "problems": []
+}

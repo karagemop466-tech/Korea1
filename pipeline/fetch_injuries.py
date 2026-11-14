@@ -278,13 +278,16 @@ def main() -> None:
     man = json.loads((snapshot_dir / "manifest.json").read_text())
     body_path = snapshot_dir / "injury_report.md"
     digest = sha256_of(body_path)
-    # Hash every staged file from its own path.
+    # Hash every staged file from its own path, fail-closed.
     #
-    # Found twice, independently, on 2026-11-13: the earlier code only set a default of None for
-    # entries after the first, so news_register.md was recorded with no hash and every build
-    # rewrote this committed manifest. Fixed by arena/18c4acce-korea1 (R1) and arena/8a322b62-korea1
-    # (T41). Merged form keeps R1's `snapshot_dir / logical` path convention and T41's fail-closed
-    # rule: a file the manifest names but does not exist raises instead of being recorded as null.
+    # Found three times independently on 2026-11-13 — arena/18c4acce-korea1 (R1),
+    # arena/8a322b62-korea1 (T41) and arena/534e771f-korea1 (T33) — the earlier code set a
+    # default of None for entries after the first, so news_register.md was recorded with no
+    # digest and every clean build rewrote this committed manifest, meaning a fresh checkout
+    # did not reproduce the published bytes. Merged form keeps R1's `snapshot_dir / logical`
+    # path convention and T41's fail-closed rule: a file the manifest names but does not
+    # exist raises instead of being recorded as null. The manifest is written below only
+    # when its content actually changes, so the build is idempotent from the first run.
     for f in man["files"]:
         local = snapshot_dir / f["logical"]
         if not local.exists():
@@ -293,7 +296,10 @@ def main() -> None:
         f["bytes"] = local.stat().st_size
     man["files"][0]["sha256"] = digest
     man["files"][0]["bytes"] = body_path.stat().st_size
-    write_json(snapshot_dir / "manifest.json", man)
+    new_text = json.dumps(man, indent=2, ensure_ascii=False, sort_keys=False) + "\n"
+    if (snapshot_dir / "manifest.json").read_text(encoding="utf-8") != new_text:
+        (snapshot_dir / "manifest.json").write_text(new_text, encoding="utf-8")
+        print("  updated injury evidence manifest with file digests")
 
     games, rows, name_map = parse_markdown(body_path.read_text(encoding="utf-8"))
     if not rows:

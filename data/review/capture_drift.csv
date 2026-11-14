@@ -1,0 +1,382 @@
+team,player,field,captured,verified,kind,injury_source_url
+ARI,Andrew Wingard,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Andrew Wingard,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Dante Stills,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Darius Robinson,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Darius Robinson,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Darius Robinson,injury,(blank),Wrist,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Hjalte Froholdt,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Hjalte Froholdt,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Hunter Long,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Hunter Long,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Jayden Williams,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Jayden Williams,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Jon Gaines II,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Jon Gaines II,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Josh Sweat,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Max Melton,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Max Melton,injury,(blank),"Knee, Hand",VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Roy Lopez,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Roy Lopez,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Roy Lopez,injury,(blank),"Toe, Ankle",VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Zachary Carter,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+ARI,Zachary Carter,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Cameron Thomas,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Divine Deablo,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Divine Deablo,injury,(blank),Forearm,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Gervon Dexter Sr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Gervon Dexter Sr.,injury,(blank),Illness,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Jake Matthews,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+ATL,James Pearce Jr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,James Pearce Jr.,injury,(blank),Back,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Jawaan Taylor,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Josh Woods,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Josh Woods,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Josh Woods,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Kendal Daniels,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Liam McCullough,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+ATL,Zachariah Branch,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+ATL,Zachariah Branch,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Alec Anderson,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Christian Benford,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Christian Benford,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Christian Benford,injury,(blank),Wrist,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Connor McGovern,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Dalton Kincaid,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Dion Dawkins,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Ed Oliver,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+BUF,Jordan Hancock,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Jordan Hancock,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Sam Franklin Jr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Sam Franklin Jr.,injury,(blank),Shoulder,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Spencer Brown,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Spencer Brown,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Terrel Bernard,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+BUF,Tyrell Shavers,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+BUF,Tyrell Shavers,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Bobby Okereke,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Bobby Okereke,injury,(blank),Foot,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Brady Christensen,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Brady Christensen,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Damien Lewis,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Jaelan Phillips,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Jaelan Phillips,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Jaelan Phillips,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Jonathon Brooks,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Jonathon Brooks,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Mike Jackson,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Mike Jackson,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Will Lee III,practice_status,Full Participation in Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Will Lee III,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Will Lee III,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Xavier Legette,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+CAR,Xavier Legette,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Andrei Iosivas,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Andrei Iosivas,injury,(blank),Thumb,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,B.J. Hill,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Brian Parker II,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Brian Parker II,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Dexter Lawrence,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+CIN,Jalen Davis,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Jalen Davis,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Jonathan Allen,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Kyle Dugger,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+CIN,Kyle Dugger,injury,(blank),Quadricep,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Austin Barber,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Carson Schwesinger,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Denzel Boston,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Denzel Boston,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Denzel Boston,injury,(blank),Toe,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Elgton Jenkins,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Harold Fannin Jr.,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Maliek Collins,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Michael Burton,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Michael Burton,injury,(blank),Calf,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Quincy Williams,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Ronnie Hickman Jr.,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Ronnie Hickman Jr.,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+CLE,Tytus Howard,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Alijah Clark,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Alijah Clark,injury,(blank),Illness,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,DaRon Bland,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+DAL,Devin Moore,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Devin Moore,injury,(blank),Hip,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Donovan Ezeiruaku,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Donovan Ezeiruaku,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,George Pickens,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Jake Ferguson,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Jake Ferguson,injury,(blank),"Knee, Ankle",VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Joey Porter Jr.,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Joey Porter Jr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Joey Porter Jr.,injury,(blank),"Ankle, Foot",VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Jonathan Bullard,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Jonathan Bullard,injury,(blank),Calf,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Jonathan Mingo,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Jonathan Mingo,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Juanyeh Thomas,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Juanyeh Thomas,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Juanyeh Thomas,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,KaVontae Turpin,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,P.J. Locke,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,P.J. Locke,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Tyler Goodson,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+DAL,Tyler Goodson,injury,(blank),"Ankle, Knee",VALUE_CHANGED,https://www.nfl.com/injuries/
+DET,Amon-Ra St. Brown,injury,(blank),Rib,VALUE_CHANGED,https://www.nfl.com/injuries/
+DET,Kerby Joseph,practice_status,Full Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+DET,Sione Vaki,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+DET,Sione Vaki,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+DET,Sione Vaki,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Chris Brooks,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Chris Brooks,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Javon Bullard,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Javon Bullard,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Javon Bullard,injury,(blank),"Ankle, Knee",VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Josh Jacobs,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Josh Jacobs,injury,(blank),Finger,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Josh Whyle,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Josh Whyle,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Kevin Zeitler,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Kevin Zeitler,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Kevin Zeitler,injury,(blank),"Ankle, Triceps",VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Lukas Van Ness,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Lukas Van Ness,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Lukas Van Ness,injury,(blank),Back,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Micah Parsons,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Micah Parsons,injury,(blank),"Knee, Illness",VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Sean Rhyan,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Sean Rhyan,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Skyy Moore,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Skyy Moore,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Travis Glover,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Travis Glover,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Ty'Ron Hopper,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Xavier McKinney,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+GB,Zaire Franklin,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+GB,Zaire Franklin,injury,(blank),Shin,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Azeez Al-Shaair,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Azeez Al-Shaair,injury,(blank),"Groin, Not injury related - personal matter",VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Brevin Jordan,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Brevin Jordan,injury,(blank),"Finger, Foot",VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Danielle Hunter,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Danielle Hunter,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Danielle Hunter,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,David Montgomery,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,David Montgomery,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,David Montgomery,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Jacob Hummel,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Jacob Hummel,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Jaylin Smith,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Jaylin Smith,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Keylan Rutledge,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Keylan Rutledge,injury,(blank),"Neck, Shoulder",VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Marvin Harrison Jr.,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Marvin Harrison Jr.,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Trent Brown,practice_status,Full Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Trent Brown,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Trent Brown,injury,(blank),"Wrist, Illness",VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Will Anderson Jr.,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Will Anderson Jr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Will Anderson Jr.,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Woody Marks,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Wyatt Teller,practice_status,Full Participation in Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Wyatt Teller,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+HOU,Wyatt Teller,injury,(blank),"Illness, Back",VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Akeem Davis-Gaither,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Akeem Davis-Gaither,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Arden Key,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Arden Key,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Grover Stewart,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Jalen Travis,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Jalen Travis,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Jaylon Carlies,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Jaylon Carlies,injury,(blank),Neck,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Jerry Tillery,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Jerry Tillery,injury,(blank),Calf,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Luke Rhodes,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Luke Rhodes,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Mo Alie-Cox,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Mo Alie-Cox,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+IND,Will Mallory,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+JAX,Bhayshul Tuten,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,BJ Green II,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,BJ Green II,injury,(blank),Forearm,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Branson Combs,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Ezra Cleveland,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Jessie Bates,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Jessie Bates,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Jessie Bates,injury,(blank),Not injury related - resting player,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Jordan Davis,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Jordan Davis,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Jordan Davis,injury,(blank),Not injury related - resting player,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Robert Hainsey,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+JAX,Robert Hainsey,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Jaydn Ott,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Jaydn Ott,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Jaylon Moore,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Jaylon Moore,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Kenneth Walker III,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+KC,Mansoor Delane,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Mansoor Delane,injury,(blank),Shoulder,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Omarr Norman-Lott,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Omarr Norman-Lott,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Peter Woods,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+KC,Peter Woods,injury,(blank),Neck,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Aaron Donald,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+LA,Braden Fiske,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+LA,Byron Young,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+LA,Colby Parkinson,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Davis Allen,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Davis Allen,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Davis Allen,injury,(blank),Oblique,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Joe Cardona,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Joe Cardona,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Kam Curl,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Kam Curl,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Kam Curl,injury,(blank),Toe,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Myles Garrett,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Myles Garrett,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Myles Garrett,injury,(blank),"Knee, Not injury related - resting player",VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Steve Avila,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Steve Avila,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Terrance Ferguson,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Terrance Ferguson,injury,(blank),"Ankle, Hamstring",VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Trent McDuffie,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Trent McDuffie,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Trent McDuffie,injury,(blank),Back,VALUE_CHANGED,https://www.nfl.com/injuries/
+LA,Tyler Higbee,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+LV,Dont'e Thornton Jr.,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+LV,Thomas Booker,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+LV,Thomas Booker,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+LV,Thomas Booker,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+LV,Trey Zuhn III,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Aaron Brewer,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Aaron Brewer,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Chris Bell,game_status,(blank),Doubtful,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Chris Bell,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Darrell Baker Jr.,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Darrell Baker Jr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Darrell Baker Jr.,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Jared Wayne,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Jared Wayne,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Jared Wayne,injury,(blank),Quadricep,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Malik Herring,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIA,Will Kacmarek,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Blake Cashman,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Blake Cashman,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Blake Cashman,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Carson Wentz,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Christian Darrisaw,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+MIN,Harrison Smith,(whole row),(absent),(blank),ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+MIN,Jauan Jennings,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Jauan Jennings,injury,(blank),Calf,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Jay Ward,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Jordan Addison,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+MIN,Josh Metellus,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+MIN,Kyle Van Noy,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Kyle Van Noy,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Kyle Van Noy,injury,(blank),Calf,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Kyler Murray,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Kyler Murray,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,T.J. Hockenson,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,T.J. Hockenson,injury,(blank),"Wrist, Chest",VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Tyrion Ingram-Dawkins,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+MIN,Tyrion Ingram-Dawkins,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Christen Miller,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Christen Miller,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,CJ Donaldson,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,CJ Donaldson,injury,(blank),Shoulder,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,David Edwards,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Erik McCoy,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Erik McCoy,injury,(blank),Biceps,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Kelvin Banks Jr.,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Martin Emerson,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Martin Emerson,injury,(blank),Shin,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Quincy Riley,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Taliese Fuaga,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Taliese Fuaga,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Taliese Fuaga,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Travis Etienne,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Travis Etienne,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NO,Travis Etienne,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Adonai Mitchell,(whole row),(absent),Questionable,ROW_MISSING_FROM_CAPTURE,https://www.nfl.com/injuries/
+NYJ,Garrett Wilson,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Garrett Wilson,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Garrett Wilson,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Harrison Phillips,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Harrison Phillips,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Harrison Phillips,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Jarvis Brownlee Jr.,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Jarvis Brownlee Jr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Jarvis Brownlee Jr.,injury,(blank),Illness,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Joseph Ossai,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Joseph Ossai,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Joseph Ossai,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Nahshon Wright,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Nahshon Wright,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Nahshon Wright,injury,(blank),Back,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Omar Cooper Jr.,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Omar Cooper Jr.,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Omar Cooper Jr.,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Trevin Wallace,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,Trevin Wallace,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,VJ Payne,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+NYJ,VJ Payne,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+PIT,Cameron Heyward,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+PIT,Derrick Harmon,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+PIT,Derrick Harmon,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+PIT,Derrick Harmon,injury,(blank),Foot,VALUE_CHANGED,https://www.nfl.com/injuries/
+PIT,T.J. Watt,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Anthony Bradford,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Brandon Pili,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Charles Cross,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Charles Cross,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Charles Cross,injury,(blank),Ankle,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Connor O'Toole,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Derick Hall,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Jarran Reed,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Leonard Williams,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Leonard Williams,injury,(blank),Stinger,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Patrick O'Connell,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Quenton Nelson,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Quenton Nelson,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Sam Darnold,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Sam Darnold,injury,(blank),"Ribs, Quadricep",VALUE_CHANGED,https://www.nfl.com/injuries/
+SEA,Uchenna Nwosu,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,C.J. West,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,C.J. West,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,C.J. West,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Deebo Samuel Sr.,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Deommodore Lenoir,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Deommodore Lenoir,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Deommodore Lenoir,injury,(blank),Foot,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Dre Greenlaw,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Dre Greenlaw,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Mike Evans,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Mike Evans,injury,(blank),Achilles,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Nate Hobbs,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Nate Hobbs,injury,(blank),Groin,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Renardo Green,practice_status,Did Not Participate In Practice,Limited Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Renardo Green,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Renardo Green,injury,(blank),Back,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Siran Neal,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Trent Williams,practice_status,Limited Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Trent Williams,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Trent Williams,injury,(blank),Shoulder,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Upton Stout,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+SF,Upton Stout,injury,(blank),"Shoulder, Neck",VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Anthony Hill Jr.,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Anthony Hill Jr.,injury,(blank),Neck,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Carnell Tate,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Carnell Tate,injury,(blank),Shoulder,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Cody Barton,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Cody Barton,injury,(blank),Concussion,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Kevin Winston Jr.,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Peter Skoronski,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Peter Skoronski,injury,(blank),Hamstring,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Tommy Townsend,practice_status,Full Participation in Practice,Did Not Participate In Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Tommy Townsend,game_status,(blank),Out,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Tommy Townsend,injury,(blank),"Knee, Achilles",VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Tony Pollard,practice_status,Did Not Participate In Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Tyjae Spears,practice_status,Limited Participation in Practice,Full Participation in Practice,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Tyjae Spears,game_status,(blank),Questionable,VALUE_CHANGED,https://www.nfl.com/injuries/
+TEN,Tyjae Spears,injury,(blank),Knee,VALUE_CHANGED,https://www.nfl.com/injuries/

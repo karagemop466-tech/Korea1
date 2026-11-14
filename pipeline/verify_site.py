@@ -18,7 +18,8 @@ ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com",
          "www.atlantafalcons.com", "www.vikings.com", "www.packers.com",
          "operations.nfl.com", "www.econometricsociety.org",
          "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
-         "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov"}
+         "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov",
+         "github.com"}  # path-scoped to provenance only — see PROVENANCE_PATHS
 # Official club sites (depth-chart pages read by pipeline/fetch_availability.py).
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fetch_availability import TEAMS as _CLUBS
@@ -53,8 +54,27 @@ class Collector(HTMLParser):
             self.cur.append(("".join(self.parts).strip(),self.hrefs.copy())); self.cell=False
         if tag=="tr" and self.body and self.cur: self.rows.append(self.cur); self.cur=[]
 
+# Narrow, path-scoped exemption for repository provenance only.
+#
+# The allow-list is deliberately hostname-based so that a community data file on GitHub can
+# never be passed off as an official source — `test_official_allowlist_rejects_community_only`
+# guards exactly that, and it must keep passing. Two claims on this site are nevertheless
+# about GitHub itself and GitHub is the primary source for them: that the pinned upstream
+# commit exists, and how far upstream master has moved since. Those two URL *shapes* are
+# allowed; every other github.com path stays rejected.
+PROVENANCE_PATHS = re.compile(r"^/[^/]+/[^/]+/(commit|compare)/")
+
+
 def official_refs(hrefs):
-    return [h for h in hrefs if urlsplit(h).scheme=="https" and urlsplit(h).hostname in ALLOW]
+    out = []
+    for h in hrefs:
+        u = urlsplit(h)
+        if u.scheme != "https" or u.hostname not in ALLOW:
+            continue
+        if u.hostname == "github.com" and not PROVENANCE_PATHS.match(u.path or ""):
+            continue
+        out.append(h)
+    return out
 
 def main():
     sha=read_json(ROOT/"data/sources.json")["upstream"]["commit_sha"]
@@ -64,6 +84,10 @@ def main():
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
               "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
+              # 2026-11-13 (arena/534e771f-korea1, T30-T32)
+              "decision-hub.html","improvements.html","gameday-deficiencies.html",
+              # 2026-11-13 (arena/8a322b62-korea1, T41) — merged from main without
+              # discarding either session's pages; both sets stay in the canonical list.
               "forward.html","live-verification.html","review.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}

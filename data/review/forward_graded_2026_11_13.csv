@@ -1,0 +1,5 @@
+pick_id,freeze_seq,strategy,family,market,n_legs,game_ids,sides,lines,prices,frozen_utc,outcome,pnl_units,detail,settled_against,stake_model
+1-0,1,SP_EDGE_1_0,model,SPREAD,1,2026_10_WAS_NYG,home,[2.5],[-108.0],2026-11-12T13:26:48Z,loss,-1.0,home +2.5 vs final NYG 21 – WAS 24,https://www.nfl.com/games/commanders-at-giants-2026-reg-10,"flat 1 unit, no commission, no limits (research ledger)"
+1-8,1,TOT_EDGE_2_0,model,TOTAL,1,2026_10_WAS_NYG,over,[40.5],[-118.0],2026-11-12T13:26:48Z,win,0.8475,over 40.5 vs final total 45,https://www.nfl.com/games/commanders-at-giants-2026-reg-10,"flat 1 unit, no commission, no limits (research ledger)"
+1-19,1,TOT_EDGE_3_5,model,TOTAL,1,2026_10_WAS_NYG,over,[40.5],[-118.0],2026-11-12T13:26:48Z,win,0.8475,over 40.5 vs final total 45,https://www.nfl.com/games/commanders-at-giants-2026-reg-10,"flat 1 unit, no commission, no limits (research ledger)"
+1-43,1,DIV_UNDER,angle,TOTAL,1,2026_10_WAS_NYG,under,[40.5],[-102.0],2026-11-12T13:26:48Z,loss,-1.0,under 40.5 vs final total 45,https://www.nfl.com/games/commanders-at-giants-2026-reg-10,"flat 1 unit, no commission, no limits (research ledger)"
