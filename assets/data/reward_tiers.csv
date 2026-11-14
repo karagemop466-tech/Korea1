@@ -1,0 +1,8 @@
+tier,name,requirement,points,reward,payout_status,note
+T0,Registered candidate,"Rule, data version and parameters frozen in the library; backtest executed and published with the trial-count lower bound.",0,Nothing,Nothing payable,"Every candidate is published, including the ones that fail."
+T1,Eligible,G2 leakage and G3 power pass. The candidate is admissible to the competition; it has not earned anything.,5,Nothing,Nothing payable,Eligibility is not evidence of edge.
+T2,Forward-tested,Pre-registered in the append-only ledger before kickoff and graded against official finals on at least one untouched slate.,15,Nothing,Nothing payable,Forward grading is what separates a prediction from a fit.
+T3,Gate-clearing (research grade),G2 through G8 pass while G1 (authenticated executable quotes) is still outstanding.,30,Nothing,Nothing payable,"Research grade only. No money, no allocation, no recommendation."
+T4,Provisionally skilled,"All eight gates including G1, measured on authenticated, timestamped, limit-aware prices.",60,Named recognition on the leaderboard and a published method note,Non-monetary,Recognition is not a payout and not a betting recommendation.
+T5,Validated and fundable,T4 plus independent prospective replication over at least two further seasons with no rule changes.,100,Stake allocation,NOT FUNDED — no authorised prize pool exists,Funding requires the owner to authorise a pool. Nothing is promised.
+DQ,Disqualified,"Leakage, selective reporting, fabricated quotes, or an undisclosed rule change after registration.",-100,Nothing,Nothing payable,Disqualification is permanent for the strategy id.

@@ -2131,6 +2131,9 @@ confirming a proposed score against the archived official page before it enters 
 unchanged: **0 of 18 canonical strategies validated, no reward**. The forward test now has a published,
 auditable, official-source-settled record of 4 settled tickets out of 65.
 
+
+<!-- both append-only logs are preserved below; see the rebase note at the end -->
+
 ## Session `arena/beafe2ae-korea1` — T24 current-snapshot audit + final verification
 
 ### 2026-11-13T22:53Z — claim
@@ -2236,6 +2239,7 @@ After confirming the remote branch was still `d340ead` and `main` was `9cca4bc`,
 
 The final T24 head is `fe22f42540120d6e726bcce9b1a08ea26bd7f81f` on base `9cca4bc`. Verify passed for both the push event ([43529580412](https://github.com/karagemop466-tech/Korea1/actions/runs/43529580412), completed 23:48:05Z) and the pull-request event ([43529588092](https://github.com/karagemop466-tech/Korea1/actions/runs/43529588092), completed 23:48:59Z). GitHub reports PR #40 `MERGEABLE`. Local audit, T24 tests, full build and full test results are recorded in the preceding entry. The scoped PR is ready for merge; its Pages deployment is necessarily still pending.
 
+
 ### T40 pull request, merge and deployment record — `arena/84e42ecc-korea1`
 
 | Step | Result |
@@ -2276,3 +2280,114 @@ The final T24 head is `fe22f42540120d6e726bcce9b1a08ea26bd7f81f` on base `9cca4b
 rather than rebased over, and the other sessions' log entries and page content were preserved. Where the
 `referent-audit` workflow's scheduled commits raced my pushes, the workflow's own `pull --rebase` retry
 loop resolved them and the probe data was recovered from the branch.
+
+## arena/132e7ca2-korea1 — 2026-11-13 consolidation session (review · knowledge · competition · repo audit · IA)
+
+**Board read first.** Every task row above is `done` or `in progress` on a branch that is already merged
+or stale; `main` == `43a946a` == this branch's base, so there is nothing to rebase. Three PRs are still
+`open` from sessions that have not committed since 2026-11-02/12 (`#19 arena/5b3f0799-korea1`,
+`#24 arena/3e57f750-korea1`, `#30 arena/f115e6a2-korea1`). Per the board rules this session does **not**
+close, rebase or push to another session's branch; the staleness is recorded here instead.
+
+**Protocol deviation, recorded.** As every earlier session recorded, the Arena platform pins this session
+to `arena/132e7ca2-korea1` and it cannot create a `session-<id>/<task>` branch.
+
+**Numbering.** To avoid a third collision on `T*`/`G*`/`FW*`, this session's tasks are **X1–X6**.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| X1 | **Repo line-by-line review** — file inventory with per-file verification status, official sources and irregularity register | in progress | `arena/132e7ca2-korea1` | `pipeline/session_review.py`, `data/integration/repo_inventory.csv`, `data/integration/irregularities.csv`, `repo-review.html` |
+| X2 | **Master suggestions register** — merge the five parallel suggestion registers into one review queue with path A/B/C selection, dedupe and provenance | in progress | `arena/132e7ca2-korea1` | `pipeline/session_decide.py`, `data/integration/suggestions_master.csv`, `review-queue.html` |
+| X3 | **Master questions / information / answers register** + missing-information discovery blueprints | in progress | `arena/132e7ca2-korea1` | `pipeline/session_decide.py`, `data/integration/questions_master.csv`, `data/information/discovery_master.csv`, `answers.html` |
+| X4 | **Competition & rewards** — leaderboard rules, reward tiers bound to the eight fail-closed gates, luck-removal statistics, current standings | in progress | `arena/132e7ca2-korea1` | `pipeline/session_competition.py`, `data/integration/reward_tiers.csv`, `data/integration/competition_rules.csv`, `competition.html` |
+| X5 | **Information architecture** — categorized navigation, clean dashboard landing page, executive-summary refresh. **Shared output; taken in the integration role because every other session is done** | in progress | `arena/132e7ca2-korea1` | `pipeline/render_site.py` (NAV block + `page_index()` body only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `EXECUTIVE_SUMMARY.md`, `README.md` |
+| X6 | **Final integration** — re-verify combined data, `make build` + `make test`, PR → `main`, merge, Pages deploy, record | in progress | `arena/132e7ca2-korea1` | `COORDINATION.md`, PR body |
+
+**Not claimed, and not edited:** every file owned by a row in the task board above, `pipeline/render_*.py`
+other than the two NAV/body blocks named in X5, `pipeline/{models,backtest,validation,correlations,props_model,fetch_*,availability,depth_status,injuries,decisions,decision_readiness,lineup_deficiencies,forward_*,audit,stats_tools,strategies,build_*}.py`,
+`data/processed/**`, `data/review/**`, `data/governance/**`, `data/availability/**`, `data/forward/**`,
+`assets/**`, `tests/test_*.py`, `.github/workflows/**`, `lab/**`, `archive/**`, and every root `*.html`
+that is not in the X1–X4 scope. Those files are **read**, never written.
+
+**Build baseline measured before any edit** (branch `arena/132e7ca2-korea1`, `main` == `43a946a`):
+`make build` → `0 failing checks`, `verify_site.py` 0 failures across 34 pages,
+`tests/check_sources.py` 1,676 rows on 24 canonical pages, `tests/check_links.py` 33 pages clean,
+`make test` → 58 passed. One file drifts on rebuild: `data/evidence/nfl_injuries/week10_2026/manifest.json`
+gains `"sha256": null` (see IR-132E-02).
+
+### Progress record — `arena/132e7ca2-korea1` — 2026-11-13
+
+Board read first: every task row is `done` or `in progress` on a merged or stale branch; `main` ==
+`43a946a` == this branch's base, so nothing needed rebasing. Three PRs remain open from sessions with no
+commits since 2026-11-02/12 (`#19`, `#24`, `#30`); per the board rules this session did **not** close,
+rebase or push to another session's branch (recorded as IR-132E-03).
+
+| # | Deliverable | Result | Evidence |
+|---|---|---|---|
+| X1 | Repository review | 392 tracked files inventoried; 8 official-source checks; 6 irregularities | `data/integration/repo_inventory.csv`, `verification_log.csv`, `irregularities.csv`, `repo-review.html` |
+| X2 | Merged suggestion register | 76 rows from 4 registers → 14 clusters, 29 awaiting a path selection | `data/integration/suggestions_master.csv`, `review-queue.html` |
+| X3 | Merged question register | 90 rows from 4 registers → 14 clusters, 58 without an answer on record, plus 8 discovery blueprints | `data/integration/questions_master.csv`, `discovery_master.csv`, `answers.html` |
+| X4 | Competition & rewards | 7-tier ladder, 3 divisions, 8-gate battery, standings ranked on gates not profit | `data/integration/{competition_rules,reward_tiers,leaderboard_master}.csv`, `competition.html` |
+| X5 | Information architecture | Navigation regrouped into 6 categories; landing page gains category tiles, start-here actions and register KPIs; executive summary gains a dated addendum | `pipeline/render_site.py`, `pipeline/render_summary.py`, `EXECUTIVE_SUMMARY.md`, `README.md` |
+
+**Verification performed against official sources (all re-read during this session, not quoted from a
+mirror):**
+
+| Check | Result | Source |
+|---|---|---|
+| Pinned upstream commit exists | `a270278f3ac4e937295fe6a27814b3c4a2b62645` is a real commit in `nflverse/nfldata`, titled "Automated data update", changing `data/games.csv` and `data/games.rds` | <https://github.com/nflverse/nfldata/commit/a270278f3ac4e937295fe6a27814b3c4a2b62645> |
+| Injury capture vs live page | 54 of 98 sampled rows identical on position, injury, practice status and game status; 58 cells empty at capture time, 8 players added later, 14 practice-status updates — **no transcription error found** | <https://www.nfl.com/injuries/> |
+| Post-pin score register vs live page | 8 of 8 sampled games identical; the one game sampled that settled before the pin is correctly absent | <https://www.nfl.com/scores/2026/week-8> |
+| NFL Operations 90-minute rule | Confirmed: the Game Day Administration Report (each club's inactive list + C2P helmet designations) is exchanged 90 minutes before kickoff, and the roof/wall designation is fixed at the same mark | <https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep> |
+| Full rebuild | `make build` → 0 failing checks across 38 pages; `make test` → 58 passed; `check_sources.py` 2,417 rows on 28 pages; `check_links.py` 37 pages clean | repository |
+
+**Irregularities recorded (published on `repo-review.html` and `flagged.html`, not repaired):**
+
+- **IR-132E-01 (High, new).** The scheduled availability capture runs before the Friday game designations
+  post. The live page carries 21 Out designations in the 8 clubs re-read while the whole 28-club capture
+  carries 8; 8 players and 58 cells are missing from the capture. The capture is faithful but early, so
+  `availability.html` understates current unavailability. Owner file: `pipeline/fetch_availability.py`,
+  `.github/workflows/availability.yml`.
+- **IR-132E-02 (Medium, new).** `pipeline/fetch_injuries.py` line 282 uses `setdefault` with a
+  missing-value default, so `data/evidence/nfl_injuries/week10_2026/manifest.json` gains a null sha256 on
+  every rebuild and the snapshot's second evidence file has no integrity hash.
+- **IR-132E-03 (Medium, new).** Three open PRs from sessions idle since 2026-11-02/12; not touched.
+- **IR-132E-04 (Low, recorded).** Four suggestion and four question registers overlap; merged additively,
+  nothing deleted.
+- **IR-132E-05 (High, carried forward).** Pinned snapshot predates 28 settled games.
+- **IR-132E-06 (Medium, carried forward).** Houston depth chart publishes as an image; 0 rows parsed.
+
+**Files outside the claimed scope that were touched, and why (logged per board rule 5):**
+
+| File | Change | Why |
+|---|---|---|
+| `Makefile` | three lines added to the `site` recipe only | every existing step is unchanged and still runs first; without it the new pages are not reproducible |
+| `pipeline/render_summary.py` | one additive function + one placeholder | the executive summary is generated, so the 2026-11-13 record had to be produced there or it would be overwritten |
+| `pipeline/render_site.py` (`build_flagged`) | one additive section | the brief requires irregularities to be published on the Flagged page, not only on the new page |
+
+**Not touched:** `data/processed/**`, `data/review/**`, `data/governance/**`, `data/availability/**`,
+`data/forward/**`, `assets/style.css`, `tests/test_*.py`, `.github/workflows/**`, `lab/**`, `archive/**`,
+`research/**`, and every root `*.html` not generated by this session's three modules.
+
+### Rebase onto `main` — 2026-11-13 (late)
+
+`main` moved while this session was working: `43a946a` → `9cca4bc` (PRs #42, #45 and the T41/CI records of
+`arena/8a322b62-korea1` and `arena/917fe36e-korea1`). The PR #46 CI run failed at
+`tests/check_rebuild.py` because the merge tree carried main's inputs while the committed artefacts had
+been built from this branch's older ones — not because either side was wrong.
+
+Resolution, applied without discarding anyone's work: the branch was reset to `origin/main`, this
+session's four new modules and its two official-page samples were re-applied, and the six shared-file
+edits were re-made **against main's versions** rather than by replaying the old diffs. Main's additions
+(`review.html`, `forward.html`, `live-verification.html`, the `liveverify` / `reviewall` / `forward-capture`
+Makefile targets, and the five extra test modules) are all preserved and still run.
+
+| Main gained | This session's response |
+|---|---|
+| `review.html` — a keyword-grouped consolidation of the same registers | Kept. `review-queue.html` is labelled "Suggestions queue (2nd)" and cross-links it; the two pages are different views over the same four registers, not competitors |
+| `live-verification.html` — every availability row and depth slot re-checked | Kept and linked from `repo-review.html` instead of repeating that narrower check |
+| `forward.html` + `forward-capture` target | Untouched |
+| Five extra test modules in `make test` | Untouched; `make test` now runs 107 tests |
+
+`make build` → 0 failing checks across 42 pages · `make test` → 107 passed ·
+`tests/check_sources.py` → 2,940 rows on 31 canonical pages · `tests/check_links.py` → 40 pages clean.

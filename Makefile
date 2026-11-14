@@ -60,6 +60,12 @@ site: injuries review reviewall
 	# Without this line the page went stale while verify_site.py counted its rows,
 	# which is exactly the drift tests/check_rebuild.py caught on PR #50.
 	$(PY) pipeline/render_referents.py
+	# X1-X4 (session arena/132e7ca2-korea1), additive: repository review, merged
+	# suggestion / question registers, competition page. Every existing recipe step
+	# is unchanged and still runs first.
+	$(PY) pipeline/session_review.py
+	$(PY) pipeline/session_decide.py
+	$(PY) pipeline/session_competition.py
 	$(PY) pipeline/render_site.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	$(PY) pipeline/render_review.py

@@ -8,6 +8,16 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
+- **`review-queue.html`** — every proposal from all four suggestion registers merged into 14 topic
+  clusters; each row keeps its source register, original id, writing session and published page, so a path
+  is chosen here before any code changes (added 2026-11-13, `arena/132e7ca2-korea1`)
+- **`answers.html`** — all four question registers merged: information we have, information we do not, the
+  answer on record (blank when there is none) and the step that would close each gap (added 2026-11-13)
+- **`competition.html`** — the leaderboard competition: entry rules, three divisions, a seven-tier reward
+  ladder, the eight-gate luck-removal battery and standings ranked on gates passed, not profit
+  (added 2026-11-13)
+- **`repo-review.html`** — every tracked file inventoried, the official-source checks run during the
+  2026-11-13 review, the row-by-row injury and score comparisons, and six irregularities (added 2026-11-13)
 - `index.html` — clean landing page and searchable leaderboard
 - `review.html` — **all four suggestion registers and all three question registers in one table** (76 proposals, 74 questions), clustered by topic, with one recommended first move and its limits. Nothing implemented.
 - `live-verification.html` — **line-by-line re-check of the published availability data against the official pages**: injury cells, depth-chart slots and all 59 matchup sentences, each with a verdict and its source
@@ -36,6 +46,29 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 The publication source is **`main` / repository root**, not `docs/`.
 Live site: <https://karagemop466-tech.github.io/Korea1/>.
+
+## Consolidation pass — 2026-11-13 (`arena/132e7ca2-korea1`)
+
+Four registers of suggestions and four registers of questions had been written in parallel by sessions
+that could not see each other. `pipeline/session_decide.py` merges them without deleting any register:
+every merged row keeps its source register, its original id, the session that wrote it and the page it is
+published on, and rows are grouped into topic clusters so the same idea written twice is visible side by
+side. `review-queue.html` is the decision surface; `answers.html` is the knowledge register. A second,
+independently written consolidation of the same registers is `review.html`.
+
+`pipeline/session_competition.py` publishes the competition: entry rules, the three divisions, the
+seven-tier reward ladder, the eight fail-closed gates with the statistic that enforces each, the
+sample-size arithmetic, and the standings. No prize pool exists; tier T5 (stake allocation) is explicitly
+not funded.
+
+`pipeline/session_review.py` inventories every tracked file and re-reads the official pages the project
+captures. On 2026-11-13 the injury capture was compared row by row with the live NFL.com page (54 of 98
+sampled rows identical on all four fields — no transcription error found; the rest are later page
+updates), the post-pin score register was compared with the live NFL.com scores page (8 of 8 sampled
+games identical), the pinned upstream commit was opened and confirmed, and the NFL Operations 90-minute
+Game Day Administration Report rule was read and confirmed. Six irregularities are recorded on
+`repo-review.html` and on `flagged.html`; none was repaired, because repair is a decision for the owner
+and the files belong to earlier sessions.
 
 ## Reproduce
 

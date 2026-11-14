@@ -50,6 +50,10 @@ NAV_GROUPS = [
     ]),
     ("Decide", [
         ("review.html", "Review & choose a path"),
+        # X2/X3 (session arena/132e7ca2-korea1): a second, independent merge of the same
+        # registers - clustered, with the source register on every row.
+        ("review-queue.html", "Suggestions queue (2nd)"),
+        ("answers.html", "Questions & answers"),
         ("suggestions-review.html", "Path selector"),
         ("suggestions.html", "Suggestions & paths"),
         ("decision-readiness.html", "Q&A + Week 8–9 audit"),
@@ -61,6 +65,8 @@ NAV_GROUPS = [
         ("lines.html", "Originated lines"),
         ("strategies.html", "Leaderboard"),
         ("forward.html", "Forward test record"),
+        # X4 (session arena/132e7ca2-korea1): rules, reward ladder and standings.
+        ("competition.html", "Competition & rewards"),
         ("validation.html", "Validation gates"),
         ("correlations.html", "Correlations"),
         ("props.html", "Player props"),
@@ -83,6 +89,8 @@ NAV_GROUPS = [
         ("referents.html", "Referent register"),
         ("audit.html", "Independent audit"),
         ("live-verification.html", "Live verification"),
+        # X1 (session arena/132e7ca2-korea1): file inventory, official-source checks, irregularities.
+        ("repo-review.html", "Repository review"),
         ("verification.html", "Reproducibility"),
         # Integration session arena/ea02c4fb-korea1: independent build served from lab/.
         ("lab/index.html", "Replication annex"),
@@ -278,7 +286,35 @@ def notice():
                 '<a href="lab/index.html">clearly labelled research annex</a> and downloadable CSVs; they are not betting recommendations.', 'info')
 
 
+def _session_counts():
+    """Counts for the merged registers, read from the files that own them.
+
+    X2/X3 (session arena/132e7ca2-korea1). Returns zeros when the registers have
+    not been built yet, so the page renders in any build order.
+    """
+    import csv
+    from pathlib import Path as _P
+    out = {"sug": 0, "clu": 0, "await": 0, "reg": 0, "q": 0, "unanswered": 0}
+    for name in ("suggestions_master", "questions_master"):
+        p = _P(__file__).resolve().parents[1] / "data" / "integration" / f"{name}.csv"
+        if not p.exists():
+            continue
+        rows = list(csv.DictReader(open(p)))
+        if name == "suggestions_master":
+            out["sug"] = len(rows)
+            out["reg"] = len({r["source_register"] for r in rows})
+            out["clu"] = len({r["cluster"] for r in rows})
+            out["await"] = sum(1 for r in rows if r["status"] == "AWAITING PATH SELECTION")
+        else:
+            out["q"] = len(rows)
+            out["unanswered"] = sum(1 for r in rows if r["status"] != "ANSWERED")
+    return out
+
+
 def build_index(d):
+    _c = _session_counts()
+    n_sug, n_clu, n_await, n_reg = _c["sug"], _c["clu"], _c["await"], _c["reg"]
+    n_q, n_unanswered = _c["q"], _c["unanswered"]
     scores = d["official_scores"]
     matched = int(scores.status.eq("MATCH").sum())
     gates = d["strategy_gates"]
@@ -296,8 +332,10 @@ def build_index(d):
   <p>A reproducible research workspace for single bets, parlays and player-prop combinations.
   The current evidence does <strong>not</strong> support a validated betting strategy or a prize award.</p>
   <div class="actions"><a class="btn primary" href="executive-summary.html">Read the executive summary</a>
-  <a class="btn" href="strategies.html">Explore the leaderboard</a></div>
+  <a class="btn" href="strategies.html">Explore the leaderboard</a>
   <a class="btn" href="suggestions-review.html">Review &amp; choose a path</a>
+  <a class="btn" href="review-queue.html">Review suggestions first</a>
+  <a class="btn" href="competition.html">See the competition</a></div>
   <a class="btn" href="referents.html">Check every citation</a></div>
   <div class="hero-status"><span class="status-dot"></span> Research only<br><strong>No validated edge</strong><small>Official quote coverage is incomplete.</small></div>
 </div>
@@ -305,7 +343,9 @@ def build_index(d):
 {kpi_grid([card(str(validated), "validated strategies", f"{len(gates)} research candidates · no rewards", "bad"),
            card(str(matched), "official score matches", "NFL.com sample; not a full-history census", "good"),
            card("0", "verified prop-price tickets", "No prop ROI is claimed", ""),
-           card("8", "fail-closed gates", "All must pass before recognition", "")])}
+           card("8", "fail-closed gates", "All must pass before recognition", ""),
+           card(str(n_sug), "proposals to review", f"{n_clu} clusters · {n_await} awaiting a path", ""),
+           card(str(n_q), "questions registered", f"{n_unanswered} without an answer on record", "")])}
 <section><div class="section-head"><h2>Strategy leaderboard</h2><a href="strategies.html">Full competition rules →</a></div>
 <p>Unverified performance cells are intentionally blank. “Unverified” is not a finding of zero edge;
 it means the evidence is insufficient. Search or sort the table without changing its evidence status.</p>
@@ -318,6 +358,8 @@ it means the evidence is insufficient. Search or sort the table without changing
 <a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
 <a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
 <a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
+<a class="minicard" href="competition.html"><strong>Competition &amp; rewards</strong><span>Rules, the reward ladder, the luck-removal battery and the standings.</span></a>
+<a class="minicard" href="repo-review.html"><strong>Repository review</strong><span>Every file inventoried, official-source checks and the irregularity register.</span></a>
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
 <a class="minicard" href="referents.html"><strong>Referent register</strong><span>Every citation on the site, resolved against the live page — plus the score census re-checked row by row.</span></a>
 </div></section>
@@ -728,7 +770,7 @@ def build_methodology(d):
         ("7", "Publish and audit", "Render static pages, check every row and internal link, merge, then confirm the deployed commit.", "GitHub Pages documentation"),
     ]]
     checks = [[e(r.check), "PASS" if r.passed else "FAIL", "Executed structural check; not an official data endorsement", official("NFL scores")] for r in d["leakage_checks"].itertuples()]
-    body = f"""{notice()}<section><h2>Reproducible dataflow</h2>{table(rows, ["Step", "Stage", "Implementation", "Reference"], caption="Pipeline design and evidence boundaries")}
+    body = f"""{notice()}{_session_flagged_section()}<section><h2>Reproducible dataflow</h2>{table(rows, ["Step", "Stage", "Implementation", "Reference"], caption="Pipeline design and evidence boundaries")}
 <pre class="pipeline">pinned archive → integrity checks → prior-only features → walk-forward lines
 → research selections → settlement → weekly inference → eight gates
 → strict public dashboard + labelled research annex → link/provenance tests</pre></section>
@@ -743,6 +785,39 @@ def build_methodology(d):
 workflows and tests were reviewed. Material defects and their repairs are listed on <a href="flagged.html">Flagged for review</a>.
 This is a targeted code and claim audit with executable tests—not a claim that every historical third-party observation has been individually authenticated.</p></section>"""
     return layout("methodology.html", "Methodology", "How the engine works, what was tested and what the tests do not establish.", body, wide=True)
+
+
+def _session_flagged_section():
+    """X1 - the 2026-11-13 irregularity register, published on the Flagged page too.
+
+    Read from data/integration/irregularities.csv, which pipeline/session_review.py
+    owns, so the two pages can never disagree. If the file is missing (a build
+    order that has not run the review module) the section is omitted rather than
+    rendered empty.
+    """
+    import csv as _csv
+    from pathlib import Path as _P
+    path = _P(__file__).resolve().parents[1] / "data" / "integration" / "irregularities.csv"
+    if not path.exists():
+        return ""
+    rows = list(_csv.DictReader(open(path)))
+    if not rows:
+        return ""
+    body = [[f'<strong>{e(r["id"])}</strong>', e(r["severity"]), e(r["area"]),
+             e(r["finding"]), e(r["next_action"]), e(r["owner_file"]),
+             src_link(r["ref_url"], r["ref_label"])] for r in rows]
+    head = ('<section id="session-132e7ca2"><h2>Repository review &#183; 2026-11-13 '
+            '(<code>arena/132e7ca2-korea1</code>)</h2>'
+            '<p>Every tracked file was inventoried and the official pages the project captures were '
+            're-read and compared row by row with what is committed. None of these findings has been '
+            'repaired: repair is a decision for the owner and the files belong to earlier sessions. '
+            'Full detail, including the row-by-row comparisons, is on '
+            '<a href="repo-review.html">Repository review</a>. '
+            'A separate, independently written availability re-check is on '
+            '<a href="live-verification.html">Live verification</a>.</p>')
+    tbl = table(body, ["ID", "Severity", "Area", "Finding", "Next action", "File(s)", "Official source"],
+                caption="2026-11-13 repository review: irregularities with evidence, next action and a source")
+    return head + tbl + "</section>"
 
 
 def build_flagged(d):

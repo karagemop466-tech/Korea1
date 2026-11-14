@@ -1,0 +1,135 @@
+team,player,position,field,committed_value,live_value,classification
+WAS,John Bates,TE,all four fields,identical,identical,EXACT MATCH
+WAS,Treylon Burks,WR,all four fields,identical,identical,EXACT MATCH
+WAS,Jayden Daniels,QB,all four fields,identical,identical,EXACT MATCH
+WAS,Matt Gulbin,C,all four fields,identical,identical,EXACT MATCH
+WAS,Chig Okonkwo,TE,all four fields,identical,identical,EXACT MATCH
+WAS,Lucas Patrick,C,all four fields,identical,identical,EXACT MATCH
+WAS,Amik Robertson,CB,all four fields,identical,identical,EXACT MATCH
+WAS,Shy Tuttle,DT,all four fields,identical,identical,EXACT MATCH
+WAS,Colson Yankoff,TE,all four fields,identical,identical,EXACT MATCH
+NYG,Abdul Carter,LB,all four fields,identical,identical,EXACT MATCH
+NYG,Jermaine Eluemunor,T,all four fields,identical,identical,EXACT MATCH
+NYG,Malik Harrison,LB,all four fields,identical,identical,EXACT MATCH
+NYG,Colton Hood,CB,all four fields,identical,identical,EXACT MATCH
+NYG,Theo Johnson,TE,all four fields,identical,identical,EXACT MATCH
+NYG,Charlie Jones,WR,all four fields,identical,identical,EXACT MATCH
+NYG,J.J. McCarthy,QB,all four fields,identical,identical,EXACT MATCH
+NYG,Darnell Mooney,WR,all four fields,identical,identical,EXACT MATCH
+NYG,Malik Nabers,WR,all four fields,identical,identical,EXACT MATCH
+NYG,Cam Skattebo,RB,all four fields,identical,identical,EXACT MATCH
+NYG,Andrew Thomas,T,all four fields,identical,identical,EXACT MATCH
+NE,Ben Brown,C,all four fields,identical,identical,EXACT MATCH
+NE,A.J. Brown,WR,all four fields,identical,identical,EXACT MATCH
+NE,Kevin Byard,S,all four fields,identical,identical,EXACT MATCH
+NE,Carlton Davis III,CB,all four fields,identical,identical,EXACT MATCH
+NE,Reggie Gilliam,FB,all four fields,identical,identical,EXACT MATCH
+NE,TreVeyon Henderson,RB,all four fields,identical,identical,EXACT MATCH
+NE,Hunter Henry,TE,all four fields,identical,identical,EXACT MATCH
+NE,Cameron Latu,TE,all four fields,identical,identical,EXACT MATCH
+NE,Drake Maye,QB,all four fields,identical,identical,EXACT MATCH
+NE,Morgan Moses,T,all four fields,identical,identical,EXACT MATCH
+NE,Walter Rouse,T,all four fields,identical,identical,EXACT MATCH
+NE,Brenden Schooler,S,all four fields,identical,identical,EXACT MATCH
+NE,Rhamondre Stevenson,RB,all four fields,identical,identical,EXACT MATCH
+NE,Greg Van Roten,G,all four fields,identical,identical,EXACT MATCH
+NE,Charles Woods,CB,all four fields,identical,identical,EXACT MATCH
+DET,Brian Branch,S,all four fields,identical,identical,EXACT MATCH
+DET,Jared Goff,QB,all four fields,identical,identical,EXACT MATCH
+DET,Kerby Joseph,S,practice_status,Full Participation in Practice,Did Not Participate In Practice,PAGE UPDATED AFTER CAPTURE
+DET,Cade Mays,C,all four fields,identical,identical,EXACT MATCH
+DET,D.J. Reed,CB,all four fields,identical,identical,EXACT MATCH
+DET,Jacob Saylors,RB,all four fields,identical,identical,EXACT MATCH
+DET,Amon-Ra St. Brown,WR,injury,(blank),Rib,CELL EMPTY AT CAPTURE TIME
+DET,Amon-Ra St. Brown,WR,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+DET,Sione Vaki,RB,injury,(blank),Ankle,CELL EMPTY AT CAPTURE TIME
+DET,Sione Vaki,RB,practice_status,Did Not Participate In Practice,Limited Participation in Practice,PAGE UPDATED AFTER CAPTURE
+DET,Sione Vaki,RB,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+DET,DJ Wonnum,DE,all four fields,identical,identical,EXACT MATCH
+KC,Jeffrey Bassa,LB,all four fields,identical,identical,EXACT MATCH
+KC,Mansoor Delane,CB,injury,(blank),Shoulder,CELL EMPTY AT CAPTURE TIME
+KC,Mansoor Delane,CB,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+KC,Justin Fields,QB,all four fields,identical,identical,EXACT MATCH
+KC,Jaden Hicks,S,all four fields,identical,identical,EXACT MATCH
+KC,Travis Kelce,TE,all four fields,identical,identical,EXACT MATCH
+KC,Patrick Mahomes,QB,all four fields,identical,identical,EXACT MATCH
+KC,Jaylon Moore,T,injury,(blank),Ankle,CELL EMPTY AT CAPTURE TIME
+KC,Jaylon Moore,T,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+KC,Omarr Norman-Lott,DT,injury,(blank),Knee,CELL EMPTY AT CAPTURE TIME
+KC,Omarr Norman-Lott,DT,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+KC,Jaydn Ott,RB,injury,(blank),Hamstring,CELL EMPTY AT CAPTURE TIME
+KC,Jaydn Ott,RB,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+KC,Rashee Rice,WR,all four fields,identical,identical,EXACT MATCH
+KC,Kenneth Walker III,RB,entire row,(player not in the capture),RB / Groin / Did Not Participate In Practice / Questionable,ROW ADDED AFTER CAPTURE
+KC,Peter Woods,DT,injury,(blank),Neck,CELL EMPTY AT CAPTURE TIME
+KC,Peter Woods,DT,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+KC,Xavier Worthy,WR,all four fields,identical,identical,EXACT MATCH
+ATL,Zachariah Branch,WR,injury,(blank),Hamstring,CELL EMPTY AT CAPTURE TIME
+ATL,Zachariah Branch,WR,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+ATL,Kendal Daniels,LB,practice_status,Limited Participation in Practice,Full Participation in Practice,PAGE UPDATED AFTER CAPTURE
+ATL,Divine Deablo,LB,injury,(blank),Forearm,CELL EMPTY AT CAPTURE TIME
+ATL,Divine Deablo,LB,game_status,(blank),Doubtful,CELL EMPTY AT CAPTURE TIME
+ATL,Gervon Dexter Sr.,DT,injury,(blank),Illness,CELL EMPTY AT CAPTURE TIME
+ATL,Gervon Dexter Sr.,DT,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+ATL,Jake Matthews,T,entire row,(player not in the capture),T / — / Limited Participation in Practice / —,ROW ADDED AFTER CAPTURE
+ATL,Liam McCullough,LS,entire row,(player not in the capture),LS / — / Did Not Participate In Practice / —,ROW ADDED AFTER CAPTURE
+ATL,James Pearce Jr.,DE,injury,(blank),Back,CELL EMPTY AT CAPTURE TIME
+ATL,James Pearce Jr.,DE,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+ATL,Za'Darius Smith,DE,all four fields,identical,identical,EXACT MATCH
+ATL,Jawaan Taylor,T,practice_status,Did Not Participate In Practice,Limited Participation in Practice,PAGE UPDATED AFTER CAPTURE
+ATL,Cameron Thomas,DE,practice_status,Limited Participation in Practice,Full Participation in Practice,PAGE UPDATED AFTER CAPTURE
+ATL,Josh Woods,LB,injury,(blank),Ankle,CELL EMPTY AT CAPTURE TIME
+ATL,Josh Woods,LB,practice_status,Limited Participation in Practice,Full Participation in Practice,PAGE UPDATED AFTER CAPTURE
+ATL,Josh Woods,LB,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+MIN,Jordan Addison,WR,entire row,(player not in the capture),WR / Thumb / Limited Participation in Practice / Questionable,ROW ADDED AFTER CAPTURE
+MIN,Blake Cashman,LB,injury,(blank),Concussion,CELL EMPTY AT CAPTURE TIME
+MIN,Blake Cashman,LB,practice_status,Did Not Participate In Practice,Limited Participation in Practice,PAGE UPDATED AFTER CAPTURE
+MIN,Blake Cashman,LB,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+MIN,Christian Darrisaw,T,entire row,(player not in the capture),T / — / Did Not Participate In Practice / —,ROW ADDED AFTER CAPTURE
+MIN,T.J. Hockenson,TE,injury,(blank),"Wrist, Chest",CELL EMPTY AT CAPTURE TIME
+MIN,T.J. Hockenson,TE,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+MIN,Tyrion Ingram-Dawkins,DT,injury,(blank),Ankle,CELL EMPTY AT CAPTURE TIME
+MIN,Tyrion Ingram-Dawkins,DT,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+MIN,Theo Jackson,S,all four fields,identical,identical,EXACT MATCH
+MIN,Jauan Jennings,WR,injury,(blank),Calf,CELL EMPTY AT CAPTURE TIME
+MIN,Jauan Jennings,WR,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+MIN,Josh Metellus,S,entire row,(player not in the capture),S / Shoulder / Limited Participation in Practice / Questionable,ROW ADDED AFTER CAPTURE
+MIN,Kyler Murray,QB,injury,(blank),Hamstring,CELL EMPTY AT CAPTURE TIME
+MIN,Kyler Murray,QB,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+MIN,Harrison Smith,S,entire row,(player not in the capture),S / — / Limited Participation in Practice / —,ROW ADDED AFTER CAPTURE
+MIN,Kyle Van Noy,LB,injury,(blank),Calf,CELL EMPTY AT CAPTURE TIME
+MIN,Kyle Van Noy,LB,practice_status,Did Not Participate In Practice,Limited Participation in Practice,PAGE UPDATED AFTER CAPTURE
+MIN,Kyle Van Noy,LB,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+MIN,Jay Ward,S,practice_status,Limited Participation in Practice,Full Participation in Practice,PAGE UPDATED AFTER CAPTURE
+MIN,Carson Wentz,QB,practice_status,Limited Participation in Practice,Full Participation in Practice,PAGE UPDATED AFTER CAPTURE
+GB,Aaron Banks,G,all four fields,identical,identical,EXACT MATCH
+GB,Chris Brooks,RB,injury,(blank),Ankle,CELL EMPTY AT CAPTURE TIME
+GB,Chris Brooks,RB,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+GB,Javon Bullard,S,injury,(blank),"Ankle, Knee",CELL EMPTY AT CAPTURE TIME
+GB,Javon Bullard,S,practice_status,Did Not Participate In Practice,Limited Participation in Practice,PAGE UPDATED AFTER CAPTURE
+GB,Javon Bullard,S,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+GB,Zaire Franklin,LB,injury,(blank),Shin,CELL EMPTY AT CAPTURE TIME
+GB,Zaire Franklin,LB,game_status,(blank),Doubtful,CELL EMPTY AT CAPTURE TIME
+GB,Travis Glover,G,injury,(blank),Knee,CELL EMPTY AT CAPTURE TIME
+GB,Travis Glover,G,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+GB,Ty'Ron Hopper,LB,practice_status,Limited Participation in Practice,Full Participation in Practice,PAGE UPDATED AFTER CAPTURE
+GB,Josh Jacobs,RB,injury,(blank),Finger,CELL EMPTY AT CAPTURE TIME
+GB,Josh Jacobs,RB,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+GB,Xavier McKinney,S,entire row,(player not in the capture),S / Foot / Limited Participation in Practice / Questionable,ROW ADDED AFTER CAPTURE
+GB,Bo Melton,WR,all four fields,identical,identical,EXACT MATCH
+GB,Skyy Moore,WR,injury,(blank),Ankle,CELL EMPTY AT CAPTURE TIME
+GB,Skyy Moore,WR,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+GB,Micah Parsons,LB,injury,(blank),"Knee, Illness",CELL EMPTY AT CAPTURE TIME
+GB,Micah Parsons,LB,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+GB,Sean Rhyan,C,injury,(blank),Ankle,CELL EMPTY AT CAPTURE TIME
+GB,Sean Rhyan,C,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+GB,Trey Smack,K,all four fields,identical,identical,EXACT MATCH
+GB,Lukas Van Ness,LB,injury,(blank),Back,CELL EMPTY AT CAPTURE TIME
+GB,Lukas Van Ness,LB,practice_status,Did Not Participate In Practice,Limited Participation in Practice,PAGE UPDATED AFTER CAPTURE
+GB,Lukas Van Ness,LB,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME
+GB,Josh Whyle,TE,injury,(blank),Concussion,CELL EMPTY AT CAPTURE TIME
+GB,Josh Whyle,TE,game_status,(blank),Out,CELL EMPTY AT CAPTURE TIME
+GB,Savion Williams,WR,all four fields,identical,identical,EXACT MATCH
+GB,Kevin Zeitler,G,injury,(blank),"Ankle, Triceps",CELL EMPTY AT CAPTURE TIME
+GB,Kevin Zeitler,G,practice_status,Limited Participation in Practice,Did Not Participate In Practice,PAGE UPDATED AFTER CAPTURE
+GB,Kevin Zeitler,G,game_status,(blank),Questionable,CELL EMPTY AT CAPTURE TIME

@@ -6,6 +6,87 @@ import pandas as pd
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from common import ROOT,PROC,read_json
 
+def _session_block():
+    """X5 - the 2026-11-13 consolidation section, read from the files that own the numbers.
+
+    Built with a list of single-quoted lines: the executive summary is itself an
+    f-string, so a nested triple-quoted f-string would not parse.
+    """
+    import csv
+    int_dir = ROOT / 'data' / 'integration'
+
+    def rows(name):
+        p = int_dir / (name + '.csv')
+        return list(csv.DictReader(open(p))) if p.exists() else []
+
+    sug = rows('suggestions_master')
+    que = rows('questions_master')
+    if not (sug and que):
+        return ''
+    irr = rows('irregularities')
+    inv = rows('repo_inventory')
+    ch = rows('official_injury_check')
+    sc = rows('official_score_check')
+    clu = len({r['cluster'] for r in sug})
+    awaiting = sum(1 for r in sug if r['status'] == 'AWAITING PATH SELECTION')
+    unanswered = sum(1 for r in que if r['status'] != 'ANSWERED')
+    exact_inj = sum(1 for r in ch if r['classification'] == 'EXACT MATCH')
+    n_players = len({(r['team'], r['player']) for r in ch})
+    exact_sc = sum(1 for r in sc if r['classification'] == 'EXACT MATCH')
+    cmp_sc = sum(1 for r in sc if r['classification'] in ('EXACT MATCH', 'MISMATCH'))
+    L = []
+    A = L.append
+    A('## Addendum - 2026-11-13')
+    A('')
+    A('A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read the official pages.')
+    A('')
+    A('| What was added | Size | What it does |')
+    A('|---|---|---|')
+    A('| `review-queue.html` | ' + str(len(sug)) + ' proposals merged from 5 registers into '
+      + str(clu) + ' clusters (' + str(awaiting) + ' awaiting a path) | The decision surface: one lead row '
+      'per cluster, every source row kept with its register and original id, so a path is chosen before '
+      'any code changes |')
+    A('| `answers.html` | ' + str(len(que)) + ' questions merged from 4 registers (' + str(unanswered)
+      + ' without an answer on record) | Information we have, information we do not, the answer on record '
+      'and the discovery step for each |')
+    A('| `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the '
+      'reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate '
+      'G1 fails for every candidate |')
+    A('| `repo-review.html` | ' + str(len(inv)) + ' tracked files, 8 official-source checks, '
+      + str(len(irr)) + ' irregularities | Line-by-line repository inventory, verification log and '
+      'irregularity register |')
+    A('')
+    A('**Official-source re-verification performed on 2026-11-13.**')
+    A('')
+    A('| Check | Result |')
+    A('|---|---|')
+    A('| Pinned upstream commit | `a270278f3ac4e937295fe6a27814b3c4a2b62645` exists in `nflverse/nfldata`, '
+      'titled "Automated data update" |')
+    A('| Injury capture re-read against nfl.com/injuries/ | **' + str(exact_inj) + ' of ' + str(n_players)
+      + ' rows identical** on position, injury, practice status and game status - no transcription error '
+      'found. The remaining rows are later page updates, not bad copies |')
+    A('| Availability completeness | **IRREGULARITY**: the live page shows 21 Out designations in the 8 '
+      'clubs re-read, the whole 28-club capture shows 8 |')
+    A('| Post-pin score register re-read against nfl.com/scores/2026/week-8 | **' + str(exact_sc) + ' of '
+      + str(cmp_sc) + ' sampled games identical**; the one game that settled before the pin is correctly '
+      'absent |')
+    A('| NFL Operations 90-minute rule | Verified: the Game Day Administration Report, containing each '
+      "club's inactive list and C2P helmet designations, is exchanged 90 minutes before kickoff, and the "
+      'roof/wall designation is fixed at the same mark |')
+    A('')
+    A('Two new irregularities were recorded and left for a decision: **IR-132E-01** (the scheduled')
+    A('availability capture runs before the Friday game designations post, so the deficiency table')
+    A('understates current unavailability) and **IR-132E-02** (`pipeline/fetch_injuries.py` writes')
+    A('`"sha256": null` for the news register, so one committed file changes on every build for no data')
+    A('reason). Neither was repaired here; repair is a decision for the owner, and the files belong to')
+    A('earlier sessions.')
+    A('')
+    A('**Decision unchanged:** keep the research engine, fund nothing, reward nothing. The merged')
+    A('registers make the decision easier to review, not different.')
+    A('')
+    return '\n'.join(L)
+
+
 def main():
     gates=pd.read_csv(PROC/'strategy_gates.csv')
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
@@ -36,6 +117,7 @@ def main():
     f_strat_with = len(_sb[_sb.counted.astype(str).ne('0') & _sb.counted.astype(str).ne('')]) if len(_sb) else 0
     f_units = pd.to_numeric(_pk.loc[_pk.status == 'OFFICIAL', 'pnl'], errors='coerce').sum() if f_declared else 0.0
     f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
+    _s = _session_block()
     text=f'''# Executive summary — NFL Line Lab
 
 Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
@@ -176,6 +258,7 @@ code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 | Questions and answers (R20) | {rc['questions']} open questions plus 12 readiness questions, each with a closure test | Implemented; blocked rows blank |
 | Injury / lineup deficiency (R21) | Official report captures plus {charts} of 32 club depth charts | PARTIAL — order only, no confirmed roles | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
+{_s}
 ## Material audit corrections
 
 1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.
