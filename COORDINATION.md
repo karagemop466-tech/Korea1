@@ -47,6 +47,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
 | T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **done** (PR #49, merged 2026-11-14T00:05Z) | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 | T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
+| X7 | **Demotion gate + repair of the red test suite + flag the 2026-11-14 contradictory injury rows** (session `arena/b400d3ae-korea1`, branch of this session; nfl.com unreachable from the build sandbox) | **needs review** | `arena/b400d3ae-korea1` | `pipeline/demotion_gate.py` (new), `tests/test_demotion_gate.py` (new), `tests/test_live_verify.py` (two stale assertions), `pipeline/render_site.py` (one Flagged row F-29 only), `Makefile` (test list only), regenerated outputs (`flagged.html`, `repo-review.html`, `EXECUTIVE_SUMMARY.md`, `assets/data/repo_inventory.csv`, `data/integration/repo_inventory.csv`, `assets/data|data/processed/verification_report.csv`) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -2444,3 +2445,33 @@ both logs are kept in full.
 **Final state after the merge:** `make build` → 0 failing verifier checks across 43 pages (32 canonical);
 `tests/check_sources.py` → 3,505 rows; `tests/check_links.py` → 41 pages clean; `make test` → 107 passed;
 the tree is a fixed point (a second `make build` leaves `git status` empty).
+
+### 2026-11-14 — X7 — `arena/b400d3ae-korea1` (demotion gate, test repair, flagged irregularity)
+
+**Claim and scope.** Board read first. The requirement "define a demotion gate that sends a live strategy back to paper" had no implementation anywhere in the repository (a grep for demotion/paper-trading/revert/retire found only unrelated register text). Claimed as X7 with the file scope above. No other session's files were edited.
+
+**What changed.**
+1. `pipeline/demotion_gate.py` (new). Fail-closed rules DG1 look-ahead, DG2 settled-row integrity, DG3 sample floor, DG4 stressed ROI, DG5 weekly-bootstrap lower bound, DG6 mean CLV (full coverage only), and an optional drawdown rule that stays off unless an owner passes a limit. Thresholds are read from `validation.GATES` (100 bets, 3 seasons, 5-cent stress), not invented. It recommends a state only; it promotes nothing and no strategy holds a live authorisation today.
+2. `tests/test_demotion_gate.py` (new, 9 tests), added to `make test`.
+3. `tests/test_live_verify.py`: two assertions were stale. The first expected MATCH for a published "Did Not Participate + Out" row against a "Full Participation" official cell, which is a contradiction; the rule test now sets the contradictory published state explicitly. The second expected 326 rows and one contradiction (Kerby Joseph); the 2026-11-14 snapshot has 345 rows and four contradictions (below). The test now asserts those values.
+4. Flagged for Review, row **F-29**: the four contradictory injury rows.
+
+**Verification performed.**
+- `make test`: before this change 105 passed, 2 failed (both in `test_live_verify.py`, both documented above). After: 116 passed.
+- `pipeline/verify_site.py`: 0 failing checks, 32 canonical pages, 3,578 rows. `tests/check_sources.py`: strict official/primary reference check passed. `tests/check_links.py`: 41 pages, all internal links and anchors resolve.
+- nfl.com is unreachable from this sandbox (HTTP 000 for `www.nfl.com/injuries/` and `/scores/`); github.com and pypi.org are reachable. No new official value was fetched or entered. All figures in F-29 come from the committed snapshot and extract, so they are not independently re-confirmed here.
+
+**Sources (committed files, for manual review).**
+- `data/availability/injuries.csv` (snapshot `2026-11-14T17:10:05Z`, source `https://www.nfl.com/injuries/`).
+- `data/live/official_injury_extract_2026_reg10.csv` (source `https://www.nfl.com/injuries/league/2026/reg10`).
+- `data/live/internal_consistency.csv` (contradiction register, produced by `pipeline/live_verify.py`).
+- Official pages to check manually: https://www.nfl.com/injuries/ and https://www.nfl.com/injuries/league/2026/reg10
+
+**Irregularities for review (not corrected).**
+- **IRR-X7-1 (F-29, High):** four published rows contradict themselves: JAX BJ Green II (Out + Full Participation); CIN Jalen Davis, Andrei Iosivas, Brian Parker II (Doubtful + Full Participation). The check is working; it found them. Neither cell has been confirmed or changed, because the JAX/CIN official pages are not in the transcribed extract and nfl.com is unreachable here.
+- **IRR-X7-2:** Kerby Joseph is no longer contradictory in the 2026-11-14 snapshot (Did Not Participate + Out, consistent with the official extract). The earlier "known contradiction" in the test was a snapshot artefact and has been retired from the test.
+- **IRR-X7-3:** the flagged register's F-20 ID is used on the page for a different item ("Low · repaired", manifest note). The new row is therefore F-29, not F-20.
+- **IRR-X7-4:** the demotion gate has no drawdown limit. The repository sets none; this is an open owner decision (NEEDS DECISION), not an inferred value.
+- **IRR-X7-5:** `tests/check_rebuild.py` compares committed outputs with regenerated ones; the regenerated outputs and the repo inventory had to be committed in this change to converge.
+
+- **IRR-X7-6 (process, 2026-11-14):** `make build` on `81836b6` (the 17:10Z availability snapshot, already on `main`) regenerates 22 committed files that were not regenerated in that commit (`data/live/*`, `assets/data/*`, `executive-summary.html`, `live-verification.html`, `repo-review.html`, `EXECUTIVE_SUMMARY.md`). `verify.yml`'s final step (`tests/check_rebuild.py`) therefore fails on `main`'s own content, and PR #52 failed the same way. Resolved on this branch by rebuilding and committing the regenerated outputs (fixed point confirmed: a second `make build` leaves `git status` empty). Pre-existing on `main`; not caused by X7's logic. Owner should confirm the new contradiction rows (F-29) against the official pages.
