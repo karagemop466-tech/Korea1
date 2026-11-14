@@ -2444,3 +2444,42 @@ both logs are kept in full.
 **Final state after the merge:** `make build` → 0 failing verifier checks across 43 pages (32 canonical);
 `tests/check_sources.py` → 3,505 rows; `tests/check_links.py` → 41 pages clean; `make test` → 107 passed;
 the tree is a fixed point (a second `make build` leaves `git status` empty).
+
+## Session `arena/fcba7eb5-korea1` — 2026-11-14 claim: nine-requirement gap closure + integration
+
+**Board read first (2026-11-14).** `main` = `81836b6` = this branch's base. Open PRs #19, #24, #30, #38, #47, #48
+belong to other sessions and are **not touched**. Every earlier task row is `done`, `needs review`, or
+`in progress` on a branch whose PR is merged or stale; no sibling session holds a live claim on the
+files below. Protocol followed: claim committed and pushed before any file in scope is changed.
+
+**Gap check against the nine-point brief (what exists before this session):**
+
+| # | Requirement | State on `main` before this session |
+|---|---|---|
+| 1 | Price-snapshot store, opening + closing for every originated market | **Missing.** No opening-line source exists in the repo; closing exists only as pinned community mirror values (`published_lines.csv`, nflverse). No store. |
+| 2 | Verified results feed for backtest / ROI | **Partial.** `data/forward/official_results.csv` (30 official finals, NFL.com) exists; ROI cells blank because no executable price exists. |
+| 3 | Origination order: side → total → moneyline | **Partial.** Code path in `pipeline/models.py` / `forward_ledger.py`; not stated or evidenced as an order on any page. |
+| 4 | Fair line, market line and difference as separate columns | **Partial.** `forward.html` shows "Originated line" and "Market line" as combined spread/total cells and no difference column. |
+| 5 | Signal separated from staking on the leaderboard | **Missing.** Standings rank on gate counts (no staking leak), but the page has no explicit signal vs staking split and no rule that forbids staking from changing rank. |
+| 6 | Replacement depth, not just replacement | **Present.** `lineup-deficiencies.html` / `data/availability/slot_status.csv` carry 1st–4th string slots. Re-checked here, not re-built. |
+| 7 | Correlations only from official numbers, `n` published | **Present.** `correlations.html` publishes `Sample` per row and leaves official-input estimates blank. |
+| 8 | Demotion gate that sends a live strategy back to paper | **Missing.** No code, rule, or page defines it. |
+| 9 | Suggestions section, reviewed before change | **Present.** `suggestions.html`, `decision-board.html`, `review-queue.html`, `decisions.html`. Nothing implemented without a path choice. |
+
+**Claimed work (this session only):**
+
+| ID | Task | Owner | File scope |
+|---|---|---|---|
+| U1 | Signal vs staking split on the leaderboard + rule R8 (staking can never change rank) | `arena/fcba7eb5-korea1` | `pipeline/session_competition.py`, `data/integration/leaderboard_master.csv`, `data/integration/competition_rules.csv`, `competition.html` |
+| U2 | Demotion gate: explicit triggers, pure function, register of current live strategies (none) | `arena/fcba7eb5-korea1` | `pipeline/demotion_gate.py` (new), `data/governance/demotion_gate.csv` (new), `tests/test_demotion_gate.py` (new), `competition.html` (section via `session_competition.py` only) |
+| U3 | Price-snapshot store: one row per originated market, opening/closing columns filled only from an official or operator-timestamped source (none exists → blank, flagged) | `arena/fcba7eb5-korea1` | `pipeline/price_snapshots.py` (new), `data/forward/price_snapshots.csv` (new), `tests/test_price_snapshots.py` (new) |
+| U4 | Forward page: separate fair line / market line / difference columns; origination order stated | `arena/fcba7eb5-korea1` | `pipeline/render_forward.py`, `forward.html` |
+| U5 | Requirements trace for the nine points, each with evidence path and status | `arena/fcba7eb5-korea1` | `data/governance/requirements_trace_2026_11_14.csv` (new), `pipeline/render_requirements.py`, `requirements.html` |
+| U6 | Repair two pre-existing failing tests in `tests/test_live_verify.py` (stale row count; assertion contradicting its own docstring) — only after verifying which side is wrong | `arena/fcba7eb5-korea1` | `tests/test_live_verify.py` |
+| U7 | Integration: Makefile recipe lines, `verify_site.py` / `check_*` page registration if a new page is added, README + EXECUTIVE_SUMMARY section, PR → `main`, merge, Pages check, record | `arena/fcba7eb5-korea1` | `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `pipeline/render_site.py` (NAV only if needed), `pipeline/verify_site.py`, `tests/check_*.py`, `COORDINATION.md` (this section) |
+
+**Baseline before any change (recorded, not hidden).** `make test` on `81836b6` → **105 passed, 2 failed**
+(`tests/test_live_verify.py::test_inactive_player_cannot_be_full_participant`,
+`::test_internal_consistency_flags_the_known_contradiction`). Cause logged under U6. Python 3.11.2 with the
+pinned `requirements.txt` in a gitignored `.venv`. `make build`'s first recipe lines fetch network data, so this
+session regenerates with the offline targets (`model`-free `site` + `verify`), which read committed inputs only.
