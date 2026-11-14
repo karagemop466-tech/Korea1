@@ -2570,3 +2570,25 @@ read "in progress" though merged or superseded; not edited here.
 - **Before merge:** `make test` 136 passed; `make build` exit 0 and a fixed point; `tests/check_rebuild.py` passes.
 - **Process incident, disclosed.** A `git pull --rebase` on this branch stopped on X7's commit `d00a264`, because the branch's merge with `origin/main` was replayed as a flat history. The rebase was then aborted, and the branch and remote are both at `aa4e8ec`. The push during the stopped rebase sent `aa4e8ec`, the pre-rebase tip, which was a fast-forward of `72e9b1b`. No history was rewritten and no commit was lost. Future pulls on this branch will use `git pull --ff-only` or `git merge origin/main`, not `--rebase`, because the branch contains a merge commit.
 - **Still open, logged above:** F-29 (four contradictory injury rows, X7), F-29a, F-33 to F-36. Shared-output integration (`flagged.html`, index, nav) is not done and needs an owner.
+## Session `arena/a6bbbf24-korea1` — 2026-11-14: price-snapshot store, verified results feed, leaderboard signal/staking split, demotion gate
+
+**Claim (committed and pushed before any file in scope was touched).** The platform pins this session to
+branch `arena/a6bbbf24-korea1` (branched from `main` `81836b63`, which equals current `origin/main`). This
+session works directly on its pinned branch; the `session-<id>/<task>` worktree pattern cannot be used here.
+Sibling branches are not touched, rebased, or discarded.
+
+The 2026-11-12/13 brief is largely published already (suggestions, questions, injuries, leaderboard, gates,
+correlations, props, forward ledger, flagged page, live Pages site). The concrete gaps this session closes:
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| P1 | **Price-snapshot store**: opening and closing numbers for every market originated (spread, total, moneyline home/away); opening from pinned `initial_lines.csv` (2021, book WSGT), closing from the pinned games.csv market columns; opener blank + flagged where the archive has none | in progress | `arena/a6bbbf24-korea1` | `pipeline/price_snapshot.py` (new), `data/processed/price_snapshot.csv` (new), `assets/data/price_snapshot.csv` (new download), Makefile `data` step |
+| P2 | **Moneyline columns**: model fair ML, market ML, and the difference (fair vs market implied probability and cents) as separate published columns | in progress | `arena/a6bbbf24-korea1` | `pipeline/models.py`, `data/processed/originated_lines.csv`, `data/processed/originated_upcoming.csv`, `lines.html` |
+| P3 | **Signal vs staking in the leaderboard**: publish signal (edge-based) performance separate from staked-unit performance so a lucky staking run cannot mask a bad signal | in progress | `arena/a6bbbf24-korea1` | `pipeline/validation.py`, `data/processed/strategy_summary.csv`, `strategies.html` |
+| P4 | **Demotion gate**: explicit rule sending a live strategy back to paper when forward-test gates fail | in progress | `arena/a6bbbf24-korea1` | `pipeline/validation.py`, `pipeline/forward_ledger.py` (read), `forward.html`, `validation.html` |
+| P5 | **Executive summary refresh** with current decision and open evidence gaps | in progress | `arena/a6bbbf24-korea1` | `EXECUTIVE_SUMMARY.md`, `executive-summary.html` (regenerated) |
+| P6 | **Verification**: run `make build`, `make test`, `make verify`; spot-check cited official sources (NFL.com scores/schedules) via the page-fetch tool; publish flagged items | in progress | `arena/a6bbbf24-korea1` | `pipeline/verify_site.py`, `tests/`, `flagged.html` |
+| P7 | **PR → main, merge without waiting, confirm GitHub Pages deploy, record PR link and result here** | unclaimed | `arena/a6bbbf24-korea1` | `COORDINATION.md`, branch `arena/a6bbbf24-korea1` → `main` |
+
+### 2026-11-14 — claim recorded — `arena/a6bbbf24-korea1`
+Branch head is `81836b63` ("availability: official snapshot 2026-11-14T17:10Z"), identical to `origin/main`. Working tree clean. No sibling branch is edited. Claims P1–P6 are started; P7 runs only after P6 passes.
