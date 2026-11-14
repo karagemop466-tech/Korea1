@@ -45,7 +45,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | R1 | **2026-11-13 availability reconciliation**: check the automated Week 10 injury report and club depth-chart snapshot (`data/availability/`, commit `43a946a`) against the official pages (line-level sample), publish the gap register, correct the stale "2 of 32 clubs" coverage claims, flag the HOU capture failure and the club-side "Unofficial Depth Chart" label | **done** | `arena/18c4acce-korea1` | `data/governance/availability_reconciliation_2026_11_13.csv` (new), `pipeline/decisions.py` (Q30 / S17 text only), `pipeline/availability.py` (AV-S1…S4 `available` text only), `pipeline/render_decisions.py` (coverage sentences only), `pipeline/render_site.py` (F-15 row + coverage sentence only), `research/injuries.md` (row 12 only), `README.md` (coverage sentence only), `EXECUTIVE_SUMMARY.md` (two coverage rows only), `DECISIONS.md` (D-05 row), `data/evidence/nfl_injuries/week10_2026/manifest.json` (null-hash repair), `COORDINATION.md` (own section + this row), `scripts/reconcile_availability_2026_11_13.py` (new), `assets/data/*_2026_11_13.csv` (new downloads) |
 
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
-| T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **in progress** | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
+| T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **done** (PR #49, merged 2026-11-14T00:05Z) | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 | T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
@@ -2235,3 +2235,44 @@ After confirming the remote branch was still `d340ead` and `main` was `9cca4bc`,
 ### 2026-11-13T23:49Z — final PR #40 checks pass; ready to merge
 
 The final T24 head is `fe22f42540120d6e726bcce9b1a08ea26bd7f81f` on base `9cca4bc`. Verify passed for both the push event ([43529580412](https://github.com/karagemop466-tech/Korea1/actions/runs/43529580412), completed 23:48:05Z) and the pull-request event ([43529588092](https://github.com/karagemop466-tech/Korea1/actions/runs/43529588092), completed 23:48:59Z). GitHub reports PR #40 `MERGEABLE`. Local audit, T24 tests, full build and full test results are recorded in the preceding entry. The scoped PR is ready for merge; its Pages deployment is necessarily still pending.
+
+### T40 pull request, merge and deployment record — `arena/84e42ecc-korea1`
+
+| Step | Result |
+|---|---|
+| Pull request | <https://github.com/karagemop466-tech/Korea1/pull/49> — "T40: resolve every external citation against the live page (referent register)" |
+| Required check | **Verify site — success** (`actions/runs/43531075315`). `mergeStateStatus` showed `UNSTABLE` only because two *referent-audit* push runs failed while racing this branch's own commits; those runs re-probe URLs and do not gate the site. |
+| Merge | `gh pr merge 49 --merge` — merged **2026-11-14T00:05:25Z** into `main` (`2b6629d`). |
+| Pages build | `built` — <https://karagemop466-tech.github.io/Korea1/> |
+| Live check | `referents.html` and `index.html` fetched from the live Pages origin after deploy: the register page renders its claim-support table, and the landing page links it under *Explore the research* and in the hero actions. `flagged.html` carries F-21…F-28. |
+
+**Final verification on the merged tree**
+
+| Check | Result |
+|---|---|
+| `make build` | clean |
+| `pipeline/verify_site.py` | **0 failing checks** |
+| `tests/check_sources.py` | **28 canonical pages, 2,655 rows** — every row with an official/primary reference |
+| `tests/check_links.py` | **37 pages** — no broken internal links, anchors or assets |
+| `pytest tests/` | **188 passed, 1 skipped** |
+| `tests/check_rebuild.py` | rebuild matches committed outputs, 0 changed files (rtol 1e-08, atol 1e-10) |
+
+**Known non-blocking issues carried forward**
+
+- The score census is **spot-verified, not machine-verified**: all 28 rows return `UNPARSED` because the
+  official game-centre page is client-rendered and the runner receives raw HTML with no score in it. Two
+  rows were confirmed by hand (`ARI 33–30 DAL`, `ATL 0–16 TB`) and both agree. Fixing the parser needs the
+  raw HTML structure; `scripts/score_reconcile.py` now has embedded-JSON extraction and an
+  `SCORE_DEBUG=1` snippet dump for whoever picks it up.
+- Open PRs **#24** and **#30** remain open and conflicted. Not merged: both are `CONFLICTING` against
+  current `main`, their titles match work already merged via other branches, and the protocol says do not
+  merge a broken site.
+- **F-28**: the landing page still presents WAS @ NYG as upcoming although the official Week 10 schedule
+  has it FINAL (Commanders 24, Giants 21). Owned by `arena/18c4acce-korea1`; not repaired here.
+
+**Concurrent sessions observed while this ran:** `arena/5aee87e3-korea1` (PR #37, final verification),
+`arena/18c4acce-korea1` (PR #39, availability reconciliation), `arena/917fe36e-korea1` (PR #44),
+`arena/beafe2ae-korea1` (PR #40). `main` moved six times during this session; each move was merged in
+rather than rebased over, and the other sessions' log entries and page content were preserved. Where the
+`referent-audit` workflow's scheduled commits raced my pushes, the workflow's own `pull --rebase` retry
+loop resolved them and the probe data was recovered from the branch.
