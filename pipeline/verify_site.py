@@ -19,6 +19,12 @@ ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com",
          "operations.nfl.com", "www.econometricsociety.org",
          "www.pm-research.com", "cris.tau.ac.il", "www.tandfonline.com",
          "support.fanduel.com", "docs.github.com", "gaming.nv.gov", "www.gaming.nv.gov"}
+# NOTE (T40, arena/84e42ecc-korea1): `github.com` was briefly added here so the referent
+# register could print one table row per cited URL.  That change was reverted because it
+# broke tests/test_integration.py::test_official_allowlist_rejects_community_only, which
+# encodes a rule this project must keep: a community repository URL is NOT an official
+# source.  referents.html therefore prints official/primary referents as table rows and
+# prints community and method publishers in a clearly separated, non-table list.
 # Official club sites (depth-chart pages read by pipeline/fetch_availability.py).
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fetch_availability import TEAMS as _CLUBS
@@ -64,6 +70,7 @@ def main():
               "flagged.html","sources.html","audit.html","decisions.html","suggestions.html","questions.html",
               "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
               "suggestions-review.html","decision-readiness.html","lineup-deficiencies.html",
+"referents.html",
               "forward.html","live-verification.html","review.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}

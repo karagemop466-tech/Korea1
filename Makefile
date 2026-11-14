@@ -62,6 +62,18 @@ site: injuries review reviewall
 	$(PY) pipeline/render_readiness.py
 	$(PY) pipeline/render_annex.py
 
+# T40 (arena/84e42ecc-korea1): resolve every external URL printed on the site.
+# Needs outbound network access to NFL/club/publisher domains, so `make build` does NOT
+# run it - the nightly .github/workflows/referent-audit.yml does, on a GitHub-hosted runner,
+# and commits the result.  Run it here only to regenerate referents.html from a committed
+# probe, or to re-probe from a shell that has egress.
+referents:
+	$(PY) scripts/referent_probe.py
+	$(PY) pipeline/render_referents.py
+
+referent-render:
+	$(PY) pipeline/render_referents.py
+
 verify:
 	$(PY) pipeline/verify_site.py
 	$(PY) tests/check_sources.py

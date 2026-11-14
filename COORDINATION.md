@@ -45,6 +45,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | R1 | **2026-11-13 availability reconciliation**: check the automated Week 10 injury report and club depth-chart snapshot (`data/availability/`, commit `43a946a`) against the official pages (line-level sample), publish the gap register, correct the stale "2 of 32 clubs" coverage claims, flag the HOU capture failure and the club-side "Unofficial Depth Chart" label | **done** | `arena/18c4acce-korea1` | `data/governance/availability_reconciliation_2026_11_13.csv` (new), `pipeline/decisions.py` (Q30 / S17 text only), `pipeline/availability.py` (AV-S1…S4 `available` text only), `pipeline/render_decisions.py` (coverage sentences only), `pipeline/render_site.py` (F-15 row + coverage sentence only), `research/injuries.md` (row 12 only), `README.md` (coverage sentence only), `EXECUTIVE_SUMMARY.md` (two coverage rows only), `DECISIONS.md` (D-05 row), `data/evidence/nfl_injuries/week10_2026/manifest.json` (null-hash repair), `COORDINATION.md` (own section + this row), `scripts/reconcile_availability_2026_11_13.py` (new), `assets/data/*_2026_11_13.csv` (new downloads) |
 
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
+| T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **in progress** | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 | T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
@@ -1714,6 +1715,40 @@ published on the Flagged-for-Review page. V1–V4 are complete for this session.
 
 ---
 
+## Session `arena/84e42ecc-korea1` — T40 referent audit (2026-11-13)
+
+**Board read first.** Every task above is `done` and merged (PRs #20–#36). Two PRs remain open and are
+**not touched**: #30 (`arena/f115e6a2-korea1`) and #24 (`arena/3e57f750-korea1`). `main` tip at claim
+time is `43a946a` ("availability: official snapshot 2026-11-13T18:32Z"). The Arena platform pins this
+session to branch `arena/84e42ecc-korea1`, so that branch is both the task branch and the final
+integration branch (same convention every earlier session recorded).
+
+**Why T40 exists.** The published site prints external citations on every table row. Prior sessions
+verified that each row *has* a reference in an allow-listed domain (a **presence** check), which is
+explicitly recorded as "proves reference presence, not truth of a claim". Several URLs in the tree were
+never resolved against a live page — for example the two `operations.nfl.com` policy URLs that
+`arena/03f66e17-korea1` recorded as returning official 404 / "FLAG ON THE PLAY" text (N-05). A citation
+that 404s is worse than no citation: it looks like evidence and is not. T40 closes that gap.
+
+**Scope discipline.** No model, strategy, statistic, threshold, upstream pin or validation gate is
+changed. This session edits only: its own new scripts/CSV/page, plus the minimum shared-file edits
+needed to register that page (this is the same class of cross-scope edit every earlier session logged).
+No previously published page's *content* is rewritten except to replace a URL that this session's audit
+proved does not resolve, and every such replacement is listed in the register.
+
+### Method
+
+1. Extract every external `href` from every published `*.html` page (root + `lab/` + `archive/**`
+   excluded from the live nav but included in the audit), deduplicated to a URL register.
+2. Resolve each URL and record: HTTP status, final redirect target, page `<title>`, whether the fetched
+   body actually contains the text the site attributes to it, and the fetch timestamp.
+3. Classify: `RESOLVED` (200 + body supports the claim), `REDIRECT` (200 after redirect to a different
+   path — recorded, target shown), `UNRESOLVED` (4xx/5xx/DNS/TLS), `UNCHECKED` (cannot be fetched).
+4. Every `UNRESOLVED` / `UNCHECKED` referent is published on the site's Flagged-for-Review page and on a
+   new `referents.html` register, with the exact URL, the status observed and the fetch timestamp. None
+   is silently deleted and none is silently replaced with a different URL that makes the same claim.
+5. Where an `UNRESOLVED` URL is replaced, the replacement is itself `RESOLVED` and the pair is recorded
+   in the register (old → new → status → timestamp).
 ## 2026-11-13 — Session `arena/917fe36e-korea1` — independent verification + suggestions review
 
 **Board read first.** On `main` at `43a946a`, every earlier task is `done` or `needs review` and
@@ -1849,6 +1884,92 @@ an earlier *edit* to one of them. Reading the rendered live page after a merge i
 `live-verification.html`, `review.html`, `tests/test_live_verify.py`,
 `tests/test_review_consolidated.py`, plus the V3 integration points claimed on the board.
 
+### T40 result — `arena/84e42ecc-korea1` (2026-11-13)
+
+**What was done.** Every external URL printed on the published site was extracted and resolved against
+the live page, and the result was published. This is the check that was missing: the existing verifiers
+confirm each row *carries* an official-domain reference, which is a presence check, and the board already
+said so explicitly ("proves reference presence, not truth of a claim"). A citation that 404s looks like
+evidence and is not.
+
+**Artefacts** (all inside the claimed scope):
+
+| File | What it holds |
+|---|---|
+| `scripts/referent_probe.py` | Extracts every external `href` from `*.html` + `lab/*.html`, resolves it, records status, redirect target, content type, byte count, SHA-256, `<title>`, and whether the asserted text is present. |
+| `scripts/score_reconcile.py` | Re-reads the final score for all 28 rows of the Week 8–9 2026 census from the official game page. |
+| `data/audit/referent_expectations.csv` | Per-URL claim text, manual status, checked date, evidence note, and whether a manual read overrides the machine. |
+| `data/audit/referent_probe.json` / `referent_register.csv` | Full machine output. |
+| `data/audit/score_reconciliation.json` / `.csv` | Score census re-check. |
+| `referents.html` | The published register: verdict definitions, claim-support checks, unresolved/qualified referents, score census, full machine register, reproduction table. |
+| `.github/workflows/referent-audit.yml` | Nightly runner probe (the build sandbox has no egress to NFL, club or publisher domains) + `workflow_dispatch` + push trigger. |
+
+**Probe result, 2026-11-13T23:37Z (475 distinct URLs on site, all probed):**
+454 resolved · 8 redirect · 11 unresolved · 2 claim-not-supported.
+
+**Confirmed dead — independently by hand and by machine.** Two NFL Football Operations policy pages
+(`/updates/football-ops/2017-nfl-injury-report-policy/`, `/inside-football-ops/players-legends/player-protections/`,
+both "404 - FLAG ON THE PLAY", three pages each — previously N-05, **still printed**); the NFL.com
+`/teams/<club>/depth-chart` path (four pages); `docs.github.com` Pages publishing-source page;
+`github.com/clausherther/nfl-dbt/tree/main/...` (branch is `master` — the `blob/master` paths in
+`data/sources_pbp.json` do resolve); `Korea1/blob/main/data/processed/audit.json` (no such file).
+
+**Two findings that needed judgement rather than a code change:**
+
+1. **The Deflated Sharpe Ratio citation is fine; the probe is wrong.** `pm-research.com` reported
+   UNRESOLVED (HTTP 302) and it is printed on 13 pages. Opened by hand it serves the correct record:
+   Bailey & López de Prado, *Journal of Portfolio Management* 40(5), 94–107, DOI 10.3905/jpm.2014.40.5.094.
+   The publisher serves an interstitial to non-browser clients. The manual read overrides the probe and
+   the reason is published; F-24 was downgraded from *Medium · open* to *Low · needs review*.
+2. **The FanDuel parlay-push page is fine too.** The probe reports EXPECTED-MISS because the help centre
+   is client-rendered — the runner only sees a "Loading / CSS Error" shell. Read with a rendering reader
+   the quoted settlement rule is present. Manual read overrides.
+
+Both are recorded as overrides with the reason, because a machine 4xx is not proof a page is wrong, any
+more than a 200 is proof a claim is right.
+
+**Still unverified, not asserted either way:** `tandfonline.com` and three `doi.org` handles return 403 —
+automated access refused, which is not proof of absence. The citation text is unchanged; the links are
+unverified in this pass.
+
+**Redirects (8), all working today but with stale printed paths:** `the-rules/nfl-rulebook` →
+`rules-officiating/2026-nfl-rulebook` (13 pages); `player-health-safety` →
+`preparation-safety/health-safety`; `/scores/2026/REG8` and `REG9` → `week-8` / `week-9`; the Kelly DOI →
+IEEE Xplore; two `issues/new` links → GitHub login (benign — they require auth). One redirect is a real
+problem: **the FiveThirtyEight Elo methodology URL now lands on `abcnews.com/politics`**, so the K=20 and
+one-third-regression values this project quotes are no longer readable from the printed link.
+
+**Score census — honest result.** All 28 rows came back `UNPARSED`: the official game-centre page is
+client-rendered and the runner gets raw HTML with no score in it. That is recorded as *no verdict*, not
+as agreement. Two rows were opened by hand on 2026-11-13 and both match the official page, including the
+Atlanta 0–16 shutout — the kind of value worth re-checking rather than assuming. The census is
+spot-verified, not machine-verified end to end, and both the page and the executive summary say so.
+
+**Irregularity logged for the availability page owner (not repaired here):** the landing page still
+presents WAS @ NYG with a 2026-11-12 kickoff as a forward-looking matchup, but the official Week 10
+schedule shows it FINAL — Commanders 24, Giants 21. Filed as F-28; `arena/18c4acce-korea1` owns that page.
+
+**Deliberate non-change.** `github.com` was briefly added to the `ALLOW` list in `verify_site.py` so the
+register could print one table row per URL. It was **reverted**: it broke
+`tests/test_integration.py::test_official_allowlist_rejects_community_only`, which encodes a rule this
+project must keep — a community repository URL is never an official source. `referents.html` instead
+prints official/primary referents as table rows and community/method publishers in a separated, clearly
+labelled list. Nothing is hidden; the reason is printed on the page and in `verify_site.py`.
+
+**Cross-scope edits** (minimum needed to register one new page; no other session's content rewritten):
+`pipeline/render_site.py` (NAV entry, one `index.html` card, two hero buttons, eight `flagged.html` rows
+F-21–F-28), `pipeline/verify_site.py` (page registration + the reverted-allowlist note),
+`tests/check_sources.py` / `tests/check_links.py` (page registration), `Makefile` (two targets),
+`pipeline/render_summary.py` (one section), `README.md` (one section + one link), `COORDINATION.md`.
+
+**Verification before the pull request:** `make build` clean; `pipeline/verify_site.py` 0 failing checks;
+`tests/check_sources.py` 27 canonical pages / 2,605 rows, every row with an official/primary reference;
+`tests/check_links.py` 36 pages, no broken internal links, anchors or assets; `pytest tests/` 164 passed,
+1 skipped.
+
+**Open PRs #24 and #30 were not merged.** Both are `CONFLICTING` against current `main` (109 and 125
+changed files, last updated 2026-11-12), their T14–T17 / T14 titles match work already merged through
+other branches, and the protocol says do not merge a broken site. Left open for their owners.
 ## Session `arena/8a322b62-korea1` — T41 (FW6): forward-ledger settlement + first published forward page
 
 ### 2026-11-13T23:00Z — claim (committed and pushed before any file in scope was touched)
