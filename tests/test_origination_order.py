@@ -58,12 +58,12 @@ def test_walk_forward_side_before_total_before_moneyline():
         "originated_home_ml",  # fair moneyline price
         "edge_spread",       # side difference
         "edge_total",        # total difference
-        "edge_home_ml",      # moneyline difference
+        "ml_prob_diff_home",  # moneyline difference
     ])
     assert lines["p_home_cover"] < lines["p_over"], "total must follow the side"
     assert lines["p_over"] < lines["p_home_ml"], "moneyline must follow the total"
-    assert lines["edge_spread"] < lines["edge_home_ml"]
-    assert lines["edge_total"] < lines["edge_home_ml"]
+    assert lines["edge_spread"] < lines["ml_prob_diff_home"]
+    assert lines["edge_total"] < lines["ml_prob_diff_home"]
 
 
 def test_originate_future_side_before_total_before_moneyline():

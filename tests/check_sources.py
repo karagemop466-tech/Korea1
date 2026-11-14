@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from pipeline.verify_site import Collector,official_refs,ROOT
-PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html","strategies.html","validation.html","audit.html",
+PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html","price-archive.html","results-feed.html","strategies.html","validation.html","audit.html",
        "correlations.html","props.html","methodology.html","requirements.html","verification.html",
        "flagged.html","sources.html","decisions.html","suggestions.html","questions.html",
        "lineups.html","injuries.html","availability.html","decision-board.html","open-questions.html",
