@@ -23,7 +23,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "methodology.html", "requirements.html", "verification.html", "flagged.html", "sources.html",
          "audit.html", "availability.html", "decision-board.html", "open-questions.html",
          "questions.html", "injuries.html", "suggestions-review.html",
-         "decision-readiness.html", "lineup-deficiencies.html", "forward.html",
+"decision-readiness.html", "lineup-deficiencies.html", "referents.html",
+         "forward.html",
          "live-verification.html", "review.html",
          # X1-X4 (session arena/132e7ca2-korea1).
          "review-queue.html", "answers.html", "competition.html", "repo-review.html",

@@ -170,6 +170,47 @@ coverage, game-day role confirmation and validated impact remain blocked.
 | Line board freshness | Stale | The open line board still starts at Week 8 (snapshot pinned 2026-11-02); the injury capture is for the current week. Refreshing is suggestion DB-04. | [NFL schedule](https://www.nfl.com/schedules/) |
 | Site | Repaired | Navigation grouped by category; stylesheet now defines the classes the pages use. Review findings RV-01 to RV-11 are on `flagged.html`. | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
+## Citation integrity audit — 2026-11-13 (session `arena/84e42ecc-korea1`)
+
+Until now every published row was checked for the *presence* of an official reference. Presence is not
+proof: a citation that resolves to a 404 looks like evidence and is not. `scripts/referent_probe.py`
+now extracts every external URL printed on the site and resolves it, and the result is published on
+`referents.html`.
+
+| Result | Count | What it means |
+|---|---|---|
+| Resolved | 455 | HTTP 200 at the printed path, and — where a text check is defined — the page contains the text the row attributes to it. |
+| Redirect | 8 | HTTP 200 only after a redirect. Works today; the printed path is stale. |
+| Unresolved | 11 | 4xx/5xx or an NFL Football Operations soft-404. **Do not rely on these.** |
+| Claim not supported | 1 | The page loaded without the asserted text. On inspection this one is a false negative: the FanDuel help centre is client-rendered, so the machine probe only sees a loading shell. A manual read found the quoted settlement rule. |
+
+Confirmed dead, independently by hand and by machine: the [2017 NFL injury-report policy](https://operations.nfl.com/updates/football-ops/2017-nfl-injury-report-policy/)
+and player-protections pages on `operations.nfl.com` (three pages each); the NFL.com
+`/teams/<club>/depth-chart` path (four pages — the working official source is the club's own
+depth-chart page, verified live for Arizona); two GitHub links (the `nfl-dbt` path uses `main` but that
+repository's default branch is `master`, and `data/processed/audit.json` does not exist); and the
+GitHub Pages publishing-source documentation page.
+
+Two results need a human decision rather than a code change. The **Deflated Sharpe Ratio** reference is
+printed on 13 pages and neither its publisher URL nor its DOI could be read (302). The **FiveThirtyEight
+Elo methodology** URL now redirects to `abcnews.com/politics`, so the K=20 values this project quotes are
+no longer readable from the printed link. Neither affects a published number; both weaken a citation.
+
+Separately, `scripts/score_reconcile.py` re-opens the official game page for all 28 rows of the Week 8–9
+2026 score census and re-reads the final score. This is the only place where the project checks its own
+archived outcomes against an official source, so agreement here is what makes the pin trustworthy for
+scores even though it is stale for results.
+
+**The first machine run produced no verdict for any of the 28 rows.** The official game-centre page is
+client-rendered: the runner receives raw HTML with no score in it, so every row came back `UNPARSED`
+rather than `MATCH` or `MISMATCH`. That is recorded as a parser limitation, not as agreement. Two rows
+(`ARI 33–30 DAL` and `ATL 0–16 TB`) were opened by hand on 2026-11-13 and both agree with the official
+page — including the Atlanta shutout, which is exactly the kind of value that should be re-checked rather
+than assumed. The census is therefore spot-verified, not machine-verified end to end.
+
+All of this is published on `referents.html` and cross-listed on `flagged.html` as F-21 to F-28. Nothing
+was silently repaired: a citation is only changed after a human confirms the replacement says the same thing.
+
 ## Forward test — first settlement, 2026-11-13 (session `arena/8a322b62-korea1`)
 
 The repository now publishes a **prospective** record, which is the only evidence that cannot be
@@ -197,6 +238,7 @@ nothing about the strategy library has been demonstrated.
 dirty after each build. Every declared file is now hashed, a missing file raises, and
 `tests/test_evidence_integrity.py` fails on a null or mismatched digest (verified by restoring the old
 code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
+
 
 ## What was delivered
 

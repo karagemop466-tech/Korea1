@@ -55,6 +55,11 @@ site: injuries review reviewall
 	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/lineup_deficiencies.py
 	$(PY) pipeline/decision_readiness.py
+	# T40 (arena/84e42ecc-korea1): the referent register must be part of the build.
+	# It reads the committed probe output only (no network), so it is reproducible.
+	# Without this line the page went stale while verify_site.py counted its rows,
+	# which is exactly the drift tests/check_rebuild.py caught on PR #50.
+	$(PY) pipeline/render_referents.py
 	# X1-X4 (session arena/132e7ca2-korea1), additive: repository review, merged
 	# suggestion / question registers, competition page. Every existing recipe step
 	# is unchanged and still runs first.
@@ -67,6 +72,18 @@ site: injuries review reviewall
 	$(PY) pipeline/render_summary.py
 	$(PY) pipeline/render_readiness.py
 	$(PY) pipeline/render_annex.py
+
+# T40 (arena/84e42ecc-korea1): resolve every external URL printed on the site.
+# Needs outbound network access to NFL/club/publisher domains, so `make build` does NOT
+# run it - the nightly .github/workflows/referent-audit.yml does, on a GitHub-hosted runner,
+# and commits the result.  Run it here only to regenerate referents.html from a committed
+# probe, or to re-probe from a shell that has egress.
+referents:
+	$(PY) scripts/referent_probe.py
+	$(PY) pipeline/render_referents.py
+
+referent-render:
+	$(PY) pipeline/render_referents.py
 
 verify:
 	$(PY) pipeline/verify_site.py
