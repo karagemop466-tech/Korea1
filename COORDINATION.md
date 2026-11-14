@@ -2592,3 +2592,42 @@ correlations, props, forward ledger, flagged page, live Pages site). The concret
 
 ### 2026-11-14 — claim recorded — `arena/a6bbbf24-korea1`
 Branch head is `81836b63` ("availability: official snapshot 2026-11-14T17:10Z"), identical to `origin/main`. Working tree clean. No sibling branch is edited. Claims P1–P6 are started; P7 runs only after P6 passes.
+
+
+---
+
+## Session `arena/6b1f0c9a-korea1` — claim and scope (2026-11-14)
+
+**Brief (2026-11-14, owner).** Nine numbered requirements (price-snapshot store with opening and
+closing numbers for every originated market; verified results feed; originate **side → total →
+moneyline**; fair/market/difference as separate columns; split signal from staking on the
+leaderboard; track the *depth* of a replacement; correlations only from officially sourced numbers
+with `n` published; a demotion gate that sends a live strategy back to paper; a dedicated suggestions
+section). Plus: verification against official sources line by line, an executive summary, no manual
+input from the owner, a clean GitHub Pages site, and the parallel-session protocol.
+
+**Baseline read before claiming (2026-11-14T19:5xZ).** `make build` passes (0 failing checks, 32
+canonical pages, 3,553 rows) but the committed tree was **not** a fixed point: the official injury
+capture refreshed at 2026-11-14T17:10Z and 21 generated files were stale against it, and
+`tests/test_live_verify.py` failed twice because two fixtures were pinned to a *published defect*
+(DET / Kerby Joseph) that the official page has since corrected. Repairing that is commit 1 of this
+session (`tests/test_live_verify.py` fixtures rebuilt from the data instead of a player's name;
+generated outputs regenerated). 188 passed, 1 skipped afterwards.
+
+**Claim.** No task on this board covers the nine items below; the nearest covered ground is
+T2/T3/T4/T5 (model, strategies, gates, correlations, all `done` with research outputs) and the four
+suggestion registers (all `needs review`, i.e. *proposals*, nothing implemented). This session takes
+the nine-item brief as **T43** and, per the brief, builds it once as its own scope instead of
+merging other sessions' branches (there is no sibling branch with commits newer than `main` this
+session can see: `git ls-remote` shows only `main` and older session branches).
+
+| # | Task | Status | Owner | File scope (new files unless marked) |
+|---|------|--------|-------|--------------------------------------|
+| T43 | **Nine-item correctness brief**: price-snapshot store (open+close), verified results feed, market-order origination, fair/market/diff columns, signal-vs-staking leaderboard, replacement-depth tracker, officially-sourced correlations with `n`, demotion gate, consolidated suggestions review surface, plus executive summary and site integration | **in progress** | `arena/6b1f0c9a-korea1` | `pipeline/` new modules `price_snapshot.py`, `results_feed.py`, `origination_order.py`, `signal_staking.py`, `replacement_depth.py`, `corr_official.py`, `demotion_gate.py`, `session_20261114.py`; `data/` new subtrees `data/prices/**`, `data/results/**`, `data/correlations/**`, `data/gates/**`, `data/processed/{fair_market_diff,signal_staking,replacement_depth,corr_official,demotion_gate}*.csv`; `assets/data/**` mirrors produced by `session_common.write_csv`; new pages `*-2026-11-14` set listed in the session log below; `tests/test_*.py` new modules; `tests/test_live_verify.py` (repair above); `COORDINATION.md` (this section); `README.md`, `EXECUTIVE_SUMMARY.md`, `DECISIONS.md` (own sections only) |
+| T43-NAV | Shared-output edits that only the integration session may make: `pipeline/render_site.py` (`NAV_GROUPS` + index cards), `pipeline/verify_site.py` (`expected` page set), `tests/check_sources.py` (`PAGES`), `tests/check_links.py` (`PAGES`), `Makefile` (`site` recipe) | **claimed by this session as the integration session for this brief** | `arena/6b1f0c9a-korea1` | those five files, additive lines only; no other session's line removed |
+
+**Concurrency statement.** `git ls-remote --heads origin` before the claim showed `main` (head
+`81836b6`) plus historical `arena/*` session branches; no branch carried a claim newer than
+2026-11-14T00:05Z (T40's merge). No file in this claim's scope is owned by an *in progress* task on
+the board. If another session starts while this one runs, it must claim new `T44+` numbers and must
+not edit the five shared files above until this session's PR is merged.
