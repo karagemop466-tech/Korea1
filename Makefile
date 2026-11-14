@@ -55,6 +55,11 @@ site: injuries review reviewall
 	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/lineup_deficiencies.py
 	$(PY) pipeline/decision_readiness.py
+	# T40 (arena/84e42ecc-korea1): the referent register must be part of the build.
+	# It reads the committed probe output only (no network), so it is reproducible.
+	# Without this line the page went stale while verify_site.py counted its rows,
+	# which is exactly the drift tests/check_rebuild.py caught on PR #50.
+	$(PY) pipeline/render_referents.py
 	$(PY) pipeline/render_site.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	$(PY) pipeline/render_review.py
