@@ -443,6 +443,52 @@ def build_executive(d):
         ["Post-pin score census", "28 settled Week 8–9 games",
          "All 28 Week 8 (13) and Week 9 (15) 2026 games listed in upcoming.csv were verified Final on NFL.com on 2026-11-12 and reconciled on decision-readiness.html without mutating the historical backtest pin.",
          official("NFL week 9 scores")],
+        # ---- T43 nine-item brief (arena/6b1f0c9a-korea1, 2026-11-14) -------------------
+        ["Price snapshots (req. 1)", "36,438 rows · 0 official prices",
+         "One row per game/market/side with an opening and a closing endpoint, each naming its pinned "
+         "file and its evidence class. 2,916 rows carry both endpoints (the spread, 2013-2018); "
+         "31,264 gap rows are queued rather than smoothed. Not one price on the site is an official "
+         "sportsbook quote, which is why gate G1 still fails for every strategy.",
+         official("NFL scores")],
+        ["Verified results feed (req. 2)", "29 official finals · 107 community-only",
+         "Every settled 2026 game in one feed with the URL it was read from, the page, the read time "
+         "and the evidence class, plus the derived settlement per market. nfl.com renders 'Hidden "
+         "Score' on some pages; those games are UNVERIFIED, and the official Game Book PDF is "
+         "recorded as the fallback that does carry the score.",
+         official("NFL week 8 scores")],
+        ["Origination, fair vs market (req. 3-4)", "worse on all three markets",
+         "Side, then total, then moneyline, with the model's fair number, the market's number and "
+         "the difference as separate columns. On paired out-of-sample rows the fair line is worse "
+         "than the closing line everywhere: side 10.523 vs 10.215 MAE, total 10.762 vs 10.527, "
+         "moneyline 0.449 vs 0.424. A difference is published as a difference, never as an edge.",
+         official("NFL scores")],
+        ["Signal vs staking (req. 5)", "1 signal in 18 · the old leader is luck-risk",
+         "Two independent tests now decide the leaderboard. WIND_UNDER, which topped the ROI board "
+         "at +9.15% on 456 bets, has no signal evidence and is labelled LUCK_RISK; BUY_LOW_ATS is "
+         "the only strategy with signal evidence and it still loses money on price. With 18 tests, "
+         "one 95% pass is close to chance, so nothing is promoted.",
+         official("NFL scores")],
+        ["Replacement depth (req. 6)", "30 club-units verified · 71 players unmatched",
+         "Official injuries joined to official club depth charts: every hole is weighted 1/rank, "
+         "the deepest slot a club must use is printed, and a slot with no listed backup is marked a "
+         "cliff. A chart order is not a game-time role, so no depth claim is made about who plays.",
+         official("NFL injuries")],
+        ["Correlations with n (req. 7)", "n = 5,213 pairs · 425 weeks per row",
+         "Six relationships from pairs where both the market number and the outcome come from the "
+         "same archive row, each with a week-block interval and a printed sign convention. Three are "
+         "distinguishable from zero and three are published as null results, including the "
+         "side/total pair a same-game parlay price depends on.",
+         official("NFL scores")],
+        ["Demotion gate (req. 8)", "armed · nothing live to demote",
+         "Four states and six fail-closed triggers: any one sends a live strategy back to paper. "
+         "The gate runs against every strategy on every build. No strategy is LIVE, so nothing can "
+         "be demoted today, and the gate says so instead of printing a pass.",
+         official("NFL scores")],
+        ["Review before change (req. 9)", "9 brief items · 10 proposals · 9 questions",
+         "suggestions-review-2026-11-14.html records what each requirement actually proved, ten new "
+         "proposals checked against the existing 76-row register, and the nine questions that must "
+         "be answered before a path is chosen. Every row reads 'awaiting path selection'.",
+         official("NFL scores")],
         ["Recommended path", "Path A now, Path B next",
          "Hold the evidence line while the site is cleaned up; buy authenticated prices before any reward is discussed; "
          "run availability research alongside, not instead.",
@@ -1004,6 +1050,13 @@ def build_flagged(d):
         ["F-26", "Low · needs review", "Eight URLs resolve only through a redirect, including operations.nfl.com/the-rules/nfl-rulebook (to the 2026 rulebook) and /scores/2026/REG8 and REG9 (to week-8 and week-9). They work today; the printed paths are stale and should be updated to the final paths.", official("NFL week 8 scores")],
         ["F-27", "Low · needs review", "Two GitHub links 404: the nfl-dbt play-by-play path uses /tree/main/ but that repository's default branch is master (the master paths used in data/sources_pbp.json do resolve), and data/processed/audit.json does not exist on main. Both need a corrected path; neither affects a published number.", official("GitHub Pages documentation")],
         ["F-28", "Medium · open", "The landing page still presents WAS @ NYG with a 2026-11-12 kickoff as a forward-looking lineup-deficiency matchup, but the official Week 10 schedule shows it FINAL (Commanders 24, Giants 21, 12 November 2026). This is the availability page's scope (session arena/18c4acce-korea1) and was not repaired here.", official("NFL week 10 schedule")],
+        # ---- T43 nine-item brief (arena/6b1f0c9a-korea1, 2026-11-14) ----------------
+        ["F-2026-11-14-01", "High · open", "nfl.com withholds scores from this client on some pages. The week-9 index page and the NYG at PHI game page both render the literal text 'Hidden Score' while still showing the word Final, and the same happens on the Commanders at Giants week-10 page. The official Game Book PDF linked from the game page does carry the score (verified on WAS 24, NYG 21). Nothing is inferred from the rendered page: those games are left UNVERIFIED in the results feed and the extract records the method per row. Proposed fix is RES-01 on the 2026-11-14 suggestions review.", official("NFL week 9 scores") + " · " + src_link("https://static.www.nfl.com/image/upload/v1794570519/gamecenter/ab5828d9-4feb-11f1-abca-2c54536568a9.pdf", "NFL Game Book (WAS at NYG)")],
+        ["F-2026-11-14-02", "Medium · repaired", "Two sign errors were found in the correlation build before publication and fixed. (1) market_home_ml in the pinned archive is already an implied probability, not an American price, so converting it again would have inverted the moneyline relationship. (2) The model-edge relationship was first written as the ABSOLUTE fair-minus-market difference, which tests magnitude rather than direction and produced a negative coefficient; the signed convention is that market_spread is the home handicap and a negative number means the home side is favoured, so the signed edge is market - fair. Both are now pinned by tests, and every correlation row prints its sign convention.", official("NFL scores") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/corr_official.py", "corr_official.py")],
+        ["F-2026-11-14-03", "High · open", "The model's fair line is worse than the market close on all three markets, out of sample and on paired rows: side 10.523 vs 10.215 MAE, total 10.762 vs 10.527, moneyline 0.449 vs 0.424 in probability terms. This is published on origination.html as a result, not hidden. It means no fair/market difference on this site should be read as an edge, and it is the reason the demotion gate has nothing to promote.", official("NFL scores") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/gates/origination_accuracy.csv", "origination_accuracy.csv")],
+        ["F-2026-11-14-04", "Medium · open", "1,892 of the 6,073 originated games (31%) have no closing spread AND no closing total in the pinned archive; the coverage is 2021 for openers and 2006-2018 for closers, so a paired open-to-close comparison is possible for only 2,916 rows, all of them the spread in 2013-2018. The price-snapshot store reports the gap per row rather than smoothing it, and 31,264 gap rows are queued on price-store.html.", official("NFL scores") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/prices/price_snapshot_coverage.csv", "price_snapshot_coverage.csv")],
+        ["F-2026-11-14-05", "High · open", "No strategy passes the signal test after the split: 17 of 18 show no signal evidence and the eighteenth (BUY_LOW_ATS) fails on price, not signal. The old ROI leader WIND_UNDER is now labelled LUCK_RISK. With 18 tests, one 95% pass is about what multiple testing produces, so no strategy is promoted and the multiplicity correction is proposed as SIG-02 rather than applied silently.", official("NFL scores") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/gates/signal_staking.csv", "signal_staking.csv")],
+        ["F-2026-11-14-06", "Medium · open", "Replacement depth is measured from club depth charts, and a chart order is not a game-time role: no chart carries a publication time and the T-90m inactive list is not archived. 71 of 160 unavailable or at-risk players could not be matched to a chart slot at all and are counted as unmatched rather than assigned a depth. Houston's chart is an image and yields no rows, so Houston is NO_CHART rather than defaulted to first string.", official("NFL injuries") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/gates/replacement_slots.csv", "replacement_slots.csv")],
     ]
     from render_review import flagged_rows
     review = flagged_rows()

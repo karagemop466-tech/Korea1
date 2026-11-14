@@ -2631,3 +2631,54 @@ session can see: `git ls-remote` shows only `main` and older session branches).
 2026-11-14T00:05Z (T40's merge). No file in this claim's scope is owned by an *in progress* task on
 the board. If another session starts while this one runs, it must claim new `T44+` numbers and must
 not edit the five shared files above until this session's PR is merged.
+
+## T43 completion — 2026-11-14 (session `arena/6b1f0c9a-korea1`)
+
+**Status: DONE.** All nine requirements of the 2026-11-14 brief are built, published, verified and
+covered by tests. Scope was additive: no file owned by another session was edited, and the two
+shared surfaces (navigation and the index) were changed only by this session, as the brief requires
+(shared outputs are changed only by the integration session, which this is).
+
+### What shipped
+
+| Req | Module | Page | Data | Headline result |
+|---|---|---|---|---|
+| 1 | `price_snapshot.py` | `price-store.html` | `data/prices/*` | 36,438 rows; 2,916 with both endpoints; **0 official prices** |
+| 2 | `results_feed.py` | `results-feed.html` | `data/results/*` | 29 official finals, 1 unverified, 13 future, 107 community-only |
+| 3-4 | `origination_order.py` | `origination.html` | `data/gates/origination_*` | side → total → ML; fair/market/diff separate; model **worse on all three** |
+| 5 | `signal_staking.py` | `signal-staking.html` | `data/gates/signal_*` | 1 signal in 18; `WIND_UNDER` re-labelled **LUCK_RISK** |
+| 6 | `replacement_depth.py` | `replacement-depth.html` | `data/gates/replacement_*` | 30 verified club-units; 71 unmatched players counted |
+| 7 | `corr_official.py` | `correlation-official.html` | `data/correlations/*` | n = 5,213 pairs / 425 weeks per row; 3 of 6 distinguishable from zero |
+| 8 | `demotion_gate.py` | `demotion.html` | `data/gates/demotion_*` | 6 fail-closed triggers; armed, 0 live, 0 demotions |
+| 9 | `session_20261114.py` | `suggestions-review-2026-11-14.html` | `data/integration/brief_*`, `suggestions_2026_11_14.csv`, `questions_2026_11_14.csv` | 9 items, 10 proposals, 9 questions — all awaiting a path |
+
+### Official reads made (with method, because this is the part that can be wrong)
+
+The shell has no route to nfl.com; every official value was read with the page-fetch tool and is
+recorded per row in `data/live/official_scores_2026_week08_10.csv` with its URL, source page, read
+time and method:
+
+- `nfl.com/scores/2026/week-8` — 14 finals, both scores printed → `OFFICIAL_INDEX_PAGE`
+- `nfl.com/games/jaguars-at-ravens-2026-reg-9` — 33–10 → `OFFICIAL_GAME_PAGE`
+- `nfl.com/games/giants-at-eagles-2026-reg-9` — **"Hidden Score"** on both the index and the game
+  page → left blank, `OFFICIAL_GAME_PAGE_HIDDEN_SCORE` (finding F-2026-11-14-01)
+- Game Book PDF for WAS at NYG — 24–21 → `OFFICIAL_GAME_BOOK` (the page itself hides the score)
+
+### Verification
+
+- `make build` → **0 failing checks**, 40 canonical pages, 4,856 rows asserted
+- `tests/check_links.py` → 49 pages, 0 broken
+- `tests/check_sources.py` → 49 strict pages, every row carries an official link
+- `make test` → **213 passed, 1 skipped** (25 new tests in `tests/test_brief_2026_11_14.py`)
+- `tests/check_rebuild.py` → matches committed outputs
+
+### Irregularities flagged (non-blocking, published on `flagged.html`)
+
+`F-2026-11-14-01` hidden scores · `-02` two correlation sign errors, found and fixed before
+publication · `-03` model loses to the close on all three markets · `-04` 31,264 price gaps ·
+`-05` one signal in eighteen tests · `-06` chart order is not a game-time role.
+
+### Still open, and not claimed as done
+
+`models.py` moneyline swap remains untested (carried over). No strategy is validated, no reward is
+awarded, and no proposal from the review page has been implemented — by design.
