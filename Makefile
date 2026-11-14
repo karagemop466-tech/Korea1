@@ -67,6 +67,16 @@ site: injuries review reviewall
 	$(PY) pipeline/session_review.py
 	$(PY) pipeline/session_decide.py
 	$(PY) pipeline/session_competition.py
+	# T43 (session arena/6b1f0c9a-korea1): the nine requirement pages. All read committed data
+	# only (no network), so `make build` stays reproducible in CI.
+	$(PY) pipeline/price_snapshot.py
+	$(PY) pipeline/results_feed.py
+	$(PY) pipeline/origination_order.py
+	$(PY) pipeline/signal_staking.py
+	$(PY) pipeline/replacement_depth.py
+	$(PY) pipeline/corr_official.py
+	$(PY) pipeline/demotion_gate.py
+	$(PY) pipeline/session_20261114.py
 	$(PY) pipeline/render_site.py
 	# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed
 	# originated lines and the forward cards only; no network.

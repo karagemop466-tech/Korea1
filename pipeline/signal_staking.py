@@ -61,6 +61,7 @@ SHA = SRC["upstream"]["commit_sha"]
 URL_BASE = f"https://github.com/nflverse/nfldata/blob/{SHA}/data/"
 URL_GAMES = URL_BASE + "games.csv"
 URL_CLOSING = URL_BASE + "closing_lines.csv"
+URL_NFL = "https://www.nfl.com/scores/"
 
 MIN_BETS_SIGNAL = 200     # below this the signal statistics are not reported at all
 N_BOOT = 2000
@@ -220,7 +221,7 @@ def build_page(out: pd.DataFrame, dec: pd.DataFrame) -> str:
             pct(r.roi), f"[{pct(r.roi_lo)}, {pct(r.roi_hi)}]",
             "yes" if r.price_complete else "no",
             clean(r.signal_verdict), clean(r.staking_verdict), clean(r.combined_verdict),
-            ref_link("closing_lines", URL_CLOSING),
+            ref_link("NFL scores", URL_NFL), ref_link("closing_lines", URL_CLOSING),
         ])
     n_sig = int((out.signal_verdict == "SIGNAL_PRESENT").sum())
     n_roi = int((out.roi > 0).sum())
@@ -233,7 +234,8 @@ def build_page(out: pd.DataFrame, dec: pd.DataFrame) -> str:
         d = dec[dec.strategy == "WIND_UNDER"]
         for r in d.itertuples():
             wind_rows.append([f"D{r.decile}", f"{r.bets:,}", f"{r.mean_signal:+.2f}",
-                              f"{r.mean_pnl:+.3f}", f"{r.hit_rate:.1%}"])
+                              f"{r.mean_pnl:+.3f}", f"{r.hit_rate:.1%}",
+                              ref_link("NFL scores", URL_NFL)])
     cards = (
         '<div class="cards">'
         f'<div class="card bad">{n_valid}<div class="card-label">strategies validated on both tests</div>'
@@ -278,7 +280,7 @@ single-bet strategies, a <em>ticket</em> for parlays — a parlay's signal is a 
 its correlation measures the legs, not the ticket.</p>
 {table(rows, ["Rank", "Strategy", "Level", "Settled", "Spearman ρ", "ρ 95% interval", "Decile lift",
               "ROI", "ROI 95% interval", "Every bet priced?", "Signal verdict", "Staking verdict",
-              "Combined", "Source"],
+              "Combined", "Official source", "Archive input"],
        caption="Signal and staking tested and reported separately; the combined verdict needs both to pass")}
 </section>
 <section>
@@ -286,7 +288,8 @@ its correlation measures the legs, not the ticket.</p>
 <p>This is the row that used to top the leaderboard. The decile table shows whether a stronger signal
 actually earned more. If the top decile is not better than the bottom, the +9.15% came from the
 sample, not from the signal — and the row is moved down accordingly.</p>
-{table(wind_rows or [["—"] * 5], ["Signal decile", "Bets", "Mean signal", "Mean pnl (units)", "Hit rate"],
+{table(wind_rows or [["—"] * 6], ["Signal decile", "Bets", "Mean signal", "Mean pnl (units)", "Hit rate",
+                                      "Official reference"],
        caption="WIND_UNDER: realised pnl by decile of the model's own signal")}
 <p class="flag warn"><strong>What would change this.</strong> A signal verdict is worth acting on only
 if it survives on data the test has never seen — which is what the forward ledger is for, and why the

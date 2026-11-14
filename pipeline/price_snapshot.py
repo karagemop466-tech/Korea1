@@ -71,6 +71,7 @@ from common import PROC, RAW, ROOT, read_json  # noqa: E402
 from render_site import layout, table  # noqa: E402
 from session_common import BLANK, clean, e, ref_link, resolve_ref, write_csv  # noqa: E402
 
+URL_NFL = "https://www.nfl.com/scores/"
 OUT = ROOT / "data" / "prices"
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -385,7 +386,8 @@ def build_page(d: pd.DataFrame, cov: pd.DataFrame, gap: pd.DataFrame) -> str:
     )
     cov_rows = [[clean(r.market_label), f"{r.originated_rows:,}", f"{r.open_line:,}",
                  f"{r.close_line:,}", f"{r.close_price:,}", f"{r.both:,}", f"{r.model_only:,}",
-                 clean(r.seasons), ref_link("closing_lines.csv", URL_CLOSING)]
+                 clean(r.seasons), ref_link("NFL scores", URL_NFL),
+                 ref_link("closing_lines.csv", URL_CLOSING)]
                 for r in cov.itertuples()]
 
     def fmt(v, price=False):
@@ -409,14 +411,14 @@ def build_page(d: pd.DataFrame, cov: pd.DataFrame, gap: pd.DataFrame) -> str:
             fmt(r.market_at_origination, r.market == "MONEYLINE"),
             fmt(r.fair, r.market == "MONEYLINE"),
             clean(r.provenance.replace("_", " ").title()),
-            ref_link("closing", URL_CLOSING),
+            ref_link("NFL scores", URL_NFL), ref_link("closing", URL_CLOSING),
         ])
     if not rows:
-        rows = [["—"] * 12]
+        rows = [["—"] * 13]
 
     gap_rows = [[clean(r.market), f"{int(r.season)} W{int(r.week)}", e(r.game_id),
                  clean(r.side), clean(r.provenance), clean(r.missing), clean(r.note),
-                 ref_link("closing_lines.csv", URL_CLOSING)]
+                 ref_link("NFL scores", URL_NFL), ref_link("closing_lines.csv", URL_CLOSING)]
                 for r in gap.head(60).itertuples()]
 
     body = f"""
@@ -451,7 +453,7 @@ called validated.</p>
 <section>
 <div class="section-head"><h2>2 · Coverage by market</h2></div>
 {table(cov_rows, ["Market", "Rows", "Opening number", "Closing number", "Closing price",
-                  "Open + close", "Model-only", "Seasons", "Pinned source"],
+                  "Open + close", "Model-only", "Seasons", "Official source", "Pinned source"],
        caption="Snapshot coverage per market. A number is not a price; they are counted separately.")}
 </section>
 <section>
@@ -460,7 +462,7 @@ called validated.</p>
 because no pinned file carries a 2026 opener; the opener column is blank, not zero, and the row says
 so in its provenance cell.</p>
 {table(rows, ["Week", "Game", "Market", "Side", "Open", "Close", "Open price", "Close price",
-              "Market at origination", "Model fair", "Provenance", "Source"],
+              "Market at origination", "Model fair", "Provenance", "Official source", "Archive input"],
        caption="2026 originated markets with the snapshot endpoints the pinned archive can support")}
 </section>
 <section>
@@ -469,7 +471,8 @@ so in its provenance cell.</p>
 least one endpoint the archive cannot populate. Closing the gap needs a licensed price feed with a
 timestamp per quote (suggestion PRICE-01 on <a href="suggestions-review-2026-11-14.html">the suggestions page</a>),
 not another community mirror — a mirror cannot prove a price was executable.</p>
-{table(gap_rows, ["Market", "Season/week", "Game", "Side", "Provenance", "Missing", "Why", "Source"],
+{table(gap_rows, ["Market", "Season/week", "Game", "Side", "Provenance", "Missing", "Why",
+                  "Official source", "Archive input"],
        caption="Originated markets with at least one missing endpoint (first 60 shown)")}
 <p class="flag warn">Unverified values are blank. Nothing here is drawn from a future row, an
 adjacent week, or a line the archive does not carry.</p>

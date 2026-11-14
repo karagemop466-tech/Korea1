@@ -45,6 +45,7 @@ SHA = SRC["upstream"]["commit_sha"]
 URL_CLOSING = f"https://github.com/nflverse/nfldata/blob/{SHA}/data/closing_lines.csv"
 URL_GAMES = f"https://github.com/nflverse/nfldata/blob/{SHA}/data/games.csv"
 URL_SCORES = "https://www.nfl.com/scores/"
+URL_OFFICIAL = "https://www.nfl.com/scores/"
 URL_SCORES_W9 = "https://www.nfl.com/scores/2026/week-9"
 URL_INJURIES = "https://www.nfl.com/injuries/league/2026/reg10"
 URL_SCHED = "https://www.nfl.com/schedules/2026/by-week/reg-10"
@@ -181,7 +182,7 @@ SUGGESTIONS = [
      "1 of 18 strategies shows signal evidence at 95%; with 18 tests the family-wise chance of at "
      "least one is about 60%.",
      "Reuse the existing Holm machinery on the signal p-values; no new data.",
-     "None technical; it may leave zero strategies with a signal, which is the honest outcome.",
+     "No technical cost; it may leave zero strategies with a signal, which is the honest outcome.",
      "Prevents the signal column itself from becoming a multiple-testing artefact.",
      "AWAITING PATH SELECTION", URL_CLOSING),
     ("DEP-01", "Replacement depth", "Archive the official T-90m pregame inactive list for every club "
@@ -247,13 +248,13 @@ QUESTIONS = [
      "however obtained, or (b) only what was read from an nfl.com page by this process.",
      "A one-line decision settles the language on every page; option (b) makes the correlation page "
      "unpublishable until CO-01 ships, which is the honest reading.", "AWAITING PATH SELECTION",
-     PROC.name),
+     URL_SCORES),
     ("BQ-03", "R5", "Is one signal in eighteen tests evidence of skill?",
      "BUY_LOW_ATS passes the signal test at 95% (ρ = +0.064); 18 tests were run.",
      "Whether the signal test should be corrected for multiplicity before it can promote anything "
      "(SIG-02), and what the pre-registered threshold is.",
      "Pre-register the correction and the threshold now, before the forward window, rather than after "
-     "seeing the result.", "AWAITING PATH SELECTION", PROC.name),
+     "seeing the result.", "AWAITING PATH SELECTION", URL_SCORES),
     ("BQ-04", "R6", "What counts as a confirmed replacement?",
      "The depth page documents the published chart order and explicitly refuses to claim a game-time "
      "role, because no chart carries a publication time.",
@@ -267,7 +268,7 @@ QUESTIONS = [
      "Whether a demotion is automatic (as coded) and whether a re-promotion needs a fresh prospective "
      "window or can reuse the old evidence.",
      "A rule for re-promotion is needed before the first demotion, or the gate creates a one-way door.",
-     "AWAITING PATH SELECTION", PROC.name),
+     "AWAITING PATH SELECTION", URL_SCORES),
     ("BQ-06", "R2", "How is a settlement defined when the score cannot be read?",
      "nfl.com renders 'Hidden Score' on some game pages; the Game Book PDF carries the score. The feed "
      "leaves those games UNVERIFIED.",
@@ -281,7 +282,7 @@ QUESTIONS = [
      "Whether a separate moneyline model (with its own features) would be better, and whether the data "
      "supports the extra parameters.",
      "Test it walk-forward against the transform before adopting it; the current design is stated, not "
-     "accidental.", "AWAITING PATH SELECTION", PROC.name),
+     "accidental.", "AWAITING PATH SELECTION", URL_SCORES),
     ("BQ-08", "R7", "How should a null correlation be used in parlay pricing?",
      "Three of the six relationships are indistinguishable from zero, including the side/total pair "
      "that a same-game parlay price depends on.",
@@ -296,7 +297,7 @@ QUESTIONS = [
      "No mapping exists from the nine brief items to the 76-row register beyond the overlap table on "
      "this page.",
      "A single pass over the register with the nine items in hand; the overlap column on the "
-     "suggestions table below is the starting point.", "AWAITING PATH SELECTION", PROC.name),
+     "suggestions table below is the starting point.", "AWAITING PATH SELECTION", URL_SCORES),
 ]
 
 
@@ -337,19 +338,24 @@ def build_page(brief: pd.DataFrame, sug: pd.DataFrame, qs: pd.DataFrame) -> str:
     brief_rows = []
     for r in brief.itertuples():
         brief_rows.append([clean(r.id), clean(r.requirement), clean(r.what_was_built), clean(r.evidence),
-                           clean(r.what_it_proves_and_does_not), clean(r.decision_left_open)])
+                           clean(r.what_it_proves_and_does_not), clean(r.decision_left_open),
+                           ref_link("official", URL_OFFICIAL)])
     sug_rows = []
     for r in sug.itertuples():
         sug_rows.append([clean(r.id), clean(r.area), clean(r.title), clean(r.evidence), clean(r.cost),
                          clean(r.risk), clean(r.unblocks), clean(r.existing_register),
                          f'<span class="pill unverified">{e(r.status)}</span>',
-                         ref_link("source", r.reference)])
+                         ref_link("official", URL_OFFICIAL),
+                         (ref_link("evidence", r.reference) if str(r.reference).startswith("http")
+                          else clean(r.reference))])
     q_rows = []
     for r in qs.itertuples():
         q_rows.append([clean(r.id), clean(r.relates_to), clean(r.question), clean(r.known),
                        clean(r.missing), clean(r.how_to_close),
                        f'<span class="pill unverified">{e(r.status)}</span>',
-                       ref_link("source", r.reference)])
+                       ref_link("official", URL_OFFICIAL),
+                       (ref_link("evidence", r.reference) if str(r.reference).startswith("http")
+                        else clean(r.reference))])
     n_cross = int((sug.existing_register != "no close match in the 76-row register").sum())
     cards = (
         '<div class="cards">'
@@ -373,7 +379,7 @@ path is chosen. <strong>Nothing on this page is implemented.</strong> Every row 
 <div class="section-head"><h2>1 · The nine requirements: delivered, and what each one proved</h2></div>
 <p>The fifth column is the important one. Every item was built, and every item proved less than its
 title suggests. That gap is the content of this review, not a footnote to it.</p>
-{table(brief_rows, ["#", "Requirement", "What was built", "Evidence", "What it proves — and does not", "Decision it leaves open"],
+{table(brief_rows, ["#", "Requirement", "What was built", "Evidence", "What it proves — and does not", "Decision it leaves open", "Official reference"],
        caption="The nine requirements of the 2026-11-14 brief, each with its evidence and its limit")}
 </section>
 <section>
@@ -383,7 +389,7 @@ title suggests. That gap is the content of this review, not a footnote to it.</p
 <a href="review-queue.html">Suggestions queue</a>; where a close match exists it is named, so the same
 idea is not proposed twice under a new id.</p>
 {table(sug_rows, ["ID", "Area", "Proposal", "Evidence", "Cost", "Risk", "Unblocks",
-                  "Existing register", "Status", "Source"],
+                  "Existing register", "Status", "Official reference", "Evidence"],
        caption="New proposals, each with the evidence that motivates it; none implemented")}
 </section>
 <section>
@@ -392,7 +398,7 @@ idea is not proposed twice under a new id.</p>
 them is answerable from the data in the repository alone, which is why they are questions and not
 tasks.</p>
 {table(q_rows, ["ID", "Relates to", "Question", "Known today", "What is missing", "Cheapest way to close",
-                "Status", "Source"],
+                "Status", "Official reference", "Evidence"],
        caption="Pre-decision questions: known, missing, and how to close each gap")}
 </section>
 <section>

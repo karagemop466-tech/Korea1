@@ -208,9 +208,10 @@ def build_page(out: pd.DataFrame, rules: pd.DataFrame) -> str:
             f"{int(r.backtest_n):,}", f"{r.backtest_roi:+.2%}",
             cell(r.d1), cell(r.d2), cell(r.d3), cell(r.d4), cell(r.d5), cell(r.d6),
             clean(r.decision), clean(r.reason),
+            ref_link("NFL scores", r.official_source or URL_SCORES),
         ])
-    rule_rows = [[clean(r.code), clean(r.name), clean(r.test), clean(r.statistic), clean(r.why)]
-                 for r in rules.itertuples()]
+    rule_rows = [[clean(r.code), clean(r.name), clean(r.test), clean(r.statistic), clean(r.why),
+                  ref_link("NFL scores", URL_SCORES)] for r in rules.itertuples()]
     n_live = int((out.state == "LIVE").sum())
     n_dem = int((out.decision == "DEMOTE_TO_PAPER").sum())
     cards = (
@@ -243,7 +244,8 @@ cannot.</li>
 </section>
 <section>
 <div class="section-head"><h2>2 · The demotion rules</h2></div>
-{table(rule_rows, ["Code", "Rule", "Fires when", "Statistic", "Why this is the right test"],
+{table(rule_rows, ["Code", "Rule", "Fires when", "Statistic", "Why this is the right test",
+                   "Official reference"],
        caption="Six fail-closed demotion triggers; any one of them is sufficient")}
 </section>
 <section>
@@ -253,7 +255,8 @@ A trigger cell is blank when the rule cannot fire (no live record), <em>fired</e
 carries the reason when it cannot be computed. The decision column is what the gate would do
 <em>today</em>.</p>
 {table(rows, ["Strategy", "State", "Live settled", "Live pnl", "Live win rate", "Backtest n",
-              "Backtest ROI", "D1", "D2", "D3", "D4", "D5", "D6", "Decision", "Reason"],
+              "Backtest ROI", "D1", "D2", "D3", "D4", "D5", "D6", "Decision", "Reason",
+              "Official reference"],
        caption="Demotion gate evaluation; no strategy is LIVE, so the armed gate has nothing to demote")}
 </section>
 <section>

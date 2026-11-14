@@ -70,6 +70,7 @@ NFL_WEEK = {8: "https://www.nfl.com/scores/2026/week-8",
             9: "https://www.nfl.com/scores/2026/week-9",
             10: "https://www.nfl.com/scores/2026/week-10"}
 NFL_SCHEDULE = "https://www.nfl.com/schedules/2026/by-week/reg-10"
+NFL_SCORES = "https://www.nfl.com/scores/"
 URL_GAMES_LOCAL = ("https://github.com/nflverse/nfldata/blob/"
                    + read_json(ROOT / "data" / "sources.json")["upstream"]["commit_sha"]
                    + "/data/games.csv")
@@ -337,14 +338,18 @@ def build_page(d: pd.DataFrame, cov: pd.DataFrame) -> str:
             f"{a}–{h}" if a and h else BLANK,
             clean(r.verified), clean(str(r.score_source).replace("_", " ").title()),
             clean(r.settle_spread), clean(r.settle_total), clean(r.settle_moneyline),
-            ref_link("NFL.com", r.official_url) if r.official_url else BLANK,
+            ref_link("NFL.com", r.official_url) if r.official_url else
+            ref_link("NFL scores", NFL_WEEK.get(int(r.week) if pd.notna(r.week) else 0, NFL_SCORES)),
+            ref_link("NFL scores", NFL_SCORES) if r.official_url else BLANK,
         ])
     if not rows:
         rows = [["—"] * 10]
     cov_rows = []
     for r in cov.itertuples():
         cov_rows.append([f"{int(r.season)}", f"{int(r.FINAL)}", f"{int(getattr(r, 'FUTURE', 0))}",
-                         f"{int(getattr(r, 'NOT_FINAL', 0))}", str(int(r.FINAL) + int(getattr(r, 'FUTURE', 0)) + int(getattr(r, 'NOT_FINAL', 0)))])
+                         f"{int(getattr(r, 'NOT_FINAL', 0))}",
+                         str(int(r.FINAL) + int(getattr(r, 'FUTURE', 0)) + int(getattr(r, 'NOT_FINAL', 0))),
+                         ref_link("NFL scores", NFL_SCORES)])
     best = int((d.settle_spread.notna()).sum()) + int((d.settle_total.notna()).sum()) + \
         int((d.settle_moneyline.notna()).sum())
     body = f"""
@@ -370,12 +375,12 @@ settleable market rows out of {3 * n:,}.</p>
 pushed — not that any bet was placed at that price. Pushes are named as pushes; a blank closing line
 cannot win and is shown blank.</p>
 {table(rows, ["Week", "Date", "Matchup", "Official final", "Feed status", "Score source",
-              "Side settles", "Total settles", "Moneyline settles", "Official page"],
+              "Side settles", "Total settles", "Moneyline settles", "Official page", "Context"],
        caption="Verified results feed, 2026: every game, its official final where one exists, and the derived settlement")}
 </section>
 <section>
 <div class="section-head"><h2>3 · Coverage by season</h2></div>
-{table(cov_rows, ["Season", "Final", "Future", "Not final", "Total"],
+{table(cov_rows, ["Season", "Final", "Future", "Not final", "Total", "Official reference"],
        caption="Feed coverage per season")}
 </section>
 <section>
@@ -385,7 +390,7 @@ cannot win and is shown blank.</p>
 <a href="assets/data/official_scores_2026_week08_10.csv">official_scores_2026_week08_10.csv</a>,
 read from the NFL.com week pages listed under each row. This is the class a settlement may use.</li>
 <li><strong>OFFICIAL_RESULTS_REGISTER</strong> — the 30 rows already settled by earlier sessions in
-<a href="assets/data/official_results.csv">official_results.csv</a>, each with its own NFL.com game
+<a href="assets/data/verified_results.csv">verified_results.csv</a> (the register rows are merged into it), each with its own NFL.com game
 URL and read time. Kept as a second source rather than re-transcribed.</li>
 <li><strong>PINNED_SCHEDULE_PENDING</strong> — a game the pinned archive lists for 2026 with no
 official final yet. It is a placeholder for scheduling, not a result.</li>

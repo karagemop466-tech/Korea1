@@ -58,6 +58,7 @@ SRC = read_json(ROOT / "data" / "sources.json")
 SHA = SRC["upstream"]["commit_sha"]
 URL_GAMES = f"https://github.com/nflverse/nfldata/blob/{SHA}/data/games.csv"
 URL_CLOSING = f"https://github.com/nflverse/nfldata/blob/{SHA}/data/closing_lines.csv"
+URL_NFL = "https://www.nfl.com/scores/"
 
 MARKETS = [
     ("SIDE", "Side (spread)", "side_fair", "side_market",
@@ -209,19 +210,21 @@ def build_page(out: pd.DataFrame, cols: pd.DataFrame, acc: pd.DataFrame) -> str:
             "yes" if r.total_edge_available else "no",
             _fmt(r.ml_fair_price, moneyline=True), _fmt(r.ml_market_price, moneyline=True),
             _fmt(r.ml_diff_prob, prob=True),
-            ref_link("schedule", URL_GAMES),
+            ref_link("NFL scores", URL_NFL), ref_link("archive", URL_GAMES),
         ])
     if not rows:
         rows = [["—"] * 15]
     col_rows = [[clean(r.market), clean(r.kind), f"<code>{e(r.column)}</code>", clean(r.meaning),
-                 clean(r.sign_rule)] for r in cols.itertuples()]
+                 clean(r.sign_rule), ref_link("NFL scores", URL_NFL)] for r in cols.itertuples()]
     acc_rows = []
     for r in acc.itertuples():
         if not getattr(r, "n", 0):
-            acc_rows.append([clean(r.label), "0", BLANK, BLANK, BLANK, BLANK])
+            acc_rows.append([clean(r.label), "0", BLANK, BLANK, BLANK, BLANK,
+                             ref_link("NFL scores", URL_NFL)])
             continue
         acc_rows.append([clean(r.label), f"{int(r.n):,}", f"{r.fair_mae:.3f}",
-                         f"{r.market_mae:.3f}", f"{r.gap:+.3f}", f"{r.fair_bias:+.3f}"])
+                         f"{r.market_mae:.3f}", f"{r.gap:+.3f}", f"{r.fair_bias:+.3f}",
+                         ref_link("NFL scores", URL_NFL)])
     side_better = int((acc.gap < 0).sum()) if "gap" in acc else 0
     cards = (
         '<div class="cards">'
@@ -244,7 +247,7 @@ column is shown next to it and reads <em>no</em> wherever the archive carries no
 <section>
 <div class="section-head"><h2>1 · The column contract</h2></div>
 <p>One sign convention, stated once, so a positive difference always means the same thing:</p>
-{table(col_rows, ["Market", "Kind", "Column", "What it is", "Sign rule"],
+{table(col_rows, ["Market", "Kind", "Column", "What it is", "Sign rule", "Official reference"],
        caption="Column dictionary for the fair / market / difference triple, per market")}
 <p><strong>The moneyline is not a spread.</strong> American prices are non-linear, so the moneyline
 difference is computed on hold-free implied probabilities and printed in probability points. Its fair
@@ -256,7 +259,8 @@ because it limits what the number can claim.</p>
 <p>The fair number is the walk-forward ensemble prediction: it is fitted only on seasons before the
 one it predicts, so this is not an in-sample fit. The market number is the closing line. Both are
 scored against the same rows, so the gap is paired and not an artefact of different samples.</p>
-{table(acc_rows, ["Market", "Paired rows", "Fair MAE", "Market MAE", "Gap (fair − market)", "Fair bias"],
+{table(acc_rows, ["Market", "Paired rows", "Fair MAE", "Market MAE", "Gap (fair − market)", "Fair bias",
+                   "Official reference"],
        caption="Paired out-of-sample error of the model's fair number against the market's closing number")}
 <p class="flag warn">A negative gap means the model's number was closer to the result than the
 market's closing number on these rows. That is <em>not</em> a profitable strategy: the model number
@@ -271,7 +275,7 @@ walk-forward model, every market cell from the pinned archive, and every differe
 {table(rows, ["Week", "Kickoff", "Matchup",
               "Side fair", "Side market", "Side diff", "Side price?",
               "Total fair", "Total market", "Total diff", "Total price?",
-              "ML fair", "ML market", "ML diff (prob)", "Source"],
+              "ML fair", "ML market", "ML diff (prob)", "Official source", "Archive input"],
        caption="2026 board: fair, market and difference as separate columns, in the required market order")}
 </section>
 <section>

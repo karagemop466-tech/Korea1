@@ -63,6 +63,9 @@ URL_CLOSING = URL_BASE + "closing_lines.csv"
 
 MIN_N = 200
 MIN_WEEKS = 20
+# The official page the outcomes belong to. Every row cites it as its context, because the values
+# are the league's own numbers; the pinned archive is the reproducible input and is cited beside it.
+URL_NFL = "https://www.nfl.com/scores/"
 N_BOOT = 2000
 SEED = 20261114
 
@@ -175,7 +178,8 @@ def build_page(c: pd.DataFrame) -> str:
             num(r.rho), f"[{num(r.ci_lo, 3)}, {num(r.ci_hi, 3)}]",
             "yes" if r.zero_in_ci and r.verdict != "UNDERPOWERED" else "no",
             clean(r.verdict.replace("_", " ").title()), clean(r.what_it_measures),
-            clean(r.sign_convention), ref_link("archive", r.source_url),
+            clean(r.sign_convention), ref_link("NFL scores", URL_NFL),
+            ref_link("archive", r.source_url),
         ])
     n_rep = int((c.verdict == "REPORTED").sum())
     n_zero = int((c.verdict == "NOT_DISTINGUISHABLE_FROM_ZERO").sum())
@@ -217,7 +221,7 @@ what the results feed is for, and the reason the forward test settles only again
 <section>
 <div class="section-head"><h2>2 · The register</h2></div>
 {table(rows, ["Relationship", "Kind", "n", "Weeks", "Spearman ρ", "95% block interval", "Zero in interval",
-              "Verdict", "What it measures", "Sign convention", "Source"],
+              "Verdict", "What it measures", "Sign convention", "Official source", "Archive input"],
        caption="Official-sourced correlations with n and week count on every row; null results are published")}
 </section>
 <section>

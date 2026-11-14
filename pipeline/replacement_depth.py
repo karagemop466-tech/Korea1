@@ -277,7 +277,7 @@ def build_page(units: pd.DataFrame, slots: pd.DataFrame, club: pd.DataFrame) -> 
             e(r.team), clean(r.unit), str(int(r.chart_rows)), str(int(r.unavailable)),
             str(int(r.at_risk)), str(int(r.starters_out)), f"{r.depth_impact:.2f}",
             clean(r.deepest_slot_used), clean(r.cliff), clean(r.evidence_state),
-            ref_link("chart", NFL_INJURIES_WEEK),
+            ref_link("NFL injuries", NFL_INJURIES_WEEK),
         ])
     slot_rows = []
     shown = slots[slots.matched].sort_values(["team", "unit", "depth_rank"]).head(80)
@@ -286,10 +286,11 @@ def build_page(units: pd.DataFrame, slots: pd.DataFrame, club: pd.DataFrame) -> 
             e(r.team), clean(r.unit), e(r.player), e(r.position), clean(r.slot),
             clean(r.game_status),
             (f"1/{int(r.depth_rank)} = {1.0/int(r.depth_rank):.2f}" if pd.notna(r.depth_rank) else BLANK),
-            ref_link("official injuries", NFL_INJURIES_WEEK),
+            ref_link("NFL injuries", NFL_INJURIES_WEEK),
+            ref_link("club chart", f"https://www.nfl.com/teams/"),
         ])
     if not slot_rows:
-        slot_rows = [["—"] * 8]
+        slot_rows = [["—"] * 9]
 
     body = f"""
 <p class="flag info"><strong>What this page is.</strong> Requirement 6 of the 2026-11-14 brief: track
@@ -339,7 +340,8 @@ listed backup at all.</p>
 <div class="section-head"><h2>4 · Every unavailable player and the slot he vacates</h2></div>
 <p>This is the audit trail for the numbers above: one row per player the official report lists as Out
 or Doubtful who is on his club's published chart, with the slot and the 1/rank weight he contributes.</p>
-{table(slot_rows, ["Club", "Unit", "Player", "Pos", "Slot", "Game status", "Weight", "Official source"],
+{table(slot_rows, ["Club", "Unit", "Player", "Pos", "Slot", "Game status", "Weight",
+                   "Official source", "Chart source"],
        caption="Unavailable players matched to a depth slot (first 80 shown)")}
 </section>
 <section>
