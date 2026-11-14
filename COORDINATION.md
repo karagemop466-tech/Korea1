@@ -47,6 +47,14 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 **R-number collision (2026-11-13, recorded).** `R1` is used twice: the availability reconciliation of `arena/18c4acce-korea1` (row 45 above, 2026-11-13) and the odds-ingest task of the independent `lab/` annex (`arena-ea02c4fb`, row in the annex table below, 2026-11-01). Both rows are kept and distinguished by owner; nothing was renumbered. In this session's commits, PR #39, `DECISIONS.md` (D-05) and the R1 log, "R1" means the availability reconciliation only.
 | T40 | **2026-11-13 referent audit**: resolve every external URL printed on the site to a live official/primary page, replace or flag unresolvable ones, publish the resolver register, consolidate the duplicated review surfaces, then final integration + publish | **done** (PR #49, merged 2026-11-14T00:05Z) | `arena/84e42ecc-korea1` | `scripts/verify_referents.py`, `scripts/referent_audit.py` (new), `data/audit/referent_register.csv` (new), `referents.html` (new), `pipeline/render_site.py` (NAV + one index section + page registration only), `pipeline/verify_site.py` (page registration + allow-list only), `tests/check_links.py` (page registration only), `tests/check_sources.py` (page registration only), `COORDINATION.md` (own section), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section) |
 | T24 | Latest official availability snapshot audit + final end-to-end verification (2026-11-13) | **in progress** | `arena/beafe2ae-korea1` | `pipeline/current_snapshot_audit.py`, `tests/test_current_snapshot_audit.py`, `research/availability-snapshot-audit-2026-11-13.md`, `COORDINATION.md` (T24 row + own log only) |
+| T50 | **Price-snapshot store**: record opening and closing numbers for every market we originate (SPREAD / TOTAL / MONEYLINE, both sides), each cell carrying its own source and evidence class | **in progress** | `arena/b13485ed-korea1` | `pipeline/price_snapshots.py` (new), `data/forward/price_snapshots.csv` (new), `assets/data/price_snapshots.csv` (new) |
+| T51 | **Verified results feed**: join the official finals to the originated lines and to the price snapshot so that a backtest and an ROI can actually be computed; every cell that has no official price on record stays blank and is flagged | **in progress** | `arena/b13485ed-korea1` | `pipeline/verified_results.py` (new), `data/forward/verified_results.csv` (new), `assets/data/verified_results.csv` (new) |
+| T52 | **Origination order**: originate the side first, then the total, then the moneyline; the order is fixed in code and published as a manifest | **in progress** | `arena/b13485ed-korea1` | `pipeline/models.py` (origination order + manifest write), `data/processed/origination_manifest.json` (new) |
+| T53 | **Model fair line, market line and difference as three separate published columns** | **in progress** | `arena/b13485ed-korea1` | `pipeline/render_site.py` (`build_lines` only), `pipeline/render_prices.py` (new) |
+| T54 | **Separate "signal" from "staking"** in the leaderboard so a lucky staking run cannot mask a bad signal | **in progress** | `arena/b13485ed-korea1` | `pipeline/leaderboard_split.py` (new), `data/processed/leaderboard_signal_staking.csv` (new), `assets/data/leaderboard_signal_staking.csv` (new) |
+| T55 | **Demotion gate**: a live strategy that trips a defined condition is sent back to paper | **in progress** | `arena/b13485ed-korea1` | `pipeline/demotion.py` (new), `data/processed/demotion_gates.csv` (new), `assets/data/demotion_gates.csv` (new) |
+| T56 | **Depth of the replacement**, not just the fact of a replacement: populate the replacement tier in the deficiency register from the official club depth charts; leave it blank where the club publishes no order | **in progress** | `arena/b13485ed-korea1` | `pipeline/lineup_deficiencies.py` (replacement-tier block only), `data/processed/lineup_deficiency.csv` |
+| T57 | **Integration + publish**: new `prices.html`, navigation, index, executive summary, verifier/test wiring, then PR → `main` → GitHub Pages | **in progress** | `arena/b13485ed-korea1` | `pipeline/render_prices.py` (new), `prices.html` (new), `pipeline/render_site.py` (NAV + index + flagged rows), `pipeline/render_summary.py`, `pipeline/verify_site.py`, `tests/check_sources.py`, `tests/check_links.py`, `tests/test_price_store.py` (new), `Makefile`, `README.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` (own section) |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -2444,3 +2452,48 @@ both logs are kept in full.
 **Final state after the merge:** `make build` → 0 failing verifier checks across 43 pages (32 canonical);
 `tests/check_sources.py` → 3,505 rows; `tests/check_links.py` → 41 pages clean; `make test` → 107 passed;
 the tree is a fixed point (a second `make build` leaves `git status` empty).
+
+## 2026-11-14 — Session `arena/b13485ed-korea1` (T50–T57: price store, results feed, origination order, signal/staking split, demotion gate)
+
+### 2026-11-14 — claim (committed and pushed before any file in scope was edited)
+
+Board read first (2446 lines at branch point `81836b6`). Every task row is `done` except the
+two stale labels left by their owners (`T8`, `T11`) and `T24`, whose owning session
+(`arena/beafe2ae-korea1`) is still the owner of its scope. The six open pull requests
+(#19, #24, #30, #38, #47, #48) belong to sessions that have not committed since
+2026-11-02/12/13; they are **not** touched by this session, and that is recorded as an
+irregularity below rather than silently resolved.
+
+This session is the final integration session for the 2026-11-14 request. It works on the
+Arena-pinned branch `arena/b13485ed-korea1` and edits only the files in its own scope
+(T50–T57, listed in the task board above). Shared outputs — the site index, the navigation,
+the executive summary, the verifier page lists — are changed here, in this session, after
+every other task in this request is done.
+
+**Baseline verified before any change.** `make build` on `81836b6` → 0 failing verifier
+checks, `tests/check_sources.py` → 32 canonical pages / 3,553 rows, `tests/check_links.py`
+→ 41 pages clean. `make test` is run separately below.
+
+**Irregularity found at the baseline (IR-B13485-01, Medium).** The committed generated
+outputs on `main` are **stale** relative to the committed inputs. The last commit on `main`
+(`81836b6`, "availability: official snapshot 2026-11-14T17:10Z") added a second official
+injury capture but did not regenerate the pages that read it. A clean `make build` therefore
+produces a 22-file diff on the untouched tree: `data/live/official_capture_drift.csv`,
+`data/live/injury_field_verification.csv`, `data/live/verification_summary.json`,
+`data/live/lineup_claim_verification.csv`, `data/live/internal_consistency.csv`,
+`data/processed/verification_report.csv`, `assets/data/**` (the same six),
+`data/integration/repo_inventory.csv`, `EXECUTIVE_SUMMARY.md`, `executive-summary.html`,
+`live-verification.html`, `repo-review.html`. Two published verification rows change
+meaning, not only count:
+
+| Row | Committed on `main` | After a clean rebuild | Source |
+|---|---|---|---|
+| DET / Kerby Joseph / `practice_status` | `INCONSISTENT` — "confirmed_defect" | `MATCH` | <https://www.nfl.com/injuries/league/2026/reg10> |
+| DET / Amon-Ra St. Brown / `injury` | `MISSING_VALUE` — "drift_possible" | `MATCH` | <https://www.nfl.com/injuries/league/2026/reg10> |
+
+Both are read from the committed official extract `data/live/official_injury_extract_2026_reg10.csv`
+and the official Week 10 injury-report page; the second capture resolves them. The rebuild is a
+fixed point — a second `make build` leaves `git status` empty — so this session regenerates and
+commits the regenerated outputs rather than leaving `main` in a state where `make build` fails
+`tests/check_rebuild.py`. The rows are **not** deleted from the flagged register; the flagged
+register keeps the earlier contradiction and this session adds the resolution beside it.
