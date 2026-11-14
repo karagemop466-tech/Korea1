@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root: `import pipeline` works under `python pipeline/render_site.py` too
 from common import PROC, ROOT, fmt, pct, read_json, write_json  # noqa: E402
 from render_audit import build_audit, irregularity_rows  # noqa: E402
 
@@ -63,6 +64,8 @@ NAV_GROUPS = [
     ]),
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
+        # P1 (arena/a6bbbf24-korea1): opening and closing numbers for every originated market.
+        ("price-snapshot.html", "Price snapshot"),
         ("strategies.html", "Leaderboard"),
         ("forward.html", "Forward test record"),
         # X4 (session arena/132e7ca2-korea1): rules, reward ladder and standings.
@@ -593,7 +596,12 @@ def build_lines(d):
     future_rows = []
     for r in fut.sort_values(["gameday", "gametime", "game_id"]).itertuples():
         future_rows.append([e(r.gameday), e(r.week), f"{e(r.away_team)} @ {e(r.home_team)}",
-                            BLANK, BLANK, BLANK, BLANK, "UNVERIFIED · research only", official("NFL schedule")])
+                            fmt(r.fair_spread), fmt(r.market_spread), fmt(r.edge_spread, signed=True),
+                            fmt(r.fair_total), fmt(r.market_total), fmt(r.edge_total, signed=True),
+                            fmt(r.originated_home_ml), fmt(r.market_home_ml), fmt(r.ml_diff_home_cents, signed=True),
+                            "Model estimate (fair) · market close from the pinned community archive (unverified) · "
+                            "edge is fair minus market, not an observation",
+                            official("NFL schedule")])
     features = [[e(r.feature), e(r.definition), e(r.used_in), official("NFL scores")] for r in d["feature_dict"].itertuples()]
     body = f"""{notice()}
 <section><h2>How a line is originated</h2><p>The model predicts home margin and game total from prior results,
@@ -613,22 +621,96 @@ because the benchmark is a community archive; the complete calculated metrics ar
 <p><a href="assets/data/model_metrics.csv">Download calculated metrics (research CSV)</a> · <a href="lab/lines.html">View explicitly unverified research estimates</a></p></section>
 <section><h2>Upcoming schedule · research line board</h2><p>The archive is a pinned historical snapshot, not a live feed.
 Some listed games may already have finished. Schedule and availability must be rechecked before any use.
-Model values are blank here because the inputs and current game state have not been officially verified for every row.</p>
-{table(future_rows, ["Archive date", "Week", "Matchup", "Home handicap", "Total", "Home ML", "Away ML", "Status", "Official schedule"], caption="All scheduled rows in the pinned archive; no results or current prices inferred")}
+Each row shows the model's fair line, the market close it is measured against, and the difference between them;
+fair lines are model estimates, market closes are community-archive data (UNVERIFIED — no official NFL source
+publishes betting lines), and the edge is fair minus market, not an observation.</p>
+{table(future_rows, ["Archive date", "Week", "Matchup", "Fair spread (model)", "Market spread (community)", "Edge (pts)",
+                     "Fair total (model)", "Market total (community)", "Edge (pts)", "Fair home price (model)",
+                     "Market home price (community)", "Home price edge (¢)", "Evidence class", "Official schedule"],
+                     caption="Pinned archive slate. Fair lines are the model's own estimates; market closes come from "
+                     "the pinned community archive and are UNVERIFIED (no official NFL source publishes lines); the edge "
+                     "is fair minus market, not an observation.")}
 <p><a href="assets/data/originated_upcoming.csv">Download unverified model estimates</a></p></section>
 <section><h2>Feature dictionary</h2>{table(features, ["Feature", "Definition", "Use", "Official context"], caption="Inputs and exclusions; no missing observation is filled")}</section>"""
     return layout("lines.html", "Originated lines", "A market-free model with explicit estimation and verification boundaries.", body, wide=True)
 
 
+def build_price_snapshot(d):
+    """P1 page: the price-snapshot store, a sample, and its evidence boundary."""
+    from pipeline.price_snapshot import OUT_CSV, OUT_JSON
+    meta = read_json(OUT_JSON) if OUT_JSON.exists() else {}
+    frame = pd.read_csv(OUT_CSV, dtype=str) if OUT_CSV.exists() else pd.DataFrame()
+
+    def cell(v):
+        v = str(v).strip()
+        if v in ("", "nan", "None", "NaN"):
+            return "—"
+        try:
+            return fmt(float(v))
+        except (TypeError, ValueError):
+            return v
+
+    sample = frame.head(40)
+    rows = [[e(r.game_id), e(r.week), e(r.market), e(r.side), cell(r.opener_line), cell(r.closer_line),
+             cell(r.closer_price), e(r.opening_available),
+             ("Opening available — WSGT book, 2021 snapshot" if r.opening_available == "YES"
+              else "Opening not in archive — 2021 openers only"),
+             official("NFL schedule")] for r in sample.itertuples(index=False)]
+
+    n_rows = int(meta.get("rows", len(frame)))
+    n_games = int(meta.get("games", frame.game_id.nunique() if len(frame) else 0))
+    n_open = int(meta.get("opening_available_games", 0))
+    upstream = meta.get("upstream", {})
+    download = ('<strong>Download the full store:</strong> '
+                '<a href=\'data/processed/price_snapshot.csv\'>price_snapshot.csv</a> '
+                '(' + f"{n_rows:,}" + " rows) · "
+                '<a href=\'data/processed/price_snapshot.json\'>price_snapshot.json</a> (counts and sources)')
+    body = f"""<section><h2>Price snapshot: opening and closing numbers for every originated market</h2>
+<p>One row per game × market × side for every market the model originates: spread, total and moneyline.
+The store records the <strong>opening</strong> number and the <strong>closing</strong> number side by side,
+each with its source, and leaves blank what the pinned archive does not carry — nothing is inferred.</p>
+<div class="cards">
+  <div class="card"><div class="card-value">{n_rows:,}</div><div class="card-label">store rows</div></div>
+  <div class="card"><div class="card-value">{n_games:,}</div><div class="card-label">games</div></div>
+  <div class="card"><div class="card-value">{n_open}</div><div class="card-label">games with an opening line (2021 only)</div></div>
+  <div class="card"><div class="card-value">3</div><div class="card-label">markets: spread, total, moneyline</div></div>
+</div>
+{table(rows, ["Game", "Week", "Market", "Side", "Opener line", "Closer line", "Closer price",
+              "Opening available", "Basis", "Official context"],
+      caption="First 40 rows of the store (sorted by game). Full store below as a download.")}
+<p>{download}</p>
+<section><h2>Evidence boundary</h2>
+<ul class="findings">
+<li><strong>Opening numbers:</strong> nflverse/nfldata <code>initial_lines.csv</code> — the 2021 season only, book WSGT,
+spread and total lines only. The archive carries no moneyline openers and no opening prices, so those cells are blank.</li>
+<li><strong>Closing numbers:</strong> nflverse/nfldata <code>games.csv</code> — the archive ships closing lines, not openers.
+No official NFL source publishes betting lines, so every price row is community data, flagged UNVERIFIED, and linked to
+the pinned archive. The NFL schedule link on each row is context only (the game is an NFL game); it is not a source for the line.</li>
+<li><strong>Blanks are not estimates:</strong> an em dash means the value is not in the pinned archive. Nothing here is filled in or inferred.</li>
+</ul>
+<p class="small">Pinned upstream: {e(upstream.get("commit_sha", ""))} — {e(upstream.get("url", ""))}.</p></section>"""
+    return layout("price-snapshot.html", "Price snapshot",
+                  "Opening and closing numbers for every market the model originates, each with its source.",
+                  body)
+
 def build_strategies(d):
     from strategies import build_library
     library = {x.id: x for x in build_library()}
     gates = d["strategy_gates"]
+    stats = d["strategy_stats"].set_index("strategy") if len(d["strategy_stats"]) else pd.DataFrame()
+    bets = d["strategy_bets"]
+    sig_mean = bets.groupby("strategy").signal.mean() if len(bets) else pd.Series(dtype=float)
     rows = []
     for r in gates.sort_values("strategy").itertuples():
         spec = library[r.strategy]
-        rows.append([e(spec.id), e(spec.name), e(spec.market), e(spec.rule), BLANK, BLANK,
-                     '<span class="pill unverified">UNVERIFIED</span>', "Unawarded", research_source("White (2000), Econometric Society")])
+        units = int(r.n) if pd.notna(r.n) else 0          # one unit staked per bet
+        sig = fmt(float(sig_mean[r.strategy])) if r.strategy in sig_mean.index and pd.notna(sig_mean[r.strategy]) else BLANK
+        # ROI stays blank: every price is a community-mirror close, never an executable quote.
+        # Signal (edge behind each selection) and staking (units staked) are printed side by side so
+        # a lucky staking run cannot be read as signal. With flat one-unit staking they coincide today;
+        # any future variable staking plan gets its own column and is never re-read as signal.
+        rows.append([e(spec.id), e(spec.name), e(spec.market), e(spec.rule), str(units),
+                     sig, BLANK, BLANK, "Unawarded", research_source("White (2000), Econometric Society")])
     rewards = [[name, rule, "No monetary reward", official("White (2000), Econometric Society")] for name, rule in [
         ("Research", "Rule and complete trial history registered; no performance award."),
         ("Candidate", "Data, leakage and power gates pass; still paper-only."),
@@ -640,7 +722,7 @@ def build_strategies(d):
 Ranking by raw profit alone rewards variance. Eligibility comes first; risk-adjusted, selection-adjusted,
 cost-adjusted evidence comes second. The current public leaderboard has no funded winner.</p>
 <div class="table-tools"><label>Find a strategy <input class="filter" type="search" placeholder="Search names, rules or markets"></label><span class="small">All {len(rows)} candidates shown</span></div>
-{table(rows, ["ID", "Strategy", "Market", "Frozen research rule", "ROI", "Adjusted p", "Evidence", "Reward", "Sources"], caption="Complete strategy library · unverified performance is blank")}
+{table(rows, ["ID", "Strategy", "Market", "Frozen research rule", "Units staked", "Mean signal edge", "ROI (flat 1 unit)", "Holm p", "Verdict", "Reward", "Sources"], caption="Complete strategy library · unverified performance is blank · signal and staking are separate columns")}
 <p><a href="assets/data/strategy_gates.csv">Download calculated gate results</a> · <a href="lab/strategies.html">Historical research annex</a></p></section>
 <section><h2>Signal families and why they might matter</h2><ul class="findings">
 <li><strong>Model disagreement:</strong> a trade only has positive expected value if the model is better calibrated than the available price, not merely different from it.</li>
@@ -670,6 +752,25 @@ def build_validation(d):
     ]
     rows = [[i, name, desc, "Required", official(ref)] for i,name,desc,ref in descriptions]
     candidate_rows = [[e(r.strategy), BLANK, BLANK, BLANK, "UNVERIFIED", "Unawarded", research_source("White (2000), Econometric Society")] for r in gates.itertuples()]
+
+    # Demotion gate: forward status read from the ledger scoreboard (settled against official NFL.com finals).
+    demotion_rows = []
+    sb_path = ROOT / "data" / "forward" / "scoreboard.csv"
+    if sb_path.exists():
+        sb = pd.read_csv(sb_path, dtype=str, keep_default_na=False)
+        gate_cols = ["F1_commitment", "F2_official_settlement", "F3_sample", "F4_skill",
+                     "F5_economics", "F6_quote_provenance"]
+        nfl_scores_link = src_link("https://www.nfl.com/scores/", "NFL.com scores")
+        for r in sb.itertuples(index=False):
+            failing = [c for c in gate_cols if str(getattr(r, c)).strip().upper() != "PASS"]
+            status = "LIVE" if not failing else "PAPER"
+            reason = ("Eligible for live forward testing" if not failing else
+                      "Demoted to paper — " + "; ".join(failing))
+            demotion_rows.append([e(r.strategy), status, "; ".join(failing) if failing else "—",
+                                  reason, nfl_scores_link])
+    demotion_table = table(demotion_rows, ["Strategy", "Forward status", "Failing gates", "Reason",
+                                           "Official source"],
+                           caption="Forward status per registered strategy from the ledger scoreboard") if demotion_rows else ""
     body = f"""{notice()}
 <section><h2>Luck cannot be deleted. False confidence can be reduced.</h2>
 <p>Statistical tests are conditional on their assumptions. A non-significant result is not proof of no skill;
@@ -685,6 +786,17 @@ economic value and untouched replication rather than relying on a single p-value
 <li>Deflated Sharpe uses weekly observations and a documented lower bound of prior trials. It cannot certify skill while the full search history is unknown.</li>
 <li>Every “validated” label requires all eight gates, including redundancy and official quote provenance.</li>
 <li>Power is computed from each candidate's weekly variance; a fixed 100-bet threshold is not described as adequate power.</li></ul></section>
+<section><h2>Demotion gate — a live strategy goes back to paper</h2>
+<p>A strategy that reaches live forward trading stays live only while every forward gate passes over the
+rolling window: commitment (F1), official settlement (F2), sample (F3), skill (F4), economics (F5) and
+quote provenance (F6). If any gate fails, the strategy is demoted back to paper immediately and its live
+picks are voided going forward; it may return to live testing only after the failing gate has been
+repaired and re-checked on an untouched window. Demotion is a rule, not a judgment about luck.</p>
+{demotion_table}
+<p class="small">Forward status is read from the ledger scoreboard settled against official NFL.com finals
+({nfl_scores_link}); gates F1–F6 are defined on forward.html. Today every registered strategy is paper-only because
+gate F6 fails for all of them: no authenticated, timestamped executable bookmaker quote exists in the pipeline, and
+community-mirror prices are not executable quotes.</p></section>
 <section><h2>Prospective acceptance protocol</h2><ol class="findings">
 <li>Freeze code, rules and source versions; record a manifest hash.</li><li>Log every eligible event, quote timestamp and no-bet decision.</li>
 <li>Do not tune on the evaluation window.</li><li>Settle using official results and the actual bookmaker's terms.</li>
@@ -1253,6 +1365,7 @@ def main() -> None:
         "index.html": build_index(d),
         "executive-summary.html": build_executive(d),
         "lines.html": build_lines(d),
+        "price-snapshot.html": build_price_snapshot(d),
         "strategies.html": build_strategies(d),
         "validation.html": build_validation(d),
         "correlations.html": build_correlations(d),

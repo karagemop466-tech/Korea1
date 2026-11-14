@@ -336,6 +336,29 @@ def walk_forward(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     pred["edge_spread"] = pred["fair_spread"] - pred["market_spread"]
     pred["edge_total"] = pred["fair_total"] - pred["market_total"]
 
+    # ---- moneyline: fair line, market line, difference as separate columns ----
+    fair_hp = pred["p_home_ml"] / (pred["p_home_ml"] + pred["p_away_ml"])
+    pred["ml_fair_home_prob"] = fair_hp
+    pred["ml_fair_home_ml"] = pred["originated_home_ml"]
+    pred["ml_fair_away_ml"] = pred["originated_away_ml"]
+    mh = pred["market_home_ml"]
+    ma = pred["market_away_ml"]
+    mp = pd.Series(float("nan"), index=pred.index)
+    valid = mh.notna() & ma.notna()
+    for i in pred.index[valid]:
+        hp, _ = novig_probs(float(mh.loc[i]), float(ma.loc[i]))
+        mp.loc[i] = hp
+    pred["ml_market_home_prob"] = mp
+    pred["ml_market_home_ml"] = mh
+    pred["ml_market_away_ml"] = ma
+    pred["ml_diff_home_cents"] = np.where(
+        pred["originated_home_ml"].notna() & mh.notna(),
+        pred["originated_home_ml"] - mh, float("nan"))
+    pred["ml_diff_away_cents"] = np.where(
+        pred["originated_away_ml"].notna() & ma.notna(),
+        pred["originated_away_ml"] - ma, float("nan"))
+    pred["ml_prob_diff_home"] = fair_hp - mp  # positive: model likes the home side more than the market
+
     # ---- metrics: each model compared with market on identical available rows ----
     rows = []
     for market, target, families in [
@@ -424,6 +447,23 @@ def originate_future(df: pd.DataFrame, future: pd.DataFrame, config: dict) -> pd
     future["p_over"], future["p_push_total"], future["p_under"] = tp.T
     future["edge_spread"] = future["fair_spread"] - future["market_spread"]
     future["edge_total"] = future["fair_total"] - future["market_total"]
+    fh = future["p_home_ml"] / (future["p_home_ml"] + future["p_away_ml"])
+    future["ml_fair_home_prob"] = fh
+    future["ml_fair_home_ml"] = future["originated_home_ml"]
+    future["ml_fair_away_ml"] = future["originated_away_ml"]
+    mh = future["market_home_ml"]
+    ma = future["market_away_ml"]
+    mp = pd.Series(float("nan"), index=future.index)
+    valid = mh.notna() & ma.notna()
+    for i in future.index[valid]:
+        hp, _ = novig_probs(float(mh.loc[i]), float(ma.loc[i]))
+        mp.loc[i] = hp
+    future["ml_market_home_prob"] = mp
+    future["ml_market_home_ml"] = mh
+    future["ml_market_away_ml"] = ma
+    future["ml_diff_home_cents"] = future["originated_home_ml"] - mh
+    future["ml_diff_away_cents"] = future["originated_away_ml"] - ma
+    future["ml_prob_diff_home"] = fh - mp
     config.setdefault("future_fit", {})["alpha_margin"] = a_m
     config["future_fit"]["alpha_total"] = a_t
     config["future_fit"]["sigma_margin"] = sm
