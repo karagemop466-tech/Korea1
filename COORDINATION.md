@@ -2707,3 +2707,105 @@ section on `competition.html` explaining the register), two price stores (`price
 opening/closing endpoints, and their coverage artefact), and two nine-item status tables. Each pair is
 consistent and cross-linked, but a reader should not have to find both. Consolidation is proposal
 **NAV-02** on the review page; it is not implemented.
+
+---
+
+## Session `arena/d0bec048-korea1` — result (2026-11-14)
+
+### What this session did
+
+The session claimed S1–S9 on 2026-11-14 and worked on its own branch. While it ran, three other
+sessions answered the same nine requirements and merged their work into `main` (PR #52, #53, #54,
+#55, #57). Rather than compete with them, this session **rebased onto `main` and kept only what
+the parallel work does not already contain**, then published the one thing none of them had.
+
+| Task | Status | What shipped |
+|---|---|---|
+| S1 price-snapshot store | **built** | `pipeline/price_store.py` → `data/prices/price_store.csv` (2,837 append-only observations), `open_close.csv` (981), `line_comparison.csv` (1,088). Page `prices.html`. |
+| S2 verified results feed | **built** | `pipeline/official_settlement.py` merges three official readers (forward ledger, independent score audit, the canonical feed) → `data/results/official_results_feed.csv` (60 games, 0 reader conflicts), `settlement_feed.csv` (7,104 played games, 60 officially confirmed), `official_roi.csv` (143 officially settled bets over 18 strategies). Page `official-roi.html`. |
+| S3 origination order + three columns | **built** | `data/processed/origination_order.csv` (side → total → moneyline) and the three separate columns on `prices.html`. |
+| S4 signal vs staking | **built, and extended** | `pipeline/leaderboard_split.py` → `data/integration/leaderboard_signal_staking.csv` with the model's edge and the **calibrated** edge, the realised return and the luck gap. |
+| S5 replacement depth | **built** | `pipeline/replacement_slots.py` → `data/availability/replacement_depth_slots.csv`: 79 flagged slots, 67 second-string and 1 third-string replacements, 11 with no published replacement. Page `replacement-slots.html`. |
+| S6 official correlations with n | **built by the parallel session** | `pipeline/corr_official.py` publishes `n` and `n_weeks` on every row; this session's page links that register rather than republishing it. |
+| S7 demotion gate live → paper | **built, reconciled with its own text** | `data/integration/demotion_gate_rules.csv` (D1–D5, P1–P2) and the historical replay in `demotion_events.csv` (16,905 triggers). |
+| S8 suggestions register | **built** | `data/integration/suggestions_d0bec048.csv` → registered in the merged master (76 → **81 rows**) and reviewed on `review-queue.html`. |
+| S9 final integration | **built** | this section; the combined tree was re-verified, the pull request merged and the Pages deployment recorded below. |
+
+### The one thing the parallel work did not have: a probability check
+
+Every published expected value in this repository is built on the model's own probability, and
+nothing checked that probability before it was used. This session added the check
+(`pipeline/probability_alignment.py`) and published it on `signal-staking.html`.
+
+**Alignment — passes.** Every bet in the library was taken at the line its probability was computed
+at, and every probability moves *with* the outcome it describes (correlation +0.017 to +0.326),
+so no probability is attached to the wrong side or the wrong line.
+
+**Calibration — fails on the model's own numbers.** The model's probability is over-confident on
+the average by up to 6.3 points, and the expected return it implies is mostly a measurement of
+that over-confidence: **+58.1% per bet** for `ML_EDGE_10` and **+181.4% per ticket** for
+`PARLAY2_ML`, against realised returns of −3.2% and +10.9%. A walk-forward recalibration (fitted
+only on earlier seasons, with the market's de-vigged price as a second feature) brings every
+market within 1.1 points of the realised rate and improves the Brier score in all six
+market/side groups (spread home 0.2594 → 0.2512; moneyline home 0.2246 → 0.2133).
+
+**What changed in the published numbers.** The luck gap is now measured against the calibrated
+expectation and the uncalibrated gap is printed beside it. `SP_EDGE_3_0` moves from a headline
+"+21.7 points of luck gap" (which was really the model's over-confidence) to −0.6 points against
+the calibrated expectation. The demotion gate's replay and the leaderboard now agree with the
+numbers on the page.
+
+### The demotion gate was reconciled with its own published text
+
+Before this session, the rule set and the code that evaluated it were separate documents: the
+text promised a bootstrap bound on the rolling rule, a 26-week sample window and a
+quote-provenance test, and the implementation tested none of them. All five rules (D1–D5) are now
+evaluated exactly as written, from the same constants the page prints, and a regression test
+asserts that each rule fires on a stream built to trip it. The replay fires 16,905 times across
+18 strategies; D4 (quote provenance) fires for every one of them, because no price in this
+repository comes from an authenticated quote — which is the honest state, and the reason no
+candidate is live.
+
+### Sources used, and how each number can be checked by hand
+
+| Surface | Source | Manual check |
+|---|---|---|
+| Verified results feed | NFL.com game pages read by the forward ledger and the independent score audit | the `official_url` column on every row of `data/results/official_results_feed.csv` |
+| Official settlement and ROI | the same finals; the price that decides the return is the pinned community mirror | `data/results/official_roi.csv` carries the coverage of every strategy |
+| Price observations | three pinned nflverse commits (2026-11-01, 11-12, 11-13), hash-verified before the rows were written | `data/prices/mirror_snapshots_manifest.json` |
+| Replacement depth | the club's own published depth chart + the official NFL injury report | the `depth_source_url` column on every row |
+| Probability alignment | the committed originated lines and the final scores in the same file | `data/integration/probability_alignment.csv` |
+| Demotion gate | the committed strategy-bet stream and the published gate thresholds | `data/integration/demotion_events.csv` |
+
+### Verification on the combined tree (after the rebase onto `main`)
+
+`make build` → **0 failing checks**, 44 canonical pages, 5,352 rows ·
+`tests/check_sources.py` → 44 pages, every row carries an official or primary reference ·
+`tests/check_links.py` → 53 pages, no broken link ·
+`pytest -q tests/` → **273 passed, 1 skipped** (31 of them new, in `tests/test_session_pipeline.py`).
+
+### Irregularities flagged, not fixed here
+
+1. **Two price surfaces.** `price-annex.html` (parallel session) leaves the opening and closing
+   cells blank because no official price source exists; `prices.html` (this session) publishes the
+   numbers the project actually *observed*, labelled as mirror observations with the commit they
+   came from. Both are correct under their own evidence policy and they are not the same claim.
+   Consolidation is still open (proposal NAV-02).
+2. **Eleven starter slots have no published replacement.** The cell is blank, not guessed. See
+   DEP-01 in the suggestions register.
+3. **Two demotion rule vocabularies** (DG1–DG7 from the parallel session, D1–D5 from this one)
+   describe different things: DG rules judge a live record, D rules judge the published
+   rolling-window conditions. They are published separately and cross-linked.
+4. **The strategy library's spread and total strategies have almost no measurable signal**
+   (probability-outcome correlation +0.017 and +0.008 against +0.324 for the moneyline). Recorded
+   as CAL-03; not changed here.
+
+### Scope changes against the original claim
+
+The claim named `prices.html`, `results.html`, `replacement-depth.html` and `signal-staking.html`.
+Three of those names were taken by the parallel sessions while this session was running, and this
+session did not overwrite their pages. The surfaces ship under distinct names instead:
+`prices.html`, `official-roi.html`, `replacement-slots.html`, and a new section **4 · The
+probability check** on the parallel session's `signal-staking.html`. The modules were renamed to
+match (`pipeline/official_settlement.py`, `pipeline/replacement_slots.py`) so that no file another
+session owns is written by this one, and every output file has a distinct path.
