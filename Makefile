@@ -12,6 +12,7 @@ all: build
 data:
 	$(PY) pipeline/fetch_data.py
 	$(PY) pipeline/build_datasets.py
+	$(PY) pipeline/price_snapshot.py   # P1 (arena/a6bbbf24-korea1): opening/closing numbers per originated market
 
 model: data
 	$(PY) pipeline/models.py
