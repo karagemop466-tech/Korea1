@@ -1,5 +1,5 @@
 {
- "retrieved_utc": "2026-11-13T18:32:20Z",
+ "retrieved_utc": "2026-11-14T01:27:53Z",
  "runner": "GitHub Actions (.github/workflows/availability.yml)",
  "sources": [
   {
@@ -7,9 +7,9 @@
    "team": "NFL",
    "url": "https://www.nfl.com/injuries/",
    "http_status": 200,
-   "bytes": 406320,
-   "sha256": "7b4a9c83247c9d86367f1a0b33af514e106a91f8b46eba407e252c5549fb25d3",
-   "rows": 326,
+   "bytes": 412874,
+   "sha256": "836e726bdfe2ddd5961da901c468db26f37c92551f523528172aa7e08999f61d",
+   "rows": 345,
    "error": ""
   },
   {
@@ -18,7 +18,7 @@
    "url": "https://www.azcardinals.com/team/depth-chart",
    "http_status": 200,
    "bytes": 293266,
-   "sha256": "531dc9e6cb0ad724fc6565abbec0adce2c4df8610859023ce9e7e88066ec13a4",
+   "sha256": "74110a4b130d5b541462ef32a0247599a803f599695592d1bcadd2d53bfe7b28",
    "rows": 58,
    "error": "",
    "previous_snapshot_kept": false
@@ -28,8 +28,8 @@
    "team": "ATL",
    "url": "https://www.atlantafalcons.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 319915,
-   "sha256": "b08df7ace4f57fb8aad7f7c8a63d4db57453a734e2f422ee18581a9238758cf6",
+   "bytes": 319897,
+   "sha256": "19eaaf289a7c0d67a00229b4102339a1edc5a1257b6da20669e400ffc745cdd1",
    "rows": 59,
    "error": "",
    "previous_snapshot_kept": false
@@ -40,7 +40,7 @@
    "url": "https://www.baltimoreravens.com/team/depth-chart",
    "http_status": 200,
    "bytes": 298556,
-   "sha256": "089c0cdb751ed9b7f22e655f5d81ae79cd4735ab4fe5edc8994f0ff700b28975",
+   "sha256": "6777c358665545bd8b1a788004ce8380f1f055e52e641734edafd03d359e4511",
    "rows": 59,
    "error": "",
    "previous_snapshot_kept": false
@@ -51,7 +51,7 @@
    "url": "https://www.buffalobills.com/team/depth-chart",
    "http_status": 200,
    "bytes": 301552,
-   "sha256": "45b989be581d841195a98cd49dc8bb6eff5746673b6b3714c8206e04e548ef8b",
+   "sha256": "6e1a577924d3960868db40feff68be7dfd68b3961e33e85337986a196b4cf73a",
    "rows": 61,
    "error": "",
    "previous_snapshot_kept": false
@@ -62,7 +62,7 @@
    "url": "https://www.panthers.com/team/depth-chart",
    "http_status": 200,
    "bytes": 330638,
-   "sha256": "f3b3a316af74a61749488f1e60a22a6a147b5a451edf2fb09b53db6c84517074",
+   "sha256": "0e1ce3b2a90d1722331fac57d1135a1a9f0dfe6bccb399d1050e0e46abb1eef9",
    "rows": 57,
    "error": "",
    "previous_snapshot_kept": false
@@ -73,7 +73,7 @@
    "url": "https://www.chicagobears.com/team/depth-chart",
    "http_status": 200,
    "bytes": 291599,
-   "sha256": "f5ddc3eb76bdc97c7cba80d9c16beb200f77c79f32743063caaa4da237d7fba1",
+   "sha256": "6429799c74e9a438be3f14db3d34ddea7445406bb32eac96ea76158921a4fd1c",
    "rows": 59,
    "error": "",
    "previous_snapshot_kept": false
@@ -84,7 +84,7 @@
    "url": "https://www.bengals.com/team/depth-chart",
    "http_status": 200,
    "bytes": 295813,
-   "sha256": "f6754d262ccd3dd00fc7a4a4a5a96b1dc1b80cb2fea3006c8dfff491e82f6fd5",
+   "sha256": "28ad7ddee3e8b58080b7e699bd7e28c289399bbb50a617ff874deea7503916a4",
    "rows": 60,
    "error": "",
    "previous_snapshot_kept": false
@@ -95,7 +95,7 @@
    "url": "https://www.clevelandbrowns.com/team/depth-chart",
    "http_status": 200,
    "bytes": 297841,
-   "sha256": "b15ca9a56421d263eca0a64abb1876cde5a1bd6dfcdae4847382257bcaeace67",
+   "sha256": "2aecaf1a061fed169bd29c51a80713108088ada85a1732b1b4e14342b88c69ed",
    "rows": 58,
    "error": "",
    "previous_snapshot_kept": false
@@ -106,7 +106,7 @@
    "url": "https://www.dallascowboys.com/team/depth-chart",
    "http_status": 200,
    "bytes": 281052,
-   "sha256": "ec3836f7779b1797614fd9154f8e70653bf40daab34e250d5417dbb7c6699e75",
+   "sha256": "8ce345dd8e8aa1cfd85370120c278f7128395cc4cee24430e63f74a7eb7682e7",
    "rows": 61,
    "error": "",
    "previous_snapshot_kept": false
@@ -117,7 +117,7 @@
    "url": "https://www.denverbroncos.com/team/depth-chart",
    "http_status": 200,
    "bytes": 295270,
-   "sha256": "0be12cc7ff5dd6c0f58e9bc4332d435f84a40e41fd87b9430b8c0b9ccf30e19c",
+   "sha256": "fd3f65d6e4252989bcdb5efeba2933b28a78e2efbbd37c8de5613581bf53d4b3",
    "rows": 60,
    "error": "",
    "previous_snapshot_kept": false
@@ -127,8 +127,8 @@
    "team": "DET",
    "url": "https://www.detroitlions.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 292193,
-   "sha256": "74cbc7ea41b58400fc1b68812642d22754c2d4a5c11d7bebbfca2c17de619d3f",
+   "bytes": 292039,
+   "sha256": "d51433671b8ffe1f09eea328c8f37db8eaef9956547224146c8f03eb5b5d85d8",
    "rows": 57,
    "error": "",
    "previous_snapshot_kept": false
@@ -138,8 +138,8 @@
    "team": "GB",
    "url": "https://www.packers.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 294131,
-   "sha256": "192f5e2cc80c87cb304374de3e3f588ae90e676ee3b446904cb44d93a2942525",
+   "bytes": 294573,
+   "sha256": "d044f6390dd36552b4dbfcc7d4b1e1624d0f1ca0aef3414b9c696240e5959231",
    "rows": 57,
    "error": "",
    "previous_snapshot_kept": false
@@ -149,8 +149,8 @@
    "team": "HOU",
    "url": "https://www.houstontexans.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 490113,
-   "sha256": "c80fd81a023d1bb80481740a7b3845d163275ecb6b78480e6284abd734c00d5e",
+   "bytes": 489829,
+   "sha256": "2be23312634efceeec275c82f3f7ad015b17495f1a22941047dc374e0124451a",
    "rows": 0,
    "error": "parsed 0 rows",
    "previous_snapshot_kept": false
@@ -161,7 +161,7 @@
    "url": "https://www.colts.com/team/depth-chart",
    "http_status": 200,
    "bytes": 347534,
-   "sha256": "789bffbad4f7a196cb50385bfe71db9551c71d8ab1b93a6dcf4807416cf29ab6",
+   "sha256": "16b817dc126f949de255a72b5651fb8d7865d9da47b8ef29aef70520236f2fb8",
    "rows": 57,
    "error": "",
    "previous_snapshot_kept": false
@@ -172,7 +172,7 @@
    "url": "https://www.jaguars.com/team/depth-chart",
    "http_status": 200,
    "bytes": 310383,
-   "sha256": "bd0480f01295da370e2d23ec2500b91e7a1d8c8e845cc6f7783e86985f1cfd17",
+   "sha256": "c0b44ec588d483402e578cbca71838c104a942958ba166bb8679905d983e167d",
    "rows": 58,
    "error": "",
    "previous_snapshot_kept": false
@@ -182,8 +182,8 @@
    "team": "KC",
    "url": "https://www.chiefs.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 302338,
-   "sha256": "d6e7732bf5a28c14ed1eb3936aea14b1f193507531292b42747bc6c44b8c237d",
+   "bytes": 302199,
+   "sha256": "b801a155a6f51c16989533364ce1ad46ef4b863b9debc024e91ffaacbd456ac8",
    "rows": 60,
    "error": "",
    "previous_snapshot_kept": false
@@ -194,7 +194,7 @@
    "url": "https://www.raiders.com/team/depth-chart",
    "http_status": 200,
    "bytes": 297614,
-   "sha256": "f394c61274e0a67cde3769a187113110e7a949ce5fc9e4efcaa84c645ce31a5e",
+   "sha256": "8b479c9a4b50ab23e4fd829516cf550897b8e68b64794d110c7ff28aaf782dfd",
    "rows": 58,
    "error": "",
    "previous_snapshot_kept": false
@@ -204,9 +204,9 @@
    "team": "LAC",
    "url": "https://www.chargers.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 360011,
-   "sha256": "a895efd92701c571261076679fa64d39c02cc39e8fda4d0cad888d224c2ca440",
-   "rows": 62,
+   "bytes": 359950,
+   "sha256": "47b187577cfc54989d4ddfddbceb3d3774da98fef636b8fec31fe617ff7732a9",
+   "rows": 61,
    "error": "",
    "previous_snapshot_kept": false
   },
@@ -216,7 +216,7 @@
    "url": "https://www.therams.com/team/depth-chart",
    "http_status": 200,
    "bytes": 293120,
-   "sha256": "87020bb20c9df5bd33908f9c730bb811aded96aef2349d39761f3e95a65b82c9",
+   "sha256": "b43b2d19a6fe6053f099aee7461bde283400808c63e01fad74f52bc037a6985b",
    "rows": 57,
    "error": "",
    "previous_snapshot_kept": false
@@ -227,7 +227,7 @@
    "url": "https://www.miamidolphins.com/team/depth-chart",
    "http_status": 200,
    "bytes": 285560,
-   "sha256": "7369ebc447615ec1d58d06836535de7c7a71aa88f3c3b2e4cd2cedeffa9ccd99",
+   "sha256": "d0bc5b2a73d3c703b7d6620094d082191d780f66aedf5de3ff7c025611297065",
    "rows": 56,
    "error": "",
    "previous_snapshot_kept": false
@@ -237,9 +237,9 @@
    "team": "MIN",
    "url": "https://www.vikings.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 307899,
-   "sha256": "dfe100350a3f54ecfe2d0d29bab78eb67dcb6f1f684f009e756d0ef062a3af57",
-   "rows": 59,
+   "bytes": 307960,
+   "sha256": "b387853d81441786f40501504a4934f8adb8b4c415e5bc9a51d21e7bd6418299",
+   "rows": 60,
    "error": "",
    "previous_snapshot_kept": false
   },
@@ -248,8 +248,8 @@
    "team": "NE",
    "url": "https://www.patriots.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 356532,
-   "sha256": "fdea2dc5b7931224e06ee2f7f57c05657b8e5d4c296a7dbaeb374d1d0ede146a",
+   "bytes": 356468,
+   "sha256": "16ce86d59b13f048f6556df34bbbdfa4ca2cb1521ba690a76022d833c22c66de",
    "rows": 62,
    "error": "",
    "previous_snapshot_kept": false
@@ -259,8 +259,8 @@
    "team": "NO",
    "url": "https://www.neworleanssaints.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 509410,
-   "sha256": "36ccb38856e09d971761f3132a3ae0d14fa222b6617d20af6807a1f0e38cedee",
+   "bytes": 509749,
+   "sha256": "7e5e52266642ee9d826dffe6e1d5f08bc48629960936f0877a341e748156a7b3",
    "rows": 61,
    "error": "",
    "previous_snapshot_kept": false
@@ -271,7 +271,7 @@
    "url": "https://www.giants.com/team/depth-chart",
    "http_status": 200,
    "bytes": 295831,
-   "sha256": "2b5a96fad9306adc759f03c21cc6e83efb15948860a96c1028e1b05b4856e3d0",
+   "sha256": "e66dedbb9f7265901c29f446aba362a981dcb65c34ae4406fd3030f015986388",
    "rows": 60,
    "error": "",
    "previous_snapshot_kept": false
@@ -282,7 +282,7 @@
    "url": "https://www.newyorkjets.com/team/depth-chart",
    "http_status": 200,
    "bytes": 293683,
-   "sha256": "44932533e6a3dde8dd65f7737b1664d7264a693b88e72bd99e365b434ca312ba",
+   "sha256": "a27e143a4c385a89091156f3894abe0c36bcd441484099731d610ea2b44b68c0",
    "rows": 58,
    "error": "",
    "previous_snapshot_kept": false
@@ -292,8 +292,8 @@
    "team": "PHI",
    "url": "https://www.philadelphiaeagles.com/team/depth-chart",
    "http_status": 200,
-   "bytes": 361198,
-   "sha256": "b45a4674bec78287f59ceaa1c0bd339540eb5a6fb7c38425d7b33d05e9be5337",
+   "bytes": 360771,
+   "sha256": "eb6ae7bcd8183bc466ee58b0f422679dc193d66e699a85029e3f853b876d562f",
    "rows": 54,
    "error": "",
    "previous_snapshot_kept": false
@@ -304,7 +304,7 @@
    "url": "https://www.steelers.com/team/depth-chart",
    "http_status": 200,
    "bytes": 308994,
-   "sha256": "272625f3d82b4b76281fd0e8724cf126b3f80f9b95320bc7d515b703719e832d",
+   "sha256": "093198035e1830fb0c35a3bcf03fd1e14dc2e1f3e504b78637d6fa389b03cd90",
    "rows": 59,
    "error": "",
    "previous_snapshot_kept": false
@@ -315,7 +315,7 @@
    "url": "https://www.49ers.com/team/depth-chart",
    "http_status": 200,
    "bytes": 288774,
-   "sha256": "ed037d485557888fd5a14ca58657f98ac42b08285ae9a2805bbdfb951fadc3ac",
+   "sha256": "d4f1684417cb4f92db3be4d04f154192c0bd5677afa7bc8a2d63cc102fc1c4f5",
    "rows": 58,
    "error": "",
    "previous_snapshot_kept": false
@@ -326,7 +326,7 @@
    "url": "https://www.seahawks.com/team/depth-chart",
    "http_status": 200,
    "bytes": 311885,
-   "sha256": "5ada37d63802a957b74f8edb0ff164e437a8ec80bb132c5416f42fd0e6d33dd3",
+   "sha256": "831b3c608d90f2fb9b2ad5bac4f70f325368bab9e2d178303a42b19038319c74",
    "rows": 63,
    "error": "",
    "previous_snapshot_kept": false
@@ -337,7 +337,7 @@
    "url": "https://www.buccaneers.com/team/depth-chart",
    "http_status": 200,
    "bytes": 295800,
-   "sha256": "38ce4e6e6909cc0e09fd70afc793374f0905bc019911d97a3d148e14413f7612",
+   "sha256": "6f89e85e4a2f851c2386a847caa22ee785f17b1ac2751e4bf19db05098ab2488",
    "rows": 60,
    "error": "",
    "previous_snapshot_kept": false
@@ -348,7 +348,7 @@
    "url": "https://www.tennesseetitans.com/team/depth-chart",
    "http_status": 200,
    "bytes": 303887,
-   "sha256": "1dc1d9a2490f20329263707688a1d607f5f29b9c3d8cc4d604e701d63b3da1de",
+   "sha256": "c5cd8b767bb19089d5676b0ce87ad77142795d9d791619028826240ada339024",
    "rows": 65,
    "error": "",
    "previous_snapshot_kept": false
@@ -359,7 +359,7 @@
    "url": "https://www.commanders.com/team/depth-chart",
    "http_status": 200,
    "bytes": 301955,
-   "sha256": "52214a81b971d18137aefb60dd553ebc15e7876f3bb8aa47bcfe805ee2b7c3a5",
+   "sha256": "0454c6e9e81e472f343b43ba25950cccc7be9299725bdd916bd5bc0ef99be66b",
    "rows": 60,
    "error": "",
    "previous_snapshot_kept": false

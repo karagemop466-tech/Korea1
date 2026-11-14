@@ -1,7 +1,7 @@
 page,data_rows,tables,rows_without_official_source,unverified_numeric_cells,broken_links,external_assets,V1_official_reference_every_row,V1b_unverified_metrics_blank,V2_internal_links,V3_no_missing_tokens,V4_all_tables_captioned,V5_snapshot_in_footer,V6_local_assets_only,passed
 answers.html,98,2,0,,,,True,True,True,True,True,True,True,True
 audit.html,84,7,0,,,,True,True,True,True,True,True,True,True
-availability.html,544,5,0,,,,True,True,True,True,True,True,True,True
+availability.html,581,5,0,,,,True,True,True,True,True,True,True,True
 competition.html,52,6,0,,,,True,True,True,True,True,True,True,True
 correlations.html,12,2,0,,,,True,True,True,True,True,True,True,True
 decision-board.html,17,1,0,,,,True,True,True,True,True,True,True,True
