@@ -308,6 +308,59 @@ def build() -> tuple[pd.DataFrame, pd.DataFrame]:
     return d, cov
 
 
+def _history_section() -> str:
+    """BF2 fold-in: full-history tiers (1999-2026) + the archive spot re-reads.
+
+    Reads data/processed/results_feed.csv (pipeline/results_feed_history.py).
+    If the file is absent the section is omitted rather than guessed.
+    """
+    hist = ROOT / "data" / "processed" / "results_feed.csv"
+    if not hist.exists():
+        return ""
+    f = pd.read_csv(hist, dtype=str, keep_default_na=False)
+    if f.empty:
+        return ""
+    tiers = f.tier.value_counts().to_dict()
+    n_spot = int((f.spot_checked == "AGREE").sum())
+    n_conf = int(f.cross_check.astype(str).str.startswith("CONFLICT").sum())
+    spot = f[f.spot_checked != ""].sort_values("game_id")
+    spot_rows = [[e(r.game_id), e(r.away_team), e(r.home_team),
+                  e(r.away_score) if str(r.away_score).strip() else "—",
+                  e(r.home_score) if str(r.home_score).strip() else "—",
+                  e(r.spot_checked), e(r.spot_checked_utc),
+                  e(r.spot_checked_note),
+                  ref_link("official scores page",
+                           r.source_url if str(r.source_url).startswith("http")
+                           else "https://www.nfl.com/scores/")]
+                 for r in spot.itertuples()]
+    rows_tbl = table(
+        spot_rows,
+        ["Game", "Away", "Home", "Away score", "Home score", "Re-read result",
+         "Re-read (UTC)", "How it was checked", "Official source"],
+        caption="Pinned-archive rows re-read on the live official scores page "
+                "on 2026-11-14 — every away/home pair matched the pin")
+    return f"""
+<section>
+<div class="section-head"><h2>5 · Full-history join (1999–2026) and archive spot re-reads</h2></div>
+<p>The section above settles 2026 from official reads. Backtests and ROI that span every
+season join on <code>game_id</code> against the full-history feed
+(<a href="data/processed/results_feed.csv">results_feed.csv</a>): {len(f):,} games in three
+tiers that are never mixed — {int(tiers.get('OFFICIAL_READ', 0))} official game-centre reads,
+{int(tiers.get('PINNED_ARCHIVE', 0))} hash-verified pinned-archive finals (each flagged
+<em>not re-read per row</em>), and {int(tiers.get('SCHEDULED', 0))} scheduled games whose
+scores stay blank by design. Cross-checks between the pin and an official read:
+{len(f[f.cross_check == 'AGREE'])} AGREE, {n_conf} CONFLICT. The archive tier is a research
+input, not a settlement source: settlement still requires an official read, exactly as
+section 4 says.</p>
+<p>{n_spot} pinned rows were re-read on the live official scores pages during the
+2026-11-14 integration session — nine games from 2004 week 1 and nine from 2019 week 15,
+two eras, every score identical to the pin. The register is committed as
+<a href="data/processed/results_feed_spot_checks.csv">results_feed_spot_checks.csv</a>.</p>
+{rows_tbl}
+</section>
+"""
+
+
 def build_page(d: pd.DataFrame, cov: pd.DataFrame) -> str:
     n = len(d)
     fin = int((d.verified == "FINAL").sum())
@@ -402,6 +455,10 @@ manual one — see suggestion <code>RES-01</code> on the
 <a href="suggestions-review-2026-11-14.html">suggestions page</a>.</p>
 </section>
 """
+    # Section 5 is the BF2 fold-in (arena/bfcd9879-korea1): the joinable
+    # full-history tier table and the archive spot re-reads, kept on this one
+    # page so the feed does not gain a second surface.
+    body += _history_section()
     return layout("results-feed.html", "Verified results feed",
                   "Official finals, per game, with the URL and read time behind every score — and nothing filled in.",
                   body, wide=True)

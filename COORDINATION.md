@@ -2815,3 +2815,28 @@ nfl.com/scores/2026/REG10 (WAS@NYG Final, matches the forward ledger).
 (recorded on `price-archive.html`, joins identity-confirmed); (ii) `build_flagged` printed
 F-17 twice (removed); (iii) `verify_site.py`'s expected set never contained
 `price-snapshot.html` (added); (iv) annex correlation tables had no n (repaired).
+
+**Post-rebase addendum (second rebase, onto PR #57 / `arena/6b1f0c9a-korea1`).**
+While the first push was being rebased, T43 merged its own nine-item implementation
+(`pipeline/{price_annex,results_feed,origination_order,signal_staking,replacement_depth,
+corr_official,demotion_rules,session_20261114}.py` + eight pages). The rebase was resolved
+in the same spirit — theirs canonical where a name or surface collided, mine kept where it
+adds data or evidence they do not have:
+
+1. `pipeline/results_feed.py` + `results-feed.html` — **theirs is canonical** (official-only
+   2026 settlement source, registered and tested). My full-history generator was restored as
+   **`pipeline/results_feed_history.py`** (7,548-game tiered join, 0 conflicts) and wired into
+   the `site` recipe; my spot re-read register (18 live rows) and tier summary were **folded
+   into their page as section 5** so the feed keeps a single surface.
+2. Nav: my duplicate `results-feed.html` entry removed (theirs, in the "Prove it" group,
+   stands); `price-archive.html` kept beside their `price-annex.html` — the two stores are
+   complementary (theirs: nflverse initial/closing/sc lines; mine: SBR 2011–2021 opens,
+   archive and pinned closes, forward freezes).
+3. `Makefile`: both test lists unioned (`test_brief_2026_11_14.py` + `test_origination_order.py`);
+   both site-recipe blocks kept; my dead `render_results_feed.py` removed so it can never
+   clobber the merged page.
+4. Provenance register on `correlations.html` gained a row for T43's
+   `correlation-official.html`.
+5. Generated files conflicted in the rebase were taken from `main` and re-converged by
+   rebuilding; final state: **`make build` green twice (fixed point), 52 pages checked,
+   0 failing checks, `make test` 166 passed**.

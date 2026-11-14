@@ -147,7 +147,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 598 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 609 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -168,6 +168,30 @@ earlier sessions.
 
 **Decision unchanged:** keep the research engine, fund nothing, reward nothing. The merged
 registers make the decision easier to review, not different.
+
+## Addendum - 2026-11-14 (integration session `arena/bfcd9879-korea1`)
+
+The eight bolded requirements were re-checked line by line against the code after
+parallel sessions merged their own implementations of the same brief. What this
+session added on top, verified in `make build` and `make test` (140 tests):
+
+| Requirement | Where it stands after this session |
+|---|---|
+| Price-snapshot store | `price-snapshot.html` keeps the strict blank-cell store; **`price-archive.html`** now publishes the archive-populated view: 29704 snapshot rows over 7426 games - 5886 opening prices (2011-2021 archive), 11253 archive closes, 25632 pinned closes, 112 forward freezes - each row tier-labelled and flagged NOT AN AUTHENTICATED QUOTE (G1 fails) |
+| Verified results feed | **`results-feed.html`**: 7548 games in three never-mixed tiers (30 official game-centre reads, 7383 pinned-archive finals, 135 scheduled with blank scores), 0 source conflicts, and 18 rows spot re-read on nfl.com this session - all agree |
+| Origination order (side then total then moneyline) | Already the code order; now asserted by `tests/test_origination_order.py` (source order + output columns) |
+| Fair / market / difference columns | `lines.html` publishes all three per market (spread and total in points, moneyline in price and probability points); the test pins the columns and their arithmetic |
+| Signal vs staking on the leaderboard | `strategies.html` prints Units staked and Mean signal edge beside blank ROI: a lucky staking run cannot be read as signal |
+| Correlation n and official-only inputs | Annex tables now publish n with every value (BF6 repair); `correlations.html` adds a provenance register for every correlation surface and one correlation computed ONLY from officially read finals with n on the row |
+| Demotion gate | Published on `validation.html` from the forward scoreboard (X7/P4 implementations verified, not replaced) |
+| Replacement depth | 1st-4th string tracking already published on `lineup-deficiencies.html`; verified, no gap found |
+
+**F-29a:** the four contradictory injury rows flagged by X7 were each re-read on the
+live official report (nfl.com/injuries/league/2026/reg10, 2026-11-14). JAX BJ Green II
+and CIN Jalen Davis / Andrei Iosivas / Brian Parker II appear exactly as published -
+faithful transcriptions of a pairing that is itself contradictory on the official page.
+
+**Decision unchanged:** keep the research engine; fund nothing, reward nothing.
 
 ## Material audit corrections
 

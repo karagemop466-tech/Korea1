@@ -81,11 +81,12 @@ site: injuries review reviewall
 	# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed
 	# originated lines and the forward cards only; no network.
 	$(PY) pipeline/price_snapshots.py
-	# BF1 (arena/bfcd9879-korea1): archive-populated price store + its page.
-	# Read committed files only; no network. The results feed is T43's
-	# pipeline/results_feed.py above (their page kept as the single surface).
+	# BF1/BF2 (arena/bfcd9879-korea1): archive-populated price store + its page,
+	# and the full-history tiered results feed (published as section 5 of T43's
+	# results-feed.html). Read committed files only; no network.
 	$(PY) pipeline/price_archive.py
 	$(PY) pipeline/render_price_archive.py
+	$(PY) pipeline/results_feed_history.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	$(PY) pipeline/render_review.py
 	$(PY) pipeline/render_summary.py

@@ -89,8 +89,6 @@ NAV_GROUPS = [
         ("price-archive.html", "Price archive"),
         ("strategies.html", "Leaderboard"),
         ("forward.html", "Forward test record"),
-        # BF2 (arena/bfcd9879-korea1): one joinable graded-outcomes table.
-        ("results-feed.html", "Results feed"),
         # X4 (session arena/132e7ca2-korea1): rules, reward ladder and standings.
         ("competition.html", "Competition & rewards"),
         ("validation.html", "Validation gates"),
@@ -920,6 +918,11 @@ def build_correlations(d):
                 "with the value \u00b7 exploratory: one block of weeks, small n",
                 official("NFL scores")]]
     provenance_rows = [
+        ["Market correlations on official pages (correlation-official.html, T43)",
+         "Spearman associations from pinned closing numbers against on-record finals",
+         "PINNED CLOSING NUMBER + ON-RECORD FINAL (T43 definition), weekly-block bootstrap",
+         "yes \u2014 n and n_weeks printed on every row", "correlation-official.html",
+         official("NFL scores")],
         ["Outcome correlation on official reads (above)",
          "Association between final margin and final total",
          "OFFICIAL \u2014 game-centre reads, data/forward/official_results.csv",
