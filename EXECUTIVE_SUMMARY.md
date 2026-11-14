@@ -20,10 +20,10 @@ of them is an approval:
 | Register | Size / status | What it establishes |
 |---|---|---|
 | `suggestions-review.html` | 12 staged improvements — interactive Path A / B / C selector | Side-by-side Conservative / Balanced / Full path options, trade-offs, affected gates and browser-only decision JSON export before any model or rule edit |
-| `suggestions.html` | 22 proposals — 8 ready now, 6 pilot, 4 recommended before any reward, 2 rejected, 1 deferred, 1 blocked | Cost, risk, dependency and acceptance evidence for every change, plus four paths (A–D) and a change-control worksheet |
+| `suggestions.html` | 28 proposals — 14 ready now, 6 pilot, 4 recommended before any reward, 2 rejected, 1 deferred, 1 blocked | Cost, risk, dependency and acceptance evidence for every change, plus four paths (A–D) and a change-control worksheet |
 | `decision-readiness.html` | 14 pre-decision Q&As, 8 discovery protocols & 28 post-pin NFL.com scores | Separates verified knowns from missing inputs and reconciles all 28 Week 8–9 2026 games settled on NFL.com after the 2026-11-01 archive pin |
 | `decisions.html` | 12 readiness questions plus a parallel 8-proposal register | Current answers, missing inputs, discovery steps and the gate each one feeds |
-| `questions.html` | 40 questions — 29 answered, 2 open, 7 blocked, 2 needing an owner decision | Every answer cited; blocked rows left blank with the reason and a closure test |
+| `questions.html` | 46 questions — 35 answered, 2 open, 7 blocked, 2 needing an owner decision | Every answer cited; blocked rows left blank with the reason and a closure test |
 | `lineup-deficiencies.html` | 39 Week 10 entries across 8 clubs / 4 matchups + NFL Operations T-90m rule | Offensive & defensive 1st–4th string tracking across `WAS@NYG`, `NE@DET`, `KC@ATL` and `MIN@GB`, club disclaimers/trade lag, and prefix-safe PBP backup diagnostics |
 
 Two dated captures are transcribed in `injuries.html`: the 2026 week-10 WAS/NYG report (20 rows — 2 Out, 1
@@ -134,8 +134,8 @@ code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 | Competition rewards | Fail-closed recognition tiers; all rewards unawarded | No funded prize pool | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Official score audit | 31 matching games in a 39-game NFL.com sample | Sample, not a census | [NFL official scores](https://www.nfl.com/scores/) |
 | Dashboard | Static categorized pages, searchable tables, source links and flagged-review register | Deployment recorded separately after merge |
-| Suggestions before changes (R19) | 22 proposals with cost, risk, dependencies, four paths and change control | Implemented; nothing approved |
-| Questions and answers (R20) | 40 open questions plus 12 readiness questions, each with a closure test | Implemented; blocked rows blank |
+| Suggestions before changes (R19) | 28 proposals with cost, risk, dependencies, four paths and change control | Implemented; nothing approved |
+| Questions and answers (R20) | 46 open questions plus 12 readiness questions, each with a closure test | Implemented; blocked rows blank |
 | Injury / lineup deficiency (R21) | Official report captures plus 2 of 32 club depth charts | PARTIAL — order only, no confirmed roles | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 ## Addendum - 2026-11-13
@@ -144,8 +144,8 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 
 | What was added | Size | What it does |
 |---|---|---|
-| `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
-| `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
+| `review-queue.html` | 82 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
+| `answers.html` | 96 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
 | `repo-review.html` | 505 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
@@ -168,6 +168,37 @@ earlier sessions.
 
 **Decision unchanged:** keep the research engine, fund nothing, reward nothing. The merged
 registers make the decision easier to review, not different.
+
+## Addendum - 2026-11-14: the price store, the results feed and the signal/staking split
+
+A sixth pass (`arena/b13485ed-korea1`) added the artifacts the return needs, and split the
+leaderboard so that a lucky run cannot read as skill.
+
+| What was added | Size | What it does |
+|---|---|---|
+| `prices.html` | 37926 price snapshots over 6237 games | One row per originated market side - spread, total and moneyline, both sides - with the model number, the market number, the difference, the opening number, the closing number and the source id and evidence class of every cell |
+| Verified results feed | 30 officially verified games | The official final, its official URL, the verification time and who verified it, joined to our own line, so that a settlement rests on an official page |
+| Signal / staking split | 18 strategies | Two scorecards per strategy. The leaderboard is ranked on the signal; the money columns are shown beside it and never order it. A positive return may never promote a strategy whose signal is not positive |
+| Demotion gate | 18 strategies, 8 conditions | A live strategy that trips any condition goes back to paper. The gate can only send a strategy down |
+| Official-only correlations | 3 pairs | Computed only from the officially verified finals and our own lines, with `n` published beside every value |
+
+**What the numbers say.**
+
+| Finding | Value | Where it comes from |
+|---|---|---|
+| Officially verified games | 30 | The official finals feed |
+| Price snapshots carrying both an opening and a closing number | 336 of 37926 | The price-snapshot store |
+| Strategies whose signal is positive (interval above zero) | 6 of 18 | The signal scorecard |
+| Strategies whose return can be told apart from luck | 0 of 18 | The staking scorecard: every one is short of the settled weeks its own power gate demands |
+| Positive-return strategies whose signal is not positive | 2 | The combined verdict: labelled a lucky staking run and capped at paper |
+| Live strategies | 0 | The demotion gate: nothing is live, so nothing has to be demoted |
+
+**What this did not change.** The blocking evidence is the same as before: NFL.com publishes
+scores, schedules, injuries and rules, and it publishes no betting line, price or limit. Every
+market number in the store is therefore a community mirror, class C, and every return computed
+from it is class D. The official final is class A and our own line is class B, and the
+settlement between them is sound. That is why the return register exists and is published, and
+why it is blank in the strict view.
 
 ## Material audit corrections
 

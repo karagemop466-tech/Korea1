@@ -2,9 +2,9 @@
   "generated_utc": "2026-11-13T22:57:59Z",
   "counts": {
     "suggestion_registers": 4,
-    "suggestion_rows": 76,
+    "suggestion_rows": 82,
     "question_registers": 3,
-    "question_rows": 74,
+    "question_rows": 80,
     "topics": 7,
     "convergence_topics": 6
   },
@@ -13,7 +13,7 @@
       "register": "suggestions",
       "page": "suggestions.html",
       "path": "data/processed/suggestions.csv",
-      "rows": 22
+      "rows": 28
     },
     {
       "register": "path-selector",
@@ -39,7 +39,7 @@
       "register": "questions",
       "page": "questions.html",
       "path": "data/processed/questions.csv",
-      "rows": 40
+      "rows": 46
     },
     {
       "register": "open-questions",
@@ -57,7 +57,7 @@
   "method": "explicit keyword map (printed on the page) applied to each proposal's own text; no model, no re-ranking of any register's own priority",
   "recommended_first_move": {
     "topic": "Prices & executable quotes",
-    "proposals": 11,
+    "proposals": 12,
     "registers_agreeing": 4,
     "blocked_questions": 8,
     "why": "it is the only topic that more than half of the independent registers converge on and that also holds the largest number of blocked questions; nothing downstream can be validated while it is open",

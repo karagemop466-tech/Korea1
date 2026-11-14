@@ -87,6 +87,90 @@ def _session_block():
     return '\n'.join(L)
 
 
+def _price_block():
+    """T50-T57 (session arena/b13485ed-korea1): the price store, the verified
+    results feed, the signal/staking split and the demotion gate.
+
+    Every number is read from the file that owns it, so this summary cannot
+    drift from the artifacts it describes.
+    """
+    import csv
+    fwd = ROOT / 'data' / 'forward'
+    proc = PROC
+
+    def rows(path):
+        return list(csv.DictReader(open(path))) if path.exists() else []
+
+    store = rows(fwd / 'price_snapshots.csv')
+    feed = rows(fwd / 'verified_results.csv')
+    summ = rows(fwd / 'verified_summary.csv')
+    split = rows(proc / 'leaderboard_signal_staking.csv')
+    dem = rows(proc / 'demotion_status.csv')
+    corr = rows(proc / 'corr_official.csv')
+    if not (store and split):
+        return ''
+
+    n_games = len({r['game_id'] for r in store})
+    n_sides = len(store)
+    n_complete = sum(1 for r in store if r.get('store_status') == 'COMPLETE')
+    n_feed_games = len({r['game_id'] for r in feed})
+    n_skill = sum(1 for r in split if r.get('signal_verdict') == 'SKILL')
+    n_luck = sum(1 for r in split if r.get('staking_verdict', '').startswith('INSUFFICIENT'))
+    n_lucky = sum(1 for r in split if r.get('combined_verdict', '').startswith('LUCKY'))
+    n_live = sum(1 for r in dem if r.get('current_tier') == 'LIVE')
+    n_corr = len(corr)
+
+    L = []
+    A = L.append
+    A('## Addendum - 2026-11-14: the price store, the results feed and the signal/staking split')
+    A('')
+    A('A sixth pass (`arena/b13485ed-korea1`) added the artifacts the return needs, and split the')
+    A('leaderboard so that a lucky run cannot read as skill.')
+    A('')
+    A('| What was added | Size | What it does |')
+    A('|---|---|---|')
+    A('| `prices.html` | ' + str(n_sides) + ' price snapshots over ' + str(n_games)
+      + ' games | One row per originated market side - spread, total and moneyline, both sides - with '
+      'the model number, the market number, the difference, the opening number, the closing number '
+      'and the source id and evidence class of every cell |')
+    A('| Verified results feed | ' + str(n_feed_games) + ' officially verified games | The official '
+      'final, its official URL, the verification time and who verified it, joined to our own line, so '
+      'that a settlement rests on an official page |')
+    A('| Signal / staking split | ' + str(len(split)) + ' strategies | Two scorecards per strategy. '
+      'The leaderboard is ranked on the signal; the money columns are shown beside it and never order '
+      'it. A positive return may never promote a strategy whose signal is not positive |')
+    A('| Demotion gate | ' + str(len(dem)) + ' strategies, 8 conditions | A live strategy that trips '
+      'any condition goes back to paper. The gate can only send a strategy down |')
+    A('| Official-only correlations | ' + str(n_corr) + ' pairs | Computed only from the officially '
+      'verified finals and our own lines, with `n` published beside every value |')
+    A('')
+    A('**What the numbers say.**')
+    A('')
+    A('| Finding | Value | Where it comes from |')
+    A('|---|---|---|')
+    A('| Officially verified games | ' + str(n_feed_games) + ' | The official finals feed |')
+    A('| Price snapshots carrying both an opening and a closing number | ' + str(n_complete)
+      + ' of ' + str(n_sides) + ' | The price-snapshot store |')
+    A('| Strategies whose signal is positive (interval above zero) | ' + str(n_skill) + ' of '
+      + str(len(split)) + ' | The signal scorecard |')
+    A('| Strategies whose return can be told apart from luck | ' + str(len(split) - n_luck) + ' of '
+      + str(len(split)) + ' | The staking scorecard: every one is short of the settled weeks its own '
+      'power gate demands |')
+    A('| Positive-return strategies whose signal is not positive | ' + str(n_lucky)
+      + ' | The combined verdict: labelled a lucky staking run and capped at paper |')
+    A('| Live strategies | ' + str(n_live) + ' | The demotion gate: nothing is live, so nothing has to '
+      'be demoted |')
+    A('')
+    A('**What this did not change.** The blocking evidence is the same as before: NFL.com publishes')
+    A('scores, schedules, injuries and rules, and it publishes no betting line, price or limit. Every')
+    A('market number in the store is therefore a community mirror, class C, and every return computed')
+    A('from it is class D. The official final is class A and our own line is class B, and the')
+    A('settlement between them is sound. That is why the return register exists and is published, and')
+    A('why it is blank in the strict view.')
+    A('')
+    return '\n'.join(L)
+
+
 def main():
     gates=pd.read_csv(PROC/'strategy_gates.csv')
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
@@ -118,6 +202,7 @@ def main():
     f_units = pd.to_numeric(_pk.loc[_pk.status == 'OFFICIAL', 'pnl'], errors='coerce').sum() if f_declared else 0.0
     f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
     _s = _session_block()
+    _p = _price_block()
     text=f'''# Executive summary — NFL Line Lab
 
 Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
@@ -259,6 +344,7 @@ code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 | Injury / lineup deficiency (R21) | Official report captures plus {charts} of 32 club depth charts | PARTIAL — order only, no confirmed roles | [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages) |
 
 {_s}
+{_p}
 ## Material audit corrections
 
 1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.

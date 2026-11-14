@@ -62,21 +62,46 @@ def test_blank_official_cell_never_confirms():
 
 
 def test_inactive_player_cannot_be_full_participant():
-    """Out + Full Participation in the published row is a defect, not drift."""
+    """Out + Full Participation in the published row is a defect, not drift.
+
+    The fixture is read from the published table rather than hard-coded, because
+    the published table is replaced by the scheduled league-wide capture: on
+    2026-11-14 it grew from the 8-club 326-row sample to a 345-row, 28-club
+    capture, and the player names and statuses in it moved with the official
+    page. The grader's logic is what this test exists to pin down.
+    """
     pub, off = _pub(), _inj()
-    off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "practice_status"] = \
-        "Full Participation in Practice"
+    # A player that is in both the published table and the transcribed extract,
+    # and that the published table records as unavailable.
+    both = pub[pub.team.isin(set(off.club)) & pub.player.isin(set(off.player))]
+    assert len(both), "the published table and the extract share no player"
+    inactive = both[both.game_status.isin(["Out", "Doubtful"])]
+    assert len(inactive), "no published player that is unavailable is in the extract"
+    r = inactive.iloc[0]
+    club, player = r.team, r.player
+    published_practice = r.practice_status
+
+    # 1. The official cell carries the published value: the values agree, so
+    #    nothing is wrong here.
+    off.loc[(off.club == club) & (off.player == player), "practice_status"] = \
+        published_practice
+    off.loc[(off.club == club) & (off.player == player), "game_status"] = \
+        r.game_status
     d = lv.compare(pub, off)
-    row = d[(d.club == "DET") & (d.player == "Kerby Joseph")
+    row = d[(d.club == club) & (d.player == player)
             & (d.field == "practice_status")].iloc[0]
     assert row.verdict == "MATCH"  # values agree, so nothing is wrong here
 
-    # now flip the official cell while the published row still says Out
-    off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "game_status"] = ""
-    off.loc[(off.club == "DET") & (off.player == "Kerby Joseph"), "practice_status"] = \
-        "Did Not Participate In Practice"
+    # 2. Now flip the official cell while the published row still says the
+    #    player is unavailable. The published cell is then contradicted by the
+    #    official page, which is a confirmed defect, not drift.
+    off.loc[(off.club == club) & (off.player == player), "game_status"] = ""
+    off.loc[(off.club == club) & (off.player == player), "practice_status"] = (
+        "Full Participation in Practice"
+        if published_practice != "Full Participation in Practice"
+        else "Did Not Participate In Practice")
     d2 = lv.compare(pub, off)
-    row2 = d2[(d2.club == "DET") & (d2.player == "Kerby Joseph")
+    row2 = d2[(d2.club == club) & (d2.player == player)
               & (d2.field == "practice_status")].iloc[0]
     assert row2.defect_class == "confirmed_defect"
     assert row2.verdict == "INCONSISTENT"
@@ -105,11 +130,35 @@ def test_missing_player_row_is_unresolved_not_a_defect():
 
 
 def test_internal_consistency_flags_the_known_contradiction():
-    issues, stats = lv.internal_consistency(_pub())
-    assert stats["rows"] == 326
-    assert stats["contradictions"] == 1
-    assert set(issues.player) == {"Kerby Joseph"}
-    assert issues.iloc[0].check == "unavailable_but_full_practice"
+    """The grader must flag a row that says Out and full practice at once.
+
+    The published table is replaced by the scheduled league-wide capture, so the
+    count and the names are read from the file rather than pinned to the
+    8-club sample of 2026-11-12 (326 rows, one contradiction, Kerby Joseph).
+    The 2026-11-14 capture holds 345 rows over 28 clubs and carries four
+    contradictions of the same kind; all four are published in
+    data/live/internal_consistency.csv.
+    """
+    pub = _pub()
+    issues, stats = lv.internal_consistency(pub)
+    assert stats["rows"] == len(pub)
+    assert stats["clubs"] == pub.team.nunique()
+    assert stats["contradictions"] == len(issues[issues.severity == "contradiction"])
+    if len(issues):
+        assert set(issues.check) == {"unavailable_but_full_practice"}
+        # Every contradiction is a real row of the published table.
+        for r in issues.itertuples():
+            assert ((pub.team == r.club) & (pub.player == r.player)).any(), \
+                f"{r.club}/{r.player} is not in the published table"
+
+    # And the grader still catches a contradiction that is injected on purpose.
+    injected = pub.copy()
+    target = injected.index[0]
+    injected.loc[target, "game_status"] = "Out"
+    injected.loc[target, "practice_status"] = "Full Participation in Practice"
+    issues2, stats2 = lv.internal_consistency(injected)
+    assert stats2["contradictions"] == stats["contradictions"] + 1
+    assert injected.loc[target, "player"] in set(issues2.player)
 
 
 def test_internal_consistency_flags_a_bad_vocabulary():

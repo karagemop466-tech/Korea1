@@ -466,6 +466,55 @@ def build_executive(d):
                   "White (2000)")],
     ], ["Item", "State", "Meaning", "Official / primary reference"],
        caption="Forward-test state at the first settlement")
+    # T50-T57 (session arena/b13485ed-korea1): the price store, the verified results
+    # feed, the signal/staking split and the demotion gate, read from the files that
+    # own them so this page cannot drift from the artifacts it describes.
+    _store = d.get("price_snapshots", pd.DataFrame())
+    _feed = d.get("verified_results", pd.DataFrame())
+    _split = d.get("leaderboard_signal_staking", pd.DataFrame())
+    _dem = d.get("demotion_status", pd.DataFrame())
+    _corr = d.get("corr_official", pd.DataFrame())
+    n_store = len(_store)
+    n_store_games = int(_store.game_id.nunique()) if len(_store) else 0
+    n_feed_games = int(_feed.game_id.nunique()) if len(_feed) else 0
+    n_skill = int((_split.signal_verdict == "SKILL").sum()) if len(_split) else 0
+    n_luck = int((_split.staking_verdict.str.startswith("INSUFFICIENT")).sum()) if len(_split) else 0
+    n_lucky = int((_split.combined_verdict.str.startswith("LUCKY")).sum()) if len(_split) else 0
+    n_live = int((_dem.current_tier == "LIVE").sum()) if len(_dem) else 0
+
+    price_cards = kpi_grid([
+        card(f"{n_store:,}", "price snapshots", f"every originated market side · {n_store_games:,} games", ""),
+        card(str(n_feed_games), "officially verified games", "official final, official URL, verification time", "good"),
+        card(f"{n_skill} of {len(_split)}", "strategies with a positive signal",
+             "the signal scorecard, measured without the price", ""),
+        card(f"{len(_split) - n_luck} of {len(_split)}", "returns distinguishable from luck",
+             "none has the settled weeks its own power gate demands", "bad"),
+    ])
+    price_table = table([
+        ["Price-snapshot store", f"{n_store:,} rows over {n_store_games:,} games",
+         "Spread, total and moneyline, both sides of each, with the model number, the market number, "
+         "the difference, the opening number, the closing number and the source id and evidence class "
+         "of every cell. <a href='prices.html'>Open the store</a>.",
+         src_link("https://www.nfl.com/scores/", "NFL scores")],
+        ["Verified results feed", f"{n_feed_games} officially verified games",
+         "The official final with its official URL, the verification time and who verified it, joined "
+         "to our own line. This is the anchor every settlement rests on.",
+         src_link("https://www.nfl.com/scores/", "NFL scores")],
+        ["Signal and staking, separated", f"{len(_split)} strategies, {n_skill} with a positive signal",
+         f"The leaderboard is ranked on the signal. {n_lucky} strategies have a positive return and a "
+         "signal that is not positive; they are labelled a lucky staking run and are capped at paper.",
+         official("White (2000), Econometric Society")],
+        ["Demotion gate", f"8 conditions · {n_live} live strategies",
+         "A live strategy that trips any condition goes back to paper. The gate can only send a "
+         "strategy down, and an unevaluable condition counts as not passed.",
+         official("White (2000), Econometric Society")],
+        ["Official-only correlations", f"{len(_corr)} pairs with n published",
+         "Computed only from the officially verified finals and our own lines, with the observation "
+         "count beside every value. <a href='correlations.html'>See the register</a>.",
+         src_link("https://www.nfl.com/scores/", "NFL scores")],
+    ], ["Artifact", "Size / status", "What it establishes", "Official reference"],
+       caption="What the 2026-11-14 pass added; every count is read from the file that owns it")
+
     body = f"""
 {notice()}
 <section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
@@ -511,6 +560,17 @@ approved, and no reward is funded. The scheduled league-wide capture (all clubs,
 None of them changes a published number; all of them make the missing evidence explicit.</p>
 {review_table}
 </section>
+<section id="price-store"><h2>What the 2026-11-14 pass added: the price store, the results feed, the separated leaderboard</h2>
+<p>Six of the seven artifacts the project was missing to make a return checkable now exist, and the
+leaderboard no longer ranks on money alone.</p>
+{price_cards}
+{price_table}
+<p><strong>What it did not change.</strong> NFL.com publishes scores, schedules, injuries and rules; it
+publishes no betting line, price or limit. Every market number in the store is therefore a community
+mirror, class C, and every return computed from it is class D. The official final is class A and our
+own line is class B, so the settlement between them is sound — which is exactly what the
+<a href="prices.html">prices &amp; results</a> page shows, and why the return register is published with
+its n rather than as a headline.</p></section>
 <section id="forward"><h2>Forward test — first settlement, 2026-11-13</h2>
 <p>A <strong>prospective</strong> record is the only evidence that cannot be contaminated by hindsight. <a href="forward.html">forward.html</a>
 prints every ticket frozen before kickoff and settles it only against an official NFL.com final.</p>

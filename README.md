@@ -17,7 +17,11 @@ player-prop ticket prices are missing, so the evidence does not support funding 
   ladder, the eight-gate luck-removal battery and standings ranked on gates passed, not profit
   (added 2026-11-13)
 - **`repo-review.html`** — every tracked file inventoried, the official-source checks run during the
-  2026-11-13 review, the row-by-row injury and score comparisons, and six irregularities (added 2026-11-13)
+  2026-11-13 review, the row-by-line injury and score comparisons, and six irregularities (added 2026-11-13)
+- **`prices.html`** — the **price-snapshot store** (every originated market side, with the opening and
+  closing number and the evidence class of each cell), the **verified results feed** (official finals
+  with their official URL and verification time), the error and return registers computed from them, and
+  the source register (added 2026-11-14, `arena/b13485ed-korea1`)
 - `index.html` — clean landing page and searchable leaderboard
 - `review.html` — **all four suggestion registers and all three question registers in one table** (76 proposals, 74 questions), clustered by topic, with one recommended first move and its limits. Nothing implemented.
 - `live-verification.html` — **line-by-line re-check of the published availability data against the official pages**: injury cells, depth-chart slots and all 59 matchup sentences, each with a verdict and its source
@@ -26,10 +30,14 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
-- `strategies.html` — complete candidate library and competition rules
+- `strategies.html` — complete candidate library and competition rules; since 2026-11-14 it also
+  publishes the **signal** and **staking** scorecards separately (ranked on the signal, never on the
+  money) and the **demotion gate** that sends a live strategy back to paper
 - `forward.html` — **forward test**: picks frozen before kickoff, settled only against official NFL.com finals (4 of 65 settled; no verdicts, no rewards)
 - `validation.html` — eight fail-closed gates
-- `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
+- `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries; `correlations.html`
+  also publishes `n` with every value and a second register computed **only** from officially sourced
+  numbers (added 2026-11-14)
 - `referents.html` — every citation on the site, resolved against the live page it points at
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
 - `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
@@ -43,6 +51,30 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `requirements.html` — requirement-by-requirement delivery register
 - `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
+
+## Price store, results feed and the separated leaderboard — 2026-11-14 (`arena/b13485ed-korea1`)
+
+Six of the artifacts needed to check a return now exist, and the leaderboard no longer ranks on
+money alone.
+
+| What | Where | What it does |
+|---|---|---|
+| Price-snapshot store | `data/forward/price_snapshots.csv`, `prices.html` | One row per originated market side — spread, total and moneyline, both sides — with the model number, the market number, the difference, the opening number, the closing number, the source id and the evidence class of every cell |
+| Verified results feed | `data/forward/verified_results.csv`, `prices.html` | The official final, its official URL, the verification time and who verified it, joined to our own line, so a settlement rests on an official page |
+| Origination order | `data/processed/origination_manifest.json`, `lines.html` | The side is originated first, then the total, then the moneyline. The order is fixed in `pipeline/models.py` and published, so the backtest and the board cannot drift apart |
+| Three separate line columns | `lines.html`, `prices.html` | The model's fair line, the market's line and the difference are three columns, never one merged "edge" figure |
+| Signal / staking split | `data/processed/leaderboard_signal_staking.csv`, `strategies.html` | Two scorecards per strategy. The leaderboard is ranked on the signal; the money columns sit beside it and never order it. A positive return may never promote a strategy whose signal is not positive |
+| Demotion gate | `data/processed/demotion_gates.csv`, `strategies.html` | Eight conditions that can only send a strategy down, each naming the data it needs; an unevaluable condition counts as not passed |
+| Replacement depth | `data/processed/replacement_depth.csv`, `lineup-deficiencies.html` | Which string replaces an unavailable starter, from the official club depth charts; blank, with the reason, where a club publishes no order |
+| Official-only correlations | `data/processed/corr_official.csv`, `correlations.html` | Correlations computed only from the officially verified finals and our own lines, with `n` published beside every value |
+
+**What this did not change.** NFL.com publishes scores, schedules, injuries and rules; it publishes no
+betting line, price or limit. Every market number in the store is a community mirror (class C) and
+every return computed from it is class D, so it stays blank in the strict public view and appears only
+as labelled research data with its `n`. The official final is class A and our own line is class B, so
+the settlement between them is sound. Six of the eighteen rules have a signal whose interval lies above
+zero, and **none** of the eighteen returns can be told apart from luck at the sample size available:
+every one is short of the settled weeks its own power gate demands.
 
 The publication source is **`main` / repository root**, not `docs/`.
 Live site: <https://karagemop466-tech.github.io/Korea1/>.
