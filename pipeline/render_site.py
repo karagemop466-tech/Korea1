@@ -100,6 +100,10 @@ NAV_GROUPS = [
         ("availability.html", "Injuries & depth · all clubs"),
         ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
         ("injury-deltas.html", "Injury & depth changes"),
+        # PS1/PS2 (arena/2e10e431-korea1): one row per club, and the depth-chart register.
+        ("schedule.html", "Schedule & dated announcement"),
+        ("team-view.html", "Per-team view · starters out"),
+        ("depth-register.html", "Depth-chart register"),
         ("injuries.html", "Injury source audit"),
         ("lineups.html", "Lineup sample"),
     ]),
@@ -1172,6 +1176,7 @@ Earlier audit findings are preserved below, including their original scope.</p>
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
     body += _flagged_2026_11_15_section()
+    body += _flagged_teamview_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1630,6 +1635,21 @@ def _flagged_2026_11_15_section() -> str:
             "Details and the brief tracker: <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
                     caption="Session findings with an official source") + listing + "</section>")
+
+
+def _flagged_teamview_section() -> str:
+    """PS3 findings (F-42 to F-45), from the per-team view session (arena/2e10e431-korea1)."""
+    fl = _read_integration("flagged_2026_11_15_teamview.csv")
+    if fl is None:
+        return ""
+    rows = [[e(r.id), e(r.severity), e(r.finding) + f"<br><span class=\"small\">Next: {e(r.next)}</span>",
+             src_link(r.source_url, r.source_label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the per-team view (2026-11-15)</h2>"
+            "<p>Irregularities found while building the per-team view and the depth-chart register. "
+            "None blocks merge. Details: <a href=\"team-view.html\">per-team view</a> and "
+            "<a href=\"depth-register.html\">depth-chart register</a>.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
+                    caption="Findings F-42 to F-45 with an official source") + "</section>")
 
 
 def _landing_panels() -> str:

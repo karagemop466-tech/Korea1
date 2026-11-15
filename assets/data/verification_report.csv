@@ -10,8 +10,9 @@ decision-board.html,17,1,0,,,,True,True,True,True,True,True,True,True
 decision-readiness.html,50,3,0,,,,True,True,True,True,True,True,True,True
 decisions.html,28,3,0,,,,True,True,True,True,True,True,True,True
 demotion.html,26,2,0,,,,True,True,True,True,True,True,True,True
+depth-register.html,32,1,0,,,,True,True,True,True,True,True,True,True
 executive-summary.html,35,5,0,,,,True,True,True,True,True,True,True,True
-flagged.html,87,7,0,,,,True,True,True,True,True,True,True,True
+flagged.html,91,8,0,,,,True,True,True,True,True,True,True,True
 forward.html,76,7,0,,,,True,True,True,True,True,True,True,True
 index.html,46,6,0,,,,True,True,True,True,True,True,True,True
 injuries.html,316,7,0,,,,True,True,True,True,True,True,True,True
@@ -35,12 +36,14 @@ requirements.html,40,3,0,,,,True,True,True,True,True,True,True,True
 results-feed.html,169,3,0,,,,True,True,True,True,True,True,True,True
 review-queue.html,90,2,0,,,,True,True,True,True,True,True,True,True
 review.html,167,5,0,,,,True,True,True,True,True,True,True,True
+schedule.html,15,2,0,,,,True,True,True,True,True,True,True,True
 signal-staking.html,25,2,0,,,,True,True,True,True,True,True,True,True
 sources.html,38,2,0,,,,True,True,True,True,True,True,True,True
 strategies.html,23,2,0,,,,True,True,True,True,True,True,True,True
 suggestions-review-2026-11-14.html,29,3,0,,,,True,True,True,True,True,True,True,True
 suggestions-review.html,16,2,0,,,,True,True,True,True,True,True,True,True
 suggestions.html,34,3,0,,,,True,True,True,True,True,True,True,True
+team-view.html,36,2,0,,,,True,True,True,True,True,True,True,True
 validation.html,44,3,0,,,,True,True,True,True,True,True,True,True
 verification.html,9,1,0,,,,True,True,True,True,True,True,True,True
 lab/correlation.html,6,1,0,,,,True,True,True,True,True,True,True,True

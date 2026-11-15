@@ -77,7 +77,9 @@ def main():
               # T43 (session arena/6b1f0c9a-korea1)
               "results-feed.html","correlation-official.html","replacement-depth.html",
               "origination.html","price-annex.html","signal-staking.html","demotion.html",
-              "suggestions-review-2026-11-14.html", "brief-2026-11-15.html"}
+              "suggestions-review-2026-11-14.html", "brief-2026-11-15.html",
+              # PS1/PS2 (arena/2e10e431-korea1)
+              "team-view.html", "depth-register.html", "schedule.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)
