@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-14T13:52:33Z",
+ "generated_utc": "2026-11-15T14:23:51Z",
  "source_csv": "data/governance/post_pin_nfl_scores_2026_11_12.csv",
  "rows": 28,
  "summary": {
@@ -21,9 +21,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "a91670ab597e35bb",
+   "sha256": "d6d9057b49612ba0",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:33Z"
+   "checked_utc": "2026-11-15T14:23:52Z"
   },
   {
    "game_id": "2026_08_ATL_TB",
@@ -40,9 +40,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "b371f569ca495de1",
+   "sha256": "a3b6677747fa1047",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:34Z"
+   "checked_utc": "2026-11-15T14:23:53Z"
   },
   {
    "game_id": "2026_08_BAL_BUF",
@@ -59,9 +59,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "17e4e975bd8c503f",
+   "sha256": "9cedc4f5f0a65892",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:34Z"
+   "checked_utc": "2026-11-15T14:23:53Z"
   },
   {
    "game_id": "2026_08_CLE_PIT",
@@ -78,9 +78,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "4cbc5a9aa1e892ab",
+   "sha256": "83f48519122dcf08",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:35Z"
+   "checked_utc": "2026-11-15T14:23:54Z"
   },
   {
    "game_id": "2026_08_IND_JAX",
@@ -97,9 +97,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "f64f322c26bafb49",
+   "sha256": "d530df14153ebf50",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:35Z"
+   "checked_utc": "2026-11-15T14:23:54Z"
   },
   {
    "game_id": "2026_08_LV_NYJ",
@@ -116,9 +116,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "f7c66a1429e25e8c",
+   "sha256": "018c61391a3d17cf",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:35Z"
+   "checked_utc": "2026-11-15T14:23:55Z"
   },
   {
    "game_id": "2026_08_MIN_DET",
@@ -135,9 +135,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "fa1589282d32d772",
+   "sha256": "407a53a57382ab10",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:36Z"
+   "checked_utc": "2026-11-15T14:23:55Z"
   },
   {
    "game_id": "2026_08_TEN_CIN",
@@ -154,9 +154,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "71736c400ef64ef6",
+   "sha256": "13c00079405c7374",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:36Z"
+   "checked_utc": "2026-11-15T14:23:55Z"
   },
   {
    "game_id": "2026_08_LAC_LA",
@@ -173,9 +173,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "b3617451d2272328",
+   "sha256": "2c46d11800e8819e",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:37Z"
+   "checked_utc": "2026-11-15T14:23:56Z"
   },
   {
    "game_id": "2026_08_KC_DEN",
@@ -192,9 +192,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "f93834215f7a11f4",
+   "sha256": "ad3bbbc3fdb4cc08",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:37Z"
+   "checked_utc": "2026-11-15T14:23:57Z"
   },
   {
    "game_id": "2026_08_NE_MIA",
@@ -211,9 +211,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "648390773d6b1e63",
+   "sha256": "6538d6ddf5b14c48",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:38Z"
+   "checked_utc": "2026-11-15T14:23:57Z"
   },
   {
    "game_id": "2026_08_PHI_WAS",
@@ -230,9 +230,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "3eb1ee0f0dfcc2a4",
+   "sha256": "55690dbe33c04f0f",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:38Z"
+   "checked_utc": "2026-11-15T14:23:57Z"
   },
   {
    "game_id": "2026_08_CHI_SEA",
@@ -249,9 +249,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "90b4ada1867fe4fe",
+   "sha256": "afaa2464bf5ccd19",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:39Z"
+   "checked_utc": "2026-11-15T14:23:58Z"
   },
   {
    "game_id": "2026_09_JAX_BAL",
@@ -268,9 +268,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "6f3562397040af96",
+   "sha256": "83f5b0fe9f13dff3",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:39Z"
+   "checked_utc": "2026-11-15T14:23:58Z"
   },
   {
    "game_id": "2026_09_CIN_ATL",
@@ -287,9 +287,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "05cdb6c015752188",
+   "sha256": "613e51996755cc49",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:39Z"
+   "checked_utc": "2026-11-15T14:23:59Z"
   },
   {
    "game_id": "2026_09_CLE_NO",
@@ -306,9 +306,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "f13efac2151b8774",
+   "sha256": "d5f3fe320b21314f",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:40Z"
+   "checked_utc": "2026-11-15T14:23:59Z"
   },
   {
    "game_id": "2026_09_DAL_IND",
@@ -325,9 +325,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "acfe1cc117ca8c25",
+   "sha256": "c15f9bd88173c733",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:40Z"
+   "checked_utc": "2026-11-15T14:24:00Z"
   },
   {
    "game_id": "2026_09_DEN_CAR",
@@ -344,9 +344,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "73c263fe3511801c",
+   "sha256": "d561efb32cd1db5d",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:41Z"
+   "checked_utc": "2026-11-15T14:24:00Z"
   },
   {
    "game_id": "2026_09_DET_MIA",
@@ -363,9 +363,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "8ed127c955df0a5e",
+   "sha256": "06e928df2fa5f821",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:41Z"
+   "checked_utc": "2026-11-15T14:24:01Z"
   },
   {
    "game_id": "2026_09_LA_WAS",
@@ -382,9 +382,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "a8d1f4f5e9012472",
+   "sha256": "0e7423bb628df968",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:42Z"
+   "checked_utc": "2026-11-15T14:24:01Z"
   },
   {
    "game_id": "2026_09_NYG_PHI",
@@ -401,9 +401,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "27a869f443dde374",
+   "sha256": "e92522f0accbea61",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:42Z"
+   "checked_utc": "2026-11-15T14:24:02Z"
   },
   {
    "game_id": "2026_09_NYJ_KC",
@@ -420,9 +420,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "266a584785530e2a",
+   "sha256": "70a0dccd05016fe7",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:43Z"
+   "checked_utc": "2026-11-15T14:24:02Z"
   },
   {
    "game_id": "2026_09_HOU_LAC",
@@ -439,9 +439,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "d550fe275f7afb05",
+   "sha256": "8865719721c2f655",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:43Z"
+   "checked_utc": "2026-11-15T14:24:02Z"
   },
   {
    "game_id": "2026_09_LV_SF",
@@ -458,9 +458,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "667a445b9a5ad229",
+   "sha256": "a965c650a77f6013",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:44Z"
+   "checked_utc": "2026-11-15T14:24:03Z"
   },
   {
    "game_id": "2026_09_ARI_SEA",
@@ -477,9 +477,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "3d5951c1a97ddafd",
+   "sha256": "7af1ce5aa059b477",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:44Z"
+   "checked_utc": "2026-11-15T14:24:03Z"
   },
   {
    "game_id": "2026_09_GB_NE",
@@ -496,9 +496,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "e6a076d4e12be8ff",
+   "sha256": "7aaccee5dc082466",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:44Z"
+   "checked_utc": "2026-11-15T14:24:03Z"
   },
   {
    "game_id": "2026_09_TB_CHI",
@@ -515,9 +515,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "641d2b5b9136ea15",
+   "sha256": "81104ba1a0adc2ab",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:45Z"
+   "checked_utc": "2026-11-15T14:24:04Z"
   },
   {
    "game_id": "2026_09_BUF_MIN",
@@ -534,9 +534,9 @@
    "live_home": "",
    "blocks_agree": "",
    "result": "UNPARSED",
-   "sha256": "e3d5a315fffad75f",
+   "sha256": "e5e71879f019f4bb",
    "error": "could not read the final score from the page",
-   "checked_utc": "2026-11-14T13:52:45Z"
+   "checked_utc": "2026-11-15T14:24:04Z"
   }
  ]
 }
