@@ -2968,4 +2968,14 @@ unresolvable and never guessed at.
 
 **Pull request and merge:** PR #69 — https://github.com/karagemop466-tech/Korea1/pull/69 — `arena/120935ef-korea1` → `main`, merged without waiting at 2026-11-15 10:48:17 -0800 (18:48:17 UTC) as merge commit `ab8955eb5d97a87238ddba4d9cfd60eaedeb38b6`. Verification summary, sources used and flagged irregularities were carried in the PR body; all checks were green before merge (see session block above).
 
-**Pages:** GitHub Pages serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the push of `ab8955eb` triggered the build/deploy. Final Pages state could not be re-probed from this shell because the GitHub API is rate-limited for this user ID (403 on `GET /repos/:owner/:repo/pages`); prior merges on this repo show `pages/builds/latest` = `built` with `error: null` and the live site at https://karagemop466-tech.github.io/Korea1/ . Confirm against `https://github.com/karagemop466-tech/Korea1/actions` when the rate limit clears.
+**Pages:** GitHub Pages serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the push of `ab8955eb` triggered the build/deploy. Final Pages state could not be re-probed from this shell because the GitHub API is rate-limited for this user ID (403 on `GET /repos/:owner/repo/pages`); prior merges on this repo show `pages/builds/latest` = `built` with `error: null` and the live site at https://karagemop466-tech.github.io/Korea1/ . Confirm against `https://github.com/karagemop466-tech/Korea1/actions` when the rate limit clears.
+
+---
+
+## Session `arena/88a183ca-korea1` — final integration verification (claim)
+
+**Board read first.** This session is pinned to `arena/88a183ca-korea1`; the platform does not permit the requested `session-<id>/<task>` worktree naming, so all work stays on this current branch. The branch was fast-forwarded with `git pull --rebase origin main` from `b4451e7` to the latest `main` merge (`853e437`, PR #67) before claiming. The current task is verification of the merged site and evidence only; it does not duplicate CB1–CB11 or edit their data/model/source scope.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| Q1 | Final integrated verification after the 2026-11-15 merge: reproduce the committed build, run tests and strict source/link checks, inspect the published decision-readiness and review surfaces, and record only reproducible findings / remaining blockers | **in progress** | `arena/88a183ca-korea1` | `COORDINATION.md` (this session block only; no model, raw-source, shared table, navigation, or generated-page edits planned) |
