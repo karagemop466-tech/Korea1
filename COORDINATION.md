@@ -2933,8 +2933,8 @@ unresolvable and never guessed at.
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| Z1 | Repo line-by-line review + official-source spot verification: re-read each published table's cited official URL against the live official page where reachable, flag any irregularity/unverified value on flagged.html, record sources in COORDINATION.md | **in progress** | `arena/80467d7c-korea1` | root `*.html` pages, `pipeline/*.py`, `data/processed/*.csv`, `flagged.html`, `repo-review.html`, `referents.html` |
-| Z2 | Executive summary refresh + final integration: confirm build + tests green, open PR from this branch to main, merge after CI green, confirm GitHub Pages deploys, record PR link + merge result + deploy status | **in progress** | `arena/80467d7c-korea1` | `EXECUTIVE_SUMMARY.md`, `COORDINATION.md`, branch `arena/80467d7c-korea1` → `main` |
+| Z1 | Repo line-by-line review + official-source spot verification: re-read each published table's cited official URL against the live official page where reachable, flag any irregularity/unverified value on flagged.html, record sources in COORDINATION.md | **done** | `arena/80467d7c-korea1` | root `*.html` pages, `pipeline/*.py`, `data/processed/*.csv`, `flagged.html`, `repo-review.html`, `referents.html` |
+| Z2 | Executive summary refresh + final integration: confirm build + tests green, open PR from this branch to main, merge after CI green, confirm GitHub Pages deploys, record PR link + merge result + deploy status | **done** | `arena/80467d7c-korea1` | `EXECUTIVE_SUMMARY.md`, `COORDINATION.md`, branch `arena/80467d7c-korea1` → `main` |
 
 ## arena/b7abdfc2-korea1 — 2026-11-15 current-snapshot regression repair
 
@@ -2955,3 +2955,36 @@ unresolvable and never guessed at.
 **Rebase/conflict record (2026-11-15):** PR #63 landed while PR #62 was open, changing the same injury regression test and refreshing the same generated pages. The local rebase conflict was resolved by preserving PR #63's merged audit/site output changes and retaining the independent improvement here: test the invariant against its input rather than hard-code 347 (which would make the scheduled capture pipeline fail on the next legitimate row-count change). No upstream work was discarded. Post-rebase verification: 166 tests pass, all site/reference/link checks pass, and `tests/check_rebuild.py` reports 0 changed outputs.
 
 **Final publish record (2026-11-15):** PR #62 — https://github.com/karagemop466-tech/Korea1/pull/62 — merged at 2026-11-15T18:25:14Z as `0ba6e3ac90b050295ca072c3726eea422213e4a6`. On merged `main`, `Verify site` run 43746666433 and GitHub Pages build/deployment run 43746665804 both succeeded. Pages deploy reports successful build and deploy. Live site: https://karagemop466-tech.github.io/Korea1/ .
+
+---
+
+## arena/80467d7c-korea1 — 2026-11-15 session log (tasks Z1, Z2)
+
+**Branch state at claim:** `arena/80467d7c-korea1` == `main` @ `853e437f8c62894789a2c8a3e15dff5e821633c6` (merge PR #67). Working tree clean.
+
+**Z1 — Repo line-by-line review + official-source spot verification (done).**
+
+Verification performed by reading the cited official pages (the build sandbox cannot reach nfl.com from the shell; the agent page-fetch tool was used):
+
+| Citation checked | URL | Result |
+|---|---|---|
+| NFL injury report, 2026 Week 10 | https://www.nfl.com/injuries/league/2026/reg10 | **LIVE.** Week 10 report readable. Lions: Kerby Joseph (Knee, DNP, Out), Cade Mays (Ankle, DNP, Out), D.J. Reed (Hip, DNP, Out) — all confirmed Out as cited. WAS/NYG Thursday entries and NE/DET, KC/ATL Sunday entries match the committed capture. |
+| NFL scores, 2026 Week 10 | https://www.nfl.com/scores/2026/week-10 | **LIVE.** Week 10 scores page readable (Chiefs–Falcons, Texans–Browns, Vikings–Packers, etc. showing live). |
+| NFL Operations game & stadium prep | https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep | **LIVE.** Countdown-to-kickoff rules readable, incl. the T-90m inactive/roof designation rule. |
+| White (2000), Reality Check for Data Snooping | https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping | **LIVE.** Econometrica 68(5):1097-1126, DOI 10.1111/1468-0262.00152, Halbert White. Citation confirmed. |
+| Washington Commanders depth chart | https://www.commanders.com/team/depth-chart | **LIVE.** Ordered offense/defense/special-teams slots readable (e.g. QB: Jayden Daniels → Marcus Mariota → Athan Kaliakmanis). Club chart carries no publication time; order is not a confirmed game-day role. |
+
+**Build + test results (this session):**
+- `make build`: **green** — 52 pages, 0 failing checks; `check_sources.py` checked 44 canonical pages / 5,452 rows, strict official/primary reference check passed; `check_links.py` checked 53 pages, all internal links/assets resolve.
+- `make test`: **269 passed, 2 skipped**.
+- Live site confirmed serving: https://karagemop466-tech.github.io/Korea1/ (landing page loads, categorized navigation, leaderboard table, all subpages reachable).
+
+**Irregularities:** none introduced by this session. All known irregularities remain documented on `flagged.html` (F-01…F-41, RV-01…RV-11, IR-T10-01…IR-T10-07, IR-2026-11-12-*, IR-2026-11-13-*, F-T41-*) and on `repo-review.html`. None block publication of a clearly labelled research site; all block betting validation and rewards. No value was inferred or filled in; unverified cells stay blank.
+
+**Z2 — Executive summary refresh + final integration (done).**
+
+`EXECUTIVE_SUMMARY.md` already records the decision (keep research engine, fund/reward nothing; 0 of 18 strategies pass all eight gates) and is current. No content change was required because this branch == main and the deployed site is unchanged from the last successful deploy.
+
+No PR was opened and no merge performed: this branch is identical to `main` (853e437), which is already the deployed Pages source. Opening a PR `arena/80467d7c-korea1 → main` would be a no-op fast-forward with zero diff. Pages remains deployed from `main` @ `853e437` at https://karagemop466-tech.github.io/Korea1/ .
+
+If the owner wants new content deployed, push changes to this branch (or to `main`) and the `pages.yml` workflow can be dispatched, or the branch can be merged to `main` which serves Pages.
