@@ -5,8 +5,8 @@ ARI,Cardinals,LA,Special Teams,6,0,0,0,0,0,,https://www.azcardinals.com/team/dep
 ATL,Falcons,KC,Offense,12,0,0,0,0,1,,https://www.atlantafalcons.com/team/depth-chart,https://www.nfl.com/injuries/
 ATL,Falcons,KC,Defense,11,0,1,0,0,0,ILB,https://www.atlantafalcons.com/team/depth-chart,https://www.nfl.com/injuries/
 ATL,Falcons,KC,Special Teams,5,1,0,0,1,1,PR,https://www.atlantafalcons.com/team/depth-chart,https://www.nfl.com/injuries/
-BAL,Ravens,LAC,Offense,11,0,0,0,0,0,,https://www.baltimoreravens.com/team/depth-chart,https://www.nfl.com/injuries/
-BAL,Ravens,LAC,Defense,12,0,0,0,0,0,,https://www.baltimoreravens.com/team/depth-chart,https://www.nfl.com/injuries/
+BAL,Ravens,LAC,Offense,11,0,0,0,1,0,,https://www.baltimoreravens.com/team/depth-chart,https://www.nfl.com/injuries/
+BAL,Ravens,LAC,Defense,12,1,0,0,1,0,SS,https://www.baltimoreravens.com/team/depth-chart,https://www.nfl.com/injuries/
 BAL,Ravens,LAC,Special Teams,5,0,0,0,0,0,,https://www.baltimoreravens.com/team/depth-chart,https://www.nfl.com/injuries/
 BUF,Bills,NYJ,Offense,11,0,1,0,0,0,RT,https://www.buffalobills.com/team/depth-chart,https://www.nfl.com/injuries/
 BUF,Bills,NYJ,Defense,12,0,0,1,2,0,,https://www.buffalobills.com/team/depth-chart,https://www.nfl.com/injuries/
@@ -47,9 +47,9 @@ KC,Chiefs,ATL,Special Teams,6,0,0,0,0,0,,https://www.chiefs.com/team/depth-chart
 LA,Rams,ARI,Offense,11,1,0,1,1,0,LG,https://www.therams.com/team/depth-chart,https://www.nfl.com/injuries/
 LA,Rams,ARI,Defense,11,0,0,3,3,0,,https://www.therams.com/team/depth-chart,https://www.nfl.com/injuries/
 LA,Rams,ARI,Special Teams,6,0,0,1,0,0,,https://www.therams.com/team/depth-chart,https://www.nfl.com/injuries/
-LAC,Chargers,BAL,Offense,11,0,0,0,1,0,,https://www.chargers.com/team/depth-chart,https://www.nfl.com/injuries/
-LAC,Chargers,BAL,Defense,11,0,0,0,0,0,,https://www.chargers.com/team/depth-chart,https://www.nfl.com/injuries/
-LAC,Chargers,BAL,Special Teams,7,0,0,0,0,0,,https://www.chargers.com/team/depth-chart,https://www.nfl.com/injuries/
+LAC,Chargers,BAL,Offense,11,0,0,2,0,2,,https://www.chargers.com/team/depth-chart,https://www.nfl.com/injuries/
+LAC,Chargers,BAL,Defense,11,0,0,0,0,1,,https://www.chargers.com/team/depth-chart,https://www.nfl.com/injuries/
+LAC,Chargers,BAL,Special Teams,7,0,0,0,0,1,,https://www.chargers.com/team/depth-chart,https://www.nfl.com/injuries/
 LV,Raiders,SEA,Offense,11,0,0,0,0,0,,https://www.raiders.com/team/depth-chart,https://www.nfl.com/injuries/
 LV,Raiders,SEA,Defense,11,0,0,0,0,0,,https://www.raiders.com/team/depth-chart,https://www.nfl.com/injuries/
 LV,Raiders,SEA,Special Teams,6,0,0,0,0,0,,https://www.raiders.com/team/depth-chart,https://www.nfl.com/injuries/
