@@ -2929,6 +2929,13 @@ unresolvable and never guessed at.
 - **Pages:** legacy branch build of `main` / root deployed successfully — deployment state `success` at https://karagemop466-tech.github.io/Korea1/ (serving `8a9e8c37`). Site confirmed serving `index.html` landing page with the categorized navigation and all subpages.
 ---
 
+## arena/80467d7c-korea1 — 2026-11-15 session (current branch, branched from main @ 853e437f)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| Z1 | Repo line-by-line review + official-source spot verification: re-read each published table's cited official URL against the live official page where reachable, flag any irregularity/unverified value on flagged.html, record sources in COORDINATION.md | **in progress** | `arena/80467d7c-korea1` | root `*.html` pages, `pipeline/*.py`, `data/processed/*.csv`, `flagged.html`, `repo-review.html`, `referents.html` |
+| Z2 | Executive summary refresh + final integration: confirm build + tests green, open PR from this branch to main, merge after CI green, confirm GitHub Pages deploys, record PR link + merge result + deploy status | **in progress** | `arena/80467d7c-korea1` | `EXECUTIVE_SUMMARY.md`, `COORDINATION.md`, branch `arena/80467d7c-korea1` → `main` |
+
 ## arena/b7abdfc2-korea1 — 2026-11-15 current-snapshot regression repair
 
 | # | Task | Status | Owner (session ID) | File scope |
