@@ -128,29 +128,23 @@ def test_missing_player_row_is_unresolved_not_a_defect():
 
 
 def test_internal_consistency_flags_a_planted_contradiction():
-    """The published snapshot has no contradiction today, so plant one.
+    """Check the consistency checker on a capture and a planted contradiction.
 
-    Snapshot note (2026-11-14): this test used to assert that the shipped table
-    carried exactly one contradiction (DET / Kerby Joseph, Out + full
-    participation) and pinned the row count at 326. Both facts moved with the
-    official page: the 2026-11-14T17:10Z capture carries 345 rows and the Kerby
-    Joseph practice cell is now consistent. Asserting a *published* defect would
-    make the suite fail whenever the source is corrected - a test cannot own a
-    fact the source owns. The row count is still pinned, because a silent row
-    change is worth noticing; the contradiction check is now a positive control.
-    Snapshot note (2026-11-15, CB11): the 2026-11-15T17:43Z capture carries 347 rows. Each
-    difference from the 345-row capture was re-read on https://www.nfl.com/injuries/league/2026/reg10
-    (LAC, BAL, IND rows) and matches that page; the 345-row capture was the stale one.
+    The published Week 10 table is an immutable daily capture of a mutable
+    official NFL page. Its row count changes as the page is updated, so pinning
+    that count here would make the test fail on a valid new capture. Capture
+    integrity and source drift are checked against the dated manifest elsewhere;
+    this test checks only the invariant that the consistency checker reports
+    the same number of rows it was given, then uses a planted contradiction as
+    a positive control.
     """
     pub = _pub()
-    # Integration note (arena/bfcd9879-korea1): the four contradictions that remain
-    # in this capture (JAX BJ Green II; CIN Jalen Davis, Andrei Iosivas,
-    # Brian Parker II) were each re-read against the live official page
-    # https://www.nfl.com/injuries/league/2026/reg10 on 2026-11-14 and are
-    # faithful transcriptions of a pairing that is contradictory on the
-    # official page itself; they are flagged as F-29 / F-29a, not corrected here.
+    # The latest manifest records the capture time and source hash; the official
+    # report is at https://www.nfl.com/injuries/ . Do not encode a mutable live
+    # row count as a test expectation.
     issues, stats = lv.internal_consistency(pub)
-    assert stats["rows"] == len(pub) == 347
+    assert stats["rows"] == len(pub)
+    assert stats["rows"] > 0
     planted = pub.copy()
     planted.loc[planted.index[0], "game_status"] = "Out"
     planted.loc[planted.index[0], "practice_status"] = "Full Participation in Practice"
