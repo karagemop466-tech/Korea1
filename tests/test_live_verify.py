@@ -130,24 +130,21 @@ def test_missing_player_row_is_unresolved_not_a_defect():
 def test_internal_consistency_flags_a_planted_contradiction():
     """The published snapshot has no contradiction today, so plant one.
 
-    Snapshot note (2026-11-14): this test used to assert that the shipped table
-    carried exactly one contradiction (DET / Kerby Joseph, Out + full
-    participation) and pinned the row count at 326. Both facts moved with the
-    official page: the 2026-11-14T17:10Z capture carries 345 rows and the Kerby
-    Joseph practice cell is now consistent. Asserting a *published* defect would
-    make the suite fail whenever the source is corrected - a test cannot own a
-    fact the source owns. The row count is still pinned, because a silent row
-    change is worth noticing; the contradiction check is now a positive control.
+    Snapshot note (2026-11-15): the 2026-11-14T17:10Z snapshot carried 345
+    rows. The scheduled official capture at 2026-11-15T17:43:36Z adds two
+    Baltimore rows (Calais Campbell and Ronnie Stanley), for 347 total. Both
+    were re-read in the live NFL report on 2026-11-15; the test's pinned count is
+    advanced only after that source check. The row count remains pinned so an
+    unexplained source/parser change is visible, while the contradiction check
+    below is a positive control rather than a claim about the live source.
     """
     pub = _pub()
-    # Integration note (arena/bfcd9879-korea1): the four contradictions that remain
-    # in this capture (JAX BJ Green II; CIN Jalen Davis, Andrei Iosivas,
-    # Brian Parker II) were each re-read against the live official page
-    # https://www.nfl.com/injuries/league/2026/reg10 on 2026-11-14 and are
-    # faithful transcriptions of a pairing that is contradictory on the
-    # official page itself; they are flagged as F-29 / F-29a, not corrected here.
+    # Four contradictions still appear in this published capture (JAX BJ Green II;
+    # CIN Jalen Davis, Andrei Iosivas, Brian Parker II). These are faithful
+    # transcriptions of pairings on the official page, not locally repairable
+    # errors, and are flagged as F-29 / F-29a.
     issues, stats = lv.internal_consistency(pub)
-    assert stats["rows"] == len(pub) == 345
+    assert stats["rows"] == len(pub) == 347
     planted = pub.copy()
     planted.loc[planted.index[0], "game_status"] = "Out"
     planted.loc[planted.index[0], "practice_status"] = "Full Participation in Practice"
