@@ -2877,6 +2877,8 @@ adds data or evidence they do not have:
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| CQ1 | Refresh the injury-snapshot regression test so a dated official daily capture does not fail on a hard-coded stale row count; verify against the official NFL injury page and run tests | in progress | `arena/b7abdfc2-korea1` | `tests/test_live_verify.py`, `COORDINATION.md` (this section only) |
+| CQ1 | Refresh the injury-snapshot regression test so a dated official daily capture does not fail on a hard-coded stale row count; verify against the official NFL injury page and run tests | **done** | `arena/b7abdfc2-korea1` | `tests/test_live_verify.py`, `COORDINATION.md` (this section only) |
 
-**Claim note (2026-11-15):** Current `make test` fails because `tests/test_live_verify.py` pins the mutable Week 10 injury table at 345 rows, while the committed 2026-11-15 17:43:36Z NFL.com capture contains 347. The scope is limited to this test and this coordination section; no other active task scope is modified. Official reference to check: https://www.nfl.com/injuries/ .
+**Outcome (2026-11-15):** Removed the stale 345-row expectation from the consistency-check unit test. It now asserts the checker reports the input's actual row count and uses a planted contradiction as its positive control; changing official capture size no longer invalidates this test. The committed manifest records 347 rows at 2026-11-15T17:43:36Z (source `https://www.nfl.com/injuries/`). I opened the official NFL injury page on 2026-11-15 and checked that the published Week 10 report includes the Lions statuses for Kerby Joseph, Cade Mays and D.J. Reed as Out; no live values were added or changed by this task.
+
+**Verification:** `make test` — 166 passed; `make verify` — 0 failing site checks, 43 canonical pages / 5,368 rows passed official-reference checks, 52 pages passed internal-link checks; `tests/check_rebuild.py` — 0 changed derived outputs. Initial `make test` before the fix reproduced the sole failure (`len(pub) == 347` vs stale expected 345). No other active task scope was modified.
