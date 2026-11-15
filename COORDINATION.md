@@ -3394,3 +3394,13 @@ the leaderboard. Nothing here is a model, strategy, gate, or official-value chan
 rebuilds of committed inputs, and integration.
 
 **B45 final publish record (2026-11-18).** PR #90 — https://github.com/karagemop466-tech/Korea1/pull/90 — `arena/b450c57b-korea1` → `main`, merged without waiting at 2026-11-18T05:21:52Z as merge commit `4ce9b1f6`. `Verify site` on `main` for that merge: **success** (run 44243739065, 1m53s). GitHub Pages build/deployment for that merge: **success** (run 44243737832, 30s). Earlier in the session, PR #80 merged at 2026-11-18T05:08:02Z as `2327984` with `Verify site` success and Pages success. The live site at https://karagemop466-tech.github.io/Korea1/ serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the sibling follow-up PR #86 merged on top of #90 and its `Verify site` also passed (run 44243930434), so the published tree contains both records. No B45 file scope beyond `COORDINATION.md` was touched by this session; no sibling branch was pushed to, rebased, or closed.
+
+
+
+## arena/d5b60b8c-korea1 — test-command coverage audit (2026-11-15)
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| QA1 | Audit the repository's registered test command against the complete checked-in pytest suite; register omitted test modules and verify the full build/test/link/source gates | **in progress** | `arena/d5b60b8c-korea1` | `Makefile` (test target only), `COORDINATION.md` (this section only) |
+
+**Claim note:** Read `COORDINATION.md` before starting. Historical F3/F2 rows that once included `Makefile` have completion records later in this file; no active claim in the current branch/PR list owns this narrow test-target change. The repository is on the pinned session branch `arena/d5b60b8c-korea1`, so that branch is used rather than creating/switching branches. No test or source file will be edited; only the existing test invocation is checked for omissions.
