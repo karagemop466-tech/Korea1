@@ -136,8 +136,21 @@ def test_internal_consistency_flags_a_planted_contradiction():
     official page: the 2026-11-14T17:10Z capture carries 345 rows and the Kerby
     Joseph practice cell is now consistent. Asserting a *published* defect would
     make the suite fail whenever the source is corrected - a test cannot own a
-    fact the source owns. The row count is still pinned, because a silent row
-    change is worth noticing; the contradiction check is now a positive control.
+    fact the source owns.
+
+    Snapshot note (2026-11-15, session arena/e0763e1e-korea1, taking over the
+    stale-assertion repair from claim arena/b400d3ae-korea1 - see COORDINATION.md
+    X7 handoff): the committed official capture staged at 2026-11-15T17:43Z
+    carries 347 rows - two clubs added entries between the 2026-11-14T17:10Z
+    capture (345 rows) and this one, so the official page owns the count. The
+    row count is pinned to this capture because a silent row change is worth
+    noticing; it moves only when the official page moves, and the move is
+    logged in COORDINATION.md. The contradiction check is a positive control:
+    four pairings that are contradictory on the official page itself (JAX BJ
+    Green II Out + Full Participation; CIN Jalen Davis, Andrei Iosivas, Brian
+    Parker II Doubtful + Full Participation) are faithfully transcribed and
+    flagged as F-29 / F-29a, not corrected here (last re-read on the live
+    official report 2026-11-14).
     """
     pub = _pub()
     # Integration note (arena/bfcd9879-korea1): the four contradictions that remain
@@ -147,7 +160,7 @@ def test_internal_consistency_flags_a_planted_contradiction():
     # faithful transcriptions of a pairing that is contradictory on the
     # official page itself; they are flagged as F-29 / F-29a, not corrected here.
     issues, stats = lv.internal_consistency(pub)
-    assert stats["rows"] == len(pub) == 345
+    assert stats["rows"] == len(pub) == 347
     planted = pub.copy()
     planted.loc[planted.index[0], "game_status"] = "Out"
     planted.loc[planted.index[0], "practice_status"] = "Full Participation in Practice"

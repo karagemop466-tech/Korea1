@@ -81,7 +81,6 @@ MIA,Jared Wayne,WR,Offense,WR #1,2.0,Out,True,
 IND,Mo Alie-Cox,TE,Offense,TE #7,2.0,Out,True,
 IND,Jaylon Carlies,LB,Defense,WLB #16,1.0,Out,True,
 IND,Akeem Davis-Gaither,LB,Defense,MLB #17,1.0,Out,True,
-IND,Arden Key,DE,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 IND,Will Mallory,TE,Offense,TE #7,4.0,Questionable,True,
 IND,Luke Rhodes,LS,Special Teams,LS #26,1.0,Out,True,
 IND,Jerry Tillery,DT,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
@@ -159,3 +158,15 @@ CIN,Jalen Davis,CB,Defense,,,Doubtful,False,"the player is not on the club's pub
 CIN,Kyle Dugger,S,Defense,S #22,2.0,Out,True,
 CIN,Andrei Iosivas,WR,Offense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 CIN,Brian Parker II,G,Offense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LAC,Kayode Awosika,G,Offense,LG #3,1.0,Questionable,True,
+LAC,Justin Eboigbe,DE,Defense,DL #14,2.0,Questionable,True,
+LAC,Ladd McConkey,WR,Offense,WR #1,1.0,Questionable,True,
+LAC,David Njoku,TE,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LAC,Denzel Perryman,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LAC,Trey Pipkins,T,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LAC,Branson Taylor,G,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LAC,Brenen Thompson,WR,Offense,WR #8,2.0,Doubtful,True,
+LAC,Isas Waxter,CB,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+LAC,Kendall Williamson,S,Defense,S #21,3.0,Out,True,
+BAL,Jaylinn Hawkins,S,Defense,SS #21,1.0,Out,True,
+BAL,Adam Randall,RB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
