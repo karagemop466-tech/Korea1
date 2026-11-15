@@ -2861,3 +2861,29 @@ adds data or evidence they do not have:
   `results-feed.html` (T43 sections + this session's section 5 with the 18-row live spot
   re-read table) on 2026-11-14.
 - **Session state:** all BF1–BF9 rows above `done`. Nothing in this session's scope remains open.
+
+---
+
+## Session `arena/c79b2684-korea1` — 2026-11-15 brief (claim)
+
+**Protocol deviation (recorded as every earlier session recorded it).** The platform pins this session to
+branch `arena/c79b2684-korea1` (base `main` = `cf904cb`). The `session-<id>/<task>` worktree pattern cannot
+be used, so this branch is the task and integration branch. Open PRs #19–#58 belong to other sessions and
+are not touched. No `VR-*`, `VQ-*`, `SG-*` identifiers exist anywhere in the repository; they are logged as
+unresolvable and never guessed at.
+
+**Numbering.** Tasks are **CB1–CB10**, claimed here before any build file is changed.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CB1 | **Brief tracker**: one row per requirement in the 2026-11-15 brief, with status, blocking gate, number that clears it, official source and what was checked this session | **in progress** | `arena/c79b2684-korea1` | `pipeline/session_20261115.py` (new), `data/integration/brief_2026_11_15.csv` (new), `brief-2026-11-15.html` (new) |
+| CB2 | **Injury and depth delta series**: every daily capture kept with its clock time and sha256; published as changes only, never levels; capture gaps separated from real changes | **in progress** | `arena/c79b2684-korea1` | `pipeline/injury_deltas.py` (new), `data/processed/injury_*`, `data/processed/depth_deltas.csv`, `injury-deltas.html` (new) |
+| CB3 | **Packers jersey-prefix defect**: strip leading jersey numbers, keep the raw string in `player_raw`, re-derive the availability join; repair is logged, not hidden | **in progress** | `arena/c79b2684-korea1` | `pipeline/fetch_availability.py` (parser only), `data/availability/**` (normalisation only), `pipeline/depth_status.py` (read) |
+| CB4 | **Reserve-list capture** (nfl.com transactions, reserve list): a scheduled capture with raw hashes so "not listed" is never read as "available" | **in progress** | `arena/c79b2684-korea1` | `pipeline/fetch_reserve_list.py` (new), `.github/workflows/reserve-list.yml` (new), `data/availability/reserve/**` |
+| CB5 | **Control baseline** on the leaderboard run: random side, favourite-only, home-only, on the same official-results universe, with n and an interval | **in progress** | `arena/c79b2684-korea1` | `pipeline/control_baseline.py` (new), `data/processed/control_baseline.*` |
+| CB6 | **Two-sided "what would change our mind"** for every strategy entry, generated from the frozen gate thresholds only | **in progress** | `arena/c79b2684-korea1` | `pipeline/session_20261115.py`, `data/integration/mind_changers_2026_11_15.csv` |
+| CB7 | **Dashboard panels**: "removal of luck" panel and decision-readiness table on the landing page | **in progress** | `arena/c79b2684-korea1` | `pipeline/render_site.py` (`build_index` section only) |
+| CB8 | **Flagged for Review additions** for every irregularity found in this session | **in progress** | `arena/c79b2684-korea1` | `pipeline/render_site.py` (`build_flagged` rows only) |
+| CB9 | **Tests, registration and wiring** (verify_site expected set, source/link checks, Makefile, README links) | **in progress** | `arena/c79b2684-korea1` | `tests/test_brief_2026_11_15.py` (new), `tests/check_*.py` (page list), `Makefile`, `README.md` |
+| CB10 | **Integration, PR to `main`, merge without waiting, Pages deploy confirmed, record here** | **pending** | `arena/c79b2684-korea1` | `COORDINATION.md`, branch → `main` |
+
