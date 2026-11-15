@@ -2948,3 +2948,43 @@ unresolvable and never guessed at.
 **Rebase/conflict record (2026-11-15):** PR #63 landed while PR #62 was open, changing the same injury regression test and refreshing the same generated pages. The local rebase conflict was resolved by preserving PR #63's merged audit/site output changes and retaining the independent improvement here: test the invariant against its input rather than hard-code 347 (which would make the scheduled capture pipeline fail on the next legitimate row-count change). No upstream work was discarded. Post-rebase verification: 166 tests pass, all site/reference/link checks pass, and `tests/check_rebuild.py` reports 0 changed outputs.
 
 **Final publish record (2026-11-15):** PR #62 — https://github.com/karagemop466-tech/Korea1/pull/62 — merged at 2026-11-15T18:25:14Z as `0ba6e3ac90b050295ca072c3726eea422213e4a6`. On merged `main`, `Verify site` run 43746666433 and GitHub Pages build/deployment run 43746665804 both succeeded. Pages deploy reports successful build and deploy. Live site: https://karagemop466-tech.github.io/Korea1/ .
+
+---
+
+## Session `arena/de5a6042-korea1` — 2026-11-15 omnibus brief: baseline check, official re-read, honest status
+
+**Protocol note.** The platform pins this session to branch `arena/de5a6042-korea1` (base `main` = `853e437`). The `session-<id>/<task>` worktree pattern is not used; this branch is the task and integration branch. No other branch is created, switched to, or pushed.
+
+**Scope claimed (DE1).** `COORDINATION.md` (own section), `data/integration/official_recheck_2026_11_15.csv` (new). No shared generated table, page or renderer is edited in this session; the stale-table fix is logged as a cross-scope request below.
+
+### Baseline checks run this session (before any edit)
+
+| Check | Result |
+|---|---|
+| `make test` (venv, `requirements.txt` pins) | 189 passed |
+| `make build` | exit 0; verify_site 0 failing checks; check_sources 44 pages / 5,452 rows; check_links 53 pages, all resolve |
+| Rebuild effect on tracked files | none (`git status` clean after build) |
+
+### Official re-read (live, this session)
+
+- Read `https://www.nfl.com/injuries/league/2026/reg10` (chunk 0 of 8; the Commanders/Giants, Patriots and Lions blocks are on chunk 0). Recorded in `data/integration/official_recheck_2026_11_15.csv` with the reading time (2026-11-15T18:43Z).
+- **Kerby Joseph (S), Cade Mays (C), D.J. Reed (CB)** are all **Out** on the official page. The three `game_status` cells are blank in the pinned 2026-11-12 capture (`data/processed/injuries_week10.csv`, rendered on the published page with "—").
+- **Nuance, not a transcription error:** the 2026-11-12 capture was correct for its date. Game status had not been published then. The later 11-13, 11-14 and 11-15 captures in `data/availability/history/` already read Out. The published page still presents the 11-12 table as current. This is a **staleness** defect. The brief framing ("blank while the article lists them Out") is correct about the official page today.
+
+### Cross-scope requests (logged, not edited)
+
+1. **Owner of `pipeline/parallel_pages.py` and `pipeline/render_site.py`:** the Week 10 injury table reads the pinned 2026-11-12 file. Either label it explicitly as "2026-11-12 capture, superseded by 11-15" with a link to the latest capture, or add a current-status column built from `data/availability/history/2026-11-15/injuries.csv`. Do not overwrite the pinned file (its reproducibility is the point).
+2. **Owner of the reserve-list workflow:** the first live CI run is still pending (F-34/F-37 in the existing board).
+3. **Integration owner:** the brief (`brief-2026-11-15.html`) and `flagged.html` should cite `data/integration/official_recheck_2026_11_15.csv`.
+
+### Not done in this session, and why (no claims made beyond this)
+
+- **Live re-capture of all 32 club depth pages and the full injury report.** The sandbox shell reaches only `github.com`, `registry.npmjs.org`, `pypi.org` and related hosts; `nfl.com` is reachable only through the read-only page fetch used above. The automated capture (`pipeline/fetch_injuries.py`, `fetch_availability.py`, `fetch_reserve_list.py`) runs in GitHub Actions instead.
+- **Texans depth image** (needs an authorized structured source; transcription by eye is not allowed).
+- **`VR-*`, `VQ-*`, `SG-*` identifiers** are not defined anywhere in the repository; they are not guessed at.
+- **Owner decisions** (e.g. the G3 power target, removal of "Units staked" from the leaderboard, the price-data policy) are listed on `decisions.html` and are not decided here.
+- **Rewriting the leaderboard, the 2026 season ledger, the origination models, or the pre-registration** was not attempted: each needs a new pre-registration commit before any result is seen, and this session did not run a new evaluation.
+
+### Status
+
+DE1 **done** for the checks above. Items the brief marks PARTLY DONE or BLOCKED remain so on `brief-2026-11-15.html`. Nothing in this session changes a verdict or a published number.
