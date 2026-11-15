@@ -2863,6 +2863,62 @@ adds data or evidence they do not have:
   re-read table) on 2026-11-14.
 - **Session state:** all BF1–BF9 rows above `done`. Nothing in this session's scope remains open.
 
+---
+
+## Session `arena/c79b2684-korea1` — 2026-11-15 brief (claim)
+
+**Protocol deviation (recorded as every earlier session recorded it).** The platform pins this session to
+branch `arena/c79b2684-korea1` (base `main` = `cf904cb`). The `session-<id>/<task>` worktree pattern cannot
+be used, so this branch is the task and integration branch. Open PRs #19–#58 belong to other sessions and
+are not touched. No `VR-*`, `VQ-*`, `SG-*` identifiers exist anywhere in the repository; they are logged as
+unresolvable and never guessed at.
+
+**Numbering.** Tasks are **CB1–CB10**, claimed here before any build file is changed.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CB1 | **Brief tracker**: one row per requirement in the 2026-11-15 brief, with status, blocking gate, number that clears it, official source and what was checked this session | **done** (brief tracker: `data/integration/brief_2026_11_15.csv`, `brief-2026-11-15.html`; PARTLY DONE rows stay open) | `arena/c79b2684-korea1` | `pipeline/session_20261115.py` (new), `data/integration/brief_2026_11_15.csv` (new), `brief-2026-11-15.html` (new) |
+| CB2 | **Injury and depth delta series**: every daily capture kept with its clock time and sha256; published as changes only, never levels; capture gaps separated from real changes | **done** (`injury-deltas.html`; club depth URL fallback added; 10 blank links filled) | `arena/c79b2684-korea1` | `pipeline/injury_deltas.py` (new), `data/processed/injury_*`, `data/processed/depth_deltas.csv`, `injury-deltas.html` (new) |
+| CB3 | **Packers jersey-prefix defect**: strip leading jersey numbers, keep the raw string in `player_raw`, re-derive the availability join; repair is logged, not hidden | **done, with disclosure** (jersey prefixes stripped; history depth files rewritten in place: F-32; GB replacement status changed as a consequence: F-32) | `arena/c79b2684-korea1` | `pipeline/fetch_availability.py` (parser only), `data/availability/**` (normalisation only), `pipeline/depth_status.py` (read) |
+| CB4 | **Reserve-list capture** (nfl.com transactions, reserve list): a scheduled capture with raw hashes so "not listed" is never read as "available" | **partly done** (module, workflow, `tests/test_reserve_list.py`; first live CI run pending: F-37) | `arena/c79b2684-korea1` | `pipeline/fetch_reserve_list.py` (new), `.github/workflows/reserve-list.yml` (new), `data/availability/reserve/**` |
+| CB5 | **Control baseline** on the leaderboard run: random side, favourite-only, home-only, on the same official-results universe, with n and an interval | **done** (`control_baseline.*`; definitions and rounding disclosed: F-36) | `arena/c79b2684-korea1` | `pipeline/control_baseline.py` (new), `data/processed/control_baseline.*` |
+| CB6 | **Two-sided "what would change our mind"** for every strategy entry, generated from the frozen gate thresholds only | **done** (18 candidates, thresholds from frozen config; G3 power finding: F-41) | `arena/c79b2684-korea1` | `pipeline/session_20261115.py`, `data/integration/mind_changers_2026_11_15.csv` |
+| CB7 | **Dashboard panels**: "removal of luck" panel and decision-readiness table on the landing page | **done** (landing panels: removal of luck, decision readiness; nav entries added in CB10) | `arena/c79b2684-korea1` | `pipeline/render_site.py` (`build_index` section only) |
+| CB8 | **Flagged for Review additions** for every irregularity found in this session | **done** (F-30 to F-41 on `flagged.html`; unsourced rows listed as text) | `arena/c79b2684-korea1` | `pipeline/render_site.py` (`build_flagged` rows only) |
+| CB9 | **Tests, registration and wiring** (verify_site expected set, source/link checks, Makefile, README links) | **done** (`tests/test_brief_2026_11_15.py`, page lists in `check_links`, `check_sources`, `verify_site`, Makefile, README) | `arena/c79b2684-korea1` | `tests/test_brief_2026_11_15.py` (new), `tests/check_*.py` (page list), `Makefile`, `README.md` |
+| CB10 | **Integration, PR to `main`, merge without waiting, Pages deploy confirmed, record here** | **in progress** (PR, merge and Pages check recorded below) | `arena/c79b2684-korea1` | `COORDINATION.md`, branch → `main` |
+| CB11 | **Red test repair (added 2026-11-15, same session)**: `make test` failed at `35b7907` because the row pin in `test_internal_consistency_flags_a_planted_contradiction` still read 345 after the official 2026-11-15 capture (347 rows; each row re-read on the official Week 10 page). Update that pin only, and add the missing test files that CB4's workflow and CB5's outputs reference: `tests/test_reserve_list.py` (new), `tests/test_control_baseline.py` (new) | **done** (pin 345→347, re-read on the official page; `tests/test_reserve_list.py` and `tests/test_control_baseline.py` added) | `arena/c79b2684-korea1` | `tests/test_live_verify.py` (one pin line), `tests/test_reserve_list.py` (new), `tests/test_control_baseline.py` (new) |
+
+### Session outcome (arena/c79b2684-korea1, 2026-11-15)
+
+**Checks run before the PR** (same branch, final commit recorded in the PR):
+- `make build`: exit 0; check_links 53 pages, all resolve; check_sources 44 canonical pages / 5,426 rows, strict reference check passed; verify_site 59 PASS.
+- `make test`: 189 passed (before the last wording edits; re-run on the final commit).
+- New tests: `tests/test_reserve_list.py` (5), `tests/test_control_baseline.py` (6), `tests/test_brief_2026_11_15.py` (11), `tests/test_live_verify.py` pin repaired (345 to 347).
+
+**Red test repaired (CB11).** `make test` was red at `35b7907` because the row pin in `test_live_verify.py` still read 345. The 2026-11-15 capture has 347 rows. The difference was re-read on the official Week 10 page (`https://www.nfl.com/injuries/league/2026/reg10`, all eight chunks read), and the 11-15 capture matches it. The 11-14 capture was the stale one (F-31).
+
+**Cross-scope requests (logged, not edited):**
+1. `render_decisions.py` hard-codes `SNAPSHOT_2026` (2026-11-12). `injuries.html` therefore does not follow the captures (F-39). Owner of `render_decisions.py` to re-point it at the latest capture, or label it as a 2026-11-12 snapshot.
+2. Packers depth chart is labelled "Unofficial, Nov. 10, 2026" (F-33). Owner of the depth-chart source to find an official chart or Game Book.
+3. Houston depth chart still returns no rows in any capture (F-18, earlier item, still open).
+4. Reserve-list first live CI run: check Josh Whyle (F-34, reserve entry 11/14 and an active-report "Out" on 11/15 in conflict) and Lamar Jackson (F-35).
+
+**Owner decisions (not changed in this session):**
+- Strategies leaderboard shows "Units staked" and "Mean signal edge" (F-38). Owner to remove or move them to the research annex.
+- G3 power: the frozen 2% target at 80% power needs 2,637 to 181,824 weeks; the archive holds 227 to 414 (F-41). Owner to confirm or change the target before any new results are seen.
+- Cause of the 2026-11-12 gap for BAL, CIN, LAC and SEA is unverified: the raw bytes were not kept, only the sha256 (F-30). Proposed control: keep raw bytes for every capture.
+
+**Integration step (CB10, in this session):** added nav entries for `brief-2026-11-15.html` and `injury-deltas.html` in `NAV_GROUPS`, the landing-page panels (CB7), and the flagged rows (CB8). No other shared table was changed. The `history/2026-11-12..15` depth files were normalised in place (F-32), and this is disclosed rather than hidden.
+
+**Pull request and merge:** recorded below after the PR is opened and merged.
+
+**Merge conflict record (2026-11-15, same session):** `main` moved to `b4451e7` while this branch was in review (sessions `e0763e1e` PRs #62–#66). Ten files conflicted:
+- `tests/test_live_verify.py`: main's CQ1 removed the hard-coded row count instead of changing it. That is the more robust repair, so main's version was taken and CB11's pin edit is superseded. The two new CB11 test files are kept.
+- Generated outputs (`assets/data/replacement_depth.csv`, `assets/data/verification_report.csv`, `data/gates/replacement_depth.csv`, `data/integration/replacement_depth.csv`, `data/processed/verification_report.csv`, `replacement-depth.html`, `repo-review.html`, `EXECUTIVE_SUMMARY.md`): taken from main, then regenerated with `make build` on the merged inputs. No hand edit.
+- `COORDINATION.md`: both sessions' entries kept, this session's block first.
+
+
 ### 2026-11-15 — session `arena/e0763e1e-korea1` (stale test repair, official-source spot checks, integration)
 
 - **X7 claim handoff taken over.** Claim `arena/b400d3ae-korea1` (task X7, demotion gate + red test suite repair + flagged 2026-11-14 contradictory injury rows) is dated 2026-11-14 with no commits since and status `needs review`, so per the board rule its stale `tests/test_live_verify.py` assertion is repaired here and the handoff is logged. `tests/test_live_verify.py::test_internal_consistency_flags_a_planted_contradiction` had its pinned row count moved from 345 to 347 to match the committed official injury capture staged 2026-11-15T17:43Z (two clubs added entries between captures; the count is owned by the source and moves only with it). The four contradictory pairings (JAX BJ Green II; CIN Jalen Davis, Andrei Iosivas, Brian Parker II — Out/Doubtful vs Full Participation in Practice) are faithful transcriptions of the official page itself, last re-read on the live report 2026-11-14; they stay flagged as F-29 / F-29a on `flagged.html` and are not corrected.

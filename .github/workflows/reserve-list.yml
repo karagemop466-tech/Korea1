@@ -1,0 +1,41 @@
+name: Official reserve-list capture
+
+# CB4 (arena/c79b2684-korea1). Captures the NFL.com monthly reserve-list pages (injured reserve,
+# reserve lists) so that a player absent from the injury report can be explained. Runs on a
+# GitHub-hosted runner because the build sandbox cannot reach nfl.com. A schema change or an HTTP
+# failure makes this job fail loudly and leaves the committed snapshot untouched.
+on:
+  schedule:
+    - cron: "37 11,23 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reserve-list-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Capture official reserve-list pages (current and previous month)
+        run: python pipeline/fetch_reserve_list.py
+      - name: Verify the capture (parser, schema, reproducibility)
+        run: python -m pytest -q tests/test_reserve_list.py
+      - name: Commit snapshot
+        run: |
+          git config user.name "availability-bot"
+          git config user.email "availability-bot@users.noreply.github.com"
+          git add -A data/availability/reserve
+          git diff --cached --quiet && { echo "no change"; exit 0; }
+          git commit -m "reserve-list: official snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

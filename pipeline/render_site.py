@@ -66,6 +66,7 @@ NAV_GROUPS = [
         ("demotion.html", "Demotion gate"),
     ]),
     ("Brief review (2026-11-14)", [
+        ("brief-2026-11-15.html", "2026-11-15 brief · tracker"),
         ("suggestions-review-2026-11-14.html", "Suggestions review · this brief"),
     ]),
     ("Decide", [
@@ -98,6 +99,7 @@ NAV_GROUPS = [
     ("Availability", [
         ("availability.html", "Injuries & depth · all clubs"),
         ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
+        ("injury-deltas.html", "Injury & depth changes"),
         ("injuries.html", "Injury source audit"),
         ("lineups.html", "Lineup sample"),
     ]),
@@ -421,6 +423,7 @@ questions a decision actually asks.</p>
 <li>Significance uses weekly blocks and Holm correction. The deflated Sharpe is provisional because the complete search history is unknown.</li>
 <li>No strategy is called “skill” merely because it was profitable. No cash prize or capital allocation is authorized.</li>
 </ul></section>"""
+    body += _landing_panels()
     return layout("index.html", "NFL Line Lab", "An auditable NFL line-origination and strategy-research dashboard.", body, wide=True)
 
 
@@ -1168,6 +1171,7 @@ Earlier audit findings are preserved below, including their original scope.</p>
 <section><h2>How to request a correction</h2><p>Use the repository issue tracker with the row ID, the authoritative source and the exact field.
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
+    body += _flagged_2026_11_15_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1594,6 +1598,73 @@ def main() -> None:
         "official_market_quote_coverage": 0,
         "public_view": "strict-source; unverified observations blank",
     })
+
+
+
+
+# --------------------------------------------------------------------------- #
+# 2026-11-15 session (CB7 landing panels, CB8 flagged rows). Both read CSVs written by
+# pipeline/session_20261115.py; they never fetch anything.
+# --------------------------------------------------------------------------- #
+def _read_integration(name: str):
+    import pandas as _pd
+    from common import ROOT as _ROOT
+    p = _ROOT / "data" / "integration" / name
+    return _pd.read_csv(p, dtype=str).fillna("") if p.exists() else None
+
+
+def _flagged_2026_11_15_section() -> str:
+    fl = _read_integration("flagged_2026_11_15.csv")
+    if fl is None:
+        return ""
+    sourced = fl[fl.source_url != ""]
+    rows = []
+    for r in sourced.itertuples(index=False):
+        rows.append([e(r.id), e(r.severity), e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+                     src_link(r.source_url, r.source_label)])
+    text = [f"<strong>{e(r.id)}</strong> ({e(r.severity)}) {e(r.finding)} <span class=\"small\">No official source: shown as text.</span>"
+            for r in fl[fl.source_url == ""].itertuples(index=False)]
+    listing = ("<ul class=\"findings\">" + "".join(f"<li>{x}</li>" for x in text) + "</ul>") if text else ""
+    return ("<section><h2>Findings from the 2026-11-15 session</h2>"
+            "<p>Irregularities found while checking this session's work. None blocks merge. "
+            "Details and the brief tracker: <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
+                    caption="Session findings with an official source") + listing + "</section>")
+
+
+def _landing_panels() -> str:
+    parts = []
+    import pandas as _pd
+    from common import ROOT as _ROOT
+    cp = _ROOT / "data" / "processed" / "control_baseline.csv"
+    if cp.exists():
+        c = _pd.read_csv(cp, dtype=str).fillna("")
+        rows = []
+        for r in c.itertuples(index=False):
+            rows.append([e(r.control), e(r.n_bets), e(r.hit_rate) or "—",
+                         f"{float(r.roi):+.4f}", f"[{float(r.roi_lo95):+.4f}, {float(r.roi_hi95):+.4f}]",
+                         e("community archive (nflverse), not official") + " · " + src_link("https://www.nfl.com/scores/", "NFL scores (grading standard)")])
+        parts.append("<section><h2>Removal of luck: control baselines</h2>"
+                     "<p>What a bettor gets with no skill at all, on the same 2006–2026 games. "
+                     "Benchmarks only: they carry no verdict and cannot be entered on the leaderboard. "
+                     "Interval = 2.5th–97.5th percentile (random draws) or week-clustered bootstrap. "
+                     "Hit rate excludes pushes; the favourite cover rate including pushes is 0.473.</p>"
+                     + table(rows, ["Control", "Bets", "Hit rate", "ROI per unit", "95% interval", "Source"],
+                             caption="Control baselines · n on every row · settlement against official finals") +
+                     "</section>")
+    dr = _read_integration("brief_2026_11_15.csv")
+    if dr is not None:
+        rows = []
+        for r in dr[dr.source_url != ""].itertuples(index=False):
+            rows.append([e(r.id), e(r.requirement), e(r.status), e(r.blocking_gate) or "—", e(r.clearing_number) or "—",
+                         src_link(r.source_url, r.source_label)])
+        parts.append("<section><h2>Decision readiness: one row per brief item</h2>"
+                     "<p>Each row names the gate that blocks it and the number that clears it. "
+                     "Full sourcing is on the <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>.</p>"
+                     + table(rows, ["ID", "Requirement", "Status", "Blocking gate", "Number that clears it", "Official source"],
+                             caption="Brief items with an official source · status from the tracker")
+                     + "<p class=\"small\">Two items have no official source (brief protocol and brief identifiers); they are listed as text on the brief page.</p></section>")
+    return "".join(parts)
 
 
 if __name__ == "__main__":

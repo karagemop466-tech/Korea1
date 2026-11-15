@@ -32,8 +32,8 @@ DEN,Special Teams,8,0,0,0,0.0,,,2,NO_INJURY,,https://www.nfl.com/injuries/league
 DET,Defense,27,1,0,1,1.0,2,,4,VERIFIED,NE,https://www.nfl.com/injuries/league/2026/reg10
 DET,Offense,23,1,2,1,1.0,2,,4,VERIFIED,NE,https://www.nfl.com/injuries/league/2026/reg10
 DET,Special Teams,7,0,0,0,0.0,,,2,NO_INJURY,NE,https://www.nfl.com/injuries/league/2026/reg10
-GB,Defense,24,0,0,0,0.0,,,3,NO_INJURY,MIN,https://www.nfl.com/injuries/league/2026/reg10
-GB,Offense,24,0,0,0,0.0,,,3,NO_INJURY,MIN,https://www.nfl.com/injuries/league/2026/reg10
+GB,Defense,24,1,1,1,1.0,2,,3,VERIFIED,MIN,https://www.nfl.com/injuries/league/2026/reg10
+GB,Offense,24,2,1,2,2.0,2,,3,VERIFIED,MIN,https://www.nfl.com/injuries/league/2026/reg10
 GB,Special Teams,6,0,0,0,0.0,,,2,NO_INJURY,MIN,https://www.nfl.com/injuries/league/2026/reg10
 HOU,Defense,0,0,0,0,0.0,,,,NO_CHART,CLE,https://www.nfl.com/injuries/
 HOU,Offense,0,0,0,0,0.0,,,,NO_CHART,CLE,https://www.nfl.com/injuries/

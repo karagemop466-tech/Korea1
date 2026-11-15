@@ -86,7 +86,18 @@ UNITS = {"offense": "Offense", "defense": "Defense", "special teams": "Special T
 INJ_COLS = ["season", "week", "team", "club", "opponent", "player", "position", "injury",
             "practice_status", "game_status", "player_url", "source_url", "retrieved_utc"]
 DEPTH_COLS = ["team", "club", "unit", "slot", "position", "depth_rank", "player",
-              "player_url", "source_url", "retrieved_utc"]
+              "player_url", "source_url", "retrieved_utc", "player_raw"]
+
+# CB3 (arena/c79b2684-korea1): some clubs (GB) print the jersey number before the name, e.g.
+# "9 Christian Watson" on https://www.packers.com/team/depth-chart. The number is removed from
+# `player` so the name joins to the injury report; the untouched string is kept in `player_raw`.
+JERSEY_PREFIX = re.compile(r"^\d{1,2}\s+(?=\S)")
+
+
+def split_jersey(text: str) -> tuple[str, str]:
+    """Return (player_name, raw_string). Only a leading 1-2 digit token followed by a space is removed."""
+    raw = " ".join(str(text).split())
+    return JERSEY_PREFIX.sub("", raw, count=1), raw
 
 
 def http_get(url: str, tries: int = 3) -> tuple[int, bytes, str]:
@@ -220,9 +231,11 @@ def parse_depth(html_text: str, team, url: str, retrieved: str) -> list[dict]:
                 names = [(l["text"], l["href"]) for l in c["links"] if l["text"].strip()] or \
                         ([(c["text"], "")] if c["text"].strip() else [])
                 for name, href in names:
+                    player, raw = split_jersey(name)
                     rows.append(dict(team=abbr, club=nick, unit=t["unit"], slot=slot, position=pos,
-                                     depth_rank=rank, player=" ".join(name.split()),
-                                     player_url=href, source_url=url, retrieved_utc=retrieved))
+                                     depth_rank=rank, player=player,
+                                     player_url=href, source_url=url, retrieved_utc=retrieved,
+                                     player_raw=raw))
     return rows
 
 

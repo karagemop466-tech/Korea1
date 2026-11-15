@@ -32,8 +32,8 @@ DEN,Broncos,,Special Teams,7,0,0,0,0,0,,https://www.denverbroncos.com/team/depth
 DET,Lions,NE,Offense,11,1,0,1,0,0,C,https://www.detroitlions.com/team/depth-chart,https://www.nfl.com/injuries/
 DET,Lions,NE,Defense,11,1,0,0,0,0,CB,https://www.detroitlions.com/team/depth-chart,https://www.nfl.com/injuries/
 DET,Lions,NE,Special Teams,6,0,0,0,0,0,,https://www.detroitlions.com/team/depth-chart,https://www.nfl.com/injuries/
-GB,Packers,MIN,Offense,11,0,0,0,0,0,,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
-GB,Packers,MIN,Defense,11,0,0,0,0,0,,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
+GB,Packers,MIN,Offense,11,2,0,0,0,0,C RB,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
+GB,Packers,MIN,Defense,11,0,1,3,0,0,LB,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
 GB,Packers,MIN,Special Teams,6,0,0,0,0,0,,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
 IND,Colts,MIA,Offense,11,1,0,0,0,1,RT,https://www.colts.com/team/depth-chart,https://www.nfl.com/injuries/
 IND,Colts,MIA,Defense,11,2,0,0,0,1,WLB MLB,https://www.colts.com/team/depth-chart,https://www.nfl.com/injuries/
