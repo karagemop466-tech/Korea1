@@ -2948,3 +2948,24 @@ unresolvable and never guessed at.
 **Rebase/conflict record (2026-11-15):** PR #63 landed while PR #62 was open, changing the same injury regression test and refreshing the same generated pages. The local rebase conflict was resolved by preserving PR #63's merged audit/site output changes and retaining the independent improvement here: test the invariant against its input rather than hard-code 347 (which would make the scheduled capture pipeline fail on the next legitimate row-count change). No upstream work was discarded. Post-rebase verification: 166 tests pass, all site/reference/link checks pass, and `tests/check_rebuild.py` reports 0 changed outputs.
 
 **Final publish record (2026-11-15):** PR #62 — https://github.com/karagemop466-tech/Korea1/pull/62 — merged at 2026-11-15T18:25:14Z as `0ba6e3ac90b050295ca072c3726eea422213e4a6`. On merged `main`, `Verify site` run 43746666433 and GitHub Pages build/deployment run 43746665804 both succeeded. Pages deploy reports successful build and deploy. Live site: https://karagemop466-tech.github.io/Korea1/ .
+
+## Session `arena/120935ef-korea1` — 2026-11-15 final verification and publish (PR pending)
+
+**Starting state.** Branch `arena/120935ef-korea1` was at `b4451e7` (merge of PR #62, Pages deployed). `git pull --rebase origin main` brought it to `853e437`, which already contains PR #67 (`arena/c79b2684-korea1`, merged 2026-11-15T18:38Z): the 2026-11-15 brief tracker, injury/depth delta series, Packers jersey-prefix repair, reserve-list capture module and workflow, control baselines, and pages `brief-2026-11-15.html` / `injury-deltas.html`. No other session's open PRs (#19, #24, #30, #38, #47, #48, #56, #58) were touched.
+
+**Scope (this session).** Final integration verification of the merged tree: rebuild every published artefact from committed inputs only, run every verifier and test, spot-check official NFL sources for key published values, then PR → `main`, merge without waiting, confirm GitHub Pages, and record the result here. No model, strategy, gate or odds code was changed.
+
+**Verification performed (all green):**
+- `make build`: exit 0. `verify_site.py` 59 PASS, 0 failing checks; `check_sources.py` 44 canonical pages / 5,452 rows, strict official/primary reference check passed; `check_links.py` 53 pages, all internal links/anchors/assets resolve, no external CDN; the build leaves 0 changed derived files (fixed point).
+- `make test`: 189 passed (includes test_brief_2026_11_15.py 11, test_control_baseline.py 6, test_reserve_list.py 5, repaired live-verify row pin 347).
+- Official source spot checks via the page-fetch tool on 2026-11-15:
+  - https://www.nfl.com/scores/2026/week-10 — Commanders 24, Giants 21, Final (Thu Nov 12); Patriots 10, Lions 35, Final (Sun Nov 15 international). Matches the committed Week 10 census and the F-28 disposition (WAS@NYG is Final, not upcoming).
+  - https://www.nfl.com/injuries/league/2026/reg10 — Lions Kerby Joseph (Knee, DNP, Out), Cade Mays (Ankle, DNP, Out), D.J. Reed (Hip, DNP, Out); JAX BJ Green II (Forearm, Full Participation in Practice, Game Status Out) — the contradiction is faithfully transcribed and stays flagged as F-29/F-29a; no committed value was changed. All re-read values match the committed 2026-11-15 capture (347 rows).
+
+**Irregularities carried forward (published on flagged.html / repo-review.html; none blocks merge):** F-28 landing-page forward-looking WAS@NYG label; F-29/F-29a designation-vs-practice contradictions; F-30 BAL/CIN/LAC/SEA missing from the 2026-11-12 capture; F-33 Packers chart club-unofficial; F-34 Whyle reserve-vs-report conflict; F-35 Jackson reserve row unverified; F-37 reserve-list parser unrun on the official page; F-39 injuries.html snapshot hard-coded to 2026-11-12; F-41 G3 power target not clearable on the archive; plus repo-review IR entries (HOU depth chart 0 rows, unofficial club labels). Full list: flagged.html.
+
+**Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard. Open path-selection items remain on suggestions-review.html and are owner decisions, not code changes.
+
+**Pull request and merge:** recorded below after the PR is opened and merged.
+
+**Pages:** deployment state to be confirmed after merge at https://karagemop466-tech.github.io/Korea1/ .
