@@ -15,7 +15,7 @@
   "data": "data/lineups/week10_2026_matchup_deficiencies.csv",
   "method": "each published sentence is matched to its official cell: status claims against nfl.com/injuries/league/2026/reg10, replacement claims against the club's own depth chart",
   "official_capture_drift": {
-    "players": 345,
+    "players": 347,
     "values_changed": 107,
     "window": "2026-11-12T13:06Z -> 2026-11-13T18:32Z",
     "note": "the official injury page revised these cells between two official captures 29 hours apart; it is why every published status must carry its capture time"

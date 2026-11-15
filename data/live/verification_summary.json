@@ -13,14 +13,14 @@
     "WAS"
   ],
   "official_rows": 98,
-  "published_rows": 345,
+  "published_rows": 347,
   "fields_compared": 392,
   "match": 392,
   "confirmed_defects": 0,
   "unresolved": 0,
   "drift_possible": 0,
   "no_basis": 0,
-  "out_of_scope": 247,
+  "out_of_scope": 249,
   "clubs_passing": 8,
   "clubs": 8,
   "parser_calibration": {
@@ -34,7 +34,7 @@
     "verdict": "PARSER_FAITHFUL"
   },
   "internal_consistency": {
-    "rows": 345,
+    "rows": 347,
     "clubs": 28,
     "contradictions": 4,
     "vocabulary": 0,
