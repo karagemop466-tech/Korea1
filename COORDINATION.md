@@ -2948,3 +2948,22 @@ unresolvable and never guessed at.
 **Rebase/conflict record (2026-11-15):** PR #63 landed while PR #62 was open, changing the same injury regression test and refreshing the same generated pages. The local rebase conflict was resolved by preserving PR #63's merged audit/site output changes and retaining the independent improvement here: test the invariant against its input rather than hard-code 347 (which would make the scheduled capture pipeline fail on the next legitimate row-count change). No upstream work was discarded. Post-rebase verification: 166 tests pass, all site/reference/link checks pass, and `tests/check_rebuild.py` reports 0 changed outputs.
 
 **Final publish record (2026-11-15):** PR #62 — https://github.com/karagemop466-tech/Korea1/pull/62 — merged at 2026-11-15T18:25:14Z as `0ba6e3ac90b050295ca072c3726eea422213e4a6`. On merged `main`, `Verify site` run 43746666433 and GitHub Pages build/deployment run 43746665804 both succeeded. Pages deploy reports successful build and deploy. Live site: https://karagemop466-tech.github.io/Korea1/ .
+
+## Session `arena/2e10e431-korea1` — 2026-11-15 claim: per-team view, depth register, reconciliation of the stated slot counts
+
+**Protocol note.** The platform pins this session to branch `arena/2e10e431-korea1` (base `main` = `853e437`). The
+`session-<id>/<task>` worktree pattern cannot be used, so this branch is the task and integration branch. Other
+sessions' branches and open PRs are not touched. Identifiers `VR-*`, `VQ-*`, `SG-*` do not exist anywhere in the
+repository (logged by earlier sessions); they are not guessed at here.
+
+**Baseline on this branch before any edit:** `make test` 189 passed; `make verify` 0 failing checks; check_links 53
+pages resolve; check_sources 44 canonical pages, 5,452 rows.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| PS1 | **Per-team decision view**: one row per NFL club (32): report rows, Out / Doubtful / Questionable counts, net injury count (definition disclosed), starters out, replacements named (published next-rank players, not predicted play), empty and shared rank-1 slots, chart status, source links | **in progress** | `arena/2e10e431-korea1` | `pipeline/session_team_view.py` (new), `team-view.html` (new), `data/processed/team_view*.csv`, `assets/data/team_view*.csv` |
+| PS2 | **Depth-chart register, date and source per club**: capture time, source URL, manifest sha256, parsed rows vs manifest rows (drift alarm), shared and empty slot counts, unofficial-label flag | **in progress** | `arena/2e10e431-korea1` | `pipeline/session_depth_register.py` (new), `depth-register.html` (new), `data/processed/depth_register*.csv` |
+| PS3 | **Reconcile stated figures**: the "149 multi-rank-1 slots" figure and the "three receivers / three inside linebackers at rank 1" examples, recomputed from the committed chart | **in progress** | `arena/2e10e431-korea1` | `pipeline/session_team_view.py` (checks), `flagged.html` rows |
+| PS4 | **Dated schedule announcement beside the live schedule page** | **unclaimed until a source is read** (see log) | `arena/2e10e431-korea1` | none until verified |
+| PS5 | Injury/personnel ablation, announced-starter field, opponent-aware ratings, vig-free decomposition | **not started — blocked, logged with the missing input** | — | none |
+| PS6 | Integration: nav, landing links, `verify_site` expected set, link and source checks, tests, PR to `main`, merge without waiting, Pages check | **pending** | `arena/2e10e431-korea1` | `COORDINATION.md`, `Makefile`, `README.md`, `pipeline/render_site.py` (nav and flagged rows only), `tests/check_*.py` (page lists) |
