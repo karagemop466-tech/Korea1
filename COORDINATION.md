@@ -796,8 +796,12 @@ branches remain untouched; nothing already merged is reverted, rebased or discar
 | T19 | Injury & backup-deficiency tracking (defense 2nd/3rd/4th string, offense starters/backups) | in progress | `arena/425336fc-korea1` | `research/injuries.md`, `injuries.html`, verified against nfl.com/injuries |
 | T20 | Executive summary update (important details) | in progress | `arena/425336fc-korea1` | `EXECUTIVE_SUMMARY.md`, `executive-summary.html` |
 | T21 | Site reorganization: category subpages, clean landing page, all-new pages rendered + verified | in progress | `arena/425336fc-korea1` | `pipeline/render_site.py` (new builders + nav), root `*.html`, `assets/` |
-| T22 | Final verification pass (verify_site, check_links, check_sources) | unclaimed | `arena/425336fc-korea1` | `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py` |
+| T22 | Final verification pass (verify_site, check_links, check_sources) | **in progress** | `arena/02547377-korea1` | read-only verification of `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`; `COORDINATION.md` (claim and result only) |
 | T23 | PR → main, merge without waiting, confirm Pages deploy, record PR link + result | unclaimed | `arena/425336fc-korea1` | `COORDINATION.md`, PR record, live site confirmation |
+
+### 2026-11-15 — T22 claim — `arena/02547377-korea1`
+
+Claimed the unclaimed final-verification task after inspecting the board and clean working tree. Scope is read-only verification of the existing site verifiers, link/source checks, tests, and the build; only this claim and its result will be added to this board. No site data or shared output is being changed.
 
 ### 2026-11-12 — claims committed — `arena/425336fc-korea1`
 
