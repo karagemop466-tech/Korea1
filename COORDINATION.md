@@ -2969,3 +2969,11 @@ unresolvable and never guessed at.
 **Pull request and merge:** PR #69 — https://github.com/karagemop466-tech/Korea1/pull/69 — `arena/120935ef-korea1` → `main`, merged without waiting at 2026-11-15 10:48:17 -0800 (18:48:17 UTC) as merge commit `ab8955eb5d97a87238ddba4d9cfd60eaedeb38b6`. Verification summary, sources used and flagged irregularities were carried in the PR body; all checks were green before merge (see session block above).
 
 **Pages:** GitHub Pages serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the push of `ab8955eb` triggered the build/deploy. Final Pages state could not be re-probed from this shell because the GitHub API is rate-limited for this user ID (403 on `GET /repos/:owner/:repo/pages`); prior merges on this repo show `pages/builds/latest` = `built` with `error: null` and the live site at https://karagemop466-tech.github.io/Korea1/ . Confirm against `https://github.com/karagemop466-tech/Korea1/actions` when the rate limit clears.
+
+---
+
+## arena/2381cdf4-korea1 — S16 claim (2026-11-15)
+
+**Board read before claim.** The published site and prior integration records already cover the requested NFL line-origination, strategy, availability, suggestions, questions and flagged-review work. This session claims a distinct, read-only release-readiness audit of the current committed tree; it will not rewrite shared site/data outputs or claim new official-source confirmation without checking the referenced official page. The Arena session is pinned to `arena/2381cdf4-korea1`; no separate `session-<id>/<task>` branch will be created.
+
+**Claim scope:** `notes/release-readiness-2026-11-15.md` (new) and this session's row/log in `COORDINATION.md`. Initial claim only; implementation/audit has not started. Claim commit and push are recorded in the next update.
