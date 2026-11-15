@@ -1,0 +1,15 @@
+{
+  "captures": 4,
+  "intervals": 3,
+  "current_equals_newest_capture": true,
+  "newest_capture_utc": "2026-11-15T17:43:36Z",
+  "injury_changes": 531,
+  "depth_changes": 26,
+  "coverage_changes": 4,
+  "byes_checked": [
+    "CHI",
+    "DEN",
+    "PHI",
+    "TB"
+  ]
+}
