@@ -128,7 +128,7 @@ def test_missing_player_row_is_unresolved_not_a_defect():
 
 
 def test_internal_consistency_flags_a_planted_contradiction():
-    """The published snapshot has no contradiction today, so plant one.
+    """Check the consistency checker on a capture and a planted contradiction.
 
     The published Week 10 table is an immutable daily capture of a mutable
     official NFL page. Its row count changes as the page is updated, so pinning
