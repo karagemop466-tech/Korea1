@@ -23,6 +23,11 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `live-verification.html` — **line-by-line re-check of the published availability data against the official pages**: injury cells, depth-chart slots and all 59 matchup sentences, each with a verdict and its source
 - `decision-board.html` — suggestions with options, to review and choose before any change is made
 - `open-questions.html` — what is known, what is missing, how to find it
+- `team-view.html` — **per-team decision view**: one row per club (32) with report counts, net injury count, starters out,
+  the replacement the club's chart names next (never a prediction), shared and gap slots, and the official report and
+  club depth-chart links on every row; the stated depth figures are recomputed and their mismatches shown (added 2026-11-15, `arena/2e10e431-korea1`)
+- `depth-register.html` — **depth-chart register**: capture time, source page, sha256 and a drift check (manifest rows vs parsed rows) for each club chart (added 2026-11-15)
+- `schedule.html` — **dated schedule announcement** (league release date, read on NFL.com) beside the live Week 10 schedule, with the four bye clubs read from the official page (added 2026-11-15)
 - `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
