@@ -7,6 +7,7 @@ were inverted, so each test below mutates an input and asserts the verdict moves
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -30,6 +31,15 @@ def _inj():
 def _pub():
     return pd.read_csv(ROOT / "data/availability/injuries.csv",
                        dtype=str, keep_default_na=False)
+
+
+def _injury_manifest_rows():
+    """Return the current official capture's parsed count, not a frozen row count."""
+    manifest = json.loads((ROOT / "data/availability/manifest.json").read_text(encoding="utf-8"))
+    sources = [source for source in manifest.get("sources", [])
+               if source.get("kind") == "injury_report"]
+    assert len(sources) == 1, "snapshot manifest must identify one official injury report"
+    return int(sources[0]["rows"])
 
 
 # --------------------------------------------------------------------------- #
@@ -128,39 +138,20 @@ def test_missing_player_row_is_unresolved_not_a_defect():
 
 
 def test_internal_consistency_flags_a_planted_contradiction():
-    """The published snapshot has no contradiction today, so plant one.
+    """Plant a contradiction; compare the live capture count with its manifest.
 
-    Snapshot note (2026-11-14): this test used to assert that the shipped table
-    carried exactly one contradiction (DET / Kerby Joseph, Out + full
-    participation) and pinned the row count at 326. Both facts moved with the
-    official page: the 2026-11-14T17:10Z capture carries 345 rows and the Kerby
-    Joseph practice cell is now consistent. Asserting a *published* defect would
-    make the suite fail whenever the source is corrected - a test cannot own a
-    fact the source owns.
-
-    Snapshot note (2026-11-15, session arena/e0763e1e-korea1, taking over the
-    stale-assertion repair from claim arena/b400d3ae-korea1 - see COORDINATION.md
-    X7 handoff): the committed official capture staged at 2026-11-15T17:43Z
-    carries 347 rows - two clubs added entries between the 2026-11-14T17:10Z
-    capture (345 rows) and this one, so the official page owns the count. The
-    row count is pinned to this capture because a silent row change is worth
-    noticing; it moves only when the official page moves, and the move is
-    logged in COORDINATION.md. The contradiction check is a positive control:
-    four pairings that are contradictory on the official page itself (JAX BJ
-    Green II Out + Full Participation; CIN Jalen Davis, Andrei Iosivas, Brian
-    Parker II Doubtful + Full Participation) are faithfully transcribed and
-    flagged as F-29 / F-29a, not corrected here (last re-read on the live
-    official report 2026-11-14).
+    The official NFL Week 10 injury report is a moving source. The automated
+    capture records its parsed-row count in data/availability/manifest.json;
+    avoid freezing that mutable count in a test. Source reviewed:
+    https://www.nfl.com/injuries/league/2026/reg10
     """
     pub = _pub()
-    # Integration note (arena/bfcd9879-korea1): the four contradictions that remain
-    # in this capture (JAX BJ Green II; CIN Jalen Davis, Andrei Iosivas,
-    # Brian Parker II) were each re-read against the live official page
-    # https://www.nfl.com/injuries/league/2026/reg10 on 2026-11-14 and are
-    # faithful transcriptions of a pairing that is contradictory on the
-    # official page itself; they are flagged as F-29 / F-29a, not corrected here.
+    # The four contradictory pairs (JAX BJ Green II; CIN Jalen Davis,
+    # Andrei Iosivas, Brian Parker II) were re-read against the live NFL report
+    # on 2026-11-15. The same conflicting cells appear on the official page;
+    # these are report observations, not claims about player availability.
     issues, stats = lv.internal_consistency(pub)
-    assert stats["rows"] == len(pub) == 347
+    assert stats["rows"] == len(pub) == _injury_manifest_rows()
     planted = pub.copy()
     planted.loc[planted.index[0], "game_status"] = "Out"
     planted.loc[planted.index[0], "practice_status"] = "Full Participation in Practice"
