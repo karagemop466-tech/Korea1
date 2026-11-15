@@ -40,13 +40,13 @@ MIN,Kyler Murray,QB,Offense,QB #1,1.0,Out,True,
 MIN,Kyle Van Noy,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 GB,Chris Brooks,RB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 GB,Javon Bullard,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-GB,Zaire Franklin,LB,Defense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-GB,Travis Glover,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-GB,Josh Jacobs,RB,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-GB,Xavier McKinney,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Zaire Franklin,LB,Defense,LB #15,1.0,Doubtful,True,
+GB,Travis Glover,G,Offense,LG #4,2.0,Questionable,True,
+GB,Josh Jacobs,RB,Offense,RB #11,1.0,Out,True,
+GB,Xavier McKinney,S,Defense,S #20,1.0,Questionable,True,
 GB,Skyy Moore,WR,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 GB,Micah Parsons,LB,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-GB,Sean Rhyan,C,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+GB,Sean Rhyan,C,Offense,C #5,1.0,Out,True,
 GB,Lukas Van Ness,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 GB,Josh Whyle,TE,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 GB,Kevin Zeitler,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"

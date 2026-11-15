@@ -37,6 +37,8 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `referents.html` — every citation on the site, resolved against the live page it points at
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
+- `brief-2026-11-15.html` — **2026-11-15 brief**: one row per item with status, blocking gate, the number that clears it and official sources; mind-changers for all 18 candidates; flagged findings F-30 to F-41 (added 2026-11-15)
+- `injury-deltas.html` — injury and depth **changes** between dated official captures (levels are not published); raw-page hashes and capture clock times on every change (added 2026-11-15)
 - `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
 - `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
 - `decision-readiness.html` — 14 pre-decision Q&As, 8 missing-info discovery blueprints and all 28 post-pin settled Week 8–9 NFL.com scores
