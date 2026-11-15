@@ -2871,3 +2871,12 @@ adds data or evidence they do not have:
 - **Integration:** this branch `arena/e0763e1e-korea1` is the integration branch; all work is committed here, then a PR is opened against `main`, merged, and GitHub Pages deployment confirmed.
 - **PR / merge record:** **PR #63** — https://github.com/karagemop466-tech/Korea1/pull/63 — `arena/e0763e1e-korea1` → `main`, merged 2026-11-15, merge commit `8a9e8c378c49b9d255611b82244dee790bb40acc` (fast-forward). Verify-site CI ran green on the PR; `make build` 52 pages / 0 failing checks; `make test` 166 passed; `check_links`/`check_sources`/`verify_site` green.
 - **Pages:** legacy branch build of `main` / root deployed successfully — deployment state `success` at https://karagemop466-tech.github.io/Korea1/ (serving `8a9e8c37`). Site confirmed serving `index.html` landing page with the categorized navigation and all subpages.
+---
+
+## arena/b7abdfc2-korea1 — 2026-11-15 current-snapshot regression repair
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CQ1 | Refresh the injury-snapshot regression test so a dated official daily capture does not fail on a hard-coded stale row count; verify against the official NFL injury page and run tests | in progress | `arena/b7abdfc2-korea1` | `tests/test_live_verify.py`, `COORDINATION.md` (this section only) |
+
+**Claim note (2026-11-15):** Current `make test` fails because `tests/test_live_verify.py` pins the mutable Week 10 injury table at 345 rows, while the committed 2026-11-15 17:43:36Z NFL.com capture contains 347. The scope is limited to this test and this coordination section; no other active task scope is modified. Official reference to check: https://www.nfl.com/injuries/ .
