@@ -138,6 +138,9 @@ def test_internal_consistency_flags_a_planted_contradiction():
     make the suite fail whenever the source is corrected - a test cannot own a
     fact the source owns. The row count is still pinned, because a silent row
     change is worth noticing; the contradiction check is now a positive control.
+    Snapshot note (2026-11-15, CB11): the 2026-11-15T17:43Z capture carries 347 rows. Each
+    difference from the 345-row capture was re-read on https://www.nfl.com/injuries/league/2026/reg10
+    (LAC, BAL, IND rows) and matches that page; the 345-row capture was the stale one.
     """
     pub = _pub()
     # Integration note (arena/bfcd9879-korea1): the four contradictions that remain
@@ -147,7 +150,7 @@ def test_internal_consistency_flags_a_planted_contradiction():
     # faithful transcriptions of a pairing that is contradictory on the
     # official page itself; they are flagged as F-29 / F-29a, not corrected here.
     issues, stats = lv.internal_consistency(pub)
-    assert stats["rows"] == len(pub) == 345
+    assert stats["rows"] == len(pub) == 347
     planted = pub.copy()
     planted.loc[planted.index[0], "game_status"] = "Out"
     planted.loc[planted.index[0], "practice_status"] = "Full Participation in Practice"
