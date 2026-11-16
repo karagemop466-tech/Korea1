@@ -56,7 +56,7 @@ LV,Raiders,SEA,Special Teams,6,0,0,0,0,0,,https://www.raiders.com/team/depth-cha
 MIA,Dolphins,IND,Offense,12,1,1,0,0,1,C WR,https://www.miamidolphins.com/team/depth-chart,https://www.nfl.com/injuries/
 MIA,Dolphins,IND,Defense,11,0,0,0,0,0,,https://www.miamidolphins.com/team/depth-chart,https://www.nfl.com/injuries/
 MIA,Dolphins,IND,Special Teams,5,0,0,0,0,0,,https://www.miamidolphins.com/team/depth-chart,https://www.nfl.com/injuries/
-MIN,Vikings,GB,Offense,12,3,0,1,1,0,QB WR TE,https://www.vikings.com/team/depth-chart,https://www.nfl.com/injuries/
+MIN,Vikings,GB,Offense,12,2,0,1,1,1,WR TE,https://www.vikings.com/team/depth-chart,https://www.nfl.com/injuries/
 MIN,Vikings,GB,Defense,11,2,0,0,0,0,DL LB,https://www.vikings.com/team/depth-chart,https://www.nfl.com/injuries/
 MIN,Vikings,GB,Special Teams,6,0,0,0,0,0,,https://www.vikings.com/team/depth-chart,https://www.nfl.com/injuries/
 NE,Patriots,DET,Offense,11,1,0,2,0,2,LG,https://www.patriots.com/team/depth-chart,https://www.nfl.com/injuries/
@@ -89,6 +89,6 @@ TB,Buccaneers,,Special Teams,8,0,0,0,0,0,,https://www.buccaneers.com/team/depth-
 TEN,Titans,JAX,Offense,11,2,0,0,0,0,LG WR,https://www.tennesseetitans.com/team/depth-chart,https://www.nfl.com/injuries/
 TEN,Titans,JAX,Defense,12,2,0,0,0,0,LB LB,https://www.tennesseetitans.com/team/depth-chart,https://www.nfl.com/injuries/
 TEN,Titans,JAX,Special Teams,7,2,0,0,0,2,P H,https://www.tennesseetitans.com/team/depth-chart,https://www.nfl.com/injuries/
-WAS,Commanders,NYG,Offense,12,0,0,0,0,1,,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
+WAS,Commanders,NYG,Offense,12,1,0,0,1,1,C,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
 WAS,Commanders,NYG,Defense,11,0,0,0,0,0,,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
 WAS,Commanders,NYG,Special Teams,6,0,0,0,0,0,,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
