@@ -1,10 +1,10 @@
 {
  "injury_rows": 347,
- "depth_rows": 1820,
- "slots": 910,
+ "depth_rows": 1825,
+ "slots": 909,
  "slots_flagged": 96,
  "first_listed_out": 40,
- "unmatched_report_players": 58,
+ "unmatched_report_players": 57,
  "teams_on_injury_report": 28,
  "clubs_with_depth_chart": 31
 }
