@@ -77,7 +77,9 @@ def main():
               # T43 (session arena/6b1f0c9a-korea1)
               "results-feed.html","correlation-official.html","replacement-depth.html",
               "origination.html","price-annex.html","signal-staking.html","demotion.html",
-              "suggestions-review-2026-11-14.html", "brief-2026-11-15.html"}
+              "suggestions-review-2026-11-14.html", "brief-2026-11-15.html",
+              # CS5 (session arena/53ef9544-korea1): the 2026-11-18 request register.
+              "request-register-2026-11-18.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

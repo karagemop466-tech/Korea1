@@ -3185,6 +3185,39 @@ Method: for every file of each PR (GitHub file list), classified against current
 
 **Scheduled-job caveat (F-47).** The scheduled jobs commit with `GITHUB_TOKEN`. GitHub does not start workflows for those pushes, so `verify.yml` does not re-check the scheduled commits.
 
+---
+
+## Session `arena/53ef9544-korea1` — 2026-11-18: CS5 request register (takeover) + integration + publish
+
+**Protocol deviation (recorded as every earlier session recorded it).** The platform pins this session to
+branch `arena/53ef9544-korea1` (base `main` = `547d5142cd4ebab91f15c06dc856e52f2d262cb7`). The
+`session-<id>/<task>` worktree pattern cannot be used; this branch is the task and integration branch.
+Sibling branches and their open PRs (#82 `arena/99b908ab-korea1`, #83 `arena/42b6f5e9-korea1`,
+#84 `arena/8a075837-korea1`) are **not** touched, rebased or discarded.
+
+**Why this session exists.** PR #79 (`arena/db6cd525-korea1`) merged, but its **CS5** — the 2026-11-18
+request register, one row per request item with status, evidence file, blocking gate, clearing number and
+official link — was explicitly left **not done** ("no request register page was published"). The brief's
+central ask is exactly that register: *"a clear list of questions, informations and answers that need to be
+addressed before any decision can be reasonably made … Suggestions need to be made to discover missing
+information."* CS5 was never implemented, so its claim is stale and unowned; this session takes it over and
+notes the handoff here per the board rule.
+
+**Baseline measured before any edit** (branch at `547d514`, tree clean): `make build` exit 0 —
+`verify_site.py` 0 failing checks, `check_sources.py` 44 canonical pages / 5,569 rows, `check_links.py`
+53 pages; `make test` **189 passed**.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CS5 | **2026-11-18 request register** (takeover): one row per request item — status, evidence file, blocking gate, clearing number, official link; CSV + page + tests; integration (nav, index card, page lists, Makefile, exec-summary addendum, README); final build/test/verify, PR → main, merge, Pages confirm, record | **in progress** | `arena/53ef9544-korea1` | `pipeline/request_register_2026_11_18.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new); integration (additive lines only): `pipeline/render_site.py` (NAV tuple + one index card), `pipeline/verify_site.py` (expected set), `tests/check_sources.py` (PAGES), `tests/check_links.py` (PAGES), `Makefile` (site recipe + test list), `pipeline/render_summary.py` (addendum), `EXECUTIVE_SUMMARY.md`, `README.md` (one link), `COORDINATION.md` (this section) |
+
+**Scope note.** `pipeline/session_20261118.py` is owned by `arena/db6cd525-korea1` and already merged; the
+CS5 scope line named it as "new", but it is not. To keep scopes non-overlapping, the register is built in a
+**new** module `pipeline/request_register_2026_11_18.py` rather than editing that file. No file owned by
+another session is edited; the five shared registration surfaces are changed additively by this session as
+the integration owner for this brief.
+
+**Claim pushed immediately** per board rule 2, before any file in scope is changed.
 
 ### Final publish record — `arena/42b6f5e9-korea1` (2026-11-18)
 

@@ -158,6 +158,52 @@ def _bf_block():
     return '\n'.join(L)
 
 
+def _cs5_block():
+    """CS5 (arena/53ef9544-korea1) - 2026-11-18 request-register addendum.
+
+    Reads the register this session wrote; nothing is retyped. Returns '' if the
+    register has not been generated yet, so a partial build never emits a half-block.
+    """
+    from collections import Counter
+    p = ROOT / 'data' / 'integration' / 'request_register_2026_11_18.csv'
+    if not p.exists():
+        return ''
+    reg = pd.read_csv(p, dtype=str).fillna('')
+    if not len(reg):
+        return ''
+    counts = Counter(reg.status)
+    n = len(reg)
+    n_src = int((reg.source_url != '').sum())
+    n_text = n - n_src
+    done = counts.get('DONE', 0)
+    part = counts.get('PARTLY DONE', 0)
+    pr = sum(v for k, v in counts.items() if k.startswith('BUILT ON OPEN PR'))
+    blocked = counts.get('BLOCKED', 0) + counts.get('NOT STARTED', 0)
+    rejected = counts.get('REJECTED', 0)
+    owner = counts.get('OWNER DECISION', 0)
+    L = []
+    A = L.append
+    A('## Addendum - 2026-11-18 (request register, session `arena/53ef9544-korea1`)')
+    A('')
+    A('The full 2026-11-18 request is now a single decision-readiness register: one row per')
+    A('request item with its status, the evidence file that supports it, the gate that blocks')
+    A('it and the number that would clear it. It is published on')
+    A('`request-register-2026-11-18.html` and in `data/integration/request_register_2026_11_18.csv`.')
+    A('')
+    A(f'**{n} request items** - {done} done, {part} partly done, {pr} built on open PR #82 (not')
+    A(f'merged to main), {blocked} blocked or not started, {rejected} rejected by design,')
+    A(f'{owner} needing an owner decision. {n_src} rows carry an official/primary source link;')
+    A(f'{n_text} rows have no official source and are printed as flagged text, never filled in.')
+    A('')
+    A("The register is the consolidated answer to the brief's central ask - the questions,")
+    A('information and answers that must be resolved before a decision, plus the suggestions')
+    A('that discover the missing information. It does not change any research number: the')
+    A('verdict stays **0 of 18 strategies validated, no reward**, and gate G1 (executable quote')
+    A('provenance) still fails for every candidate.')
+    A('')
+    return '\n'.join(L)
+
+
 def main():
     gates=pd.read_csv(PROC/'strategy_gates.csv')
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
@@ -191,6 +237,7 @@ def main():
     f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
     _s = _session_block()
     _b = _bf_block()
+    _cs5 = _cs5_block()
     text=f'''# Executive summary — NFL Line Lab
 
 Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
@@ -333,6 +380,7 @@ code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 
 {_s}
 {_b}
+{_cs5}
 ## Material audit corrections
 
 1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.
