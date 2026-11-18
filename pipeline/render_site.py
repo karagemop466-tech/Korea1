@@ -510,13 +510,15 @@ def build_executive(d):
     fwd_declared = len(fpick)
     fwd_settled = int((fpick.status == "OFFICIAL").sum()) if fwd_declared else 0
     fwd_open = int((fpick.status == "OPEN").sum()) if fwd_declared else 0
+    fwd_unresolved = (fwd_declared - fwd_settled - fwd_open) if fwd_declared else 0
     fwd_units = pd.to_numeric(fpick.loc[fpick.status == "OFFICIAL", "pnl"], errors="coerce").sum() \
         if fwd_declared else 0.0
     fwd_validated = int((fsb.verdict == "VALIDATED").sum()) if len(fsb) else 0
     forward_cards = kpi_grid([
         card(f"{fwd_settled} / {fwd_declared}", "frozen tickets settled", "settled only from an official NFL.com final",
              "good" if fwd_settled else ""),
-        card(f"{fwd_open}", "still open", "not settled, not voided, not counted"),
+        card(f"{fwd_open}", "still OPEN (status)", "carries the OPEN status in the ledger"),
+        card(f"{fwd_unresolved}", "unresolved (provisional)", "awaiting an official NFL.com final; not voided, not counted"),
         card(f"{fwd_units:+.3f}", "net units settled", "one game — not a track record"),
         card(f"{fwd_validated}", "strategies validated", "no horizon reached; verdicts withheld", "bad"),
     ])
@@ -525,7 +527,7 @@ def build_executive(d):
          "written 2026-11-12T13:26:48Z; received by GitHub 13:28:07Z, 11.78 h before the first kickoff",
          src_link("https://www.nfl.com/schedules/2026/by-week/reg-10", "NFL week 10 schedule")],
         ["Settled from an official final", f"WAS 24–21 NYG → {fwd_settled} of {fwd_declared} tickets",
-         f"net {fwd_units:+.3f} units; {fwd_open} tickets stay OPEN",
+         f"net {fwd_units:+.3f} units; {fwd_open} OPEN, {fwd_unresolved} provisional awaiting an official final",
          src_link("https://www.nfl.com/games/commanders-at-giants-2026-reg-10", "NFL.com Game Center")],
         ["Gate F2 (official settlement)", "PASS where a ticket has settled",
          "before this pass the same 4 tickets were PROVISIONAL from the community mirror",
@@ -1146,6 +1148,7 @@ def build_flagged(d):
         ["F-2026-11-14-04", "Medium · open", "1,892 of the 6,073 originated games (31%) have no closing spread AND no closing total in the pinned archive; the coverage is 2021 for openers and 2006-2018 for closers, so a paired open-to-close comparison is possible for only 2,916 rows, all of them the spread in 2013-2018. The price-snapshot store reports the gap per row rather than smoothing it, and 31,264 gap rows are queued on price-annex.html.", official("NFL scores") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/prices/price_snapshot_coverage.csv", "price_snapshot_coverage.csv")],
         ["F-2026-11-14-05", "High · open", "No strategy passes the signal test after the split: 17 of 18 show no signal evidence and the eighteenth (BUY_LOW_ATS) fails on price, not signal. The old ROI leader WIND_UNDER is now labelled LUCK_RISK. With 18 tests, one 95% pass is about what multiple testing produces, so no strategy is promoted and the multiplicity correction is proposed as SIG-02 rather than applied silently.", official("NFL scores") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/gates/signal_staking.csv", "signal_staking.csv")],
         ["F-2026-11-14-06", "Medium · open", "Replacement depth is measured from club depth charts, and a chart order is not a game-time role: no chart carries a publication time and the T-90m inactive list is not archived. 71 of 160 unavailable or at-risk players could not be matched to a chart slot at all and are counted as unmatched rather than assigned a depth. Houston's chart is an image and yields no rows, so Houston is NO_CHART rather than defaulted to first string.", official("NFL injuries") + " · " + src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/gates/replacement_slots.csv", "replacement_slots.csv")],
+        ["F-2026-11-18-01", "Medium · open", "Official club depth charts drift between captures: the 2026-11-13 hand transcription (WAS, NYG, DET, NE) differs from the 2026-11-17 automated capture on 18 slots (e.g. WAS WR1 went from McLaurin|Burks to Burks|Van Jefferson; NYG CB2 added Nikko Reed; DET CB4 dropped Nick Whiteside). Same-date comparison (extract vs the 2026-11-13 capture) is 115/115 with 0 mismatches, so this is source drift, not a parse error. Depth rows are versioned by capture date and never treated as a confirmed game-day role.", official("NFL injuries") + " · " + src_link("https://www.commanders.com/team/depth-chart", "Commanders depth chart") + " · " + src_link("https://www.giants.com/team/depth-chart", "Giants depth chart") + " · " + src_link("https://www.detroitlions.com/team/depth-chart", "Lions depth chart")],
     ]
     from render_review import flagged_rows
     review = flagged_rows()

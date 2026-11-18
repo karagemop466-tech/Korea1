@@ -3058,3 +3058,33 @@ refused, measured on 2026-11-18T03:47Z), so the capture runs on a GitHub-hosted 
 `.github/workflows/gamebooks.yml`, exactly like the existing availability tracker. The page-fetch tool
 reaches the official pages and was used to read the pages this session quotes.
 
+
+---
+## Session `arena/292f7ae1-korea1` — 2026-11-18 integration verification and publish (merged into main via PR #81)
+
+**Starting state.** Branch `arena/292f7ae1-korea1` was at `5df9bab` (same as `main` at claim time). `main` later advanced to `9933bba` (PRs #75, #77, #78 merged) while this session ran, so the branch was merged with `origin/main` and conflicts resolved before the PR.
+
+**Scope.** Took over T22 and T23 from `arena/425336fc-korea1` (claim older than 60 minutes, no commits; handoff noted on the task board). Ran the full verification pass from committed inputs, then integrated main's depth-snapshot repair and the new official game-centre layer.
+
+**Conflicts resolved (merge of origin/main into the branch):**
+- `tests/test_live_verify.py`: took main's already-fixed depth-snapshot test (session cb61dcec / PR #75) which reports capture-time drift via `data/live/depth_slot_verification.csv` instead of failing hard; my same-date-snapshot control was superseded by main's integrated approach.
+- All regenerated build artefacts (`EXECUTIVE_SUMMARY.md`, `executive-summary.html`, `flagged.html`, `replacement-depth.html`, `repo-review.html`, `validation.html`, `data/**`, `assets/data/**`): took main's versions, then re-ran `make build` to regenerate from the merged sources.
+- `COORDINATION.md`: kept all four session records (cb61dcec, 27eca1b3, 99b908ab, this one).
+
+**Changes unique to this session (on top of main):**
+- `pipeline/render_site.py`: new flagged row F-2026-11-18-01 documenting verified official club depth-chart drift between the 2026-11-13 transcription and the 2026-11-17 capture (WR Burks\|Jefferson, DL Omenihu\|Newton on commanders.com); not a parse error.
+- `pipeline/render_summary.py`: forward ledger reads "0 OPEN, 61 provisional, awaiting an official final" instead of the misleading "61 open".
+- `pipeline/live_verify_depth.py`: same-date history snapshot as the verification control.
+
+**Official spot checks (fetch_page tool):**
+- `nfl.com/scores/2026/week-10`: Commanders 24, Giants 21 Final — matches the committed forward ledger.
+- `commanders.com/team/depth-chart`: WR Burks\|Jefferson, DL Omenihu\|Newton — confirms the 11-13->11-17 drift is real source movement.
+
+**Verification performed (all green):**
+- `make build`: exit 0. `verify_site.py` 0 failing checks; `check_sources.py` 44 canonical pages / 5,546 rows, strict official/primary reference check passed; `check_links.py` 53 pages, all internal links/assets resolve.
+- `make test`: 189 passed.
+- Build reaches a fixed point (second run produces no changes).
+
+**Pull request and merge:** PR #81 — https://github.com/karagemop466-tech/Korea1/pull/81 — `arena/292f7ae1-korea1` → `main`, merged without waiting. Verification summary, sources used and flagged irregularities carried in the PR body; all checks green before merge.
+
+**Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard. Flagged items do not block merge.

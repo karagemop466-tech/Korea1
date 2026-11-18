@@ -1,18 +1,18 @@
 team,unit,chart_rows,unavailable,at_risk,starters_out,depth_impact,deepest_slot_used,cliff,max_chart_rank,evidence_state,opponent,source_url
-ARI,Defense,25,0,3,0,0.0,,,3,PARTIAL,LA,https://www.nfl.com/injuries/league/2026/reg10
-ARI,Offense,25,1,2,1,1.0,2,,3,VERIFIED,LA,https://www.nfl.com/injuries/league/2026/reg10
+ARI,Defense,25,0,2,0,0.0,,,3,PARTIAL,LA,https://www.nfl.com/injuries/league/2026/reg10
+ARI,Offense,24,1,2,1,1.0,2,,3,VERIFIED,LA,https://www.nfl.com/injuries/league/2026/reg10
 ARI,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,LA,https://www.nfl.com/injuries/league/2026/reg10
 ATL,Defense,25,1,3,1,1.0,2,,3,VERIFIED,KC,https://www.nfl.com/injuries/league/2026/reg10
 ATL,Offense,25,1,0,0,0.5,,WR #11: no listed backup behind rank 2,4,VERIFIED,KC,https://www.nfl.com/injuries/league/2026/reg10
 ATL,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,KC,https://www.nfl.com/injuries/league/2026/reg10
 BAL,Defense,26,1,0,1,1.0,2,,3,VERIFIED,LAC,https://www.nfl.com/injuries/league/2026/reg10
-BAL,Offense,25,0,0,0,0.0,,,3,NO_INJURY,LAC,https://www.nfl.com/injuries/league/2026/reg10
-BAL,Special Teams,8,0,0,0,0.0,,,3,NO_INJURY,LAC,https://www.nfl.com/injuries/league/2026/reg10
+BAL,Offense,26,0,0,0,0.0,,,3,NO_INJURY,LAC,https://www.nfl.com/injuries/league/2026/reg10
+BAL,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,LAC,https://www.nfl.com/injuries/league/2026/reg10
 BUF,Defense,25,0,2,0,0.0,,,3,PARTIAL,NYJ,https://www.nfl.com/injuries/league/2026/reg10
 BUF,Offense,24,0,0,0,0.0,,,4,NO_INJURY,NYJ,https://www.nfl.com/injuries/league/2026/reg10
 BUF,Special Teams,11,0,0,0,0.0,,,4,NO_INJURY,NYJ,https://www.nfl.com/injuries/league/2026/reg10
-CAR,Defense,23,1,1,1,1.0,2,,3,VERIFIED,NO,https://www.nfl.com/injuries/league/2026/reg10
-CAR,Offense,26,0,0,0,0.0,,,5,NO_INJURY,NO,https://www.nfl.com/injuries/league/2026/reg10
+CAR,Defense,24,1,1,1,1.0,2,,3,VERIFIED,NO,https://www.nfl.com/injuries/league/2026/reg10
+CAR,Offense,27,0,1,0,0.0,,,5,PARTIAL,NO,https://www.nfl.com/injuries/league/2026/reg10
 CAR,Special Teams,7,0,0,0,0.0,,,2,NO_INJURY,NO,https://www.nfl.com/injuries/league/2026/reg10
 CHI,Defense,26,0,0,0,0.0,,,3,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
 CHI,Offense,23,0,0,0,0.0,,,3,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
@@ -23,14 +23,14 @@ CIN,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,PIT,https://www.nfl.com/injuries/lea
 CLE,Defense,25,0,0,0,0.0,,,3,NO_INJURY,HOU,https://www.nfl.com/injuries/league/2026/reg10
 CLE,Offense,25,1,1,0,0.333,,RB #9: no listed backup behind rank 3,4,VERIFIED,HOU,https://www.nfl.com/injuries/league/2026/reg10
 CLE,Special Teams,8,0,0,0,0.0,,,2,NO_INJURY,HOU,https://www.nfl.com/injuries/league/2026/reg10
-DAL,Defense,26,2,3,1,1.5,,S #23: no listed backup behind rank 2,3,VERIFIED,SF,https://www.nfl.com/injuries/league/2026/reg10
-DAL,Offense,24,3,0,1,2.0,,WR #9: no listed backup behind rank 2,2,VERIFIED,SF,https://www.nfl.com/injuries/league/2026/reg10
+DAL,Defense,27,2,4,1,1.5,,S #23: no listed backup behind rank 2,3,VERIFIED,SF,https://www.nfl.com/injuries/league/2026/reg10
+DAL,Offense,24,2,0,1,1.5,,WR #9: no listed backup behind rank 2,3,VERIFIED,SF,https://www.nfl.com/injuries/league/2026/reg10
 DAL,Special Teams,10,0,0,0,0.0,,,3,NO_INJURY,SF,https://www.nfl.com/injuries/league/2026/reg10
 DEN,Defense,27,0,0,0,0.0,,,3,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
 DEN,Offense,25,0,0,0,0.0,,,4,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
 DEN,Special Teams,8,0,0,0,0.0,,,2,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
-DET,Defense,27,1,0,1,1.0,2,,4,VERIFIED,NE,https://www.nfl.com/injuries/league/2026/reg10
-DET,Offense,23,1,2,1,1.0,2,,4,VERIFIED,NE,https://www.nfl.com/injuries/league/2026/reg10
+DET,Defense,28,1,0,1,1.0,2,,4,VERIFIED,NE,https://www.nfl.com/injuries/league/2026/reg10
+DET,Offense,22,1,2,1,1.0,2,,3,VERIFIED,NE,https://www.nfl.com/injuries/league/2026/reg10
 DET,Special Teams,7,0,0,0,0.0,,,2,NO_INJURY,NE,https://www.nfl.com/injuries/league/2026/reg10
 GB,Defense,24,1,1,1,1.0,2,,3,VERIFIED,MIN,https://www.nfl.com/injuries/league/2026/reg10
 GB,Offense,24,2,1,2,2.0,2,,3,VERIFIED,MIN,https://www.nfl.com/injuries/league/2026/reg10
@@ -68,23 +68,23 @@ NE,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,DET,https://www.nfl.com/injuries/leag
 NO,Defense,27,0,0,0,0.0,,,3,NO_INJURY,CAR,https://www.nfl.com/injuries/league/2026/reg10
 NO,Offense,27,2,0,1,1.333,,RB #11: no listed backup behind rank 3,3,VERIFIED,CAR,https://www.nfl.com/injuries/league/2026/reg10
 NO,Special Teams,9,0,0,0,0.0,,,2,NO_INJURY,CAR,https://www.nfl.com/injuries/league/2026/reg10
-NYG,Defense,26,0,0,0,0.0,,,3,NO_INJURY,WAS,https://www.nfl.com/injuries/league/2026/reg10
-NYG,Offense,26,0,0,0,0.0,,,4,NO_INJURY,WAS,https://www.nfl.com/injuries/league/2026/reg10
-NYG,Special Teams,8,0,0,0,0.0,,,2,NO_INJURY,WAS,https://www.nfl.com/injuries/league/2026/reg10
+NYG,Defense,25,0,0,0,0.0,,,3,NO_INJURY,WAS,https://www.nfl.com/injuries/league/2026/reg10
+NYG,Offense,25,0,0,0,0.0,,,4,NO_INJURY,WAS,https://www.nfl.com/injuries/league/2026/reg10
+NYG,Special Teams,7,0,0,0,0.0,,,2,NO_INJURY,WAS,https://www.nfl.com/injuries/league/2026/reg10
 NYJ,Defense,23,1,3,0,0.5,,LB #18: no listed backup behind rank 2,3,VERIFIED,BUF,https://www.nfl.com/injuries/league/2026/reg10
-NYJ,Offense,26,0,3,0,0.0,,,4,PARTIAL,BUF,https://www.nfl.com/injuries/league/2026/reg10
+NYJ,Offense,25,0,3,0,0.0,,,4,PARTIAL,BUF,https://www.nfl.com/injuries/league/2026/reg10
 NYJ,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,BUF,https://www.nfl.com/injuries/league/2026/reg10
 PHI,Defense,24,0,0,0,0.0,,,2,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
 PHI,Offense,24,0,0,0,0.0,,,3,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
 PHI,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
-PIT,Defense,23,0,0,0,0.0,,,3,NO_INJURY,CIN,https://www.nfl.com/injuries/league/2026/reg10
+PIT,Defense,24,0,0,0,0.0,,,3,NO_INJURY,CIN,https://www.nfl.com/injuries/league/2026/reg10
 PIT,Offense,26,0,0,0,0.0,,,5,NO_INJURY,CIN,https://www.nfl.com/injuries/league/2026/reg10
 PIT,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,CIN,https://www.nfl.com/injuries/league/2026/reg10
-SEA,Defense,24,1,0,1,1.0,2,,3,VERIFIED,LV,https://www.nfl.com/injuries/league/2026/reg10
+SEA,Defense,25,1,0,1,1.0,2,,3,VERIFIED,LV,https://www.nfl.com/injuries/league/2026/reg10
 SEA,Offense,27,3,0,3,3.0,2,,4,VERIFIED,LV,https://www.nfl.com/injuries/league/2026/reg10
 SEA,Special Teams,11,0,0,0,0.0,,,5,NO_INJURY,LV,https://www.nfl.com/injuries/league/2026/reg10
-SF,Defense,25,0,4,0,0.0,,,3,PARTIAL,DAL,https://www.nfl.com/injuries/league/2026/reg10
-SF,Offense,25,1,1,1,1.0,2,,3,VERIFIED,DAL,https://www.nfl.com/injuries/league/2026/reg10
+SF,Defense,24,0,4,0,0.0,,,3,PARTIAL,DAL,https://www.nfl.com/injuries/league/2026/reg10
+SF,Offense,26,1,1,1,1.0,2,,4,VERIFIED,DAL,https://www.nfl.com/injuries/league/2026/reg10
 SF,Special Teams,8,0,0,0,0.0,,,2,NO_INJURY,DAL,https://www.nfl.com/injuries/league/2026/reg10
 TB,Defense,25,0,0,0,0.0,,,3,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
 TB,Offense,25,0,0,0,0.0,,,4,NO_INJURY,,https://www.nfl.com/injuries/league/2026/reg10
@@ -92,6 +92,6 @@ TB,Special Teams,10,0,0,0,0.0,,,2,NO_INJURY,,https://www.nfl.com/injuries/league
 TEN,Defense,25,2,0,2,2.0,,LB #16: no listed backup behind rank 1,3,VERIFIED,JAX,https://www.nfl.com/injuries/league/2026/reg10
 TEN,Offense,25,2,1,2,2.0,,LG #4: no listed backup behind rank 1,3,VERIFIED,JAX,https://www.nfl.com/injuries/league/2026/reg10
 TEN,Special Teams,15,1,0,1,1.0,2,,3,VERIFIED,JAX,https://www.nfl.com/injuries/league/2026/reg10
-WAS,Defense,23,0,0,0,0.0,,,3,NO_INJURY,NYG,https://www.nfl.com/injuries/league/2026/reg10
-WAS,Offense,27,1,0,0,0.5,,TE #8: no listed backup behind rank 2,3,VERIFIED,NYG,https://www.nfl.com/injuries/league/2026/reg10
-WAS,Special Teams,10,0,0,0,0.0,,,3,NO_INJURY,NYG,https://www.nfl.com/injuries/league/2026/reg10
+WAS,Defense,25,0,0,0,0.0,,,3,NO_INJURY,NYG,https://www.nfl.com/injuries/league/2026/reg10
+WAS,Offense,25,2,0,1,1.5,,TE #8: no listed backup behind rank 2,3,VERIFIED,NYG,https://www.nfl.com/injuries/league/2026/reg10
+WAS,Special Teams,9,0,0,0,0.0,,,3,NO_INJURY,NYG,https://www.nfl.com/injuries/league/2026/reg10
