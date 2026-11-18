@@ -11,9 +11,9 @@ decision-readiness.html,50,3,0,,,,True,True,True,True,True,True,True,True
 decisions.html,28,3,0,,,,True,True,True,True,True,True,True,True
 demotion.html,26,2,0,,,,True,True,True,True,True,True,True,True
 executive-summary.html,35,5,0,,,,True,True,True,True,True,True,True,True
-flagged.html,97,8,0,,,,True,True,True,True,True,True,True,True
+flagged.html,105,9,0,,,,True,True,True,True,True,True,True,True
 forward.html,137,7,0,,,,True,True,True,True,True,True,True,True
-index.html,46,6,0,,,,True,True,True,True,True,True,True,True
+index.html,129,7,0,,,,True,True,True,True,True,True,True,True
 injuries.html,316,7,0,,,,True,True,True,True,True,True,True,True
 injury-deltas.html,565,4,0,,,,True,True,True,True,True,True,True,True
 lines.html,190,3,0,,,,True,True,True,True,True,True,True,True
@@ -30,7 +30,8 @@ props.html,17,3,0,,,,True,True,True,True,True,True,True,True
 questions.html,48,2,0,,,,True,True,True,True,True,True,True,True
 referents.html,584,5,0,,,,True,True,True,True,True,True,True,True
 replacement-depth.html,156,3,0,,,,True,True,True,True,True,True,True,True
-repo-review.html,797,5,0,,,,True,True,True,True,True,True,True,True
+repo-review.html,802,5,0,,,,True,True,True,True,True,True,True,True
+request-register.html,83,76,0,,,,True,True,True,True,True,True,True,True
 requirements.html,40,3,0,,,,True,True,True,True,True,True,True,True
 results-feed.html,169,3,0,,,,True,True,True,True,True,True,True,True
 review-queue.html,90,2,0,,,,True,True,True,True,True,True,True,True

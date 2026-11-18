@@ -3343,3 +3343,53 @@ wins: **B45 merges neither #70 nor #73**; both belong to PR #84's session. No br
 G1 (executable quote provenance) fails for all 18 candidates; backtest numbers do not appear on
 the leaderboard. Nothing here is a model, strategy, gate, or official-value change — only records,
 rebuilds of committed inputs, and integration.
+
+
+
+---
+## Session `arena/40fa7839-korea1` — 2026-11-18 request register, decision-readiness panel, and gap check
+
+**Protocol note.** The platform assigns this session one branch (`arena/40fa7839-korea1`, base `main` = `547d514`). The `session-<id>/<task>` worktree pattern is not used, as earlier sessions recorded. No other branch is touched. The claim for CS5 is recorded here in the same commit as the work, because this session was run as one turn; there was no earlier claim commit.
+
+**Starting state.** Branch at `547d514`, identical to `main`, working tree clean. `make build` and `make test` were run before any change: build exit 0 (0 failing checks), tests 189 passed.
+
+**Scope (this session).**
+| # | Task | Status | Files |
+|---|------|--------|-------|
+| RQ1 | Request register: one row per request item (83 rows), with status, repo evidence, blocking gate, clearing number, official source | **done** | `data/integration/request_register_2026_11_18.csv` (new), `pipeline/request_register_20261118.py` (new), `request-register.html` (new) |
+| RQ2 | Decision-readiness table on the landing page (one row per requirement, gate, number) | **done** | `pipeline/render_site.py` (`_request_register_landing`, `_landing_panels`, NAV line, flagged hook only) |
+| RQ3 | Flagged rows F-52 to F-58 for irregularities found while checking | **done** | `data/integration/flagged_request_register_2026_11_18.csv` (new) |
+| RQ4 | Tests with mutation controls (bad status, missing evidence file, non-official source, unnamed gate) | **done, 13 pass** | `tests/test_request_register.py` (new) |
+| RQ5 | Wiring: Makefile step and test list, verifier and link/source page lists, README line | **done** | `Makefile`, `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py`, `README.md` |
+
+**Not done in this session (recorded as OPEN or BLOCKED in the register, not claimed).** The availability graph (expected vs actual starter), the fixture-context table, the game-centre venue transcription, the schedule-announcement comparison, Game Book starters and status, the NWS and roof overlay, injury and personnel ablations, the chronological holdout split, the reliability score for designations, snap-count proxies, the inactive-list capture, the transaction-versioned roster events, and the price-data policy. Each row names the gate and the number that would clear it. The board entries GB1 to GB7 from session `arena/99b908ab-korea1` are marked in progress, but none of their outputs is on `main` (F-56).
+
+**Official reads made (method stated, because it is the part that can be wrong).**
+- `https://www.nfl.com/schedules/2026/by-week/reg-10`, read with the page-fetch tool on 2026-11-18, part 1 of 2. Week 10 finals shown include Commanders 24 Giants 21, Patriots 10 Lions 35, Chiefs 35 Falcons 13, Vikings 30 Packers 10, Rams 34 Cardinals 6. The committed official score register holds only the Commanders–Giants game for Week 10 (matched exactly). This gap is F-58.
+- `https://www.nfl.com/injuries/` could not be read directly: the sandbox cannot reach nfl.com (TLS refused, measured 2026-11-18). The four clubs with zero rows in the newest capture (CHI, DEN, PHI, TB) therefore remain unverified (F-52).
+- The committed raw Week 10 injury capture (dated 2026-11-12) prints `No Injuries Reported` for Seattle and Cincinnati. The 2026-11-18 capture has 15 and 9 rows for them. That matches the request's stale-capture claim and shows the page has changed since the earlier capture.
+
+**Counts checked against committed files (not against the request).** 18 strategies in the trial registry; 18 mind-changer rows; 150 verified-result rows; 17 official score rows (Weeks 8 to 10); 39 lineup entries; 347 injury rows; 171 of 347 with a game status; 31 of 32 club charts with rows; 161 team/unit/position groups with more than one rank-1 player (15 with slot); 45 canonical pages and 5,741 checked rows after this session's additions.
+
+**Verification performed.**
+- `pipeline/request_register_20261118.py`: 83 rows, each status one of six defined values; every evidence path exists; every source URL passes `session_common.resolve_ref` (official allow-list); every PARTIAL, BLOCKED, OPEN or NOT REPRODUCED row names a gate and a number; every flag id exists.
+- `make build`: exit 0, `verify_site` 0 failing checks, `check_sources` 45 pages / 5,741 rows, `check_links` 54 pages, all internal links and anchors resolve.
+- `make test`: 202 passed (189 existing + 13 new).
+
+**Irregularities flagged (non-blocking; published on `flagged.html`, section "Findings from the request-register check").**
+- F-52: four clubs (CHI, DEN, PHI, TB) have zero injury rows in the 2026-11-18 capture; the live page was not re-read for them.
+- F-53: the request's 149 count of groups with more than one rank-1 player is not reproduced (161 by team/unit/position; 15 with slot). Seattle's shared slot and Washington's empty slot were not reproduced.
+- F-54: the "136-game log" named in the request is not found in the repo.
+- F-55: the schedule file holds 14 Week 10 games; a 272-game regular-season capture is needed before any fixture-context, venue or schedule-announcement claim.
+- F-56: board entries GB1 to GB7 are marked in progress but their outputs are absent on `main`.
+- F-57: no official inactive list or snap-count source is captured; the inactives source is a verified-season placeholder.
+- F-58: the official score register holds one Week 10 game; the live Week 10 page shows Final for at least twelve.
+- Carried forward, unchanged: F-18 (Houston chart, 0 rows), F-44 (price-data policy, owner decision), F-45 (reserve-list completeness), F-46 (Baltimore QB claim and request identifiers VR-*, VQ-*, SG-*), F-47 (scheduled commits do not trigger workflows).
+
+**Decision state.** 0 of 18 strategies validated; no reward awarded; the gate that enforces it (G1, executable quote provenance) still fails. No backtest number appears on the leaderboard. Nothing in this session changes a published number; it adds the register, a table, and findings.
+
+**Merge with `origin/main` (2026-11-18, late).** While this branch was being prepared, `main` advanced to `fbc10c5` (PR #82, the gamebook capture). The first attempt was a rebase; a rebase was started and then aborted, because the branch had already been pushed once as `4b68c91`. The branch was then merged with `origin/main` (merge commit `6d503ec`), which avoids rewriting pushed history. Conflicts: `Makefile` (test list: main's list plus `tests/test_request_register.py`); generated pages and CSVs (`EXECUTIVE_SUMMARY.md`, `flagged.html`, `repo-review.html`, `assets/data/verification_report.csv`, `data/processed/verification_report.csv`) were taken from main and regenerated by `make build`.
+
+**Added after the merge.** F-59 (float-precision drift in regenerated CSVs; no substantive value changed; recorded in `flagged_request_register_2026_11_18.csv`). Re-run on the merged tree: `make build` exit 0, 0 failing checks; `make test` 202 passed; `tests/check_rebuild.py` passes.
+
+**Pull request and merge.** Opened from `arena/40fa7839-korea1` into `main`. The PR number and merge result are in the PR itself and in the GitHub Actions run for the Pages deploy. This board records the branch and the commit that was merged; it does not record a merge commit hash, because the hash is created by the merge.
