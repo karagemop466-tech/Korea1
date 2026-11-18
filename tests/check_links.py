@@ -33,6 +33,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
          "suggestions-review-2026-11-14.html",
          "brief-2026-11-15.html",
+         # RR1 (arena/7aae360e-korea1, 2026-11-18): the dated per-item request register.
+         "request-register-2026-11-18.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]

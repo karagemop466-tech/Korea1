@@ -98,6 +98,13 @@ site: injuries review reviewall
 	$(PY) pipeline/render_summary.py
 	$(PY) pipeline/render_readiness.py
 	$(PY) pipeline/render_annex.py
+	# RR1-RR3 (arena/7aae360e-korea1, 2026-11-18): the per-item request register for the current
+	# brief — one row per request item with its gate and clearing number — plus this session's
+	# official page reads, the venue transcription and the personnel-ablation contract. Reads
+	# committed files and data/live/register_reads_2026_11_18/ only (no network, no clock), so
+	# `make build` stays byte-reproducible and tests/check_rebuild.py keeps its teeth.
+	$(PY) pipeline/register_20261118.py
+	$(PY) pipeline/render_register_20261118.py
 
 # T40 (arena/84e42ecc-korea1): resolve every external URL printed on the site.
 # Needs outbound network access to NFL/club/publisher domains, so `make build` does NOT
@@ -117,7 +124,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_request_register_2026_11_18.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives

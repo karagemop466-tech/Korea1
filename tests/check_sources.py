@@ -14,7 +14,9 @@ PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html",
        # T43 (session arena/6b1f0c9a-korea1)
        "results-feed.html", "correlation-official.html", "replacement-depth.html",
        "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
-       "suggestions-review-2026-11-14.html", "brief-2026-11-15.html"]
+       "suggestions-review-2026-11-14.html", "brief-2026-11-15.html",
+       # RR1 (arena/7aae360e-korea1, 2026-11-18): the dated per-item request register.
+       "request-register-2026-11-18.html"]
 def main():
     problems=[]; total=0
     for name in PAGES:

@@ -37,6 +37,11 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `correlations.html`, `props.html` — joint-dependence and prop evidence boundaries
 - `referents.html` — every citation on the site, resolved against the live page it points at
 - `audit.html`, `flagged.html`, `sources.html` — official comparisons, irregularities and references
+- **`request-register-2026-11-18.html`** — **per-item request register for the 2026-11-18 brief**: one row per
+  request item (68 rows), with the evidence file that backs it, the gate that blocks it and the number that clears
+  it, plus 142 line-by-line comparisons against official pages read the same morning, the fixture venues
+  transcribed from the captured game centres, the questions register and a path selector for the suggestions.
+  Every number on the page is recomputed from committed files at build time (added 2026-11-18, `arena/7aae360e-korea1`)
 - `brief-2026-11-15.html` — **2026-11-15 brief**: one row per item with status, blocking gate, the number that clears it and official sources; mind-changers for all 18 candidates; flagged findings F-30 to F-41 (added 2026-11-15)
 - `injury-deltas.html` — injury and depth **changes** between dated official captures (levels are not published); raw-page hashes and capture clock times on every change (added 2026-11-15)
 - `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
