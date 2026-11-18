@@ -80,6 +80,22 @@ def main() -> None:
         "<strong>No published research number was changed by this page, no strategy is validated and no reward "
         "is awarded.</strong>", "info"))
 
+    # --------------------------------------------- relationship to the other registers
+    body.append(flag(
+        "<strong>Two 2026-11-18 registers exist for this brief, and they are not the same document.</strong> "
+        "<a href=\"request-register-2026-11-18.html\">The request register</a> "
+        "(<code>arena/53ef9544-korea1</code>, 81 rows) and "
+        "<a href=\"requirement-annex-2026-11-18.html\">the requirement annex</a> were written by other sessions from "
+        "the same brief; this annex was written here, independently, and carries what those two do not: "
+        "<strong>line-by-line comparisons</strong> between the official pages and the committed captures, the venue "
+        "transcribed from each captured game centre, the fixture-list reconciliation that explains the report's club "
+        "coverage, the escrow ledger that keeps an official grade apart from a provisional one, and the ablation "
+        "contract. Row counts differ because the brief was cut into items differently — that is not a defect in "
+        "either. Where the two disagree it is usually a judgement about the word 'done': this annex marks an item "
+        "DONE only when the named artefact exists and was re-checked today, so the verified results feed, for "
+        "instance, reads DONE here (the feed exists and is graded on official finals) and PARTLY DONE there (ROI "
+        "still has no authenticated price to be computed on). Both statements are true of the same files.", "info"))
+
     # ---------------------------------------------------- executive summary
     counts = {"DONE": int((reg.status == "DONE").sum()),
               "PARTLY DONE": int((reg.status == "PARTLY DONE").sum()),
@@ -314,9 +330,10 @@ def main() -> None:
                 f"<h3>Excerpts committed with this register</h3><ul>{files}</ul>"
                 "</section>")
 
-    html = layout(OUT_NAME, "Request register · " + AS_OF,
-                  "One row per item of the 2026-11-18 brief: status, the evidence file behind it, the gate that "
-                  "blocks it, the number that clears it, and the official page to check.", "".join(body), wide=True)
+    html = layout(OUT_NAME, "Register evidence annex · " + AS_OF,
+                  "The verification half of the 2026-11-18 brief: 68 items with their gate and clearing number, "
+                  "180 line-by-line comparisons against the official pages, the fixture venues, the prospective "
+                  "escrow ledger and the ablation contract.", "".join(body), wide=True)
     (ROOT / OUT_NAME).write_text(html)
     print("  wrote", OUT_NAME, f"({len(html)} bytes)")
 

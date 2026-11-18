@@ -27,7 +27,7 @@ Outputs
   data/integration/register_evidence_questions_2026_11_18.csv    what must be known, what is known, how to find the rest
   data/integration/register_evidence_suggestions_2026_11_18.csv  paths the owner can choose, with cost, risk and gate
   data/integration/register_evidence_ablation_2026_11_18.csv     the ablation contract and the fixed-penalty audit
-  data/integration/register_evidence_flags_2026_11_18.csv         RR-flags (RX-F1 …), each with its next step
+  data/integration/register_evidence_flags_2026_11_18.csv         RX-flags (RX-F1 …), each with its next step
 
 Run:  python pipeline/register_evidence_20261118.py
 """
@@ -891,7 +891,7 @@ def items() -> list[dict]:
         "market columns are blank where no market line is held ({orig_market_available} of {origination_order_rows} "
         "rows carry an edge-available flag, i.e. a market number to differ against).",
         ["data/integration/origination_order.csv", "pipeline/origination_order.py", "origination.html"],
-        "the market columns stay blank until an authenticated quote exists (RR-01)",
+        "the market columns stay blank until an authenticated quote exists (RX-01)",
         "one quote with provenance turns the diff column from blank to computed for that market",
         URL["scores_w10"], "NFL.com schedule and scores (game identity)")
     add("RX-05", "Separate 'signal' from 'staking' in the leaderboard", "Leaderboard", "DONE",
@@ -905,7 +905,7 @@ def items() -> list[dict]:
         "{replacement_slots_rows} slot rows carry the matched chart row. The depth is a club chart slot, not snap "
         "share, so 'how deep' is bounded by what the club publishes.",
         ["data/gates/replacement_depth.csv", "data/gates/replacement_slots.csv", "replacement-depth.html"],
-        "club charts carry no publication time and no game-day role; snap counts are not captured (RR-16)",
+        "club charts carry no publication time and no game-day role; snap counts are not captured (RX-16)",
         "an official snap share per replacement, or a dated official inactive list, for one full week",
         URL["was_depth"], "Commanders club depth chart (representative of the club pages captured)")
     add("RX-07", "Compute correlations only from officially sourced numbers and publish n with each value",
@@ -974,7 +974,7 @@ def items() -> list[dict]:
         "IN PROGRESS — SIBLING",
         "The committed pieces are the schedule facts already keyed to official rows (week, day, division flag, "
         "rest) and {corpus_games} games with those fields; the venue-side facts come from the game centres "
-        "(RR-21) and are claimed by `arena/99b908ab-korea1` (GB4).",
+        "(RX-21) and are claimed by `arena/99b908ab-korea1` (GB4).",
         ["data/processed/games_model.csv", "data/processed/feature_dict.csv"],
         "a fixture-context table whose every column cites a published schedule fact is not yet merged",
         "one merged fixture_context.csv with a source URL per column",
@@ -1078,7 +1078,7 @@ def items() -> list[dict]:
         URL["injuries_root"], "NFL.com injury report (the page the scheduled job reads)")
     add("RX-26", "Treat the injury report as a timestamped series, not a weekly snapshot", "Availability", "DONE",
         "Every row carries retrieved_utc and every capture keeps its raw bytes with a hash ({captures_with_hash} of "
-        "{capture_sources} sources hashed this run); deltas are published instead of levels (RR-12).",
+        "{capture_sources} sources hashed this run); deltas are published instead of levels (RX-12).",
         ["data/processed/injury_deltas.csv", "data/availability/history", "injury-deltas.html"],
         "none", "already cleared", URL["injuries_root"], "NFL.com injury report")
     add("RX-27", "Automate immutable multi-day availability snapshots with retained hashes", "Availability",
@@ -1101,7 +1101,7 @@ def items() -> list[dict]:
     add("RX-29", "Point-in-time snapshot ledger for injuries, depth charts and inactives", "Availability",
         "PARTLY DONE",
         "The injury and depth halves exist as a dated ledger ({capture_days} days, hashes, capture times) and the "
-        "forward ledger freezes lines and inputs before kickoff; the inactive half has no source (RR-16).",
+        "forward ledger freezes lines and inputs before kickoff; the inactive half has no source (RX-16).",
         ["data/availability/history", "data/forward/ledger.jsonl", "data/forward/anchors.csv"],
         "inactives are not captured, so a pre-kickoff certainty for a replacement cannot be shown",
         "one fixture with a captured T-90m inactive list joined to its pre-kickoff freeze",
@@ -1195,7 +1195,7 @@ def items() -> list[dict]:
         "Model", "PARTLY DONE",
         "The official page prints words, not probabilities: of {inj_rows} report rows, {inj_game_designations} carry "
         "a game designation and {inj_blank_game} carry none. The calibration needs designations joined to inactives "
-        "over several seasons; {injury_delta_rows} delta rows exist and no inactive list does (RR-16).",
+        "over several seasons; {injury_delta_rows} delta rows exist and no inactive list does (RX-16).",
         ["data/availability/injuries.csv", "data/processed/injury_impact_history.csv", "pipeline/injuries.py"],
         "no inactive list per game, so the play rate per designation cannot be measured",
         "several seasons of designations joined to inactives; the minimum honest first step is one full season of "
@@ -1203,7 +1203,7 @@ def items() -> list[dict]:
         URL["injuries_root"], "NFL.com injury report (the page whose words are being calibrated)")
     add("RX-41", "Score injury-designation reliability before using it as a feature", "Model", "PARTLY DONE",
         "The register publishes the designation counts and the delta history; it does not publish a play rate per "
-        "designation, which is the reliability measure asked for, for the same reason as RR-40.",
+        "designation, which is the reliability measure asked for, for the same reason as RX-40.",
         ["data/processed/injury_impact_history.csv", "data/processed/availability_signals.csv"],
         "no official 'played' outcome joined to each designation",
         "one week where every designation is joined to the game's official participation evidence",
@@ -1352,13 +1352,13 @@ def items() -> list[dict]:
         ["data/processed/validation_config.json", "data/processed/leakage_checks.csv", "validation.html"],
         "none", "already cleared", URL["scores_w10"], "NFL.com scores for the graded outcomes")
     add("RX-60", "Store every model output with its inputs (probability plus inputs)", "Model", "DONE",
-        "See RR-15; the forward ledger stores the input vector hash with each freeze ({published_lines_rows} rows with "
+        "See RX-15; the forward ledger stores the input vector hash with each freeze ({published_lines_rows} rows with "
         "a blob hash and a commit).",
         ["data/forward/published_lines.csv", "data/processed/originated_lines.csv"],
         "none", "already cleared", URL["scores_w10"], "NFL.com schedule keys the inputs")
     add("RX-61", "Store every injury-hub read with its clock time and publish the delta, never the level",
         "Availability", "DONE",
-        "See RR-12 and RR-26; the capture ledger holds {capture_days} dated reads with hashes and the delta table "
+        "See RX-12 and RX-26; the capture ledger holds {capture_days} dated reads with hashes and the delta table "
         "holds {injury_delta_rows} changes.",
         ["data/processed/injury_capture_ledger.csv", "data/processed/injury_deltas.csv"],
         "none", "already cleared", URL["injuries_root"], "NFL.com injury report")
@@ -1386,7 +1386,7 @@ def items() -> list[dict]:
     add("RX-65", "No manual input; the pipeline runs on its own", "Process", "PARTLY DONE",
         "Source capture, settlement proposals and the build run on schedules; what remains manual is the promotion "
         "step that must stay manual by policy (the forward ledger never writes the evidence file automatically) and "
-        "every owner decision (RR-57, RR-32, RR-31).",
+        "every owner decision (RX-57, RX-32, RX-31).",
         [".github/workflows/availability.yml", ".github/workflows/forward-ledger.yml", ".github/workflows/reserve-list.yml"],
         "promotion of a proposed score, and any owner decision",
         "already as automated as the evidence policy allows",
@@ -1399,7 +1399,7 @@ def items() -> list[dict]:
         "DONE",
         "The verifier enforces it on {site_pages} pages at build time; {irregularities_rows} irregularity rows and "
         "{flagged_rows_1118} dated 2026-11-18 findings record what is blank and why. Rows with no official source "
-        "anywhere (RR-20, RR-22, RR-57) are printed outside the tables on this page, with that stated.",
+        "anywhere (RX-20, RX-22, RX-57) are printed outside the tables on this page, with that stated.",
         ["pipeline/verify_site.py", "data/integration/irregularities.csv", "data/integration/flagged_2026_11_18.csv"],
         "none for the rule", "already cleared", URL["gh_pages"], "GitHub Pages (the published site the rule binds)")
     add("RX-68", "Sweep the site for irregularities and flag them for review", "Process", "DONE",
@@ -1415,15 +1415,15 @@ def items() -> list[dict]:
 def questions(f: dict) -> list[dict]:
     """The questions that gate decisions, keyed to the register row each one unblocks."""
     Q = [
-        dict(id="RX-Q1", gates="RX-01, RR-51, RR-52",
+        dict(id="RX-Q1", gates="RX-01, RX-51, RX-52",
              question="Which price source may we hold, publish and backtest against, under whose terms?",
              known="The repository holds a community archive and our own frozen lines; the label on every close cell "
                    "says whether it is a bookmaker quote or a ledger mirror.",
              missing="an authenticated quote feed, and the written terms under which a quote may be republished",
-             how="read an operator's terms, or buy a feed; until then the price-data policy (RR-57) is the decision "
+             how="read an operator's terms, or buy a feed; until then the price-data policy (RX-57) is the decision "
                  "that unblocks three rows",
              status="NEEDS OWNER DECISION", source_url=URL["scores_w10"], source_label="NFL.com scores"),
-        dict(id="RX-Q2", gates="RX-10, RR-16, RR-29",
+        dict(id="RX-Q2", gates="RX-10, RX-16, RX-29",
              question="Where does an official inactive list come from, on a schedule, for every club?",
              known="The T-90m report is the official deadline and the club pages carry the game-day report; the "
                    "repository captures neither on a schedule.",
@@ -1431,7 +1431,7 @@ def questions(f: dict) -> list[dict]:
              how="extend the availability workflow to fetch the pre-game report window on Sundays, or parse the "
                  "Game Book (claimed by another session)",
              status="OPEN", source_url=URL["ops_pregame"], source_label="NFL Operations pre-game rules"),
-        dict(id="RX-Q3", gates="RX-37, RR-11",
+        dict(id="RX-Q3", gates="RX-37, RX-11",
              question="What is the authorised structured source for a club that publishes depth only as an image?",
              known="The Houston page prints one image under 'Unofficial Depth Chart' — verified by reading the club "
                    "page in this session; the capture therefore yields 0 rows, correctly.",
@@ -1454,7 +1454,7 @@ def questions(f: dict) -> list[dict]:
              how="read each club's terms of use and the league's copyright statement, record the outcome in "
                  "DECISIONS.md; the analysis layer stays either way",
              status="BLOCKED — OWNER", source_url=URL["was_depth"], source_label="a representative club page"),
-        dict(id="RX-Q6", gates="RX-20, RR-44",
+        dict(id="RX-Q6", gates="RX-20, RX-44",
              question="What do the brief's identifiers (VR-*, VQ-*, SG-*, the 136-game log) point at?",
              known="No file in the repository uses that scheme; the 2026-11-18 register F-48 records the search that "
                    "found none.",
@@ -1462,7 +1462,7 @@ def questions(f: dict) -> list[dict]:
              how="the brief author supplies the mapping, or the identifiers are dropped and the claims restated "
                  "against repository artefacts",
              status="OPEN", source_url=URL["reserve"], source_label="NFL.com transactions (the page one such claim cites)"),
-        dict(id="RX-Q7", gates="RX-13, RR-28",
+        dict(id="RX-Q7", gates="RX-13, RX-28",
              question="Is the monthly reserve page a record or a rolling window?",
              known=f"The live page read in this session prints November rows from {f['reserve_date_min']} to "
                    f"{f['reserve_date_max']}; {f['reserve_older_only']} rows that were on the page are still held in "
@@ -1478,9 +1478,9 @@ def questions(f: dict) -> list[dict]:
              missing="a decision to build the derived table from the newest capture instead of a committed extract",
              how="change the derived input, not the published numbers by hand; the build then cannot lag the capture",
              status="OPEN", source_url=URL["injuries"], source_label="NFL.com Week 10 injury report"),
-        dict(id="RX-Q9", gates="RX-40, RR-41",
+        dict(id="RX-Q9", gates="RX-40, RX-41",
              question="What does 'Questionable' have to be measured against before it can be a feature?",
-             known="Designation counts are known; the play rate is not, because no inactive list is held (RR-16).",
+             known="Designation counts are known; the play rate is not, because no inactive list is held (RX-16).",
              missing="designations joined to participation, over enough games to say something",
              how="score the designation against the official game record for every week captured so far, publish the "
                  "rate with an interval, and only then decide if it enters the model",
@@ -1515,7 +1515,7 @@ def questions(f: dict) -> list[dict]:
 def suggestions(f: dict) -> list[dict]:
     """Paths the owner can choose, each tied to the register rows it clears. Nothing here is implemented."""
     S = [
-        dict(id="RX-S1", gates="RX-01, RR-51, RR-52, RR-57", title="Close the price question first",
+        dict(id="RX-S1", gates="RX-01, RX-51, RX-52, RX-57", title="Close the price question first",
              path_a="Publish nothing that calls a number a price: strip the close column to blanks and keep the "
                     "ledger mirror in a separate, labelled table.",
              path_b="Keep the current labelling (mirror vs quote) and record the policy in DECISIONS.md without "
@@ -1526,7 +1526,7 @@ def suggestions(f: dict) -> list[dict]:
              gate_cleared="F-44 becomes answerable; G1 still fails until a real quote is held",
              status="AWAITING PATH SELECTION", source_url=URL["scores_w10"],
              source_label="NFL.com scores (the settlement the closes would be graded against)"),
-        dict(id="RX-S2", gates="RX-16, RR-10, RR-29, RR-40", title="Capture the game-day report window",
+        dict(id="RX-S2", gates="RX-16, RX-10, RX-29, RX-40", title="Capture the game-day report window",
              path_a="Extend the existing availability workflow with a Sunday T-100m/T-60m capture of the official "
                     "pre-game report, storing the raw page and its hash.",
              path_b="Wait for the Game Book workflow (another session's scope) and derive inactives from the Game "
@@ -1534,10 +1534,10 @@ def suggestions(f: dict) -> list[dict]:
              path_c="Both, with the two sources cross-checked and conflicts flagged rather than reconciled by hand.",
              recommended="Path C", cost="machine time and one workflow file; no purchase",
              risk="a third capture source means a third way to be wrong; conflicts must be published, not averaged",
-             gate_cleared="unblocks RR-16, which RR-40 and RR-41 wait on",
+             gate_cleared="unblocks RX-16, which RX-40 and RX-41 wait on",
              status="AWAITING PATH SELECTION", source_url=URL["ops_pregame"],
              source_label="NFL Operations pre-game report rules"),
-        dict(id="RX-S3", gates="RX-23, RR-30", title="Make the derived injury table read the newest capture",
+        dict(id="RX-S3", gates="RX-23, RX-30", title="Make the derived injury table read the newest capture",
              path_a="Point the derived Week 10 table at the newest dated capture and let the build fail if a club's "
                     "row count drops without a transaction to explain it.",
              path_b="Leave the derived table as a dated sample and publish the capture as the source of record, with "
@@ -1545,10 +1545,10 @@ def suggestions(f: dict) -> list[dict]:
              path_c="Remove the derived table entirely.",
              recommended="Path A", cost="one input path change plus an expected-count assertion",
              risk="an expected-count rule can shout at a legitimate source change; the exception list matters",
-             gate_cleared=f"removes the {f['inj_rows']}-against-{f['inj_pub_rows']} row gap that RR-23 records",
+             gate_cleared=f"removes the {f['inj_rows']}-against-{f['inj_pub_rows']} row gap that RX-23 records",
              status="AWAITING PATH SELECTION", source_url=URL["injuries"],
              source_label="NFL.com Week 10 injury report"),
-        dict(id="RX-S4", gates="RX-31, RR-32, RR-47", title="Decide storage and terms before more data accumulates",
+        dict(id="RX-S4", gates="RX-31, RX-32, RX-47", title="Decide storage and terms before more data accumulates",
              path_a="Keep captures in the public repository and read the terms before publishing anything derived "
                     "from a club page.",
              path_b="Move raw captures to release assets or a private store, keep the site to derived analysis, and "
@@ -1556,10 +1556,10 @@ def suggestions(f: dict) -> list[dict]:
              path_c="Do nothing until a legal read is available; accept the drift risk in the meantime.",
              recommended="Path B", cost="one repository change plus a small alerting job",
              risk="Path C leaves the site as the only store, which is the failure mode the brief flags",
-             gate_cleared="RX-31 and RR-32; also makes RR-47's 'no manual input' claim stronger",
+             gate_cleared="RX-31 and RX-32; also makes RX-47's 'no manual input' claim stronger",
              status="AWAITING PATH SELECTION", source_url=URL["gh_pages"],
              source_label="GitHub Pages documentation"),
-        dict(id="RX-S5", gates="RX-33, RR-41", title="Grow the availability corpus forward, not backward",
+        dict(id="RX-S5", gates="RX-33, RX-41", title="Grow the availability corpus forward, not backward",
              path_a="Start a dated pre-kickoff capture of the report per club and let it accumulate for a season; "
                     "no backtest of availability claims until then.",
              path_b="Reconstruct history from archive pages that carry no publication time, and label every such row "
@@ -1567,20 +1567,20 @@ def suggestions(f: dict) -> list[dict]:
              path_c="Skip availability as a model input and keep it as a published diagnostic.",
              recommended="Path A", cost="disk and patience",
              risk="Path B's ambiguity is exactly the lookahead the brief forbids; Path C is honest but slow",
-             gate_cleared=f"one season (about {f['corpus_games'] // 23} games' worth of captures) makes RR-33 runnable",
+             gate_cleared=f"one season (about {f['corpus_games'] // 23} games' worth of captures) makes RX-33 runnable",
              status="AWAITING PATH SELECTION", source_url=URL["injuries_root"],
              source_label="NFL.com injury report"),
-        dict(id="RX-S6", gates="RX-37, RR-11, RR-06", title="Resolve the depth-order source club by club",
+        dict(id="RX-S6", gates="RX-37, RX-11, RX-06", title="Resolve the depth-order source club by club",
              path_a="Verify the club chart route for all 32 clubs and record which clubs cannot be parsed, rather "
                     "than treating an image as an absence of depth.",
              path_b="Use snap share as the ordering everywhere, once a Game Book or play-by-play source is merged.",
              path_c="Restrict every depth feature to the clubs whose charts are verified, and say so on each row.",
              recommended="Path A then B", cost="a coverage audit per club; route B depends on another session's merge",
              risk="a partial chart route silently treats unparsed clubs as healthy",
-             gate_cleared="RX-37 and the depth half of RR-06",
+             gate_cleared="RX-37 and the depth half of RX-06",
              status="AWAITING PATH SELECTION", source_url=URL["was_depth"],
              source_label="club depth-chart pages (one of 32; the audit covers all)"),
-        dict(id="RX-S7", gates="RX-62, RR-57", title="Turn the path picker into a recorded decision",
+        dict(id="RX-S7", gates="RX-62, RX-57", title="Turn the path picker into a recorded decision",
              path_a="Leave the picker as a browser preview; the owner writes the chosen path into DECISIONS.md by "
                     "hand.",
              path_b="Add a reviewed path where a chosen selection is submitted as a pull request against the "
@@ -1588,17 +1588,17 @@ def suggestions(f: dict) -> list[dict]:
              path_c="Auto-commit selections.",
              recommended="Path B", cost="a small export format plus one manual commit per decision",
              risk="Path C would let a browser click change a published decision record — refused by the evidence policy",
-             gate_cleared="RX-62's 'selection is not recorded' limit; RR-57 if the decision is the price policy",
+             gate_cleared="RX-62's 'selection is not recorded' limit; RX-57 if the decision is the price policy",
              status="AWAITING PATH SELECTION", source_url=URL["gh_pages"],
              source_label="GitHub Pages (a static site cannot write a decision back)"),
-        dict(id="RX-S8", gates="RX-20, RR-44, RX-Q6", title="Retire or resolve the brief's private identifiers",
+        dict(id="RX-S8", gates="RX-20, RX-44, RX-Q6", title="Retire or resolve the brief's private identifiers",
              path_a="Ask the brief author for the mapping (VR-*, VQ-*, SG-*, the 136-game log) and restate the "
                     "affected rows against named artefacts.",
              path_b="Restate each claim in repository terms now, and treat the identifiers as prose.",
              path_c="Leave them as unresolvable flags, as F-48 does.",
              recommended="Path A", cost="one exchange with the brief author",
              risk="Path B risks silently substituting a different claim for the one made",
-             gate_cleared="RX-20 and RR-44 stop being not-reproducible, or are formally closed",
+             gate_cleared="RX-20 and RX-44 stop being not-reproducible, or are formally closed",
              status="AWAITING PATH SELECTION", source_url=URL["reserve"],
              source_label="NFL.com transactions (the page several such claims rest on)"),
     ]
@@ -1696,12 +1696,12 @@ def flags(f: dict, stats: dict) -> list[dict]:
              source_url=URL["scores_w10"], register="RX-22"),
         dict(id="RX-F6", severity="Low · recorded",
              finding="Two request items in the 2026-11-18 brief describe an artefact the repository does not contain "
-                     "and cannot obtain without the brief author: the 136-game log (RR-20) and the brief's own "
-                     "VR/VQ/SG identifier scheme (RR-44, F-48). A third item it asks for — the league's dated "
-                     "schedule announcement (RR-22) — was found, read and hashed on 2026-11-18, so it is no longer "
+                     "and cannot obtain without the brief author: the 136-game log (RX-20) and the brief's own "
+                     "VR/VQ/SG identifier scheme (RX-44, F-48). A third item it asks for — the league's dated "
+                     "schedule announcement (RX-22) — was found, read and hashed on 2026-11-18, so it is no longer "
                      "in this list. Nothing here is filled with an estimate in the meantime.",
              next="RX-S8 for the identifiers; the 136-game log needs its source named.",
-             source_label="", source_url="", register="RX-20, RR-44"),
+             source_label="", source_url="", register="RX-20, RX-44"),
     ]
     order = {"RX-F1": 1, "RX-F2": 2, "RX-F3": 3, "RX-F4": 4, "RX-F5": 5, "RX-F6": 6, "RX-F7": 7, "RX-F8": 8,
              "RX-F9": 9}

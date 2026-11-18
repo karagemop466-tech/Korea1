@@ -15,7 +15,7 @@ PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html",
        "results-feed.html", "correlation-official.html", "replacement-depth.html",
        "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
        "suggestions-review-2026-11-14.html", "brief-2026-11-15.html",
-       "request-register-2026-11-18.html", "requirement-annex-2026-11-18.html",,
+       "request-register-2026-11-18.html", "requirement-annex-2026-11-18.html",
        # RX1 (arena/7aae360e-korea1, 2026-11-18): the register evidence annex.
        "register-evidence-2026-11-18.html"]
 def main():
