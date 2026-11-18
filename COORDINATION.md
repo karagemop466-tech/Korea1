@@ -797,8 +797,8 @@ branches remain untouched; nothing already merged is reverted, rebased or discar
 | T19 | Injury & backup-deficiency tracking (defense 2nd/3rd/4th string, offense starters/backups) | in progress | `arena/425336fc-korea1` | `research/injuries.md`, `injuries.html`, verified against nfl.com/injuries |
 | T20 | Executive summary update (important details) | in progress | `arena/425336fc-korea1` | `EXECUTIVE_SUMMARY.md`, `executive-summary.html` |
 | T21 | Site reorganization: category subpages, clean landing page, all-new pages rendered + verified | in progress | `arena/425336fc-korea1` | `pipeline/render_site.py` (new builders + nav), root `*.html`, `assets/` |
-| T22 | Final verification pass (verify_site, check_links, check_sources) | unclaimed | `arena/425336fc-korea1` | `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py` |
-| T23 | PR → main, merge without waiting, confirm Pages deploy, record PR link + result | unclaimed | `arena/425336fc-korea1` | `COORDINATION.md`, PR record, live site confirmation |
+| T22 | Final verification pass (verify_site, check_links, check_sources) | in progress | `arena/292f7ae1-korea1` (handoff from `arena/425336fc-korea1`, inactive since 2026-11-12, >60 min, no commits) | `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py` |
+| T23 | PR → main, merge without waiting, confirm Pages deploy, record PR link + result | in progress | `arena/292f7ae1-korea1` (handoff from `arena/425336fc-korea1`, inactive since 2026-11-12, >60 min, no commits) | `COORDINATION.md`, PR record, live site confirmation |
 
 ### 2026-11-12 — claims committed — `arena/425336fc-korea1`
 
@@ -2969,3 +2969,18 @@ unresolvable and never guessed at.
 **Pull request and merge:** PR #69 — https://github.com/karagemop466-tech/Korea1/pull/69 — `arena/120935ef-korea1` → `main`, merged without waiting at 2026-11-15 10:48:17 -0800 (18:48:17 UTC) as merge commit `ab8955eb5d97a87238ddba4d9cfd60eaedeb38b6`. Verification summary, sources used and flagged irregularities were carried in the PR body; all checks were green before merge (see session block above).
 
 **Pages:** GitHub Pages serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the push of `ab8955eb` triggered the build/deploy. Final Pages state could not be re-probed from this shell because the GitHub API is rate-limited for this user ID (403 on `GET /repos/:owner/:repo/pages`); prior merges on this repo show `pages/builds/latest` = `built` with `error: null` and the live site at https://karagemop466-tech.github.io/Korea1/ . Confirm against `https://github.com/karagemop466-tech/Korea1/actions` when the rate limit clears.
+
+## Session `arena/292f7ae1-korea1` — 2026-11-18 integration verification and publish
+
+**Starting state.** Branch `arena/292f7ae1-korea1` is at `5df9bab reserve-list: official snapshot 2026-11-17T19:59Z`, identical to `origin/main`. Working tree clean. No sibling branch is edited.
+
+**Scope (this session).**
+- Take over T22 and T23 from `arena/425336fc-korea1` (claim older than 60 minutes, no commits; handoff noted on the task board).
+- Run the full verification pass (`make build`, `make test`, `make verify`) from committed inputs only.
+- Spot-check official NFL sources for key published values (page-fetch tool; the shell cannot reach nfl.com).
+- Flag irregularities on `flagged.html`; refresh the executive summary if needed.
+- PR `arena/292f7ae1-korea1` → `main`, merge without waiting, confirm GitHub Pages deploy, record PR link and result here.
+- No model, strategy, gate or odds code is changed unless verification finds a defect.
+
+**Network note.** `fetch_data.py` re-downloads the *pinned* archive (`nflverse/nfldata@a270278f3ac4`, recorded in committed `data/sources.json`) via codeload.github.com — reachable from this shell. The pin is not moved unless `--refresh-pin` is passed.
+
