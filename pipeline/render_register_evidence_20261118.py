@@ -115,10 +115,11 @@ def main() -> None:
     ]))
     body.append(
         f"<p><strong>The decision state has not moved.</strong> {F('strategies')} strategy candidates are registered, "
-        f"{F('strategies_validated')} pass the eight gates and {F('strategies_g1_fail')} fail G1 (authenticated quote "
-        f"provenance), so no candidate may be promoted, demoted or rewarded. {F('prereg_picks')} picks were frozen "
-        f"before kickoff, {F('forward_settled')} are settled against an official final and {F('forward_open')} await "
-        f"one. The corpus behind the models is {F('corpus_games')} games ({F('corpus_seasons')}); the availability "
+        f"{F('strategies_validated')} pass the eight gates and {F('strategies_g1_fail')} of {F('strategies')} fail G1 "
+        "(authenticated quote provenance), so no candidate may be promoted, demoted or rewarded. "
+        f"{F('prereg_picks')} picks were frozen before kickoff, {F('forward_official')} are graded on an official "
+        f"result and {F('forward_provisional')} are provisional, scored from a community mirror while the official "
+        f"final is still the missing piece ({F('forward_open')} are ungraded). The corpus behind the models is {F('corpus_games')} games ({F('corpus_seasons')}); the availability "
         f"capture behind the injury work is {F('inj_rows')} report rows for one week ({F('inj_retrieved')}). The gap "
         "between those two numbers is the reason an injury ablation cannot be run yet.</p>")
     body.append(
