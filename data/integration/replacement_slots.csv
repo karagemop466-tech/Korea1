@@ -1,22 +1,22 @@
 team,player,position,unit,slot,depth_rank,game_status,matched,note
-WAS,Lucas Patrick,C,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+WAS,Lucas Patrick,C,Offense,C #4,1.0,Out,True,
 WAS,Colson Yankoff,TE,Offense,TE #8,2.0,Out,True,
 NYG,Malik Harrison,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 NE,Ben Brown,C,Offense,C #4,2.0,Out,True,
 NE,A.J. Brown,WR,Offense,WR #1,1.0,Questionable,True,
 NE,Kevin Byard,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-NE,Carlton Davis III,CB,Defense,CB #8,1.0,Out,True,
+NE,Carlton Davis III,CB,Defense,CB #19,1.0,Out,True,
 NE,Reggie Gilliam,FB,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 NE,TreVeyon Henderson,RB,Offense,RB #10,2.0,Out,True,
 NE,Cameron Latu,TE,Offense,TE #7,3.0,Questionable,True,
 NE,Walter Rouse,T,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-NE,Brenden Schooler,S,Defense,S #10,3.0,Questionable,True,
+NE,Brenden Schooler,S,Defense,S #21,3.0,Questionable,True,
 NE,Rhamondre Stevenson,RB,Offense,RB #10,1.0,Questionable,True,
 NE,Greg Van Roten,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-NE,Charles Woods,CB,Defense,CB #11,2.0,Questionable,True,
+NE,Charles Woods,CB,Defense,CB #22,2.0,Questionable,True,
 DET,Kerby Joseph,S,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 DET,Cade Mays,C,Offense,C #5,1.0,Out,True,
-DET,D.J. Reed,CB,Defense,CB #8,1.0,Out,True,
+DET,D.J. Reed,CB,Defense,CB #19,1.0,Out,True,
 DET,Amon-Ra St. Brown,WR,Offense,WR #2,1.0,Questionable,True,
 DET,Sione Vaki,RB,Offense,RB #11,2.0,Questionable,True,
 KC,Mansoor Delane,CB,Defense,CB #20,1.0,Questionable,True,
@@ -89,7 +89,7 @@ CAR,Jonathon Brooks,RB,Offense,,,Doubtful,False,"the player is not on the club's
 CAR,Brady Christensen,G,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 CAR,Mike Jackson,CB,Defense,,,Doubtful,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 CAR,Will Lee III,CB,Defense,CB #20,1.0,Questionable,True,
-CAR,Xavier Legette,WR,Offense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+CAR,Xavier Legette,WR,Offense,WR #9,2.0,Questionable,True,
 CAR,Bobby Okereke,LB,Defense,LB #17,1.0,Out,True,
 CAR,Jaelan Phillips,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 NO,CJ Donaldson,RB,Offense,RB #11,3.0,Out,True,
@@ -124,10 +124,10 @@ ARI,Hjalte Froholdt,C,Offense,C #4,1.0,Out,True,
 ARI,Jon Gaines II,G,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 ARI,Hunter Long,TE,Offense,TE #7,2.0,Questionable,True,
 ARI,Roy Lopez,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
-ARI,Max Melton,CB,Defense,CB #20,1.0,Questionable,True,
+ARI,Max Melton,CB,Defense,CB #20,2.0,Questionable,True,
 ARI,Darius Robinson,DT,Defense,DT #12,2.0,Questionable,True,
 ARI,Jayden Williams,T,Offense,LT #2,1.0,Questionable,True,
-ARI,Andrew Wingard,S,Defense,S #22,1.0,Questionable,True,
+ARI,Andrew Wingard,S,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 SEA,Charles Cross,T,Offense,LT #2,1.0,Out,True,
 SEA,Sam Darnold,QB,Offense,QB #9,1.0,Out,True,
 SEA,Quenton Nelson,G,Offense,LG #3,1.0,Out,True,
@@ -143,11 +143,11 @@ SF,Upton Stout,CB,Defense,NB #21,1.0,Questionable,True,
 SF,C.J. West,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 SF,Trent Williams,T,Offense,LT #2,1.0,Questionable,True,
 DAL,DaRon Bland,CB,Defense,CB #22,1.0,Questionable,True,
-DAL,Jonathan Bullard,DT,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
+DAL,Jonathan Bullard,DT,Defense,DT #14,2.0,Questionable,True,
 DAL,Alijah Clark,S,Defense,S #24,2.0,Questionable,True,
 DAL,Donovan Ezeiruaku,LB,Defense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 DAL,Jake Ferguson,TE,Offense,TE #7,1.0,Out,True,
-DAL,Tyler Goodson,RB,Offense,RB #11,2.0,Out,True,
+DAL,Tyler Goodson,RB,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 DAL,P.J. Locke,S,Defense,S #23,1.0,Out,True,
 DAL,Jonathan Mingo,WR,Offense,WR #9,2.0,Out,True,
 DAL,Devin Moore,CB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"

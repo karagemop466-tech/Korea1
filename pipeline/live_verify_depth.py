@@ -34,7 +34,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
-SNAPSHOT = ROOT / "data" / "availability" / "depth_charts.csv"
+# Same-date control: compare the 2026-11-13 official extract against the capture
+# taken the same date (data/availability/history/2026-11-13/depth_charts.csv).
+# The live snapshot (data/availability/depth_charts.csv) is regenerated on every
+# availability run and legitimately drifts as club charts change; comparing against
+# it would conflate source drift with a parsing defect (see flagged row F-2026-11-18-01).
+SNAPSHOT = ROOT / "data" / "availability" / "history" / "2026-11-13" / "depth_charts.csv"
 EXTRACT = LIVE / "official_depth_extract_2026_11_13.csv"
 
 # Disclaimers read on the official pages themselves, quoted, with their source.
