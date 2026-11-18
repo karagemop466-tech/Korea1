@@ -23,9 +23,18 @@ from common import ROOT  # noqa: E402
 SPOT = ROOT / "data" / "live" / "spotcheck_2026_11_18"
 AV = ROOT / "data" / "availability"
 HIST = AV / "history"
-INJ_CAPTURE_LABEL = "2026-11-17T19:51:56Z capture"
 RES_CAPTURE_LABEL = "2026-11-17T19:59:57Z capture"
-DEP_CAPTURE_LABEL = "2026-11-17T19:51:56Z depth capture"
+
+
+def newest_stamp(path: Path) -> str:
+    """retrieved_utc of a committed capture, read from the file (never typed in)."""
+    d = pd.read_csv(path, dtype=str, keep_default_na=False, usecols=["retrieved_utc"])
+    return d.retrieved_utc.max()
+
+
+def newest_key() -> str:
+    """Label of the newest dated depth capture (last history folder)."""
+    return sorted(HIST.glob("*/depth_charts.csv"))[-1].parent.name
 
 URL_INJ = "https://www.nfl.com/injuries/"
 URL_RES = "https://www.nfl.com/transactions/league/reserve-list/2026/11"
@@ -87,7 +96,7 @@ def compare_injuries(live: list[dict], inj: pd.DataFrame) -> list[dict]:
         rows.append(dict(check="injury report", club=lr["team"], item=lr["player"],
                          live=" · ".join(x or "—" for x in (lr["injury"], lr["practice"], lr["game"])),
                          capture=" · ".join(x or "—" for x in cap), verdict=verdict,
-                         retrieved=INJ_CAPTURE_LABEL, source_url=URL_INJ))
+                         retrieved=newest_stamp(AV / "injuries.csv") + " injury capture", source_url=URL_INJ))
     return rows
 
 
@@ -109,7 +118,7 @@ def compare_depth(live: list[dict], was: pd.DataFrame) -> list[dict]:
         rows.append(dict(check="club depth chart", club="WAS", item=f"{lr['unit']} {lr['label']} row {k + 1}",
                          live=" | ".join(lr["players"]) or "—",
                          capture=" | ".join(pub) or "—", verdict=verdict,
-                         retrieved=DEP_CAPTURE_LABEL, source_url=URL_WAS))
+                         retrieved=newest_stamp(AV / "depth_charts.csv") + " depth capture", source_url=URL_WAS))
     return rows
 
 
@@ -142,7 +151,10 @@ def compare_reserve() -> tuple[list[dict], dict]:
 # --------------------------------------------------------------------------- #
 def captures() -> list[tuple[str, Path]]:
     out = [(p.parent.name, p) for p in sorted(HIST.glob("*/depth_charts.csv"))]
-    out.append(("latest (2026-11-17T19:51:56Z)", AV / "depth_charts.csv"))
+    import filecmp
+    latest = AV / "depth_charts.csv"
+    if not any(filecmp.cmp(latest, p, shallow=False) for _, p in out):
+        out.append(("latest", latest))
     return out
 
 
@@ -205,7 +217,7 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
              finding=("Washington depth chart changed between captures. Daron Payne is on the club chart in "
                       f"{', '.join(payne_listed) or 'no capture'} and absent from {', '.join(payne_absent) or 'none'}. "
                       f"The live club page read on 2026-11-18 also omits him (live Defense DL/DT rows, spot-check). "
-                      f"He is not on the 2026-11-17 injury report. No official reason for the change was read."),
+                      f"The newest capture (scheduled job, 2026-11-18T04:24:05Z) also omits him. No official reason for the change was read."),
              next="Source check: the Commanders roster or transaction record for the change. No Washington DL1 role is asserted until then. The 2026-11-13 depth test was repaired to compare like dates (CS2).",
              source_label="Commanders club depth chart", source_url=URL_WAS),
         dict(id="F-43", severity="Medium · repaired in this session",
@@ -232,10 +244,10 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
         dict(id="F-46", severity="High · open",
              finding=("Request claims that no source read here confirms. "
                       f"(a) Lamar Jackson and Tyler Huntley on injured reserve: the 2026-11-12 Baltimore chart lists {bal.get('2026-11-12', '')}; "
-                      f"the 2026-11-17 chart lists {bal.get('latest (2026-11-17T19:51:56Z)', '')}. Neither name is on the November reserve page or the injury report read here. "
-                      f"(b) '149 slots with more than one rank-1 player': the 2026-11-17 capture gives {groups['latest (2026-11-17T19:51:56Z)']} club/unit/position groups; "
+                      f"the newest chart lists {bal.get(newest_key(), '')}. Neither name is on the November reserve page or the injury report read here. "
+                      f"(b) '149 slots with more than one rank-1 player': the newest capture gives {groups[newest_key()]} club/unit/position groups; "
                       f"the dated captures give {', '.join(str(v) for v in groups.values())}. The request's count is not reproduced. "
-                      f"(c) Seattle puts two players in one slot: not reproduced. Offense slot 5 lists {f['sea_offense_slot5_players']} players in the 2026-11-17 capture ({f['sea_offense_slot5_names']})."),
+                      f"(c) Seattle puts two players in one slot: not reproduced. Offense slot 5 lists {f['sea_offense_slot5_players']} players in the newest capture ({f['sea_offense_slot5_names']})."),
              next="Owner: supply the source for each claim, and the definition used for the 149 count.",
              source_label="Baltimore Ravens club depth chart", source_url=URL_BAL),
         dict(id="F-47", severity="Medium · open",
@@ -247,21 +259,22 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
              finding=("Brief identifiers VR-17, VR-24, VR-25, VR-26, VQ-05, VQ-06, VQ-07, SG-03 and SG-05 do not appear anywhere in the repository. "
                       "The claims tied to them are not verified. The one observation that can be checked is recorded in the spot-check: Malik Willis is on the November reserve page "
                       f"(MIA, 11/10; in capture: {f['reserve_names_checked']['Malik Willis']}) and "
-                      f"{'not ' if f['injury_names_checked']['Malik Willis'] == 'not listed' else ''}on the 2026-11-17 injury report."),
+                      f"{'not ' if f['injury_names_checked']['Malik Willis'] == 'not listed' else ''}on the newest injury report."),
              next="Brief author: supply a mapping from each identifier to a source.",
              source_label="NFL.com reserve list, November 2026", source_url=URL_RES),
         dict(id="F-49", severity="Medium · open (no source)",
-             finding=("Houston has no depth-chart rows in any capture (0 rows in the 2026-11-17 capture). The brief's Texans depth is published as an image. "
+             finding=("Houston has no depth-chart rows in any capture (0 rows in the newest capture). The brief's Texans depth is published as an image. "
                       "No authorised structured source has been located, and the image has not been transcribed."),
              next="Locate an official structured source (route a) or snap counts (route b) for Houston before any Houston depth feature is built.",
              source_label="Houston Texans team page", source_url="https://www.houstontexans.com/team/depth-chart"),
         dict(id="F-50", severity="High · repaired in this branch",
-             finding=("Commit 0193893 (S18, merged to main with PR #77) replaced the WAS, NYG, DET and NE rows of data/availability/depth_charts.csv "
-                      "with the 2026-11-13 official extract, and stamped every replaced row with the 2026-11-17T19:51:56Z capture time. Those rows are not the 2026-11-17 capture. "
-                      "The same commit changed test_depth_snapshot_matches_the_official_charts so that drift is logged and not failed. The test could no longer fail. "
-                      "This branch restores the 2026-11-17 capture (byte-identical to history/2026-11-17) and restores the strict test on the 2026-11-13 dated capture. "
-                      "The live Commanders page read on 2026-11-18 agrees with the restored capture, not with the S18 rows (see spotcheck_rows.csv)."),
-             next="Owner: confirm the restore. Any reconciliation must be a new dated capture, not an edit of an older one.",
+             finding=("Commit 0193893 (S18, PR #77) replaced the WAS, NYG, DET and NE rows of data/availability/depth_charts.csv with the 2026-11-13 official extract, "
+                      "and stamped every replaced row 2026-11-17T19:51:56Z, which is not the source of those rows. The same commit changed "
+                      "test_depth_snapshot_matches_the_official_charts so that drift is logged and cannot fail. "
+                      "This branch restores the strict test (2026-11-13 extract against the 2026-11-13 dated capture). "
+                      "The S18 rows are no longer in the newest file: the scheduled job on main (commit 9933bba, 2026-11-18T04:24:05Z) wrote a new capture of the club charts, "
+                      "which is the source of record. That capture has no Daron Payne row, and the live Commanders page read on 2026-11-18 agrees with it on the rows compared (see spotcheck_rows.csv)."),
+             next="Owner: confirm. Any reconciliation must be a new dated capture, never an edit of an older one. The S18 rows remain in git history.",
              source_label="Commanders club depth chart", source_url=URL_WAS),
         dict(id="F-51", severity="Medium · open",
              finding=("scripts/reconcile_depth_charts.py (from S18) still rewrites data/availability/depth_charts.csv when it is run, and it has no guard. "
