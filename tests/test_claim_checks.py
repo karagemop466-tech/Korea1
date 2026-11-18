@@ -117,6 +117,29 @@ def test_schedule_excerpt_scores_are_parsed_exactly():
     assert all(g["url"].startswith("https://www.nfl.com/games/") for g in games)
 
 
+def test_no_build_machine_path_is_published():
+    """Reproducibility guard: a published evidence pointer is repo-relative, never absolute.
+
+    An absolute path makes the generated CSV and the page differ between the CI runner's checkout and any
+    other clone — the failure mode tests/check_rebuild.py exists to catch. It was found here by building a
+    clean clone of this branch: only the evidence column moved, and it moved because of nothing in the data.
+    """
+    targets = [ROOT / "data/integration/claim_checks_2026_11_18.csv",
+               ROOT / "assets/data/claim_checks_2026_11_18.csv",
+               ROOT / "request-register.html"]
+    markers = ("/home/", "/runner/", "/github/workspace", "/private/var", "/tmp/")
+    for path in targets:
+        text = path.read_text(encoding="utf-8")
+        for marker in markers:
+            assert marker not in text, f"{path.name} leaks the build path ({marker})"
+    with open(ROOT / "data/integration/claim_checks_2026_11_18.csv", encoding="utf-8") as fh:
+        for cell in csv.DictReader(fh):
+            ev = cell.get("live_evidence") or ""
+            assert not ev.startswith("/"), f"{cell['claim_id']}: absolute evidence path {ev}"
+            if ev:
+                assert (ROOT / ev).exists(), f"{cell['claim_id']}: {ev} does not resolve in the repository"
+
+
 def test_claim_csv_is_the_published_copy(tmp_path):
     """The page prints the CSV that ships, so the download and the table cannot diverge."""
     published = ROOT / "data/integration/claim_checks_2026_11_18.csv"

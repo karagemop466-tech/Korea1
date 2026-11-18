@@ -34,6 +34,7 @@ from common import PROC, ROOT, SITE_DATA, write_json  # noqa: E402
 
 OUT_DIR = ROOT / "data" / "integration"
 READS = ROOT / "data" / "live" / "claim_reads_2026_11_18"
+READS_REL = "data/live/claim_reads_2026_11_18"
 READ_UTC = "2026-11-18T05:00Z"
 
 URL_INJURIES = "https://www.nfl.com/injuries/"
@@ -46,6 +47,16 @@ URL_PACKERS_DEPTH = "https://www.packers.com/team/depth-chart"
 ALL32 = ["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU",
          "IND", "JAX", "KC", "LA", "LAC", "LV", "MIA", "MIN", "NE", "NO", "NYG", "NYJ", "PHI", "PIT",
          "SEA", "SF", "TB", "TEN", "WAS"]
+
+
+def rel(path: Path) -> str:
+    """Repo-relative path. A published evidence pointer must not contain the build machine's checkout
+    location: an absolute path made this file differ between CI and any other clone, which is precisely the
+    reproducibility failure tests/check_rebuild.py exists to catch."""
+    try:
+        return str(Path(path).resolve().relative_to(ROOT))
+    except ValueError:
+        return str(path)
 
 
 def _read(path: Path) -> list[dict]:
@@ -187,7 +198,7 @@ def build_claims() -> list[dict]:
         repo_value=(f"{len(multi_group)} club/unit/position groups carry more than one rank-1 name "
                     f"(of {len(by_group)} groups); {len(multi_slot)} individual chart rows sit at rank 1 "
                     f"in the same printed slot"),
-        live_evidence=str(READS / "baltimoreravens_depth_chart_2026_11_18.md"),
+        live_evidence=rel(READS / "baltimoreravens_depth_chart_2026_11_18.md"),
         live_value="two WR rows, two TE rows and one player listed at two positions (Ravens, 2026-11-18)",
         official_url=URL_RAVENS_DEPTH, live_read_utc=READ_UTC,
         verdict="DIFFERS_SOURCE_MOVED",
@@ -216,7 +227,7 @@ def build_claims() -> list[dict]:
         subject="Houston depth-chart source structure",
         repo_evidence="data/availability/depth_charts.csv (HOU), data/availability/manifest.json",
         repo_value=f"{len(hou_rows)} HOU rows parsed; manifest records rows: 0 for HOU",
-        live_evidence=str(READS / "houstontexans_depth_chart_2026_11_18.md"),
+        live_evidence=rel(READS / "houstontexans_depth_chart_2026_11_18.md"),
         live_value=("page prints the heading 'Unofficial Depth Chart' followed by a single image and no "
                     "table" if "Unofficial Depth Chart" in tex_excerpt else ""),
         official_url=URL_TEXANS_DEPTH, live_read_utc=READ_UTC,
@@ -252,7 +263,7 @@ def build_claims() -> list[dict]:
         subject="three Lions game designations, site vs official page",
         repo_evidence="data/availability/injuries.csv (DET, 2026-11-18T04:24:05Z capture)",
         repo_value="; ".join(f"{p} = {repo_det.get(p) or '(blank)'}" for p in sorted(det_named)),
-        live_evidence=str(READS / "nfl_injuries_week10_DET.md"),
+        live_evidence=rel(READS / "nfl_injuries_week10_DET.md"),
         live_value="; ".join(f"{p} = {live_det.get(p) or '(blank)'}" for p in sorted(det_named)),
         official_url=URL_INJURIES, live_read_utc=READ_UTC,
         verdict="CLOSED" if agree == 3 and all(live_det.get(p) for p in det_named) else "OPEN",
@@ -276,7 +287,7 @@ def build_claims() -> list[dict]:
         subject="field-level agreement, one whole club table vs the active capture",
         repo_evidence="data/availability/injuries.csv (DET, {0} rows)".format(len(det_repo)),
         repo_value=f"{agree_rows} of {len(det_excerpt)} official rows agree on player, practice status and game status",
-        live_evidence=str(READS / "nfl_injuries_week10_DET.md"),
+        live_evidence=rel(READS / "nfl_injuries_week10_DET.md"),
         live_value=f"{len(det_excerpt)} rows read from the official page",
         official_url=URL_INJURIES, live_read_utc=READ_UTC,
         verdict="MATCHES" if agree_rows == len(det_excerpt) else "DIFFERS_SOURCE_MOVED",
@@ -298,7 +309,7 @@ def build_claims() -> list[dict]:
         subject="Ravens quarterback row: club chart vs our capture",
         repo_evidence="data/availability/depth_charts.csv (BAL, QB, 2026-11-18 capture)",
         repo_value=" / ".join(f"rank {r['depth_rank']} {r['player']}" for r in bal_qb) or "(no QB row)",
-        live_evidence=str(READS / "baltimoreravens_depth_chart_2026_11_18.md"),
+        live_evidence=rel(READS / "baltimoreravens_depth_chart_2026_11_18.md"),
         live_value=" / ".join(f"rank {r['rank']} {r['player']}" for r in rav_qb),
         official_url=URL_RAVENS_DEPTH, live_read_utc=READ_UTC,
         verdict="SUPERSEDED" if not stale else "OPEN",
@@ -331,7 +342,7 @@ def build_claims() -> list[dict]:
         subject="club coverage of the injury capture and the cause of the gap",
         repo_evidence="data/availability/injuries.csv vs the official Week 10 game list",
         repo_value=f"{len(covered)} of 32 clubs carry a row; clubs with no row: {', '.join(missing)}",
-        live_evidence=str(READS / "nfl_schedule_week10_2026_games_and_byes.md"),
+        live_evidence=rel(READS / "nfl_schedule_week10_2026_games_and_byes.md"),
         live_value=(f"official Week 10 page prints {len(games)} games and lists {len(byes)} clubs on bye "
                     f"({', '.join(sorted(bye_abbr))})"),
         official_url=URL_SCHEDULE, live_read_utc=READ_UTC,
@@ -386,7 +397,7 @@ def build_claims() -> list[dict]:
         repo_value=(f"{len(fwd_w10)} of the {len(games)} official Week 10 games are in the settlement "
                     f"ledger; the canonical results feed carries {settled_feed} settled 2026 rows of "
                     f"{len(resfeed)} total"),
-        live_evidence=str(READS / "nfl_schedule_week10_2026_games_and_byes.md"),
+        live_evidence=rel(READS / "nfl_schedule_week10_2026_games_and_byes.md"),
         live_value=f"{len(games)} games with a printed FINAL score on the official schedule page",
         official_url=URL_SCHEDULE, live_read_utc=READ_UTC,
         verdict="MATCHES" if matched and matched == len(live_pairs) else ("PARTLY" if matched else "OPEN"),
