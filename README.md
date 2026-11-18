@@ -8,6 +8,9 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
+- **`request-register-2026-11-18.html`** — **the requirement register**: one row for every line of the
+  2026-11-18 brief with the evidence that exists, the gate that blocks it and the number that would clear it,
+  plus the 12 questions that block a decision and the 8 decisions only the owner can take (added 2026-11-18)
 - **`review-queue.html`** — every proposal from all four suggestion registers merged into 14 topic
   clusters; each row keeps its source register, original id, writing session and published page, so a path
   is chosen here before any code changes (added 2026-11-13, `arena/132e7ca2-korea1`)
