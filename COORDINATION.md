@@ -3209,7 +3209,7 @@ notes the handoff here per the board rule.
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| CS5 | **2026-11-18 request register** (takeover): one row per request item — status, evidence file, blocking gate, clearing number, official link; CSV + page + tests; integration (nav, index card, page lists, Makefile, exec-summary addendum, README); final build/test/verify, PR → main, merge, Pages confirm, record | **in progress** | `arena/53ef9544-korea1` | `pipeline/request_register_2026_11_18.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new); integration (additive lines only): `pipeline/render_site.py` (NAV tuple + one index card), `pipeline/verify_site.py` (expected set), `tests/check_sources.py` (PAGES), `tests/check_links.py` (PAGES), `Makefile` (site recipe + test list), `pipeline/render_summary.py` (addendum), `EXECUTIVE_SUMMARY.md`, `README.md` (one link), `COORDINATION.md` (this section) |
+| CS5 | **2026-11-18 request register** (takeover): one row per request item — status, evidence file, blocking gate, clearing number, official link; CSV + page + tests; integration (nav, index card, page lists, Makefile, exec-summary addendum, README); final build/test/verify, PR → main, merge, Pages confirm, record | **done** | `arena/53ef9544-korea1` | `pipeline/request_register_2026_11_18.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new); integration (additive lines only): `pipeline/render_site.py` (NAV tuple + one index card), `pipeline/verify_site.py` (expected set), `tests/check_sources.py` (PAGES), `tests/check_links.py` (PAGES), `Makefile` (site recipe + test list), `pipeline/render_summary.py` (addendum), `EXECUTIVE_SUMMARY.md`, `README.md` (one link), `COORDINATION.md` (this section) |
 
 **Scope note.** `pipeline/session_20261118.py` is owned by `arena/db6cd525-korea1` and already merged; the
 CS5 scope line named it as "new", but it is not. To keep scopes non-overlapping, the register is built in a
@@ -3218,6 +3218,18 @@ another session is edited; the five shared registration surfaces are changed add
 the integration owner for this brief.
 
 **Claim pushed immediately** per board rule 2, before any file in scope is changed.
+
+**Final publish record (CS5, 2026-11-18).** The register, page, tests and integration shipped via
+**PR #92** — https://github.com/karagemop466-tech/Korea1/pull/92 — `arena/53ef9544-korea1` → `main`,
+merged 2026-11-18T05:27:38Z as merge commit `dd5d2a471d15f61a16caa62b207fef9918a4218a`. During review
+`main` advanced under several parallel integration sessions (PRs #80/#83/#84/#85/#86/#90/#91/#93); each
+was merged into this branch, the generated-output collisions resolved by a full `make build` regeneration,
+and every session's `COORDINATION.md` record retained. **Checks on the merge commit:** "Verify site"
+success (run 44244408714); "pages build and deployment" success (run 44244407256). **Live check:**
+https://karagemop466-tech.github.io/Korea1/request-register-2026-11-18.html serves the 81-row register.
+Combined-tree verification before merge: `make build` 0 failing checks (45 canonical pages / 5,656 rows,
+54 link pages), `make test` 221 passed, `tests/check_rebuild.py` clean. No model, strategy, gate or
+official value changed; the decision state stays **0 of 18 strategies validated, no reward**.
 
 ### Final publish record — `arena/42b6f5e9-korea1` (2026-11-18)
 
