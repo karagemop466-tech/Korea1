@@ -501,7 +501,10 @@ def main() -> int:
 
     intro = flag(
         "<strong>Request register · compiled 2026-11-18 (UTC).</strong> One row per line of the "
-        "standing request, in request order. <em>What is built</em> names the published evidence; "
+        "standing request, in request order. This is a second independent pass, published beside "
+        "the earlier <a href=\"request-register-2026-11-18.html\">CS5 request register "
+        "(2026-11-18)</a> — both are kept; neither replaces the other. <em>What is built</em> names "
+        "the published evidence; "
         "<em>the gate</em> is what blocks full delivery; <em>what would clear it</em> is the number "
         "or condition, never a guess. Values that no official source confirms are left blank and "
         "flagged (F-rows on <a href=\"flagged.html\">flagged.html</a>) — nothing is inferred. "

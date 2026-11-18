@@ -34,7 +34,7 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "suggestions-review-2026-11-14.html",
          "brief-2026-11-15.html",
          # CR1 (arena/f84bc1d7-korea1)
-         "request-register.html",
+         "request-register.html", "request-register-2026-11-18.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]

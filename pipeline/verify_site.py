@@ -79,7 +79,7 @@ def main():
               "origination.html","price-annex.html","signal-staking.html","demotion.html",
               "suggestions-review-2026-11-14.html", "brief-2026-11-15.html",
               # CR1 (arena/f84bc1d7-korea1)
-              "request-register.html"}
+              "request-register.html", "request-register-2026-11-18.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

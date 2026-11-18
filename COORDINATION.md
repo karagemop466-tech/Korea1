@@ -3464,3 +3464,24 @@ parser tests, #83 stale-PR disposition, #84 date-matched depth checks) was edite
 edits are the ones this board's convention assigns to the integrating session (NAV + one index card
 + page lists + one Makefile line). Stale-PR disposition is left to #83's register; PR #80's
 regeneration is left to #80 (identical content either way).
+
+### `arena/f84bc1d7-korea1` — merge note (2026-11-18): CS5 double-pass, both kept
+
+While PR #89 was in CI, `arena/53ef9544-korea1` published its own CS5 request register
+(`request-register-2026-11-18.html`, PR #92) and merged it to `main`. The two registers were
+written concurrently from the same base commit and use disjoint filenames. Per the board's
+collision protocol both are kept and this session's register is labelled on its page as a
+**second independent pass** beside the CS5 register, not substituted for it.
+
+**One merge defect found and repaired here (recorded because it clobbered a sibling's work).**
+The conflict resolution of the merge (53 files, dual nav reflow) bulk-took this branch's versions
+of shared files, which silently dropped `arena/53ef9544-korea1`'s registrations in
+`pipeline/render_site.py` (NAV + minicard), `pipeline/verify_site.py` (expected set),
+`tests/check_sources.py` / `tests/check_links.py` (PAGES) and `pipeline/render_summary.py`
+(`_cs5_block`). Their own test (`tests/test_request_register_2026_11_18.py::
+test_register_is_wired_into_the_site_checks_and_navigation`) caught the nav loss. All five
+registrations were restored side by side with this session's equivalents before the rebuild;
+`make test` is green at 228 tests including both registers' suites, `make build` 0 failing checks,
+`check_sources` 46 canonical pages / 5,752 rows, `check_links` 55 pages. Lesson recorded: bulk
+`checkout --ours` is only safe for true generated artefacts; shared source files need line-level
+union.
