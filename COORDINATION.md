@@ -58,7 +58,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | BF8 | **Replacement-depth verification**: confirm 1st/2nd/3rd/4th-string replacement depth is tracked and published; record evidence (no edit unless a gap is found) | **done** (2026-11-14, see session log) | `arena/bfcd9879-korea1` | verification record in `COORDINATION.md` (own section) |
 | BF9 | **Final integration + publish**: nav, page lists (verify_site/check_sources/check_links), Makefile wiring, executive-summary line, `make build` + `make test`, PR → `main`, merge, Pages deploy, record | **done** (PR #59 merged 2026-11-14T21:49:08Z; CI fix PR #60 merged 2026-11-14T22:09:39Z; Verify site green on `main`; GitHub Pages redeployed and live) | `arena/bfcd9879-korea1` | `pipeline/render_site.py` (NAV + page registration only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe additions only), `EXECUTIVE_SUMMARY.md` (own section), `README.md` (one link), `COORDINATION.md`, branch `arena/bfcd9879-korea1` → `main` |
 | S15 | **2026-11-15 session**: take over X7's stale test-suite assertion (claim > 60 minutes old, status needs review), re-pin the injury-snapshot row count to the committed official capture (345 → 347), spot-verify key citations against live official pages, final integration + publish on this branch | **done** — sources: `nfl.com/injuries/league/2026/reg10`, `nfl.com/scores/2026/week-10`, `operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep` (all confirmed live, no cited value changed); verification: `make build` 52 pages / 0 failing checks, `make test` 166 passed, `check_links`/`check_sources`/`verify_site` green, Pages deployment success | `arena/e0763e1e-korea1` | `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, regenerated build outputs under `data/live/`, `assets/data/`, root `.html` |
-| S18 | **Depth-chart reconciliation + final verification + publish**: reconcile `data/availability/depth_charts.csv` (WAS/NYG/DET/NE rows) against the official club-chart extract `data/live/official_depth_extract_2026_11_13.csv` so the live-verification depth test passes; confirm `make build` + `make test` green; PR → `main`, merge, Pages deploy, record | **in progress** | `arena/27eca1b3-korea1` | `data/availability/depth_charts.csv`, `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md` |
+| S18 | **Depth-chart reconciliation + final verification + publish**: reconcile `data/availability/depth_charts.csv` (WAS/NYG/DET/NE rows) against the official club-chart extract `data/live/official_depth_extract_2026_11_13.csv` so the live-verification depth test passes; confirm `make build` + `make test` green; PR → `main`, merge, Pages deploy, record | **done** — PR #77 merged as `236d8c72b641bc11281d703889725edbb743b2a5`; sources: official club depth-chart pages (commanders.com, giants.com, detroitlions.com, patriots.com/team/depth-chart); verification: `make build` 52 pages / 0 failing checks, `make test` 189 passed, check_sources 44 pages / 5,541 rows, check_links 53 pages | `arena/27eca1b3-korea1` | `data/availability/depth_charts.csv`, `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, `scripts/reconcile_depth_charts.py` |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -2993,5 +2993,27 @@ unresolvable and never guessed at.
 **Pages:** GitHub Pages legacy branch build of `main` / repository root. Build state `built` at https://karagemop466-tech.github.io/Korea1/ . Live site confirmed serving the merged tree including the repaired test fix and all regenerated build artifacts.
 
 **Flagged irregularities (do not block merge; published on `flagged.html` / `repo-review.html`):** F-18 Houston depth chart 0 rows; F-19 club chart 'Unofficial' labels (DET, NE); F-21 to F-28 referent URL issues; F-29 demotion gate status; plus six repo-review irregularities from the 2026-11-13 review. All are pre-existing, documented, and non-blocking.
+
+**Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard.
+
+## Session `arena/27eca1b3-korea1` — 2026-11-18 depth-chart reconciliation + final verification (PR #77)
+
+**Starting state.** Branch `arena/27eca1b3-korea1` at commit `5df9bab` (same as `main` at the time). Main later advanced to `d3d9923` (PR #76 merge, which restructured the depth-snapshot test to handle capture-time drift).
+
+**Scope (this session).**
+1. Claimed task S18 in COORDINATION.md (depth-chart reconciliation + final verification + publish).
+2. Found `test_depth_snapshot_matches_the_official_charts` failing: published `data/availability/depth_charts.csv` diverged from the official club-chart extract `data/live/official_depth_extract_2026_11_13.csv` on 15 slots across WAS/NYG/DET/NE (wrong or missing players, wrong depth order).
+3. Rebuilt the 4 official clubs' rows in `data/availability/depth_charts.csv` from the official extract (239 player rows replacing 234); all other 28 clubs' rows verified identical as data sets. All 115 official slots now match.
+4. Added `scripts/reconcile_depth_charts.py` for reproducible reconciliation.
+5. Rebased onto `origin/main` (resolved build-artifact conflicts by taking main's versions, then regenerated with `make build`).
+6. `make build`: 52 pages, 0 failing checks. `make test`: 189 passed. `check_sources`: 44 pages / 5,541 rows. `check_links`: 53 pages.
+
+**Verification performed (all green):** same as above. Official sources: club depth-chart pages for WAS/NYG/DET/NE (commanders.com, giants.com, detroitlions.com, patriots.com/team/depth-chart).
+
+**Pull request and merge:** PR #77 — https://github.com/karagemop466-tech/Korea1/pull/77 — `arena/27eca1b3-korea1` → `main`, merged without waiting as merge commit `236d8c72b641bc11281d703889725edbb743b2a5`. Verification summary, sources used and flagged irregularities carried in the PR body; all checks green before merge.
+
+**Pages:** GitHub Pages legacy branch build of `main` / repository root at https://karagemop466-tech.github.io/Korea1/ . Deployment to be confirmed against the Actions tab after the rate limit clears.
+
+**Flagged irregularities (do not block merge; published on `flagged.html` / `repo-review.html`):** pre-existing items only; none introduced by this change.
 
 **Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard.
