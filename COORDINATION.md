@@ -3121,3 +3121,30 @@ reaches the official pages and was used to read the pages this session quotes.
 
 **Scheduled-job caveat (F-47).** The scheduled jobs commit with `GITHUB_TOKEN`. GitHub does not start workflows for those pushes, so `verify.yml` does not re-check the scheduled commits.
 
+
+## Session `arena/ba09384a-korea1` — 2026-11-18 requirement verification, request register and publish
+
+**Protocol deviation (recorded as every earlier session recorded it).** The platform pins this session to
+branch `arena/ba09384a-korea1` (base `main` = `547d514`). The `session-<id>/<task>` worktree pattern cannot be
+used; this branch is both the task and the integration branch. No sibling branch or PR is edited by this
+session. Earlier sessions' sections above are left untouched.
+
+**Why this session exists.** The 2026-11-18 request is the 2026-11-13 request repeated in full, with one
+addition: *"I want a clear list of questions, informations and answers that need to be addressed before any
+decision can be reasonably made … Suggestions need to be made to discover missing information."* Earlier
+sessions built most of the machinery. What has not been done — CS5 above recorded it as `not done` — is a
+**single register that maps every request line to what is actually built, the evidence file, the gate that
+blocks it, and the number that would clear it.** That register is this session's main deliverable.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| D1 | Board claim and session log (this section) | **done** (first commit of this session) | `arena/ba09384a-korea1` | `COORDINATION.md` (own section only) |
+| D2 | **Requirement verification register**: one row per request line (side→total→ML origination order, price-snapshot store, verified results feed, three-column fair/market/diff, signal-vs-staking split, replacement depth, correlation n, demotion gate, pre-registration, availability graph, playing-time depth, injury surprise, 32-club sweep, fixture context, probability+inputs storage, luck panel, mind-changer field, residual pricing, 136-game corpus, price-data policy, injury clock deltas, readiness table, venue transcription, dated schedule announcement, Game Books, opponent-aware ratings, injury ablations, immutable snapshots, inactive lists + snaps, depth-parse repairs, depth slots as groups, roster-turnover event, singles baseline, parlay joint-evidence gate, proper-score divisions, proper-score ranking, durable storage + alerts, public/private split, per-team view, announced starters, depth register, questionable calibration, 1st–4th string matrix, stale-depth flag, point-in-time ledger, Lions designations, Week 10 re-capture, reject jersey-order depth, shared/empty slots, depth-source route, designation reliability, Wed/Thu/Fri capture, injury series, snap counts, control baselines, weather/roof overlay, two-stage leaderboard, vig-free decomposition, weekly diff, two totals, drift alarm, reserve list, reject season ROI, historical injury archive, pre-registration rule, train/validation/holdout, suggestions section) — status, evidence, blocking gate, clearing number, official source | **in progress** | `arena/ba09384a-korea1` | `pipeline/req_register_2026_11_18.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
+| D3 | Official availability spot-check: 4 clubs' injury rows + 1 club depth chart re-read on the live official pages and compared row by row with the committed capture | **planned** | `arena/ba09384a-korea1` | `data/live/spotcheck_2026_11_18_b/**` (new), part of `pipeline/req_register_2026_11_18.py` |
+| D4 | Verify every number quoted in the new register against the committed evidence file (no typed-in numbers) | **planned** | `arena/ba09384a-korea1` | `tests/test_request_register_2026_11_18.py` |
+| D5 | Current decision-blocking register: the owner decisions the open PRs and the flagged register are waiting on, in one place | **planned** | `arena/ba09384a-korea1` | `request-register-2026-11-18.html` section 3 |
+| D6 | Integration + publish: nav entry, page lists, Makefile, executive-summary addendum, `make build`/`make test`/`check_rebuild`, PR to `main`, merge without waiting, confirm Pages, record here | **planned** | `arena/ba09384a-korea1` | `pipeline/render_site.py` (NAV only), `pipeline/render_summary.py` (addendum only), `Makefile`, `tests/check_links.py`, `tests/check_sources.py`, `pipeline/verify_site.py` (page list only), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (one section), `COORDINATION.md` |
+
+**No shared output is changed before the integration step (D6).** The table data, `index.html` and the
+navigation are touched only in D6, after D2–D5 are green.
+
