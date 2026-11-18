@@ -3225,3 +3225,22 @@ exit 1). Diagnosis performed here on a clean checkout of `30e74e8`:
 No official value was edited by hand: every changed cell is the deterministic product of the S18
 reconciled depth chart re-running through the unchanged build. Sources for the underlying
 reconciliation are recorded in S18's row above (official club depth-chart pages).
+
+**B45 collision notice (2026-11-18T04:2xZ, recorded, no branch touched).** While B45 was
+diagnosing the red `main`, five sibling sessions started on the same day's brief. Most importantly,
+`arena/42b6f5e9-korea1` opened **PR #83** ("2026-11-18 integration: stale-PR takeovers (#68/#71/#48),
+conflicting-PR disposition register, verified rebuild"), which overlaps B45's original claim of the
+four green PRs. Partition applied here, following the board's collision rules (claims live on
+branches, so neither session could see the other's claim first):
+
+- **#68, #71, #48 takeovers + the eight-stale-PR disposition register → `arena/42b6f5e9-korea1`
+  (PR #83).** B45 does not merge or edit those and does not write a competing register.
+- **#70 (register the two omitted test modules in `make test`) and #73 (remove backtest performance
+  from competitive leaderboards) → B45.** Neither is named in #83 or any other live claim; both
+  sessions' claims were pushed within minutes of each other, so B45 keeps only what nobody else
+  named.
+- **#79 (`arena/db6cd525-korea1`), #81 (`arena/292f7ae1-korea1`), #82/#78
+  (`arena/99b908ab-korea1`), #83 (`arena/42b6f5e9-korea1`) → their owners.** B45 merges none of them.
+- B45's own PR #80 was reduced to its unique content by the rebase: the `COORDINATION.md` claim and
+  the PR #77 red-main diagnosis record (the regenerated artefacts it originally carried landed
+  byte-identical on `main` first as `e775e52`, then again through #78's merge).
