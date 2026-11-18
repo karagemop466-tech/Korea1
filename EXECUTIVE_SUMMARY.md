@@ -147,7 +147,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 701 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 714 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -192,6 +192,24 @@ and CIN Jalen Davis / Andrei Iosivas / Brian Parker II appear exactly as publish
 faithful transcriptions of a pairing that is itself contradictory on the official page.
 
 **Decision unchanged:** keep the research engine; fund nothing, reward nothing.
+
+## Addendum - 2026-11-18 (request register, session `arena/53ef9544-korea1`)
+
+The full 2026-11-18 request is now a single decision-readiness register: one row per
+request item with its status, the evidence file that supports it, the gate that blocks
+it and the number that would clear it. It is published on
+`request-register-2026-11-18.html` and in `data/integration/request_register_2026_11_18.csv`.
+
+**81 request items** - 37 done, 26 partly done, 4 built on open PR #82 (not
+merged to main), 10 blocked or not started, 3 rejected by design,
+1 needing an owner decision. 74 rows carry an official/primary source link;
+7 rows have no official source and are printed as flagged text, never filled in.
+
+The register is the consolidated answer to the brief's central ask - the questions,
+information and answers that must be resolved before a decision, plus the suggestions
+that discover the missing information. It does not change any research number: the
+verdict stays **0 of 18 strategies validated, no reward**, and gate G1 (executable quote
+provenance) still fails for every candidate.
 
 ## Material audit corrections
 

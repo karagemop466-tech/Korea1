@@ -78,12 +78,17 @@ NAV_GROUPS = [
         ("suggestions-review.html", "Path selector"),
         ("suggestions.html", "Suggestions & paths"),
         ("decision-readiness.html", "Q&A + Week 8–9 audit"),
+        # CS5 (session arena/53ef9544-korea1): the full 2026-11-18 request register — one row
+        # per request item with its blocking gate and the number that clears it.
+        ("request-register-2026-11-18.html", "Request register · 2026-11-18"),
+        # D6 (arena/ba09384a-korea1): the additive annex — recomputed evidence, official re-read,
+        # questions and owner decisions. The register above remains the primary surface.
+        ("requirement-annex-2026-11-18.html", "Requirement annex · evidence check"),
         ("questions.html", "Open questions"),
         ("decisions.html", "Decision readiness"),
         ("flagged.html", "Flagged for review"),
         # D2/D6 (arena/ba09384a-korea1): one row per line of the 2026-11-18 brief, with the gate that
         # blocks it and the number that clears it. Reads committed files only; no network.
-        ("request-register-2026-11-18.html", "Requirement register · 2026-11-18"),
     ]),
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
@@ -411,6 +416,7 @@ questions a decision actually asks.</p>
 <a class="minicard" href="suggestions-review.html"><strong>Interactive path selector</strong><span>Compare Path A / B / C across 12 staged improvements and export a decision JSON before changing code.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Suggestions &amp; paths</strong><span>Twenty-two changes with cost, risk and dependencies, plus four coherent paths.</span></a>
 <a class="minicard" href="decision-readiness.html"><strong>Q&amp;A + Week 8–9 reconciliation</strong><span>14 pre-decision Q&amp;As, 8 missing-info discovery blueprints and all 28 settled post-pin NFL.com scores.</span></a>
+<a class="minicard" href="request-register-2026-11-18.html"><strong>2026-11-18 request register</strong><span>One row per request item: status, evidence file, the gate that blocks it and the number that clears it. Official source on every table row.</span></a>
 <a class="minicard" href="decisions.html"><strong>Decision readiness</strong><span>Twelve decision questions, known answers, missing inputs and a parallel eight-proposal register.</span></a>
 <a class="minicard" href="questions.html"><strong>Open questions</strong><span>What must be known first, what is answered, and what is blocked on data we do not have.</span></a>
 <a class="minicard" href="lineup-deficiencies.html"><strong>8-club 1st–4th string tracker</strong><span>39 Week 10 offensive &amp; defensive injury/depth entries across WAS, NYG, NE, DET, KC, ATL, MIN &amp; GB.</span></a>
@@ -612,7 +618,7 @@ every build and carried <code>"sha256": null</code> for one of the two files it 
 
 def _exec_requirement_register_section() -> str:
     """D6 (arena/ba09384a-korea1): the 2026-11-18 register, summarised for the executive reader."""
-    rr = _read_integration("request_register_2026_11_18.csv")
+    rr = _read_integration("requirement_annex_2026_11_18.csv")
     if rr is None:
         return ""
     q = _read_integration("questions_2026_11_18.csv")
@@ -623,7 +629,7 @@ def _exec_requirement_register_section() -> str:
              src_link(r.official_url, r.official_label)] for r in blocked.itertuples(index=False)]
     return (f"""<section id="requirement-register"><h2>Requirement register, 2026-11-18</h2>
 <p>The brief asks for one thing above all: <em>a clear list of questions, information and answers that must be
-settled before any decision.</em> <a href="request-register-2026-11-18.html">The register</a> gives that — one row per
+settled before any decision.</em> <a href="requirement-annex-2026-11-18.html">The requirement annex</a> gives that — one row per
 line of the brief, each with the evidence that exists, the gate that blocks it and the number that would clear it.</p>
 <div class="cards smallcards">
 <div class="card"><div class="card-value">{len(rr)}</div><div class="card-label">lines of the brief traced</div></div>
@@ -644,7 +650,7 @@ page is a rolling window, not a record (F-57), and the results feed still calls 
 has not been located (inactive lists, snap counts, a committed Game Book capture) or an owner decision (the
 price-data policy, the public/private split, the 136-game corpus).</p>
 {table(rows, ["ID", "Blocked line of the brief", "Gate", "Number that clears it", "Official source"],
- caption="Every blocked requirement line · detail on request-register-2026-11-18.html")}
+ caption="Every blocked requirement line · detail on requirement-annex-2026-11-18.html")}
 </section>""")
 
 
@@ -1611,7 +1617,7 @@ def main() -> None:
         # consolidated review surface. Both read only data/live/**.
         "live-verification.html": build_live_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
         # D2 (arena/ba09384a-korea1): the 75-row requirement verification register and its CSVs.
-        "request-register-2026-11-18.html": __import__("req_register_2026_11_18").build_page(),
+        "requirement-annex-2026-11-18.html": __import__("req_annex_2026_11_18").build_page(),
         "review.html": build_review_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
     }
     for name, html_text in pages.items():
@@ -1737,7 +1743,7 @@ def _landing_panels() -> str:
     # D6 (arena/ba09384a-korea1): the 2026-11-18 requirement register, as a landing-page digest.
     # The full 75-row register is its own page; the landing page shows what a decision needs now:
     # every blocked row (the gate that blocks it and the number that clears it) plus the counts.
-    rr = _read_integration("request_register_2026_11_18.csv")
+    rr = _read_integration("requirement_annex_2026_11_18.csv")
     if rr is not None:
         blocked = rr[rr.norm == "BLOCKED"]
         counts = rr.norm.value_counts().to_dict()
@@ -1745,13 +1751,13 @@ def _landing_panels() -> str:
                 for r in blocked.itertuples(index=False)]
         parts.append(
             "<section><h2>Requirement register: what is built, what is blocked</h2>"
-            f"<p>Every line of the brief is traced on the <a href=\"request-register-2026-11-18.html\">"
-            f"2026-11-18 register</a>: <strong>{len(rr)}</strong> lines, <strong>{counts.get('DONE', 0)}</strong> done, "
+            f"<p>Every line of the brief is traced on the <a href=\"requirement-annex-2026-11-18.html\">"
+            f"2026-11-18 annex</a>: <strong>{len(rr)}</strong> lines, <strong>{counts.get('DONE', 0)}</strong> done, "
             f"<strong>{counts.get('PARTIAL', 0)}</strong> partly done, <strong>{len(blocked)}</strong> blocked and "
             f"<strong>{counts.get('REJECTED', 0)}</strong> rejected as asked. The {len(blocked)} blocked rows are below "
             f"with the gate and the number that would clear each one.</p>"
             + table(rows, ["ID", "Line of the brief", "Blocking gate", "Number that clears it", "Official source"],
-                    caption="Blocked requirement lines · full register on request-register-2026-11-18.html") +
+                    caption="Blocked requirement lines · full annex on requirement-annex-2026-11-18.html") +
             "</section>")
     dr = _read_integration("brief_2026_11_15.csv")
     if dr is not None:

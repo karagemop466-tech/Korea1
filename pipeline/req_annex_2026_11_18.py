@@ -42,7 +42,7 @@ SPOT = ROOT / "data" / "live" / "spotcheck_2026_11_18_b"
 AVAIL = ROOT / "data" / "availability"
 INTEG = ROOT / "data" / "integration"
 GATES = ROOT / "data" / "gates"
-OUT_HTML = ROOT / "request-register-2026-11-18.html"
+OUT_HTML = ROOT / "requirement-annex-2026-11-18.html"
 CHECKED_UTC = "2026-11-18T04:52Z"
 # 9 WAS + 11 NYG + 15 NE + 9 DET + 12 KC (13 printed, 1 omitted by the reader) + 11 ATL + 13 MIN + 17 GB.
 # Pinned so a dropped section fails the build instead of shrinking the comparison silently.
@@ -1029,7 +1029,7 @@ def write_csvs(R, Q, D, rows, findings) -> None:
                              official_label=lab, official_url=u, evidence_path=repo_path(r),
                              checked_utc=CHECKED_UTC))
     reg = pd.DataFrame(rows_out, columns=REG_COLS)
-    reg.to_csv(INTEG / "request_register_2026_11_18.csv", index=False)
+    reg.to_csv(INTEG / "requirement_annex_2026_11_18.csv", index=False)
     pd.DataFrame(Q).to_csv(INTEG / "questions_2026_11_18.csv", index=False)
     pd.DataFrame(D).to_csv(INTEG / "decisions_2026_11_18.csv", index=False)
     pd.DataFrame(rows).to_csv(SPOT / "spotcheck_rows.csv", index=False)
@@ -1075,11 +1075,15 @@ def page(R, Q, D, rows, f, m, findings) -> str:
 
     head = f"""<section id="what-this-is">
 <h2>What this page is</h2>
-<p>This is the missing piece earlier sessions recorded as <code>not done</code>: one register that answers, for
-every line of the brief, <em>is it built, what proves it, what blocks it, and what number would clear it</em>.
-It does not replace the <a href="flagged.html">flagged register</a>, the
-<a href="review-queue.html">suggestion queue</a> or the <a href="answers.html">question register</a>; it indexes them
-against the brief so a decision can be taken without re-reading seventy pages.</p>
+<p>This is the <strong>annex</strong> to the <a href="request-register-2026-11-18.html">2026-11-18 request
+register</a>. The register is the primary surface: one row per request item, hand-checked against the artefacts on
+main. This annex adds the three things a register cannot carry on its own: every number in it is
+<em>recomputed from a committed file on each build</em> rather than written once; the official pages it relies on were
+<strong>re-read on 2026-11-18 and compared cell by cell</strong> with the committed captures; and the questions and
+owner decisions are separated into their own registers so a decision can be taken without re-reading seventy pages.</p>
+<p>Where the two disagree, both are printed. The one known disagreement is the removal-of-luck row: the register calls
+it DONE because the panel is published, this annex calls it PARTIAL because no strategy is ranked by a proper score
+(Brier skill) even though 44 model rows carry one. R14 below says so in the evidence column.</p>
 {notice()}
 <p><strong>How to read a row.</strong> <em>Status</em> is one of DONE (a committed artefact does the thing),
 PARTIAL (a real artefact exists and a named part is missing), BLOCKED (nothing in the repository can close it:
@@ -1223,7 +1227,7 @@ in the CSV cannot drift apart.</li>
 </section>"""
     body = head + cards + sec_reg + sec_by + sec_self + sec_live + sec_res + sec_find + sec_q + sec_d + sec_sug
 
-    return layout("request-register-2026-11-18.html", "Requirement verification register · 2026-11-18",
+    return layout("requirement-annex-2026-11-18.html", "Requirement annex · row-by-row evidence and official re-read",
                   "Every line of the brief, one row each: what is built, what proves it, what blocks it, and the "
                   "number that would clear it — plus the eight decisions only the owner can take.", body, wide=True)
 
