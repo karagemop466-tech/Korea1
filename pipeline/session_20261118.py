@@ -255,6 +255,19 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
                       "No authorised structured source has been located, and the image has not been transcribed."),
              next="Locate an official structured source (route a) or snap counts (route b) for Houston before any Houston depth feature is built.",
              source_label="Houston Texans team page", source_url="https://www.houstontexans.com/team/depth-chart"),
+        dict(id="F-50", severity="High · repaired in this branch",
+             finding=("Commit 0193893 (S18, merged to main with PR #77) replaced the WAS, NYG, DET and NE rows of data/availability/depth_charts.csv "
+                      "with the 2026-11-13 official extract, and stamped every replaced row with the 2026-11-17T19:51:56Z capture time. Those rows are not the 2026-11-17 capture. "
+                      "The same commit changed test_depth_snapshot_matches_the_official_charts so that drift is logged and not failed. The test could no longer fail. "
+                      "This branch restores the 2026-11-17 capture (byte-identical to history/2026-11-17) and restores the strict test on the 2026-11-13 dated capture. "
+                      "The live Commanders page read on 2026-11-18 agrees with the restored capture, not with the S18 rows (see spotcheck_rows.csv)."),
+             next="Owner: confirm the restore. Any reconciliation must be a new dated capture, not an edit of an older one.",
+             source_label="Commanders club depth chart", source_url=URL_WAS),
+        dict(id="F-51", severity="Medium · open",
+             finding=("scripts/reconcile_depth_charts.py (from S18) still rewrites data/availability/depth_charts.csv when it is run, and it has no guard. "
+                      "It is not called by make build, but the next session that runs it will reintroduce the rewrite of F-50."),
+             next="Owner: remove the script, or make it refuse to write over a dated capture.",
+             source_label="", source_url=""),
     ]
 
 
@@ -272,7 +285,7 @@ def main() -> None:
     f = facts()
     fl = flagged_rows(f, res, inj_v, dep_v)
     for r in fl:
-        if not r["source_url"].startswith("https://"):
+        if r["source_url"] and not r["source_url"].startswith("https://"):
             raise SystemExit(f"{r['id']}: bad source url")
     pd.DataFrame(fl).to_csv(ROOT / "data" / "integration" / "flagged_2026_11_18.csv", index=False)
 

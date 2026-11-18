@@ -1651,7 +1651,7 @@ def _flagged_2026_11_18_section() -> str:
             "<p>Irregularities found while checking the 2026-11-18 spot-check and the availability job. None blocks merge. "
             "Spot-check rows: <code>data/live/spotcheck_2026_11_18/spotcheck_rows.csv</code>.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
-                    caption="Session findings with an official source · F-42 to F-49")
+                    caption="Session findings with an official source · F-42 to F-51")
             + listing + "</section>")
 
 
