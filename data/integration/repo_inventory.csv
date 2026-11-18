@@ -672,6 +672,7 @@ tests/test_forward_capture.py,1-10 KB,Test,SOURCE · executed by make build / ma
 tests/test_forward_ledger.py,10-100 KB,Test,SOURCE · executed by make build / make test,pipeline/render_forward.py,NFL schedule,https://www.nfl.com/schedules/
 tests/test_forward_settlement.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL schedule,https://www.nfl.com/schedules/
 tests/test_future_lines.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+tests/test_gamebooks.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_governance_and_lineups.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL injuries,https://www.nfl.com/injuries/
 tests/test_integration.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/decision_readiness.py; pipeline/render_referents.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_live_verify.py,10-100 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/session_20261115.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
