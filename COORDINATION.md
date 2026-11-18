@@ -3058,3 +3058,88 @@ refused, measured on 2026-11-18T03:47Z), so the capture runs on a GitHub-hosted 
 `.github/workflows/gamebooks.yml`, exactly like the existing availability tracker. The page-fetch tool
 reaches the official pages and was used to read the pages this session quotes.
 
+## Session `arena/8a075837-korea1` — 2026-11-18 verification dating + snapshot provenance (claim and completion)
+
+**Starting point and branch reality.** The platform pins this session to `arena/8a075837-korea1`;
+no `session-<id>/<task>` branch could be created, so all work landed here. The branch started at
+`5df9bab` and was moved onto `origin/main` as it advanced: `d3d9923` (PR #75/#76) and finally
+`9933bba` (the `2026-11-18T04:24Z` scheduled capture, which carries PR #77 and PR #78). Local
+coordination-only commits from the earlier, pre-`9933bba` state were folded into this single record
+rather than rebased again, because the scheduled capture superseded the data those commits
+described.
+
+**Claimed scope.** (a) Takeover of the stale test-coverage change in PR #70, (b) takeover of the
+stale competitive-leaderboard policy in PR #73, (c) making the depth-chart verification
+time-consistent, (d) freshness disclosure on the dated status snapshot, (e) full rebuild,
+verification, PR → `main`, Pages confirmation. Last commits on #70 and #73 are dated
+2026-11-15T18:51:12Z and 2026-11-15T19:13:34Z with no later activity, so both were taken over here
+rather than left open.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| I1 | Date-consistent depth verification, snapshot-provenance guards, PR #70 test target, PR #73 competitive display, freshness disclosure, rebuild and publication | **done** (see completion record below) | `arena/8a075837-korea1` | `COORDINATION.md`, `Makefile`, `pipeline/live_verify.py`, `pipeline/live_verify_depth.py`, `pipeline/render_live.py`, `pipeline/render_site.py`, `pipeline/render_summary.py`, `pipeline/session_competition.py`, `pipeline/session_review.py`, `scripts/reconcile_depth_charts.py` (deleted), `tests/test_live_verify.py`, `tests/test_brief_2026_11_15.py`, `audit/INTEGRATION_VERIFICATION_2026-11-18.md`, generated site/data artifacts from `make build` |
+
+**What was found.** `main` published "115 of 115 slots MATCH, four clubs PASS" for the depth-chart
+verification while the file it verifies — `data/availability/depth_charts.csv` — had just been
+replaced by the `2026-11-18T04:24:05Z` capture. Recomputed: the 2026-11-13 official transcription
+and that capture agree on 94 of 115 slots and differ on **21** (DET 4, NYG 3, WAS 14, NE 0); the
+same 21 appear between the two immutable archives and under both file-order and slot-anchored
+re-numbering, so they are five days of chart movement, not a keying artefact. This follows an
+earlier instance of the same class: PR #77 rebuilt four clubs' rows inside the `2026-11-17`
+snapshot from the older transcription while keeping the 11-17 timestamp, which contradicted
+`data/availability/manifest.json` row counts and left five tests in
+`tests/test_current_snapshot_audit.py` erroring on `main` until the next scheduled capture
+overwrote the file.
+
+**What was changed, and what it does not claim.** The verifier now compares a transcription only
+with its own same-date archive and publishes `latest_snapshot_independently_verified: false` with
+the newest capture time; the cross-date gap is published as `data/live/depth_capture_divergence.csv`
+and Table 6b on `live-verification.html`, labelled capture movement; `scripts/reconcile_depth_charts.py`
+is deleted because rewriting a dated capture is the hazard, not the fix; `tests/test_live_verify.py`
+pins the manifest row-count and single-timestamp invariants so a rewrite cannot pass silently; the
+injury comparison prints both read dates and describes a match as "this cell has not moved"; and
+`Current status — 2026-11-15` is renamed `Decision status snapshot — 2026-11-15` with the capture
+time read from the manifest on every build. None of this re-reads a live official page: the sandbox
+cannot reach `nfl.com`, so no claim here is that today's page was checked.
+
+**Verification performed on this tree (all green).**
+- `make liveverify`: parser control `PARSER_FAITHFUL` (254/254 rows, 0/1,016 cells); injury fields
+  392/392 MATCH, 0 confirmed defects, 0 unresolved, 0 drift-possible, 249 out of scope; internal
+  consistency 347 rows / 28 clubs with 4 contradictions (JAX B.J. Green II; CIN J. Davis,
+  A. Iosivas, B. Parker II — all faithful transcriptions of a page that is itself contradictory);
+  same-date depth 115/115 slots, 239 players, four clubs PASS; lineup claims 41 CONFIRMED,
+  17 STALE, 0 CONTRADICTED, 1 OUT_OF_SCOPE; 107 of 347 values moved between the 11-12 and 11-13
+  official captures.
+- `make test`: **275 passed, 1 skipped** across 24 modules, and the target was verified by
+  enumeration to list every `tests/test_*.py` file present (the PR #70 gap).
+- `make build`: **0 failing checks**; `tests/check_sources.py` 44 canonical pages / 5,581 rows with
+  a strict official/primary reference on every row; `tests/check_links.py` 53 pages, all links,
+  anchors and assets resolve locally, no CDN.
+- Rebuild idempotence: a second `make build` left the working tree byte-identical, so the committed
+  artefacts are the build output — the property the overwritten capture had broken.
+- `make test` coverage: the two previously omitted modules (`tests/test_current_snapshot_audit.py`,
+  `tests/test_forward_ledger.py`) now run in `make test` and in CI, which is what catches this class
+  of breakage at all.
+
+**Competitive display (PR #73 takeover), test-pinned.** `strategies.html` and both standings tables
+on `competition.html` carry no `Units staked`, `Mean signal edge`, `ROI` or `Adjusted p` column;
+signal qualification is printed separately from PAPER/LIVE status; the move-up and stop columns are
+two-sided and the "(now: …)" historical values present in the mind-changer register are omitted from
+the rendered tables. Verified by `tests/test_brief_2026_11_15.py`, which renders the pages and greps
+the emitted markup.
+
+**Decision state after this pass (unchanged, fail-closed).** 18 candidate strategies, 0 VALIDATED,
+G1 quote provenance failed for all 18 (0 opening and 0 closing prices verified); demotion register
+18 PAPER / 0 LIVE; forward ledger 4 OFFICIAL-settled and 61 PROVISIONAL; no reward and no funded
+stake is supported; singles first, parlays and player props still gated on joint-probability and
+settlement evidence that does not exist; raw row data stays private pending the terms review.
+
+**Concurrent sessions.** PR #79 (`arena/db6cd525-korea1`, "depth-capture restore (F-50), official
+spot-check, availability rebuild, flags F-42 to F-51"), PR #80 (`arena/b450c57b-korea1`, "repair red
+main after PR #77"), PR #81 (`arena/292f7ae1-korea1`) and PR #82/#83 were open when this pass
+started, several touching the same files. This pass deliberately does not re-add a capture-derived
+data file (the scheduled capture had already replaced it), does not create `flagged_2026_11_18.csv`
+or register a new `F-` id — leaving that numbering to PR #79 — and records its finding in the
+existing registers as `V-09` and `IR-8A07-01` instead. Whoever integrates second must rebase and
+re-run `make build`: the generated pages under `data/live/`, `assets/data/` and the root HTML are
+build output, and hand-merging them is how the dating bug in this record was created.

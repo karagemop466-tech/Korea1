@@ -7,6 +7,7 @@ were inverted, so each test below mutates an input and asserts the verdict moves
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -180,41 +181,64 @@ def test_depth_rows_line_up_with_the_official_charts():
 
 
 def test_depth_snapshot_matches_the_official_charts():
-    """The official extract (4 clubs, captured 2026-11-13) and the published
-    snapshot (all 32 clubs, captured later) are different captures at different
-    times. Depth charts legitimately change between captures, so this test
-    verifies the *comparison logic* rather than requiring the two committed
-    files to be in sync: every official slot must be present in the published
-    data, matching slots must match exactly, and drifted slots are reported
-    (not failed) because the source moved between captures.
+    """Compare the 2026-11-13 official transcription with its matching archive.
 
-    The mutation block at the end proves the comparison detects real changes.
+    Never compare the moving latest snapshot to this older transcription: a change
+    between captures is not evidence of a parser defect. The scheduled latest
+    snapshot is explicitly reported as not independently verified until there is
+    a time-matched official extract.
     """
     ext = pd.read_csv(ROOT / "data/live/official_depth_extract_2026_11_13.csv",
                       dtype=str, keep_default_na=False)
-    pub = pd.read_csv(ROOT / "data/availability/depth_charts.csv", dtype=str,
-                      keep_default_na=False)
+    pub = pd.read_csv(lvd.SNAPSHOT, dtype=str, keep_default_na=False)
     pub["depth_rank"] = pub["depth_rank"].astype(int)
     off, pr = lvd._off_rows(ext), lvd._pub_rows(pub)
-    keys = set(off)
-    # every official slot must exist in the published data (no missing slot)
-    assert all(k in pr for k in keys), "official slot missing from published data"
-    matched = [k for k in keys if off[k] == pr[k]]
-    drifted = [k for k in keys if off[k] != pr[k]]
-    # matching slots must match exactly (parsing is faithful)
-    assert all(off[k] == pr[k] for k in matched)
-    # drifted slots are real source movement between captures; log the count
-    # but do not fail the build — the depth verifier publishes per-slot verdicts
-    # at data/live/depth_slot_verification.csv for manual review
-    assert len(matched) + len(drifted) == len(keys)
+    assert len(off) == 115
+    assert all(k in pr for k in off), "dated snapshot is missing an official slot"
+    assert all(off[k] == pr[k] for k in off), "same-date official slot differs from dated snapshot"
 
-    # logic check: mutating a published slot must flip it from match to drift
-    if matched:
-        k = matched[0]
-        original = pr[k]
-        pr[k] = ["Z-Nobody-Test"] + list(original)
-        assert off[k] != pr[k]
-        pr[k] = original  # restore
+
+def test_latest_depth_snapshot_is_not_claimed_verified_by_an_older_extract():
+    report = json.loads((ROOT / "data/live/depth_verification_summary.json").read_text())
+    dated = json.loads((ROOT / "data/availability/history/2026-11-13/manifest.json").read_text())
+    current = json.loads((ROOT / "data/availability/manifest.json").read_text())
+    assert report["comparison_snapshot_utc"] == dated["retrieved_utc"]
+    assert report["latest_snapshot_utc"] == current["retrieved_utc"]
+    assert report["latest_snapshot_independently_verified"] is False
+    assert "not compared" in report["latest_snapshot_note"].lower()
+
+
+def test_published_snapshot_keeps_its_own_capture_provenance():
+    """The current capture must stay the parse of its own fetch.
+
+    A previous integration rebuilt four clubs' rows from the older official
+    transcription while leaving the 2026-11-17 timestamp on them. That broke the
+    manifest invariants `pipeline/current_snapshot_audit.py` enforces and made a
+    2026-11-13 reading look like a 2026-11-17 capture. This test pins the rule:
+    per-club row counts equal what the manifest recorded, and every row carries the
+    capture timestamp of the file it is in.
+    """
+    manifest = json.loads((ROOT / "data/availability/manifest.json").read_text())
+    captured = manifest["retrieved_utc"]
+    rows_by_team = {s["team"]: int(s["rows"]) for s in manifest["sources"]
+                    if s["kind"] == "depth_chart" and not s.get("error")}
+    cur = pd.read_csv(ROOT / "data/availability/depth_charts.csv", dtype=str, keep_default_na=False)
+    assert set(cur.retrieved_utc.unique()) == {captured}, "a depth row carries another capture's timestamp"
+    for team in lvd.CLUBS:
+        assert len(cur[cur.team == team]) == rows_by_team[team], (
+            f"{team}: published rows no longer match the rows its capture parsed")
+
+
+def test_movement_between_captures_is_reported_as_movement():
+    """The dated gap is disclosed in its own file, with non-defect vocabulary."""
+    div = pd.read_csv(ROOT / "data/live/depth_capture_divergence.csv", dtype=str, keep_default_na=False)
+    report = json.loads((ROOT / "data/live/depth_verification_summary.json").read_text())
+    assert set(div.verdict) <= {"CAPTURE_MOVEMENT", "MISSING_FROM_LATEST_CAPTURE", "ONLY_IN_LATEST_CAPTURE"}
+    assert not div.empty and not div.verdict.str.contains("MISMATCH|DEFECT").any()
+    assert "not a parser defect" in " ".join(div.note).lower()
+    assert len(div) == report["current_capture_divergent_slots"]
+    # and it must not leak into the same-date verification, which stays exact
+    assert report["mismatch"] == 0 and report["missing"] == 0 and report["extra"] == 0
 
 
 def test_depth_order_change_is_detected():
@@ -224,8 +248,7 @@ def test_depth_order_change_is_detected():
     parts = ext.loc[i, "players"].split("|")
     ext.loc[i, "players"] = "|".join(reversed(parts))
     off = lvd._off_rows(ext)
-    pub = pd.read_csv(ROOT / "data/availability/depth_charts.csv", dtype=str,
-                      keep_default_na=False)
+    pub = pd.read_csv(lvd.SNAPSHOT, dtype=str, keep_default_na=False)
     pub["depth_rank"] = pub["depth_rank"].astype(int)
     pr = lvd._pub_rows(pub)
     key = (ext.loc[i, "team"], ext.loc[i, "unit"], int(ext.loc[i, "row"]))

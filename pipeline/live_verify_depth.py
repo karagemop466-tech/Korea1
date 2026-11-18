@@ -1,25 +1,41 @@
-"""V1b — independent verification of the published depth-chart snapshot.
+"""V1b — point-in-time verification of the archived 2026-11-13 depth snapshot.
 
-Compares `data/availability/depth_charts.csv` (written by the scheduled
-availability workflow from each club's `/team/depth-chart` page) against
-`data/live/official_depth_extract_2026_11_13.csv`, transcribed directly from
-four official club charts while reading them in full on 2026-11-13.
+Compares the immutable `data/availability/history/2026-11-13/depth_charts.csv`
+with `data/live/official_depth_extract_2026_11_13.csv`, transcribed directly
+from four official club charts read on 2026-11-13. The snapshot and transcription
+have separate capture timestamps, both published in the verification summary.
 
-The unit of comparison is a *slot*: one published position row of one club,
-identified by (team, unit, position, occurrence). The ordered list of players in
-that row is compared element by element, because the depth order is exactly what
-the site's "1st / 2nd / 3rd / 4th string" claim rests on.
+The current daily snapshot is deliberately not compared with this older extract:
+changes between dates are temporal deltas, not parser errors. Current availability
+and its history are published separately in `availability.html` and
+`injury-deltas.html`; without a time-matched official extract, current depth rows
+are not described as independently re-verified.
+
+Two rules follow from that and are enforced here and by
+`tests/test_live_verify.py`:
+
+* The published snapshot is never rewritten to match an older transcription. A
+  capture's rows are the parse of that capture and keep that capture's timestamp;
+  editing them to agree with another date breaks the row-count and timestamp
+  invariants that `pipeline/current_snapshot_audit.py` checks against
+  `data/availability/manifest.json`.
+* The gap between the verified date and the published date is still shown, not
+  hidden: `data/live/depth_capture_divergence.csv` lists every slot whose ordered
+  player list differs between the two dates, labelled as capture movement.
+
+The unit of comparison is a *slot*: one position row of one club, identified by
+(team, unit, position, occurrence). The ordered player list is compared element
+by element, because the site's "1st / 2nd / 3rd / 4th string" claim rests on it.
 
 Verdicts per slot
 -----------------
-MATCH      the ordered player list is identical
+MATCH      the ordered player list is identical in these dated captures
 MISMATCH   the ordered player list differs in order, membership or length
-MISSING    the club publishes the slot; the snapshot has no such slot
-EXTRA      the snapshot has a slot the club page (as transcribed) does not
+MISSING    the official extract has a slot absent from the dated snapshot
+EXTRA      the dated snapshot has a slot absent from the official extract
 
-Club disclaimers found on the official pages are recorded as irregularity rows,
-because they change what the site is allowed to claim: two of the four charts
-are explicitly *unofficial*.
+Club disclaimers found on the official pages are recorded as irregularity rows;
+two of the four charts are explicitly *unofficial*.
 
 Run: python pipeline/live_verify_depth.py
 """
@@ -31,11 +47,17 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
+from common import LIVE_CAPTURE_UTC, ROOT, read_json, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
-SNAPSHOT = ROOT / "data" / "availability" / "depth_charts.csv"
+SNAPSHOT = ROOT / "data" / "availability" / "history" / "2026-11-13" / "depth_charts.csv"
+SNAPSHOT_MANIFEST = SNAPSHOT.parent / "manifest.json"
+CURRENT_SNAPSHOT = ROOT / "data" / "availability" / "depth_charts.csv"
+CURRENT_MANIFEST = CURRENT_SNAPSHOT.parent / "manifest.json"
 EXTRACT = LIVE / "official_depth_extract_2026_11_13.csv"
+
+# The verified sample: the four clubs whose official charts were transcribed by hand.
+CLUBS = ("DET", "NE", "NYG", "WAS")
 
 # Disclaimers read on the official pages themselves, quoted, with their source.
 DISCLAIMERS = [
@@ -82,6 +104,8 @@ def main() -> int:
     ext = pd.read_csv(EXTRACT, dtype=str, keep_default_na=False)
     pub = pd.read_csv(SNAPSHOT, dtype=str, keep_default_na=False)
     pub["depth_rank"] = pub["depth_rank"].astype(int)
+    snapshot_manifest = read_json(SNAPSHOT_MANIFEST)
+    current_manifest = read_json(CURRENT_MANIFEST)
 
     official = _off_rows(ext)
     published = _pub_rows(pub)
@@ -95,9 +119,9 @@ def main() -> int:
         ov, pv = official.get(key), published.get(key)
         url = ext[ext.team == key[0]].source_url.iloc[0]
         if ov is None:
-            verdict, note = "EXTRA", "published slot not present on the official page as transcribed"
+            verdict, note = "EXTRA", "dated snapshot slot not present in the official extract"
         elif pv is None:
-            verdict, note = "MISSING", "official page publishes this slot; the snapshot has none"
+            verdict, note = "MISSING", "official extract has this slot; the dated snapshot has none"
         elif ov == pv:
             verdict, note = "MATCH", ""
         else:
@@ -123,9 +147,52 @@ def main() -> int:
     disc = pd.DataFrame(DISCLAIMERS)
     disc.to_csv(LIVE / "depth_chart_disclaimers.csv", index=False)
 
+    # Informational only: how far the current daily capture has moved since the
+    # dated official transcription. This is not a defect list and it is not
+    # verification of the current capture — it exists so a reader can see the
+    # size of the gap between what was checked and what is being published.
+    cur = pd.read_csv(CURRENT_SNAPSHOT, dtype=str, keep_default_na=False)
+    cur["depth_rank"] = cur["depth_rank"].astype(int)
+    cur_rows = _pub_rows(cur)
+    current_manifest_rows = len(cur)
+    drift = []
+    for key in sorted(set(official) | set(cur_rows)):
+        if key[0] not in teams:
+            continue
+        ov, cv = official.get(key), cur_rows.get(key)
+        if ov == cv:
+            continue
+        if ov is None:
+            verdict, note = "ONLY_IN_LATEST_CAPTURE", "the slot exists in the latest capture, not in the dated official transcription"
+        elif cv is None:
+            verdict, note = "MISSING_FROM_LATEST_CAPTURE", "the slot exists in the dated official transcription, not in the latest capture"
+        else:
+            verdict, note = "CAPTURE_MOVEMENT", "ordered player list differs between the two capture dates; not a parser defect"
+        drift.append(dict(team=key[0], unit=key[1], row=key[2],
+                          official_2026_11_13=" | ".join(ov or []),
+                          latest_capture=" | ".join(cv or []),
+                          verdict=verdict, note=note,
+                          source_url=ext[ext.team == key[0]].source_url.iloc[0]))
+    pd.DataFrame(drift).to_csv(LIVE / "depth_capture_divergence.csv", index=False)
+
     counts = detail.verdict.value_counts().to_dict()
     head = dict(
         generated_utc=LIVE_CAPTURE_UTC,
+        official_source_read_utc=LIVE_CAPTURE_UTC,
+        comparison_snapshot_utc=snapshot_manifest.get("retrieved_utc", ""),
+        latest_snapshot_utc=current_manifest.get("retrieved_utc", ""),
+        latest_snapshot_independently_verified=False,
+        latest_snapshot_note=("The latest daily chart snapshot is not compared with this older "
+                              "2026-11-13 official extract; differences between dates are not "
+                              "classified as parser errors. The latest capture is never rewritten "
+                              "to match the older transcription: its rows are the parse of its own "
+                              "fetch and must keep their own capture timestamp."),
+        current_capture_rows=current_manifest_rows,
+        current_capture_divergent_slots=len(drift),
+        current_capture_divergence_note=("Slots whose ordered player list differs between the dated "
+                                         "official transcription and the latest capture, listed in "
+                                         "data/live/depth_capture_divergence.csv. Capture movement, "
+                                         "not a defect, and not a claim about who starts."),
         clubs=teams,
         slots_compared=int(len(detail)),
         match=int(counts.get("MATCH", 0)),

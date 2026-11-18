@@ -1,5 +1,13 @@
 {
   "generated_utc": "2026-11-13T22:57:59Z",
+  "official_source_read_utc": "2026-11-13T22:57:59Z",
+  "comparison_snapshot_utc": "2026-11-13T18:32:20Z",
+  "latest_snapshot_utc": "2026-11-18T04:24:05Z",
+  "latest_snapshot_independently_verified": false,
+  "latest_snapshot_note": "The latest daily chart snapshot is not compared with this older 2026-11-13 official extract; differences between dates are not classified as parser errors. The latest capture is never rewritten to match the older transcription: its rows are the parse of its own fetch and must keep their own capture timestamp.",
+  "current_capture_rows": 1831,
+  "current_capture_divergent_slots": 21,
+  "current_capture_divergence_note": "Slots whose ordered player list differs between the dated official transcription and the latest capture, listed in data/live/depth_capture_divergence.csv. Capture movement, not a defect, and not a claim about who starts.",
   "clubs": [
     "DET",
     "NE",

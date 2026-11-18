@@ -43,7 +43,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
+from common import LIVE_CAPTURE_UTC, ROOT, read_json, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
 OFFICIAL_PAGE = "https://www.nfl.com/injuries/league/2026/reg10"
@@ -261,6 +261,10 @@ def main() -> int:
     LIVE.mkdir(parents=True, exist_ok=True)
     official = pd.read_csv(EXTRACT, dtype=str, keep_default_na=False)
     published = pd.read_csv(PUBLISHED, dtype=str, keep_default_na=False)
+    # The published table is a scheduled capture on its own date. The two dates must be
+    # published together: a match means "this cell has not moved since", not "checked today".
+    published_capture_utc = str(read_json(ROOT / "data" / "availability" / "manifest.json")
+                                .get("retrieved_utc", ""))
     calibration = archive_calibration()
     detail = compare(published, official)
     consistency, consistency_stats = internal_consistency(published)
@@ -275,6 +279,11 @@ def main() -> int:
     c = graded.defect_class.value_counts()
     head = dict(
         generated_utc=LIVE_CAPTURE_UTC,
+        official_source_read_utc=LIVE_CAPTURE_UTC,
+        published_capture_utc=published_capture_utc,
+        dating_note=("the official transcription was read " + LIVE_CAPTURE_UTC + " and the published table was "
+                     "captured " + (published_capture_utc or "on its own recorded date") + "; a match means the "
+                     "cell has not moved between those two reads, not that it was re-read today"),
         official_page=OFFICIAL_PAGE,
         method=METHOD,
         transcribed_clubs=in_scope,

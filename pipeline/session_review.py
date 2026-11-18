@@ -296,6 +296,23 @@ def build_verification_log(inj: dict, score: dict) -> pd.DataFrame:
              result="VERIFIED — 76 proposal rows and 90 question rows, every row carrying an allow-listed "
                     "official/primary reference URL; no register was deleted or rewritten.",
              ref_label="NFL scores", ref_url="https://www.nfl.com/scores/"),
+        dict(check_id="V-09", scope="Snapshot provenance and verification dating (2026-11-18 integration)",
+             method="Offline only: compared the 2026-11-13 official club-chart transcription with the immutable "
+                    "same-date archive and again with the published snapshot; checked every row of "
+                    "data/availability/depth_charts.csv against the per-club row counts and single retrieval "
+                    "timestamp in data/availability/manifest.json; re-ran pipeline/current_snapshot_audit.py, "
+                    "pipeline/live_verify_depth.py and the full test list. No NFL or club page was opened, so "
+                    "nothing here re-reads the live source.",
+             result="VERIFIED, WITH ONE DISCLOSURE ADDED — the same-date comparison is 115 of 115 slots "
+                    "(239 players, four clubs), the published snapshot reproduces its own capture, and the "
+                    "manifest invariants hold. What did not hold was the dating of the claim: the published "
+                    "verification page printed 115/115 MATCH without saying which two files were compared, while "
+                    "the charts had moved on 21 of those 115 slots between the verified date and the "
+                    "2026-11-18T04:24:05Z capture. The comparison is now same-date only, those 21 slots are "
+                    "published as capture movement (data/live/depth_capture_divergence.csv, Table 6b), and the "
+                    "latest capture is reported as not independently verified. make test: 275 passed, 1 skipped. "
+                    "Full record: `audit/INTEGRATION_VERIFICATION_2026-11-18.md`.",
+             ref_label="NFL injuries", ref_url="https://www.nfl.com/injuries/"),
     ]
     for r in rows:
         host = r["ref_url"].split("/")[2]
@@ -364,6 +381,31 @@ IRREGULARITIES = [
                      "does not attempt a name-matching heuristic.",
          owner_file="pipeline/fetch_availability.py, data/availability/unmatched_report_players.csv",
          ref_label="Houston Texans club depth chart", ref_url="https://www.houstontexans.com/team/depth-chart"),
+    dict(id="IR-8A07-01", severity="High · closed by the next capture; rule now test-pinned",
+         area="Snapshot provenance",
+         finding="An earlier integration pass rewrote the WAS, NYG, DET and NE rows of "
+                 "data/availability/depth_charts.csv from data/live/official_depth_extract_2026_11_13.csv — a "
+                 "hand transcription read four days earlier — while leaving every rewritten row stamped with the "
+                 "2026-11-17 capture time. The published snapshot then no longer reproduced what its own capture "
+                 "parsed: the per-club row counts disagreed with data/availability/manifest.json, which is the "
+                 "invariant pipeline/current_snapshot_audit.py enforces, and five of its tests errored on main. "
+                 "The scheduled capture of 2026-11-18T04:24:05Z re-parsed all 32 clubs and overwrote those rows, "
+                 "so the published file is again the capture it claims; the editing script has been removed.",
+         consequence="For one capture cycle the site published a 2026-11-13 reading of four club charts under a "
+                     "2026-11-17 timestamp, and the verification page reported 115 of 115 slots matching without "
+                     "saying which two files had been compared. The charts had in fact moved on 21 of those slots "
+                     "by the 2026-11-18 capture. A dated file whose rows are not from that date is not evidence, "
+                     "whichever direction the edit goes.",
+         next_action="Rules are now enforced in code, not by convention: pipeline/live_verify_depth.py compares "
+                     "the transcription only with its immutable same-date archive, data/live/"
+                     "depth_capture_divergence.csv publishes the movement between dates as movement, "
+                     "tests/test_live_verify.py pins the per-club row counts and single capture timestamp of the "
+                     "published snapshot, and scripts/reconcile_depth_charts.py is deleted. Closing a dating gap "
+                     "takes a fresh official read at the newer date, written by the scheduled capture — never an "
+                     "edit to either file.",
+         owner_file="data/availability/depth_charts.csv, data/live/depth_capture_divergence.csv, "
+                    "pipeline/live_verify_depth.py, tests/test_live_verify.py",
+         ref_label="Commanders club depth chart", ref_url="https://www.commanders.com/team/depth-chart"),
 ]
 
 

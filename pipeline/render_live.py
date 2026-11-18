@@ -65,11 +65,11 @@ def build_live(layout, table, card, kpi_grid, flag, src_link, SHA, SRC) -> str:
 
     body = []
     body.append(flag(
-        "<strong>What this page is.</strong> An independent second check of the published "
-        "tables against the official NFL sources, run outside the build. The build's own "
+        "<strong>What this page is.</strong> An independent second check of dated published "
+        "tables against captured official NFL sources, run outside the build. The build's own "
         "verifier only proves that every row <em>carries</em> an official link; this page "
-        "checks whether the row <em>matches</em> it. Where the two disagree, the row is "
-        "listed here instead of being corrected silently.", "info"))
+        "checks whether the row <em>matched</em> the source at the recorded capture time. "
+        "A later snapshot is not compared with an older source extract or silently corrected.", "info"))
 
     body.append(kpi_grid([
         card(str(head.get("clubs_passing", 0)) + "/" + str(head.get("clubs", 0)),
@@ -78,7 +78,8 @@ def build_live(layout, table, card, kpi_grid, flag, src_link, SHA, SRC) -> str:
              "lineup claims confirmed", "matchup page sentences graded one by one",
              "good" if not chead.get("contradicted") else "luck"),
         card(str(dhead.get("match", 0)) + "/" + str(dhead.get("slots_compared", 0)),
-             "depth slots match", f"{dhead.get('players_compared', 0)} players, four club charts", "good"),
+             "archived depth slots match",
+             f"{dhead.get('players_compared', 0)} players; 2026-11-13 capture, not the latest chart", "good"),
         card(str(chead.get("official_capture_drift", {}).get("values_changed", 0)),
              "official values changed", "in 29 hours, between two official captures", "luck"),
     ]))
@@ -95,16 +96,24 @@ without network access, and it makes the transcription itself auditable.</p>
 {table(
     [["Official injury report", e("2026 week 10, four matchups (WAS@NYG, NE@DET, KC@ATL, MIN@GB)"),
       f'{head.get("official_rows", 0)} players', src_link(INJ_URL, "nfl.com/injuries/league/2026/reg10")],
-     ["Published injury table", e("written by the scheduled availability workflow"),
+     ["Published injury table", e("scheduled availability capture " + str(head.get("published_capture_utc", "") or "date not recorded") + " · " + str(head.get("official_source_read_utc", "")) + " official read"),
       f'{head.get("published_rows", 0)} rows', src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/availability/injuries.csv", "injuries.csv") + " · " + src_link(INJ_URL, "official source")],
-     ["Official club depth charts", e("commanders.com, giants.com, detroitlions.com, patriots.com"),
-      f'{dhead.get("slots_compared", 0)} slots', src_link("https://www.commanders.com/team/depth-chart", "commanders.com")],
-     ["Published depth table", e("same workflow, same capture"),
-      f'{dhead.get("players_compared", 0)} players', src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/availability/depth_charts.csv", "depth_charts.csv") + " · " + src_link("https://www.commanders.com/team/depth-chart", "official club chart")],
+     ["Official club depth charts", e("four-club source transcription read " + str(dhead.get("official_source_read_utc", ""))),
+      f'{dhead.get("slots_compared", 0)} slots',
+      " · ".join([
+          src_link("https://www.commanders.com/team/depth-chart", "Commanders"),
+          src_link("https://www.giants.com/team/depth-chart", "Giants"),
+          src_link("https://www.detroitlions.com/team/depth-chart", "Lions"),
+          src_link("https://www.patriots.com/team/depth-chart", "Patriots")])],
+     ["Matching immutable depth snapshot", e("scheduled capture " + str(dhead.get("comparison_snapshot_utc", ""))),
+      f'{dhead.get("players_compared", 0)} players',
+      src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/availability/history/2026-11-13/depth_charts.csv", "2026-11-13 depth snapshot") + " · " + src_link("https://www.commanders.com/team/depth-chart", "official club chart")],
+     ["Latest scheduled depth snapshot", e(str(dhead.get("latest_snapshot_utc", "")) + "; not independently verified against a time-matched extract"),
+      "NOT VERIFIED", src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/availability/depth_charts.csv", "latest depth snapshot") + " · " + src_link("https://www.commanders.com/team/depth-chart", "official club chart")],
      ["Matchup lineup claims", e("every status and replacement sentence on the deficiency page"),
       f'{chead.get("claims", 0)} claims', src_link("https://github.com/karagemop466-tech/Korea1/blob/main/data/lineups/week10_2026_matchup_deficiencies.csv", "source table") + " · " + src_link(INJ_URL, "official source")]],
     ["Source", "Scope", "Size", "Official reference"],
-    caption="Table 1. Verification scope. Every comparison in this page is against one of these sources.")}
+    caption="Table 1. Verification scope. The latest depth capture is listed as a freshness boundary, not as a verified comparison.")}
 <p><strong>Nothing is filled in.</strong> A blank official cell never confirms a published
 value, and a published blank is never filled from the official page.</p>
 </section>""")
@@ -147,8 +156,11 @@ would be a parser defect.</p>
     body.append(f"""
 <section>
 <div class="section-head"><h2>3 · Injury table, field by field</h2></div>
-<p>Every published cell for the eight transcribed clubs was compared with the official
-page. Differences are classified so that a normal midweek status update is never reported as
+<p>Every published cell for the eight transcribed clubs was compared with the official page,
+read on <strong>{e(head.get("official_source_read_utc", ""))}</strong>, against the published
+table as captured on <strong>{e(head.get("published_capture_utc", "") or "the capture named in data/availability/manifest.json")}</strong>.
+The two dates differ, so a match here means "this cell has not moved since", not "verified
+today". Differences are classified so that a normal midweek status update is never reported as
 an error:</p>
 <ul>
 <li><strong>confirmed defect</strong> — the published value cannot be explained by a later
@@ -204,14 +216,29 @@ official page at all.</p>
     # ---- 6. depth charts --------------------------------------------------
     rows = [[e(r.team), e(r.MATCH), e(r.MISMATCH), e(r.MISSING), e(r.EXTRA), _pill(r.verdict),
              src_link(r.source_url, "club chart")] for r in dsum.itertuples()]
+    div = _read(live / "depth_capture_divergence.csv")
+    div_table = ""
+    if not div.empty:
+        drows = [[e(r.team), e(r.unit), e(r.row), e(r.official_2026_11_13), e(r.latest_capture),
+                  _pill("CAPTURE MOVEMENT"), src_link(r.source_url, "club chart")]
+                 for r in div.itertuples()]
+        div_table = f"""
+<p><strong>What the verified date and the published date disagree about.</strong>
+{len(div)} of {dhead.get("slots_compared", 0)} checked slots carry a different ordered player list in
+the latest capture ({e(dhead.get("latest_snapshot_utc", ""))}) than in the official transcription
+({e(dhead.get("comparison_snapshot_utc", "")).split("T")[0]}). Each row below is <em>reported</em>, not
+repaired: the published snapshot still holds what its own capture parsed, because rewriting a dated
+capture to match an older reading would destroy the timestamp and row-count provenance that
+<code>pipeline/current_snapshot_audit.py</code> checks. The fix, when one is wanted, is a fresh
+official read at the newer date — not an edit to the older file.</p>
+{table(drows, ["Club", "Unit", "Slot", "Official transcription 2026-11-13", "Latest capture", "Reading", "Official chart"],
+       caption="Table 6b. Slots whose chart order moved between the verified date and the published capture — movement, not a defect, and not independently verified at the newer date.")}"""
     body.append(f"""
 <section>
 <div class="section-head"><h2>6 · Depth charts: the 1st / 2nd / 3rd / 4th string claim</h2></div>
-<p>The whole availability argument rests on the order of names on a club's depth chart. Each
-published position row was compared with the club's own chart as an ordered list, because the
-order is the claim.</p>
+<p>The source transcript was read on <strong>{e(dhead.get("official_source_read_utc", ""))}</strong> and is compared only with its immutable scheduled snapshot from <strong>{e(dhead.get("comparison_snapshot_utc", ""))}</strong>. These are separate reads on 2026-11-13. The latest scheduled chart capture is <strong>{e(dhead.get("latest_snapshot_utc", ""))}</strong> and has <strong>not</strong> been independently re-read against a matching official extract; changes between capture dates are not called parser defects, and the newer capture is not edited to look like the older one. The 1st/2nd/3rd/4th-string order remains a chart ordering, not a confirmed starting role or snap share.</p>
 {table(rows, ["Club", "Slots matched", "Mismatched", "Missing", "Extra", "Verdict", "Official chart"],
-       caption="Table 6. Depth-chart slot comparison for the four clubs used by the matchup pages.")}
+       caption="Table 6. Point-in-time depth-chart comparison: official transcription and immutable snapshot both dated 2026-11-13.")}{div_table}
 </section>""")
 
     if not disc.empty:
@@ -291,6 +318,12 @@ here.</li>
 <li><strong>Order is not role.</strong> A depth chart places names in an order. It does not
 confirm who starts, who is active, or how much a backup will play; only the official inactives
 list and the game itself do that.</li>
+<li><strong>Dated, not current.</strong> Every verdict here is a verdict about the
+{e(dhead.get("comparison_snapshot_utc", "")).split("T")[0]} reading. The snapshot the site publishes
+today was fetched on <strong>{e(dhead.get("latest_snapshot_utc", ""))}</strong> and carries
+{dhead.get("current_capture_divergent_slots", 0)} slots whose order has moved since; those rows are
+not independently verified, and "not verified" is not "wrong" either. Freshness is disclosed, not
+inferred.</li>
 <li><strong>No causal claim.</strong> Verifying that a player is out says nothing about how
 many points that is worth. No availability term has been measured or priced.</li>
 </ul>
@@ -303,7 +336,7 @@ The machine-readable verdicts are downloadable as
 </section>""")
 
     return layout("live-verification.html", "Live verification",
-                  "Every published row re-checked against the official page, one line at a time.",
+                  "Dated injury and depth captures re-checked against official pages; newer snapshots are not treated as historical mismatches.",
                   "".join(body), wide=True)
 
 
