@@ -3393,3 +3393,27 @@ rebuilds of committed inputs, and integration.
 **Added after the merge.** F-59 (float-precision drift in regenerated CSVs; no substantive value changed; recorded in `flagged_request_register_2026_11_18.csv`). Re-run on the merged tree: `make build` exit 0, 0 failing checks; `make test` 202 passed; `tests/check_rebuild.py` passes.
 
 **Pull request and merge.** Opened from `arena/40fa7839-korea1` into `main`. The PR number and merge result are in the PR itself and in the GitHub Actions run for the Pages deploy. This board records the branch and the commit that was merged; it does not record a merge commit hash, because the hash is created by the merge.
+
+## arena/40fa7839-korea1 — 2026-11-18 late status: request register overlap, PR #87 held open
+
+**Outcome.** The request register, landing-page panel, flagged F-52 to F-59, and 13 tests are complete on `arena/40fa7839-korea1` (head `08a071b`), and every check passed on that head (`make build` 0 failing checks; `make test` 225 passed; `tests/check_rebuild.py` passes; the PR `verify` check passed). **PR #87 is NOT merged.** It is `CONFLICTING` with `main`, and I did not merge it, for the reason below.
+
+**Why it is held.** Three sessions are building the same CS5 register on this board:
+- `arena/53ef9544-korea1`: its register (81 rows, IDs RR-01 to RR-81, statuses DONE / PARTLY DONE / NOT STARTED / REJECTED / OWNER DECISION / BLOCKED, page `request-register-2026-11-18.html`) is already on `main` (merged).
+- `arena/f84bc1d7-korea1`: PR #89 "CR1–CR3: request register (81 rows)", open and conflicting.
+- `arena/40fa7839-korea1`: this session, PR #87 (83 rows, IDs RR01 to RR83, statuses BUILT / PARTIAL / BLOCKED / OPEN / NOT REPRODUCED / RULE HONOURED, page `request-register.html`).
+- `arena/ba09384a-korea1`: PR #88 "requirement verification register", open.
+
+Merging #87 would require overwriting `data/integration/request_register_2026_11_18.csv` and `assets/data/request_register_2026_11_18.csv`, which another session owns. The board rule is that shared outputs change only through the integration session, and that scopes do not overlap. I did not overwrite another session's file, and I did not force a choice between registers.
+
+**Decision needed (owner).** Choose one register as authoritative. Options: (a) keep `main`'s register and fold this branch's additional evidence rows and the F-52 to F-59 findings into it as a follow-up; (b) replace `main`'s register with this one (requires the owner to accept the status vocabulary and the 83-row structure, and to close #89 and #88 as duplicates); (c) publish both under different filenames, with a cross-reference. This session takes no action on that choice.
+
+**Verified facts this session adds, which any chosen register should carry.**
+- The live NFL.com Week 10 schedule page (read 2026-11-18, part 1 of 2) shows Final for at least twelve Week 10 games; the official score register holds one Week 10 game (F-58).
+- The schedule file holds 14 Week 10 games; a 272-game capture is needed before any fixture-context or venue claim (F-55).
+- Four clubs (CHI, DEN, PHI, TB) have zero injury rows in the 2026-11-18 capture; the live page could not be read from the sandbox (F-52).
+- The request's 149 count of rank-1 groups is not reproduced: 161 by team/unit/position, 15 with slot (F-53).
+- The "136-game log" named in the request is not in the repo (F-54).
+- Board entries GB1 to GB7 are marked in progress but their outputs are not on `main` (F-56).
+
+**What remains open for the owner.** PR #87 merge (blocked on the register decision above); the Pages deploy for the merged state (not confirmed, since no merge happened); the four-club live read (F-52).
