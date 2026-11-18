@@ -11,16 +11,28 @@ name: Official game centre and Game Book capture
 # See pipeline/fetch_official_games.py for the capture rules and
 # pipeline/official_games.py for the parsers.
 on:
+  # The capture runs when this workflow file changes on main.  The token this
+  # project uses cannot create a workflow_dispatch event ("Resource not
+  # accessible by integration"), so a push to the workflow file is the manual
+  # trigger; the schedule below is the unattended one.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/gamebooks.yml'
   workflow_dispatch:
     inputs:
       weeks:
         description: "Regular-season weeks to capture (e.g. 1-11, or 9,10)"
         required: false
-        default: "1-18"
+        default: "9,10"
       gamebook_weeks:
         description: "Weeks whose Game Book PDFs are captured (blank = every finished game)"
         required: false
         default: ""
+  schedule:
+    # 03:47 and 15:47 UTC daily: a finished game publishes its Game Book within
+    # hours of the final whistle, and the league edits the schedule page as it goes.
+    - cron: "47 3,15 * * *"
 
 permissions:
   contents: write
@@ -45,14 +57,16 @@ jobs:
         run: |
           python pipeline/fetch_official_games.py \
             --season 2026 \
-            --weeks "${{ github.event.inputs.weeks || '1-18' }}" \
+            --weeks "${{ github.event.inputs.weeks || '9,10' }}" \
             ${{ github.event.inputs.gamebook_weeks && format('--gamebook-weeks {0}', github.event.inputs.gamebook_weeks) || '' }}
-      - name: Rebuild the official-evidence tables and pages
-        if: hashFiles('pipeline/render_gamebooks.py') != ''
+      - name: Rebuild the official-evidence tables and the published pages
         run: |
-          python pipeline/availability_graph.py
-          python pipeline/fixture_context.py
-          python pipeline/render_gamebooks.py
+          if [ -f pipeline/render_gamebooks.py ]; then
+            python pipeline/availability_graph.py
+            python pipeline/fixture_context.py
+            python pipeline/render_gamebooks.py
+          fi
+          make build
       - name: Verify (row sources, links, captions) before publishing
         run: |
           python pipeline/verify_site.py
@@ -70,10 +84,7 @@ jobs:
         run: |
           git config user.name "gamebooks-bot"
           git config user.email "gamebooks-bot@users.noreply.github.com"
-          git add -A data/evidence/official_games data/processed/official_fixtures.csv \
-                    data/processed/official_gamecentres.csv data/processed/official_gamebooks.csv \
-                    data/processed/official_gamebook_rosters.csv data/processed/availability_graph.csv \
-                    data/processed/fixture_context.csv gamebooks.html assets/data
+          git add -A data assets ./*.html EXECUTIVE_SUMMARY.md
           git diff --cached --quiet && { echo "no change"; exit 0; }
           git commit -m "gamebooks: official capture $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase origin "${GITHUB_REF_NAME}"
