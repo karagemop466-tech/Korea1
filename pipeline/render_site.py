@@ -1175,6 +1175,7 @@ Earlier audit findings are preserved below, including their original scope.</p>
 No manual input is required to use the current site. A correction must update the source evidence and regenerate the table, not merely edit a displayed number.</p>
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
     body += _flagged_2026_11_15_section()
+    body += _flagged_2026_11_18_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1633,6 +1634,25 @@ def _flagged_2026_11_15_section() -> str:
             "Details and the brief tracker: <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
                     caption="Session findings with an official source") + listing + "</section>")
+
+
+def _flagged_2026_11_18_section() -> str:
+    """Flagged rows F-42 onward from the 2026-11-18 session (CS6). Rows with no source are shown as text."""
+    fl = _read_integration("flagged_2026_11_18.csv")
+    if fl is None:
+        return ""
+    sourced = fl[fl.source_url != ""]
+    rows = [[e(r.id), e(r.severity), e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+             src_link(r.source_url, r.source_label)] for r in sourced.itertuples(index=False)]
+    text = [f"<strong>{e(r.id)}</strong> ({e(r.severity)}) {e(r.finding)} <span class=\"small\">No official source: shown as text.</span>"
+            for r in fl[fl.source_url == ""].itertuples(index=False)]
+    listing = ("<ul class=\"findings\">" + "".join(f"<li>{x}</li>" for x in text) + "</ul>") if text else ""
+    return ("<section><h2>Findings from the 2026-11-18 session</h2>"
+            "<p>Irregularities found while checking the 2026-11-18 spot-check and the availability job. None blocks merge. "
+            "Spot-check rows: <code>data/live/spotcheck_2026_11_18/spotcheck_rows.csv</code>.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
+                    caption="Session findings with an official source · F-42 to F-51")
+            + listing + "</section>")
 
 
 def _landing_panels() -> str:

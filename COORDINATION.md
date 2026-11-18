@@ -3088,3 +3088,36 @@ reaches the official pages and was used to read the pages this session quotes.
 **Pull request and merge:** PR #81 — https://github.com/karagemop466-tech/Korea1/pull/81 — `arena/292f7ae1-korea1` → `main`, merged without waiting. Verification summary, sources used and flagged irregularities carried in the PR body; all checks green before merge.
 
 **Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard. Flagged items do not block merge.
+## Session `arena/db6cd525-korea1` — 2026-11-18 request register, drift repair and spot-check (claim)
+
+**Protocol deviation (recorded as every earlier session recorded it).** The platform pins this session to branch `arena/db6cd525-korea1` (base `main` = `5df9bab`). The `session-<id>/<task>` worktree pattern cannot be used; this branch is the task and integration branch. Sibling sessions were pushing to their own `arena/*` branches during this session (seen via `gh run list`); none of their branches or PRs is touched.
+
+**Why this session exists.** The 2026-11-18 request repeats the 2026-11-13 request in full. Most of it has been partly built by earlier sessions. This session (a) repairs two defects found while re-running the build, (b) spot-checks the live official pages against the committed captures, and (c) publishes one register that says, for every request item, what is built, what is partly built, what is blocked by a source and what was rejected as requested.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CS1 | Board claim and session log | **done** | `arena/db6cd525-korea1` | `COORDINATION.md` (own section only) |
+| CS2 | Repair: `test_depth_snapshot_matches_the_official_charts` compared a 2026-11-13 extract with the 2026-11-17 capture (comparison-date error). Compare with the same-date dated capture instead | **done** (commit 8fdf383) | `arena/db6cd525-korea1` | `tests/test_live_verify.py` (one test) |
+| CS3 | Repair: `availability.yml` committed raw captures but not the derived pages built from them (published tables lagged the captures). Scheduled job now regenerates and stages every derived output | **done** (commit 52d242b; first scheduled run not yet observed) | `arena/db6cd525-korea1` | `.github/workflows/availability.yml` |
+| CS4 | Official spot-check of the 2026-11-17 capture against the live pages on 2026-11-18: 42 injury rows (WAS, NYG, NE, DET) and the Commanders depth chart | **done** for the injury report (44/44 lines) and the WAS depth rows in the excerpt (23/23); full WAS key-level comparison not done | `arena/db6cd525-korea1` | `data/live/spotcheck_2026_11_18/**` (new), `pipeline/session_20261118.py` (new) |
+| CS5 | 2026-11-18 request register: one row per request item, with status, evidence file, clearing gate and official link; page and tests | **not done** (deferred; no request register page was published) | `arena/db6cd525-korea1` | `pipeline/session_20261118.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
+| CS6 | Flagged additions F-42 onward for irregularities found this session | **done** (F-42 to F-51) | `arena/db6cd525-korea1` | `data/integration/flagged_2026_11_18.csv` (new); `pipeline/render_site.py` (`build_flagged` one line) |
+| CS7 | Integration: nav entry, executive-summary addendum, Makefile wiring, page lists, README link | **partly done** (Makefile step for the session script; no nav or page list change, because CS5 is not built) | `arena/db6cd525-korea1` | `pipeline/render_site.py` (NAV only), `pipeline/render_summary.py` (addendum only), `Makefile`, `tests/check_*.py` and `pipeline/verify_site.py` (page lists), `README.md` (one line) |
+| CS8 | Final `make build`, `make test`, `check_rebuild`, PR to `main`, merge without waiting, Pages confirmed, record here | **in progress** (see the session log below) | `arena/db6cd525-korea1` | `COORDINATION.md`, branch → `main` |
+
+### Session `arena/db6cd525-korea1` — 2026-11-18 session log (CS1–CS8)
+
+**Board check (CS1).** Read before any file change: `COORDINATION.md` entries after `arena/120935ef-korea1`, and the `main` sessions `arena/cb61dcec-korea1` (PR #75) and `arena/27eca1b3-korea1` (S18, PR #77). Claim commit `30d11ae` was pushed before any file change.
+
+**Finding that changes main (F-50, repaired on this branch).** Commit `0193893` (S18, PR #77) replaced the WAS, NYG, DET and NE rows of `data/availability/depth_charts.csv` with the 2026-11-13 official extract and stamped them `2026-11-17T19:51:56Z`. It also changed `test_depth_snapshot_matches_the_official_charts` so that drift is logged and cannot fail. This branch restores the strict test (2026-11-13 extract against the 2026-11-13 dated capture). The S18 rows are no longer in the newest file: the scheduled job on `main` (commit `9933bba`, 2026-11-18T04:24:05Z) wrote a new capture, which is the source of record. The live Commanders page read on 2026-11-18 agrees with that capture on the rows compared. **Owner decision requested (F-50, F-51):** confirm, and remove or guard `scripts/reconcile_depth_charts.py`, which still rewrites the depth file when run.
+
+**Rebase log.** Conflicts: `COORDINATION.md` (both sides' sections kept, `main`'s first) and `tests/test_live_verify.py` (CS2 version kept). The generated outputs were discarded and regenerated by `make build` after the rebase; no source change was lost.
+
+**Verification (this branch, after the restore).** `make build` exit 0 (`verify_site`: 0 failing checks; `check_sources`: 44 pages, 5553 rows; `check_links`: 53 pages). `make test`: 189 passed. `make -o injuries site` and `make -o injuries verify` (the availability job path) exit 0. A clean rebuild on top of the committed tree leaves no diff, and `tests/check_rebuild.py` passes.
+
+**Spot-check (CS4).** `pipeline/session_20261118.py` compares the verbatim excerpts in `data/live/spotcheck_2026_11_18/` with the committed files. Injury report, four clubs: 44 of 44 lines match the 2026-11-17 capture. Commanders Offense and Defense: 23 of 23 rows match. Reserve list, November: live page 25 rows, 2026-11-17 19:59Z capture 25 rows, 17 on both, 8 on the live page only, 8 in the capture only. Not checked: Special Teams, the other 28 clubs' charts, and the full 347-row injury report.
+
+**Still open, not done here.** CS5 (the request register (one row per request item, about 60 items)) was not built. Most request items cannot be verified from the sources read. Items that need an owner or a new source are in F-42 to F-51 on `flagged.html`. Also open: the price-data policy (F-44; `DECISIONS.md` has none), the reserve-list source of record (F-45), and the request identifiers VR-*, VQ-*, SG-* (F-48), which map to no repository artefact.
+
+**Scheduled-job caveat (F-47).** The scheduled jobs commit with `GITHUB_TOKEN`. GitHub does not start workflows for those pushes, so `verify.yml` does not re-check the scheduled commits.
+
