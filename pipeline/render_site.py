@@ -111,6 +111,7 @@ NAV_GROUPS = [
     ("Evidence", [
         ("methodology.html", "Methodology"),
         ("requirements.html", "Requirements"),
+        ("request-register.html", "Request register · 2026-11-18"),
         ("sources.html", "Sources"),
         ("referents.html", "Referent register"),
         ("audit.html", "Independent audit"),
@@ -1176,6 +1177,7 @@ No manual input is required to use the current site. A correction must update th
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
     body += _flagged_2026_11_15_section()
     body += _flagged_2026_11_18_section()
+    body += _flagged_request_register_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1655,8 +1657,51 @@ def _flagged_2026_11_18_section() -> str:
             + listing + "</section>")
 
 
+_REG_PILL = {"BUILT": "skill", "RULE HONOURED": "skill", "PARTIAL": "partial", "BLOCKED": "no",
+             "NOT REPRODUCED": "no", "OPEN": "unverified"}
+
+
+def _request_register_landing() -> str:
+    """Decision-readiness table on the landing page: one row per request item (CS5, arena/40fa7839-korea1)."""
+    import pandas as _pd
+    p = ROOT / "data" / "integration" / "request_register_2026_11_18.csv"
+    if not p.exists():
+        return ""
+    d = _pd.read_csv(p, dtype=str, keep_default_na=False)
+    order = ["BUILT", "PARTIAL", "BLOCKED", "OPEN", "NOT REPRODUCED", "RULE HONOURED"]
+    counts = d["status"].value_counts()
+    summary = " · ".join(f"{int(counts.get(s, 0))} {s.lower()}" for s in order)
+    rows = [[e(r.id), e(r.requirement),
+             f'<span class="pill {_REG_PILL.get(r.status, "")}">{e(r.status)}</span>',
+             e(r.clearing_gate) or "—", e(r.clearing_number) or "—",
+             src_link(r.source_url, r.source_label)] for r in d.itertuples(index=False)]
+    return ("<section><h2>Decision readiness: one row per requirement</h2>"
+            f"<p>{len(d)} items from the 2026-11-18 request, each with its status, the gate that blocks it and the number "
+            f"that would clear it. Status counts: {e(summary)}. Full evidence for every row, including the file each "
+            "status rests on, is on the <a href=\"request-register.html\">request register</a>.</p>"
+            "<details open><summary>Show all rows</summary>"
+            + table(rows, ["ID", "Requirement (as stated)", "Status", "Blocking gate", "Number that clears it", "Official source"],
+                    caption="Request register · status from the committed evidence files")
+            + "</details></section>")
+
+
+def _flagged_request_register_section() -> str:
+    """Flagged rows F-52 onward from the request-register session (arena/40fa7839-korea1)."""
+    fl = _read_integration("flagged_request_register_2026_11_18.csv")
+    if fl is None or fl.empty:
+        return ""
+    rows = [[e(r.id), e(r.severity), e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+             src_link(r.source_url, r.source_label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the request-register check (2026-11-18)</h2>"
+            "<p>Irregularities found while building the request register. None blocks merge. "
+            "Evidence for each is on the <a href=\"request-register.html\">request register</a>.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
+                    caption="Request-register findings · F-52 to F-58")
+            + "</section>")
+
+
 def _landing_panels() -> str:
-    parts = []
+    parts = [_request_register_landing()]
     import pandas as _pd
     from common import ROOT as _ROOT
     cp = _ROOT / "data" / "processed" / "control_baseline.csv"

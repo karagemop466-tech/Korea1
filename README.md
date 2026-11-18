@@ -48,6 +48,7 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `lineups.html` — seven observed players plus two club depth charts; roles and impacts blank
 - `injuries.html` — verified official captures, the coverage gap and the availability signal register
 - `requirements.html` — requirement-by-requirement delivery register
+- `request-register.html` — **2026-11-18 request register**: one row per request item (83 rows), with its status (BUILT / PARTIAL / BLOCKED / OPEN / NOT REPRODUCED / RULE HONOURED), the repo file it rests on, the gate that blocks it, the number that would clear it and an official source; the same table is the decision-readiness panel on the landing page (added 2026-11-18, `arena/40fa7839-korea1`)
 - `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
 

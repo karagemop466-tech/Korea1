@@ -33,6 +33,7 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
          "suggestions-review-2026-11-14.html",
          "brief-2026-11-15.html",
+         "request-register.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]
