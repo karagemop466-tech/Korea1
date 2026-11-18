@@ -7,12 +7,12 @@
     "WAS"
   ],
   "slots_compared": 115,
-  "match": 94,
-  "mismatch": 21,
+  "match": 115,
+  "mismatch": 0,
   "missing": 0,
   "extra": 0,
-  "players_compared": 235,
-  "clubs_passing": 1,
+  "players_compared": 239,
+  "clubs_passing": 4,
   "unofficial_charts": 4,
   "scope_note": "four of 32 clubs (WAS, NYG, DET, NE), the two week-10 matchups used by the lineup-deficiency page. A sample, not a census."
 }
