@@ -230,7 +230,10 @@ def facts() -> dict:
     sg = rd(PROC / "strategy_gates.csv")
     f["strategies"] = len(sg)
     f["strategies_validated"] = int((sg.verdict == "VALIDATED").sum())
-    f["strategies_g1_fail"] = int((~sg.G1_data.astype(bool)).sum()) if "G1_data" in sg else len(sg)
+    # The gate columns hold the strings "True"/"False"; `astype(bool)` would make "False" truthy, so the
+    # count is taken from the literal text. (Same guard as the edge-available flag below.)
+    f["strategies_g1_pass"] = int((sg.G1_data.str.strip().str.lower() == "true").sum()) if "G1_data" in sg else 0
+    f["strategies_g1_fail"] = len(sg) - f["strategies_g1_pass"]
     lb = rd(OUT / "leaderboard_master.csv")
     f["leaderboard_rows"] = len(lb)
     f["demotion_rows"] = len(rd(OUT / "demotion_gate.csv"))

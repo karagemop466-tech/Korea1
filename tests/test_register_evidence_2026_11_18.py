@@ -198,6 +198,33 @@ def test_movement_table_cannot_invent_a_rank_change():
     assert got.official_scores_url.str.startswith("https://www.nfl.com/scores/2026/week-").all()
 
 
+def test_gate_flags_are_counted_from_literals_not_string_truthiness():
+    """"False" read out of a CSV is a non-empty string, so `astype(bool)` would call every gate a pass.
+
+    This guard recomputes the G1 pass/fail split from the gate table's literal text and compares it with
+    the published fact. The first version of the summary printed "0 fail G1" for exactly this reason.
+    """
+    sg = pd.read_csv(ROOT / "data" / "processed" / "strategy_gates.csv", dtype=str, keep_default_na=False)
+    fac = _csv("register_evidence_facts_2026_11_18.csv").set_index("fact")["value"]
+    passed = int((sg.G1_data.str.strip().str.lower() == "true").sum())
+    assert int(fac["strategies_g1_pass"]) == passed
+    assert int(fac["strategies_g1_fail"]) == len(sg) - passed
+    assert int(fac["strategies_g1_pass"]) + int(fac["strategies_g1_fail"]) == int(fac["strategies"])
+
+
+def test_no_renderer_reference_points_at_a_missing_fact():
+    """`F('name')` printing an empty string is how a sentence lost its number once already."""
+    fac = set(_csv("register_evidence_facts_2026_11_18.csv")["fact"])
+    src = (ROOT / "pipeline" / "render_register_evidence_20261118.py").read_text()
+    used = set(re.findall(r"F\('([a-z0-9_]+)'\)", src))
+    assert used, "the renderer is expected to pull numbers from the facts table"
+    missing = sorted(used - fac)
+    assert not missing, f"renderer asks for facts the builder never computes: {missing}"
+    for k in used:
+        v = str(_csv("register_evidence_facts_2026_11_18.csv").set_index("fact")["value"].get(k, ""))
+        assert v.strip() != "", f"fact {k} is empty, so the page prints a hole"
+
+
 def test_page_is_rendered_from_the_committed_data_and_carries_the_pin():
     assert PAGE.exists(), "run make build"
     html = PAGE.read_text()
