@@ -3121,3 +3121,26 @@ reaches the official pages and was used to read the pages this session quotes.
 
 **Scheduled-job caveat (F-47).** The scheduled jobs commit with `GITHUB_TOKEN`. GitHub does not start workflows for those pushes, so `verify.yml` does not re-check the scheduled commits.
 
+
+---
+## Session `arena/7aae360e-korea1` — 2026-11-18 claim: per-item request register (CS5), official reads, decision table
+
+**Board read first (2026-11-18T04:55Z).** Siblings active on `main` right now, per `gh pr list` and `gh run list`:
+`arena/8a075837-korea1` (PR #84 — date-matched depth checks, capture-provenance guards; touches `pipeline/render_site.py`,
+`pipeline/render_summary.py`, `scripts/reconcile_depth_charts.py`, `tests/test_live_verify.py`),
+`arena/42b6f5e9-korea1` (PR #83 — stale-PR takeovers; touches `index.html`, `pipeline/session_20261115.py`, `EXECUTIVE_SUMMARY.md`),
+`arena/99b908ab-korea1` (PR #82 — Game Book layer; touches `.github/workflows/*`, `pipeline/fetch_official_games.py`, `Makefile`),
+`arena/b450c57b-korea1` (PR #80), `arena/87d27a1d-korea1` (running: "depth reconciliation safety repair" — F-51 guard).
+None of those scopes is touched here. `pipeline/render_site.py` (NAV, index cards, flagged rows) is **not** edited: a
+wiring request is logged at the end of this section instead. This session's files are all new, plus one added Makefile
+site step and page-list additions in `tests/check_links.py` / `tests/check_sources.py`.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| RR1 | **Per-item request register for the 2026-11-18 brief** (CS5, left "not done" by `arena/db6cd525-korea1`): one row per request item with status, evidence path, what was checked, the gate that blocks it, the number that clears it and the official source; a builder that recomputes every claimed count from committed data; a page; a test | **in progress** | `arena/7aae360e-korea1` | `pipeline/register_20261118.py` (new), `pipeline/render_register_20261118.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `data/integration/register_verify_2026_11_18.csv` (new), `data/integration/register_flags_2026_11_18.csv` (new), `data/integration/register_questions_2026_11_18.csv` (new), `data/integration/register_suggestions_2026_11_18.csv` (new), `assets/data/register_*.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new), `tests/check_links.py` + `tests/check_sources.py` (page lists only), `Makefile` (one site step), `README.md` (one link), `COORDINATION.md` (own section) |
+| RR2 | **Fresh official reads 2026-11-18** with clock times and hashes under `data/live/register_reads_2026_11_18/`: Week 10 injury report row counts, the live injuries page, the November reserve list, the Week 11 schedule and the Week 10 scores page, one official game-centre venue line, and the Houston depth-chart source question (F-49). Verbatim excerpts committed; every register "verified" claim points at one of them | **in progress** | `arena/7aae360e-korea1` | `data/live/register_reads_2026_11_18/**` (new), consumed by RR1 |
+| RR3 | **Personnel-ablation contract** for the brief items "Add injury and personnel ablations instead of fixed penalties" / "…with chronological holdouts": confirm in code that no fixed injury penalty is applied anywhere, and publish the ablation design with the exact sample size it needs, marked blocked while the historical corpus carries no personnel features | **in progress** | `arena/7aae360e-korea1` | `pipeline/register_20261118.py` (ablation audit section), `data/integration/register_ablation_2026_11_18.csv` (new), rendered inside the RR1 page |
+
+**Wiring request to the integration session** (files owned elsewhere, so not edited here): after merge, add
+`("request-register-2026-11-18.html", "Request register")` to `NAV_GROUPS` in `pipeline/render_site.py`, one index card
+pointing at it, and `RR-*` rows into `build_flagged` if the owner wants them mirrored on `flagged.html`.
