@@ -1,5 +1,5 @@
 team,player,position,unit,slot,depth_rank,game_status,matched,note
-WAS,Lucas Patrick,C,Offense,C #4,1.0,Out,True,
+WAS,Lucas Patrick,C,Offense,,,Out,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 WAS,Colson Yankoff,TE,Offense,TE #8,2.0,Out,True,
 NYG,Malik Harrison,LB,Defense,,,Questionable,False,"the player is not on the club's published depth chart (a practice-squad call-up, a recent signing, or a chart lag); no depth can be assigned"
 NE,Ben Brown,C,Offense,C #4,2.0,Out,True,
