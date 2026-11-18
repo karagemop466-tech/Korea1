@@ -3762,3 +3762,17 @@ generators and all 30 test modules.
 passed**; the branch was then built in a clean clone of its own head (the CI condition) and
 `tests/check_rebuild.py` reported no drift — which is how the absolute-path bug above was found and is now
 kept from returning.
+
+**Why this branch's first CI run was red, and the rule that follows (commit `5462c21`).**
+`pipeline/session_review.py` builds the repository inventory from `git ls-files`. While a path is unmerged,
+`git ls-files` prints it once per index stage, so the build that ran *during* my conflict resolution
+published `COORDINATION.md` three times. `tests/check_rebuild.py` compares a clean rebuild against the
+committed output — in CI, that is a checkout with no unmerged paths — so it correctly reported drift on
+`repo_inventory.csv` (both copies) and `repo-review.html`. Nothing was wrong with the data; the committed
+output had been produced in a transient index state.
+
+Rule for every session here, including this one: **re-run the generators after the last conflict is
+resolved, before committing the merge.** And when a rebuild disagrees with a committed artefact, reproduce
+it in a clean clone (`git clone --branch <branch> "file://$(pwd)" /tmp/x && cd /tmp/x && make build &&
+git status --porcelain`) instead of force-committing the local copy — that is how both of this session's
+reproducibility bugs (the absolute evidence path and this one) were found in minutes.
