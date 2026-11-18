@@ -45,7 +45,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from official_games import (html_to_text, parse_game_book, parse_game_centre,  # noqa: E402
-                            parse_roster_entries, parse_schedule_page)
+                            parse_lineup_rows, parse_roster_entries, parse_schedule_page,
+                            parse_two_column_roster, split_columns)
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "data" / "evidence" / "official_games"
@@ -169,11 +170,13 @@ def main() -> int:
         text = html_to_text(raw.decode("utf-8", "replace"))
         write_raw(RAW_DIR / "schedule" / f"REG{week}.html", raw)
         nb, sh = write_gz(EVIDENCE / f"schedule/REG{week}.txt.gz", text)
+        hb, hh = write_gz(EVIDENCE / f"schedule/REG{week}.html.gz", raw.decode("utf-8", "replace"))
         manifest["schedule_pages"].append(dict(week=week, url=url, http_status=status,
                                                raw_bytes=len(raw), raw_sha256=sha256_bytes(raw),
                                                text_bytes=nb, text_sha256=sh,
+                                               html_bytes=hb, html_sha256=hh,
                                                retrieved_utc=stamp))
-        rows = parse_schedule_page(text)
+        rows = parse_schedule_page(raw.decode("utf-8", "replace"))
         for row in rows:
             row.update(season=season, week=week, schedule_url=url, retrieved_utc=stamp)
         fixtures.extend(rows)
@@ -201,10 +204,11 @@ def main() -> int:
         slug = url.rsplit("/", 1)[-1]
         write_raw(RAW_DIR / "gamecentres" / f"{slug}.html", raw)
         nb, sh = write_gz(EVIDENCE / f"gamecentres/{slug}.txt.gz", text)
-        parsed = parse_game_centre(text)
+        hb, hh = write_gz(EVIDENCE / f"gamecentres/{slug}.html.gz", raw.decode("utf-8", "replace"))
+        parsed = parse_game_centre(text, raw_html=raw.decode("utf-8", "replace"))
         parsed.update(official_url=url, season=season, week=fx["week"], slug=slug,
                       raw_bytes=len(raw), raw_sha256=sha256_bytes(raw),
-                      text_sha256=sh, retrieved_utc=stamp)
+                      text_sha256=sh, html_sha256=hh, retrieved_utc=stamp)
         centres.append(parsed)
         manifest["game_centres"].append(dict(url=url, http_status=status, raw_bytes=len(raw),
                                              raw_sha256=sha256_bytes(raw), text_bytes=nb,
@@ -216,7 +220,7 @@ def main() -> int:
     books: list[dict] = []
     roster_rows: list[dict] = []
     for c in centres:
-        if c["status_as_printed"] != "Final" or not c["gamebook_url"]:
+        if not c["gamebook_url"]:
             continue
         if book_weeks and c["week"] not in book_weeks:
             continue
@@ -247,18 +251,49 @@ def main() -> int:
                                            raw_bytes=len(raw), raw_sha256=sha256_bytes(raw),
                                            text_bytes=nb, text_sha256=sh,
                                            extraction_method=method, retrieved_utc=stamp))
-        for side, key in (("away", "away_as_printed"), ("home", "home_as_printed")):
-            team = parsed.get(key, "")
-            for label, block in (("starter", parsed["lineups"]),
-                                 ("substitution", parsed["substitutions"]),
-                                 ("did_not_play", parsed["did_not_play"]),
-                                 ("not_active", parsed["not_active"])):
-                for entry in parse_roster_entries(block):
+        # Lineups: four printed columns (visitor offence, visitor defence,
+        # home offence, home defence).
+        away_name = parsed.get("away_as_printed", "")
+        home_name = parsed.get("home_as_printed", "")
+        column_team = {0: (away_name, "away", "offense"), 1: (away_name, "away", "defense"),
+                       2: (home_name, "home", "offense"), 3: (home_name, "home", "defense")}
+        for row in parse_lineup_rows(parsed["lineups"]):
+            if row["column"] < 0:
+                roster_rows.append(dict(slug=slug, season=season, week=c["week"],
+                                        team_as_printed="", side="", unit="",
+                                        roster_block="lineup_unreadable", position="", jersey="",
+                                        player="", official_url=url,
+                                        source_url=c["official_url"], retrieved_utc=stamp,
+                                        raw=row["raw"]))
+                continue
+            team, side, unit = column_team[row["column"]]
+            roster_rows.append(dict(slug=slug, season=season, week=c["week"],
+                                    team_as_printed=team, side=side, unit=unit,
+                                    roster_block="starter", position=row["position"],
+                                    jersey=row["jersey"], player=row["player"],
+                                    official_url=url, source_url=c["official_url"],
+                                    retrieved_utc=stamp, raw=row["raw"]))
+        # Substitutions, did-not-play and inactive: one printed column per club.
+        for label, block in (("substitution", parsed["substitutions"]),
+                             ("did_not_play", parsed["did_not_play"]),
+                             ("not_active", parsed["not_active"])):
+            cols = parse_two_column_roster(block)
+            for side, team, entries in (("away", away_name, cols["left"]),
+                                        ("home", home_name, cols["right"])):
+                for entry in entries:
                     roster_rows.append(dict(slug=slug, season=season, week=c["week"],
-                                            team_as_printed=team, side=side, roster_block=label,
-                                            position=entry["position"], jersey=entry["jersey"],
-                                            player=entry["player"], official_url=url,
-                                            source_url=c["official_url"], retrieved_utc=stamp))
+                                            team_as_printed=team, side=side, unit="",
+                                            roster_block=label, position=entry["position"],
+                                            jersey=entry["jersey"], player=entry["player"],
+                                            official_url=url, source_url=c["official_url"],
+                                            retrieved_utc=stamp, raw=""))
+            for entry in cols["unattributed"]:
+                roster_rows.append(dict(slug=slug, season=season, week=c["week"],
+                                        team_as_printed="", side="", unit="",
+                                        roster_block=label + "_unattributed",
+                                        position=entry["position"], jersey=entry["jersey"],
+                                        player=entry["player"], official_url=url,
+                                        source_url=c["official_url"], retrieved_utc=stamp, raw=""))
         time.sleep(args.sleep)
     print(f"game books captured: {len(books)}", flush=True)
 

@@ -4,7 +4,6 @@ audit.html,84,7,0,,,,True,True,True,True,True,True,True,True
 availability.html,579,5,0,,,,True,True,True,True,True,True,True,True
 brief-2026-11-15.html,34,3,0,,,,True,True,True,True,True,True,True,True
 competition.html,94,9,0,,,,True,True,True,True,True,True,True,True
-consensus.html,45,2,0,,,,True,True,True,True,True,True,True,True
 correlation-official.html,6,1,0,,,,True,True,True,True,True,True,True,True
 correlations.html,20,4,0,,,,True,True,True,True,True,True,True,True
 decision-board.html,17,1,0,,,,True,True,True,True,True,True,True,True
@@ -12,7 +11,7 @@ decision-readiness.html,50,3,0,,,,True,True,True,True,True,True,True,True
 decisions.html,28,3,0,,,,True,True,True,True,True,True,True,True
 demotion.html,26,2,0,,,,True,True,True,True,True,True,True,True
 executive-summary.html,35,5,0,,,,True,True,True,True,True,True,True,True
-flagged.html,103,9,0,,,,True,True,True,True,True,True,True,True
+flagged.html,97,8,0,,,,True,True,True,True,True,True,True,True
 forward.html,137,7,0,,,,True,True,True,True,True,True,True,True
 index.html,46,6,0,,,,True,True,True,True,True,True,True,True
 injuries.html,316,7,0,,,,True,True,True,True,True,True,True,True
@@ -21,7 +20,6 @@ lines.html,190,3,0,,,,True,True,True,True,True,True,True,True
 lineup-deficiencies.html,64,6,0,,,,True,True,True,True,True,True,True,True
 lineups.html,7,1,0,,,,True,True,True,True,True,True,True,True
 live-verification.html,197,8,0,,,,True,True,True,True,True,True,True,True
-matchup-matrix.html,160,2,0,,,,True,True,True,True,True,True,True,True
 methodology.html,18,3,0,,,,True,True,True,True,True,True,True,True
 open-questions.html,20,1,0,,,,True,True,True,True,True,True,True,True
 origination.html,120,3,0,,,,True,True,True,True,True,True,True,True
@@ -32,8 +30,7 @@ props.html,17,3,0,,,,True,True,True,True,True,True,True,True
 questions.html,48,2,0,,,,True,True,True,True,True,True,True,True
 referents.html,584,5,0,,,,True,True,True,True,True,True,True,True
 replacement-depth.html,156,3,0,,,,True,True,True,True,True,True,True,True
-repo-review.html,822,5,0,,,,True,True,True,True,True,True,True,True
-request-register.html,95,3,0,,,,True,True,True,True,True,True,True,True
+repo-review.html,797,5,0,,,,True,True,True,True,True,True,True,True
 requirements.html,40,3,0,,,,True,True,True,True,True,True,True,True
 results-feed.html,169,3,0,,,,True,True,True,True,True,True,True,True
 review-queue.html,90,2,0,,,,True,True,True,True,True,True,True,True
