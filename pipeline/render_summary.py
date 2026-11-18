@@ -185,6 +185,7 @@ def main():
     f_declared = len(_pk)
     f_settled = int((_pk.status == 'OFFICIAL').sum()) if f_declared else 0
     f_open = int((_pk.status == 'OPEN').sum()) if f_declared else 0
+    f_provisional = (f_declared - f_settled - f_open) if f_declared else 0
     f_strat_with = len(_sb[_sb.counted.astype(str).ne('0') & _sb.counted.astype(str).ne('')]) if len(_sb) else 0
     f_units = pd.to_numeric(_pk.loc[_pk.status == 'OFFICIAL', 'pnl'], errors='coerce').sum() if f_declared else 0.0
     f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
@@ -292,7 +293,7 @@ against an official NFL.com final.
 | Item | State | Meaning |
 |---|---|---|
 | Frozen before kickoff | {f_declared} tickets across 18 strategies and 14 Week 10 games; written `2026-11-12T13:26:48Z`, received by GitHub `13:28:07Z`, 11.78 h before the first kickoff | The picks were public before the games started. The receipt time is GitHub's, not the committer's. [NFL week 10 schedule](https://www.nfl.com/schedules/2026/by-week/reg-10) |
-| Settled from an official final | **{f_settled} of {f_declared}** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | {f_open} tickets stay `OPEN`; none is defaulted to a push or a void. Net {f_units:+.3f} units across the settled tickets. |
+| Settled from an official final | **{f_settled} of {f_declared}** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | {f_open} tickets stay `OPEN`; {f_provisional} provisional, awaiting an official final; none is defaulted to a push or a void. Net {f_units:+.3f} units across the settled tickets. |
 | Strategies with a counted result | {f_strat_with} of {len(_sb) if len(_sb) else 18} | One ticket each is not a record. |
 | Validated strategies / rewards | **{f_validated} / none** | No strategy is past its declared horizon (150 single or 60 parlay tickets over 30 weeks); verdicts are withheld from the agent by ledger amendment A1. |
 | Gate F2 (official settlement) | PASS where a ticket has settled | Settlement now rests on an official page; before this pass the same 4 tickets were `PROVISIONAL`. |

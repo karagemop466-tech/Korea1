@@ -180,10 +180,16 @@ def test_depth_rows_line_up_with_the_official_charts():
 
 
 def test_depth_snapshot_matches_the_official_charts():
+    # Compare the official extract against the availability capture taken the
+    # SAME date (2026-11-13). The current snapshot (data/availability/
+    # depth_charts.csv) is regenerated on every availability run and legitimately
+    # drifts as club depth charts change; testing against it would conflate
+    # source drift with a parsing defect. Same-date capture is the parser control
+    # that V1–V3 validated: 115/115 slots, 239 players, 0 mismatches.
     ext = pd.read_csv(ROOT / "data/live/official_depth_extract_2026_11_13.csv",
                       dtype=str, keep_default_na=False)
-    pub = pd.read_csv(ROOT / "data/availability/depth_charts.csv", dtype=str,
-                      keep_default_na=False)
+    pub = pd.read_csv(ROOT / "data/availability/history/2026-11-13/depth_charts.csv",
+                      dtype=str, keep_default_na=False)
     pub["depth_rank"] = pub["depth_rank"].astype(int)
     off, pr = lvd._off_rows(ext), lvd._pub_rows(pub)
     keys = set(off)
@@ -197,8 +203,8 @@ def test_depth_order_change_is_detected():
     parts = ext.loc[i, "players"].split("|")
     ext.loc[i, "players"] = "|".join(reversed(parts))
     off = lvd._off_rows(ext)
-    pub = pd.read_csv(ROOT / "data/availability/depth_charts.csv", dtype=str,
-                      keep_default_na=False)
+    pub = pd.read_csv(ROOT / "data/availability/history/2026-11-13/depth_charts.csv",
+                      dtype=str, keep_default_na=False)
     pub["depth_rank"] = pub["depth_rank"].astype(int)
     pr = lvd._pub_rows(pub)
     key = (ext.loc[i, "team"], ext.loc[i, "unit"], int(ext.loc[i, "row"]))
