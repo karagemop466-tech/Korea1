@@ -81,6 +81,9 @@ NAV_GROUPS = [
         ("questions.html", "Open questions"),
         ("decisions.html", "Decision readiness"),
         ("flagged.html", "Flagged for review"),
+        # D2/D6 (arena/ba09384a-korea1): one row per line of the 2026-11-18 brief, with the gate that
+        # blocks it and the number that clears it. Reads committed files only; no network.
+        ("request-register-2026-11-18.html", "Requirement register · 2026-11-18"),
     ]),
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
@@ -1567,6 +1570,8 @@ def main() -> None:
         # V1/V2 (arena/917fe36e-korea1): independent official re-verification and the
         # consolidated review surface. Both read only data/live/**.
         "live-verification.html": build_live_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
+        # D2 (arena/ba09384a-korea1): the 75-row requirement verification register and its CSVs.
+        "request-register-2026-11-18.html": __import__("req_register_2026_11_18").build_page(),
         "review.html": build_review_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
     }
     for name, html_text in pages.items():
