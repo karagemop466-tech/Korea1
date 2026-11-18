@@ -47,6 +47,20 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
 - `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
 - `decision-readiness.html` — 14 pre-decision Q&As, 8 missing-info discovery blueprints and all 28 post-pin settled Week 8–9 NFL.com scores
+- `verified-register-2026-11-18.html` — **2026-11-18 verified request register**: 74 items whose status is
+  re-derived at build time by opening the artefact each row cites, under a fail-closed contract (a cited file
+  that disappears, or a declared gap that appears, fails `make build`); the brief's own numbers re-derived
+  against verbatim official reads of 2026-11-18; and 10 suggestions staged for a path choice. Three sessions
+  registered this request — CR1 (`request-register.html`), CS5 (`request-register-2026-11-18.html`) and this
+  one — and all three are published, each saying what the others do not (added 2026-11-18,
+  `arena/ceddf8d8-korea1`)
+- `matchup-matrix.html` — offensive groups against defensive groups (1st–4th string) for every fixture the
+  dated official captures support: printed ranks only, co-starters as counts, and the club-weeks that could
+  not be built listed with their reasons (added 2026-11-18, `arena/ceddf8d8-korea1`)
+- `consensus.html` — vig-free market consensus against our originated fair line: posted break-even, vig-free
+  consensus, margin cost and divergence as four separate columns over 16,206 game × market rows, with the
+  identity `gross gap = divergence − margin cost` asserted at build time (added 2026-11-18,
+  `arena/ceddf8d8-korea1`)
 - `request-register-2026-11-18.html` — **2026-11-18 request register**: one row per request item with its status, evidence file, the gate that blocks it and the number that clears it; official source on every table row, no-source rows flagged as text (added 2026-11-18)
 - `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
 - `questions.html` — what must be known before a decision, what is answered and what is blocked

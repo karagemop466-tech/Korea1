@@ -15,8 +15,12 @@ PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html",
        "results-feed.html", "correlation-official.html", "replacement-depth.html",
        "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
        "suggestions-review-2026-11-14.html", "brief-2026-11-15.html",
-       # CR1/CS5 (arena/f84bc1d7-korea1, arena/53ef9544-korea1)
+       # CR1 (arena/f84bc1d7-korea1)
        "request-register.html", "request-register-2026-11-18.html", "requirement-annex-2026-11-18.html",
+       # NR3-NR5 (arena/ceddf8d8-korea1, 2026-11-18): the verified register, the deficiency matrix and the
+       # vig-free view — three pages, all built from committed artefacts, all carrying an official link per
+       # row. Listed apart from CR1's and CS5's registers, which check the same request from the other side.
+       "verified-register-2026-11-18.html", "matchup-matrix.html", "consensus.html",
        # RX1 (arena/7aae360e-korea1, 2026-11-18): the register evidence annex.
        "register-evidence-2026-11-18.html"]
 def main():
