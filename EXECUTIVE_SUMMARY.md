@@ -1,6 +1,6 @@
 # Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02. Research snapshot: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
+Current status refreshed: 2026-11-15. Pinned research inputs: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
 
 ## Decision
 
@@ -11,6 +11,20 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
+
+## Current status — 2026-11-15
+
+This dated snapshot supersedes older status notes below. Counts come from the committed gate, forward-ledger, demotion and brief registers. Unverified items remain flagged; no missing evidence is filled in.
+
+| Area | Current status | Decision meaning / blocker | Sources |
+|---|---|---|---|
+| Signal qualification | 0 of 18 pass the registered signal-gate set; 0 pass all eight validation gates. | Signal qualification is not a staking status or a profitability claim. No candidate is validated and no reward is supported. | [Competition](competition.html) · [validation gates](validation.html) · [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+| Staking and quote provenance | 0 LIVE · 18 PAPER · B6 BLOCKED · 18 fail quote-provenance G1. | No authenticated, timestamped executable bookmaker quote archive is recorded. Signal qualification and paper/live state are shown separately; no live stake or reward is authorized. | [Price archive](price-archive.html) · [paper/live register](assets/data/demotion_register.csv) · [NFL scores (settlement context)](https://www.nfl.com/scores/) |
+| Prospective results | 4 official-settled · 0 open · 0 validated | Official outcomes are used for settlement; open tickets remain open. The available prospective record does not validate a strategy or establish a repeatable edge. | [Forward ledger](forward.html) · [NFL Week 10 scores](https://www.nfl.com/scores/2026/week-10) |
+| Injury, roster and depth blockers | B1 PARTLY DONE; B7 PARTLY DONE. | Reserve-list live capture (CI) has not run; chunk 0 re-read is partial in this session; Reserve-list CI run; HOU depth chart (0 rows); 2026-11-12 coverage gap cause (unverified). Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified. | [Brief tracker](brief-2026-11-15.html) · [NFL injury report](https://www.nfl.com/injuries/league/2026/reg10) · [NFL reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11) |
+| Parlay and player-prop priceability | UNVERIFIED — no executable price evidence. | Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established. | [Props](props.html) · [correlation rules](correlations.html) · [NFL injuries](https://www.nfl.com/injuries/) |
+| F-38 competitive-display policy | Implemented in the 2026-11-15 update. | Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This is a display-policy change, not validation. | [Strategy leaderboard](strategies.html) · [competition standings](competition.html) · [frozen thresholds](assets/data/validation_config.json) · [demotion register](assets/data/demotion_register.csv) |
+
 
 ## Decision readiness & lineup follow-up — 2026-11-12
 
@@ -192,6 +206,24 @@ and CIN Jalen Davis / Andrei Iosivas / Brian Parker II appear exactly as publish
 faithful transcriptions of a pairing that is itself contradictory on the official page.
 
 **Decision unchanged:** keep the research engine; fund nothing, reward nothing.
+
+## Addendum - 2026-11-18 (request register, session `arena/53ef9544-korea1`)
+
+The full 2026-11-18 request is now a single decision-readiness register: one row per
+request item with its status, the evidence file that supports it, the gate that blocks
+it and the number that would clear it. It is published on
+`request-register-2026-11-18.html` and in `data/integration/request_register_2026_11_18.csv`.
+
+**81 request items** - 37 done, 26 partly done, 4 built on open PR #82 (not
+merged to main), 10 blocked or not started, 3 rejected by design,
+1 needing an owner decision. 74 rows carry an official/primary source link;
+7 rows have no official source and are printed as flagged text, never filled in.
+
+The register is the consolidated answer to the brief's central ask - the questions,
+information and answers that must be resolved before a decision, plus the suggestions
+that discover the missing information. It does not change any research number: the
+verdict stays **0 of 18 strategies validated, no reward**, and gate G1 (executable quote
+provenance) still fails for every candidate.
 
 ## Material audit corrections
 

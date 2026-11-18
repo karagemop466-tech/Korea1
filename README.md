@@ -8,6 +8,10 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
+- **`requirement-annex-2026-11-18.html`** — the annex to the register above: the same brief traced
+  with every number recomputed on each build, the official pages re-read row by row (97 injury rows,
+  23 depth rows, three reserve-list month pages, one game centre), and the 12 decision-blocking
+  questions plus the 8 owner decisions in their own registers (added 2026-11-18)
 - **`review-queue.html`** — every proposal from all four suggestion registers merged into 14 topic
   clusters; each row keeps its source register, original id, writing session and published page, so a path
   is chosen here before any code changes (added 2026-11-13, `arena/132e7ca2-korea1`)
@@ -43,6 +47,7 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
 - `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
 - `decision-readiness.html` — 14 pre-decision Q&As, 8 missing-info discovery blueprints and all 28 post-pin settled Week 8–9 NFL.com scores
+- `request-register-2026-11-18.html` — **2026-11-18 request register**: one row per request item with its status, evidence file, the gate that blocks it and the number that clears it; official source on every table row, no-source rows flagged as text (added 2026-11-18)
 - `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
 - `questions.html` — what must be known before a decision, what is answered and what is blocked
 - `lineup-deficiencies.html` — 39 verified Week 10 offensive & defensive 1st–4th string entries across 8 NFL clubs (`WAS`, `NYG`, `NE`, `DET`, `KC`, `ATL`, `MIN`, `GB`), NFL Operations T-90m countdown rules, and prefix-safe PBP backup diagnostics

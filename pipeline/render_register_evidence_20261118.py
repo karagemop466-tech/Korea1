@@ -1,6 +1,6 @@
-"""Render the 2026-11-18 per-item request register as `request-register-2026-11-18.html`.
+"""Render the 2026-11-18 per-item request register as `register-evidence-2026-11-18.html`.
 
-Session `arena/7aae360e-korea1`. Reads only the CSVs written by `pipeline/register_20261118.py`
+Session `arena/7aae360e-korea1`. Reads only the CSVs written by `pipeline/register_evidence_20261118.py`
 (no network, no clock), so `make build` reproduces this page byte for byte and
 `tests/check_rebuild.py` stays green.
 
@@ -19,7 +19,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from render_site import BLANK, ROOT, card, e, flag, kpi_grid, layout, src_link, table  # noqa: E402
 
-OUT_NAME = "request-register-2026-11-18.html"
+OUT_NAME = "register-evidence-2026-11-18.html"
 DATA = ROOT / "data" / "integration"
 AS_OF = "2026-11-18"
 
@@ -53,15 +53,15 @@ def src_cell(row: pd.Series) -> str:
 
 
 def main() -> None:
-    reg = rd("request_register_2026_11_18.csv")
-    ver = rd("register_verify_2026_11_18.csv")
-    ven = rd("register_venues_2026_11_18.csv")
-    qdf = rd("register_questions_2026_11_18.csv")
-    sdf = rd("register_suggestions_2026_11_18.csv")
-    adf = rd("register_ablation_2026_11_18.csv")
-    fdf = rd("register_flags_2026_11_18.csv")
-    mv = rd("register_movement_2026_11_18.csv")
-    fac = rd("register_facts_2026_11_18.csv").set_index("fact")["value"].to_dict()
+    reg = rd("register_evidence_rows_2026_11_18.csv")
+    ver = rd("register_evidence_verify_2026_11_18.csv")
+    ven = rd("register_evidence_venues_2026_11_18.csv")
+    qdf = rd("register_evidence_questions_2026_11_18.csv")
+    sdf = rd("register_evidence_suggestions_2026_11_18.csv")
+    adf = rd("register_evidence_ablation_2026_11_18.csv")
+    fdf = rd("register_evidence_flags_2026_11_18.csv")
+    mv = rd("register_evidence_movement_2026_11_18.csv")
+    fac = rd("register_evidence_facts_2026_11_18.csv").set_index("fact")["value"].to_dict()
     manifest = json.loads((ROOT / "data" / "live" / "register_reads_2026_11_18" / "manifest.json").read_text())
 
     def F(k: str) -> str:
@@ -140,10 +140,10 @@ def main() -> None:
                       caption="2026-11-18 request register · statuses derived from committed files and official page reads"))
     if no_src:
         body.append('<ul class="findings">' + "".join(no_src) + "</ul>")
-    body.append('<p class="small">Downloads: <a href="assets/data/request_register_2026_11_18.csv">the register '
-                '(CSV)</a> · <a href="assets/data/register_verify_2026_11_18.csv">every verified line (CSV)</a> · '
-                '<a href="assets/data/register_venues_2026_11_18.csv">the venue table (CSV)</a> · '
-                '<a href="assets/data/register_facts_2026_11_18.csv">every computed number (CSV)</a>.</p></section>')
+    body.append('<p class="small">Downloads: <a href="assets/data/register_evidence_rows_2026_11_18.csv">the register '
+                '(CSV)</a> · <a href="assets/data/register_evidence_verify_2026_11_18.csv">every verified line (CSV)</a> · '
+                '<a href="assets/data/register_evidence_venues_2026_11_18.csv">the venue table (CSV)</a> · '
+                '<a href="assets/data/register_evidence_facts_2026_11_18.csv">every computed number (CSV)</a>.</p></section>')
 
     # --------------------------------------------------------- verification
     vrows = [[e(r.check), c(r.club), e(r["item"]), c(r.official), c(r.committed), c(r.verdict),
@@ -270,7 +270,7 @@ def main() -> None:
                       f"register row {c(r.register)}</span>",
                       src_link(r.source_url, r.source_label)])
     body.append('<section><h2>Findings flagged by this session</h2>'
-                f"<p>{len(frows) + len(ftext)} findings, numbered RR-F1 onward so they cannot collide with the "
+                f"<p>{len(frows) + len(ftext)} findings, numbered RX-F1 onward so they cannot collide with the "
                 "F-42 to F-51 register written by "
                 "<code>arena/db6cd525-korea1</code>. A finding is published, not repaired: repair is a decision, and "
                 "the files a fix would touch belong to other sessions or to the integration pass.</p>")
@@ -284,7 +284,7 @@ def main() -> None:
     body.append('<section><h2>Every number on this page, and where it comes from</h2>'
                 "<p>Printed as a definition list rather than a table on purpose: the site's rule is that a data-table "
                 "row carries an official link, and these are properties of the repository, not observations of a "
-                "game. They are all recomputed by <code>pipeline/register_20261118.py</code> on every build.</p><dl>")
+                "game. They are all recomputed by <code>pipeline/register_evidence_20261118.py</code> on every build.</p><dl>")
     for k in sorted(fac):
         body.append(f"<dt>{e(k)}</dt><dd>{e(str(fac[k]))}</dd>")
     body.append("</dl></section>")
@@ -309,7 +309,7 @@ def main() -> None:
                 "month. The Houston read establishes only that the club page publishes an image. The Game Book PDFs were "
                 "not opened: that parse belongs to <code>arena/99b908ab-korea1</code> (GB2, PR #82) and this page does "
                 "not duplicate it. No pricing data was added: an authenticated quote is an owner decision (F-44, "
-                "RR-Q1, RR-S1).</p>"
+                "RX-Q1, RX-S1).</p>"
                 f"<h3>Official pages read in this session</h3><ul>{srcs}</ul>"
                 f"<h3>Excerpts committed with this register</h3><ul>{files}</ul>"
                 "</section>")

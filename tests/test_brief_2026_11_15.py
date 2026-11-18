@@ -4,6 +4,7 @@ Each test targets a rule that could break without anyone noticing: an official-l
 lets a non-official host through, a mind-changer that only says one side, thresholds typed by
 hand rather than read from the frozen config, or a landing panel that silently disappears.
 """
+import re
 import sys
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -117,3 +118,87 @@ def test_flagged_section_renders_every_session_row():
     html = rs._flagged_2026_11_15_section()
     for n in range(30, 42):
         assert f"F-{n}" in html
+
+
+def _table_by_caption(page, caption):
+    match = re.search(
+        r"<table\b[^>]*>.*?<caption>" + re.escape(caption) + r"</caption>.*?</table>",
+        page,
+        flags=re.DOTALL,
+    )
+    assert match, caption
+    return match.group(0)
+
+
+def _table_headers(table_html):
+    return [re.sub(r"<[^>]+>", "", h).strip()
+            for h in re.findall(r"<th[^>]*>(.*?)</th>", table_html, flags=re.DOTALL)]
+
+
+def test_competitive_leaderboards_withhold_backtest_values_and_show_two_sided_criteria():
+    import render_site as rs
+    import session_competition as comp
+
+    strategy_html = rs.build_strategies(rs.load())
+    standings, tiers, rules, extra = comp.build()
+    competition_html = comp.build_page(standings, tiers, rules, extra)
+    strategy_table = _table_by_caption(
+        strategy_html,
+        "Competitive strategy view · signal and staking status separated · historical backtest performance values withheld",
+    )
+    signal_table = _table_by_caption(
+        competition_html,
+        "Signal standings: qualification and sample facts only; historical performance values withheld",
+    )
+    staking_table = _table_by_caption(
+        competition_html,
+        "Separate paper/live and execution state; historical performance values withheld",
+    )
+
+    strategy_headers = " | ".join(_table_headers(strategy_table)).lower()
+    signal_headers = " | ".join(_table_headers(signal_table)).lower()
+    staking_headers = " | ".join(_table_headers(staking_table)).lower()
+    for header_text in (strategy_headers, signal_headers, staking_headers):
+        assert "units staked" not in header_text
+        assert "mean signal edge" not in header_text
+        assert "roi" not in header_text
+        assert "adjusted p" not in header_text
+    assert "signal qualification" in strategy_headers
+    assert "staking status" in strategy_headers
+    assert "move up when" in strategy_headers
+    assert "stop / demote when" in strategy_headers
+    assert "signal qualification" in signal_headers
+    assert "move up when" in signal_headers
+    assert "stop / demote when" in signal_headers
+    assert "current staking status" in staking_headers
+    assert "paper/live register" in strategy_table.lower()
+    assert "assets/data/strategy_gates.csv" not in strategy_html
+
+    for row in _mc().itertuples(index=False):
+        assert row.strategy in strategy_table
+        assert row.strategy in signal_table
+        assert "(now:" not in strategy_table.lower()
+        assert "(now:" not in signal_table.lower()
+        current_values = re.findall(r"\(now:\s*(.*?)\)", row.moves_up_when)
+        for value in current_values:
+            assert value not in strategy_table
+            assert value not in signal_table
+    assert "PAPER" in strategy_html
+    assert "PAPER" in staking_table
+
+
+def test_2026_11_15_executive_summaries_publish_current_status_and_blockers():
+    import render_site as rs
+    import render_summary as summary
+
+    current = summary._current_status_2026_11_15_block()
+    assert "Current status — 2026-11-15" in current
+    assert "B6 BLOCKED" in current
+    assert "HOU depth chart (0 rows)" in current
+    assert "F-38 competitive-display policy" in current
+    assert "historical result values are omitted" in current
+
+    executive = rs.build_executive(rs.load())
+    assert "Current status — 2026-11-15" in executive
+    assert "F-38 competitive-display policy" in executive
+    assert "HOU depth chart (0 rows)" in executive

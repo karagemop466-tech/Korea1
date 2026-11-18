@@ -32,9 +32,14 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "results-feed.html", "correlation-official.html", "replacement-depth.html",
          "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
          "suggestions-review-2026-11-14.html",
-         "brief-2026-11-15.html",
-         # RR1 (arena/7aae360e-korea1, 2026-11-18): the dated per-item request register.
          "request-register-2026-11-18.html",
+         "requirement-annex-2026-11-18.html",
+         "brief-2026-11-15.html",
+         # CS5 (session arena/53ef9544-korea1): the 2026-11-18 request register.
+         "request-register-2026-11-18.html",
+         # RX1 (arena/7aae360e-korea1, 2026-11-18): the register evidence annex — verification lines,
+         # venues, the prospective escrow ledger and the ablation contract behind the 2026-11-18 register.
+         "register-evidence-2026-11-18.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]

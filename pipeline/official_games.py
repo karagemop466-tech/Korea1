@@ -14,7 +14,7 @@ Two official document shapes are handled.
    the date, the start time and its time zone, the officials, the game-day
    weather and the roof / surface designation, the venue line, both starting
    lineups, the substitution lists, the "Did Not Play" lists and the "Not
-   Active" (inactive) lists.
+   Active" lists.
 
 The parsers are deliberately tolerant: the same fact is looked for in more
 than one way, and a fact that cannot be confirmed is left empty.
@@ -69,26 +69,34 @@ def html_to_text(raw: str) -> str:
 # --------------------------------------------------------------------------
 
 # "- Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME"
-_SCHEDULE_LINK = re.compile(
-    r"(?P<away>[A-Za-z0-9'&.\- ]+?)\s+at\s+(?P<home>[A-Za-z0-9'&.\- ]+?),"
+_SCHEDULE_LABEL = re.compile(
+    r"^\s*(?P<away>[A-Za-z0-9'&.\- ]+?)\s+at\s+(?P<home>[A-Za-z0-9'&.\- ]+?),"
     r"\s+(?P<day>[A-Za-z]+day,\s+[A-Za-z]+\s+\d{1,2}(?:st|nd|rd|th)?),"
     r"\s+(?P<time>\d{1,2}:\d{2}\s*[AP]M)"
-    r"(?:,\s*(?P<network>[A-Za-z0-9+&.\- ]+?))?"
-    r"\s*\(?(?P<url>https://www\.nfl\.com/games/[A-Za-z0-9\-]+)"
-)
+    r"(?:,\s*(?P<network>[A-Za-z0-9+&.\- ]+?))?\s*$")
 
-_HEADING = re.compile(r"^###\s+(?P<heading>.+?)\s*$", re.M)
+_ANCHOR = re.compile(
+    r"<a\b[^>]*?href=\"(?P<url>https://www\.nfl\.com/games/[^\"]+)\"[^>]*>(?P<label>[^<]*)</a>",
+    re.I)
+_HTML_HEADING = re.compile(r"<h[1-6]\b[^>]*>(?P<h>.*?)</h[1-6]>", re.I | re.S)
 
 
-def parse_schedule_page(text: str) -> list[dict]:
+def parse_schedule_page(raw_html: str) -> list[dict]:
     """Fixtures printed on an official NFL schedule page.
 
-    Each row keeps the wording the league printed, the section heading the row
-    sits under, the official game-centre URL and the page it was read from.
+    The league prints each fixture as a link whose text is
+    ``Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME``.  Each row
+    keeps that wording, the section heading the row sits under, the official
+    game-centre URL and the page it was read from.
     """
+    headings = [(m.start(), re.sub(r"\s+", " ", html_mod.unescape(m.group("h"))).strip())
+                for m in _HTML_HEADING.finditer(raw_html)]
     rows: list[dict] = []
-    headings = [(m.start(), m.group("heading")) for m in _HEADING.finditer(text)]
-    for m in _SCHEDULE_LINK.finditer(text):
+    for m in _ANCHOR.finditer(raw_html):
+        label = html_mod.unescape(m.group("label"))
+        lab = _SCHEDULE_LABEL.match(label)
+        if not lab:
+            continue
         heading = ""
         for pos, head in headings:
             if pos < m.start():
@@ -96,11 +104,11 @@ def parse_schedule_page(text: str) -> list[dict]:
             else:
                 break
         rows.append(dict(
-            away_as_printed=m.group("away").strip(),
-            home_as_printed=m.group("home").strip(),
-            date_as_printed=re.sub(r"\s+", " ", m.group("day")).strip(),
-            time_as_printed=re.sub(r"\s+", " ", m.group("time")).strip(),
-            network_as_printed=re.sub(r"\s+", " ", (m.group("network") or "")).strip(),
+            away_as_printed=lab.group("away").strip(),
+            home_as_printed=lab.group("home").strip(),
+            date_as_printed=re.sub(r"\s+", " ", lab.group("day")).strip(),
+            time_as_printed=re.sub(r"\s+", " ", lab.group("time")).strip(),
+            network_as_printed=re.sub(r"\s+", " ", (lab.group("network") or "")).strip(),
             section_heading=heading,
             official_url=m.group("url"),
         ))
@@ -112,58 +120,41 @@ def parse_schedule_page(text: str) -> list[dict]:
 # --------------------------------------------------------------------------
 
 _GAME_INFO = re.compile(
-    r"Game\s*Info\b(?P<body>.{0,600}?)(?:Standings|Ways to watch|Ways to listen|"
-    r"Season at a glance|Team Leaders|$)",
+    r"Game\s*Info\b(?P<body>.{0,800}?)(?:Standings|Ways to watch|Ways to listen|"
+    r"Season at a glance|Team Leaders|REGULAR SEASON AT A GLANCE|$)",
     re.S | re.I,
 )
-_LOCATION = re.compile(r"Location\s*:?\s*LOCATION\s*:?\s*(?P<v>[^\n]+)", re.I)
-_STADIUM = re.compile(r"Stadium\s*:?\s*STADIUM\s*:?\s*(?P<v>[^\n]+)", re.I)
+_LOCATION = re.compile(
+    r"Location[^\S\n]*:?[^\S\n]*LOCATION[^\S\n]*:?[^\S\n]*(?P<v>[^\n]+)|"
+    r"Location[^\S\n]*:?[^\S\n]*LOCATION[^\S\n]*\n[^\S\n]*(?P<v2>[^\n]+)", re.I)
+_STADIUM = re.compile(
+    r"Stadium[^\S\n]*:?[^\S\n]*STADIUM[^\S\n]*:?[^\S\n]*(?P<v>[^\n]+)|"
+    r"Stadium[^\S\n]*:?[^\S\n]*STADIUM[^\S\n]*\n[^\S\n]*(?P<v2>[^\n]+)", re.I)
 _GAMEBOOK = re.compile(
     r"https://static\.www\.nfl\.com/image/upload/[^\s\"'<>)]+/gamecenter/[A-Za-z0-9\-]+\.pdf")
 
 
-def parse_game_centre(text: str) -> dict:
+def parse_game_centre(text: str, raw_html: str = "") -> dict:
     """The facts the official game centre prints about the fixture itself.
 
     ``venue_location`` and ``venue_stadium`` come from the page's own Game Info
-    block.  ``gamebook_url`` is the league's Game Book link.  The final score is
-    read only when the page prints one next to a team; a scheduled game has no
-    score and the field stays blank.
+    block.  ``gamebook_url`` is the league's Game Book link; the league
+    publishes it only for a finished game, so its presence is also the
+    game's own statement that the fixture has been played.  The link lives in
+    the page's markup, so it is read from ``raw_html`` when it is supplied.
     """
-    out = dict(venue_location="", venue_stadium="", gamebook_url="",
-               away_score="", home_score="", away_abbr="", home_abbr="",
-               away_name="", home_name="", status_as_printed="", week_as_printed="",
-               date_as_printed="")
+    out = dict(venue_location="", venue_stadium="", gamebook_url="")
     block = _GAME_INFO.search(text)
     body = block.group("body") if block else text
     m = _LOCATION.search(body)
     if m:
-        out["venue_location"] = m.group("v").strip()
+        out["venue_location"] = (m.group("v") or m.group("v2") or "").strip()
     m = _STADIUM.search(body)
     if m:
-        out["venue_stadium"] = m.group("v").strip()
-    m = _GAMEBOOK.search(text)
+        out["venue_stadium"] = (m.group("v") or m.group("v2") or "").strip()
+    m = _GAMEBOOK.search(raw_html) or _GAMEBOOK.search(text)
     if m:
         out["gamebook_url"] = m.group(0)
-
-    # Final score: the game centre prints "<abbr> <name> <abbr> <city> <abbr>
-    # <score> points" for each side, then the status word.
-    teams = re.findall(
-        r"\b([A-Z]{2,3})\b\s*\n([A-Z][A-Za-z'&\.\- ]{3,40}?)\s*\n(?:[A-Z][A-Z'&\. ]{3,40}\s*\n){2,4}"
-        r"(\d{1,3})\s*\n?\s*points",
-        text)
-    if len(teams) >= 2:
-        (aa, an, as_), (ha, hn, hs) = teams[0], teams[1]
-        out["away_abbr"], out["away_name"], out["away_score"] = aa, an.strip(), as_
-        out["home_abbr"], out["home_name"], out["home_score"] = ha, hn.strip(), hs
-    if re.search(r"\bFinal\b", text):
-        out["status_as_printed"] = "Final"
-    m = re.search(r"\bWEEK\s+(\d{1,2})\b", text)
-    if m:
-        out["week_as_printed"] = m.group(1)
-    m = re.search(r"\b(Nov|Dec|Sep|Oct|Jan)\s+(\d{1,2})\b", text)
-    if m:
-        out["date_as_printed"] = f"{m.group(1)} {m.group(2)}"
     return out
 
 
@@ -174,11 +165,11 @@ def parse_game_centre(text: str) -> dict:
 _BOOK_TITLE = re.compile(r"^(?P<away>.+?)\s+at\s+(?P<home>.+?)\s*$", re.M)
 _BOOK_DATE = re.compile(r"^Date:\s*(?P<v>.+?)\s*$", re.M)
 _BOOK_START = re.compile(r"^Start Time:\s*(?P<v>.+?)\s*$", re.M)
-_BOOK_VENUE = re.compile(r"^\*\*(?P<away>.+?)\s+vs\s+(?P<home>.+?)\*\*\s*$", re.M)
-_BOOK_VENUE2 = re.compile(r"^\d{1,2}/\d{1,2}/\d{4}\s+at\s+(?P<v>.+?)\s*$", re.M)
-_BOOK_WEATHER = re.compile(r"^Game Weather:\s*(?P<v>.+?)\s*$", re.M)
+_BOOK_VENUE = re.compile(r"^(?P<v>\d{1,2}/\d{1,2}/\d{4}\s+at\s+.+?)\s*$", re.M)
+_BOOK_WEATHER = re.compile(r"^Game Weather:\s*(?P<v>.*?)(?:\s+Temp:|\s*$)", re.M)
 _BOOK_TEMP = re.compile(r"Temp:\s*(?P<t>[-\d]+)°\s*F.*?Wind:\s*(?P<w>[A-Za-z]+\s+\d+)\s*mph", re.S)
-_BOOK_ROOF = re.compile(r"^(?P<v>Retractable Roof.*?|Dome.*?|Roof.*?)\s*$", re.M)
+_BOOK_ROOF = re.compile(r"^(?P<v>(?:Retractable Roof|Dome|Roof).*?)\s*$", re.M)
+_BOOK_SURFACE = re.compile(r"on\s+(?P<v>Grass|Field Turf|Turf|AstroTurf|Synthetic Turf)", re.I)
 _BOOK_ATTEND = re.compile(r"^Paid Attendance:\s*(?P<v>[\d,]+)\s*$", re.M)
 _BOOK_OFFICIALS = re.compile(r"^Referee:\s*(?P<v>.+?)\s*$", re.M)
 
@@ -209,7 +200,6 @@ def parse_game_book(text: str) -> dict:
         venue_as_printed="", weather_as_printed="", temp_f="", wind_as_printed="",
         roof_as_printed="", surface_as_printed="", attendance_as_printed="",
         referee_as_printed="", lineups="", substitutions="", did_not_play="", not_active="",
-        notes=[],
     )
     m = _BOOK_TITLE.search(text)
     if m:
@@ -221,7 +211,7 @@ def parse_game_book(text: str) -> dict:
     m = _BOOK_START.search(text)
     if m:
         out["start_time_as_printed"] = m.group("v").strip()
-    m = _BOOK_VENUE2.search(text)
+    m = _BOOK_VENUE.search(text)
     if m:
         out["venue_as_printed"] = m.group("v").strip()
     m = _BOOK_WEATHER.search(text)
@@ -233,11 +223,10 @@ def parse_game_book(text: str) -> dict:
         out["wind_as_printed"] = m.group("w").strip()
     m = _BOOK_ROOF.search(text)
     if m:
-        roof = m.group("v").strip()
-        out["roof_as_printed"] = roof
-        if "Field Turf" in roof or "Grass" in roof or "Turf" in roof:
-            out["surface_as_printed"] = re.search(r"on\s+(\w+)\s+Turf|on\s+Grass", roof).group(1) \
-                if re.search(r"on\s+(\w+)\s+Turf|on\s+Grass", roof) else ""
+        out["roof_as_printed"] = m.group("v").strip()
+        s = _BOOK_SURFACE.search(out["roof_as_printed"])
+        if s:
+            out["surface_as_printed"] = s.group("v").strip()
     m = _BOOK_ATTEND.search(text)
     if m:
         out["attendance_as_printed"] = m.group("v").strip()
@@ -248,7 +237,8 @@ def parse_game_book(text: str) -> dict:
     out["lineups"] = _split_block(text, "Lineups", ["Substitutions", "Did Not Play", "Not Active"])
     out["substitutions"] = _split_block(text, "Substitutions", ["Did Not Play", "Not Active"])
     out["did_not_play"] = _split_block(text, "Did Not Play", ["Not Active"])
-    out["not_active"] = _split_block(text, "Not Active", ["Field Goals", "Scoring Plays"])
+    out["not_active"] = _split_block(text, "Not Active",
+                                     ["Field Goals", "Scoring Plays", "Paid Attendance"])
     return out
 
 
@@ -264,9 +254,75 @@ def parse_roster_entries(block: str) -> list[dict]:
         chunk = chunk.strip()
         if not chunk:
             continue
-        for m in _CELL.finditer(chunk):
-            entries.append(dict(position=m.group("pos"), jersey=m.group("num"),
-                                player=m.group("name")))
-        if not _CELL.search(chunk) and chunk:
+        found = list(_CELL.finditer(chunk))
+        if found:
+            for m in found:
+                entries.append(dict(position=m.group("pos"), jersey=m.group("num"),
+                                    player=m.group("name")))
+        else:
             entries.append(dict(position="", jersey="", player=chunk))
     return entries
+
+
+def split_columns(line: str) -> list[str]:
+    """Split a Game Book table row into its printed columns.
+
+    The Game Book lays its tables out with a wide gap between columns and a
+    narrow gap inside a cell, so a run of two or more spaces is a column
+    boundary.  A row whose columns do not separate is returned as one column,
+    which the caller records as an unreadable row rather than guessing.
+    """
+    parts = [p.strip() for p in re.split(r"\s{2,}", line.strip()) if p.strip()]
+    return parts
+
+
+def parse_lineup_rows(block: str) -> list[dict]:
+    """The starting-lineup rows of a Game Book, with their printed column.
+
+    The page prints four columns: the visiting club's offence, the visiting
+    club's defence, the home club's offence and the home club's defence.  A row
+    that does not yield four columns is returned with ``column=-1`` and is
+    reported as unreadable; it is never redistributed by guesswork.
+    """
+    rows: list[dict] = []
+    for line in block.splitlines():
+        line = line.strip()
+        if not line or re.match(r"^(Offense|Defense|Special Teams)\b", line):
+            continue
+        cols = split_columns(line)
+        if len(cols) != 4:
+            rows.append(dict(column=-1, position="", jersey="", player="", raw=line))
+            continue
+        for idx, col in enumerate(cols):
+            m = _CELL.match(col.strip())
+            if not m:
+                rows.append(dict(column=idx, position="", jersey="", player="", raw=col.strip()))
+                continue
+            rows.append(dict(column=idx, position=m.group("pos"), jersey=m.group("num"),
+                             player=m.group("name"), raw=col.strip()))
+    return rows
+
+
+def parse_two_column_roster(block: str) -> dict:
+    """A Game Book block printed as two club columns.
+
+    The Game Book prints one club's list on the left of the page and the
+    other's on the right.  A line that yields two printed columns is split
+    between them.  A line that yields only one column cannot be attributed
+    to a club from the document alone, so it is returned under ``unattributed``
+    and is never assigned to a club by guesswork.
+    """
+    left: list[dict] = []
+    right: list[dict] = []
+    unattributed: list[dict] = []
+    for line in block.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        cols = split_columns(line)
+        if len(cols) >= 2:
+            left.extend(parse_roster_entries(cols[0]))
+            right.extend(parse_roster_entries(cols[-1]))
+        elif len(cols) == 1:
+            unattributed.extend(parse_roster_entries(cols[0]))
+    return dict(left=left, right=right, unattributed=unattributed)

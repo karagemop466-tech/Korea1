@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -78,9 +79,17 @@ NAV_GROUPS = [
         ("suggestions-review.html", "Path selector"),
         ("suggestions.html", "Suggestions & paths"),
         ("decision-readiness.html", "Q&A + Week 8–9 audit"),
+        # CS5 (session arena/53ef9544-korea1): the full 2026-11-18 request register — one row
+        # per request item with its blocking gate and the number that clears it.
+        ("request-register-2026-11-18.html", "Request register · 2026-11-18"),
+        # D6 (arena/ba09384a-korea1): the additive annex — recomputed evidence, official re-read,
+        # questions and owner decisions. The register above remains the primary surface.
+        ("requirement-annex-2026-11-18.html", "Requirement annex · evidence check"),
         ("questions.html", "Open questions"),
         ("decisions.html", "Decision readiness"),
         ("flagged.html", "Flagged for review"),
+        # D2/D6 (arena/ba09384a-korea1): one row per line of the 2026-11-18 brief, with the gate that
+        # blocks it and the number that clears it. Reads committed files only; no network.
     ]),
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
@@ -301,6 +310,49 @@ def research_source(context="NFL scores"):
 BLANK = '<span class="blank" aria-label="blank: unverified"></span>'
 
 
+def _mind_changer_map() -> dict[str, dict[str, str]]:
+    """Read the dated two-sided criteria without exposing their current backtest results."""
+    path = ROOT / "data" / "integration" / "mind_changers_2026_11_15.csv"
+    if not path.exists():
+        return {}
+    rows = pd.read_csv(path, dtype=str, keep_default_na=False).to_dict("records")
+    return {row["strategy"]: row for row in rows if row.get("strategy")}
+
+
+def _without_current_result_values(text: str) -> str:
+    """Remove every balanced ``(now: ...)`` annotation, preserving registered thresholds."""
+    source = str(text or "")
+    kept: list[str] = []
+    i = 0
+    while i < len(source):
+        if source[i:i + 5].lower() == "(now:":
+            depth = 1
+            i += 5
+            while i < len(source) and depth:
+                if source[i] == "(":
+                    depth += 1
+                elif source[i] == ")":
+                    depth -= 1
+                i += 1
+            continue
+        kept.append(source[i])
+        i += 1
+    clean = "".join(kept)
+    clean = re.sub(r"\s*;\s*", "; ", clean)
+    clean = re.sub(r"[ \t]{2,}", " ", clean).strip(" ;")
+    if re.search(r"\bnow\s*:", clean, flags=re.IGNORECASE):
+        raise ValueError("current backtest result annotation was not removed from a mind-changer")
+    return clean
+
+
+def _mind_changer_cell(text: str, summary: str) -> str:
+    """Compactly render a two-sided decision criterion; never include its current result."""
+    criterion = _without_current_result_values(text)
+    if not criterion:
+        return BLANK + '<br><span class="unverified">UNVERIFIED — criterion not recorded</span>'
+    return f'<details><summary>{e(summary)}</summary><p>{e(criterion)}</p></details>'
+
+
 def metric(x, nd=3):
     """A reproducible estimate is not an official observation. Strict public view."""
     return BLANK
@@ -408,6 +460,7 @@ questions a decision actually asks.</p>
 <a class="minicard" href="suggestions-review.html"><strong>Interactive path selector</strong><span>Compare Path A / B / C across 12 staged improvements and export a decision JSON before changing code.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Suggestions &amp; paths</strong><span>Twenty-two changes with cost, risk and dependencies, plus four coherent paths.</span></a>
 <a class="minicard" href="decision-readiness.html"><strong>Q&amp;A + Week 8–9 reconciliation</strong><span>14 pre-decision Q&amp;As, 8 missing-info discovery blueprints and all 28 settled post-pin NFL.com scores.</span></a>
+<a class="minicard" href="request-register-2026-11-18.html"><strong>2026-11-18 request register</strong><span>One row per request item: status, evidence file, the gate that blocks it and the number that clears it. Official source on every table row.</span></a>
 <a class="minicard" href="decisions.html"><strong>Decision readiness</strong><span>Twelve decision questions, known answers, missing inputs and a parallel eight-proposal register.</span></a>
 <a class="minicard" href="questions.html"><strong>Open questions</strong><span>What must be known first, what is answered, and what is blocked on data we do not have.</span></a>
 <a class="minicard" href="lineup-deficiencies.html"><strong>8-club 1st–4th string tracker</strong><span>39 Week 10 offensive &amp; defensive injury/depth entries across WAS, NYG, NE, DET, KC, ATL, MIN &amp; GB.</span></a>
@@ -538,6 +591,43 @@ def build_executive(d):
                   "White (2000)")],
     ], ["Item", "State", "Meaning", "Official / primary reference"],
        caption="Forward-test state at the first settlement")
+
+    signal_cols = ["G2_leakage", "G3_power", "G4_significance", "G5_luck", "G7_stability", "G8_redundancy"]
+    signal_qualified = int(gates[signal_cols].astype(bool).all(axis=1).sum()) if len(gates) else 0
+    g1_failed = int((~gates.G1_data.astype(bool)).sum()) if len(gates) else 0
+    brief_frame = _read_integration("brief_2026_11_15.csv")
+    brief_rows = {} if brief_frame is None else {
+        str(r.id): r._asdict() for r in brief_frame.itertuples(index=False)
+    }
+    b1 = brief_rows.get("B1", {})
+    b6 = brief_rows.get("B6", {})
+    b7 = brief_rows.get("B7", {})
+    demo_path = ROOT / "data" / "governance" / "demotion_register.csv"
+    demo_status = (pd.read_csv(demo_path, dtype=str, keep_default_na=False)
+                   if demo_path.exists() else pd.DataFrame())
+    n_live_status = int((demo_status.current_status == "LIVE").sum()) if len(demo_status) else 0
+    n_paper_status = int((demo_status.current_status == "PAPER").sum()) if len(demo_status) else 0
+    current_status_table = table([
+        ["Signal qualification", f"{signal_qualified} of {len(gates)} pass the registered signal-gate set; {int(gates.verdict.eq('VALIDATED').sum()) if len(gates) else 0} pass all eight gates.",
+         "Signal qualification is not a staking status or a profitability claim. No candidate is validated and no reward is supported.",
+         official("White (2000), Econometric Society") + " · " + src_link("competition.html", "signal standings")],
+        ["Staking and quote provenance", f"{n_live_status} LIVE · {n_paper_status} PAPER · B6 {e(b6.get('status', 'not recorded'))} · {g1_failed} fail G1.",
+         "No authenticated, timestamped executable bookmaker quote archive is recorded. Paper/live state is separate from signal qualification; no live stake or reward is authorized.",
+         src_link("price-archive.html", "price evidence") + " · " + src_link("assets/data/demotion_register.csv", "paper/live register") + " · " + official("NFL scores")],
+        ["Prospective results", f"{fwd_settled} official-settled · {fwd_open} open · {fwd_validated} validated.",
+         "Official outcomes are used for settlement; open tickets remain open. The current prospective record does not validate a strategy or establish a repeatable edge.",
+         src_link("forward.html", "forward ledger") + " · " + src_link("https://www.nfl.com/scores/2026/week-10", "NFL Week 10 scores")],
+        ["Injury, roster and depth blockers", f"B1 {e(b1.get('status', 'not recorded'))}; B7 {e(b7.get('status', 'not recorded'))}.",
+         f"Blockers: {e(b1.get('blocking_gate', 'Not recorded'))}; {e(b7.get('blocking_gate', 'Not recorded'))}. Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified.",
+         src_link("brief-2026-11-15.html", "brief tracker") + " · " + official("NFL injury report (2026 week 10)") + " · " + src_link("lineup-deficiencies.html", "depth audit")],
+        ["Parlay and player-prop priceability", "UNVERIFIED — no executable price evidence.",
+         "Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established.",
+         src_link("props.html", "prop evidence") + " · " + src_link("correlations.html", "correlation rules") + " · " + official("NFL injuries")],
+        ["F-38 competitive-display policy", "Implemented in the 2026-11-15 update.",
+         "Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This display change is not validation.",
+         src_link("strategies.html", "strategy leaderboard") + " · " + src_link("competition.html", "competition standings") + " · " + official("White (2000), Econometric Society")],
+    ], ["Area", "Current status", "Decision meaning / blocker", "Sources"],
+       caption="Current decision snapshot · 2026-11-15 · linked to the tracker, registers and primary sources")
     body = f"""
 {notice()}
 <section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
@@ -552,6 +642,11 @@ a <a href="suggestions.html">22-proposal register with four decision paths</a>, 
 (<a href="injuries.html">league report</a> and <a href="lineups.html">club depth charts</a>). Confirmed
 starter/replacement roles, depth ranks and quantitative impacts remain blank. No strategy or proposal is newly
 approved, and no reward is funded. The scheduled league-wide capture (all clubs, refreshed automatically) is <a href="availability.html">Injuries &amp; depth · all clubs</a>.</p></section>
+<section><h2>Current status — 2026-11-15</h2>
+<p>This dated snapshot supersedes older status notes below. Counts are read from the committed gate, forward-ledger,
+demotion and brief registers. Unknown values remain blank or flagged; no missing evidence is inferred.</p>
+{current_status_table}
+</section>
 <section><h2>Update of 2026-11-12</h2>
 {table([
 ["Injuries and lineups", "Tracking live · effect not priced", "A scheduled workflow reads the official NFL.com injury report and each club's depth-chart page, then shows for offense and defense which first-listed players are Out or Doubtful and which 2nd, 3rd or 4th-string player the club lists next. It does not yet move the originated line: the point value of an absence has not been measured. See <a href='availability.html'>Injuries &amp; depth</a>.", official("NFL injuries")],
@@ -603,7 +698,46 @@ every build and carried <code>"sha256": null</code> for one of the two files it 
 <li>Joint prop outcomes and actual SGP prices to test correlation rather than assume independence.</li>
 </ol><p><a class="btn" href="requirements.html">See the complete requirements matrix →</a></p></section>"""
     body += _exec_verification_section()
+    body += _exec_requirement_register_section()
     return layout("executive-summary.html", "Executive summary", "The decision, the evidence and the limits—without a promised betting edge.", body)
+
+
+def _exec_requirement_register_section() -> str:
+    """D6 (arena/ba09384a-korea1): the 2026-11-18 register, summarised for the executive reader."""
+    rr = _read_integration("requirement_annex_2026_11_18.csv")
+    if rr is None:
+        return ""
+    q = _read_integration("questions_2026_11_18.csv")
+    d = _read_integration("decisions_2026_11_18.csv")
+    counts = rr.norm.value_counts().to_dict()
+    blocked = rr[rr.norm == "BLOCKED"]
+    rows = [[e(r.id), e(r.request), e(r.gate) or "—", e(r.clears) or "—",
+             src_link(r.official_url, r.official_label)] for r in blocked.itertuples(index=False)]
+    return (f"""<section id="requirement-register"><h2>Requirement register, 2026-11-18</h2>
+<p>The brief asks for one thing above all: <em>a clear list of questions, information and answers that must be
+settled before any decision.</em> <a href="requirement-annex-2026-11-18.html">The requirement annex</a> gives that — one row per
+line of the brief, each with the evidence that exists, the gate that blocks it and the number that would clear it.</p>
+<div class="cards smallcards">
+<div class="card"><div class="card-value">{len(rr)}</div><div class="card-label">lines of the brief traced</div></div>
+<div class="card"><div class="card-value">{counts.get('DONE', 0)}</div><div class="card-label">done, evidence recomputed</div></div>
+<div class="card"><div class="card-value">{counts.get('PARTIAL', 0)}</div><div class="card-label">partly done</div></div>
+<div class="card"><div class="card-value">{len(blocked)}</div><div class="card-label">blocked</div></div>
+<div class="card"><div class="card-value">{counts.get('REJECTED', 0)}</div><div class="card-label">rejected as asked</div></div>
+<div class="card"><div class="card-value">{0 if q is None else len(q)}</div><div class="card-label">decision-blocking questions</div></div>
+<div class="card"><div class="card-value">{0 if d is None else len(d)}</div><div class="card-label">decisions only the owner can take</div></div>
+</div>
+<p><strong>What was verified on the official pages this pass.</strong> At 2026-11-18T04:52Z four official pages were
+re-read and compared cell by cell with the committed captures: the NFL injury report (97 rows, all identical), the
+Commanders depth chart (23 rows, all identical), the November reserve list (25 rows, all identical) and one game
+centre (KC 35 – ATL 13 Final). Two findings came out of it that change what the site may claim: the monthly reserve
+page is a rolling window, not a record (F-57), and the results feed still calls a settled game FUTURE (F-52).</p>
+<p><strong>The decision is unchanged.</strong> No strategy is validated, no reward is authorised, and the
+{len(blocked)} blocked lines cannot be cleared by anything in this repository — they need an official source that
+has not been located (inactive lists, snap counts, a committed Game Book capture) or an owner decision (the
+price-data policy, the public/private split, the 136-game corpus).</p>
+{table(rows, ["ID", "Blocked line of the brief", "Gate", "Number that clears it", "Official source"],
+ caption="Every blocked requirement line · detail on requirement-annex-2026-11-18.html")}
+</section>""")
 
 
 def _exec_verification_section() -> str:
@@ -782,20 +916,44 @@ def build_strategies(d):
     from strategies import build_library
     library = {x.id: x for x in build_library()}
     gates = d["strategy_gates"]
-    stats = d["strategy_stats"].set_index("strategy") if len(d["strategy_stats"]) else pd.DataFrame()
-    bets = d["strategy_bets"]
-    sig_mean = bets.groupby("strategy").signal.mean() if len(bets) else pd.Series(dtype=float)
+    mind_changers = _mind_changer_map()
+    status_path = ROOT / "data" / "governance" / "demotion_register.csv"
+    statuses = (pd.read_csv(status_path, dtype=str, keep_default_na=False)
+                .set_index("strategy")["current_status"].to_dict()) if status_path.exists() else {}
+    signal_gates = [
+        ("G2_leakage", "G2"), ("G3_power", "G3"), ("G4_significance", "G4"),
+        ("G5_luck", "G5"), ("G7_stability", "G7"), ("G8_redundancy", "G8"),
+    ]
+    sources = (official("NFL scores") + " · " +
+               official("White (2000), Econometric Society") + " · " +
+               src_link("validation.html", "gate definitions") + " · " +
+               src_link("assets/data/validation_config.json", "frozen thresholds") + " · " +
+               src_link("assets/data/demotion_register.csv", "paper/live register"))
     rows = []
     for r in gates.sort_values("strategy").itertuples():
         spec = library[r.strategy]
-        units = int(r.n) if pd.notna(r.n) else 0          # one unit staked per bet
-        sig = fmt(float(sig_mean[r.strategy])) if r.strategy in sig_mean.index and pd.notna(sig_mean[r.strategy]) else BLANK
-        # ROI stays blank: every price is a community-mirror close, never an executable quote.
-        # Signal (edge behind each selection) and staking (units staked) are printed side by side so
-        # a lucky staking run cannot be read as signal. With flat one-unit staking they coincide today;
-        # any future variable staking plan gets its own column and is never re-read as signal.
-        rows.append([e(spec.id), e(spec.name), e(spec.market), e(spec.rule), str(units),
-                     sig, BLANK, BLANK, "Unawarded", research_source("White (2000), Econometric Society")])
+        failed_signal = [label for col, label in signal_gates if not bool(getattr(r, col))]
+        signal_status = (
+            '<span class="pill unverified">NOT SIGNAL-QUALIFIED</span><br>'
+            f'<span class="small">Failing signal gates: {e(", ".join(failed_signal))}</span>'
+            if failed_signal else
+            '<span class="pill skill">SIGNAL GATES PASS</span><br>'
+            '<span class="small">This is not an all-gate validation.</span>'
+        )
+        current_status = statuses.get(r.strategy, "").strip().upper()
+        if current_status == "PAPER":
+            staking_status = '<span class="pill unverified">PAPER · no live staking</span>'
+        elif current_status == "LIVE":
+            staking_status = '<span class="pill skill">LIVE status recorded</span>'
+        else:
+            staking_status = '<span class="pill unverified">UNVERIFIED · status not recorded</span>'
+        mind = mind_changers.get(r.strategy, {})
+        move_cell = _mind_changer_cell(mind.get("moves_up_when", ""), "Show move-up criteria")
+        stop_cell = _mind_changer_cell(mind.get("stops_when", ""), "Show stop / demotion triggers")
+        rows.append([
+            e(spec.id), e(spec.name), e(spec.market), e(spec.rule), signal_status,
+            staking_status, move_cell, stop_cell, sources,
+        ])
     rewards = [[name, rule, "No monetary reward", official("White (2000), Econometric Society")] for name, rule in [
         ("Research", "Rule and complete trial history registered; no performance award."),
         ("Candidate", "Data, leakage and power gates pass; still paper-only."),
@@ -806,9 +964,12 @@ def build_strategies(d):
 <section><h2>Competition, not a tipping service</h2><p>Every candidate is published, including failures.
 Ranking by raw profit alone rewards variance. Eligibility comes first; risk-adjusted, selection-adjusted,
 cost-adjusted evidence comes second. The current public leaderboard has no funded winner.</p>
+<p class="flag info">Signal qualification and the recorded PAPER/LIVE staking state are separate. This competitive view withholds
+historical backtest returns, hit rates, mean signal edge and staked-unit totals. The two-sided mind-changer cells show only
+registered move-up criteria and stop/demotion triggers; current historical result values are omitted.</p>
 <div class="table-tools"><label>Find a strategy <input class="filter" type="search" placeholder="Search names, rules or markets"></label><span class="small">All {len(rows)} candidates shown</span></div>
-{table(rows, ["ID", "Strategy", "Market", "Frozen research rule", "Units staked", "Mean signal edge", "ROI (flat 1 unit)", "Holm p", "Verdict", "Reward", "Sources"], caption="Complete strategy library · unverified performance is blank · signal and staking are separate columns")}
-<p><a href="assets/data/strategy_gates.csv">Download calculated gate results</a> · <a href="lab/strategies.html">Historical research annex</a></p></section>
+{table(rows, ["ID", "Strategy", "Market", "Frozen research rule", "Signal qualification", "Staking status", "Move up when", "Stop / demote when", "Sources"], caption="Competitive strategy view · signal and staking status separated · historical backtest performance values withheld")}
+<p><a href="validation.html">Validation gates</a> · <a href="lab/strategies.html">Historical research annex</a></p></section>
 <section><h2>Signal families and why they might matter</h2><ul class="findings">
 <li><strong>Model disagreement:</strong> a trade only has positive expected value if the model is better calibrated than the available price, not merely different from it.</li>
 <li><strong>Situational angles:</strong> rest, weather and recent form are hypotheses. Their availability timestamps and multiple-testing burden must be controlled.</li>
@@ -817,10 +978,10 @@ cost-adjusted evidence comes second. The current public leaderboard has no funde
 <li><strong>Closing-line value:</strong> a useful prospective diagnostic only with genuine entry timestamps and comparable bookmaker closing quotes; it is not a guarantee of profit.</li></ul></section>
 <section><h2>Reward and anti-gaming rules</h2>{table(rewards, ["Tier", "Requirement", "Payout status", "Reference"], caption="Proposed recognition framework—not an existing financial promotion")}
 <ol class="findings"><li>Register the complete rule, data version, parameters and every trial before evaluation.</li>
-<li>One-unit flat staking for comparison; no leverage-based ranking.</li><li>Keep all selections and all no-bet weeks; no cherry-picked subsets.</li>
+<li>Keep the same flat-stake rule across candidates; staking choices never determine rank.</li><li>Keep all selections and all no-bet weeks; no cherry-picked subsets.</li>
 <li>Use actual ticket quotes and bookmaker-specific push/void rules.</li><li>Any rule change creates a new entrant and increases the trial count.</li>
 <li>Pass every gate and replicate prospectively before recognition. Rewards remain unawarded until separately authorized and funded.</li></ol></section>"""
-    return layout("strategies.html", "Strategy leaderboard", "All candidates, frozen rules and fail-closed reward eligibility.", body, wide=True)
+    return layout("strategies.html", "Strategy leaderboard", "Signal qualification and staking state are separated; historical backtest performance is withheld.", body, wide=True)
 
 
 def build_validation(d):
@@ -1176,6 +1337,7 @@ No manual input is required to use the current site. A correction must update th
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
     body += _flagged_2026_11_15_section()
     body += _flagged_2026_11_18_section()
+    body += _flagged_2026_11_18_b_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1567,6 +1729,8 @@ def main() -> None:
         # V1/V2 (arena/917fe36e-korea1): independent official re-verification and the
         # consolidated review surface. Both read only data/live/**.
         "live-verification.html": build_live_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
+        # D2 (arena/ba09384a-korea1): the 75-row requirement verification register and its CSVs.
+        "requirement-annex-2026-11-18.html": __import__("req_annex_2026_11_18").build_page(),
         "review.html": build_review_page(layout, table, card, kpi_grid, flag, src_link, SHA, SRC),
     }
     for name, html_text in pages.items():
@@ -1655,6 +1819,20 @@ def _flagged_2026_11_18_section() -> str:
             + listing + "</section>")
 
 
+def _flagged_2026_11_18_b_section() -> str:
+    """Findings F-52 onward from the 2026-11-18 requirement pass (arena/ba09384a-korea1)."""
+    fl = _read_integration("findings_2026_11_18.csv")
+    if fl is None:
+        return ""
+    rows = [[e(r.id), e(r.sev), e(r.text) + (f"<br><span class=\"small\">Next: {e(r.nxt)}</span>" if r.nxt else ""),
+             src_link(r.url, r.label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the 2026-11-18 requirement pass</h2>"
+            "<p>Found while re-reading four official pages against the committed captures for the "
+            "<a href=\"request-register-2026-11-18.html\">requirement register</a>. None blocks merge.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                    caption="Requirement-pass findings with an official source · F-52 onward") + "</section>")
+
+
 def _landing_panels() -> str:
     parts = []
     import pandas as _pd
@@ -1675,6 +1853,25 @@ def _landing_panels() -> str:
                      + table(rows, ["Control", "Bets", "Hit rate", "ROI per unit", "95% interval", "Source"],
                              caption="Control baselines · n on every row · settlement against official finals") +
                      "</section>")
+    # D6 (arena/ba09384a-korea1): the 2026-11-18 requirement register, as a landing-page digest.
+    # The full 75-row register is its own page; the landing page shows what a decision needs now:
+    # every blocked row (the gate that blocks it and the number that clears it) plus the counts.
+    rr = _read_integration("requirement_annex_2026_11_18.csv")
+    if rr is not None:
+        blocked = rr[rr.norm == "BLOCKED"]
+        counts = rr.norm.value_counts().to_dict()
+        rows = [[e(r.id), e(r.request), e(r.gate) or "—", e(r.clears) or "—", src_link(r.official_url, r.official_label)]
+                for r in blocked.itertuples(index=False)]
+        parts.append(
+            "<section><h2>Requirement register: what is built, what is blocked</h2>"
+            f"<p>Every line of the brief is traced on the <a href=\"requirement-annex-2026-11-18.html\">"
+            f"2026-11-18 annex</a>: <strong>{len(rr)}</strong> lines, <strong>{counts.get('DONE', 0)}</strong> done, "
+            f"<strong>{counts.get('PARTIAL', 0)}</strong> partly done, <strong>{len(blocked)}</strong> blocked and "
+            f"<strong>{counts.get('REJECTED', 0)}</strong> rejected as asked. The {len(blocked)} blocked rows are below "
+            f"with the gate and the number that would clear each one.</p>"
+            + table(rows, ["ID", "Line of the brief", "Blocking gate", "Number that clears it", "Official source"],
+                    caption="Blocked requirement lines · full annex on requirement-annex-2026-11-18.html") +
+            "</section>")
     dr = _read_integration("brief_2026_11_15.csv")
     if dr is not None:
         rows = []
