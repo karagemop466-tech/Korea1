@@ -2911,7 +2911,11 @@ unresolvable and never guessed at.
 
 **Integration step (CB10, in this session):** added nav entries for `brief-2026-11-15.html` and `injury-deltas.html` in `NAV_GROUPS`, the landing-page panels (CB7), and the flagged rows (CB8). No other shared table was changed. The `history/2026-11-12..15` depth files were normalised in place (F-32), and this is disclosed rather than hidden.
 
-**Pull request and merge:** recorded below after the PR is opened and merged.
+**Pull request and merge (recorded 2026-11-15):**
+- **PR #67** — https://github.com/karagemop466-tech/Korea1/pull/67 — `arena/c79b2684-korea1` → `main`, merged 2026-11-15T18:38:36Z as merge commit `853e437f8c62894789a2c8a3e15dff5e821633c6`, after the branch merged `main` at `b4451e7`.
+- **Checks on the merge commit:** "Verify site" success; "pages build and deployment" success (both for `853e437`).
+- **Live check:** `https://karagemop466-tech.github.io/Korea1/brief-2026-11-15.html` served the brief tracker on the day of merge.
+- **Follow-up (text-only):** the live brief page said "eight rows (F-30 to F-37)" in three places; the flagged set is twelve (F-30 to F-41). The text is corrected in a follow-up PR, **PR #68** (`arena/c79b2684-korea1` → `main`), which repeats the same build, test and Pages checks. Its merge result is on the PR page.
 
 **Merge conflict record (2026-11-15, same session):** `main` moved to `b4451e7` while this branch was in review (sessions `e0763e1e` PRs #62–#66). Ten files conflicted:
 - `tests/test_live_verify.py`: main's CQ1 removed the hard-coded row count instead of changing it. That is the more robust repair, so main's version was taken and CB11's pin edit is superseded. The two new CB11 test files are kept.
