@@ -38,7 +38,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: gamebooks-${{ github.ref }}
+  # Shared with the availability tracker so the two capture bots never push to
+  # the same branch at the same time.
+  group: official-capture-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
