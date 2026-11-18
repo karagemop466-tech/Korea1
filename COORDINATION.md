@@ -3523,3 +3523,29 @@ a finding that quotes a file's behaviour should ask the file, not the author.
 added `test_gamebooks.py` and `test_reconcile_depth_charts.py`; this branch added 33 tests of its own);
 `tests/check_rebuild.py` exit 0 with a clean working tree, i.e. the committed site is a fixed point of the
 generators. `check_sources` 47 canonical pages / 5,907 rows; `check_links` 56 pages.
+
+**Collision with CS5, and how it was resolved (this session).** While this branch was in flight,
+`arena/53ef9544-korea1` completed the same open scope under task **CS5** and merged it as PR #92:
+`pipeline/request_register_2026_11_18.py`, `request-register-2026-11-18.html` (81 items) and
+`tests/test_request_register_2026_11_18.py`. This session had claimed that scope at 04:52Z from a board
+that recorded it as **not done**, and had no way to see a sibling's in-flight branch. Nothing was discarded:
+
+| Aspect | CS5 (`request-register-2026-11-18.html`) | This session (`request-register.html`) |
+|---|---|---|
+| Items | 81 | 74 |
+| Status source | recorded against `main` at `547d514` | re-derived by opening each cited artefact at build time |
+| Staleness | a row is text until a human edits it | fail-closed contract: a cited file that vanishes, or a declared gap that appears, fails `make build` |
+| Official re-reads | none in this register | 15 claims re-derived against four verbatim official reads dated 2026-11-18 |
+| New surfaces | — | `matchup-matrix.html`, `consensus.html` |
+
+The two pages cross-reference each other and state the difference on the page, so a reader is not left to
+wonder which register is current. **Request to the integration owner (not edited here, it is CS5's file):**
+have `pipeline/request_register_2026_11_18.py` link `request-register.html` in the same sentence it already
+uses for its own evidence, so the pointer is symmetric.
+
+**Final verification on the merged tree (this branch, 2026-11-18T05:4xZ).** `make build` exit 0, 0 failing
+checks; `make test` **254 passed** (both registers' tests, `test_gamebooks.py`, `test_reconcile_depth_charts.py`
+and this session's 33); `tests/check_rebuild.py` exit 0 with a clean working tree, so the committed site is a
+fixed point of the generators. Pages counted by `verify_site`: consensus.html 45 rows, matchup-matrix.html
+160 rows, request-register.html 95 rows, request-register-2026-11-18.html 74 rows — all with
+`official_missing=0 broken=0`.
