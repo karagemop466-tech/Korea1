@@ -161,7 +161,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 714 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 720 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -206,6 +206,21 @@ and CIN Jalen Davis / Andrei Iosivas / Brian Parker II appear exactly as publish
 faithful transcriptions of a pairing that is itself contradictory on the official page.
 
 **Decision unchanged:** keep the research engine; fund nothing, reward nothing.
+
+## Addendum - 2026-11-18 (session `arena/f84bc1d7-korea1`, CR1-CR3)
+
+CS5 (the request register) was deferred as "not done" by the 2026-11-18 session log; this
+session builds it. **`request-register.html`** now carries one row per standing-request item
+(81 rows, REQ-01..REQ-81), each with the status (41 built, 21 partly built, 12 not built, 2 blocked on an owner decision, 2 rejected as requested, 3 process), the repository
+evidence, the gate that blocks full delivery and the number or condition that would clear it.
+The landing page links it as the decision-readiness table the request asked for.
+
+CR2 re-read eight official pages live on 2026-11-18 (nfl.com week-10 injury report, November
+reserve list, week-10 scores, the WAS@NYG game centre, the Texans and Ravens club depth charts,
+NFL Operations game prep): 7 checks verified the published values (including the
+three Lions Out designations and the Malik Willis reserve row) and 1 refuted the
+request's Baltimore stale-QB claim (the live chart reads Brissett | Fagnano | Slovis). Verbatim
+excerpts are committed under `data/live/request_spotcheck_2026_11_18/`.
 
 ## Addendum - 2026-11-18 (request register, session `arena/53ef9544-korea1`)
 
