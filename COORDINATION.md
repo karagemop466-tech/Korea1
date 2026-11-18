@@ -3203,3 +3203,25 @@ than the 2026-11-17 bot snapshots, so no active sibling claim is taken over.
 conflicting ones, re-verify the combined tree line by line against committed inputs, publish via
 PR → `main`, and record the result here. No model, strategy, gate, or official value is changed
 by this session.
+
+### B45 outcome (1) — 2026-11-18: red-main repair after PR #77
+
+While this session was rebasing its claim, `arena/27eca1b3-korea1` merged **PR #77** (S18 depth-chart
+reconciliation) and the two subsequent `Verify site` runs on `main` **failed** (`check_rebuild.py`
+exit 1). Diagnosis performed here on a clean checkout of `30e74e8`:
+
+- `make build` — exit 0 (0 failing checks, 44 canonical pages / 5,545 rows, 53 pages linked).
+- `make test` — 189 passed (the S18 test repair works: depth extract vs published charts, 0 mismatches).
+- `tests/check_rebuild.py` — **exit 1, 12 drifted generated files**: PR #77 changed the committed inputs
+  (`data/availability/depth_charts.csv`, new `scripts/reconcile_depth_charts.py`) and regenerated *some*
+  outputs, but not `EXECUTIVE_SUMMARY.md` (file count 671 → 672), `assets/data/depth_slot_verification.csv`,
+  `assets/data/depth_verification_summary.{csv,json}`, `assets/data/replacement_defence.csv`
+  (WAS row: `OFFENCE_DEPLETED`/1.5 → `BALANCED`/0.5, derived from the reconciled WAS chart),
+  `assets/data/replacement_slots.csv`, both `repo_inventory.csv` copies, `verification_report.csv`
+  copies, and the three HTML pages (`executive-summary`, `live-verification`, `repo-review`).
+- Repair: full `make build` regeneration committed on this branch; second build is a fixed point;
+  `make test` 189 passed; `check_rebuild` 0 drifted files after commit.
+
+No official value was edited by hand: every changed cell is the deterministic product of the S18
+reconciled depth chart re-running through the unchanged build. Sources for the underlying
+reconciliation are recorded in S18's row above (official club depth-chart pages).
