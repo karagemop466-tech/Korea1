@@ -29,9 +29,7 @@ DAL,Cowboys,SF,Special Teams,6,0,0,0,0,3,,https://www.dallascowboys.com/team/dep
 DEN,Broncos,,Offense,12,0,0,0,0,0,,https://www.denverbroncos.com/team/depth-chart,
 DEN,Broncos,,Defense,12,0,0,0,0,0,,https://www.denverbroncos.com/team/depth-chart,
 DEN,Broncos,,Special Teams,7,0,0,0,0,0,,https://www.denverbroncos.com/team/depth-chart,
-DET,Lions,NE,Offense,11,1,0,1,0,0,C,https://www.detroitlions.com/team/depth-chart,https://www.nfl.com/injuries/
-DET,Lions,NE,Defense,11,1,0,0,0,0,CB,https://www.detroitlions.com/team/depth-chart,https://www.nfl.com/injuries/
-DET,Lions,NE,Special Teams,6,0,0,0,0,0,,https://www.detroitlions.com/team/depth-chart,https://www.nfl.com/injuries/
+DET,Lions,NE,Defense,11,2,0,1,0,0,C CB,https://www.detroitlions.com/team/depth-chart,https://www.nfl.com/injuries/
 GB,Packers,MIN,Offense,11,2,0,0,0,0,C RB,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
 GB,Packers,MIN,Defense,11,0,1,3,0,0,LB,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
 GB,Packers,MIN,Special Teams,6,0,0,0,0,0,,https://www.packers.com/team/depth-chart,https://www.nfl.com/injuries/
@@ -59,15 +57,11 @@ MIA,Dolphins,IND,Special Teams,5,0,0,0,0,0,,https://www.miamidolphins.com/team/d
 MIN,Vikings,GB,Offense,12,2,0,1,1,1,WR TE,https://www.vikings.com/team/depth-chart,https://www.nfl.com/injuries/
 MIN,Vikings,GB,Defense,11,2,0,0,0,0,DL LB,https://www.vikings.com/team/depth-chart,https://www.nfl.com/injuries/
 MIN,Vikings,GB,Special Teams,6,0,0,0,0,0,,https://www.vikings.com/team/depth-chart,https://www.nfl.com/injuries/
-NE,Patriots,DET,Offense,11,1,0,2,0,2,LG,https://www.patriots.com/team/depth-chart,https://www.nfl.com/injuries/
-NE,Patriots,DET,Defense,12,1,0,1,0,0,CB,https://www.patriots.com/team/depth-chart,https://www.nfl.com/injuries/
-NE,Patriots,DET,Special Teams,6,0,0,0,0,0,,https://www.patriots.com/team/depth-chart,https://www.nfl.com/injuries/
+NE,Patriots,DET,Defense,12,2,0,3,0,2,LG CB,https://www.patriots.com/team/depth-chart,https://www.nfl.com/injuries/
 NO,Saints,CAR,Offense,11,2,0,1,0,1,C RT,https://www.neworleanssaints.com/team/depth-chart,https://www.nfl.com/injuries/
 NO,Saints,CAR,Defense,12,0,0,1,0,0,,https://www.neworleanssaints.com/team/depth-chart,https://www.nfl.com/injuries/
 NO,Saints,CAR,Special Teams,7,0,0,0,0,0,,https://www.neworleanssaints.com/team/depth-chart,https://www.nfl.com/injuries/
-NYG,Giants,WAS,Offense,11,0,0,0,0,0,,https://www.giants.com/team/depth-chart,https://www.nfl.com/injuries/
 NYG,Giants,WAS,Defense,12,0,0,0,0,0,,https://www.giants.com/team/depth-chart,https://www.nfl.com/injuries/
-NYG,Giants,WAS,Special Teams,6,0,0,0,0,0,,https://www.giants.com/team/depth-chart,https://www.nfl.com/injuries/
 NYJ,Jets,BUF,Offense,12,0,0,2,0,0,,https://www.newyorkjets.com/team/depth-chart,https://www.nfl.com/injuries/
 NYJ,Jets,BUF,Defense,12,0,0,2,0,1,,https://www.newyorkjets.com/team/depth-chart,https://www.nfl.com/injuries/
 NYJ,Jets,BUF,Special Teams,6,0,0,0,0,0,,https://www.newyorkjets.com/team/depth-chart,https://www.nfl.com/injuries/
@@ -89,6 +83,5 @@ TB,Buccaneers,,Special Teams,8,0,0,0,0,0,,https://www.buccaneers.com/team/depth-
 TEN,Titans,JAX,Offense,11,2,0,0,0,0,LG WR,https://www.tennesseetitans.com/team/depth-chart,https://www.nfl.com/injuries/
 TEN,Titans,JAX,Defense,12,2,0,0,0,0,LB LB,https://www.tennesseetitans.com/team/depth-chart,https://www.nfl.com/injuries/
 TEN,Titans,JAX,Special Teams,7,2,0,0,0,2,P H,https://www.tennesseetitans.com/team/depth-chart,https://www.nfl.com/injuries/
-WAS,Commanders,NYG,Offense,12,1,0,0,1,1,C,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
-WAS,Commanders,NYG,Defense,11,0,0,0,0,0,,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
-WAS,Commanders,NYG,Special Teams,6,0,0,0,0,0,,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
+WAS,Commanders,NYG,Defense,11,0,0,0,0,1,,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
+WAS,Commanders,NYG,Offense,1,0,0,0,0,0,,https://www.commanders.com/team/depth-chart,https://www.nfl.com/injuries/
