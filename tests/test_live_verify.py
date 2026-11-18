@@ -182,8 +182,11 @@ def test_depth_rows_line_up_with_the_official_charts():
 def test_depth_snapshot_matches_the_official_charts():
     ext = pd.read_csv(ROOT / "data/live/official_depth_extract_2026_11_13.csv",
                       dtype=str, keep_default_na=False)
-    pub = pd.read_csv(ROOT / "data/availability/depth_charts.csv", dtype=str,
-                      keep_default_na=False)
+    # Compare like-for-like: this extract is dated Nov 13, while the top-level
+    # depth_charts.csv is intentionally the latest (mutable pointer) capture.
+    # Newer club charts must not be treated as a contradiction of the old source.
+    pub = pd.read_csv(ROOT / "data/availability/history/2026-11-13/depth_charts.csv",
+                      dtype=str, keep_default_na=False)
     pub["depth_rank"] = pub["depth_rank"].astype(int)
     off, pr = lvd._off_rows(ext), lvd._pub_rows(pub)
     keys = set(off)

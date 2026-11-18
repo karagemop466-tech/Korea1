@@ -1,6 +1,14 @@
 # COORDINATION.md — shared task board
 
-Last updated: 2026-11-13 (latest: `arena/beafe2ae-korea1`; concurrent R1 integration: `arena/18c4acce-korea1`; prior sessions: `arena/03f66e17-korea1`, `arena/25460478-korea1`, `arena/c0528572-korea1`)
+Last updated: 2026-11-18 (`arena/51fae77c-korea1`; current branch is the sole task branch)
+
+## Session `arena/51fae77c-korea1` — dated depth-snapshot regression repair (2026-11-18)
+
+**Scope:** `tests/test_live_verify.py` and this coordination record only. The current repository's mutable `data/availability/depth_charts.csv` points to the 2026-11-17 capture, but the test fixture `data/live/official_depth_extract_2026_11_13.csv` records a Nov 13 comparison. The old test compared those different capture dates and failed on legitimate intervening chart changes (18 Washington/New York/Detroit rows differed). Updated the test to compare against the retained immutable `data/availability/history/2026-11-13/depth_charts.csv` snapshot instead. No data or model output was altered. These are committed source artifacts; this repair does not claim a new live-source reread.
+
+**Verification:** `make test` — 189 passed; `make verify` — 0 failing site checks, 44 canonical pages / 5,516 rows pass strict official/primary reference check, 53 pages pass internal link checks; `tests/check_rebuild.py` reports 0 derived output changes; `git diff --check` clean. `make verify` initially required the project dependencies; installed from `requirements.txt` into ignored `.venv/`.
+
+---
 
 ## How to use this board
 
