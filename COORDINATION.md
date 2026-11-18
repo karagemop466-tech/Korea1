@@ -3549,3 +3549,21 @@ and this session's 33); `tests/check_rebuild.py` exit 0 with a clean working tre
 fixed point of the generators. Pages counted by `verify_site`: consensus.html 45 rows, matchup-matrix.html
 160 rows, request-register.html 95 rows, request-register-2026-11-18.html 74 rows — all with
 `official_missing=0 broken=0`.
+
+**CI failure found and fixed by this session (the reason this PR took a second pass).** The first `Verify
+site` run on this branch (44245729332) failed at the last step, `python tests/check_rebuild.py`, while
+`make build` and `make test` passed both locally and in CI. Cause: `pipeline/claim_checks_20261118.py`
+published `str(READS / file)` — an **absolute** path — into `claim_checks_2026_11_18.csv`, its
+`assets/data` copy and `request-register.html`. GitHub Actions checks out at `/home/runner/work/Korea1/Korea1`
+and this workspace at `/home/user/Korea1`, so a rebuild on CI rewrote those three files and the drift check
+correctly refused them. Reproduced exactly by cloning this branch into a clean directory and running
+`make build` there: the only diff was the evidence column. Fixed by writing repo-relative paths (commit
+`01b7913`), with `tests/test_claim_checks.py::test_no_build_machine_path_is_published` now forbidding
+`/home/`, `/runner/`, `/github/workspace` and `/tmp/` in any published artefact of this register and
+asserting every relative pointer resolves inside the repository.
+
+**This class of bug is not hypothetical and not local to this session.** Any generator that puts a
+filesystem path, or anything else derived from the checkout location, into a committed output makes CI red
+for the next person. The pattern to copy: repo-relative pointers plus that assertion. A clean-clone build is
+the cheapest reproduction, and it is worth running before opening a PR that adds a generator:
+`git clone --branch <branch> "file://$(pwd)" /tmp/x && cd /tmp/x && make build && git status --porcelain`.
