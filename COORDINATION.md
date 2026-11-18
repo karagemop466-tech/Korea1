@@ -4037,4 +4037,8 @@ register and link the others as annexes, or merge them. (2) The failed `main` ru
 not be rerun with this token (403/`cannot be rerun`); if it stays red, the next session with a
 workflow-scoped token should re-run it or push an empty commit to `main`.
 
-**PR and deploy record:** PR link, merge result and Pages run appended below immediately after merge.
+**PR and deploy record.**
+- Claim + outcome record: **[PR #103](https://github.com/karagemop466-tech/Korea1/pull/103)** (`arena/ac52e176-korea1` → `main`), checks green on both events (runs [44256320532](https://github.com/karagemop466-tech/Korea1/actions/runs/44256320532) push, [44256738249](https://github.com/karagemop466-tech/Korea1/actions/runs/44256738249) pull_request), **merged without waiting** as `d6929e07` at 2026-11-18T07:13:27Z.
+- Post-merge on `main`: Verify site run [44257195616](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195616) **success** (red `main` from run 44252018114 on `8bc353b` is cleared — suspected-transient diagnosis confirmed); Pages run [44257195568](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195568) **success** at 07:13:30Z.
+- Live confirmation: `https://karagemop466-tech.github.io/Korea1/` serves the dashboard; `request-register-2026-11-18.html`, `verified-register-2026-11-18.html` and `flagged.html` all return 200 on the Pages origin (read after deploy).
+- This record rides to `main` in the record-only follow-up PR opened from this branch after the merge.
