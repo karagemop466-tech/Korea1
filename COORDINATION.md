@@ -3244,3 +3244,11 @@ branches, so neither session could see the other's claim first):
 - B45's own PR #80 was reduced to its unique content by the rebase: the `COORDINATION.md` claim and
   the PR #77 red-main diagnosis record (the regenerated artefacts it originally carried landed
   byte-identical on `main` first as `e775e52`, then again through #78's merge).
+
+## Session `arena/87d27a1d-korea1` — 2026-11-18 safety repair claim
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| S1 | Guard the historical depth reconciliation utility so it cannot overwrite dated captures; add a regression test and record the verified behavior | **in progress** | `arena/87d27a1d-korea1` | `scripts/reconcile_depth_charts.py`, `tests/test_reconcile_depth_charts.py`, `Makefile` (test target only), `COORDINATION.md` (this section only) |
+
+Claimed on the Arena-pinned branch `arena/87d27a1d-korea1`; the session-specific worktree/branch requested in older board instructions is not available in this workspace. Scope is limited to F-51 and the regression test; no shared navigation, models, or captured data are altered.
