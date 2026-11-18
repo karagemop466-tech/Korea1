@@ -1,6 +1,18 @@
 fact,value,note
 ablation_files,0,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_bye_first_week,5,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_bye_last_week,14,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_date_as_printed,"May 14, 2026",computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_excerpt,data/live/register_reads_2026_11_18/nfl_media_2026_schedule_announcement.md,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_final_week,18,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_final_week_division_games,16,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_games,272,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_games_per_team,17,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_url,https://media.nfl.com/football-information/2026/news/2026-nfl-schedule-announced,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+announcement_weeks,18,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 as_of,2026-11-18,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+avail_club_week_pct,35.3,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+avail_club_weeks,192,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 bye_clubs,"CHI, DEN, PHI, TB",computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 bye_clubs_n,4,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 capture_days,7,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
@@ -9,9 +21,13 @@ capture_http_ok,33,computed by pipeline/register_20261118.py from committed file
 capture_last,2026-11-18,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 capture_sources,33,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 captures_with_hash,33,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+clubs_in_schedule_with_rows,28,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 clubs_in_week_schedule,28,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 clubs_that_gained_rows,"BAL, CIN, LAC, SEA",computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 clubs_that_gained_rows_n,4,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+clubs_without_report_rows,"CHI, DEN, PHI, TB",computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+clubs_without_rows_but_playing,0,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+clubs_without_rows_not_playing,4,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 control_rows,5,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 corpus_games,7384,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 corpus_seasons,1999–2026,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
@@ -71,6 +87,9 @@ originated_rows,6073,computed by pipeline/register_20261118.py from committed fi
 origination_order_rows,6073,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 pbp_backup_rows,9,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 personnel_features,0,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+pinned_none_clubs,"Seahawks, Bengals, Chargers, Ravens",computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+pinned_none_n,4,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+pinned_stamp,2026-11-12T13:06:29Z,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 prereg_picks,65,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 prereg_sets,3,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 prereg_trial_rows,18,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
@@ -87,10 +106,10 @@ questions_master_rows,90,computed by pipeline/register_20261118.py from committe
 read_window,2026-11-18T04:47Z–04:52Z,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 register_blocked,2,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 register_done,35,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-register_flag_n,8,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+register_flag_n,9,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 register_notrepro,1,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-register_notstarted,2,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-register_partly,24,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+register_notstarted,1,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+register_partly,25,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 register_q_n,12,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 register_rejected,2,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 register_rows,68,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
@@ -115,6 +134,7 @@ reserve_union_nov,35,computed by pipeline/register_20261118.py from committed fi
 results_feed_rows,7548,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 results_feed_tiers,PINNED_ARCHIVE=7383; SCHEDULED=135; OFFICIAL_READ=30,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 roster_depth_rows,6743,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+season_club_weeks,544,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 signal_staking_rows,18,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 site_pages,45,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 spotcheck_rows,92,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
@@ -127,6 +147,8 @@ venues_n,14,computed by pipeline/register_20261118.py from committed files and t
 venues_with_both_fields,14,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 verified_results_final,30,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 verified_results_rows,150,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+week10_clubs_in_schedule,28,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+week10_fixtures,14,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 zero_row_clubs_first,"BAL, CHI, CIN, DEN, LAC, PHI, SEA, TB",computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 zero_row_clubs_latest,"CHI, DEN, PHI, TB",computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 zero_row_n_first,8,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/

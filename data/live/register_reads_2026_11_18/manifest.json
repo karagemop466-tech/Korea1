@@ -18,6 +18,10 @@
       "sha256": "c9697e14bc82da05880e6b7e8f3e3bd531fde73f48ffe49af09417215547bf94",
       "bytes": 13817
     },
+    "nfl_media_2026_schedule_announcement.md": {
+      "sha256": "cde7f716dc99fab30cda41796a62752ada9589d9e4adc2370c05e9d4951c6d27",
+      "bytes": 6165
+    },
     "nfl_reserve_list_2026_11_rows.md": {
       "sha256": "bcfef87e5632a78dd643cb124d3c48118d1cb80656f942fc1926866256132d19",
       "bytes": 11615

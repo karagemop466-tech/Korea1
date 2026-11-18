@@ -299,7 +299,25 @@ def facts() -> dict:
     f["inj_pub_contradicted"] = "; ".join(f"{t} ({c}) printed injury-free against {n} official rows"
                                           for t, c, n in contrad) or "none"
     f["inj_pub_contradicted_n"] = len(contrad)
+    _pn, _ps = pinned_none_clubs()
+    f.update({k: v for k, v in announcement_facts().items() if k != "announcement_excerpt"})
+    f["announcement_excerpt"] = announcement_facts().get("announcement_excerpt", "")
+    _club_weeks = sum(len(rd(d / "injuries.csv").groupby("team").size()) for d in cap_dirs())
+    f["avail_club_weeks"] = _club_weeks
+    f["season_club_weeks"] = 2 * int(f.get("announcement_games", 272) or 272)
+    f["avail_club_week_pct"] = round(100 * _club_weeks / f["season_club_weeks"], 1)
+    f["pinned_none_clubs"] = ", ".join(_pn) or "none"
+    f["pinned_none_n"] = len(_pn)
+    f["pinned_stamp"] = _ps or "not recorded"
     f["inj_first_capture_rows"] = len(rd(cds[0] / "injuries.csv"))
+    playing_, _sched = week_fixture_clubs()
+    f["week10_fixtures"] = len(_sched)
+    f["week10_clubs_in_schedule"] = len(playing_)
+    zero = set(fetcher_clubs()) - set(inj.team.unique())
+    f["clubs_without_report_rows"] = ", ".join(sorted(zero)) or "none"
+    f["clubs_without_rows_not_playing"] = len(zero - playing_)
+    f["clubs_without_rows_but_playing"] = len(zero & playing_)
+    f["clubs_in_schedule_with_rows"] = len(playing_ & set(inj.team.unique()))
     return f
 
 
@@ -407,6 +425,183 @@ def name_to_code_lookup() -> dict:
     return {club: code for code, club, slug, host in _club_rows()}
 
 
+ANNOUNCEMENT = READS / "nfl_media_2026_schedule_announcement.md"
+
+
+PINNED_EVIDENCE = ROOT / "data" / "evidence" / "nfl_injuries" / "week10_2026" / "injury_report.md"
+PINNED_MANIFEST = ROOT / "data" / "evidence" / "nfl_injuries" / "week10_2026" / "manifest.json"
+HEADING_BEFORE_NONE = re.compile(r"([A-Za-z .]+)\n+No Injuries Reported")
+
+
+def announcement_facts() -> dict:
+    """the numbers the league's own dated announcement prints, read off the committed excerpt."""
+    if not ANNOUNCEMENT.exists():
+        return {}
+    txt = ANNOUNCEMENT.read_text(errors="ignore")
+    verbatim = txt.split("BEGIN VERBATIM")[1].split("END VERBATIM")[0] if "BEGIN VERBATIM" in txt else txt
+    out = {}
+    m = re.search(r"dated line_as_printed: \"(\w+ \d+, \d{4})\"", txt)
+    m2 = re.search(r"date_line_as_printed: \"(.*?)\"", txt)
+    if m2:
+        out["announcement_date_as_printed"] = m2.group(1)
+    m3 = re.search(r"(\d+)-week, (\d+)-game regular-season schedule", verbatim)
+    if m3:
+        out["announcement_weeks"] = int(m3.group(1))
+        out["announcement_games"] = int(m3.group(2))
+    m4 = re.search(r"each team playing (\d+) regular-season games", verbatim)
+    if m4:
+        out["announcement_games_per_team"] = int(m4.group(1))
+    m5 = re.search(r"Byes will begin in Week (\d+) and end in Week (\d+)", verbatim)
+    if m5:
+        out["announcement_bye_first_week"] = int(m5.group(1))
+        out["announcement_bye_last_week"] = int(m5.group(2))
+    m6 = re.search(r"concludes with (\d+) division games in Week (\d+)", verbatim)
+    if m6:
+        out["announcement_final_week_division_games"] = int(m6.group(1))
+        out["announcement_final_week"] = int(m6.group(2))
+    out["announcement_url"] = "https://media.nfl.com/football-information/2026/news/2026-nfl-schedule-announced"
+    out["announcement_excerpt"] = str(ANNOUNCEMENT.relative_to(ROOT))
+    return out
+
+
+def schedule_shape_rows(f: dict) -> list[dict]:
+    """Does the week's fixture list agree with the season shape the league announced?
+
+    17 games per club over 18 weeks means four clubs are idle in a normal week, so a 14-fixture week
+    should report 28 clubs and no more. This is the arithmetic that turns "the report has 28 of 32
+    clubs" from an alarming gap into a verified property of the week. The second row measures the
+    availability corpus in club-weeks against the size of one announced season.
+    """
+    playing, sched = week_fixture_clubs()
+    inj = rd(AV / "injuries.csv")
+    n_fix, n_reporting = len(sched), int(inj.team.nunique())
+    per_day = {d.name: len(rd(d / "injuries.csv").groupby("team").size()) for d in cap_dirs()}
+    club_weeks = sum(per_day.values())
+    season_club_weeks = 2 * f.get("announcement_games", 272)      # two clubs report per game
+    rows = [dict(note="the announcement is the league's own dated statement, not a news item",
+                 check="announced season shape vs the committed week schedule", club="LEAGUE",
+                 item="weeks and games implied by 17 games per club over 18 weeks",
+                 official=(f"{f.get('announcement_games','?')} games over {f.get('announcement_weeks','?')} weeks, "
+                           f"{f.get('announcement_games_per_team','?')} per club, byes Week "
+                           f"{f.get('announcement_bye_first_week','?')} to {f.get('announcement_bye_last_week','?')}, "
+                           f"printed {f.get('announcement_date_as_printed','?')}"),
+                 committed=(f"Week 10: {n_fix} fixtures, {len(playing)} clubs with a fixture, "
+                            f"{n_reporting} clubs with report rows"),
+                 verdict=("MATCH — a 14-fixture week is 28 clubs, so four report sections cannot exist and the "
+                          "capture has exactly that many"
+                          if (2 * n_fix == len(playing) == n_reporting) else
+                          f"RECHECK — {n_fix} fixtures, {len(playing)} listed, {n_reporting} reporting"),
+                 as_of=f"announcement {f.get('announcement_date_as_printed','?')}; capture {f['inj_retrieved']}",
+                 source_url=URL["scores_w10"]),
+            dict(note="the denominator for every availability sample-size claim in this repository",
+                 check="announced season shape vs the availability corpus actually held", club="LEAGUE",
+                 item="club-weeks of report coverage needed for one season of ablations",
+                 official=(f"one regular season = {f.get('announcement_games','?')} games = "
+                           f"{season_club_weeks} club-weeks of report sections"),
+                 committed=(f"{club_weeks} club-weeks held across {len(per_day)} dated captures "
+                            f"({', '.join(f'{k}:{v}' for k, v in per_day.items())})"),
+                 verdict=f"BLOCKED AT n — {club_weeks} of {season_club_weeks} club-weeks "
+                         f"({round(100 * club_weeks / max(1, season_club_weeks), 1)}% of one season)",
+                 as_of=f"{f['inj_retrieved']} capture", source_url=URL["scores_w10"])]
+    return rows
+
+
+def pinned_none_clubs() -> tuple[list[str], str]:
+    """Which club headings the pinned official snapshot itself prints 'No Injuries Reported' under."""
+    if not PINNED_EVIDENCE.exists():
+        return [], ""
+    txt = PINNED_EVIDENCE.read_text(errors="ignore")
+    clubs = [m.group(1).strip() for m in HEADING_BEFORE_NONE.finditer(txt)]
+    stamp = ""
+    if PINNED_MANIFEST.exists():
+        stamp = json.loads(PINNED_MANIFEST.read_text()).get("retrieved_utc", "")
+    return clubs, stamp
+
+
+def week_fixture_clubs() -> tuple[set, pd.DataFrame]:
+    """clubs the committed official week schedule lists, plus the schedule itself."""
+    sched = rd(FORWARD / "official_schedule.csv")
+    return set(sched.away_team) | set(sched.home_team), sched
+
+
+def bye_reconciliation(f: dict) -> list[dict]:
+    """Does 'the report has no rows for this club' mean available, or mean not playing?
+
+    The report is organised by fixture, so a club with no fixture in the week has no report section.
+    Any club that DOES have a fixture and still has no rows is a coverage failure, not a bye.
+    """
+    playing, sched = week_fixture_clubs()
+    inj = rd(AV / "injuries.csv")
+    universe = set(fetcher_clubs())
+    rows = []
+    for club in sorted(universe):
+        n = int((inj.team == club).sum())
+        listed = club in playing
+        if not listed and n == 0:
+            verdict, meaning = ("MATCH — no fixture in the official week schedule and no report rows",
+                               "the club is not playing in the week; 'no rows' is not a roster statement")
+        elif listed and n > 0:
+            verdict, meaning = (f"MATCH — in the week schedule with {n} report rows", "report coverage agrees with the fixture list")
+        elif listed and n == 0:
+            verdict, meaning = ("MISMATCH — the club has a fixture and no report rows", "a club the report should list is missing")
+        else:
+            verdict, meaning = ("MISMATCH — not in the week schedule but the report lists rows",
+                                "the capture and the schedule disagree about who plays")
+        rows.append(dict(check="report rows vs the official week schedule", club=club,
+                         item="has a Week 10 fixture? / rows in the capture",
+                         official=("in the week schedule" if listed else "not in the week schedule (no fixture)"),
+                         committed=f"{n} rows", verdict=verdict, note=meaning,
+                         as_of=f"{f['inj_retrieved']} capture vs the committed official week schedule",
+                         source_url=URL["scores_w10"]))
+    return rows
+
+
+def published_injury_free_clubs(f: dict) -> list[dict]:
+    """Two questions, kept apart on purpose:
+
+    (1) does the published derived table faithfully transcribe the official page it was pinned to, and
+    (2) does that statement still hold against the newest official read?
+
+    Conflating them is how a stale-but-correct number gets reported as a bug, or a real bug gets excused
+    as staleness. Both answers are published.
+    """
+    """A published 'No Injuries Reported' club must either be genuinely empty on the official page or
+    be explained by the fixture list; anything else is a stale statement about a club that is playing."""
+    playing, _ = week_fixture_clubs()
+    inj = rd(AV / "injuries.csv")
+    pub_all = rd(PROC / "injuries_week10.csv")
+    pinned, pinned_stamp = pinned_none_clubs()
+    rows = []
+    for tname in pub_all[pub_all.player == "No Injuries Reported"].team:
+        code = next((c for word, c in name_to_code_lookup().items() if str(tname).endswith(word)), "")
+        faithful = any(str(tname).endswith(w.strip()) or w.strip().endswith(str(tname).split()[-1])
+                       for w in pinned)
+        rows.append(dict(check="published 'No Injuries Reported' vs the pinned official page", club=code or "?",
+                         item=f"{tname}: faithful to the snapshot it was built from?",
+                         official=(f"the pinned page ({pinned_stamp}) prints 'No Injuries Reported' under this club"
+                                   if faithful else "the pinned page does not print this club as injury-free"),
+                         committed="No Injuries Reported (0 player rows)",
+                         verdict=("FAITHFUL TO THE PIN — the page said it; the page has since changed"
+                                  if faithful else "NOT FAITHFUL — the derived table invents a statement its own source does not make"),
+                         note="a stale transcription is still a transcription; only the second is a parser defect",
+                         as_of=f"pinned {pinned_stamp} vs derived table built {AS_OF}",
+                         source_url=URL["injuries"]))
+        n = int((inj.team == code).sum()) if code else 0
+        plays = code in playing
+        verdict = (f"CONTRADICTED — the club has a Week 10 fixture and {n} official rows, so a published "
+                   "'none' is not supported by the report" if n else
+                   "MATCH — no rows in the capture either" if not plays else
+                   "MISMATCH — playing, in the week schedule, and empty on the official page")
+        rows.append(dict(check="published 'No Injuries Reported' vs the fixture list", club=code or "?",
+                         item=f"{tname} printed injury-free in the published Week 10 table",
+                         official=f"{n} rows in the capture; {'in' if plays else 'not in'} the week schedule",
+                         committed="No Injuries Reported (0 player rows)", verdict=verdict,
+                         note="a bye explains an empty club; a fixture does not",
+                         as_of=f"{f['inj_retrieved']} capture vs the {AS_OF} derived table",
+                         source_url=URL["injuries"]))
+    return rows
+
+
 def verify_rows(f: dict) -> tuple[list[dict], dict]:
     """Every check this session ran against an official page, one row per compared line."""
     inj = rd(AV / "injuries.csv")
@@ -430,7 +625,7 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
                       ("game status", r.game_status, lr["game"])) if str(a).strip() != str(b).strip()]
             verdict = "MATCH" if not diffs else "MISMATCH — " + "; ".join(diffs)
             match += not diffs
-        rows.append(dict(check="injury report vs capture", club=lr["club"], item=lr["player"],
+        rows.append(dict(note="", check="injury report vs capture", club=lr["club"], item=lr["player"],
                          official=" · ".join(x or "—" for x in (lr["injury"], lr["practice"], lr["game"])),
                          committed=" · ".join(x or "—" for x in cap), verdict=verdict,
                          as_of=f"{f['inj_retrieved']} capture vs {READ_WINDOW} read", source_url=URL["injuries"]))
@@ -442,7 +637,7 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
         if not n_live:
             continue
         n_cap = int((inj.team == abbr).sum())
-        rows.append(dict(check="club row count", club=abbr, item=f"{club} rows on the official page vs capture",
+        rows.append(dict(note="", check="club row count", club=abbr, item=f"{club} rows on the official page vs capture",
                          official=str(n_live), committed=str(n_cap),
                          verdict=("MATCH" if n_live == n_cap else
                                   "PARTIAL READ — the fetched chunk cut this club's table short, "
@@ -452,21 +647,10 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
     # (b) the published Week 10 table (assets/data, injuries.html source) vs the same official capture
     for label, abbr, n_cap, n_pub in (("Seattle", "SEA", f["inj_sea"], f["inj_pub_sea"]),
                                       ("Cincinnati", "CIN", f["inj_cin"], f["inj_pub_cin"])):
-        rows.append(dict(check="published table vs capture", club=abbr, item=f"{label} Week 10 rows",
+        rows.append(dict(note="", check="published table vs capture", club=abbr, item=f"{label} Week 10 rows",
                          official=str(n_cap), committed=str(n_pub),
                          verdict=("MATCH" if n_cap == n_pub else
                                    f"MISMATCH — {n_cap - n_pub} official player rows are not in the published table"),
-                         as_of=f"{f['inj_retrieved']} capture vs {AS_OF} derived table", source_url=URL["injuries"]))
-
-    for tname in pub_all[pub_all.player == "No Injuries Reported"].team:
-        code = next((c for word, c in name_to_code_lookup().items() if str(tname).endswith(word)), "")
-        n_cap = int((inj.team == code).sum()) if code else 0
-        rows.append(dict(check="published 'No Injuries Reported' vs official capture", club=code or "?",
-                         item=f"{tname} printed injury-free in the published Week 10 table",
-                         official=f"{n_cap} rows on the official page as captured {f['inj_retrieved']}",
-                         committed="No Injuries Reported (0 player rows)",
-                         verdict=("MATCH — the club has no rows in the capture either" if n_cap == 0 else
-                                  f"CONTRADICTED — {n_cap} official rows against a published 'none'"),
                          as_of=f"{f['inj_retrieved']} capture vs {AS_OF} derived table", source_url=URL["injuries"]))
 
     # (c) reserve list: live page window vs the newest capture vs the retained history
@@ -478,7 +662,7 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
     stats["reserve_live_rows"] = len(klive)
     for d, t, p in sorted(klive):
         on = (d, t, p) in kcap
-        rows.append(dict(check="reserve list vs newest capture", club=t, item=f"{p} ({d[5:]})",
+        rows.append(dict(note="", check="reserve list vs newest capture", club=t, item=f"{p} ({d[5:]})",
                          official="listed", committed="listed" if on else "not in capture",
                          verdict="ON BOTH" if on else "LIVE PAGE ONLY",
                          as_of=f"{f['reserve_captures']} captures; newest {AS_OF}", source_url=URL["reserve"]))
@@ -495,7 +679,7 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
     one = v[v.game_id == "2026_10_WAS_NYG"]
     if len(one):
         man = json.loads((FORWARD / "captures" / "2026_10_WAS_NYG" / "manifest.json").read_text())
-        rows.append(dict(check="game centre venue vs committed capture", club="WAS@NYG",
+        rows.append(dict(note="", check="game centre venue vs committed capture", club="WAS@NYG",
                          item="LOCATION / STADIUM as printed on the official game centre",
                          official=f"{one.iloc[0].location_printed} / {one.iloc[0].stadium_printed}",
                          committed=f"{man.get('away_team')} {man.get('away_score')} at "
@@ -512,7 +696,7 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
     hou = int((dep.team == "HOU").sum())
     txt = (READS / "houstontexans_depth_chart_page.md").read_text()
     has_image = "static.clubs.nfl.com/image/upload/texans/" in txt
-    rows.append(dict(check="Houston depth source shape", club="HOU",
+    rows.append(dict(note="", check="Houston depth source shape", club="HOU",
                      item="does the club page print machine-readable depth rows?",
                      official="heading 'Unofficial Depth Chart' over one image; no table" if has_image else "not established",
                      committed=f"{hou} parsed rows in {f['depth_retrieved']} capture",
@@ -521,6 +705,9 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
                               if has_image and hou == 0 else "RECHECK — capture and read disagree"),
                      as_of=f"club page read {READ_WINDOW}; capture {f['depth_retrieved']}",
                      source_url=URL["hou_depth"]))
+    rows += bye_reconciliation(f)
+    rows += published_injury_free_clubs(f)
+    rows += schedule_shape_rows(f)
     return rows, stats
 
 
@@ -571,8 +758,10 @@ def ablation_rows(f: dict) -> list[dict]:
                    f"seasons ⇒ about {round(f['corpus_games'] / max(1, len(set(int(s) for s in rd(PROC / 'games_model.csv').season))))} games per season; "
                    f"one captured week is {f['inj_rows']} report rows",
              verdict="BLOCKED AT n — a one-week join cannot resolve anything; a full season is the minimum unit",
-             next_step="the number that clears it: 272 or more games each carrying a pre-kickoff availability row "
-                       "(one full 17-week season at 16 games a week)",
+             next_step=f"the number that clears it is one season of the league's own size: "
+                       f"{f.get('announcement_games',272)} games over {f.get('announcement_weeks',18)} weeks = "
+                       f"{f.get('season_club_weeks',544)} club-weeks of report sections, against the "
+                       f"{f.get('avail_club_weeks',0)} ({f.get('avail_club_week_pct',0)}%) held today",
              source_url=URL["injuries"]),
     ]
     return rows
@@ -687,11 +876,15 @@ def items() -> list[dict]:
         URL["injuries_root"], "NFL.com injury report (the page every delta is computed from)")
     add("RR-13", "Run the 32-team roster/IR sweep before any team-level model is trusted", "Availability",
         "PARTLY DONE",
-        "The injury capture covers {inj_clubs} clubs with rows today; the reserve-list sweep holds "
-        "{reserve_latest_rows} rows in the newest capture across {reserve_captures} captures. The roster sweep "
-        "itself is not run for all 32 clubs in one dated pass.",
+        "The injury capture covers {inj_clubs} clubs with rows today, and the reason is now verified rather than "
+        "assumed: {clubs_in_schedule_with_rows} of the {week10_clubs_in_schedule} clubs that appear in the official "
+        "Week 10 schedule carry rows, and the {clubs_without_rows_not_playing} clubs with no rows "
+        "({clubs_without_report_rows}) are exactly the clubs the week schedule does not list. The reserve-list sweep "
+        "holds {reserve_latest_rows} rows in the newest capture across {reserve_captures} captures; the roster sweep "
+        "is not run for all 32 clubs in one dated pass.",
         ["data/availability/injuries.csv", "data/availability/reserve/latest.csv", "pipeline/fetch_reserve_list.py"],
-        "the report prints a window, not a league-wide roster state; 'not listed' is not 'available'",
+        "the report is per-fixture, so a club with no fixture has no section; 'not listed' is not 'available' and "
+        "an empty club is not an empty roster",
         "one dated pass over all 32 club rosters and all IR designations, joined to the report by player id",
         URL["reserve"], "NFL.com reserve list, November 2026")
     add("RR-14", "Fixture-context feature set built only from published schedule facts", "Features",
@@ -761,18 +954,26 @@ def items() -> list[dict]:
         "venues published today, {game_pages_captured} of them from a committed raw page",
         URL["gc_was_nyg"], "NFL.com game centre (the page that prints LOCATION and STADIUM)")
     add("RR-22", "Publish the league's dated schedule announcement beside the live schedule page", "Publishing",
-        "NOT STARTED",
-        "The repository captures the live schedule and the per-game pages, and records verification times; it does "
-        "not hold the league's dated announcement of the schedule, and no committed file cites one.",
-        ["data/forward/official_schedule.csv"],
-        "no artefact; the source is an NFL press release with its own date line, which this session did not read",
-        "one committed capture of the announcement page with its printed date and a hash",
-        URL["scores_w10"], "NFL.com scores and schedule pages (the live side that is captured)")
+        "PARTLY DONE",
+        "The announcement is now held as a dated verbatim excerpt with a hash "
+        "({announcement_excerpt}), read in this session: {announcement_games} games over {announcement_weeks} weeks, "
+        "{announcement_games_per_team} per club, byes Week {announcement_bye_first_week} to "
+        "Week {announcement_bye_last_week}, printed {announcement_date_as_printed}. What is still missing is the "
+        "publication side: the announcing page sits on a host the site's official allow-list does not carry, so its "
+        "numbers are cited here as a dated statement and as prose on the schedule page, not as the evidence link of "
+        "a data-table row (RR-F9).",
+        ["data/forward/official_schedule.csv", "data/live/register_reads_2026_11_18/nfl_media_2026_schedule_announcement.md"],
+        "allow-list decision (RR-F9); the announcement is also not re-fetched on a schedule",
+        "one entry in the site's official-host allow-list for the announcing host, or a decision to keep it out",
+        URL["scores_w10"], "NFL.com scores and schedule pages (the live side the announcement is published beside)",
+        note="the announcement's own page is a primary method-of-record for the season's shape; the site's rule "
+             "reserves row-level evidence links for allowlisted hosts, and widening that list is an integration call")
     add("RR-23", "Re-capture and republish the Week 10 injury tables", "Availability", "PARTLY DONE",
         "The capture is current ({inj_rows} rows, {inj_clubs} clubs, {inj_retrieved}); the published derived table is "
-        "not: injuries_week10.csv holds {inj_pub_rows} rows over {inj_pub_clubs} clubs, {inj_pub_sea} Seattle rows "
-        "against {inj_sea} official and {inj_pub_cin} Cincinnati against {inj_cin}. The staleness is in the derived "
-        "table, not the capture.",
+        "not: injuries_week10.csv holds {inj_pub_player_rows} player rows over {inj_pub_clubs} clubs, with "
+        "{inj_pub_sea} Seattle rows against {inj_sea} official and {inj_pub_cin} Cincinnati against {inj_cin}, plus "
+        "{inj_pub_placeholders} clubs the pinned page printed as injury-free. Every one of those numbers is faithful "
+        "to the snapshot it was cut from ({pinned_stamp}); the staleness is in the pin, not the parse.",
         ["data/availability/injuries.csv", "data/processed/injuries_week10.csv", "assets/data/injuries_week10.csv"],
         "the derived table is built from a committed evidence snapshot rather than from the newest capture",
         "a build that reads the newest dated capture: the derived table matching {inj_rows} rows",
@@ -860,7 +1061,8 @@ def items() -> list[dict]:
         "ablation contract table on this page.",
         ["data/processed/feature_dict.csv", "data/integration/register_ablation_2026_11_18.csv", "pipeline/models.py"],
         "no availability feature exists per game in the scored corpus",
-        "272 or more games each carrying a pre-kickoff availability row — one full season of captures",
+        "one season of dated report coverage: {season_club_weeks} club-weeks, against {avail_club_weeks} held "
+        "({avail_club_week_pct}%), on the league's own 272-game, 18-week season shape",
         URL["injuries"], "NFL.com injury report (the only official source for the feature being ablated)")
     add("RR-34", "Ingest game-level results so the ratings are opponent-aware", "Results", "DONE",
         "{results_feed_rows} graded rows feed the ratings; offence and defence ratings are computed as "
@@ -1356,15 +1558,21 @@ def flags(f: dict, stats: dict) -> list[dict]:
              next="the availability/forward workflows capture every scheduled fixture of the current week.",
              source_label="NFL.com Week 10 scores", source_url=URL["scores_w10"], register="RR-21"),
         dict(id="RR-F7", severity="Medium · open",
-             finding=f"The published Week 10 table prints 'No Injuries Reported' for {f['inj_pub_placeholder_n']} clubs "
-                     f"({f['inj_pub_placeholder_clubs']}) while the official report as captured {f['inj_retrieved']} "
-                     f"lists rows for all of them. It was not a transcription error: the {f['capture_first']} capture "
-                     f"({f['inj_first_capture_rows']} rows) had no rows for those clubs either, and "
-                     f"{f['clubs_that_gained_rows_n']} clubs ({f['clubs_that_gained_rows']}) gained rows in the "
-                     f"{f['capture_last']} capture window. The page populated between the two reads; the derived "
-                     "table was never re-cut, and the four clubs still print 'none' on the site.",
-             next="RR-S3 Path A. Until then the site publishes a statement the official page no longer supports, "
-                  "which is exactly the failure 'treat the report as a timestamped series' exists to prevent.",
+             finding=f"The Week 10 injury table the site publishes is a faithful copy of a page that has moved. "
+                     f"The derived table prints 'No Injuries Reported' for {f['inj_pub_placeholder_n']} clubs "
+                     f"({f['inj_pub_placeholder_clubs']}), and the pinned official snapshot it was built from "
+                     f"({f['pinned_stamp']}) does print that phrase under each of those four club headings — so the "
+                     f"transcription is correct and no parser is at fault. The official report as captured "
+                     f"{f['inj_retrieved']} lists rows for all four, and it has since {f['capture_first'] if False else '2026-11-13'} "
+                     f"(Seattle {f['inj_sea']}, Cincinnati {f['inj_cin']} and the others in the {f['inj_rows']}-row "
+                     "capture). The derived table was never re-cut, so the site is publishing a statement the "
+                     "league's own page no longer makes. Separately: "
+                     f"{f['clubs_without_rows_not_playing']} clubs do have no rows in the newest capture "
+                     f"({f['clubs_without_report_rows']}) and none of them appears in the official Week 10 schedule "
+                     f"({f['week10_fixtures']} fixtures, {f['week10_clubs_in_schedule']} clubs), so there an empty "
+                     "report section means 'no fixture that week', never 'available'.",
+             next="RR-S3 Path A: build the derived table from the newest dated capture, so a statement about the "
+                  "report is only ever as old as the capture it came from. No published number is changed by hand.",
              source_label="NFL.com Week 10 injury report", source_url=URL["injuries"], register="RR-23"),
         dict(id="RR-F8", severity="Medium · open",
              finding=f"One reserve row disagrees about its club. Jordan Whittington (11/10) prints the Miami "
@@ -1379,15 +1587,31 @@ def flags(f: dict, stats: dict) -> list[dict]:
                   "Any club-attribution rule for the reserve page belongs in the capture, not in a later edit.",
              source_label="NFL.com reserve list, November 2026", source_url=URL["reserve"], register="RR-28"),
     ]
-    rows.append(
+    rows += [
+        dict(id="RR-F9", severity="Medium · open (owner / integration decision)",
+             finding="The league's dated schedule announcement, read and hashed into this repository today, cannot "
+                     "be cited as the evidence link of a data-table row: the site's official-host allow-list in "
+                     "pipeline/verify_site.py lists nfl.com, operations.nfl.com and the 32 club hosts, and "
+                     "media.nfl.com is not among them. So the announcement's own numbers (the season's size, the bye "
+                     "window, the Week 18 shape) are published here as a dated statement in prose, with the excerpt "
+                     "and its hash committed, and not as a row-level reference. Every number the register needs from "
+                     "it is cross-checked against a committed official page before it is used.",
+             next="Owner or integration session: decide whether media.nfl.com joins the allow-list as an official "
+                  "NFL host, or whether announcement-derived facts stay prose-only. Either answer is fine; what is "
+                  "not fine is letting the row look stronger than the source policy allows.",
+             source_label="NFL.com scores and schedule (the allowlisted host the same facts are checked against)",
+             source_url=URL["scores_w10"], register="RR-22"),
         dict(id="RR-F6", severity="Low · recorded",
-             finding="Three request items in the 2026-11-18 brief describe a source or artefact the repository does "
-                     "not contain and cannot obtain without an owner decision: the dated league schedule announcement "
-                     "(RR-22), the 136-game log (RR-20) and the brief's own VR/VQ/SG identifier scheme (RR-44, F-48). "
-                     "They are published here as NOT STARTED / NOT REPRODUCIBLE rather than filled with an estimate.",
-             next="RR-S8 for the identifiers; RR-22 needs one dated capture.",
-             source_label="", source_url="", register="RR-20, RR-22, RR-44"))
-    order = {"RR-F1": 1, "RR-F2": 2, "RR-F3": 3, "RR-F4": 4, "RR-F5": 5, "RR-F6": 6, "RR-F7": 7, "RR-F8": 8}
+             finding="Two request items in the 2026-11-18 brief describe an artefact the repository does not contain "
+                     "and cannot obtain without the brief author: the 136-game log (RR-20) and the brief's own "
+                     "VR/VQ/SG identifier scheme (RR-44, F-48). A third item it asks for — the league's dated "
+                     "schedule announcement (RR-22) — was found, read and hashed on 2026-11-18, so it is no longer "
+                     "in this list. Nothing here is filled with an estimate in the meantime.",
+             next="RR-S8 for the identifiers; the 136-game log needs its source named.",
+             source_label="", source_url="", register="RR-20, RR-44"),
+    ]
+    order = {"RR-F1": 1, "RR-F2": 2, "RR-F3": 3, "RR-F4": 4, "RR-F5": 5, "RR-F6": 6, "RR-F7": 7, "RR-F8": 8,
+             "RR-F9": 9}
     return sorted(rows, key=lambda r: order.get(r["id"], 99))
 
 

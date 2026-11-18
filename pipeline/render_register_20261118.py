@@ -154,7 +154,7 @@ def main() -> None:
                 'fetched chunk ended mid-table — labelled PARTIAL READ, never treated as a source defect.</p>'
                 '<label>Search the checks <input class="filter" type="search" placeholder="Try MATCH, Lions, reserve…"></label>')
     body.append(table(vrows, ["Check", "Club", "Item", "As printed on the official page",
-                              "As committed in the repository", "Verdict", "Times compared", "Source"],
+                              "As committed in the repository", "Verdict", "Reading rule", "Times compared", "Source"],
                       caption="Official page read vs committed capture · every line shown, not sampled"))
 
     # ------------------------------------------------------------- venues
