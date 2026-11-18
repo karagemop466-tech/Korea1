@@ -438,12 +438,12 @@ def write_claims(claims: list[dict]) -> Path:
     cols = ["claim_id", "claim_as_written", "subject", "repo_evidence", "repo_value", "live_evidence",
             "live_value", "official_url", "live_read_utc", "verdict", "note"]
     with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=cols)
+        w = csv.DictWriter(fh, fieldnames=cols, lineterminator="\n")
         w.writeheader()
         for c in claims:
             w.writerow({k: c.get(k, "") for k in cols})
     SITE_DATA.mkdir(parents=True, exist_ok=True)
-    (SITE_DATA / "claim_checks_2026_11_18.csv").write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
+    (SITE_DATA / "claim_checks_2026_11_18.csv").write_bytes(path.read_bytes())
     return path
 
 

@@ -387,14 +387,16 @@ def main() -> int:
             "off_chart_url", "def_chart_url", "off_injury_url", "def_injury_url",
             "off_depth_utc", "def_depth_utc", "off_injury_utc", "def_injury_utc"]
     with open(PROC / "matchup_matrix.csv", "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=cols)
+        w = csv.DictWriter(fh, fieldnames=cols, lineterminator="\n")
         w.writeheader()
         w.writerows({k: r.get(k, "") for k in cols} for r in rows)
     SITE_DATA.mkdir(parents=True, exist_ok=True)
-    (SITE_DATA / "matchup_matrix.csv").write_text((PROC / "matchup_matrix.csv").read_text(encoding="utf-8"),
-                                                  encoding="utf-8")
+    # byte copy, not a text copy: a text copy translates newlines and makes the published file differ from
+    # the one the build compared, which is what tests/check_rebuild.py is designed to catch
+    (SITE_DATA / "matchup_matrix.csv").write_bytes((PROC / "matchup_matrix.csv").read_bytes())
     with open(PROC / "matchup_matrix_excluded.csv", "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=["club", "listed_opponent", "reason", "rows", "chart_url"])
+        w = csv.DictWriter(fh, fieldnames=["club", "listed_opponent", "reason", "rows", "chart_url"],
+                           lineterminator="\n")
         w.writeheader()
         w.writerows(excluded)
     write_json(PROC / "matchup_matrix_summary.json", {

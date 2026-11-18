@@ -994,7 +994,8 @@ def write_flagged(claims: list[dict], register: list[dict]) -> Path:
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / "flagged_2026_11_18b.csv"
     with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=["id", "severity", "finding", "next", "source_label", "source_url"])
+        w = csv.DictWriter(fh, fieldnames=["id", "severity", "finding", "next", "source_label", "source_url"],
+                           lineterminator="\n")
         w.writeheader()
         w.writerows(rows)
     return path
@@ -1020,7 +1021,7 @@ def main() -> int:
     SITE_DATA.mkdir(parents=True, exist_ok=True)
     for name in ("request_register_items_2026_11_18.csv", "suggestions_2026_11_18.csv",
                  "claim_checks_2026_11_18.csv"):
-        (SITE_DATA / name).write_text((OUT / name).read_text(encoding="utf-8"), encoding="utf-8")
+        (SITE_DATA / name).write_bytes((OUT / name).read_bytes())
 
     write_flagged(claims, register)
 
