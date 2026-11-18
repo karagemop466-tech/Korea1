@@ -3982,9 +3982,59 @@ reproducibility bugs (the absolute evidence path and this one) were found in min
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| AC1 | Board claim and session log | **in progress** | `arena/ac52e176-korea1` | `COORDINATION.md` (own section only) |
-| AC2 | **2026-11-18 request register** (takeover of deferred CS5): one row per request item of the current brief — status, evidence file, blocking gate, clearing number, official source link; published page + CSV + tests. Unverifiable items are left blank and flagged, never inferred | **in progress** | `arena/ac52e176-korea1` | `pipeline/request_register.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
-| AC3 | Integration: NAV entry, page registration in `pipeline/verify_site.py` / `tests/check_sources.py` / `tests/check_links.py`, `Makefile` site recipe, one `README.md` line, executive-summary addendum | **in progress** | `arena/ac52e176-korea1` | `pipeline/render_site.py` (NAV tuple + page registration only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (PAGES only), `tests/check_links.py` (PAGES only), `Makefile` (site recipe only), `README.md` (one line), `pipeline/render_summary.py` (own addendum only) |
+| AC1 | Board claim and session log | **done** (claim pushed 2026-11-18T05:07:30Z before any file in scope was touched) | `arena/ac52e176-korea1` | `COORDINATION.md` (own section only) |
+| AC2 | **2026-11-18 request register** (takeover of deferred CS5): one row per request item of the current brief — status, evidence file, blocking gate, clearing number, official source link; published page + CSV + tests. Unverifiable items are left blank and flagged, never inferred | **superseded — not published** (collision recorded below: while this session's register was being built, sibling sessions merged five register implementations to `main`; this session's module/page/CSV/test were dropped at rebase because those exact paths now hold sibling content; no sibling work was discarded) | `arena/ac52e176-korea1` | `pipeline/request_register.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
+| AC3 | Integration: NAV entry, page registration in `pipeline/verify_site.py` / `tests/check_sources.py` / `tests/check_links.py`, `Makefile` site recipe, one `README.md` line, executive-summary addendum | **not required** (the sibling register integrations already landed these wirings for the pages that shipped; this session's parallel wiring edits were dropped with AC2 so no duplicate NAV entry or page-list entry exists) | `arena/ac52e176-korea1` | `pipeline/render_site.py` (NAV tuple + page registration only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (PAGES only), `tests/check_links.py` (PAGES only), `Makefile` (site recipe only), `README.md` (one line), `pipeline/render_summary.py` (own addendum only) |
 | AC4 | Final verification (`make build`, `make test`, `tests/check_rebuild.py`), PR → `main`, merge without waiting, confirm Pages deploy, record PR link + result here | **in progress** | `arena/ac52e176-korea1` | `COORDINATION.md`, branch `arena/ac52e176-korea1` → `main` |
 
 **Cross-scope edits:** none at claim time. If a sibling's merge conflicts with this scope, the conflict is resolved without discarding their work and is logged here.
+
+### Session `arena/ac52e176-korea1` — 2026-11-18 session log (AC1–AC4)
+
+**Race on CS5 recorded (five-way).** This session pushed its claim at 05:07:30Z, when CS5 had been
+deferred (`not done`, owner `arena/db6cd525-korea1`, claim > 60 minutes old, no commits on scope).
+While the register was being built locally, sibling sessions independently took the same deferred
+task and merged five register implementations to `main`:
+
+| PR | Branch | Merged (UTC) | What landed |
+|---|---|---|---|
+| [#92](https://github.com/karagemop466-tech/Korea1/pull/92) | `arena/53ef9544-korea1` | 05:27:38 | `request-register-2026-11-18.html` (81-row decision-readiness register) + `pipeline/request_register_2026_11_18.py` + tests |
+| [#88](https://github.com/karagemop466-tech/Korea1/pull/88) | `arena/ba09384a-korea1` | 05:50:38 | 75-line requirement verification register + 6 official page re-reads + 12 questions / 8 owner decisions |
+| [#89](https://github.com/karagemop466-tech/Korea1/pull/89) | `arena/f84bc1d7-korea1` | 05:59:26 | `request-register.html` (81 rows REQ-01..81) + live official spot-check + `pipeline/request_register.py` |
+| [#95](https://github.com/karagemop466-tech/Korea1/pull/95) | `arena/ceddf8d8-korea1` | 06:23:14 | verified statuses re-derived from committed artefacts + re-derived claims + deficiency matrix + vig-free decomposition |
+| [#100](https://github.com/karagemop466-tech/Korea1/pull/100) | `arena/7aae360e-korea1` | 06:31:51 | `register-evidence-2026-11-18.html` + `verified-register-2026-11-18.html` (68 evidence items, 180 official comparisons, venues) |
+
+**Disposition (no work discarded).** `main` now carries four register pages
+(`request-register.html`, `request-register-2026-11-18.html`, `register-evidence-2026-11-18.html`,
+`verified-register-2026-11-18.html`) and six register modules, several with live official page reads
+this session's pass did not have. This session rebased onto that `main`: the COORDINATION claim
+resolved as a union (both sides kept), and this session's own parallel register commit — whose five
+files collide path-for-path with the sibling landings — was **dropped at rebase rather than
+renamed into a fifth duplicate page**. Publishing a fifth near-identical register would degrade the
+clean dashboard the request asks for; the CS5 deliverable the request needs is satisfied by the
+sibling registers above. Result: this session's branch = `main` + this section only.
+
+**Verification on the rebased tree (2026-11-18, local).** `make build`: exit 0, **0 failing checks**,
+51 canonical pages / 6,730 rows pass the strict official/primary reference check, 61 pages pass
+link/asset resolution. `make test`: **373 passed** (the expanded sibling test list). Rebuild is a
+**fixed point**: a second `make build` leaves `git status --porcelain` empty (0 changed files).
+
+**Red-main incident (recorded, not hidden).** `main` at `8bc353b` (PR #100 merge) has
+`Verify site` **failed** at 06:31:54Z — failing step "Verify pinned inputs and rebuild" (`make build`,
+exit 2); `pages-build-deployment` for the same commit **succeeded** (06:31:53Z), so the live site is
+current. Facts established: (a) `.github/workflows/verify.yml` on `main` is byte-identical to the
+version whose runs passed earlier the same hour; (b) the job log is not retrievable (log receiver EOF);
+(c) the only failure annotation is `Process completed with exit code 2`; (d) local `make build` on
+identical content passes and is a fixed point (above); (e) a workflow-dispatch retry is refused to this
+token (HTTP 403) and `gh run rerun` is refused by the API. The likely class is the fresh-checkout
+data fetch (`pipeline/fetch_data.py` downloads the pinned codeload archive when `data/raw/` is empty),
+which is not exercised by a dirty local tree — recorded as **suspected transient runner fetch, not a
+content defect**, pending the green run triggered by this session's merge (appended below).
+
+**Cross-scope requests logged (rule 5), not edited:** (1) `flagged.html` consolidation note — four
+register pages now ship from one nav group; a future integration pass should label one canonical
+register and link the others as annexes, or merge them. (2) The failed `main` run 44252018114 could
+not be rerun with this token (403/`cannot be rerun`); if it stays red, the next session with a
+workflow-scoped token should re-run it or push an empty commit to `main`.
+
+**PR and deploy record:** PR link, merge result and Pages run appended below immediately after merge.
