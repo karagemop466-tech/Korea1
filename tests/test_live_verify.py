@@ -180,41 +180,22 @@ def test_depth_rows_line_up_with_the_official_charts():
 
 
 def test_depth_snapshot_matches_the_official_charts():
-    """The official extract (4 clubs, captured 2026-11-13) and the published
-    snapshot (all 32 clubs, captured later) are different captures at different
-    times. Depth charts legitimately change between captures, so this test
-    verifies the *comparison logic* rather than requiring the two committed
-    files to be in sync: every official slot must be present in the published
-    data, matching slots must match exactly, and drifted slots are reported
-    (not failed) because the source moved between captures.
+    """The 2026-11-13 extract must match the 2026-11-13 dated capture.
 
-    The mutation block at the end proves the comparison detects real changes.
+    Repair (2026-11-18, arena/db6cd525-korea1, CS2): this test compared the 2026-11-13 extract
+    with the newest capture (2026-11-17). Clubs changed their charts in between (Washington
+    DL1 no longer lists Daron Payne on the 11-17 capture; see F-42 in data/integration/flagged_2026_11_18.csv), so the comparison was
+    between two dates. Like must be compared with like: the dated history file of the same
+    day is used. The newest capture is checked against the live page in CS4, not here.
     """
     ext = pd.read_csv(ROOT / "data/live/official_depth_extract_2026_11_13.csv",
                       dtype=str, keep_default_na=False)
-    pub = pd.read_csv(ROOT / "data/availability/depth_charts.csv", dtype=str,
-                      keep_default_na=False)
+    pub = pd.read_csv(ROOT / "data/availability/history/2026-11-13/depth_charts.csv",
+                      dtype=str, keep_default_na=False)
     pub["depth_rank"] = pub["depth_rank"].astype(int)
     off, pr = lvd._off_rows(ext), lvd._pub_rows(pub)
     keys = set(off)
-    # every official slot must exist in the published data (no missing slot)
-    assert all(k in pr for k in keys), "official slot missing from published data"
-    matched = [k for k in keys if off[k] == pr[k]]
-    drifted = [k for k in keys if off[k] != pr[k]]
-    # matching slots must match exactly (parsing is faithful)
-    assert all(off[k] == pr[k] for k in matched)
-    # drifted slots are real source movement between captures; log the count
-    # but do not fail the build — the depth verifier publishes per-slot verdicts
-    # at data/live/depth_slot_verification.csv for manual review
-    assert len(matched) + len(drifted) == len(keys)
-
-    # logic check: mutating a published slot must flip it from match to drift
-    if matched:
-        k = matched[0]
-        original = pr[k]
-        pr[k] = ["Z-Nobody-Test"] + list(original)
-        assert off[k] != pr[k]
-        pr[k] = original  # restore
+    assert all(off[k] == pr[k] for k in keys)
 
 
 def test_depth_order_change_is_detected():
