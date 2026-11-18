@@ -1,0 +1,24 @@
+{
+  "retrieved_utc": "2026-11-18T19:34:22Z",
+  "runner": "GitHub Actions (.github/workflows/reserve-list.yml)",
+  "pages": [
+    {
+      "month": "2026-10",
+      "url": "https://www.nfl.com/transactions/league/reserve-list/2026/10",
+      "http_status": 200,
+      "bytes": 248000,
+      "sha256": "81e41aff840009e31b13104030f31b1714dfd70f948546e21ff871ab5d037c21",
+      "rows": 25,
+      "error": ""
+    },
+    {
+      "month": "2026-11",
+      "url": "https://www.nfl.com/transactions/league/reserve-list/2026/11",
+      "http_status": 200,
+      "bytes": 247949,
+      "sha256": "58045e476c9d9b51288a9e220f6efb67f632c93c1d6e39b22533e84af4e4b2e3",
+      "rows": 25,
+      "error": ""
+    }
+  ]
+}
