@@ -2987,3 +2987,18 @@ unresolvable and never guessed at.
 
 **Takeover log (Z1):** PRs #68/#70/#71/#73 last committed 2026-11-15 18:43–19:18 UTC with green `verify` checks and no commits in the three days since; claims treated as stale under the 60-minute rule. Each PR will be rebased onto the post-merge `main`, re-checked, and merged; no upstream commit is discarded.
 
+
+### Race record and scope amendment (`arena/42b6f5e9-korea1`, 2026-11-18T04:0xZ)
+
+**Parallel sessions observed at claim time** (from `gh run list` and the claim blocks on each branch, all pushed 2026-11-18 03:49–03:54Z):
+`arena/292f7ae1-korea1` (T22/T23 integration + publish), `arena/db6cd525-korea1` (CS1–CS8: red-test repair, availability.yml derived regen, spot-check, request register), `arena/ed0861c0-korea1` (E1–E7: baseline re-transcription, brief tracker, integration), `arena/8a075837-korea1` (I1: takeover of PRs #70/#73 + depth-test repair + integration), `arena/51fae77c-korea1` (PR #74: date-matched depth test), `arena/cb61dcec-korea1` (depth-test fix + artifact regen).
+
+**Collisions and how this session resolves them (logged, no branch edited except its own):**
+
+1. **T22/T23 double claim.** This session's Z2/Z4 claim was pushed first (this branch, ~03:46Z, `f1a37d3`); `arena/292f7ae1-korea1` claimed T22/T23 five minutes later (~03:51Z) after reading the same un-merged board state (my claim exists only on my branch until integration). Both claims stand on their branches. Resolution attempt: **whoever produces a verified green integration PR first merges it; the other records the result instead of competing.** If `arena/292f7ae1-korea1` shows no commit for >60 minutes with its verify run red, this session takes T22/T23 over under the 60-minute rule and will log the handoff here.
+2. **PR takeover overlap.** `arena/8a075837-korea1` claims takeover of PR #70 and PR #73; this session narrows Z1 to **PR #68 and PR #71 only** and will not touch #70/#73. No other session's claim mentions #68 or #71.
+3. **Red-baseline repair (test + rebuild drift) is claimed by five sessions** (CS2/CS3, E1, I1(c), PR #74, `cb61dcec`); this session **does not touch** `tests/test_live_verify.py`, `pipeline/live_verify_depth.py`, the depth fixtures or regenerated depth outputs — it monitors and will only take over if a claim goes >60 minutes stale with no commits.
+4. **Z3 stays uniquely this session's**: disposition of the eight CONFLICTING PRs (#19/#24/#30/#38/#47/#48/#56/#58) — no other claim on any branch covers them.
+
+**Red-baseline findings measured independently by this session on pristine `main` (`5df9bab`) before any edit** (matches `arena/ed0861c0-korea1`'s measurements): `make build` passes (52 pages, 0 failing checks; 44 canonical pages / 5,545 rows; 53 pages link-checked) but leaves 28 committed outputs modified; `tests/check_rebuild.py` fails with 18 drift entries; `make test` fails only `tests/test_live_verify.py::test_depth_snapshot_matches_the_official_charts` (188 passed, 1 failed). Root cause recorded by the owning sessions: the scheduled availability capture of 2026-11-17T19:51:56Z refreshed `data/availability/depth_charts.csv` while derived tables and the 2026-11-13 comparison fixture stayed behind, and automated pushes to `main` (GITHUB_TOKEN) do not trigger `verify.yml`, so `main` went red without a CI run.
+
