@@ -3150,10 +3150,89 @@ keeps both and links them side by side, following the 2026-11-12 collision conve
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| NR1 | Board claim + session log | **in progress** | `arena/ceddf8d8-korea1` | `COORDINATION.md` (own section only) |
-| NR2 | Verify the numeric claims made in the 2026-11-18 brief against the committed official captures and against live official re-reads; one row per claim with a verdict, blank where the claim cannot be checked | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/claim_checks_20261118.py` (new), `data/integration/claim_checks_2026_11_18.csv` (new), `data/live/claim_reads_2026_11_18/**` (new verbatim official excerpts), `tests/test_claim_checks.py` (new) |
-| NR3 | 2026-11-18 request register: one row per brief item (~60), status derived from the repository artefact that is supposed to carry it, the gate that blocks it, the number that clears it, official link or an explicit blank + flag; published page | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/request_register_20261118.py` (new), `data/integration/request_register_items_2026_11_18.csv` (new), `assets/data/request_register_items_2026_11_18.csv`, `request-register.html` (new), `tests/test_request_register.py` (new) |
-| NR4 | Interactive Offence-vs-Defence matchup deficiency matrix (1st–4th string), built only from the dated official club depth captures and the official injury report; multi-rank-1 and empty slots represented faithfully, never flattened to "the starter" | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/matchup_matrix.py` (new), `data/processed/matchup_matrix.csv` (new), `assets/data/matchup_matrix.csv`, `matchup-matrix.html` (new) |
-| NR5 | Vig-free market consensus vs originated fair line: decompose our edge into (a) operator margin and (b) true pricing divergence, per market, with n on every value | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/vigfree_decomposition.py` (new), `data/processed/vigfree_decomposition.csv` (new), `assets/data/vigfree_decomposition.csv`, `consensus.html` (new) |
-| NR6 | Suggestions register for the items this brief adds: paths A/B/C, cost, risk, dependency and the gate each path opens; staged for review, nothing implemented | **in progress** | `arena/ceddf8d8-korea1` | `data/integration/suggestions_2026_11_18.csv` (new, written by `pipeline/request_register_20261118.py`), `assets/data/suggestions_2026_11_18.csv` |
-| NR7 | Integration + publish: NAV + index card, page lists (verify_site / check_sources / check_links), Makefile wiring, flagged rows for every unverified value, executive-summary section, README line, `make build` + `make test`, PR → `main`, merge, Pages, record | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/render_site.py` (NAV tuple + one index card + flagged rows only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe + test list), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch → `main` |
+| NR1 | Board claim + session log | **done** | `arena/ceddf8d8-korea1` | `COORDINATION.md` (own section only) |
+| NR2 | Verify the numeric claims made in the 2026-11-18 brief against the committed official captures and against live official re-reads; one row per claim with a verdict, blank where the claim cannot be checked | **done** (15 claims re-derived; 4 verbatim official reads committed under `data/live/claim_reads_2026_11_18/`) | `arena/ceddf8d8-korea1` | `pipeline/claim_checks_20261118.py` (new), `data/integration/claim_checks_2026_11_18.csv` (new), `data/live/claim_reads_2026_11_18/**` (new verbatim official excerpts), `tests/test_claim_checks.py` (new) |
+| NR3 | 2026-11-18 request register: one row per brief item (~60), status derived from the repository artefact that is supposed to carry it, the gate that blocks it, the number that clears it, official link or an explicit blank + flag; published page | **done** (74 items on `request-register.html`) | `arena/ceddf8d8-korea1` | `pipeline/request_register_20261118.py` (new), `data/integration/request_register_items_2026_11_18.csv` (new), `assets/data/request_register_items_2026_11_18.csv`, `request-register.html` (new), `tests/test_request_register.py` (new) |
+| NR4 | Interactive Offence-vs-Defence matchup deficiency matrix (1st–4th string), built only from the dated official club depth captures and the official injury report; multi-rank-1 and empty slots represented faithfully, never flattened to "the starter" | **done** (154 matrix rows; 6 excluded club-weeks published with their reasons) | `arena/ceddf8d8-korea1` | `pipeline/matchup_matrix.py` (new), `data/processed/matchup_matrix.csv` (new), `assets/data/matchup_matrix.csv`, `matchup-matrix.html` (new) |
+| NR5 | Vig-free market consensus vs originated fair line: decompose our edge into (a) operator margin and (b) true pricing divergence, per market, with n on every value | **done** (16,206 game × market decompositions; the identity is asserted at build) | `arena/ceddf8d8-korea1` | `pipeline/vigfree_decomposition.py` (new), `data/processed/vigfree_decomposition.csv` (new), `assets/data/vigfree_decomposition.csv`, `consensus.html` (new) |
+| NR6 | Suggestions register for the items this brief adds: paths A/B/C, cost, risk, dependency and the gate each path opens; staged for review, nothing implemented | **done** (10 suggestions staged, none implemented) | `arena/ceddf8d8-korea1` | `data/integration/suggestions_2026_11_18.csv` (new, written by `pipeline/request_register_20261118.py`), `assets/data/suggestions_2026_11_18.csv` |
+| NR7 | Integration + publish: NAV + index card, page lists (verify_site / check_sources / check_links), Makefile wiring, flagged rows for every unverified value, executive-summary section, README line, `make build` + `make test`, PR → `main`, merge, Pages, record | **done** — see the session log below for the build, merge and Pages record | `arena/ceddf8d8-korea1` | `pipeline/render_site.py` (NAV tuple + one index card + flagged rows only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe + test list), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch → `main` |
+
+### Session `arena/ceddf8d8-korea1` — 2026-11-18 session log (NR1–NR7)
+
+**Board check (NR1).** Read before any file change: everything after `arena/db6cd525-korea1`, the open PRs
+(#84, #83, #82, #80, and the stale #73/#71/#70/#68/#58/#56/#47/#38/#30/#24/#19) and their file lists, and
+`main`'s CI state (last `Verify site` on `main`: success at `547d514`). Claim commit `50d23d5` was pushed
+before any file outside `COORDINATION.md` changed. Scope taken because `arena/db6cd525-korea1` recorded
+**CS5 as not done**; the paths it left unused were renamed (see the collision note above) so neither
+register can overwrite the other. No file owned by an open sibling PR was edited: `tests/test_live_verify.py`,
+`pipeline/session_20261118.py`, `pipeline/fetch_reserve_list.py`, `scripts/reconcile_depth_charts.py` and
+`data/live/depth_slot_verification.csv` are untouched, and the availability capture itself was not written
+by this session (it is the scheduled job's output, read-only here).
+
+**What the register says (NR3).** 74 items on `request-register.html`, each with the artefact re-opened at
+build time. Result: 26 built, 6 built by this session, 20 partly, 3 open, 3 blocked, 4 not built, 1 closed
+by verification, 1 explained, and the rest held/deferred/refused-by-evidence. Two deliberate refusals are
+published as rows rather than quietly dropped: R-24 (depth from jersey number) and R-74 (no reward is
+fundable while 0 of 18 candidates pass G1).
+
+**Claims re-derived (NR2).** `pipeline/claim_checks_20261118.py` parses four verbatim official reads taken on
+2026-11-18 and compares them with the committed captures:
+- **C-07 / C-08 — closed, not repaired by us.** The three Lions designations the brief calls missing
+  (Kerby Joseph, Cade Mays, D.J. Reed) print `Out` on the official page *and* in the 2026-11-18 capture; the
+  whole Detroit table agrees on 9 of 9 rows. The defect was in the site's staleness, and the scheduled
+  capture has overtaken it.
+- **C-11 — the 2026-11-12 coverage-gap cause is now verified.** CHI, DEN, PHI and TB have no injury row
+  because the official Week 10 page lists exactly those four clubs on **bye** (`set(missing) == bye_abbr` is
+  asserted in `tests/test_claim_checks.py`). This closes the item the `db6cd525` log and `brief` row B7 left
+  as "(unverified)". Absence from the report is still not "available" — R-26/R-55 keep the reserve list as
+  the separate evidence.
+- **C-03 — the multi-rank-1 count moved:** 161 club/unit/position groups today (the brief quotes 149 for the
+  capture it read). Published as `DIFFERS_SOURCE_MOVED` with both numbers, and it is why the matrix publishes
+  groups and never "the starter".
+- **C-05 / C-06 —** the Texans page really is image-only (re-read 2026-11-18: heading `Unofficial Depth
+  Chart`, then one image, no table), so a 0-row parse is faithful and the structured-source gap stays open
+  (SUG-18-09); the Packers fix the brief asks for is already in the capture (54 of 54 rows carry the number
+  in `player_raw`, 0 dirty in `player`).
+- **C-09 —** the Ravens' stale QB rows the brief cites are gone on both sides (Brissett / Fagnano / Slovis),
+  so the item is `SUPERSEDED` by the club's own update rather than by a site change.
+- **C-13 — settlement, not sourcing, is what blocks a verdict:** the ledger holds 1 of the 14 official
+  Week 10 finals. Flagged as `F-2026-11-18b-01`, and deliberately *not* filled in: 13 games stay unsettled
+  rather than being settled from a page this session only read in part.
+- **C-14 —** the "136-game log" matches nothing owned (the forward ledger holds 84 published rows over 28
+  games), so the requirement is recorded as an unverified reference, with the wording fix staged as
+  SUG-18-10 instead of being satisfied by the nearest number.
+
+**New surfaces (NR4, NR5).** `matchup-matrix.html` — 154 rows, offence group against defence group for the
+26 fixtures both sides of which are captured, printed ranks only, and the six club-weeks that could not be
+built are printed with their cause (four byes, HOU image-only, CLE for want of a far side). The page states
+its own as-at: the report it overlays is the **WEEK 10** table, so it is a worked example on played games, not
+a live pre-kickoff read (`F-2026-11-18b-04`). `consensus.html` — posted break-even, vig-free consensus,
+margin cost and divergence as four separate columns over 16,206 game × market rows, with
+`gross gap = divergence − margin cost` asserted for every row at build time; the one archive pair below parity
+is counted and disclosed on the page (`rows below parity`) rather than repaired.
+
+**Build fixes found on the way (owner-relevant).** (1) The `csv` module's default `\r\n` terminator met a
+text-mode copy into `assets/data/`, so the published CSV differed byte-wise from the file `check_rebuild.py`
+had compared; the new writers pin `lineterminator="\n"` and copy bytes (commit `70b0158`). (2)
+`repo-review.html`'s row count moves when new files appear, so the verification report had to be committed at
+its fixed point; a second `make build` now leaves the tree clean. (3) `tests/check_rebuild.py` compares every
+generated page, which means any new page must be *rendered deterministically* — both new pages read only
+committed artefacts and no clock.
+
+**Verification.** `make build` exit 0 (0 failing checks; `check_sources`: 47 canonical pages, 5,907 rows;
+`check_links`: 56 pages). `make test`: 222 passed (189 before this session, +33 in the four new modules).
+`tests/check_rebuild.py`: exit 0, "Rebuild matches committed outputs", working tree clean afterwards.
+
+**Integration state and requests to others.** NAV gained one group ("Brief review (2026-11-18)");
+`index.html`'s decision-readiness card now points at the 74-item register instead of duplicating it.
+`EXECUTIVE_SUMMARY.md` is **generated** by `pipeline/render_summary.py`, so no hand-written section was added
+(it would be overwritten by the next build); **request to the integration owner:** add one
+`_session_block()` line there citing `data/integration/claim_checks_2026_11_18.csv` — `render_summary.py` is
+also touched by open PR #73, so this session did not edit it. `scripts/reconcile_depth_charts.py` (F-50/F-51)
+is likewise left for the owner, and re-flagged as `F-2026-11-18b-07`.
+
+**Rebase log.** `git pull --rebase origin main` before the PR: conflicts expected in `COORDINATION.md`
+(keep both, `main` first) and in the three shared page-list files if #84/#80/#82 merged meanwhile; resolution
+rule = keep both sides' added lines, never drop a sibling's page or row, then re-run `make build && make test`
+and commit the regenerated outputs.
