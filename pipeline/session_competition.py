@@ -36,7 +36,9 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import ROOT, PROC, fmt, read_json  # noqa: E402
-from render_site import layout, table  # noqa: E402
+from render_site import (  # noqa: E402
+    _mind_changer_cell, _mind_changer_map, layout, table,
+)
 from session_common import (  # noqa: E402
     BLANK, clean, clip, e, read_csv, ref_link, resolve_ref, write_csv,
 )
@@ -208,36 +210,53 @@ def build_page(standings, tiers, rules, extra) -> str:
     g1_pass = int(gates.G1_data.sum())
     worst_shortfall = int((standings.weeks_required_power - standings.weeks_observed).max())
 
+    mind_changers = _mind_changer_map()
+    demo = extra["demo"]
+    current_statuses = demo.set_index("strategy")["current_status"].to_dict() if len(demo) else {}
+    mind_sources = (f'{S}<br>{W}<br>'
+                    '<a href="validation.html">Gate definitions</a> · '
+                    '<a href="assets/data/validation_config.json">Frozen thresholds</a> · '
+                    '<a href="assets/data/demotion_register.csv">Paper/live register</a>')
     stand_rows = []
     for _, r in standings.iterrows():
+        signal_qualified = int(r["signal_passed"]) == len(SIGNAL_GATES)
+        signal_status = ('<span class="pill skill">SIGNAL GATES PASS</span>' if signal_qualified else
+                         '<span class="pill unverified">NOT SIGNAL-QUALIFIED</span>')
+        mind = mind_changers.get(r["strategy"], {})
         stand_rows.append([
             str(r["rank"]),
             f'<strong>{e(r["strategy"])}</strong><br><span class="small">{clip(r["name"], 60)}</span>',
             e(r["division"]), e(r["market"]),
             f'{r["signal_passed"]} / {len(SIGNAL_GATES)}',
-            e(r["signal_failed"]),
+            e(r["signal_failed"]), signal_status,
             str(r["seasons"]), f'{int(r["bets"]):,}',
             f'{int(r["weeks_observed"]):,}',
             f'{int(r["weeks_required_power"]):,}',
-            '<span class="pill unverified">UNVERIFIED</span>' if r["verdict"] != "VALIDATED" else '<span class="pill skill">VALIDATED</span>',
-            f'{S}<br>{W}',
+            _mind_changer_cell(mind.get("moves_up_when", ""), "Show move-up criteria"),
+            _mind_changer_cell(mind.get("stops_when", ""), "Show stop / demotion triggers"),
+            mind_sources,
         ])
     stak_rows = []
     for _, r in standings.iterrows():
         failed_stk = [x.strip() for x in str(r["staking_failed"]).split(";")]
         g1 = "G1" not in failed_stk
         g6 = "G6" not in failed_stk
+        status = str(current_statuses.get(r["strategy"], "")).strip().upper()
+        if status == dg.LIVE:
+            status_cell = '<span class="pill skill">LIVE status recorded</span>'
+        elif status == dg.PAPER:
+            status_cell = '<span class="pill unverified">PAPER · no live stake</span>'
+        else:
+            status_cell = '<span class="pill unverified">UNVERIFIED · status not recorded</span>'
         stak_rows.append([
             f'<strong>{e(r["strategy"])}</strong>',
-            e(r["stake_rule"]),
-            f'{r["staking_passed"]} / {len(STAKING_GATES)}',
+            status_cell,
+            "Fixed flat-stake rule; not a live stake",
+            f'{r["staking_passed"]} / {len(STAKING_GATES)} execution gates pass',
             '<span class="pill skill">PASS</span>' if g1 else '<span class="pill unverified">FAIL</span>',
             '<span class="pill skill">PASS</span>' if g6 else '<span class="pill unverified">FAIL</span>',
-            BLANK, BLANK,
-            f'{r["gates_passed"]} / 8 · {e(r["reward"])}',
-            f'{S}<br>{W}',
+            f'{S}<br>{W}<br><a href="assets/data/demotion_register.csv">Paper/live register</a>',
         ])
-    demo = extra["demo"]
     demo_rows = []
     for _, d in demo.iterrows():
         demo_rows.append([
@@ -344,22 +363,24 @@ terms · <a href="validation.html">the full gate configuration</a> ·
 </section>
 
 <section><div class="section-head"><h2>Signal ranking</h2>
-<span class="small">ranked on signal gates passed (of six), then sample size — staking and profit never rank</span></div>
+<span class="small">ranked on signal gates passed (of six), then sample size — staking and execution never rank</span></div>
+<p class="flag info">This standings block reports signal qualification and sample coverage only. Historical backtest returns,
+hit rates, mean signal edge and staked-unit totals are withheld. The move-up and stop columns show registered thresholds
+and demotion triggers, not current historical results. Sample counts describe coverage, not profitability.</p>
 <div class="table-tools"><label>Search <input class="filter" type="search" placeholder="Try parlay, spread, wind…"></label>
 <span class="small">Click a column heading to sort</span></div>
-{table(stand_rows, ["Rank", "Candidate", "Division", "Market", "Signal gates", "Failing signal gates", "Seasons", "Bets", "Weeks seen", "Weeks needed", "Verdict", "Official reference"],
-       caption="Signal standings: signal gate outcomes and sample facts; unverified performance cells are blank")}
+{table(stand_rows, ["Rank", "Candidate", "Division", "Market", "Signal gates", "Failing signal gates", "Signal qualification", "Seasons", "Bets", "Weeks seen", "Weeks needed", "Move up when", "Stop / demote when", "Sources"],
+       caption="Signal standings: qualification and sample facts only; historical performance values withheld")}
 <p>Ties are declared rather than broken silently: candidates with the same signal count and the same number of bets
-share a rank. <a href="assets/data/leaderboard_master.csv">Download the standings</a> ·
-<a href="assets/data/strategy_gates.csv">Download the calculated gate results</a></p>
+share a rank. <a href="assets/data/leaderboard_master.csv">Download the standings</a></p>
 </section>
 
 <section><h2>Staking and execution — shown separately, cannot move a rank</h2>
-<p>Staking is flat: every candidate risks one unit per bet, so no staking choice can make a candidate look better
-than its signal. Price provenance (G1) and economic reality (G6) decide only whether a reward tier may be awarded
-(rule R8). The ROI and adjusted-p cells are blank because they need authenticated executable quotes, which do not exist.</p>
-{table(stak_rows, ["Candidate", "Stake rule", "Execution gates", "G1 quote provenance", "G6 economic reality", "ROI", "Adjusted p", "Gates (all eight) · reward", "Official reference"],
-       caption="Staking and execution block: the stake rule and the execution gates; performance cells are blank, not zero")}
+<p>The paper/live register is separate from signal qualification. Execution gates G1 and G6 can block a reward but cannot
+change a signal rank. No historical return, hit rate, adjusted p-value or cumulative stake total is shown here; no live
+stake is authorized unless a recorded promotion is made.</p>
+{table(stak_rows, ["Candidate", "Current staking status", "Stake rule", "Execution gates", "G1 quote provenance", "G6 economic reality", "Sources"],
+       caption="Separate paper/live and execution state; historical performance values withheld")}
 </section>
 
 <section><h2>Demotion gate — sending a live strategy back to paper</h2>

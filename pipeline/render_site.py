@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -301,6 +302,49 @@ def research_source(context="NFL scores"):
 BLANK = '<span class="blank" aria-label="blank: unverified"></span>'
 
 
+def _mind_changer_map() -> dict[str, dict[str, str]]:
+    """Read the dated two-sided criteria without exposing their current backtest results."""
+    path = ROOT / "data" / "integration" / "mind_changers_2026_11_15.csv"
+    if not path.exists():
+        return {}
+    rows = pd.read_csv(path, dtype=str, keep_default_na=False).to_dict("records")
+    return {row["strategy"]: row for row in rows if row.get("strategy")}
+
+
+def _without_current_result_values(text: str) -> str:
+    """Remove every balanced ``(now: ...)`` annotation, preserving registered thresholds."""
+    source = str(text or "")
+    kept: list[str] = []
+    i = 0
+    while i < len(source):
+        if source[i:i + 5].lower() == "(now:":
+            depth = 1
+            i += 5
+            while i < len(source) and depth:
+                if source[i] == "(":
+                    depth += 1
+                elif source[i] == ")":
+                    depth -= 1
+                i += 1
+            continue
+        kept.append(source[i])
+        i += 1
+    clean = "".join(kept)
+    clean = re.sub(r"\s*;\s*", "; ", clean)
+    clean = re.sub(r"[ \t]{2,}", " ", clean).strip(" ;")
+    if re.search(r"\bnow\s*:", clean, flags=re.IGNORECASE):
+        raise ValueError("current backtest result annotation was not removed from a mind-changer")
+    return clean
+
+
+def _mind_changer_cell(text: str, summary: str) -> str:
+    """Compactly render a two-sided decision criterion; never include its current result."""
+    criterion = _without_current_result_values(text)
+    if not criterion:
+        return BLANK + '<br><span class="unverified">UNVERIFIED — criterion not recorded</span>'
+    return f'<details><summary>{e(summary)}</summary><p>{e(criterion)}</p></details>'
+
+
 def metric(x, nd=3):
     """A reproducible estimate is not an official observation. Strict public view."""
     return BLANK
@@ -536,6 +580,43 @@ def build_executive(d):
                   "White (2000)")],
     ], ["Item", "State", "Meaning", "Official / primary reference"],
        caption="Forward-test state at the first settlement")
+
+    signal_cols = ["G2_leakage", "G3_power", "G4_significance", "G5_luck", "G7_stability", "G8_redundancy"]
+    signal_qualified = int(gates[signal_cols].astype(bool).all(axis=1).sum()) if len(gates) else 0
+    g1_failed = int((~gates.G1_data.astype(bool)).sum()) if len(gates) else 0
+    brief_frame = _read_integration("brief_2026_11_15.csv")
+    brief_rows = {} if brief_frame is None else {
+        str(r.id): r._asdict() for r in brief_frame.itertuples(index=False)
+    }
+    b1 = brief_rows.get("B1", {})
+    b6 = brief_rows.get("B6", {})
+    b7 = brief_rows.get("B7", {})
+    demo_path = ROOT / "data" / "governance" / "demotion_register.csv"
+    demo_status = (pd.read_csv(demo_path, dtype=str, keep_default_na=False)
+                   if demo_path.exists() else pd.DataFrame())
+    n_live_status = int((demo_status.current_status == "LIVE").sum()) if len(demo_status) else 0
+    n_paper_status = int((demo_status.current_status == "PAPER").sum()) if len(demo_status) else 0
+    current_status_table = table([
+        ["Signal qualification", f"{signal_qualified} of {len(gates)} pass the registered signal-gate set; {int(gates.verdict.eq('VALIDATED').sum()) if len(gates) else 0} pass all eight gates.",
+         "Signal qualification is not a staking status or a profitability claim. No candidate is validated and no reward is supported.",
+         official("White (2000), Econometric Society") + " · " + src_link("competition.html", "signal standings")],
+        ["Staking and quote provenance", f"{n_live_status} LIVE · {n_paper_status} PAPER · B6 {e(b6.get('status', 'not recorded'))} · {g1_failed} fail G1.",
+         "No authenticated, timestamped executable bookmaker quote archive is recorded. Paper/live state is separate from signal qualification; no live stake or reward is authorized.",
+         src_link("price-archive.html", "price evidence") + " · " + src_link("assets/data/demotion_register.csv", "paper/live register") + " · " + official("NFL scores")],
+        ["Prospective results", f"{fwd_settled} official-settled · {fwd_open} open · {fwd_validated} validated.",
+         "Official outcomes are used for settlement; open tickets remain open. The current prospective record does not validate a strategy or establish a repeatable edge.",
+         src_link("forward.html", "forward ledger") + " · " + src_link("https://www.nfl.com/scores/2026/week-10", "NFL Week 10 scores")],
+        ["Injury, roster and depth blockers", f"B1 {e(b1.get('status', 'not recorded'))}; B7 {e(b7.get('status', 'not recorded'))}.",
+         f"Blockers: {e(b1.get('blocking_gate', 'Not recorded'))}; {e(b7.get('blocking_gate', 'Not recorded'))}. Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified.",
+         src_link("brief-2026-11-15.html", "brief tracker") + " · " + official("NFL injury report (2026 week 10)") + " · " + src_link("lineup-deficiencies.html", "depth audit")],
+        ["Parlay and player-prop priceability", "UNVERIFIED — no executable price evidence.",
+         "Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established.",
+         src_link("props.html", "prop evidence") + " · " + src_link("correlations.html", "correlation rules") + " · " + official("NFL injuries")],
+        ["F-38 competitive-display policy", "Implemented in the 2026-11-15 update.",
+         "Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This display change is not validation.",
+         src_link("strategies.html", "strategy leaderboard") + " · " + src_link("competition.html", "competition standings") + " · " + official("White (2000), Econometric Society")],
+    ], ["Area", "Current status", "Decision meaning / blocker", "Sources"],
+       caption="Current decision snapshot · 2026-11-15 · linked to the tracker, registers and primary sources")
     body = f"""
 {notice()}
 <section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
@@ -550,6 +631,11 @@ a <a href="suggestions.html">22-proposal register with four decision paths</a>, 
 (<a href="injuries.html">league report</a> and <a href="lineups.html">club depth charts</a>). Confirmed
 starter/replacement roles, depth ranks and quantitative impacts remain blank. No strategy or proposal is newly
 approved, and no reward is funded. The scheduled league-wide capture (all clubs, refreshed automatically) is <a href="availability.html">Injuries &amp; depth · all clubs</a>.</p></section>
+<section><h2>Current status — 2026-11-15</h2>
+<p>This dated snapshot supersedes older status notes below. Counts are read from the committed gate, forward-ledger,
+demotion and brief registers. Unknown values remain blank or flagged; no missing evidence is inferred.</p>
+{current_status_table}
+</section>
 <section><h2>Update of 2026-11-12</h2>
 {table([
 ["Injuries and lineups", "Tracking live · effect not priced", "A scheduled workflow reads the official NFL.com injury report and each club's depth-chart page, then shows for offense and defense which first-listed players are Out or Doubtful and which 2nd, 3rd or 4th-string player the club lists next. It does not yet move the originated line: the point value of an absence has not been measured. See <a href='availability.html'>Injuries &amp; depth</a>.", official("NFL injuries")],
@@ -780,20 +866,44 @@ def build_strategies(d):
     from strategies import build_library
     library = {x.id: x for x in build_library()}
     gates = d["strategy_gates"]
-    stats = d["strategy_stats"].set_index("strategy") if len(d["strategy_stats"]) else pd.DataFrame()
-    bets = d["strategy_bets"]
-    sig_mean = bets.groupby("strategy").signal.mean() if len(bets) else pd.Series(dtype=float)
+    mind_changers = _mind_changer_map()
+    status_path = ROOT / "data" / "governance" / "demotion_register.csv"
+    statuses = (pd.read_csv(status_path, dtype=str, keep_default_na=False)
+                .set_index("strategy")["current_status"].to_dict()) if status_path.exists() else {}
+    signal_gates = [
+        ("G2_leakage", "G2"), ("G3_power", "G3"), ("G4_significance", "G4"),
+        ("G5_luck", "G5"), ("G7_stability", "G7"), ("G8_redundancy", "G8"),
+    ]
+    sources = (official("NFL scores") + " · " +
+               official("White (2000), Econometric Society") + " · " +
+               src_link("validation.html", "gate definitions") + " · " +
+               src_link("assets/data/validation_config.json", "frozen thresholds") + " · " +
+               src_link("assets/data/demotion_register.csv", "paper/live register"))
     rows = []
     for r in gates.sort_values("strategy").itertuples():
         spec = library[r.strategy]
-        units = int(r.n) if pd.notna(r.n) else 0          # one unit staked per bet
-        sig = fmt(float(sig_mean[r.strategy])) if r.strategy in sig_mean.index and pd.notna(sig_mean[r.strategy]) else BLANK
-        # ROI stays blank: every price is a community-mirror close, never an executable quote.
-        # Signal (edge behind each selection) and staking (units staked) are printed side by side so
-        # a lucky staking run cannot be read as signal. With flat one-unit staking they coincide today;
-        # any future variable staking plan gets its own column and is never re-read as signal.
-        rows.append([e(spec.id), e(spec.name), e(spec.market), e(spec.rule), str(units),
-                     sig, BLANK, BLANK, "Unawarded", research_source("White (2000), Econometric Society")])
+        failed_signal = [label for col, label in signal_gates if not bool(getattr(r, col))]
+        signal_status = (
+            '<span class="pill unverified">NOT SIGNAL-QUALIFIED</span><br>'
+            f'<span class="small">Failing signal gates: {e(", ".join(failed_signal))}</span>'
+            if failed_signal else
+            '<span class="pill skill">SIGNAL GATES PASS</span><br>'
+            '<span class="small">This is not an all-gate validation.</span>'
+        )
+        current_status = statuses.get(r.strategy, "").strip().upper()
+        if current_status == "PAPER":
+            staking_status = '<span class="pill unverified">PAPER · no live staking</span>'
+        elif current_status == "LIVE":
+            staking_status = '<span class="pill skill">LIVE status recorded</span>'
+        else:
+            staking_status = '<span class="pill unverified">UNVERIFIED · status not recorded</span>'
+        mind = mind_changers.get(r.strategy, {})
+        move_cell = _mind_changer_cell(mind.get("moves_up_when", ""), "Show move-up criteria")
+        stop_cell = _mind_changer_cell(mind.get("stops_when", ""), "Show stop / demotion triggers")
+        rows.append([
+            e(spec.id), e(spec.name), e(spec.market), e(spec.rule), signal_status,
+            staking_status, move_cell, stop_cell, sources,
+        ])
     rewards = [[name, rule, "No monetary reward", official("White (2000), Econometric Society")] for name, rule in [
         ("Research", "Rule and complete trial history registered; no performance award."),
         ("Candidate", "Data, leakage and power gates pass; still paper-only."),
@@ -804,9 +914,12 @@ def build_strategies(d):
 <section><h2>Competition, not a tipping service</h2><p>Every candidate is published, including failures.
 Ranking by raw profit alone rewards variance. Eligibility comes first; risk-adjusted, selection-adjusted,
 cost-adjusted evidence comes second. The current public leaderboard has no funded winner.</p>
+<p class="flag info">Signal qualification and the recorded PAPER/LIVE staking state are separate. This competitive view withholds
+historical backtest returns, hit rates, mean signal edge and staked-unit totals. The two-sided mind-changer cells show only
+registered move-up criteria and stop/demotion triggers; current historical result values are omitted.</p>
 <div class="table-tools"><label>Find a strategy <input class="filter" type="search" placeholder="Search names, rules or markets"></label><span class="small">All {len(rows)} candidates shown</span></div>
-{table(rows, ["ID", "Strategy", "Market", "Frozen research rule", "Units staked", "Mean signal edge", "ROI (flat 1 unit)", "Holm p", "Verdict", "Reward", "Sources"], caption="Complete strategy library · unverified performance is blank · signal and staking are separate columns")}
-<p><a href="assets/data/strategy_gates.csv">Download calculated gate results</a> · <a href="lab/strategies.html">Historical research annex</a></p></section>
+{table(rows, ["ID", "Strategy", "Market", "Frozen research rule", "Signal qualification", "Staking status", "Move up when", "Stop / demote when", "Sources"], caption="Competitive strategy view · signal and staking status separated · historical backtest performance values withheld")}
+<p><a href="validation.html">Validation gates</a> · <a href="lab/strategies.html">Historical research annex</a></p></section>
 <section><h2>Signal families and why they might matter</h2><ul class="findings">
 <li><strong>Model disagreement:</strong> a trade only has positive expected value if the model is better calibrated than the available price, not merely different from it.</li>
 <li><strong>Situational angles:</strong> rest, weather and recent form are hypotheses. Their availability timestamps and multiple-testing burden must be controlled.</li>
@@ -815,10 +928,10 @@ cost-adjusted evidence comes second. The current public leaderboard has no funde
 <li><strong>Closing-line value:</strong> a useful prospective diagnostic only with genuine entry timestamps and comparable bookmaker closing quotes; it is not a guarantee of profit.</li></ul></section>
 <section><h2>Reward and anti-gaming rules</h2>{table(rewards, ["Tier", "Requirement", "Payout status", "Reference"], caption="Proposed recognition framework—not an existing financial promotion")}
 <ol class="findings"><li>Register the complete rule, data version, parameters and every trial before evaluation.</li>
-<li>One-unit flat staking for comparison; no leverage-based ranking.</li><li>Keep all selections and all no-bet weeks; no cherry-picked subsets.</li>
+<li>Keep the same flat-stake rule across candidates; staking choices never determine rank.</li><li>Keep all selections and all no-bet weeks; no cherry-picked subsets.</li>
 <li>Use actual ticket quotes and bookmaker-specific push/void rules.</li><li>Any rule change creates a new entrant and increases the trial count.</li>
 <li>Pass every gate and replicate prospectively before recognition. Rewards remain unawarded until separately authorized and funded.</li></ol></section>"""
-    return layout("strategies.html", "Strategy leaderboard", "All candidates, frozen rules and fail-closed reward eligibility.", body, wide=True)
+    return layout("strategies.html", "Strategy leaderboard", "Signal qualification and staking state are separated; historical backtest performance is withheld.", body, wide=True)
 
 
 def build_validation(d):
