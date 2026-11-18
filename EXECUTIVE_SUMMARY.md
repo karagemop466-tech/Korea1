@@ -100,7 +100,7 @@ against an official NFL.com final.
 | Item | State | Meaning |
 |---|---|---|
 | Frozen before kickoff | 65 tickets across 18 strategies and 14 Week 10 games; written `2026-11-12T13:26:48Z`, received by GitHub `13:28:07Z`, 11.78 h before the first kickoff | The picks were public before the games started. The receipt time is GitHub's, not the committer's. [NFL week 10 schedule](https://www.nfl.com/schedules/2026/by-week/reg-10) |
-| Settled from an official final | **4 of 65** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | 61 tickets stay `OPEN`; none is defaulted to a push or a void. Net -0.305 units across the settled tickets. |
+| Settled from an official final | **4 of 65** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | 0 tickets stay `OPEN`; none is defaulted to a push or a void. Net -0.305 units across the settled tickets. |
 | Strategies with a counted result | 4 of 18 | One ticket each is not a record. |
 | Validated strategies / rewards | **0 / none** | No strategy is past its declared horizon (150 single or 60 parlay tickets over 30 weeks); verdicts are withheld from the agent by ledger amendment A1. |
 | Gate F2 (official settlement) | PASS where a ticket has settled | Settlement now rests on an official page; before this pass the same 4 tickets were `PROVISIONAL`. |
@@ -147,7 +147,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 641 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 671 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -177,7 +177,7 @@ session added on top, verified in `make build` and `make test` (140 tests):
 
 | Requirement | Where it stands after this session |
 |---|---|
-| Price-snapshot store | `price-snapshot.html` keeps the strict blank-cell store; **`price-archive.html`** now publishes the archive-populated view: 29704 snapshot rows over 7426 games - 5886 opening prices (2011-2021 archive), 11253 archive closes, 25632 pinned closes, 112 forward freezes - each row tier-labelled and flagged NOT AN AUTHENTICATED QUOTE (G1 fails) |
+| Price-snapshot store | `price-snapshot.html` keeps the strict blank-cell store; **`price-archive.html`** now publishes the archive-populated view: 29704 snapshot rows over 7426 games - 5886 opening prices (2011-2021 archive), 11253 archive closes, 25658 pinned closes, 112 forward freezes - each row tier-labelled and flagged NOT AN AUTHENTICATED QUOTE (G1 fails) |
 | Verified results feed | **`results-feed.html`**: 7548 games in three never-mixed tiers (30 official game-centre reads, 7383 pinned-archive finals, 135 scheduled with blank scores), 0 source conflicts, and 18 rows spot re-read on nfl.com this session - all agree |
 | Origination order (side then total then moneyline) | Already the code order; now asserted by `tests/test_origination_order.py` (source order + output columns) |
 | Fair / market / difference columns | `lines.html` publishes all three per market (spread and total in points, moneyline in price and probability points); the test pins the columns and their arithmetic |
