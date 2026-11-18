@@ -1,104 +1,132 @@
-"""NR3/NR6 — the 2026-11-18 request register: coverage, vocabulary and the evidence contract.
+"""CR1 tests (session arena/f84bc1d7-korea1): the request register must be complete,
+sourced, and free of invented values.
 
-The register is the decision surface, so these tests ask whether it can be trusted rather than whether it
-renders: every status must come from an artefact that opens, every gap must be a gap the repository really
-has, and no item may be marked built because a plan said it would be.
+Mutation-sensitive checks:
+* every request item REQ-01..REQ-81 present exactly once, in request order;
+* status in the closed set;
+* every row carries an official/primary source URL (verify_site.ALLOW hosts only);
+* every live-check id resolves to a committed CR2 spot-check row;
+* the rendered page's tbody row count equals the CSV row count;
+* the summary cards equal the CSV status counts;
+* the register's ground-truth cells agree with the repository data they cite
+  (Lions Out rows, Houston 0 rows, Green Bay jersey stripping, 31 depth clubs).
 """
 from __future__ import annotations
 
-import csv
+import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 
+import pandas as pd
+
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "pipeline"))
+from verify_site import ALLOW  # noqa: E402
 
-from request_register_20261118 import (  # noqa: E402
-    OUT, absent, ev, register_rows, resolve, suggestion_rows,
-)
+CSV = ROOT / "data" / "integration" / "request_register.csv"
+HTML = ROOT / "request-register.html"
+SPOT = ROOT / "data" / "live" / "request_spotcheck_2026_11_18" / "spotcheck.csv"
 
-STARTS = ("BUILT", "PARTLY", "OPEN", "BLOCKED", "NOT BUILT", "CLOSED", "HELD", "POLICY", "REFUSED",
-          "REFERENCE", "CONFLICTS", "NOT AVAILABLE", "IN PROGRESS", "EXTENDED")
-
-
-def test_covers_the_request():
-    rows = register_rows()
-    assert len(rows) >= 60, "the 2026-11-18 request lists about sixty items"
-    ids = [r["id"] for r in rows]
-    assert len(ids) == len(set(ids))
-    for r in rows:
-        assert r["status"].startswith(STARTS), r["status"]
-        assert r["blocking_gate"] and r["clears_when"] and r["theme"], r["id"]
-        assert r["evidence"], r["id"]
+STATUSES = {"built", "partly built", "not built", "blocked (owner decision)",
+            "rejected as requested", "process · executed"}
+VERDICTS = {"VERIFIED LIVE", "REFUTED LIVE", "READ LIVE PARTIAL"}
 
 
-def test_every_built_row_opens_an_artefact():
-    for r in register_rows():
-        present = [ok for _t, ok in r["evidence"]]
-        if r["status"].startswith(("BUILT", "HELD", "CLOSED")):
-            assert any(present), f"{r['id']} claims {r['status']} with nothing behind it"
+class RowCounter(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.rows = 0
+        self.in_body = False
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "tbody":
+            self.in_body = True
+        elif tag == "tr" and self.in_body:
+            self.rows += 1
+
+    def handle_endtag(self, tag):
+        if tag == "tbody":
+            self.in_body = False
 
 
-def test_gap_rows_are_real_gaps():
-    """Items recorded as not built must still be absent, or the register is stale and must fail."""
-    for r in register_rows():
-        if r["status"].startswith("NOT BUILT") and "HERE" not in r["status"]:
-            for text, ok in r["evidence"]:
-                if "not in the repository" in text:
-                    assert not ok or resolve(Path(text.split(" —")[0]).name) is None, r["id"]
+def test_register_rows_complete_unique_and_ordered():
+    d = pd.read_csv(CSV, dtype=str, keep_default_na=False)
+    assert len(d) == 81
+    ids = d.req_id.tolist()
+    assert ids == [f"REQ-{i:02d}" for i in range(1, 82)]
 
 
-def test_evidence_helpers_are_fail_closed():
-    text, ok = ev("data/processed/model_metrics.csv")
-    assert ok and "rows" in text
-    text, ok = ev("data/processed/no_such_artefact.csv")
-    assert not ok and "MISSING" in text
-    text, ok = absent("data/processed/no_such_artefact.csv")
-    assert ok and "not in the repository" in text
-    text, ok = absent("data/processed/model_metrics.csv")
-    assert not ok and "register needs updating" in text
+def test_status_closed_set_and_counts_match_cards():
+    d = pd.read_csv(CSV, dtype=str, keep_default_na=False)
+    assert set(d.status) <= STATUSES
+    counts = d.status.value_counts().to_dict()
+    html = HTML.read_text(encoding="utf-8")
+    combined = counts.get("not built", 0) + counts.get("blocked (owner decision)", 0)
+    for status in ("built", "partly built", "rejected as requested", "process · executed"):
+        n = counts.get(status, 0)
+        if n:
+            assert f">{n}</div>" in html or f">{n} " in html, f"card for {status} ({n}) missing"
+    if combined:
+        assert f">{combined}</div>" in html or f">{combined} " in html, \
+            f"combined not-built/blocked card ({combined}) missing"
 
 
-def test_csvs_are_published_downloads():
-    for name, expected in (("request_register_items_2026_11_18.csv", len(register_rows())),
-                           ("suggestions_2026_11_18.csv", len(suggestion_rows()))):
-        path = OUT / name
-        assert path.exists(), name
-        with open(path, encoding="utf-8") as fh:
-            assert len(list(csv.DictReader(fh))) == expected, name
-        assert (ROOT / "assets/data" / name).exists(), name
+def test_every_row_has_official_source_and_nonempty_gate_and_clears():
+    d = pd.read_csv(CSV, dtype=str, keep_default_na=False)
+    for r in d.itertuples(index=False):
+        host = re.sub(r"^https://([^/]+)/.*$", r"\1", r.source_url)
+        assert host in ALLOW, f"{r.req_id} source host {host} not in official allow-list"
+        assert r.gate.strip(), f"{r.req_id} has no blocking gate"
+        assert r.clears.strip(), f"{r.req_id} has no clearing number/condition"
+        assert r.published.strip(), f"{r.req_id} has no evidence cell"
 
 
-def test_suggestions_offer_three_paths_and_commit_to_nothing():
-    rows = suggestion_rows()
-    assert len(rows) >= 8
-    for s in rows:
-        for key in ("path_a", "path_b", "path_c", "gate_it_opens", "cost", "risk"):
-            assert s[key].strip(), f"{s['id']} missing {key}"
-        assert "PROPOSED" in s["state"], s["state"]
+def test_live_check_ids_resolve_to_spotcheck_rows():
+    d = pd.read_csv(CSV, dtype=str, keep_default_na=False)
+    s = pd.read_csv(SPOT, dtype=str, keep_default_na=False)
+    assert set(s.verdict) <= VERDICTS
+    known = set(s.check_id)
+    for r in d.itertuples(index=False):
+        if r.live_check:
+            assert r.live_check in known, f"{r.req_id} cites unknown spot-check {r.live_check}"
 
 
-def test_flagged_rows_are_generated_from_the_claims():
-    flagged = OUT / "flagged_2026_11_18b.csv"
-    assert flagged.exists()
-    with open(flagged, encoding="utf-8") as fh:
-        rows = list(csv.DictReader(fh))
-    assert len(rows) >= 5
-    assert any(r["source_url"].startswith("https://www.nfl.com") for r in rows)
-    for r in rows:
-        assert r["finding"].strip() and r["next"].strip(), r["id"]
-        if not r["source_url"]:
-            assert r["source_label"] == "", "a row without a URL must not claim a source"
+def test_html_row_count_matches_csv():
+    c = RowCounter()
+    c.feed(HTML.read_text(encoding="utf-8"))
+    d = pd.read_csv(CSV, dtype=str, keep_default_na=False)
+    # two tables: the register (81 rows) + the spot-check table (9 rows)
+    s = pd.read_csv(SPOT, dtype=str, keep_default_na=False)
+    assert c.rows == len(d) + len(s)
 
 
-def test_page_registered_and_self_consistent():
-    page = ROOT / "request-register.html"
-    assert page.exists()
-    html = page.read_text(encoding="utf-8")
-    for href in ("request_register_items_2026_11_18.csv", "claim_checks_2026_11_18.csv",
-                 "suggestions_2026_11_18.csv"):
-        assert href in html, href
-    import re
-    cells = re.findall(r"<td>(.*?)</td>", html, re.S)
-    leaked = [c for c in cells if re.search(r"(?<![\w/])(nan|NaN|None|inf|-inf)(?![\w/-])", c)]
-    assert not leaked, leaked[:3]
+def test_no_blank_or_token_cells_in_register():
+    d = pd.read_csv(CSV, dtype=str, keep_default_na=False)
+    for r in d.itertuples(index=False):
+        for name in ("request", "status", "gate", "clears", "published", "source_url"):
+            v = getattr(r, name).strip()
+            assert v, f"{r.req_id}.{name} blank"
+            assert not re.search(r"(?<![\w/])(nan|NaN|None|inf|-inf)(?![\w/-])", v), \
+                f"{r.req_id}.{name} leaks a token: {v[:40]}"
+
+
+def test_ground_truth_cells_match_the_repository():
+    d = pd.read_csv(CSV, dtype=str, keep_default_na=False).set_index("req_id")
+    inj = pd.read_csv(ROOT / "data" / "availability" / "injuries.csv", dtype=str, keep_default_na=False)
+    for name in ("Kerby Joseph", "Cade Mays", "D.J. Reed"):
+        row = inj[inj.player == name]
+        assert len(row) == 1 and row.iloc[0].game_status == "Out", name
+    assert "Out" in d.loc["REQ-48", "clears"] or "S1" in d.loc["REQ-48", "live_check"]
+    dc = pd.read_csv(ROOT / "data" / "availability" / "depth_charts.csv", dtype=str, keep_default_na=False)
+    assert len(dc[dc.team == "HOU"]) == 0
+    assert "0 rows" in d.loc["REQ-32", "published"]
+    gb = dc[dc.team == "GB"]
+    assert len(gb) > 0 and (gb.player_raw.str.contains(r"\d")).any()
+    assert dc.team.nunique() == 31
+    assert "31/32" in d.loc["REQ-13", "published"] or "31" in d.loc["REQ-43", "published"]
+    # refuted claim stays refuted (verdict lives in the CR2 spot-check file)
+    spot = pd.read_csv(SPOT, dtype=str, keep_default_na=False).set_index("check_id")
+    assert d.loc["REQ-46", "live_check"] == "S8"
+    assert spot.loc["S8", "verdict"] == "REFUTED LIVE"

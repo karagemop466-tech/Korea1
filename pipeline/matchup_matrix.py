@@ -329,7 +329,7 @@ charts can be asked about honestly:</p>
 </ul>
 <p class="small">This is a convention about which two lists to print side by side. It is not a claim about
 who aligned against whom on a play, and no snap, route or block data is used: none is captured (see
-<a href="request-register.html">register rows R-24 and R-57</a>).</p>
+<a href="verified-register-2026-11-18.html">register rows R-24 and R-57</a>).</p>
 <input class="filter" type="search" placeholder="Filter: club, position, or a player's name"
        aria-label="Filter the matrix">
 </section>

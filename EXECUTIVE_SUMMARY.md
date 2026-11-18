@@ -1,6 +1,6 @@
 # Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02. Research snapshot: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
+Current status refreshed: 2026-11-15. Pinned research inputs: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
 
 ## Decision
 
@@ -11,6 +11,20 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
+
+## Current status — 2026-11-15
+
+This dated snapshot supersedes older status notes below. Counts come from the committed gate, forward-ledger, demotion and brief registers. Unverified items remain flagged; no missing evidence is filled in.
+
+| Area | Current status | Decision meaning / blocker | Sources |
+|---|---|---|---|
+| Signal qualification | 0 of 18 pass the registered signal-gate set; 0 pass all eight validation gates. | Signal qualification is not a staking status or a profitability claim. No candidate is validated and no reward is supported. | [Competition](competition.html) · [validation gates](validation.html) · [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+| Staking and quote provenance | 0 LIVE · 18 PAPER · B6 BLOCKED · 18 fail quote-provenance G1. | No authenticated, timestamped executable bookmaker quote archive is recorded. Signal qualification and paper/live state are shown separately; no live stake or reward is authorized. | [Price archive](price-archive.html) · [paper/live register](assets/data/demotion_register.csv) · [NFL scores (settlement context)](https://www.nfl.com/scores/) |
+| Prospective results | 4 official-settled · 0 open · 0 validated | Official outcomes are used for settlement; open tickets remain open. The available prospective record does not validate a strategy or establish a repeatable edge. | [Forward ledger](forward.html) · [NFL Week 10 scores](https://www.nfl.com/scores/2026/week-10) |
+| Injury, roster and depth blockers | B1 PARTLY DONE; B7 PARTLY DONE. | Reserve-list live capture (CI) has not run; chunk 0 re-read is partial in this session; Reserve-list CI run; HOU depth chart (0 rows); 2026-11-12 coverage gap cause (unverified). Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified. | [Brief tracker](brief-2026-11-15.html) · [NFL injury report](https://www.nfl.com/injuries/league/2026/reg10) · [NFL reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11) |
+| Parlay and player-prop priceability | UNVERIFIED — no executable price evidence. | Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established. | [Props](props.html) · [correlation rules](correlations.html) · [NFL injuries](https://www.nfl.com/injuries/) |
+| F-38 competitive-display policy | Implemented in the 2026-11-15 update. | Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This is a display-policy change, not validation. | [Strategy leaderboard](strategies.html) · [competition standings](competition.html) · [frozen thresholds](assets/data/validation_config.json) · [demotion register](assets/data/demotion_register.csv) |
+
 
 ## Decision readiness & lineup follow-up — 2026-11-12
 
@@ -147,7 +161,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 732 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 753 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -192,6 +206,21 @@ and CIN Jalen Davis / Andrei Iosivas / Brian Parker II appear exactly as publish
 faithful transcriptions of a pairing that is itself contradictory on the official page.
 
 **Decision unchanged:** keep the research engine; fund nothing, reward nothing.
+
+## Addendum - 2026-11-18 (session `arena/f84bc1d7-korea1`, CR1-CR3)
+
+CS5 (the request register) was deferred as "not done" by the 2026-11-18 session log; this
+session builds it. **`request-register.html`** now carries one row per standing-request item
+(81 rows, REQ-01..REQ-81), each with the status (41 built, 21 partly built, 12 not built, 2 blocked on an owner decision, 2 rejected as requested, 3 process), the repository
+evidence, the gate that blocks full delivery and the number or condition that would clear it.
+The landing page links it as the decision-readiness table the request asked for.
+
+CR2 re-read eight official pages live on 2026-11-18 (nfl.com week-10 injury report, November
+reserve list, week-10 scores, the WAS@NYG game centre, the Texans and Ravens club depth charts,
+NFL Operations game prep): 7 checks verified the published values (including the
+three Lions Out designations and the Malik Willis reserve row) and 1 refuted the
+request's Baltimore stale-QB claim (the live chart reads Brissett | Fagnano | Slovis). Verbatim
+excerpts are committed under `data/live/request_spotcheck_2026_11_18/`.
 
 ## Addendum - 2026-11-18 (request register, session `arena/53ef9544-korea1`)
 

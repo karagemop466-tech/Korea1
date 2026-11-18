@@ -21,7 +21,7 @@ Writes:
   data/integration/request_register_items_2026_11_18.csv
   data/integration/suggestions_2026_11_18.csv
   (+ copies under assets/data/ so the tables are downloadable)
-  request-register.html
+  verified-register-2026-11-18.html
 """
 from __future__ import annotations
 
@@ -862,24 +862,29 @@ def render(claims: list[dict], register: list[dict], suggestions: list[dict]) ->
 
     verdict_counts = Counter(c["verdict"] for c in claims)
 
-    # The same scope was claimed independently by CS5 (arena/53ef9544-korea1) and merged first, so both
-    # registers ship. The difference is stated rather than hidden: theirs is the item inventory pinned to a
-    # commit, this one re-opens the artefacts at every build and re-derives the brief's own numbers.
+    # Three sessions claimed this scope; all three registers ship. The difference is stated on the page
+    # rather than left for a reader to discover, and the counts are read from the siblings' own CSVs.
     sib = ROOT / "data/integration/request_register_2026_11_18.csv"
     sib_n = len(list(csv.DictReader(open(sib, encoding="utf-8")))) if sib.exists() else 0
+    cr = ROOT / "data/integration/request_register.csv"
+    cr_n = len(list(csv.DictReader(open(cr, encoding="utf-8")))) if cr.exists() else 0
+    cr1 = (f'<a href="request-register.html">the standing-request register (CR1, {cr_n} items)</a>'
+           if cr_n else "the CR1 register")
+    cs5 = (f'<a href="request-register-2026-11-18.html">the CS5 register ({sib_n} items)</a>'
+           if sib_n else "the CS5 register")
     sibling_note = (
-        '<p class="flag info">Two registers, one scope. The '
-        f'<a href="request-register-2026-11-18.html">2026-11-18 request register (CS5, {sib_n} items)</a> '
-        "was written independently and merged first: it inventories every item with the status recorded at "
-        "the commit it was written against, and prints rows with no official source as flagged text. This "
-        f"register ({len(register)} items) adds what that one does not: each status is re-derived by opening "
-        "the artefact at build time under a fail-closed contract (a cited file that disappears, or a "
-        "declared gap that appears, fails the build), the brief's own numeric claims are re-derived against "
-        f"verbatim official reads ({len(claims)} rows, section 2), and the two surfaces the brief asked for "
-        "that did not exist anywhere — the "
+        '<p class="flag info">Three registers cover this request, and they are not duplicates — read the '
+        f"distinction. {cr1} records what was built per item with the live spot-check verdict beside it; "
+        f"{cs5} inventories the same items against the commit it was written on; "
+        f"this register ({len(register)} items) is the one whose status is <em>re-derived</em>: every row "
+        "opens the artefact it cites at build time under a fail-closed contract, so a cited file that "
+        "disappears — or a declared gap that appears — fails the build instead of leaving a stale sentence. "
+        "It also carries the brief's own numeric claims re-derived against verbatim official reads "
+        f"({len(claims)} rows, section 2), the {len(suggestions)} staged suggestions in section 3, and the "
+        'two surfaces the brief asked for that existed nowhere: the '
         '<a href="matchup-matrix.html">deficiency matrix</a> and the '
-        '<a href="consensus.html">vig-free decomposition</a> — are built here. Where the two disagree, '
-        "the difference is the finding: read both.</p>")
+        '<a href="consensus.html">vig-free decomposition</a>. Where the registers disagree, the '
+        "disagreement is the finding.</p>")
 
     body = f"""{sibling_note}
 {flag("This is a register, not a changelog. Nothing here changes a published research "
@@ -955,7 +960,7 @@ and the VR-/VQ-/SG- identifiers are recorded as unverified references (R-62, R-4
 </ul>
 </section>"""
 
-    return layout("request-register.html", "2026-11-18 request register",
+    return layout("verified-register-2026-11-18.html", "2026-11-18 verified request register",
                   f"One row per requirement in the request — {len(register)} items, each with its status, "
                   f"its blocking gate, the number that clears it and its official referent — plus the "
                   f"brief's own numbers re-derived and {len(suggestions)} suggestions staged for a path "
@@ -1090,9 +1095,9 @@ def main() -> int:
     write_flagged(claims, register)
 
     html_text = render(claims, register, suggestions)
-    (ROOT / "request-register.html").write_text(html_text, encoding="utf-8")
+    (ROOT / "verified-register-2026-11-18.html").write_text(html_text, encoding="utf-8")
     print(f"  request register: {len(register)} items, {len(suggestions)} suggestions, "
-          f"{len(claims)} claim checks -> request-register.html")
+          f"{len(claims)} claim checks -> verified-register-2026-11-18.html")
     return 0
 
 

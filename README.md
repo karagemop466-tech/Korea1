@@ -8,16 +8,10 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
-- **`request-register.html`** — **2026-11-18 request register**: one row per requirement in the current
-  request (74 items), each with the artefact that carries it re-opened at build time, the gate that blocks
-  it, the number that clears it and its official referent; plus the brief's own numbers re-derived against
-  verbatim official reads (15 claims) and 10 suggestions staged for a path choice (added 2026-11-18,
-  `arena/ceddf8d8-korea1`)
-- **`matchup-matrix.html`** — offensive groups against defensive groups (1st–4th string) for every fixture
-  the dated official captures support: printed ranks only, co-starters published as a count, designations
-  from the report with their capture times
-- **`consensus.html`** — vig-free market consensus against our originated fair line: posted break-even,
-  vig-free consensus and margin cost as separate columns, per season and market, n on every row
+- **`requirement-annex-2026-11-18.html`** — the annex to the register above: the same brief traced
+  with every number recomputed on each build, the official pages re-read row by row (97 injury rows,
+  23 depth rows, three reserve-list month pages, one game centre), and the 12 decision-blocking
+  questions plus the 8 owner decisions in their own registers (added 2026-11-18)
 - **`review-queue.html`** — every proposal from all four suggestion registers merged into 14 topic
   clusters; each row keeps its source register, original id, writing session and published page, so a path
   is chosen here before any code changes (added 2026-11-13, `arena/132e7ca2-korea1`)
@@ -52,6 +46,20 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `suggestions-review.html` — dedicated interactive Path A / B / C selector across 12 staged improvements (review before implementing changes)
 - `suggestions.html` — 22 proposals with cost, risk, dependencies and four decision paths
 - `decision-readiness.html` — 14 pre-decision Q&As, 8 missing-info discovery blueprints and all 28 post-pin settled Week 8–9 NFL.com scores
+- `verified-register-2026-11-18.html` — **2026-11-18 verified request register**: 74 items whose status is
+  re-derived at build time by opening the artefact each row cites, under a fail-closed contract (a cited file
+  that disappears, or a declared gap that appears, fails `make build`); the brief's own numbers re-derived
+  against verbatim official reads of 2026-11-18; and 10 suggestions staged for a path choice. Three sessions
+  registered this request — CR1 (`request-register.html`), CS5 (`request-register-2026-11-18.html`) and this
+  one — and all three are published, each saying what the others do not (added 2026-11-18,
+  `arena/ceddf8d8-korea1`)
+- `matchup-matrix.html` — offensive groups against defensive groups (1st–4th string) for every fixture the
+  dated official captures support: printed ranks only, co-starters as counts, and the club-weeks that could
+  not be built listed with their reasons (added 2026-11-18, `arena/ceddf8d8-korea1`)
+- `consensus.html` — vig-free market consensus against our originated fair line: posted break-even, vig-free
+  consensus, margin cost and divergence as four separate columns over 16,206 game × market rows, with the
+  identity `gross gap = divergence − margin cost` asserted at build time (added 2026-11-18,
+  `arena/ceddf8d8-korea1`)
 - `request-register-2026-11-18.html` — **2026-11-18 request register**: one row per request item with its status, evidence file, the gate that blocks it and the number that clears it; official source on every table row, no-source rows flagged as text (added 2026-11-18)
 - `decisions.html` — 12 decision questions, known answers and discovery steps (parallel session register)
 - `questions.html` — what must be known before a decision, what is answered and what is blocked
@@ -59,6 +67,7 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `lineups.html` — seven observed players plus two club depth charts; roles and impacts blank
 - `injuries.html` — verified official captures, the coverage gap and the availability signal register
 - `requirements.html` — requirement-by-requirement delivery register
+- **`request-register.html`** — one row per standing-request item (REQ-01…REQ-81): what is built, the gate that blocks it and the number that would clear it, with CR2 live spot-check verdicts against the official pages (added 2026-11-18, `arena/f84bc1d7-korea1`)
 - `DECISIONS.md` — dated decision log (owner-facing)
 - `lab/` — independent historical replication annex, strict public view
 

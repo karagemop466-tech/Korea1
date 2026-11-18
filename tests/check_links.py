@@ -32,11 +32,13 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "results-feed.html", "correlation-official.html", "replacement-depth.html",
          "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
          "suggestions-review-2026-11-14.html",
-         "brief-2026-11-15.html",
-         # CS5 (session arena/53ef9544-korea1): the 2026-11-18 request register.
          "request-register-2026-11-18.html",
+         "requirement-annex-2026-11-18.html",
          # NR3-NR5 (arena/ceddf8d8-korea1, 2026-11-18).
- "request-register.html", "matchup-matrix.html", "consensus.html",
+         "verified-register-2026-11-18.html", "matchup-matrix.html", "consensus.html",
+         "brief-2026-11-15.html",
+         # CR1 (arena/f84bc1d7-korea1)
+         "request-register.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]

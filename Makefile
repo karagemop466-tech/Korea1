@@ -56,6 +56,10 @@ site: injuries review reviewall
 	# CS4/CS6 (arena/db6cd525-korea1): official spot-check rows and flagged rows F-42 onward.
 	# Reads committed captures and data/live/spotcheck_2026_11_18/ only (no network).
 	$(PY) pipeline/session_20261118.py
+	# CR1 (arena/f84bc1d7-korea1): the standing-request register (one row per request item,
+	# with the gate that blocks it and the number that would clear it). Reads only committed
+	# files, including the CR2 live spot-check excerpts (no network).
+	$(PY) pipeline/request_register.py
 	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/lineup_deficiencies.py
 	$(PY) pipeline/decision_readiness.py
@@ -83,12 +87,15 @@ site: injuries review reviewall
 	# CB1/CB6/CB8 (arena/c79b2684-korea1, 2026-11-15): brief tracker, mind-changers, flagged rows.
 	# Must run before render_site.py, which reads the CSVs it writes.
 	$(PY) pipeline/session_20261115.py
-	# CS5 (arena/53ef9544-korea1): the 2026-11-18 request register. Writes its own page and CSV.
+	# CS5 (arena/53ef9544-korea1): the 2026-11-18 request register writes its CSV before render_site.
 	$(PY) pipeline/request_register_2026_11_18.py
+	# D2/D6 (arena/ba09384a-korea1): the requirement ANNEX — recomputed evidence, official re-read,
+	# questions and owner-decision registers. Committed files only; no network.
+	$(PY) pipeline/req_annex_2026_11_18.py
 	# NR2-NR5 (arena/ceddf8d8-korea1, 2026-11-18): the brief's own numbers re-derived against verbatim
-	# official reads, this session's 74-item register (distinct from CS5's 81-item register above), the
-	# offence-vs-defence deficiency matrix and the vig-free decomposition. All read committed artefacts only;
-	# no network, so `make build` stays reproducible in CI.
+	# official reads, this session's re-derived register (its own page, CSVs and test file, distinct from
+	# CR1's and CS5's registers), the offence-vs-defence deficiency matrix and the vig-free
+	# decomposition. Committed files only; no network, so the build stays reproducible in CI.
 	$(PY) pipeline/claim_checks_20261118.py
 	$(PY) pipeline/matchup_matrix.py
 	$(PY) pipeline/vigfree_decomposition.py
@@ -127,7 +134,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_request_register_2026_11_18.py tests/test_gamebooks.py tests/test_reconcile_depth_charts.py tests/test_claim_checks.py tests/test_request_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_gamebooks.py tests/test_request_register.py tests/test_reconcile_depth_charts.py tests/test_request_register_2026_11_18.py tests/test_current_snapshot_audit.py tests/test_forward_ledger.py tests/test_requirement_annex_2026_11_18.py tests/test_claim_checks.py tests/test_verified_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives
