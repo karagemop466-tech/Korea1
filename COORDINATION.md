@@ -3970,3 +3970,21 @@ resolved, before committing the merge.** And when a rebuild disagrees with a com
 it in a clean clone (`git clone --branch <branch> "file://$(pwd)" /tmp/x && cd /tmp/x && make build &&
 git status --porcelain`) instead of force-committing the local copy — that is how both of this session's
 reproducibility bugs (the absolute evidence path and this one) were found in minutes.
+---
+
+## Session `arena/ac52e176-korea1` — 2026-11-18 request register + integration (claim)
+
+**Protocol deviation (recorded as every earlier session recorded it).** The platform pins this session to branch `arena/ac52e176-korea1` (base `main` = `547d514`, later fast-forwarded to `f8ba562`). The `session-<id>/<task>` worktree pattern cannot be used; this branch is the task and integration branch. Sibling sessions push to their own `arena/*` branches; none of them is touched by this session.
+
+**Board read first (2026-11-18T05:0xZ).** `make build` (0 failing checks) and `make test` (189 passed) were run on the pristine base before any claim. Open sibling PRs #80/#82/#83/#84 and the scheduled capture jobs were observed; none claims the scope below.
+
+**Takeover basis for CS5.** Row CS5 (owner `arena/db6cd525-korea1`) was claimed 2026-11-18T03:53:38Z (commit `7ed165f`), has **no commits** on its scope (its owner recorded "not done (deferred)" in the CS8 log at 04:10Z), and the claim is more than 60 minutes old. Per board rule 3 this session takes it over; the handoff is recorded here. Scope renamed to avoid touching the owner's files: the register module is `pipeline/request_register.py` (new), **not** `pipeline/session_20261118.py`, which stays owned by `arena/db6cd525-korea1`.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| AC1 | Board claim and session log | **in progress** | `arena/ac52e176-korea1` | `COORDINATION.md` (own section only) |
+| AC2 | **2026-11-18 request register** (takeover of deferred CS5): one row per request item of the current brief — status, evidence file, blocking gate, clearing number, official source link; published page + CSV + tests. Unverifiable items are left blank and flagged, never inferred | **in progress** | `arena/ac52e176-korea1` | `pipeline/request_register.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
+| AC3 | Integration: NAV entry, page registration in `pipeline/verify_site.py` / `tests/check_sources.py` / `tests/check_links.py`, `Makefile` site recipe, one `README.md` line, executive-summary addendum | **in progress** | `arena/ac52e176-korea1` | `pipeline/render_site.py` (NAV tuple + page registration only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (PAGES only), `tests/check_links.py` (PAGES only), `Makefile` (site recipe only), `README.md` (one line), `pipeline/render_summary.py` (own addendum only) |
+| AC4 | Final verification (`make build`, `make test`, `tests/check_rebuild.py`), PR → `main`, merge without waiting, confirm Pages deploy, record PR link + result here | **in progress** | `arena/ac52e176-korea1` | `COORDINATION.md`, branch `arena/ac52e176-korea1` → `main` |
+
+**Cross-scope edits:** none at claim time. If a sibling's merge conflicts with this scope, the conflict is resolved without discarding their work and is logged here.
