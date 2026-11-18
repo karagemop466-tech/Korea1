@@ -189,8 +189,10 @@ def facts() -> dict:
     f["prereg_trial_rows"] = len(rd(FORWARD / "trial_registry.csv"))
     f["prereg_sets"] = len(rd(FORWARD / "prereg_summary.csv"))
     f["published_lines_rows"] = len(rd(FORWARD / "published_lines.csv"))
-    f["forward_settled"] = int((graded.status != "OPEN").sum()) if "status" in graded else 0
-    f["forward_open"] = int((graded.status == "OPEN").sum()) if "status" in graded else 0
+    f["forward_official"] = int((graded.status == "OFFICIAL").sum())
+    f["forward_provisional"] = int((graded.status == "PROVISIONAL").sum())
+    f["forward_open"] = int((~graded.status.isin(["OFFICIAL", "PROVISIONAL"])).sum())
+    f["forward_official_weeks"] = int(graded[graded.status == "OFFICIAL"].week.nunique())
     f["forward_results_rows"] = len(rd(FORWARD / "official_results.csv"))
     f["forward_schedule_rows"] = len(rd(FORWARD / "official_schedule.csv"))
     raws = sorted((FORWARD / "raw_captures").glob("*.html"))
@@ -305,9 +307,11 @@ def facts() -> dict:
     f["announcement_excerpt"] = announcement_facts().get("announcement_excerpt", "")
     _mv = movement_rows(f)
     f["mv_strategies"] = len(_mv)
-    f["mv_strategies_movable"] = sum(1 for r in _mv if r["rank_move"] != "")
-    f["mv_settled_picks"] = sum(int(r["settled_picks"]) for r in _mv) if _mv else 0
-    f["mv_weeks_covered"] = len({r["last_settled_week"] for r in _mv if r["last_settled_week"] != ""})
+    f["mv_strategies_ranked"] = sum(1 for r in _mv if str(r["rank_now"]) not in ("", "nan"))
+    f["mv_strategies_movable"] = sum(1 for r in _mv if str(r["rank_move"]) not in ("", "nan"))
+    f["mv_picks_official"] = sum(int(r["picks_official"]) for r in _mv) if _mv else 0
+    f["mv_picks_provisional"] = sum(int(r["picks_provisional"]) for r in _mv) if _mv else 0
+    f["mv_strategies_with_official"] = sum(1 for r in _mv if int(r["picks_official"]) > 0)
     _club_weeks = sum(len(rd(d / "injuries.csv").groupby("team").size()) for d in cap_dirs())
     f["avail_club_weeks"] = _club_weeks
     f["season_club_weeks"] = 2 * int(f.get("announcement_games", 272) or 272)
@@ -720,57 +724,73 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
 
 
 def movement_rows(f: dict) -> list[dict]:
-    """The prospective escrow ledger, and the week-over-week movement it cannot yet show.
+    """The prospective escrow ledger, and the movement it cannot yet show.
 
     The brief asks two related things: a weekly 'what changed' view instead of a static snapshot, and a
     second leaderboard stage that ranks on prospective results after a proper-score qualification. Both
     need the same input, and it is the only input this table uses: picks frozen before kickoff in
-    `data/forward/picks.csv` and graded against an official final. No backtest number enters it, so no
-    backtest number can be ranked by it.
+    `data/forward/picks.csv` and graded afterwards. Two grades exist and they are kept apart:
+    `OFFICIAL` means the score came from the official result file, `PROVISIONAL` means it came from a
+    community mirror only. Ranking, movement and any promotion argument use the official subset alone;
+    the provisional figure is published next to it, labelled, so a reader can see what is waiting on a
+    final rather than being told the week is settled.
 
-    Movement is the difference between the rank computed from settled weeks up to the latest settled week
-    and the rank up to the one before it. A strategy with one settled week therefore has a cumulative
-    figure and no movement, and the movement cells are blank rather than zero — which is the honest state
-    of the whole column today, because the ledger has one settled week.
+    No backtest number enters this table, so no backtest number can be ranked by it.
     """
     g = rd(FORWARD / "graded_picks.csv")
     g["pnl_num"] = pd.to_numeric(g.pnl, errors="coerce")
     g["week_num"] = pd.to_numeric(g.week, errors="coerce")
-    settled = g[g.status != "OPEN"]
-    by_strat = []
-    for strat, d in settled.groupby("strategy"):
-        weeks = sorted(set(d.week_num.dropna().astype(int)))
-        cum = {w: float(d[d.week_num <= w].pnl_num.sum()) for w in weeks}
-        last = weeks[-1] if weeks else None
-        prev = weeks[-2] if len(weeks) > 1 else None
-        by_strat.append(dict(strategy=strat, family=str(d.family.iloc[0]) if len(d) else "",
-                             market=str(d.market.iloc[0]) if len(d) else "",
-                             settled_picks=len(d), weeks_with_settled_picks=len(weeks),
-                             last_settled_week=last, units_now=(round(cum[last], 4) if last is not None else ""),
-                             units_prev=(round(cum[prev], 4) if prev is not None else ""),
-                             units_delta=(round(cum[last] - cum[prev], 4) if (last is not None and prev is not None) else ""),
-                             legs=str(int(pd.to_numeric(d.n_legs, errors="coerce").sum())) if len(d) else "",
-                             official_week=(f"https://www.nfl.com/scores/2026/week-{last}" if last is not None else "")))
-    d1 = pd.DataFrame(by_strat)
-    if len(d1):
-        # ranks are over cumulative units; a strategy with one settled week cannot move, so its
-        # earlier rank is blank by construction rather than imputed
-        r1 = d1.units_now.rank(ascending=False, method="min") if d1.units_now.map(lambda x: x != "").any() else pd.Series([None] * len(d1))
-        d1["rank_now"] = [("" if pd.isna(x) else int(x)) for x in r1]
-        have_prev = d1[d1.units_prev.map(lambda x: x != "")]
-        ranks_prev = have_prev.units_prev.rank(ascending=False, method="min") if len(have_prev) else pd.Series(dtype=float)
-        d1["rank_prev"] = [("" if (row.units_prev == "" or row.strategy not in set(have_prev.strategy)) else
-                            int(ranks_prev[have_prev[have_prev.strategy == row.strategy].index[0]]))
-                           for _, row in d1.iterrows()]
-        d1["rank_move"] = [("" if (row.rank_prev == "" or row.rank_now == "") else int(row.rank_prev) - int(row.rank_now))
-                           for _, row in d1.iterrows()]
-    cols = ["strategy", "family", "market", "settled_picks", "weeks_with_settled_picks", "last_settled_week",
-            "units_now", "units_prev", "units_delta", "rank_now", "rank_prev", "rank_move", "legs",
-            "official_week"]
-    out = d1.reindex(columns=cols).sort_values(["weeks_with_settled_picks", "strategy"],
-                                               ascending=[False, True]).reset_index(drop=True)
-    return out.to_dict("records")
-
+    rows = []
+    for strat, d in g.groupby("strategy"):
+        off = d[d.status == "OFFICIAL"]
+        prov = d[d.status == "PROVISIONAL"]
+        weeks_off = sorted(set(off.week_num.dropna().astype(int)))
+        last_week = int(max(d.week_num.dropna())) if d.week_num.notna().any() else ""
+        rows.append(dict(
+            strategy=strat,
+            family=str(d.family.iloc[0]), market=str(d.market.iloc[0]),
+            picks_frozen=len(d), picks_official=len(off), picks_provisional=len(prov),
+            picks_unsettled=int((~d.status.isin(["OFFICIAL", "PROVISIONAL"])).sum()),
+            weeks_with_official_picks=len(weeks_off),
+            last_graded_week=last_week,
+            units_official=(round(float(off.pnl_num.sum()), 4) if len(off) else ""),
+            units_provisional_inclusive=(round(float(d[d.status.isin(["OFFICIAL", "PROVISIONAL"])].pnl_num.sum()), 4)
+                                          if len(off) + len(prov) else ""),
+            legs_graded=int(pd.to_numeric(off.n_legs, errors="coerce").sum()) if len(off) else 0,
+            official_scores_url=(f"https://www.nfl.com/scores/2026/week-{last_week}" if last_week != "" else ""),
+        ))
+    d1 = pd.DataFrame(rows)
+    cols = ["strategy", "family", "market", "picks_frozen", "picks_official", "picks_provisional",
+            "picks_unsettled", "weeks_with_official_picks", "last_graded_week", "units_official",
+            "units_provisional_inclusive", "legs_graded", "rank_now", "rank_prev", "rank_move",
+            "official_scores_url"]
+    # A rank over the official subset is only meaningful where that subset exists; a strategy with no
+    # officially settled pick is not ranked at zero, it is not ranked. Movement needs the same strategy
+    # to have official picks in two different weeks, so it is blank wherever that is not true.
+    d1["rank_now"] = ""
+    d1["rank_prev"] = ""
+    d1["rank_move"] = ""
+    ranked = d1[d1.picks_official.astype(int) > 0].copy()
+    if len(ranked):
+        r_now = ranked.units_official.astype(float).rank(ascending=False, method="min")
+        for i, v in r_now.items():
+            d1.loc[i, "rank_now"] = str(int(v))
+    movable = [i for i in ranked.index if int(d1.loc[i, "weeks_with_official_picks"]) >= 2]
+    if movable:
+        g = rd(FORWARD / "graded_picks.csv")
+        g["pnl_num"] = pd.to_numeric(g.pnl, errors="coerce")
+        g["week_num"] = pd.to_numeric(g.week, errors="coerce")
+        before = {}
+        for i in movable:
+            strat, last = d1.loc[i, "strategy"], int(d1.loc[i, "last_graded_week"])
+            d = g[(g.strategy == strat) & (g.status == "OFFICIAL") & (g.week_num < last)]
+            before[i] = round(float(d.pnl_num.sum()), 4) if len(d) else 0.0
+        r_prev = pd.Series(before).rank(ascending=False, method="min")
+        for i, v in r_prev.items():
+            d1.loc[i, "rank_prev"] = str(int(v))
+            d1.loc[i, "rank_move"] = str(int(d1.loc[i, "rank_now"]) - int(v))
+    return d1.reindex(columns=cols).sort_values(
+        ["picks_official", "strategy"], ascending=[False, True]).reset_index(drop=True).to_dict("records")
 
 # --------------------------------------------------------------------------- #
 # 3. the ablation contract (RR3)
@@ -906,9 +926,11 @@ def items() -> list[dict]:
         "Governance", "DONE",
         "{prereg_trial_rows} trial-registry rows and {prereg_sets} pre-registration sets; {published_lines_rows} "
         "published-line rows are keyed to a commit and a publication time; {prereg_picks} picks were frozen before "
-        "kickoff, of which {forward_settled} are settled and {forward_open} remain open.",
+        "kickoff, of which {forward_official} are graded on an official result and {forward_provisional} are "
+        "provisional (scored from a community mirror, awaiting the official final); {forward_official_weeks} week "
+        "of the ledger has any official grade at all.",
         ["data/forward/trial_registry.csv", "data/forward/prereg_summary.csv", "data/forward/picks.csv", "forward.html"],
-        "settlement needs an official final; {forward_open} picks still have none",
+        "settlement needs an official final; {forward_provisional} of {prereg_picks} picks are graded provisionally",
         "each open pick's official final on nfl.com; the leaderboard already excludes backtest returns",
         URL["scores_w10"], "NFL.com Week 10 scores (the settlement source)")
     add("RR-10", "Availability graph as a first-class dataset (who was expected to start, who actually did)",
@@ -1277,15 +1299,17 @@ def items() -> list[dict]:
         URL["scores_w10"], "NFL.com (the schedule and settlement spine a consensus would be keyed to)")
     add("RR-53", "Publish a weekly 'what changed' diff instead of a static snapshot", "Publishing", "DONE",
         "Two halves. Availability: {injury_delta_rows} change rows across {injury_delta_pairs} dated capture pairs, "
-        "published as deltas rather than levels. Ranking: the prospective escrow ledger built in this session from "
-        "the forward ledger alone — {mv_strategies} strategies, {mv_settled_picks} settled picks, "
-        "{mv_weeks_covered} settled week — and its movement column is blank for all {mv_strategies}, because a "
-        "strategy with one settled week has no 'before' to compare with. Publishing zeros there would invent "
-        "movement. No backtest number enters the table, so none is ranked by it.",
+        "published as deltas rather than levels. Ranking: a prospective escrow ledger built in this session from the "
+        "forward ledger alone — {mv_strategies} strategies, {mv_picks_official} officially graded picks and "
+        "{mv_picks_provisional} provisional ones. Only {mv_strategies_ranked} strategies have any official grade to "
+        "rank, all of them in {forward_official_weeks} week, so the movement column is blank for every strategy: one "
+        "graded week has no 'before' to compare against, and publishing a zero there would invent a change. No "
+        "backtest number enters the table, so none can be ranked by it.",
         ["data/integration/register_movement_2026_11_18.csv", "data/processed/injury_coverage_changes.csv",
          "injury-deltas.html", "data/processed/strategy_weekly_matrix.csv"],
-        "the movement column needs two or more settled weeks per strategy; the ledger has {mv_weeks_covered}",
-        "two or more settled weeks for a strategy gives it a rank change; {forward_settled} settled picks today",
+        "the movement column needs two or more weeks of officially graded picks per strategy; the ledger has "
+        "{forward_official_weeks} week and {forward_official} officially graded picks",
+        "two graded weeks per strategy, or {mv_strategies_movable} strategies able to show a movement today",
         URL["scores_w10"], "NFL.com scores (the official final each settled pick is graded against)")
     add("RR-54", "Publish every model total twice until one wins", "Model", "PARTLY DONE",
         "Two total estimators are published per game with the gap column (ridge and matchup inside "
@@ -1761,9 +1785,10 @@ def main() -> None:
            "next_step": fmt(str(x["next_step"]), f)} for x in ab]
 
     _mv_out = movement_rows(f)
-    _mv_cols = ["strategy", "family", "market", "settled_picks", "weeks_with_settled_picks",
-                "last_settled_week", "units_now", "units_prev", "units_delta", "rank_now", "rank_prev",
-                "rank_move", "legs", "official_week"]
+    _mv_cols = ["strategy", "family", "market", "picks_frozen", "picks_official", "picks_provisional",
+                "picks_unsettled", "weeks_with_official_picks", "last_graded_week", "units_official",
+                "units_provisional_inclusive", "legs_graded", "rank_now", "rank_prev", "rank_move",
+                "official_scores_url"]
     ven, vdf = venues(), pd.DataFrame(vrows)
     fac = pd.DataFrame([dict(fact=k, value=v,
                              note="computed by pipeline/register_20261118.py from committed files and the "
