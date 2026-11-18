@@ -405,6 +405,7 @@ data/live/register_reads_2026_11_18/houstontexans_depth_chart_page.md,1-10 KB,Da
 data/live/register_reads_2026_11_18/manifest.json,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/current_snapshot_audit.py; pipeline/fetch_availability.py; pipeline/fetch_injuries.py,NFL scores,https://www.nfl.com/scores/
 data/live/register_reads_2026_11_18/nfl_gamecentre_was_at_nyg_2026_reg10.md,1-10 KB,Data,AUTHORED · read and cross-checked,pipeline/register_20261118.py,NFL scores,https://www.nfl.com/scores/
 data/live/register_reads_2026_11_18/nfl_injuries_reg10_clubs.md,10-100 KB,Data,AUTHORED · read and cross-checked,pipeline/register_20261118.py,NFL injuries,https://www.nfl.com/injuries/
+data/live/register_reads_2026_11_18/nfl_media_2026_schedule_announcement.md,1-10 KB,Data,AUTHORED · read and cross-checked,pipeline/register_20261118.py,NFL schedule,https://www.nfl.com/schedules/
 data/live/register_reads_2026_11_18/nfl_reserve_list_2026_11_rows.md,10-100 KB,Data,AUTHORED · read and cross-checked,pipeline/register_20261118.py,NFL scores,https://www.nfl.com/scores/
 data/live/review_clusters.csv,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/render_live.py; pipeline/review_consolidated.py,NFL scores,https://www.nfl.com/scores/
 data/live/review_summary.json,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/build_review.py; pipeline/render_live.py; pipeline/render_site.py,NFL scores,https://www.nfl.com/scores/
