@@ -3642,6 +3642,112 @@ quote provenance) fails for all 18 candidates. Backtest numbers do not appear on
 leaderboard. Flagged irregularities (F-18 … F-62) are published on `flagged.html` and on the
 register; they do not block the merge, per the standing request.
 
+## Session `arena/7aae360e-korea1` — 2026-11-18 claim: per-item request register (CS5), official reads, decision table
+
+**Board read first (2026-11-18T04:55Z).** Siblings active on `main` right now, per `gh pr list` and `gh run list`:
+`arena/8a075837-korea1` (PR #84 — date-matched depth checks, capture-provenance guards; touches `pipeline/render_site.py`,
+`pipeline/render_summary.py`, `scripts/reconcile_depth_charts.py`, `tests/test_live_verify.py`),
+`arena/42b6f5e9-korea1` (PR #83 — stale-PR takeovers; touches `index.html`, `pipeline/session_20261115.py`, `EXECUTIVE_SUMMARY.md`),
+`arena/99b908ab-korea1` (PR #82 — Game Book layer; touches `.github/workflows/*`, `pipeline/fetch_official_games.py`, `Makefile`),
+`arena/b450c57b-korea1` (PR #80), `arena/87d27a1d-korea1` (running: "depth reconciliation safety repair" — F-51 guard).
+None of those scopes is touched here. `pipeline/render_site.py` (NAV, index cards, flagged rows) is **not** edited: a
+wiring request is logged at the end of this section instead. This session's files are all new, plus one added Makefile
+site step and page-list additions in `tests/check_links.py` / `tests/check_sources.py`.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| RR1 | **Per-item request register for the 2026-11-18 brief** (CS5, left "not done" by `arena/db6cd525-korea1`): one row per request item with status, evidence path, what was checked, the gate that blocks it, the number that clears it and the official source; a builder that recomputes every claimed count from committed data; a page; a test | **in progress** | `arena/7aae360e-korea1` | `pipeline/register_20261118.py` (new), `pipeline/render_register_20261118.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `data/integration/register_verify_2026_11_18.csv` (new), `data/integration/register_flags_2026_11_18.csv` (new), `data/integration/register_questions_2026_11_18.csv` (new), `data/integration/register_suggestions_2026_11_18.csv` (new), `assets/data/register_*.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new), `tests/check_links.py` + `tests/check_sources.py` (page lists only), `Makefile` (one site step), `README.md` (one link), `COORDINATION.md` (own section) |
+| RR2 | **Fresh official reads 2026-11-18** with clock times and hashes under `data/live/register_reads_2026_11_18/`: Week 10 injury report row counts, the live injuries page, the November reserve list, the Week 11 schedule and the Week 10 scores page, one official game-centre venue line, and the Houston depth-chart source question (F-49). Verbatim excerpts committed; every register "verified" claim points at one of them | **in progress** | `arena/7aae360e-korea1` | `data/live/register_reads_2026_11_18/**` (new), consumed by RR1 |
+| RR3 | **Personnel-ablation contract** for the brief items "Add injury and personnel ablations instead of fixed penalties" / "…with chronological holdouts": confirm in code that no fixed injury penalty is applied anywhere, and publish the ablation design with the exact sample size it needs, marked blocked while the historical corpus carries no personnel features | **in progress** | `arena/7aae360e-korea1` | `pipeline/register_20261118.py` (ablation audit section), `data/integration/register_ablation_2026_11_18.csv` (new), rendered inside the RR1 page |
+
+**Wiring request to the integration session** (files owned elsewhere, so not edited here): after merge, add
+`("request-register-2026-11-18.html", "Request register")` to `NAV_GROUPS` in `pipeline/render_site.py`, one index card
+pointing at it, and `RR-*` rows into `build_flagged` if the owner wants them mirrored on `flagged.html`.
+
+## Session `arena/7aae360e-korea1` — 2026-11-18 register evidence annex (RX1–RX3), delivered
+
+**Board read (2026-11-18T04:55Z, re-read 05:05Z before any edit).** Claim pushed as `93519ab` before any file
+change. Live siblings on this repo at claim time: `arena/8a075837-korea1` (PR #84, `tests/test_live_verify.py`,
+`pipeline/render_site.py`, `scripts/reconcile_depth_charts.py`), `arena/42b6f5e9-korea1` (PR #83),
+`arena/99b908ab-korea1` (PR #82, the game-centre / Game Book layer), `arena/b450c57b-korea1` (PR #80),
+`arena/87d27a1d-korea1` (depth-reconciliation safety repair), and later `arena/53ef9544-korea1`, `arena/ceddf8d8`,
+`arena/f84bc1d7`, `arena/40fa7839`, `arena/ba09384a`. None of their files was edited.
+
+**Scope delivered (the three rows claimed as RR1–RR3, renamed below).**
+
+| # | Task | Status | Files |
+|---|------|--------|-------|
+| RX1 | Per-item request register for the 2026-11-18 brief: 68 rows, each with status, the evidence file(s) that back it, the gate that blocks it and the number that clears it, plus an official link or an explicit statement that none exists; a builder that recomputes every published number; a page; 14 tests | **done** | `pipeline/register_evidence_20261118.py`, `pipeline/render_register_evidence_20261118.py`, `data/integration/register_evidence_*_2026_11_18.csv` (9 files), `assets/data/` mirrors, `register-evidence-2026-11-18.html`, `tests/test_register_evidence_2026_11_18.py`, `Makefile` (one `site` step + one test module), `tests/check_links.py`, `tests/check_sources.py` (page lists), `README.md` (one entry) |
+| RX2 | Fresh official reads with clock times and hashes, compared line by line | **done** | `data/live/register_reads_2026_11_18/` — 5 verbatim excerpts plus `manifest.json` (sha256 + byte count each, and an explicit statement that a hash proves the bytes, not the completeness of the transcription) |
+| RX3 | Personnel-ablation contract: verify in code that no fixed injury penalty exists, publish the design and the exact sample size it needs | **done** | the ablation table on the RX1 page and `data/integration/register_evidence_ablation_2026_11_18.csv` |
+
+**Naming collision, and how it was resolved.** This session claimed the "CS5 not done" item and built a register at
+`request-register-2026-11-18.html` / `data/integration/request_register_2026_11_18.csv` /
+`tests/test_request_register_2026_11_18.py`. While it was in flight, `arena/53ef9544-korea1` merged its own
+81-row register at exactly those three paths. On merge, **theirs was kept at those paths and this session's
+artefacts were moved to the `register_evidence_*` / `register-evidence-2026-11-18.html` namespace**, and the ids
+renumbered `RR-* → RX-*` so the site never has two different `RR-01` rows. Both registers are now published and
+cross-linked; the RX1 page opens with a paragraph stating what each covers and why the row counts differ.
+Nothing from `arena/53ef9544-korea1`, and no generated output of another session, was overwritten or reverted.
+
+**Verification performed (this branch, after the merge).**
+- `make build` exit 0 — `verify_site.py` 0 failing checks; `tests/check_sources.py` 45 canonical pages / ~5.9k
+  rows, strict official/primary reference check passed; `tests/check_links.py` all internal links, anchors and
+  assets resolve (the new page is in both lists).
+- `make test` — 203 passed (14 of them new, covering the closed status vocabulary, evidence-path existence, the
+  no-invented-rank rule on the escrow ledger, the hash check on the excerpts and the no-leaked-`nan`/`None`/
+  `<bound method>` cell rule).
+- `tests/check_rebuild.py` — the committed tree is a fixed point of `make build` (two consecutive builds leave no
+  diff). The self-referential `repo_inventory.csv` still needs one extra build after a commit that adds files;
+  that one-cycle lag is pre-existing and recorded here rather than fixed in a file another session owns.
+
+**Official sources read on 2026-11-18 (04:47Z–04:52Z, agent page-fetch; the sandbox shell cannot open nfl.com —
+TLS refused — which is why the scheduled workflows, not this session, do the automated capture).**
+- `https://www.nfl.com/injuries/league/2026/reg10` — nine club tables read; 99 of 99 compared lines match the
+  committed 04:24:05Z capture field for field.
+- `https://www.nfl.com/transactions/league/reserve-list/2026/11` — the whole November row block; 25 rows, 24
+  agreeing with the 04:42:01Z capture on player, date and club.
+- `https://www.nfl.com/games/commanders-at-giants-2026-reg-10` — score 24–21 Final, `LOCATION EAST RUTHERFORD, NJ`,
+  `STADIUM METLIFE STADIUM`, and the Game Book PDF link.
+- `https://www.houstontexans.com/team/depth-chart` — the page prints the heading **"Unofficial Depth Chart"** over a
+  **single image** and no rows (F-49's premise confirmed; 0 parsed rows is a faithful reading, not a parser defect).
+- `https://media.nfl.com/football-information/2026/news/2026-nfl-schedule-announced` (May 14, 2026) — the league's
+  dated announcement: 18 weeks, 272 games, 17 per club, byes Week 5 to Week 14, and the Week 10 Munich fixture named.
+
+**New findings published (RX-F1 … RX-F9 on `register-evidence-2026-11-18.html`; no `flagged.html` row was written
+because `pipeline/render_site.py` belongs to `arena/8a075837-korea1` today).**
+- **The published Week 10 injury table is stale but faithful.** `injuries_week10.csv` prints "No Injuries Reported"
+  for Baltimore, Cincinnati, the LA Chargers and Seattle — and the pinned official snapshot it was built from
+  (`2026-11-12T13:06:29Z`) does print that phrase under each of those four headings. The newest capture lists 10, 9,
+  19 and 15 rows for them and has since 2026-11-13. So: not a transcription error, but a statement the league's page
+  no longer makes. Suggested fix is an input-path change (`RX-S3` Path A), not a hand edit.
+- **Report coverage is explained by the fixture list, club by club.** All 28 clubs in the official Week 10 schedule
+  have report rows; the only clubs without rows (CHI, DEN, PHI, TB) are exactly the four the week schedule does not
+  list. An empty section means "no fixture that week", never "available".
+- **F-45 can be closed as measured.** The morning's reserve-list mismatch (8 live-only / 8 capture-only) is gone:
+  the newest capture and the live page now agree on 24 of 25 November rows, and the retained captures hold 35
+  distinct November rows, 10 of them no longer printed on the page. The page is a window; the capture history is the
+  record. One row still disagrees about its **club** (Jordan Whittington 11/10: Miami logo and link on the read,
+  `/teams/los-angeles-rams/` in the capture) — `RX-F8`, not reconciled by eye.
+- **Venues were captured and never published.** 13 raw game-centre pages sit in the repository with LOCATION and
+  STADIUM fields and "MUNICH" / "FC BAYERN MUNICH STADIUM" appeared in no committed table before this annex; 14
+  venues are published now, with the capture hash per row.
+- **The forward ledger's grade is not uniform.** 4 picks are graded on an official result and 61 on a community
+  mirror; earlier text on this repo described the ledger as "61 provisional, 0 open", which is right, but no
+  published table distinguished the two grades per strategy. `register_evidence_movement_2026_11_18.csv` does, and
+  its rank-movement column is deliberately blank for all 14 strategies because there is one officially graded week.
+  An earlier draft of that table counted PROVISIONAL as settled; it does not any more.
+
+**Wiring request to the final integration session** (files owned elsewhere, so not edited here): in
+`pipeline/render_site.py`, next to the existing `request-register-2026-11-18.html` and
+`requirement-annex-2026-11-18.html` entries, add `("register-evidence-2026-11-18.html", "Register evidence annex")`
+and one index minicard; optionally mirror `RX-F1`, `RX-F7` and `RX-F8` into `flagged.html`'s row list. Also two
+owner decisions this session surfaced: whether `media.nfl.com` joins the official-host allow-list (`RX-F9`), and
+whether a ledger freeze may populate a close column at all (F-44, still unanswered).
+
+**Decision state unchanged by this session:** 0 of 18 strategies validated, no reward awarded, gate G1 (executable
+quote provenance) failing for all 18, backtest numbers absent from the leaderboard. No published research number
+was edited; everything here is an added artefact plus a page.
 
 
 ---

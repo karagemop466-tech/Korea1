@@ -1,0 +1,48 @@
+{
+  "as_of": "2026-11-18",
+  "read_window_utc": "2026-11-18T04:47Z\u201304:52Z",
+  "retrieval_method": {
+    "tool": "agent page-fetch tool",
+    "note": "the sandbox shell cannot open www.nfl.com or club domains (TLS refused), so each page is read with the agent page-fetch tool and the relevant block is transcribed verbatim; recorded_utc is when the file was written in this session, immediately after the fetch"
+  },
+  "files": {
+    "houstontexans_depth_chart_page.md": {
+      "sha256": "07e3b11d1284c170fb745152976d2f2452aa708496c6782881122ce5da3800bf",
+      "bytes": 2505
+    },
+    "nfl_gamecentre_was_at_nyg_2026_reg10.md": {
+      "sha256": "09220ddda5a0fcd57a0e5d7c8ee42ad9b069017877fe81d4d04525ea45a8b1c9",
+      "bytes": 2577
+    },
+    "nfl_injuries_reg10_clubs.md": {
+      "sha256": "c9697e14bc82da05880e6b7e8f3e3bd531fde73f48ffe49af09417215547bf94",
+      "bytes": 13817
+    },
+    "nfl_media_2026_schedule_announcement.md": {
+      "sha256": "cde7f716dc99fab30cda41796a62752ada9589d9e4adc2370c05e9d4951c6d27",
+      "bytes": 6165
+    },
+    "nfl_reserve_list_2026_11_rows.md": {
+      "sha256": "bcfef87e5632a78dd643cb124d3c48118d1cb80656f942fc1926866256132d19",
+      "bytes": 11615
+    }
+  },
+  "sources": [
+    {
+      "url": "https://www.nfl.com/injuries/league/2026/reg10",
+      "what": "official Week 10 injury report (rows for nine clubs read from chunks 0 and 2 of 8)"
+    },
+    {
+      "url": "https://www.nfl.com/transactions/league/reserve-list/2026/11",
+      "what": "official reserve list, November 2026 (the whole row block: chunks 0 and 1 of 2)"
+    },
+    {
+      "url": "https://www.nfl.com/games/commanders-at-giants-2026-reg-10",
+      "what": "official game centre for WAS at NYG (score, Game Info, Game Book link)"
+    },
+    {
+      "url": "https://www.houstontexans.com/team/depth-chart",
+      "what": "Houston Texans club depth-chart page (source-shape question behind F-49)"
+    }
+  ]
+}

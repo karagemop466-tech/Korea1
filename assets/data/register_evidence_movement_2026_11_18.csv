@@ -1,0 +1,15 @@
+strategy,family,market,picks_frozen,picks_official,picks_provisional,picks_unsettled,weeks_with_official_picks,last_graded_week,units_official,units_provisional_inclusive,legs_graded,rank_now,rank_prev,rank_move,official_scores_url
+DIV_UNDER,angle,TOTAL,7,1,6,0,1,10,-1.0,-1.1977,1,3,,,https://www.nfl.com/scores/2026/week-10
+SP_EDGE_1_0,model,SPREAD,6,1,5,0,1,10,-1.0,-2.1812,1,3,,,https://www.nfl.com/scores/2026/week-10
+TOT_EDGE_2_0,model,TOTAL,11,1,10,0,1,10,0.8475,2.2637,1,1,,,https://www.nfl.com/scores/2026/week-10
+TOT_EDGE_3_5,model,TOTAL,6,1,5,0,1,10,0.8475,1.6084,1,1,,,https://www.nfl.com/scores/2026/week-10
+BUY_LOW_ATS,angle,SPREAD,6,0,6,0,0,10,,-4.0741,0,,,,https://www.nfl.com/scores/2026/week-10
+FADE_BLOWOUT_ATS,angle,SPREAD,5,0,5,0,0,10,,-1.1385,0,,,,https://www.nfl.com/scores/2026/week-10
+HOME_DOG_ATS,angle,SPREAD,7,0,7,0,0,10,,-5.0476,0,,,,https://www.nfl.com/scores/2026/week-10
+ML_EDGE_5,model,MONEYLINE,4,0,4,0,0,10,,-0.3044,0,,,,https://www.nfl.com/scores/2026/week-10
+PARLAY2_EDGE,parlay,PARLAY,1,0,1,0,0,10,,2.7092,0,,,,https://www.nfl.com/scores/2026/week-10
+PARLAY2_ML,parlay,PARLAY,1,0,1,0,0,10,,-1.0,0,,,,https://www.nfl.com/scores/2026/week-10
+PARLAY3_EDGE,parlay,PARLAY,1,0,1,0,0,10,,6.3457,0,,,,https://www.nfl.com/scores/2026/week-10
+REST_ADV_ATS,angle,SPREAD,1,0,1,0,0,10,,-1.0,0,,,,https://www.nfl.com/scores/2026/week-10
+ROAD_FAV_ATS,angle,SPREAD,7,0,7,0,0,10,,4.3074,0,,,,https://www.nfl.com/scores/2026/week-10
+SP_EDGE_2_0,model,SPREAD,2,0,2,0,0,10,,1.8188,0,,,,https://www.nfl.com/scores/2026/week-10
