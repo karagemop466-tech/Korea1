@@ -6,7 +6,7 @@ DET,Defense,EDGE,4,DJ Wonnum | Tyler Lacy | Ahmed Hassanein,DJ Wonnum | Tyler La
 DET,Defense,LB,5,Derrick Barnes | Joe Bachie,Derrick Barnes | Joe Bachie,MATCH,https://www.detroitlions.com/team/depth-chart,
 DET,Defense,LB,6,Malcolm Rodriguez | K.J. Britt,Malcolm Rodriguez | K.J. Britt,MATCH,https://www.detroitlions.com/team/depth-chart,
 DET,Defense,LB,7,Trevor Nowaske | Amen Ogbongbemiga,Trevor Nowaske | Amen Ogbongbemiga,MATCH,https://www.detroitlions.com/team/depth-chart,
-DET,Defense,CB,8,D.J. Reed | Rock Ya-Sin | Khalil Dorsey,D.J. Reed | Rock Ya-Sin | Khalil Dorsey | Nick Whiteside,MISMATCH,https://www.detroitlions.com/team/depth-chart,ordered player list differs
+DET,Defense,CB,8,D.J. Reed | Rock Ya-Sin | Khalil Dorsey | Nick Whiteside,D.J. Reed | Rock Ya-Sin | Khalil Dorsey | Nick Whiteside,MATCH,https://www.detroitlions.com/team/depth-chart,
 DET,Defense,CB,9,Roger McCreary | Ennis Rakestraw Jr. | Keith Abney II,Roger McCreary | Ennis Rakestraw Jr. | Keith Abney II,MATCH,https://www.detroitlions.com/team/depth-chart,
 DET,Defense,S,10,Chuck Clark,Chuck Clark,MATCH,https://www.detroitlions.com/team/depth-chart,
 DET,Defense,S,11,Brian Branch | Christian Izien,Brian Branch | Christian Izien,MATCH,https://www.detroitlions.com/team/depth-chart,
@@ -63,13 +63,13 @@ NYG,Defense,RUSH,4,Kayvon Thibodeaux | Trace Ford,Kayvon Thibodeaux | Trace Ford
 NYG,Defense,MLB,5,Micah McFadden | Zaire Barnes,Micah McFadden | Zaire Barnes,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Defense,WLB,6,Arvell Reese | Jack Kelly,Arvell Reese | Jack Kelly,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Defense,SAM,7,Abdul Carter | Kayvon Thibodeaux,Abdul Carter | Kayvon Thibodeaux,MATCH,https://www.giants.com/team/depth-chart,
-NYG,Defense,CB,8,Deonte Banks | Paulson Adebo,Deonte Banks | Paulson Adebo | Nikko Reed,MISMATCH,https://www.giants.com/team/depth-chart,ordered player list differs
+NYG,Defense,CB,8,Deonte Banks | Paulson Adebo | Nikko Reed,Deonte Banks | Paulson Adebo | Nikko Reed,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Defense,SS,9,Tyler Nubin | Jason Pinnock,Tyler Nubin | Jason Pinnock,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Defense,FS,10,Jevón Holland | Ar'Darius Washington | Elijah Campbell,Jevón Holland | Ar'Darius Washington | Elijah Campbell,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Defense,CB,11,Greg Newsome II | Colton Hood,Greg Newsome II | Colton Hood,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Defense,NB,12,Dru Phillips | Nic Jones,Dru Phillips | Nic Jones,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Offense,WR,1,Malik Nabers | Malachi Fields | Jalin Hyatt,Malik Nabers | Malachi Fields | Jalin Hyatt,MATCH,https://www.giants.com/team/depth-chart,
-NYG,Offense,WR,2,Darnell Mooney,Darnell Mooney | Charlie Jones,MISMATCH,https://www.giants.com/team/depth-chart,ordered player list differs
+NYG,Offense,WR,2,Darnell Mooney | Charlie Jones,Darnell Mooney | Charlie Jones,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Offense,LT,3,Andrew Thomas | J.C. Davis,Andrew Thomas | J.C. Davis,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Offense,LG,4,Jon Runyan Jr. | Aaron Stinnie | Josh Sills,Jon Runyan Jr. | Aaron Stinnie | Josh Sills,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Offense,C,5,Bryan Hudson | John Michael Schmitz Jr.,Bryan Hudson | John Michael Schmitz Jr.,MATCH,https://www.giants.com/team/depth-chart,
@@ -84,33 +84,33 @@ NYG,Special Teams,K,2,Dominic Zvada,Dominic Zvada,MATCH,https://www.giants.com/t
 NYG,Special Teams,H,3,Jordan Stout,Jordan Stout,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Special Teams,LS,4,Ben Mann,Ben Mann,MATCH,https://www.giants.com/team/depth-chart,
 NYG,Special Teams,KOR,5,Deonte Banks | Devin Singletary,Deonte Banks | Devin Singletary,MATCH,https://www.giants.com/team/depth-chart,
-NYG,Special Teams,PR,6,Jevón Holland,Jevón Holland | Charlie Jones,MISMATCH,https://www.giants.com/team/depth-chart,ordered player list differs
-WAS,Defense,DL,1,Charles Omenihu | Jer'Zhan Newton,Daron Payne,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+NYG,Special Teams,PR,6,Jevón Holland | Charlie Jones,Jevón Holland | Charlie Jones,MATCH,https://www.giants.com/team/depth-chart,
+WAS,Defense,DL,1,Daron Payne,Daron Payne,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Defense,DL,2,Tim Settle | Shy Tuttle,Tim Settle | Shy Tuttle,MATCH,https://www.commanders.com/team/depth-chart,
-WAS,Defense,DL,3,Deatrich Wise Jr. | Ricky Barber,Javon Kinlaw | Charles Omenihu,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+WAS,Defense,DL,3,Javon Kinlaw | Charles Omenihu,Javon Kinlaw | Charles Omenihu,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Defense,OLB,4,Odafe Oweh | Joshua Josephs,Odafe Oweh | Joshua Josephs,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Defense,LB,5,Sonny Styles | Kain Medrano,Sonny Styles | Kain Medrano,MATCH,https://www.commanders.com/team/depth-chart,
-WAS,Defense,LB,6,Frankie Luvu | Jordan Magee,Frankie Luvu | Kain Medrano,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
-WAS,Defense,OLB,7,K'Lavon Chaisson | Dorance Armstrong,K'Lavon Chaisson | Dorance Armstrong | Javontae Jean-Baptiste,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
-WAS,Defense,CB,8,Amik Robertson | Rasul Douglas | Isaac Yiadom,Amik Robertson | Rasul Douglas,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
-WAS,Defense,CB,9,Trey Amos | Mike Sainristil | Fabian Moreau,Mike Sainristil | Fabian Moreau,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+WAS,Defense,LB,6,Frankie Luvu | Kain Medrano,Frankie Luvu | Kain Medrano,MATCH,https://www.commanders.com/team/depth-chart,
+WAS,Defense,OLB,7,K'Lavon Chaisson | Dorance Armstrong | Javontae Jean-Baptiste,K'Lavon Chaisson | Dorance Armstrong | Javontae Jean-Baptiste,MATCH,https://www.commanders.com/team/depth-chart,
+WAS,Defense,CB,8,Amik Robertson | Rasul Douglas,Amik Robertson | Rasul Douglas,MATCH,https://www.commanders.com/team/depth-chart,
+WAS,Defense,CB,9,Mike Sainristil | Fabian Moreau,Mike Sainristil | Fabian Moreau,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Defense,SS,10,Nick Cross | Tyler Owens,Nick Cross | Tyler Owens,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Defense,FS,11,Jeremy Reaves | Quan Martin | Percy Butler,Jeremy Reaves | Quan Martin | Percy Butler,MATCH,https://www.commanders.com/team/depth-chart,
-WAS,Offense,WR,1,Treylon Burks | Van Jefferson,Terry McLaurin | Treylon Burks,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+WAS,Offense,WR,1,Terry McLaurin | Treylon Burks,Terry McLaurin | Treylon Burks,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Offense,LT,2,Brandon Coleman | Andrew Wylie,Brandon Coleman | Andrew Wylie,MATCH,https://www.commanders.com/team/depth-chart,
-WAS,Offense,LG,3,Chris Paul | Nick Allegretti,Chris Paul | Tanoa Togiai,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
-WAS,Offense,C,4,Lucas Patrick | Matt Gulbin,Nick Allegretti | Matt Gulbin,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+WAS,Offense,LG,3,Chris Paul | Tanoa Togiai,Chris Paul | Tanoa Togiai,MATCH,https://www.commanders.com/team/depth-chart,
+WAS,Offense,C,4,Nick Allegretti | Matt Gulbin,Nick Allegretti | Matt Gulbin,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Offense,RG,5,Sam Cosmi | Tanoa Togiai,Sam Cosmi | Tanoa Togiai,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Offense,RT,6,Josh Conerly Jr. | Andrew Wylie,Josh Conerly Jr. | Andrew Wylie,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Offense,TE,7,Chig Okonkwo | Ben Sinnott,Chig Okonkwo | Ben Sinnott,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Offense,TE,8,John Bates | Colson Yankoff,John Bates | Colson Yankoff,MATCH,https://www.commanders.com/team/depth-chart,
-WAS,Offense,WR,9,Stefon Diggs | Luke McCaffrey,Stefon Diggs | Jaylin Lane,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
-WAS,Offense,WR,10,Antonio Williams,Dyami Brown | Antonio Williams | Luke McCaffrey,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+WAS,Offense,WR,9,Stefon Diggs | Jaylin Lane,Stefon Diggs | Jaylin Lane,MATCH,https://www.commanders.com/team/depth-chart,
+WAS,Offense,WR,10,Dyami Brown | Antonio Williams | Luke McCaffrey,Dyami Brown | Antonio Williams | Luke McCaffrey,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Offense,QB,11,Jayden Daniels | Marcus Mariota | Athan Kaliakmanis,Jayden Daniels | Marcus Mariota | Athan Kaliakmanis,MATCH,https://www.commanders.com/team/depth-chart,
-WAS,Offense,RB,12,Rachaad White | Austin Ekeler | Robert Henry Jr.,Jacory Croskey-Merritt | Rachaad White | Austin Ekeler,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+WAS,Offense,RB,12,Jacory Croskey-Merritt | Rachaad White | Austin Ekeler,Jacory Croskey-Merritt | Rachaad White | Austin Ekeler,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Special Teams,P,1,Tress Way,Tress Way,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Special Teams,K,2,Drew Stevens,Drew Stevens,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Special Teams,H,3,Tress Way,Tress Way,MATCH,https://www.commanders.com/team/depth-chart,
 WAS,Special Teams,LS,4,Tyler Ott,Tyler Ott,MATCH,https://www.commanders.com/team/depth-chart,
-WAS,Special Teams,KR,5,Luke McCaffrey | Austin Ekeler,Luke McCaffrey | Jaylin Lane | Dyami Brown,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
-WAS,Special Teams,PR,6,Antonio Williams | Luke McCaffrey | Treylon Burks,Jaylin Lane | Luke McCaffrey | Treylon Burks,MISMATCH,https://www.commanders.com/team/depth-chart,ordered player list differs
+WAS,Special Teams,KR,5,Luke McCaffrey | Jaylin Lane | Dyami Brown,Luke McCaffrey | Jaylin Lane | Dyami Brown,MATCH,https://www.commanders.com/team/depth-chart,
+WAS,Special Teams,PR,6,Jaylin Lane | Luke McCaffrey | Treylon Burks,Jaylin Lane | Luke McCaffrey | Treylon Burks,MATCH,https://www.commanders.com/team/depth-chart,
