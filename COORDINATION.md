@@ -3121,3 +3121,39 @@ reaches the official pages and was used to read the pages this session quotes.
 
 **Scheduled-job caveat (F-47).** The scheduled jobs commit with `GITHUB_TOKEN`. GitHub does not start workflows for those pushes, so `verify.yml` does not re-check the scheduled commits.
 
+
+---
+## Session `arena/ceddf8d8-korea1` — 2026-11-18 (NR1–NR7)
+
+**Board read first (2026-11-18T04:50Z).** `main` = `547d514`, `make build`/`make test` green in CI (last
+`Verify site` run on `main`: success). Open sibling PRs observed and **not touched**: #84, #83, #82, #80,
+#73, #71, #70, #68, #58, #56, #47, #38, #30, #24, #19. The most recent merged session
+(`arena/db6cd525-korea1`, PR #79) recorded **CS5 as "not done"**: the 2026-11-18 request register (one row
+per brief item, with status, evidence, blocking gate and official link) was never built. This session takes
+that open scope plus two site features that the 2026-11-18 brief asks for and that do not exist anywhere in
+the repository (verified by `grep -ril` over all non-archive files, 2026-11-18T04:52Z):
+"Matchup Deficiency Matrix" (0 hits), "Vig-Free" (0 hits), "Two-Stage Skill" (0 hits).
+
+**Protocol deviation, recorded as every earlier session recorded it.** The platform pins this session to
+branch `arena/ceddf8d8-korea1` (base `main` = `547d514`); the `session-<id>/<task>` worktree pattern is not
+available, so this branch is both the task branch and the integration branch. No sibling branch or PR is
+pushed to, closed or rebased.
+
+**Name-collision avoidance.** `arena/db6cd525-korea1` claimed `pipeline/session_20261118.py` (that file is
+now merged on `main` and is *not* edited here), `data/integration/request_register_2026_11_18.csv`,
+`request-register-2026-11-18.html` and `tests/test_request_register_2026_11_18.py`. Because it published
+none of the last three and marked the task not done, this session takes the same *scope* under distinct
+paths so no file collides: `pipeline/request_register_20261118.py`,
+`data/integration/request_register_items_2026_11_18.csv`, `request-register.html`,
+`tests/test_request_register.py`. If that session (or a later one) publishes its own version, integration
+keeps both and links them side by side, following the 2026-11-12 collision convention.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| NR1 | Board claim + session log | **in progress** | `arena/ceddf8d8-korea1` | `COORDINATION.md` (own section only) |
+| NR2 | Verify the numeric claims made in the 2026-11-18 brief against the committed official captures and against live official re-reads; one row per claim with a verdict, blank where the claim cannot be checked | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/claim_checks_20261118.py` (new), `data/integration/claim_checks_2026_11_18.csv` (new), `data/live/claim_reads_2026_11_18/**` (new verbatim official excerpts), `tests/test_claim_checks.py` (new) |
+| NR3 | 2026-11-18 request register: one row per brief item (~60), status derived from the repository artefact that is supposed to carry it, the gate that blocks it, the number that clears it, official link or an explicit blank + flag; published page | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/request_register_20261118.py` (new), `data/integration/request_register_items_2026_11_18.csv` (new), `assets/data/request_register_items_2026_11_18.csv`, `request-register.html` (new), `tests/test_request_register.py` (new) |
+| NR4 | Interactive Offence-vs-Defence matchup deficiency matrix (1st–4th string), built only from the dated official club depth captures and the official injury report; multi-rank-1 and empty slots represented faithfully, never flattened to "the starter" | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/matchup_matrix.py` (new), `data/processed/matchup_matrix.csv` (new), `assets/data/matchup_matrix.csv`, `matchup-matrix.html` (new) |
+| NR5 | Vig-free market consensus vs originated fair line: decompose our edge into (a) operator margin and (b) true pricing divergence, per market, with n on every value | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/vigfree_decomposition.py` (new), `data/processed/vigfree_decomposition.csv` (new), `assets/data/vigfree_decomposition.csv`, `consensus.html` (new) |
+| NR6 | Suggestions register for the items this brief adds: paths A/B/C, cost, risk, dependency and the gate each path opens; staged for review, nothing implemented | **in progress** | `arena/ceddf8d8-korea1` | `data/integration/suggestions_2026_11_18.csv` (new, written by `pipeline/request_register_20261118.py`), `assets/data/suggestions_2026_11_18.csv` |
+| NR7 | Integration + publish: NAV + index card, page lists (verify_site / check_sources / check_links), Makefile wiring, flagged rows for every unverified value, executive-summary section, README line, `make build` + `make test`, PR → `main`, merge, Pages, record | **in progress** | `arena/ceddf8d8-korea1` | `pipeline/render_site.py` (NAV tuple + one index card + flagged rows only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe + test list), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch → `main` |
