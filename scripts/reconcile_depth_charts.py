@@ -1,90 +1,58 @@
 #!/usr/bin/env python3
-"""Reconcile data/availability/depth_charts.csv for the four official clubs
-(WAS, NYG, DET, NE) against data/live/official_depth_extract_2026_11_13.csv.
+"""Read-only comparison of the 2026-11-13 official depth extract.
 
-The official extract is the verified source (transcribed directly from the
-clubs' official depth-chart pages). The published snapshot is rebuilt for those
-clubs so the live-verification depth test passes. All other 28 clubs keep their
-captured rows unchanged. Rows are sorted by (team, unit, slot) so the
-groupby-based re-ranking in live_verify_depth._pub_rows lines up with the
-official row numbers.
+This utility intentionally does not reconcile or rewrite the current depth
+snapshot. Historical captures are immutable and must never be relabelled with a
+new retrieval timestamp. It compares the transcribed official extract with the
+capture from the same date; use the scheduled capture workflow for new data.
 
 Usage: python scripts/reconcile_depth_charts.py
 """
 from __future__ import annotations
 
-import pandas as pd
+import sys
 from pathlib import Path
+
+import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 OFFICIAL = ROOT / "data" / "live" / "official_depth_extract_2026_11_13.csv"
-PUBLISHED = ROOT / "data" / "availability" / "depth_charts.csv"
-OFFICIAL_CLUBS = {"WAS", "NYG", "DET", "NE"}
-RETRIEVED_UTC = "2026-11-17T19:51:56Z"
+# Compare only with the capture from the same day. Comparing against the latest
+# file confounds transcription errors with legitimate subsequent chart changes.
+PUBLISHED = ROOT / "data" / "availability" / "history" / "2026-11-13" / "depth_charts.csv"
 
 
 def main() -> int:
-    ext = pd.read_csv(OFFICIAL, dtype=str, keep_default_na=False)
-    pub = pd.read_csv(PUBLISHED, dtype=str, keep_default_na=False)
-    pub["depth_rank"] = pub["depth_rank"].astype(int)
+    if not OFFICIAL.is_file() or not PUBLISHED.is_file():
+        print("required dated inputs are missing; no files were changed", file=sys.stderr)
+        return 2
 
-    # Drop the four official clubs' captured rows; they will be rebuilt from
-    # the official extract.
-    keep = pub[~pub.team.isin(OFFICIAL_CLUBS)].copy()
-
-    rows = []
-    for _, r in ext.sort_values(["team", "unit", "row"]).iterrows():
-        team = r.team
-        club = r.club
-        unit = r.unit
-        slot = int(r.row)
-        position = r.position
-        source_url = r.source_url
-        players = [p for p in r.players.split("|") if p]
-        for depth_rank, player in enumerate(players, 1):
-            rows.append(
-                dict(
-                    team=team,
-                    club=club,
-                    unit=unit,
-                    slot=slot,
-                    position=position,
-                    depth_rank=depth_rank,
-                    player=player,
-                    player_url="",
-                    source_url=source_url,
-                    retrieved_utc=RETRIEVED_UTC,
-                    player_raw=player,
-                )
-            )
-
-    rebuilt = pd.DataFrame(rows, columns=pub.columns)
-    combined = pd.concat([keep, rebuilt], ignore_index=True)
-    combined["depth_rank"] = combined["depth_rank"].astype(int)
-    combined = combined.sort_values(["team", "unit", "slot", "depth_rank"]).reset_index(drop=True)
-
-    combined.to_csv(PUBLISHED, index=False)
-
-    # Verification: re-run the same comparison the test performs.
-    import sys
+    # Import the repository's canonical comparison functions without duplicating
+    # their slot/group semantics here.
     sys.path.insert(0, str(ROOT / "pipeline"))
     import live_verify_depth as lvd  # noqa: E402
 
-    ext2 = pd.read_csv(OFFICIAL, dtype=str, keep_default_na=False)
-    pub2 = pd.read_csv(PUBLISHED, dtype=str, keep_default_na=False)
-    pub2["depth_rank"] = pub2["depth_rank"].astype(int)
-    off = lvd._off_rows(ext2)
-    pr = lvd._pub_rows(pub2)
-    keys = set(off)
-    mismatches = [k for k in keys if off[k] != pr[k]]
-    print(f"official keys: {len(off)} | rebuilt rows for 4 clubs: {len(rows)} | "
-          f"mismatches: {len(mismatches)}")
-    for k in mismatches:
-        print(f"  {k}: official={off[k]} published={pr[k]}")
-    if mismatches:
-        return 1
-    print("reconciliation complete: all official slots match the published snapshot.")
-    return 0
+    ext = pd.read_csv(OFFICIAL, dtype=str, keep_default_na=False)
+    pub = pd.read_csv(PUBLISHED, dtype=str, keep_default_na=False)
+    pub["depth_rank"] = pub["depth_rank"].astype(int)
+    official_rows = lvd._off_rows(ext)
+    published_rows = lvd._pub_rows(pub)
+
+    missing = sorted(set(official_rows) - set(published_rows))
+    mismatches = sorted(
+        key for key in set(official_rows) & set(published_rows)
+        if official_rows[key] != published_rows[key]
+    )
+    print(
+        f"read-only comparison: {len(official_rows)} official slots; "
+        f"{len(missing)} missing; {len(mismatches)} mismatched"
+    )
+    for key in missing:
+        print(f"  missing {key}: official={official_rows[key]}")
+    for key in mismatches:
+        print(f"  mismatch {key}: official={official_rows[key]} published={published_rows[key]}")
+    print("No capture was written or modified.")
+    return 1 if missing or mismatches else 0
 
 
 if __name__ == "__main__":
