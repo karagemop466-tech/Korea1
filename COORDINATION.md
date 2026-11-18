@@ -2969,3 +2969,38 @@ unresolvable and never guessed at.
 **Pull request and merge:** PR #69 — https://github.com/karagemop466-tech/Korea1/pull/69 — `arena/120935ef-korea1` → `main`, merged without waiting at 2026-11-15 10:48:17 -0800 (18:48:17 UTC) as merge commit `ab8955eb5d97a87238ddba4d9cfd60eaedeb38b6`. Verification summary, sources used and flagged irregularities were carried in the PR body; all checks were green before merge (see session block above).
 
 **Pages:** GitHub Pages serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the push of `ab8955eb` triggered the build/deploy. Final Pages state could not be re-probed from this shell because the GitHub API is rate-limited for this user ID (403 on `GET /repos/:owner/:repo/pages`); prior merges on this repo show `pages/builds/latest` = `built` with `error: null` and the live site at https://karagemop466-tech.github.io/Korea1/ . Confirm against `https://github.com/karagemop466-tech/Korea1/actions` when the rate limit clears.
+
+---
+
+## Session `arena/ed0861c0-korea1` — 2026-11-18 integration session (claim)
+
+**Starting state.** Branch `arena/ed0861c0-korea1`, base `main` = `5df9bab` ("reserve-list: official snapshot
+2026-11-17T19:59Z"). The repository history was squashed to a single commit upstream, so `git log` shows one
+commit; the board below still records the earlier sessions' claims and outcomes.
+
+**State found on `main` (measured, not assumed).**
+
+- `make build` completes (52 pages, 0 failing checks) but is **not a fixed point**: a rebuild from the committed
+  inputs changes 28 committed outputs (18 of them listed by `tests/check_rebuild.py`), because the scheduled
+  availability capture of 2026-11-17T19:51:56Z refreshed `data/availability/depth_charts.csv` and the derived
+  depth tables were never regenerated from it.
+- `make test` is **red**: `tests/test_live_verify.py::test_depth_snapshot_matches_the_official_charts` fails
+  (188 passed, 1 failed).
+- Root cause, verified against the official club pages on 2026-11-18 (this session): the verification baseline
+  `data/live/official_depth_extract_2026_11_13.csv` is a **hand transcription that has gone stale**, not a parser
+  defect. The Commanders page read on 2026-11-18 differs from the 2026-11-13 transcription in 14 of 29 slots, the
+  Giants page in 3 of 29 and the Lions page in 1 of 28; the Patriots page still matches in all 29. The published
+  2026-11-17 machine capture agrees with the pages as they read on 2026-11-18.
+
+**Tasks claimed in this session** (file scopes are this session's only; shared files are touched here because this
+is the integration session and every other session on the board is closed).
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| E1 | Repair the red suite and the rebuild drift: refresh the official depth-chart verification baseline to 2026-11-18 from the four official club pages, make the comparison date-aware, regenerate every derived output | **in progress** | `arena/ed0861c0-korea1` | `scripts/transcribe_depth_charts_2026_11_18.py` (new), `data/live/official_depth_extract_2026_11_18.csv` (new), `pipeline/live_verify_depth.py`, `pipeline/lineup_claims.py`, `tests/test_live_verify.py`, regenerated outputs |
+| E2 | 2026-11-18 brief tracker: one row per requirement in this brief with status, what was checked today, the blocking gate, the number that would clear it, and the official source | **unclaimed** | `arena/ed0861c0-korea1` | `pipeline/session_20261118.py` (new), `data/integration/brief_2026_11_18.csv` (new), `brief-2026-11-18.html` (new) |
+| E3 | Dated official re-read table: every official page this session read on 2026-11-18, what was checked and what it confirmed or contradicted | **unclaimed** | `arena/ed0861c0-korea1` | `data/live/official_reads_2026_11_18.csv` (new), `pipeline/session_20261118.py`, `live-verification.html` section |
+| E4 | Close the actionable flagged items that today's official re-read can settle (F-28 forward-looking landing label, F-13 missing per-row status on the originated board, F-39 hard-coded injury snapshot date) | **unclaimed** | `arena/ed0861c0-korea1` | `pipeline/render_site.py`, `pipeline/render_decisions.py`, `pipeline/session_20261118.py` |
+| E5 | Raw-byte retention for the availability capture so a future difference between a capture and a later page read can be attributed to the page or to the parser | **unclaimed** | `arena/ed0861c0-korea1` | `pipeline/fetch_availability.py`, `data/availability/**`, `.github/workflows/availability.yml` |
+| E6 | Integration: rebuild, full test suite, source/link checks, rebuild-drift check | **unclaimed** | `arena/ed0861c0-korea1` | Makefile, `tests/**` |
+| E7 | PR to `main`, merge without waiting, confirm the Pages deploy, record the result | **unclaimed** | `arena/ed0861c0-korea1` | `COORDINATION.md`, branch `arena/ed0861c0-korea1` → `main` |
