@@ -158,6 +158,45 @@ def _bf_block():
     return '\n'.join(L)
 
 
+def _cr1_block():
+    """CR1 (arena/f84bc1d7-korea1) - 2026-11-18 request-register addendum.
+
+    Counts are read from data/integration/request_register.csv; nothing is retyped.
+    """
+    import pandas as pd
+    reg_p = ROOT / 'data' / 'integration' / 'request_register.csv'
+    spot_p = ROOT / 'data' / 'live' / 'request_spotcheck_2026_11_18' / 'spotcheck.csv'
+    if not reg_p.exists():
+        return ''
+    d = pd.read_csv(reg_p, dtype=str, keep_default_na=False)
+    s = pd.read_csv(spot_p, dtype=str, keep_default_na=False) if spot_p.exists() else pd.DataFrame()
+    c = d.status.value_counts().to_dict()
+    n_ref = int((s.verdict == 'REFUTED LIVE').sum()) if len(s) else 0
+    n_ver = int((s.verdict == 'VERIFIED LIVE').sum()) if len(s) else 0
+    L = []
+    A = L.append
+    A('## Addendum - 2026-11-18 (session `arena/f84bc1d7-korea1`, CR1-CR3)')
+    A('')
+    A('CS5 (the request register) was deferred as "not done" by the 2026-11-18 session log; this')
+    A('session builds it. **`request-register.html`** now carries one row per standing-request item')
+    A('(' + str(len(d)) + ' rows, REQ-01..REQ-' + str(len(d)).zfill(2) + '), each with the status '
+      '(' + str(c.get('built', 0)) + ' built, ' + str(c.get('partly built', 0)) + ' partly built, '
+      + str(c.get('not built', 0)) + ' not built, ' + str(c.get('blocked (owner decision)', 0))
+      + ' blocked on an owner decision, ' + str(c.get('rejected as requested', 0))
+      + ' rejected as requested, ' + str(c.get('process · executed', 0)) + ' process), the repository')
+    A('evidence, the gate that blocks full delivery and the number or condition that would clear it.')
+    A('The landing page links it as the decision-readiness table the request asked for.')
+    A('')
+    A('CR2 re-read eight official pages live on 2026-11-18 (nfl.com week-10 injury report, November')
+    A('reserve list, week-10 scores, the WAS@NYG game centre, the Texans and Ravens club depth charts,')
+    A('NFL Operations game prep): ' + str(n_ver) + ' checks verified the published values (including the')
+    A('three Lions Out designations and the Malik Willis reserve row) and ' + str(n_ref) + ' refuted the')
+    A("request's Baltimore stale-QB claim (the live chart reads Brissett | Fagnano | Slovis). Verbatim")
+    A('excerpts are committed under `data/live/request_spotcheck_2026_11_18/`.')
+    A('')
+    return '\n'.join(L)
+
+
 def main():
     gates=pd.read_csv(PROC/'strategy_gates.csv')
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
@@ -191,6 +230,7 @@ def main():
     f_validated = int((_sb.verdict == 'VALIDATED').sum()) if len(_sb) else 0
     _s = _session_block()
     _b = _bf_block()
+    _c = _cr1_block()
     text=f'''# Executive summary — NFL Line Lab
 
 Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
@@ -333,6 +373,7 @@ code: 2 tests fail). Findings F-T41-01 to F-T41-06 are on `flagged.html`.
 
 {_s}
 {_b}
+{_c}
 ## Material audit corrections
 
 1. **Pinned reproduction:** normal builds now read the committed SHA. Refreshing upstream requires an explicit flag.
