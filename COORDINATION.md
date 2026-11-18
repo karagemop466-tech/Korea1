@@ -60,8 +60,8 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | S15 | **2026-11-15 session**: take over X7's stale test-suite assertion (claim > 60 minutes old, status needs review), re-pin the injury-snapshot row count to the committed official capture (345 → 347), spot-verify key citations against live official pages, final integration + publish on this branch | **done** — sources: `nfl.com/injuries/league/2026/reg10`, `nfl.com/scores/2026/week-10`, `operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep` (all confirmed live, no cited value changed); verification: `make build` 52 pages / 0 failing checks, `make test` 166 passed, `check_links`/`check_sources`/`verify_site` green, Pages deployment success | `arena/e0763e1e-korea1` | `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, regenerated build outputs under `data/live/`, `assets/data/`, root `.html` |
 | S18 | **Depth-chart reconciliation + final verification + publish**: reconcile `data/availability/depth_charts.csv` (WAS/NYG/DET/NE rows) against the official club-chart extract `data/live/official_depth_extract_2026_11_13.csv` so the live-verification depth test passes; confirm `make build` + `make test` green; PR → `main`, merge, Pages deploy, record | **done** — PR #77 merged as `236d8c72b641bc11281d703889725edbb743b2a5`; sources: official club depth-chart pages (commanders.com, giants.com, detroitlions.com, patriots.com/team/depth-chart); verification: `make build` 52 pages / 0 failing checks, `make test` 189 passed, check_sources 44 pages / 5,541 rows, check_links 53 pages | `arena/27eca1b3-korea1` | `data/availability/depth_charts.csv`, `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, `scripts/reconcile_depth_charts.py` |
 | B45 | **2026-11-18 final integration + publish**: board read first; review and merge the four CI-green open PRs (#68, #70, #71, #73) as integration owner, assess the eight conflicting stale PRs (#19/#24/#30/#38/#47/#48/#56/#58) and record their disposition without touching their branches, full re-verify of the combined tree (`make build`, `make test`, `make verify`, `tests/check_rebuild.py`), fix any integration collision on this branch, then PR → `main`, merge without waiting, confirm GitHub Pages, record PR link + result | **in progress** | `arena/b450c57b-korea1` | `COORDINATION.md` (own section + this row only); sibling PRs merged only via `gh pr merge` (no sibling branch pushed to); content fixes only on `arena/b450c57b-korea1` if a collision forces one, logged here |
-| CR1 | **Request register (CS5 follow-through)** — `arena/db6cd525-korea1` deferred CS5 ("the request register … not done"); claim re-checked 2026-11-18T04:50Z and no live session holds it. One row per standing-request item (the 2026-11-18 request, items grouped REQ-01…): status (built / partly built / blocked / rejected as requested), repository evidence, the gate that blocks it, the number or condition that clears it, official source link where the item asserts an NFL fact, and the live spot-check verdict | **in progress** | `arena/f84bc1d7-korea1` | `pipeline/request_register.py` (new), `data/integration/request_register.csv` (new), `request-register.html` (new), `tests/test_request_register.py` (new) |
-| CR2 | **Live official-source spot-check behind CR1** — page-fetch reads of every official page the register cites (nfl.com injury report, reserve list, week scores, club depth charts, NFL Operations); verdict recorded per register row; nothing inferred, unconfirmed cells left blank and flagged | **in progress** | `arena/f84bc1d7-korea1` | `data/live/request_spotcheck_2026_11_18/**` (new), register rows of CR1 |
+| CR1 | **Request register (CS5 follow-through)** — `arena/db6cd525-korea1` deferred CS5 ("the request register … not done"); claim re-checked 2026-11-18T04:50Z and no live session holds it. One row per standing-request item (the 2026-11-18 request, items grouped REQ-01…): status (built / partly built / blocked / rejected as requested), repository evidence, the gate that blocks it, the number or condition that clears it, official source link where the item asserts an NFL fact, and the live spot-check verdict | **done** — 81 rows (REQ-01..REQ-81) published on `request-register.html` + `data/integration/request_register.csv`; verification: `tests/test_request_register.py` 7 passed (id completeness/order, closed status set, official-host sources only, HTML/CSV parity, ground-truth cells match `data/availability/*`); `make build` 45 pages / 5,659 rows strict-checked | `arena/f84bc1d7-korea1` | `pipeline/request_register.py` (new), `data/integration/request_register.csv` (new), `request-register.html` (new), `tests/test_request_register.py` (new) |
+| CR2 | **Live official-source spot-check behind CR1** — page-fetch reads of every official page the register cites (nfl.com injury report, reserve list, week scores, club depth charts, NFL Operations); verdict recorded per register row; nothing inferred, unconfirmed cells left blank and flagged | **done** — 8 official pages read live 2026-11-18 (9 checks: 7 VERIFIED LIVE, 1 READ LIVE PARTIAL, 1 REFUTED LIVE). Verified: DET Joseph/Mays/Reed all **Out** on nfl.com (matches capture); Malik Willis MIA 11/10 Reserve/Injured; WAS 24–21 Final; game centre prints LOCATION EAST RUTHERFORD, NJ / STADIUM METLIFE STADIUM + Game Book PDF link; Texans chart is one image under "Unofficial Depth Chart" (confirms F-18). Refuted: the request's Baltimore stale-QB claim (live chart QB row = Brissett \| Fagnano \| Slovis; no Jackson/Huntley anywhere on the page, consistent with F-46a) | `arena/f84bc1d7-korea1` | `data/live/request_spotcheck_2026_11_18/**` (new), register rows of CR1 |
 | CR3 | **Final integration + publish for CR1–CR2** — NAV entry + one index card + page lists (`verify_site.py`, `check_sources.py`, `check_links.py`) + one Makefile line + README link + executive-summary section; merge `origin/main` first (keeping every sibling section), `make build` + `make test` + `tests/check_rebuild.py` green, PR → `main`, merge without waiting, Pages confirmed, record here | **in progress** | `arena/f84bc1d7-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one line), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch `arena/f84bc1d7-korea1` → `main` |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
@@ -3275,3 +3275,46 @@ cites with the live page-fetch tool and records a verdict per row; CR3 integrate
 5,569 rows strict official/primary check passed, `check_links.py` 53 pages all resolve.
 `make test` 189 passed. A rebuild regenerates the nine derived files already claimed by PR #80
 (byte-identical, see above), so the working tree was restored to `HEAD` before claiming.
+
+### Session `arena/f84bc1d7-korea1` — CR1–CR2 done; CR3 integration log (2026-11-18)
+
+**CR1 (request register).** `pipeline/request_register.py` renders `request-register.html` and
+`data/integration/request_register.csv`: REQ-01..REQ-81, one row per line of the standing request,
+in request order. Columns: status (closed set), what is built (repository evidence, linked), the gate
+that blocks full delivery, the number or condition that would clear it, the flag holding any gap,
+the official/primary source and the CR2 live-check verdict. Register state at publication:
+**38 built · 19 partly built · 11 not built · 4 blocked (owner decision) · 2 rejected as requested ·
+3 process · executed** — counts generated from the CSV, never retyped (see `_cr1_block()` in
+`pipeline/render_summary.py`). Items that assert facts the repository cannot confirm are blank and
+flagged, never inferred: the "136-game log" (REQ-19, F-52), the league schedule announcement
+(REQ-24, F-53), the Colts roster-event claim (REQ-34, F-56), the 149/254/279 counts (REQ-33/49,
+F-46b/F-59), the VR-*/VQ-*/SG-* identifier claims (REQ-42/46, F-48). The two "reject:" requests
+(REQ-50 jersey/experience/salary depth, REQ-65 season-ROI ranking) are published as
+**rejected as requested** — the rejection is the deliverable and is already enforced by the build.
+
+**CR2 (live reads, 2026-11-18).** The build sandbox cannot reach nfl.com, so the reads used the
+page-fetch tool and the excerpts are committed verbatim under
+`data/live/request_spotcheck_2026_11_18/excerpts.md` (sources: `nfl.com/injuries/league/2026/reg10`,
+`nfl.com/transactions/league/reserve-list/2026/11`, `nfl.com/scores/2026/week-10`,
+`nfl.com/games/commanders-at-giants-2026-reg-10`, `houstontexans.com/team/depth-chart`,
+`baltimoreravens.com/team/depth-chart`, `operations.nfl.com/.../game-and-stadium-prep`; the
+Commanders chart was re-verified by session db6cd525 and is cited from there). One request claim is
+**refuted live** (Baltimore stale QBs) and moves to the flagged page via the register; one is
+**confirmed live but against the request's own wording** (Malik Willis: on IR, absent from the report
+— exactly the "not listed ≠ available" behaviour REQ-64 asks for).
+
+**CR3 (integration).** NAV entry + one landing minicard (the decision-readiness table REQ-22 asks
+for on the landing page), page lists (`verify_site.py`, `check_sources.py`, `check_links.py`),
+`Makefile` (site recipe + `make test`), `pipeline/render_summary.py` addendum, `README.md` link.
+Baseline measured before any change: `make build` exit 0 (52→53 pages, 0 failing checks) and
+`make test` 189 passed; after: `make build` 0 failing checks, `check_sources` 45 canonical pages /
+5,659 rows, `check_links` 54 pages, `make test` **196 passed** (189 + 7 new). The nine derived files
+that a rebuild changes after the 04:42Z reserve-list capture were regenerated here byte-identically
+to PR #80's (`git diff pr-80` empty on all nine before claiming) and are included in the build
+commit so `check_rebuild` reaches a fixed point from this tree.
+
+**Scope discipline.** No file claimed by a live sibling (#80 B45 drift regeneration, #82 Game Book
+parser tests, #83 stale-PR disposition, #84 date-matched depth checks) was edited; the only shared
+edits are the ones this board's convention assigns to the integrating session (NAV + one index card
++ page lists + one Makefile line). Stale-PR disposition is left to #83's register; PR #80's
+regeneration is left to #80 (identical content either way).
