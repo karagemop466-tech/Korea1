@@ -1,0 +1,84 @@
+name: Official game centre and Game Book capture
+
+# Reads the league's own documents with no manual input:
+#   https://www.nfl.com/schedules/<season>/REG<week>   (the published schedule)
+#   https://www.nfl.com/games/<slug>                  (the fixture's game centre)
+#   the Game Book PDF the game centre links            (lineups, inactives, conditions)
+#
+# The build sandbox cannot reach www.nfl.com or static.www.nfl.com (TLS refused,
+# measured 2026-11-18), so this runs on a GitHub-hosted runner and commits what it
+# captured: the flattened official text, its SHA-256, and the parsed rows.
+# See pipeline/fetch_official_games.py for the capture rules and
+# pipeline/official_games.py for the parsers.
+on:
+  schedule:
+    # 03:47 and 15:47 UTC daily: a finished game publishes its Game Book within
+    # hours of the final whistle, and the league edits the schedule page as it goes.
+    - cron: "47 3,15 * * *"
+  workflow_dispatch:
+    inputs:
+      weeks:
+        description: "Regular-season weeks to capture (e.g. 1-11, or 9,10)"
+        required: false
+        default: "1-18"
+      gamebook_weeks:
+        description: "Weeks whose Game Book PDFs are captured (blank = every finished game)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gamebooks-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          pip install -r requirements.txt
+      - name: Capture the official schedule, game centres and Game Books
+        run: |
+          python pipeline/fetch_official_games.py \
+            --season 2026 \
+            --weeks "${{ github.event.inputs.weeks || '1-18' }}" \
+            ${{ github.event.inputs.gamebook_weeks && format('--gamebook-weeks {0}', github.event.inputs.gamebook_weeks) || '' }}
+      - name: Rebuild the official-evidence tables and pages
+        if: hashFiles('pipeline/render_gamebooks.py') != ''
+        run: |
+          python pipeline/availability_graph.py
+          python pipeline/fixture_context.py
+          python pipeline/render_gamebooks.py
+      - name: Verify (row sources, links, captions) before publishing
+        run: |
+          python pipeline/verify_site.py
+          python tests/check_sources.py
+          python tests/check_links.py
+          python -m pytest -q tests/test_gamebooks.py
+      - name: Keep the raw official response bytes as an artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-game-raw-${{ github.run_id }}
+          path: data/raw/official_games
+          retention-days: 30
+      - name: Commit the capture
+        run: |
+          git config user.name "gamebooks-bot"
+          git config user.email "gamebooks-bot@users.noreply.github.com"
+          git add -A data/evidence/official_games data/processed/official_fixtures.csv \
+                    data/processed/official_gamecentres.csv data/processed/official_gamebooks.csv \
+                    data/processed/official_gamebook_rosters.csv data/processed/availability_graph.csv \
+                    data/processed/fixture_context.csv gamebooks.html assets/data
+          git diff --cached --quiet && { echo "no change"; exit 0; }
+          git commit -m "gamebooks: official capture $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
