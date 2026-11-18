@@ -144,13 +144,13 @@ results_feed_tiers,PINNED_ARCHIVE=7383; SCHEDULED=135; OFFICIAL_READ=30,computed
 roster_depth_rows,6743,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 season_club_weeks,544,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 signal_staking_rows,18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-site_pages,47,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+site_pages,48,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 spotcheck_rows,125,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies,18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies_g1_fail,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies_validated,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 suggestions_master_rows,76,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-test_count,29,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+test_count,30,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 venues_n,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 venues_with_both_fields,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 verified_results_final,30,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
