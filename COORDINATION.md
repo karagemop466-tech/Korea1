@@ -3278,3 +3278,23 @@ branches, so neither session could see the other's claim first):
 - B45's own PR #80 was reduced to its unique content by the rebase: the `COORDINATION.md` claim and
   the PR #77 red-main diagnosis record (the regenerated artefacts it originally carried landed
   byte-identical on `main` first as `e775e52`, then again through #78's merge).
+
+## Session `arena/87d27a1d-korea1` — 2026-11-18 safety repair claim
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| S1 | Guard the historical depth reconciliation utility so it cannot overwrite dated captures; add a regression test and record the verified behavior | **done** | `arena/87d27a1d-korea1` | `scripts/reconcile_depth_charts.py`, `tests/test_reconcile_depth_charts.py`, `Makefile` (test target only), `COORDINATION.md` (this section only) |
+
+Claimed on the Arena-pinned branch `arena/87d27a1d-korea1`; the session-specific worktree/branch requested in older board instructions is not available in this workspace. Scope is limited to the previously flagged unsafe utility (F-51) and its test. No shared page, navigation, model, or raw capture was edited by S1.
+
+**S1 outcome (2026-11-18).** Replaced the destructive rewrite behavior with a read-only check comparing `data/live/official_depth_extract_2026_11_13.csv` against the immutable `data/availability/history/2026-11-13/depth_charts.csv`. The tool no longer targets or edits the current depth snapshot. Added a regression test hashing both the current snapshot and the same-date historical capture before/after execution. `scripts/reconcile_depth_charts.py` reports 115 slots, 0 missing, 0 mismatched, and confirms no capture was modified. The regression is in the standard `make test` target. F-51 is updated as repaired on the review page. No new roster facts were introduced.
+
+### Integration follow-up — reserve recapture comparison (2026-11-18)
+
+The PR clean-rebuild check exposed a stale comparison in `pipeline/session_20261118.py`: F-45 named the 2026-11-17T19:59:57Z archive, while its comparison code consumed rolling `reserve/latest.csv` (the 2026-11-18T04:42:01Z recapture), resulting in contradictory counts. This was corrected without changing either capture.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| S2 | Compare the 2026-11-18 reserve-page excerpt separately against the cited 2026-11-17 historical capture and the 2026-11-18 recapture; retain both immutable snapshots, update the review finding, and test both comparisons | **done** | `arena/87d27a1d-korea1` | `pipeline/session_20261118.py`, `tests/test_reconcile_depth_charts.py`, `data/live/spotcheck_2026_11_18/spotcheck_rows.csv`, `data/integration/flagged_2026_11_18.csv`, generated review pages/inventory from `make build`, `COORDINATION.md` (this section only) |
+
+**S2 outcome.** Comparison inputs are now pinned explicitly: `data/availability/reserve/history/2026-11-17T195957Z/reserve_list.csv` and `data/availability/reserve/history/2026-11-18T044201Z/reserve_list.csv`, not whichever file happens to be `latest.csv`. Against the live rows recorded at `data/live/spotcheck_2026_11_18/nfl_reserve_list_2026_11_live_rows.csv`, the older capture matches 17/25 rows (8 live-only, 8 capture-only); the 2026-11-18 capture matches 25/25 (0/0). The updated F-45 wording records that the recapture matches this sample but makes no claim about NFL retention/completeness policy. F-51 now displays as repaired, not open. Official review link: https://www.nfl.com/transactions/league/reserve-list/2026/11. Both raw captures and their manifests remain unchanged and preserved. `make build` and `make verify` pass (44 canonical pages, 5,585 checked rows, 53 pages, no broken internal links); `make test` reports 212 passed, including Game Book tests and both new regressions. The rebase conflict in `Makefile` was resolved by retaining both `test_gamebooks.py` (from main) and `test_reconcile_depth_charts.py` (this branch). A first rebuild while rebase conflict stages were present produced duplicate inventory rows; this was corrected after rebase completion by regenerating from the clean index (694 tracked files). The final clean-index outputs are committed; `tests/check_rebuild.py` passes with zero changed files. No raw source capture was rewritten.
