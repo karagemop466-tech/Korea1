@@ -1,31 +1,31 @@
 {
   "season": 2026,
-  "retrieved_utc": "2026-11-18T04:50:39Z",
+  "retrieved_utc": "2026-11-18T22:42:58Z",
   "runner": "GitHub Actions",
   "schedule_pages": [
     {
       "week": 9,
       "url": "https://www.nfl.com/schedules/2026/REG9",
       "http_status": 200,
-      "raw_bytes": 2331619,
-      "raw_sha256": "b8abb16d908d57696708cfae7bfecb4faf7e269c0606fbc5b92876dee3d2feac",
-      "text_bytes": 7410,
-      "text_sha256": "242bd43c7dbcd9836c02e47a84e21c7fdb3f0a2cf8c2fd161c1ce68d0cb53f20",
-      "html_bytes": 2331619,
-      "html_sha256": "b8abb16d908d57696708cfae7bfecb4faf7e269c0606fbc5b92876dee3d2feac",
-      "retrieved_utc": "2026-11-18T04:50:39Z"
+      "raw_bytes": 2277254,
+      "raw_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
+      "text_bytes": 7407,
+      "text_sha256": "0e15c190a005f82c6ad16684c18b0c6828ff401fd76ac42d69654b08e2152d02",
+      "html_bytes": 2277254,
+      "html_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
+      "retrieved_utc": "2026-11-18T22:42:58Z"
     },
     {
       "week": 10,
       "url": "https://www.nfl.com/schedules/2026/REG10",
       "http_status": 200,
-      "raw_bytes": 2331619,
-      "raw_sha256": "b8abb16d908d57696708cfae7bfecb4faf7e269c0606fbc5b92876dee3d2feac",
-      "text_bytes": 7410,
-      "text_sha256": "242bd43c7dbcd9836c02e47a84e21c7fdb3f0a2cf8c2fd161c1ce68d0cb53f20",
-      "html_bytes": 2331619,
-      "html_sha256": "b8abb16d908d57696708cfae7bfecb4faf7e269c0606fbc5b92876dee3d2feac",
-      "retrieved_utc": "2026-11-18T04:50:39Z"
+      "raw_bytes": 2277254,
+      "raw_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
+      "text_bytes": 7407,
+      "text_sha256": "0e15c190a005f82c6ad16684c18b0c6828ff401fd76ac42d69654b08e2152d02",
+      "html_bytes": 2277254,
+      "html_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
+      "retrieved_utc": "2026-11-18T22:42:58Z"
     }
   ],
   "game_centres": [],
