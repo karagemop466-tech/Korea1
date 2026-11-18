@@ -3641,3 +3641,226 @@ union before publish. Never bulk-resolve `pipeline/*.py`, `tests/*.py` or `Makef
 quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the competition
 leaderboard. Flagged irregularities (F-18 … F-62) are published on `flagged.html` and on the
 register; they do not block the merge, per the standing request.
+
+
+
+---
+## Session `arena/ceddf8d8-korea1` — 2026-11-18 (NR1–NR7)
+
+**Board read first (2026-11-18T04:50Z).** `main` = `547d514`, `make build`/`make test` green in CI (last
+`Verify site` run on `main`: success). Open sibling PRs observed and **not touched**: #84, #83, #82, #80,
+#73, #71, #70, #68, #58, #56, #47, #38, #30, #24, #19. The most recent merged session
+(`arena/db6cd525-korea1`, PR #79) recorded **CS5 as "not done"**: the 2026-11-18 request register (one row
+per brief item, with status, evidence, blocking gate and official link) was never built. This session takes
+that open scope plus two site features that the 2026-11-18 brief asks for and that do not exist anywhere in
+the repository (verified by `grep -ril` over all non-archive files, 2026-11-18T04:52Z):
+"Matchup Deficiency Matrix" (0 hits), "Vig-Free" (0 hits), "Two-Stage Skill" (0 hits).
+
+**Protocol deviation, recorded as every earlier session recorded it.** The platform pins this session to
+branch `arena/ceddf8d8-korea1` (base `main` = `547d514`); the `session-<id>/<task>` worktree pattern is not
+available, so this branch is both the task branch and the integration branch. No sibling branch or PR is
+pushed to, closed or rebased.
+
+**Name-collision avoidance.** `arena/db6cd525-korea1` claimed `pipeline/session_20261118.py` (that file is
+now merged on `main` and is *not* edited here), `data/integration/request_register_2026_11_18.csv`,
+`request-register-2026-11-18.html` and `tests/test_request_register_2026_11_18.py`. Because it published
+none of the last three and marked the task not done, this session takes the same *scope* under distinct
+paths so no file collides: `pipeline/request_register_20261118.py`,
+`data/integration/request_register_items_2026_11_18.csv`, `request-register.html`,
+`tests/test_request_register.py`. If that session (or a later one) publishes its own version, integration
+keeps both and links them side by side, following the 2026-11-12 collision convention.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| NR1 | Board claim + session log | **done** | `arena/ceddf8d8-korea1` | `COORDINATION.md` (own section only) |
+| NR2 | Verify the numeric claims made in the 2026-11-18 brief against the committed official captures and against live official re-reads; one row per claim with a verdict, blank where the claim cannot be checked | **done** (15 claims re-derived; 4 verbatim official reads committed under `data/live/claim_reads_2026_11_18/`) | `arena/ceddf8d8-korea1` | `pipeline/claim_checks_20261118.py` (new), `data/integration/claim_checks_2026_11_18.csv` (new), `data/live/claim_reads_2026_11_18/**` (new verbatim official excerpts), `tests/test_claim_checks.py` (new) |
+| NR3 | 2026-11-18 request register: one row per brief item (~60), status derived from the repository artefact that is supposed to carry it, the gate that blocks it, the number that clears it, official link or an explicit blank + flag; published page | **done** (74 items on `request-register.html`) | `arena/ceddf8d8-korea1` | `pipeline/request_register_20261118.py` (new), `data/integration/request_register_items_2026_11_18.csv` (new), `assets/data/request_register_items_2026_11_18.csv`, `request-register.html` (new), `tests/test_request_register.py` (new) |
+| NR4 | Interactive Offence-vs-Defence matchup deficiency matrix (1st–4th string), built only from the dated official club depth captures and the official injury report; multi-rank-1 and empty slots represented faithfully, never flattened to "the starter" | **done** (154 matrix rows; 6 excluded club-weeks published with their reasons) | `arena/ceddf8d8-korea1` | `pipeline/matchup_matrix.py` (new), `data/processed/matchup_matrix.csv` (new), `assets/data/matchup_matrix.csv`, `matchup-matrix.html` (new) |
+| NR5 | Vig-free market consensus vs originated fair line: decompose our edge into (a) operator margin and (b) true pricing divergence, per market, with n on every value | **done** (16,206 game × market decompositions; the identity is asserted at build) | `arena/ceddf8d8-korea1` | `pipeline/vigfree_decomposition.py` (new), `data/processed/vigfree_decomposition.csv` (new), `assets/data/vigfree_decomposition.csv`, `consensus.html` (new) |
+| NR6 | Suggestions register for the items this brief adds: paths A/B/C, cost, risk, dependency and the gate each path opens; staged for review, nothing implemented | **done** (10 suggestions staged, none implemented) | `arena/ceddf8d8-korea1` | `data/integration/suggestions_2026_11_18.csv` (new, written by `pipeline/request_register_20261118.py`), `assets/data/suggestions_2026_11_18.csv` |
+| NR7 | Integration + publish: NAV + index card, page lists (verify_site / check_sources / check_links), Makefile wiring, flagged rows for every unverified value, executive-summary section, README line, `make build` + `make test`, PR → `main`, merge, Pages, record | **done** — see the session log below for the build, merge and Pages record | `arena/ceddf8d8-korea1` | `pipeline/render_site.py` (NAV tuple + one index card + flagged rows only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe + test list), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch → `main` |
+
+### Session `arena/ceddf8d8-korea1` — 2026-11-18 session log (NR1–NR7)
+
+**Board check (NR1).** Read before any file change: everything after `arena/db6cd525-korea1`, the open PRs
+(#84, #83, #82, #80, and the stale #73/#71/#70/#68/#58/#56/#47/#38/#30/#24/#19) and their file lists, and
+`main`'s CI state (last `Verify site` on `main`: success at `547d514`). Claim commit `50d23d5` was pushed
+before any file outside `COORDINATION.md` changed. Scope taken because `arena/db6cd525-korea1` recorded
+**CS5 as not done**; the paths it left unused were renamed (see the collision note above) so neither
+register can overwrite the other. No file owned by an open sibling PR was edited: `tests/test_live_verify.py`,
+`pipeline/session_20261118.py`, `pipeline/fetch_reserve_list.py`, `scripts/reconcile_depth_charts.py` and
+`data/live/depth_slot_verification.csv` are untouched, and the availability capture itself was not written
+by this session (it is the scheduled job's output, read-only here).
+
+**What the register says (NR3).** 74 items on `request-register.html`, each with the artefact re-opened at
+build time. Result: 26 built, 6 built by this session, 20 partly, 3 open, 3 blocked, 4 not built, 1 closed
+by verification, 1 explained, and the rest held/deferred/refused-by-evidence. Two deliberate refusals are
+published as rows rather than quietly dropped: R-24 (depth from jersey number) and R-74 (no reward is
+fundable while 0 of 18 candidates pass G1).
+
+**Claims re-derived (NR2).** `pipeline/claim_checks_20261118.py` parses four verbatim official reads taken on
+2026-11-18 and compares them with the committed captures:
+- **C-07 / C-08 — closed, not repaired by us.** The three Lions designations the brief calls missing
+  (Kerby Joseph, Cade Mays, D.J. Reed) print `Out` on the official page *and* in the 2026-11-18 capture; the
+  whole Detroit table agrees on 9 of 9 rows. The defect was in the site's staleness, and the scheduled
+  capture has overtaken it.
+- **C-11 — the 2026-11-12 coverage-gap cause is now verified.** CHI, DEN, PHI and TB have no injury row
+  because the official Week 10 page lists exactly those four clubs on **bye** (`set(missing) == bye_abbr` is
+  asserted in `tests/test_claim_checks.py`). This closes the item the `db6cd525` log and `brief` row B7 left
+  as "(unverified)". Absence from the report is still not "available" — R-26/R-55 keep the reserve list as
+  the separate evidence.
+- **C-03 — the multi-rank-1 count moved:** 161 club/unit/position groups today (the brief quotes 149 for the
+  capture it read). Published as `DIFFERS_SOURCE_MOVED` with both numbers, and it is why the matrix publishes
+  groups and never "the starter".
+- **C-05 / C-06 —** the Texans page really is image-only (re-read 2026-11-18: heading `Unofficial Depth
+  Chart`, then one image, no table), so a 0-row parse is faithful and the structured-source gap stays open
+  (SUG-18-09); the Packers fix the brief asks for is already in the capture (54 of 54 rows carry the number
+  in `player_raw`, 0 dirty in `player`).
+- **C-09 —** the Ravens' stale QB rows the brief cites are gone on both sides (Brissett / Fagnano / Slovis),
+  so the item is `SUPERSEDED` by the club's own update rather than by a site change.
+- **C-13 — settlement, not sourcing, is what blocks a verdict:** the ledger holds 1 of the 14 official
+  Week 10 finals. Flagged as `F-2026-11-18b-01`, and deliberately *not* filled in: 13 games stay unsettled
+  rather than being settled from a page this session only read in part.
+- **C-14 —** the "136-game log" matches nothing owned (the forward ledger holds 84 published rows over 28
+  games), so the requirement is recorded as an unverified reference, with the wording fix staged as
+  SUG-18-10 instead of being satisfied by the nearest number.
+
+**New surfaces (NR4, NR5).** `matchup-matrix.html` — 154 rows, offence group against defence group for the
+26 fixtures both sides of which are captured, printed ranks only, and the six club-weeks that could not be
+built are printed with their cause (four byes, HOU image-only, CLE for want of a far side). The page states
+its own as-at: the report it overlays is the **WEEK 10** table, so it is a worked example on played games, not
+a live pre-kickoff read (`F-2026-11-18b-04`). `consensus.html` — posted break-even, vig-free consensus,
+margin cost and divergence as four separate columns over 16,206 game × market rows, with
+`gross gap = divergence − margin cost` asserted for every row at build time; the one archive pair below parity
+is counted and disclosed on the page (`rows below parity`) rather than repaired.
+
+**Build fixes found on the way (owner-relevant).** (1) The `csv` module's default `\r\n` terminator met a
+text-mode copy into `assets/data/`, so the published CSV differed byte-wise from the file `check_rebuild.py`
+had compared; the new writers pin `lineterminator="\n"` and copy bytes (commit `70b0158`). (2)
+`repo-review.html`'s row count moves when new files appear, so the verification report had to be committed at
+its fixed point; a second `make build` now leaves the tree clean. (3) `tests/check_rebuild.py` compares every
+generated page, which means any new page must be *rendered deterministically* — both new pages read only
+committed artefacts and no clock.
+
+**Verification.** `make build` exit 0 (0 failing checks; `check_sources`: 47 canonical pages, 5,907 rows;
+`check_links`: 56 pages). `make test`: 222 passed (189 before this session, +33 in the four new modules).
+`tests/check_rebuild.py`: exit 0, "Rebuild matches committed outputs", working tree clean afterwards.
+
+**Integration state and requests to others.** NAV gained one group ("Brief review (2026-11-18)");
+`index.html`'s decision-readiness card now points at the 74-item register instead of duplicating it.
+`EXECUTIVE_SUMMARY.md` is **generated** by `pipeline/render_summary.py`, so no hand-written section was added
+(it would be overwritten by the next build); **request to the integration owner:** add one
+`_session_block()` line there citing `data/integration/claim_checks_2026_11_18.csv` — `render_summary.py` is
+also touched by open PR #73, so this session did not edit it. `scripts/reconcile_depth_charts.py` (F-50/F-51)
+is likewise left for the owner, and re-flagged as `F-2026-11-18b-07`.
+
+**Rebase log.** `git pull --rebase origin main` before the PR: conflicts expected in `COORDINATION.md`
+(keep both, `main` first) and in the three shared page-list files if #84/#80/#82 merged meanwhile; resolution
+rule = keep both sides' added lines, never drop a sibling's page or row, then re-run `make build && make test`
+and commit the regenerated outputs.
+
+**Post-claim integration record (same session).** `main` moved while this branch was in flight: PR #82
+(Game-centre/Game-Book fetcher and parsers, merged 2026-11-18T04:50Z) and PR #90 (rebuild of drifted derived
+files, the read-only guard on `scripts/reconcile_depth_charts.py` and `tests/test_reconcile_depth_charts.py`)
+landed, and #85/#86 as well. `git pull --rebase` produced six sequential conflicts, so the rebase was aborted
+and the branch merged `origin/main` instead (`c6295c8`), which is one resolution instead of six.
+
+Conflicts and how each was resolved:
+- `COORDINATION.md` — both sides kept, `main`'s sections first, this section after. Nothing dropped.
+- `Makefile` — the `test:` list became the **union** (28 modules: this session's four plus
+  `test_gamebooks.py` and `test_reconcile_depth_charts.py` from `main`). No sibling test was removed.
+- `EXECUTIVE_SUMMARY.md`, `flagged.html`, `index.html`, `repo-review.html`, `repo_inventory.csv`,
+  `verification_report.csv`, `flagged_2026_11_18.csv`, `spotcheck_rows.csv` — all generated; taken from
+  `main` and then regenerated by `make build`, never hand-merged.
+
+**Two register rows were wrong the moment the merge landed, and the fix was made derived, not manual.**
+R-28/R-30/R-31 said the game-centre capture "does not exist and belongs to an open PR"; after #82 it does
+exist, so those rows now cite `data/evidence/official_games/manifest.json`, `pipeline/fetch_official_games.py`
+and `pipeline/official_games.py`, and the clearing number is the manifest's own page count. The flagged row
+about `scripts/reconcile_depth_charts.py` is now **generated by reading the script and the Makefile at build
+time**: with the guard merged it prints "Info · closed on this branch", and it re-opens by itself if the script
+gains a write path or the test leaves the list. That is the pattern the other registers should follow —
+a finding that quotes a file's behaviour should ask the file, not the author.
+
+**Verification after the merge.** `make build` exit 0 (0 failing checks); `make test` **245 passed** (main
+added `test_gamebooks.py` and `test_reconcile_depth_charts.py`; this branch added 33 tests of its own);
+`tests/check_rebuild.py` exit 0 with a clean working tree, i.e. the committed site is a fixed point of the
+generators. `check_sources` 47 canonical pages / 5,907 rows; `check_links` 56 pages.
+
+**Collision with CS5, and how it was resolved (this session).** While this branch was in flight,
+`arena/53ef9544-korea1` completed the same open scope under task **CS5** and merged it as PR #92:
+`pipeline/request_register_2026_11_18.py`, `request-register-2026-11-18.html` (81 items) and
+`tests/test_request_register_2026_11_18.py`. This session had claimed that scope at 04:52Z from a board
+that recorded it as **not done**, and had no way to see a sibling's in-flight branch. Nothing was discarded:
+
+| Aspect | CS5 (`request-register-2026-11-18.html`) | This session (`request-register.html`) |
+|---|---|---|
+| Items | 81 | 74 |
+| Status source | recorded against `main` at `547d514` | re-derived by opening each cited artefact at build time |
+| Staleness | a row is text until a human edits it | fail-closed contract: a cited file that vanishes, or a declared gap that appears, fails `make build` |
+| Official re-reads | none in this register | 15 claims re-derived against four verbatim official reads dated 2026-11-18 |
+| New surfaces | — | `matchup-matrix.html`, `consensus.html` |
+
+The two pages cross-reference each other and state the difference on the page, so a reader is not left to
+wonder which register is current. **Request to the integration owner (not edited here, it is CS5's file):**
+have `pipeline/request_register_2026_11_18.py` link `request-register.html` in the same sentence it already
+uses for its own evidence, so the pointer is symmetric.
+
+**Final verification on the merged tree (this branch, 2026-11-18T05:4xZ).** `make build` exit 0, 0 failing
+checks; `make test` **254 passed** (both registers' tests, `test_gamebooks.py`, `test_reconcile_depth_charts.py`
+and this session's 33); `tests/check_rebuild.py` exit 0 with a clean working tree, so the committed site is a
+fixed point of the generators. Pages counted by `verify_site`: consensus.html 45 rows, matchup-matrix.html
+160 rows, request-register.html 95 rows, request-register-2026-11-18.html 74 rows — all with
+`official_missing=0 broken=0`.
+
+**CI failure found and fixed by this session (the reason this PR took a second pass).** The first `Verify
+site` run on this branch (44245729332) failed at the last step, `python tests/check_rebuild.py`, while
+`make build` and `make test` passed both locally and in CI. Cause: `pipeline/claim_checks_20261118.py`
+published `str(READS / file)` — an **absolute** path — into `claim_checks_2026_11_18.csv`, its
+`assets/data` copy and `request-register.html`. GitHub Actions checks out at `/home/runner/work/Korea1/Korea1`
+and this workspace at `/home/user/Korea1`, so a rebuild on CI rewrote those three files and the drift check
+correctly refused them. Reproduced exactly by cloning this branch into a clean directory and running
+`make build` there: the only diff was the evidence column. Fixed by writing repo-relative paths (commit
+`01b7913`), with `tests/test_claim_checks.py::test_no_build_machine_path_is_published` now forbidding
+`/home/`, `/runner/`, `/github/workspace` and `/tmp/` in any published artefact of this register and
+asserting every relative pointer resolves inside the repository.
+
+**This class of bug is not hypothetical and not local to this session.** Any generator that puts a
+filesystem path, or anything else derived from the checkout location, into a committed output makes CI red
+for the next person. The pattern to copy: repo-relative pointers plus that assertion. A clean-clone build is
+the cheapest reproduction, and it is worth running before opening a PR that adds a generator:
+`git clone --branch <branch> "file://$(pwd)" /tmp/x && cd /tmp/x && make build && git status --porcelain`.
+
+**Second collision, and why a rename was the only correct resolution (this session).** `arena/f84bc1d7-korea1`
+merged CR1 (PR #89) while this branch was being re-verified, and CR1 writes **`request-register.html`** —
+the path this session had used for its own register — plus `tests/test_request_register.py`. That is not a
+cosmetic clash: both generators write the same file, so whichever ran last in `make build` would have
+silently replaced the other's page, and the loser's own test (CR1 asserts its page's tbody count equals its
+CSV) would then fail. Two rules from the board drove the fix: a merged session's file is never edited by
+another session, and no sibling's work is discarded. So **this session renamed its own outputs** —
+`request-register.html` → **`verified-register-2026-11-18.html`**, `tests/test_request_register.py` →
+`tests/test_verified_register.py` — and left CR1's and CS5's pages, modules and tests exactly as merged. The
+renamed page now states the three-way difference on its first block (CR1 records what was built with the
+live spot-check verdict; CS5 inventories against its own commit; this one re-derives each status from the
+artefact and fails the build when that stops being true), and `README.md` says the same. All three registers
+are in `verify_site.py`, `tests/check_sources.py` and `tests/check_links.py`; the Makefile runs all three
+generators and all 30 test modules.
+
+**Re-verification after that merge:** `make build` exit 0 with **0 failing checks**; `make test` **359
+passed**; the branch was then built in a clean clone of its own head (the CI condition) and
+`tests/check_rebuild.py` reported no drift — which is how the absolute-path bug above was found and is now
+kept from returning.
+
+**Why this branch's first CI run was red, and the rule that follows (commit `5462c21`).**
+`pipeline/session_review.py` builds the repository inventory from `git ls-files`. While a path is unmerged,
+`git ls-files` prints it once per index stage, so the build that ran *during* my conflict resolution
+published `COORDINATION.md` three times. `tests/check_rebuild.py` compares a clean rebuild against the
+committed output — in CI, that is a checkout with no unmerged paths — so it correctly reported drift on
+`repo_inventory.csv` (both copies) and `repo-review.html`. Nothing was wrong with the data; the committed
+output had been produced in a transient index state.
+
+Rule for every session here, including this one: **re-run the generators after the last conflict is
+resolved, before committing the merge.** And when a rebuild disagrees with a committed artefact, reproduce
+it in a clean clone (`git clone --branch <branch> "file://$(pwd)" /tmp/x && cd /tmp/x && make build &&
+git status --porcelain`) instead of force-committing the local copy — that is how both of this session's
+reproducibility bugs (the absolute evidence path and this one) were found in minutes.

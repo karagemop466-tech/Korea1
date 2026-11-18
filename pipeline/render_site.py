@@ -66,6 +66,15 @@ NAV_GROUPS = [
         ("signal-staking.html", "Signal vs staking"),
         ("demotion.html", "Demotion gate"),
     ]),
+    # NR3-NR5 (session arena/ceddf8d8-korea1, 2026-11-18): the re-derived register and the two surfaces the
+    # brief asked for that existed nowhere. Distinct page names from CR1's request-register.html and CS5's
+    # request-register-2026-11-18.html by design: three sessions claimed this scope, and the site publishes
+    # all three instead of one overwriting another.
+    ("Brief review (2026-11-18) · verified", [
+        ("verified-register-2026-11-18.html", "Verified register · 74 items"),
+        ("matchup-matrix.html", "Matchup deficiency matrix"),
+        ("consensus.html", "Vig-free vs fair line"),
+    ]),
     ("Brief review (2026-11-14)", [
         ("brief-2026-11-15.html", "2026-11-15 brief · tracker"),
         ("suggestions-review-2026-11-14.html", "Suggestions review · this brief"),
@@ -132,6 +141,9 @@ NAV_GROUPS = [
     ]),
 ]
 NAV = [item for _, items in NAV_GROUPS for item in items]
+# Page written by pipeline/request_register_20261118.py (arena/ceddf8d8-korea1). Named apart
+# from CR1's request-register.html and CS5's request-register-2026-11-18.html.
+NEWPAGE = "verified-register-2026-11-18.html"
 
 
 def e(x) -> str:
@@ -1338,6 +1350,7 @@ No manual input is required to use the current site. A correction must update th
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
     body += _flagged_2026_11_15_section()
     body += _flagged_2026_11_18_section()
+    body += _flagged_2026_11_18b_section()
     body += _flagged_2026_11_18_b_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
@@ -1799,6 +1812,33 @@ def _flagged_2026_11_15_section() -> str:
             "Details and the brief tracker: <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
                     caption="Session findings with an official source") + listing + "</section>")
+
+
+def _flagged_2026_11_18b_section() -> str:
+    """NR2/NR3 (arena/ceddf8d8-korea1): findings generated from the re-derived claim values.
+
+    The row about the depth-reconciliation script reads that script and the Makefile at build time, so it
+    re-opens itself if the guard is ever removed. Rows with no official source are shown as text, never as
+    an unsourced table row.
+    """
+    fl = _read_integration("flagged_2026_11_18b.csv")
+    if fl is None or not len(fl):
+        return ""
+    sourced = fl[fl.source_url != ""]
+    rows = [[e(r.id), e(r.severity),
+             e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+             src_link(r.source_url, r.source_label)] for r in sourced.itertuples(index=False)]
+    text = [f"<strong>{e(r.id)}</strong> ({e(r.severity)}) {e(r.finding)} "
+            f"<span class=\"small\">No official source: shown as text. Next: {e(r.next)}</span>"
+            for r in fl[fl.source_url == ""].itertuples(index=False)]
+    listing = ("<ul class=\"findings\">" + "".join(f"<li>{x}</li>" for x in text) + "</ul>") if text else ""
+    return ("<section><h2>Findings from the 2026-11-18 verified-register session</h2>"
+            "<p>Each row was re-derived from a committed artefact or from a verbatim official read under "
+            "<code>data/live/claim_reads_2026_11_18/</code>. None blocks a merge; the working is on "
+            "<a href=\"" + NEWPAGE + "\">the verified register</a>.</p>"
+            + (table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
+                      caption=f"{len(rows)} session findings with an official source") if rows else "")
+            + listing + "</section>")
 
 
 def _flagged_2026_11_18_section() -> str:

@@ -1,0 +1,15 @@
+{
+  "read_utc": "2026-11-18T05:00Z",
+  "rows": 15,
+  "verdicts": {
+    "MATCHES": 4,
+    "SUPERSEDED": 2,
+    "DIFFERS_SOURCE_MOVED": 1,
+    "CONFIRMED": 3,
+    "CLOSED": 1,
+    "PARTLY_MATCHES": 1,
+    "EXPLAINED": 1,
+    "PARTLY": 1,
+    "NOT_CHECKABLE": 1
+  }
+}

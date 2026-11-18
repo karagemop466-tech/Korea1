@@ -34,6 +34,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "suggestions-review-2026-11-14.html",
          "request-register-2026-11-18.html",
          "requirement-annex-2026-11-18.html",
+         # NR3-NR5 (arena/ceddf8d8-korea1, 2026-11-18).
+         "verified-register-2026-11-18.html", "matchup-matrix.html", "consensus.html",
          "brief-2026-11-15.html",
          # CR1 (arena/f84bc1d7-korea1)
          "request-register.html",
