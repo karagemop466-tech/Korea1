@@ -53,6 +53,9 @@ reviewall: liveverify
 
 site: injuries review reviewall
 	$(PY) data/review/_author.py
+	# CS4/CS6 (arena/db6cd525-korea1): official spot-check rows and flagged rows F-42 onward.
+	# Reads committed captures and data/live/spotcheck_2026_11_18/ only (no network).
+	$(PY) pipeline/session_20261118.py
 	$(PY) pipeline/depth_status.py
 	$(PY) pipeline/lineup_deficiencies.py
 	$(PY) pipeline/decision_readiness.py
