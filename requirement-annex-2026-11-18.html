@@ -38,12 +38,13 @@ asked for something the evidence says must not be done; the rejection is recorde
 is the readable test, not a threshold invented here: it is the value the frozen configuration
 (<a href="assets/data/validation_config.json">validation_config.json</a>) or the next official capture would have to
 produce. No cell is filled by hand; every number in the evidence column is recomputed from the committed file
-named in the same row, and <code>tests/test_request_register_2026_11_18.py</code> fails the build if a row loses its
+named in the same row, and <code>tests/test_requirement_annex_2026_11_18.py</code> fails the build if a row loses its
 source or its clearing number.</p>
-<p><strong>Live check.</strong> At 2026-11-18T04:52Z this session re-read four official pages with the page-fetch tool:
-the NFL injury report (97 rows), the Commanders depth chart (23 rows, Offense and Defense),
-the November reserve list (25 rows) and one game centre (KC at ATL, printed
-35–13 Final). The verbatim transcriptions are committed under
+<p><strong>Live check.</strong> At 2026-11-18T04:52Z this session re-read six official pages with the page-fetch tool:
+the NFL injury report (97 rows across 8 clubs), the Commanders depth chart
+(23 rows, Offense and Defense), the reserve list for three months
+(25 + 25 + 25
+rows) and one game centre (KC at ATL, printed 35–13 Final). The verbatim transcriptions are committed under
 <code>data/live/spotcheck_2026_11_18_b/</code>; the comparison below is recomputed from those files on every build.</p>
 </section><div class="cards"><div class="card "><div class="card-value">75</div><div class="card-label">request lines registered</div><div class=card-note>one row per line, no merge</div></div><div class="card "><div class="card-value">27</div><div class="card-label">done</div><div class=card-note>evidence file recomputed this build</div></div><div class="card "><div class="card-value">32</div><div class="card-label">partly done</div><div class=card-note>named gate, named number</div></div><div class="card "><div class="card-value">13</div><div class="card-label">blocked</div><div class=card-note>official source or owner decision</div></div><div class="card "><div class="card-value">3</div><div class="card-label">rejected as asked</div><div class=card-note>recorded, not silently dropped</div></div><div class="card "><div class="card-value">97/97</div><div class="card-label">injury rows identical</div><div class=card-note>official re-read 2026-11-18T04:52Z</div></div><div class="card "><div class="card-value">23/23</div><div class="card-label">Commanders depth rows identical</div><div class=card-note>same read</div></div></div><section id="register">
 <h2>1 · The register — one row per line of the brief</h2>
@@ -68,7 +69,7 @@ placeholder="price, depth, injury, gate, Houston…"></label></div>
 <h2>5 · How this page verifies itself</h2>
 <ul>
 <li>Every number in the evidence column is read from a committed file in the same build; no value is typed in.
-<code>tests/test_request_register_2026_11_18.py</code> re-derives the headline numbers and fails on a mismatch.</li>
+<code>tests/test_requirement_annex_2026_11_18.py</code> re-derives the headline numbers and fails on a mismatch.</li>
 <li>Every row carries an official source URL, checked against the same allow-list as every other page.</li>
 <li>The live check is recomputed from the committed transcriptions, so the counts on this page and the counts
 in the CSV cannot drift apart.</li>

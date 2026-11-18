@@ -214,7 +214,7 @@ request item with its status, the evidence file that supports it, the gate that 
 it and the number that would clear it. It is published on
 `request-register-2026-11-18.html` and in `data/integration/request_register_2026_11_18.csv`.
 
-**81 request items** - 37 done, 26 partly done, 4 built on open PR #82 (not
+**81 request items** - 36 done, 27 partly done, 4 built on open PR #82 (not
 merged to main), 10 blocked or not started, 3 rejected by design,
 1 needing an owner decision. 74 rows carry an official/primary source link;
 7 rows have no official source and are printed as flagged text, never filled in.
