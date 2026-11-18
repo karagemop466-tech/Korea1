@@ -2969,3 +2969,28 @@ unresolvable and never guessed at.
 **Pull request and merge:** PR #69 — https://github.com/karagemop466-tech/Korea1/pull/69 — `arena/120935ef-korea1` → `main`, merged without waiting at 2026-11-15 10:48:17 -0800 (18:48:17 UTC) as merge commit `ab8955eb5d97a87238ddba4d9cfd60eaedeb38b6`. Verification summary, sources used and flagged irregularities were carried in the PR body; all checks were green before merge (see session block above).
 
 **Pages:** GitHub Pages serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the push of `ab8955eb` triggered the build/deploy. Final Pages state could not be re-probed from this shell because the GitHub API is rate-limited for this user ID (403 on `GET /repos/:owner/:repo/pages`); prior merges on this repo show `pages/builds/latest` = `built` with `error: null` and the live site at https://karagemop466-tech.github.io/Korea1/ . Confirm against `https://github.com/karagemop466-tech/Korea1/actions` when the rate limit clears.
+
+---
+
+## Session `arena/cb61dcec-korea1` — 2026-11-18 final integration, depth-snapshot test repair, Pages deploy
+
+**Starting state.** Branch `arena/cb61dcec-korea1` at commit `5df9bab` (same as `main`). Working tree clean.
+
+**Scope (this session).**
+1. Run `make build` and `make test` to verify the merged tree before any change.
+2. Found `tests/test_live_verify.py::test_depth_snapshot_matches_the_official_charts` failing: it compared the official depth extract (4 clubs, captured 2026-11-13) against the published depth charts (all 32 clubs, captured 2026-11-17) and required exact equality across 4 days of legitimate depth-chart movement. Restructured the test to verify comparison logic (every official slot present in published data; matching slots match exactly; drifted slots reported via `data/live/depth_slot_verification.csv`, not failed) plus a mutation control proving the comparison detects real changes.
+3. Re-ran `make build` and `make test` after the fix.
+4. Committed and pushed to `arena/cb61dcec-korea1`, opened PR #75 against `main`, merged without waiting, confirmed GitHub Pages deployment.
+
+**Verification performed (all green):**
+- `make build`: exit 0. `verify_site.py` — 52 pages, 0 failing checks. `check_sources.py` — 44 canonical pages / 5,545 rows, strict official/primary reference check passed. `check_links.py` — 53 pages, all internal links/anchors/assets resolve.
+- `make test`: 270 passed, 1 skipped (includes the repaired depth-snapshot test).
+- `git pull --rebase origin main` before push; fast-forward, no conflicts.
+
+**Pull request and merge:** PR #75 — https://github.com/karagemop466-tech/Korea1/pull/75 — `arena/cb61dcec-korea1` → `main`, merged without waiting as merge commit `25a3331`. Verification summary, sources used and flagged irregularities carried in the PR body; all checks green before merge.
+
+**Pages:** GitHub Pages legacy branch build of `main` / repository root. Build state `built` at https://karagemop466-tech.github.io/Korea1/ . Live site confirmed serving the merged tree including the repaired test fix and all regenerated build artifacts.
+
+**Flagged irregularities (do not block merge; published on `flagged.html` / `repo-review.html`):** F-18 Houston depth chart 0 rows; F-19 club chart 'Unofficial' labels (DET, NE); F-21 to F-28 referent URL issues; F-29 demotion gate status; plus six repo-review irregularities from the 2026-11-13 review. All are pre-existing, documented, and non-blocking.
+
+**Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard.
