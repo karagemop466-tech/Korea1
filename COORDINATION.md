@@ -62,7 +62,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | B45 | **2026-11-18 final integration + publish**: board read first; diagnosed and repaired the red `main` after PR #77 (12 drifted derived files, `check_rebuild` exit 1); recorded the multi-session collision and scope partitions; merged **PR #80** (claim + diagnosis + records) with `Verify site` green on `main`; full re-verify of the combined tree; official spot-checks against live nfl.com; disposition of the four green PRs partitioned with siblings (#68/#71 absorbed by #83, #48/#74 closed by Z3, #70/#73 → `arena/8a075837-korea1` PR #84), the eight stale conflicting PRs dispositioned by Z3's register; final PR → `main`, merge, Pages, record | **done** (2026-11-18, see session log below) | `arena/b450c57b-korea1` | `COORDINATION.md` (own section + this row only); sibling PRs merged only via `gh pr merge` (no sibling branch pushed to); content fixes only on `arena/b450c57b-korea1`, logged here |
 | CR1 | **Request register (CS5 follow-through)** — `arena/db6cd525-korea1` deferred CS5 ("the request register … not done"); claim re-checked 2026-11-18T04:50Z and no live session holds it. One row per standing-request item (the 2026-11-18 request, items grouped REQ-01…): status (built / partly built / blocked / rejected as requested), repository evidence, the gate that blocks it, the number or condition that clears it, official source link where the item asserts an NFL fact, and the live spot-check verdict | **done** — 81 rows (REQ-01..REQ-81) published on `request-register.html` + `data/integration/request_register.csv`; verification: `tests/test_request_register.py` 7 passed (id completeness/order, closed status set, official-host sources only, HTML/CSV parity, ground-truth cells match `data/availability/*`); `make build` 45 pages / 5,659 rows strict-checked | `arena/f84bc1d7-korea1` | `pipeline/request_register.py` (new), `data/integration/request_register.csv` (new), `request-register.html` (new), `tests/test_request_register.py` (new) |
 | CR2 | **Live official-source spot-check behind CR1** — page-fetch reads of every official page the register cites (nfl.com injury report, reserve list, week scores, club depth charts, NFL Operations); verdict recorded per register row; nothing inferred, unconfirmed cells left blank and flagged | **done** — 8 official pages read live 2026-11-18 (9 checks: 7 VERIFIED LIVE, 1 READ LIVE PARTIAL, 1 REFUTED LIVE). Verified: DET Joseph/Mays/Reed all **Out** on nfl.com (matches capture); Malik Willis MIA 11/10 Reserve/Injured; WAS 24–21 Final; game centre prints LOCATION EAST RUTHERFORD, NJ / STADIUM METLIFE STADIUM + Game Book PDF link; Texans chart is one image under "Unofficial Depth Chart" (confirms F-18). Refuted: the request's Baltimore stale-QB claim (live chart QB row = Brissett \| Fagnano \| Slovis; no Jackson/Huntley anywhere on the page, consistent with F-46a) | `arena/f84bc1d7-korea1` | `data/live/request_spotcheck_2026_11_18/**` (new), register rows of CR1 |
-| CR3 | **Final integration + publish for CR1–CR2** — NAV entry + one index card + page lists (`verify_site.py`, `check_sources.py`, `check_links.py`) + one Makefile line + README link + executive-summary section; merge `origin/main` first (keeping every sibling section), `make build` + `make test` + `tests/check_rebuild.py` green, PR → `main`, merge without waiting, Pages confirmed, record here | **in progress** | `arena/f84bc1d7-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one line), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch `arena/f84bc1d7-korea1` → `main` |
+| CR3 | **Final integration + publish for CR1–CR2** — NAV entry + one index card + page lists (`verify_site.py`, `check_sources.py`, `check_links.py`) + one Makefile line + README link + executive-summary section; merge `origin/main` first (keeping every sibling section), `make build` + `make test` + `tests/check_rebuild.py` green, PR → `main`, merge without waiting, Pages confirmed, record here | **done** — PR #89 merged as `4b5981d` 2026-11-18T05:59:26Z; verification: `make build` 0 failing checks, `check_sources` 46→46 pages / 5,752 rows at PR head (56 pages / 325 tests on the final merged tree), PR-event verify green on head `54fe37d4`; Pages deployment `7875532706` **success** 05:59:58Z, live page confirmed | `arena/f84bc1d7-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one line), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch `arena/f84bc1d7-korea1` → `main` |
 
 | T44 | **Integration of the four abandoned 2026-11-15 pull requests (#68, #70, #71, #73) + full verification + publish.** All four branches have had no commits since 2026-11-15 (>60 minutes, status open, checks green at the time), so per board rule 3 their open work is taken over here: merge each into this integration branch in order (#68 brief text correction → #70 Makefile test registration → #71 integration-verification record → #73 leaderboard backtest-value removal), resolve generated-file conflicts by regenerating with `make build`, run `make build` + `make test` + `tests/check_rebuild.py`, PR → `main`, merge, confirm Pages deploy, record | **done** — PR #96 merged as `c4f5c9a`; `Verify site` success; Pages `built` at `c4f5c9a`; 305 tests; `check_rebuild` 0 drift | `arena/6d716989-korea1` | `COORDINATION.md` (board row + own session section), files of PRs #68/#70/#71/#73 as merged (`pipeline/render_site.py`, `pipeline/render_summary.py`, `pipeline/session_competition.py`, `pipeline/session_20261115.py`, `Makefile`, `tests/test_brief_2026_11_15.py`, `INTEGRATION_VERIFICATION.md`, generated `*.html`/`assets/data/*`/`data/{processed,integration}/*` outputs), branch `arena/6d716989-korea1` → `main` |
 
@@ -3498,8 +3498,9 @@ cites with the live page-fetch tool and records a verdict per row; CR3 integrate
 in request order. Columns: status (closed set), what is built (repository evidence, linked), the gate
 that blocks full delivery, the number or condition that would clear it, the flag holding any gap,
 the official/primary source and the CR2 live-check verdict. Register state at publication:
-**38 built · 19 partly built · 11 not built · 4 blocked (owner decision) · 2 rejected as requested ·
-3 process · executed** — counts generated from the CSV, never retyped (see `_cr1_block()` in
+**41 built · 21 partly built · 12 not built · 2 blocked (owner decision) · 2 rejected as requested ·
+**3 process · executed** (corrected 2026-11-18 in the publish record below; the earlier hand-typed
+counts in this paragraph were estimates, the register page computes them from the CSV) — counts generated from the CSV, never retyped (see `_cr1_block()` in
 `pipeline/render_summary.py`). Items that assert facts the repository cannot confirm are blank and
 flagged, never inferred: the "136-game log" (REQ-19, F-52), the league schedule announcement
 (REQ-24, F-53), the Colts roster-event claim (REQ-34, F-56), the 149/254/279 counts (REQ-33/49,
@@ -3605,3 +3606,38 @@ every candidate, and the pre-existing flagged register F-01…F-57 plus the new 
 this session's annex: F-57 records that the monthly reserve page is a rolling window (September, October and
 November each printed exactly 25 complete rows and each stopped before month end), which is why R69 stays an
 owner decision and why "not listed" must never read as "available".
+
+### `arena/f84bc1d7-korea1` — CR3 publish record (2026-11-18)
+
+**Pull request and merge.** PR #89 — https://github.com/karagemop466-tech/Korea1/pull/89 —
+`arena/f84bc1d7-korea1` → `main`, merged without waiting as merge commit **`4b5981d`** at
+2026-11-18T05:59:26Z. Verification summary, sources used and flagged irregularities were carried
+in the PR body.
+
+**CI.** `verify` green on the PR head (`54fe37d4`, push event and pull-request event both success —
+the pull-request event builds the *merged* state and is the binding one). The merge itself raced
+four sibling record-merges (PRs #88, #92/#94, #96, #97) between CI and the merge attempt; each
+round resolved by merging `origin/main` into the branch, re-running `make build` + `make test`
+(325 passed on the final merged tree) and re-attempting immediately.
+
+**Pages.** GitHub Pages legacy branch build of `main` / repository root. Deployment `7875532706`
+for `4b5981d0` reported **success** at 2026-11-18T05:59:58Z. Live read of
+https://karagemop466-tech.github.io/Korea1/request-register.html confirms the merged site serves
+the register (81 rows, summary cards 41/21/14/2/3, both independent registers cross-linked).
+
+**Record corrections.** The CR1–CR2 log paragraph above hand-typed status counts as
+38/19/11/4/2/3; the register (computed from `data/integration/request_register.csv`) is
+**41 built · 21 partly built · 12 not built · 2 blocked (owner decision) · 2 rejected as
+requested · 3 process · executed**. Corrected in place and noted here; the CSV is the source of
+record.
+
+**Merge-conflict lesson (second occurrence, recorded).** Bulk `checkout --ours` on conflicted
+*generated* files is safe; on shared *source* files it silently dropped a sibling's registrations
+twice (this session's first merge of PR #92's CS5 work; again in the PR #88 merge round). Both
+times the damage was caught by the sibling's own tests or by line-level review and repaired by
+union before publish. Never bulk-resolve `pipeline/*.py`, `tests/*.py` or `Makefile`.
+
+**Decision state (unchanged).** 0 of 18 strategies validated; no reward awarded; G1 (executable
+quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the competition
+leaderboard. Flagged irregularities (F-18 … F-62) are published on `flagged.html` and on the
+register; they do not block the merge, per the standing request.
