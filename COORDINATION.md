@@ -3139,12 +3139,73 @@ blocks it, and the number that would clear it.** That register is this session's
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
 | D1 | Board claim and session log (this section) | **done** (first commit of this session) | `arena/ba09384a-korea1` | `COORDINATION.md` (own section only) |
-| D2 | **Requirement verification register**: one row per request line (side→total→ML origination order, price-snapshot store, verified results feed, three-column fair/market/diff, signal-vs-staking split, replacement depth, correlation n, demotion gate, pre-registration, availability graph, playing-time depth, injury surprise, 32-club sweep, fixture context, probability+inputs storage, luck panel, mind-changer field, residual pricing, 136-game corpus, price-data policy, injury clock deltas, readiness table, venue transcription, dated schedule announcement, Game Books, opponent-aware ratings, injury ablations, immutable snapshots, inactive lists + snaps, depth-parse repairs, depth slots as groups, roster-turnover event, singles baseline, parlay joint-evidence gate, proper-score divisions, proper-score ranking, durable storage + alerts, public/private split, per-team view, announced starters, depth register, questionable calibration, 1st–4th string matrix, stale-depth flag, point-in-time ledger, Lions designations, Week 10 re-capture, reject jersey-order depth, shared/empty slots, depth-source route, designation reliability, Wed/Thu/Fri capture, injury series, snap counts, control baselines, weather/roof overlay, two-stage leaderboard, vig-free decomposition, weekly diff, two totals, drift alarm, reserve list, reject season ROI, historical injury archive, pre-registration rule, train/validation/holdout, suggestions section) — status, evidence, blocking gate, clearing number, official source | **in progress** | `arena/ba09384a-korea1` | `pipeline/req_register_2026_11_18.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
-| D3 | Official availability spot-check: 4 clubs' injury rows + 1 club depth chart re-read on the live official pages and compared row by row with the committed capture | **planned** | `arena/ba09384a-korea1` | `data/live/spotcheck_2026_11_18_b/**` (new), part of `pipeline/req_register_2026_11_18.py` |
-| D4 | Verify every number quoted in the new register against the committed evidence file (no typed-in numbers) | **planned** | `arena/ba09384a-korea1` | `tests/test_request_register_2026_11_18.py` |
-| D5 | Current decision-blocking register: the owner decisions the open PRs and the flagged register are waiting on, in one place | **planned** | `arena/ba09384a-korea1` | `request-register-2026-11-18.html` section 3 |
-| D6 | Integration + publish: nav entry, page lists, Makefile, executive-summary addendum, `make build`/`make test`/`check_rebuild`, PR to `main`, merge without waiting, confirm Pages, record here | **planned** | `arena/ba09384a-korea1` | `pipeline/render_site.py` (NAV only), `pipeline/render_summary.py` (addendum only), `Makefile`, `tests/check_links.py`, `tests/check_sources.py`, `pipeline/verify_site.py` (page list only), `README.md` (one line), `EXECUTIVE_SUMMARY.md` (one section), `COORDINATION.md` |
+| D2 | **Requirement verification register** (done: 75 rows): one row per request line (side→total→ML origination order, price-snapshot store, verified results feed, three-column fair/market/diff, signal-vs-staking split, replacement depth, correlation n, demotion gate, pre-registration, availability graph, playing-time depth, injury surprise, 32-club sweep, fixture context, probability+inputs storage, luck panel, mind-changer field, residual pricing, 136-game corpus, price-data policy, injury clock deltas, readiness table, venue transcription, dated schedule announcement, Game Books, opponent-aware ratings, injury ablations, immutable snapshots, inactive lists + snaps, depth-parse repairs, depth slots as groups, roster-turnover event, singles baseline, parlay joint-evidence gate, proper-score divisions, proper-score ranking, durable storage + alerts, public/private split, per-team view, announced starters, depth register, questionable calibration, 1st–4th string matrix, stale-depth flag, point-in-time ledger, Lions designations, Week 10 re-capture, reject jersey-order depth, shared/empty slots, depth-source route, designation reliability, Wed/Thu/Fri capture, injury series, snap counts, control baselines, weather/roof overlay, two-stage leaderboard, vig-free decomposition, weekly diff, two totals, drift alarm, reserve list, reject season ROI, historical injury archive, pre-registration rule, train/validation/holdout, suggestions section) — status, evidence, blocking gate, clearing number, official source | **done** | `arena/ba09384a-korea1` | `pipeline/req_register_2026_11_18.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
+| D3 | Official re-read, row by row: **8 clubs'** injury rows (97), 1 club depth chart (23), the reserve list for three months (25 each) and 1 game centre, compared cell by cell with the committed captures | **done** | `arena/ba09384a-korea1` | `data/live/spotcheck_2026_11_18_b/**` (new), part of `pipeline/req_register_2026_11_18.py` |
+| D4 | Verify every number quoted in the new register against the committed evidence file (no typed-in numbers) | **done** (13 tests) | `arena/ba09384a-korea1` | `tests/test_request_register_2026_11_18.py` |
+| D5 | Current decision-blocking register: 12 questions (have / lack / discover) and 8 owner decisions in one place | **done** | `arena/ba09384a-korea1` | `request-register-2026-11-18.html` section 3 |
+| D6 | Integration + publish: nav entry, page lists, Makefile, landing digest, executive-summary section, flagged-page rows, `make build`/`make test`/`check_rebuild`, PR to `main`, merge without waiting, confirm Pages, record here | **done** for build/test/verify; PR + merge recorded below | `arena/ba09384a-korea1` | `pipeline/render_site.py` (NAV + one landing section + one exec section + one flagged section), `Makefile`, `tests/check_links.py`, `tests/check_sources.py`, `pipeline/verify_site.py` (page list only), `README.md` (one line), `COORDINATION.md` |
 
 **No shared output is changed before the integration step (D6).** The table data, `index.html` and the
 navigation are touched only in D6, after D2–D5 are green.
 
+
+### Session `arena/ba09384a-korea1` — 2026-11-18 session log (D1–D6)
+
+**Board check (D1).** Read before any file change: this board, the `arena/db6cd525-korea1` and
+`arena/292f7ae1-korea1` logs, and the open PR list. Seven sibling PRs were open when this session started
+(#58, #68, #70, #71, #73, #80, #82, #83, #84); none is edited, reverted or deleted here. Claim commit
+`d19b500` was pushed before any file in scope was touched.
+
+**What was built (D2–D5).** The 2026-11-18 brief repeats the 2026-11-13 brief in full and adds one demand:
+*a clear list of questions, information and answers that must be settled before any decision.* The CS5 row
+above recorded that register as `not done`. It exists now:
+
+* `pipeline/req_register_2026_11_18.py` — reads committed files only, no network. Writes
+  `data/integration/request_register_2026_11_18.csv` (75 rows), `questions_2026_11_18.csv` (12),
+  `decisions_2026_11_18.csv` (8), `findings_2026_11_18.csv` (6) and `request-register-2026-11-18.html`.
+* Every number in the evidence column is recomputed from the committed file named in the same row.
+  `tests/test_request_register_2026_11_18.py` re-derives the headline counts independently and fails on a
+  mismatch, a missing official source, or a row without a clearing number.
+
+**Official re-read (D3), page-fetch tool, 2026-11-18 ~04:52Z.** Transcriptions are committed verbatim under
+`data/live/spotcheck_2026_11_18_b/`. The sandbox shell cannot open `www.nfl.com` (TLS refused), so the
+transcription is the record of the read; the comparison is recomputed from it on every build.
+
+| Page | Rows read | Result against the committed capture |
+|---|---|---|
+| nfl.com/injuries/ (WAS, NYG, NE, DET, KC, ATL, MIN, GB) | 97 | **97/97 identical** on injury, practice and game status |
+| commanders.com/team/depth-chart (Offense, Defense) | 23 | **23/23 identical** |
+| nfl.com reserve list, November | 25 | **25/25 on both**; 0 live-only, 0 capture-only |
+| nfl.com reserve list, October | 25 | read to test the window question (below) |
+| nfl.com reserve list, September | 25 (+1 row cut mid-cell, not counted) | same |
+| nfl.com game centre, KC at ATL week 10 | 1 | printed **KC 35 – ATL 13 Final**; the results feed still says FUTURE |
+
+**One row was not scored.** The reader cut KC's 13th row (Patrick Mahomes) mid-cell. The row is omitted, named
+on the transcription and excluded from the comparison; the build asserts that exactly one KC row is missing, so
+a silently dropped section fails instead of shrinking the comparison.
+
+**Findings (D5, flagged page).** F-52 the results feed still calls a settled game FUTURE; F-53 nfl.com prints
+`AZ` for the Cardinals while every table here uses `ARI`; F-54 the Game Book capture has never produced a
+committed table, which is what blocks R28/R45/R60/R62 — one workflow run, not missing code; F-55 the Lions trio
+is blank only in the 2026-11-12 capture and Out from 11-13 onward (the earlier flag described a stale capture);
+F-56 28 of 32 clubs carry injury rows (CHI, DEN, PHI, TB carry none) and 31 of 32 carry depth rows (HOU none);
+**F-57 the monthly reserve page is a rolling window** — September, October and November each printed exactly 25
+complete rows and each stopped before month end (09/26–09/30, 10/24–10/31, 11/10–11/17). Three months, same
+count, every one short of month end is strong evidence and is recorded as such, not as a stated rule. R69
+therefore stays an owner decision, with a one-page second-day sample named as the test that would settle it.
+
+**Register state.** 75 lines: 27 done, 32 partly done, 13 blocked, 3 rejected as asked. The 13 blocked lines
+are blocked by a missing official source (inactive lists, snap counts, a committed Game Book capture, a
+structured Houston chart, past-season injury archives, an unread rulebook page) or by an owner decision
+(price-data policy, public/private split, the 136-game corpus, the reserve-page window, HOU source). The 3
+rejections are the ones the brief itself asked to reject (season-long ROI ranking, jersey/experience/salary
+depth, transcribing the Texans image).
+
+**Verification (D6).** `make build` exit 0 on the committed tree: `verify_site.py` 0 failing checks,
+`check_sources.py` 45 canonical pages / 5,818 rows all with an official/primary reference, `check_links.py`
+54 pages all internal links and anchors resolve. `make test`: **202 passed** (189 before this session + 13
+new). `tests/check_rebuild.py` reports a clean rebuild matches the committed outputs, 0 changed files.
+
+**Scope discipline.** No shared output was touched before D6. The five navigation/landing/executive/flagged
+changes are inside files earlier sessions listed as integration-owned; every other page is regenerated, not
+edited by hand. No other session's branch was touched.
