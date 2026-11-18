@@ -1,0 +1,15 @@
+strategy,family,market,settled_picks,weeks_with_settled_picks,last_settled_week,units_now,units_prev,units_delta,rank_now,rank_prev,rank_move,legs,official_week
+BUY_LOW_ATS,angle,SPREAD,6,1,10,-4.0741,,,13,,,6,https://www.nfl.com/scores/2026/week-10
+DIV_UNDER,angle,TOTAL,7,1,10,-1.1977,,,11,,,7,https://www.nfl.com/scores/2026/week-10
+FADE_BLOWOUT_ATS,angle,SPREAD,5,1,10,-1.1385,,,10,,,5,https://www.nfl.com/scores/2026/week-10
+HOME_DOG_ATS,angle,SPREAD,7,1,10,-5.0476,,,14,,,7,https://www.nfl.com/scores/2026/week-10
+ML_EDGE_5,model,MONEYLINE,4,1,10,-0.3044,,,7,,,4,https://www.nfl.com/scores/2026/week-10
+PARLAY2_EDGE,parlay,PARLAY,1,1,10,2.7092,,,3,,,2,https://www.nfl.com/scores/2026/week-10
+PARLAY2_ML,parlay,PARLAY,1,1,10,-1.0,,,8,,,2,https://www.nfl.com/scores/2026/week-10
+PARLAY3_EDGE,parlay,PARLAY,1,1,10,6.3457,,,1,,,3,https://www.nfl.com/scores/2026/week-10
+REST_ADV_ATS,angle,SPREAD,1,1,10,-1.0,,,8,,,1,https://www.nfl.com/scores/2026/week-10
+ROAD_FAV_ATS,angle,SPREAD,7,1,10,4.3074,,,2,,,7,https://www.nfl.com/scores/2026/week-10
+SP_EDGE_1_0,model,SPREAD,6,1,10,-2.1812,,,12,,,6,https://www.nfl.com/scores/2026/week-10
+SP_EDGE_2_0,model,SPREAD,2,1,10,1.8188,,,5,,,2,https://www.nfl.com/scores/2026/week-10
+TOT_EDGE_2_0,model,TOTAL,11,1,10,2.2637,,,4,,,11,https://www.nfl.com/scores/2026/week-10
+TOT_EDGE_3_5,model,TOTAL,6,1,10,1.6084,,,6,,,6,https://www.nfl.com/scores/2026/week-10

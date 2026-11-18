@@ -167,6 +167,28 @@ def test_reads_are_hashed_and_admittedly_partial():
     assert "chunks 0 and 2 of 8" in (READS / "nfl_injuries_reg10_clubs.md").read_text()
 
 
+def test_movement_table_cannot_invent_a_rank_change():
+    """The escrow ledger is prospective-only, and a single settled week must show no movement."""
+    mv = _csv("register_movement_2026_11_18.csv")
+    g = pd.read_csv(ROOT / "data" / "forward" / "graded_picks.csv", dtype=str, keep_default_na=False)
+    g["pnl_num"] = pd.to_numeric(g.pnl, errors="coerce")
+    g["week_num"] = pd.to_numeric(g.week, errors="coerce")
+    settled = g[g.status != "OPEN"]
+    assert len(mv) == settled.strategy.nunique(), "the ledger must cover every strategy with a settled pick"
+    for _, r in mv.iterrows():
+        strat = r.strategy
+        d = settled[settled.strategy == strat]
+        weeks = sorted(set(d.week_num.dropna().astype(int)))
+        assert int(r.weeks_with_settled_picks) == len(weeks)
+        # the published figure is the recomputed sum rounded to 4 dp, exactly as the builder rounds it
+        assert float(r.units_now) == round(float(d[d.week_num <= weeks[-1]].pnl_num.sum()), 4), strat
+        if len(weeks) < 2:
+            assert r.rank_move == "" and r.units_prev == "" and r.rank_prev == "", \
+                f"{strat}: movement published from a single settled week"
+    # no backtest table may be cited as this table's source
+    assert mv.official_week.str.startswith("https://www.nfl.com/scores/2026/week-").all()
+
+
 def test_page_is_rendered_from_the_committed_data_and_carries_the_pin():
     assert PAGE.exists(), "run make build"
     html = PAGE.read_text()

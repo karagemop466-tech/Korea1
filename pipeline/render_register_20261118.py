@@ -60,6 +60,7 @@ def main() -> None:
     sdf = rd("register_suggestions_2026_11_18.csv")
     adf = rd("register_ablation_2026_11_18.csv")
     fdf = rd("register_flags_2026_11_18.csv")
+    mv = rd("register_movement_2026_11_18.csv")
     fac = rd("register_facts_2026_11_18.csv").set_index("fact")["value"].to_dict()
     manifest = json.loads((ROOT / "data" / "live" / "register_reads_2026_11_18" / "manifest.json").read_text())
 
@@ -209,6 +210,30 @@ def main() -> None:
                               "Path C · full build", "Cost", "Risk", "Gate it clears", "Reviewer choice",
                               "Official source the work would rest on"],
                       caption="Suggested paths for the 2026-11-18 register · no path approved by this page"))
+
+    # ------------------------------------------------- prospective escrow ledger
+    mrows = []
+    for _, r in mv.iterrows():
+        def num(v):
+            return BLANK if v == "" else e(v)
+        mrows.append([e(r.strategy), e(r.family), e(r.market), num(r.settled_picks), num(r.weeks_with_settled_picks),
+                      num(r.last_settled_week), num(r.units_now), num(r.units_prev), num(r.units_delta),
+                      num(r.rank_now), num(r.rank_prev), num(r.rank_move), num(r.legs),
+                      (src_link(r.official_week, "official final, week " + e(r.last_settled_week))
+                       if r.official_week else BLANK)])
+    body.append('<section><h2>Prospective escrow ledger: what the frozen picks have actually done</h2>'
+                "<p>The only performance table on this page, and it is prospective: every row is computed from picks "
+                "that were frozen before kickoff and graded against an official final, so no backtest number is "
+                "ranked here or anywhere else. The movement columns are blank on purpose — the ledger has one "
+                "settled week, so there is no earlier rank to move from, and publishing a zero would be inventing a "
+                "change. Cumulative units are one unit per bet at the price recorded on the pick; they are not a "
+                "return on a bankroll and are not comparable to a market quote, because no authenticated quote is "
+                "held (gate G1 fails for every candidate).</p>"
+                '<label>Search the ledger <input class="filter" type="search" placeholder="Try parlay, spread, ML…"></label>')
+    body.append(table(mrows, ["Strategy", "Family", "Market", "Settled picks", "Weeks with settled picks",
+                              "Latest settled week", "Units, cumulative", "Units, before that week", "Change",
+                              "Rank now", "Rank before", "Rank movement", "Legs settled", "Official settlement"],
+                      caption="Prospective escrow ledger from frozen, officially settled picks · blanks are uncomputable, not zero"))
 
     # ------------------------------------------------------------- ablation
     arows = []

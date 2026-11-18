@@ -79,6 +79,10 @@ model_features,23,computed by pipeline/register_20261118.py from committed files
 multirank_by_capture,2026-11-12=159; 2026-11-13=160; 2026-11-14=160; 2026-11-15=160; 2026-11-16=161; 2026-11-17=161; 2026-11-18=161,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 multirank_max,161,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 multirank_min,159,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+mv_settled_picks,65,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+mv_strategies,14,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+mv_strategies_movable,0,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+mv_weeks_covered,1,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 orig_market_available,5403,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 orig_ml_prob,6073,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 orig_side_fair,6073,computed by pipeline/register_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/

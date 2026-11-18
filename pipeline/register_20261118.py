@@ -74,7 +74,8 @@ SELF_OUTPUTS = {"data/integration/register_venues_2026_11_18.csv",
                 "data/integration/register_questions_2026_11_18.csv",
                 "data/integration/register_suggestions_2026_11_18.csv",
                 "data/integration/register_facts_2026_11_18.csv",
-                "data/integration/register_verify_2026_11_18.csv"}
+                "data/integration/register_verify_2026_11_18.csv",
+                "data/integration/register_movement_2026_11_18.csv"}
 
 STATUS = {"DONE", "PARTLY DONE", "BLOCKED — SOURCE", "BLOCKED — OWNER", "IN PROGRESS — SIBLING",
           "REJECTED AS REQUESTED", "NOT REPRODUCIBLE", "NOT STARTED"}
@@ -302,6 +303,11 @@ def facts() -> dict:
     _pn, _ps = pinned_none_clubs()
     f.update({k: v for k, v in announcement_facts().items() if k != "announcement_excerpt"})
     f["announcement_excerpt"] = announcement_facts().get("announcement_excerpt", "")
+    _mv = movement_rows(f)
+    f["mv_strategies"] = len(_mv)
+    f["mv_strategies_movable"] = sum(1 for r in _mv if r["rank_move"] != "")
+    f["mv_settled_picks"] = sum(int(r["settled_picks"]) for r in _mv) if _mv else 0
+    f["mv_weeks_covered"] = len({r["last_settled_week"] for r in _mv if r["last_settled_week"] != ""})
     _club_weeks = sum(len(rd(d / "injuries.csv").groupby("team").size()) for d in cap_dirs())
     f["avail_club_weeks"] = _club_weeks
     f["season_club_weeks"] = 2 * int(f.get("announcement_games", 272) or 272)
@@ -709,6 +715,61 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
     rows += published_injury_free_clubs(f)
     rows += schedule_shape_rows(f)
     return rows, stats
+
+
+
+
+def movement_rows(f: dict) -> list[dict]:
+    """The prospective escrow ledger, and the week-over-week movement it cannot yet show.
+
+    The brief asks two related things: a weekly 'what changed' view instead of a static snapshot, and a
+    second leaderboard stage that ranks on prospective results after a proper-score qualification. Both
+    need the same input, and it is the only input this table uses: picks frozen before kickoff in
+    `data/forward/picks.csv` and graded against an official final. No backtest number enters it, so no
+    backtest number can be ranked by it.
+
+    Movement is the difference between the rank computed from settled weeks up to the latest settled week
+    and the rank up to the one before it. A strategy with one settled week therefore has a cumulative
+    figure and no movement, and the movement cells are blank rather than zero — which is the honest state
+    of the whole column today, because the ledger has one settled week.
+    """
+    g = rd(FORWARD / "graded_picks.csv")
+    g["pnl_num"] = pd.to_numeric(g.pnl, errors="coerce")
+    g["week_num"] = pd.to_numeric(g.week, errors="coerce")
+    settled = g[g.status != "OPEN"]
+    by_strat = []
+    for strat, d in settled.groupby("strategy"):
+        weeks = sorted(set(d.week_num.dropna().astype(int)))
+        cum = {w: float(d[d.week_num <= w].pnl_num.sum()) for w in weeks}
+        last = weeks[-1] if weeks else None
+        prev = weeks[-2] if len(weeks) > 1 else None
+        by_strat.append(dict(strategy=strat, family=str(d.family.iloc[0]) if len(d) else "",
+                             market=str(d.market.iloc[0]) if len(d) else "",
+                             settled_picks=len(d), weeks_with_settled_picks=len(weeks),
+                             last_settled_week=last, units_now=(round(cum[last], 4) if last is not None else ""),
+                             units_prev=(round(cum[prev], 4) if prev is not None else ""),
+                             units_delta=(round(cum[last] - cum[prev], 4) if (last is not None and prev is not None) else ""),
+                             legs=str(int(pd.to_numeric(d.n_legs, errors="coerce").sum())) if len(d) else "",
+                             official_week=(f"https://www.nfl.com/scores/2026/week-{last}" if last is not None else "")))
+    d1 = pd.DataFrame(by_strat)
+    if len(d1):
+        # ranks are over cumulative units; a strategy with one settled week cannot move, so its
+        # earlier rank is blank by construction rather than imputed
+        r1 = d1.units_now.rank(ascending=False, method="min") if d1.units_now.map(lambda x: x != "").any() else pd.Series([None] * len(d1))
+        d1["rank_now"] = [("" if pd.isna(x) else int(x)) for x in r1]
+        have_prev = d1[d1.units_prev.map(lambda x: x != "")]
+        ranks_prev = have_prev.units_prev.rank(ascending=False, method="min") if len(have_prev) else pd.Series(dtype=float)
+        d1["rank_prev"] = [("" if (row.units_prev == "" or row.strategy not in set(have_prev.strategy)) else
+                            int(ranks_prev[have_prev[have_prev.strategy == row.strategy].index[0]]))
+                           for _, row in d1.iterrows()]
+        d1["rank_move"] = [("" if (row.rank_prev == "" or row.rank_now == "") else int(row.rank_prev) - int(row.rank_now))
+                           for _, row in d1.iterrows()]
+    cols = ["strategy", "family", "market", "settled_picks", "weeks_with_settled_picks", "last_settled_week",
+            "units_now", "units_prev", "units_delta", "rank_now", "rank_prev", "rank_move", "legs",
+            "official_week"]
+    out = d1.reindex(columns=cols).sort_values(["weeks_with_settled_picks", "strategy"],
+                                               ascending=[False, True]).reset_index(drop=True)
+    return out.to_dict("records")
 
 
 # --------------------------------------------------------------------------- #
@@ -1200,7 +1261,8 @@ def items() -> list[dict]:
         "Stage one is live: qualification on proper scores with {strategies_validated} of {strategies} candidates "
         "passing. Stage two needs closing-line value, and a close is only ever a mirror of our own frozen line "
         "(irregularity F-44), not a market close.",
-        ["data/processed/strategy_gates.csv", "data/processed/price_archive.csv", "competition.html"],
+        ["data/processed/strategy_gates.csv", "data/processed/price_archive.csv",
+         "data/integration/register_movement_2026_11_18.csv", "competition.html"],
         "no market close with provenance, so CLV is undefined",
         "one authenticated closing number for one already-frozen pick",
         URL["scores_w10"], "NFL.com settlement (the only source used for outcomes today)")
@@ -1214,10 +1276,17 @@ def items() -> list[dict]:
         "one week of quotes from two or more permitted operators, with capture times",
         URL["scores_w10"], "NFL.com (the schedule and settlement spine a consensus would be keyed to)")
     add("RR-53", "Publish a weekly 'what changed' diff instead of a static snapshot", "Publishing", "DONE",
-        "The delta pages publish change between dated captures; the strategy side publishes the weekly matrix; the "
-        "brief's ranking-change column follows from the leaderboard rows.",
-        ["injury-deltas.html", "data/processed/strategy_weekly_matrix.csv", "data/processed/injury_coverage_changes.csv"],
-        "none", "already cleared", URL["injuries_root"], "NFL.com injury report (what the diff is computed from)")
+        "Two halves. Availability: {injury_delta_rows} change rows across {injury_delta_pairs} dated capture pairs, "
+        "published as deltas rather than levels. Ranking: the prospective escrow ledger built in this session from "
+        "the forward ledger alone — {mv_strategies} strategies, {mv_settled_picks} settled picks, "
+        "{mv_weeks_covered} settled week — and its movement column is blank for all {mv_strategies}, because a "
+        "strategy with one settled week has no 'before' to compare with. Publishing zeros there would invent "
+        "movement. No backtest number enters the table, so none is ranked by it.",
+        ["data/integration/register_movement_2026_11_18.csv", "data/processed/injury_coverage_changes.csv",
+         "injury-deltas.html", "data/processed/strategy_weekly_matrix.csv"],
+        "the movement column needs two or more settled weeks per strategy; the ledger has {mv_weeks_covered}",
+        "two or more settled weeks for a strategy gives it a rank change; {forward_settled} settled picks today",
+        URL["scores_w10"], "NFL.com scores (the official final each settled pick is graded against)")
     add("RR-54", "Publish every model total twice until one wins", "Model", "PARTLY DONE",
         "Two total estimators are published per game with the gap column (ridge and matchup inside "
         "originated_lines.csv, and the accuracy table showing the two MAEs against the market); the collapse rule is "
@@ -1691,6 +1760,10 @@ def main() -> None:
     ab = [{**x, "found": fmt(str(x["found"]), f), "check": fmt(str(x["check"]), f),
            "next_step": fmt(str(x["next_step"]), f)} for x in ab]
 
+    _mv_out = movement_rows(f)
+    _mv_cols = ["strategy", "family", "market", "settled_picks", "weeks_with_settled_picks",
+                "last_settled_week", "units_now", "units_prev", "units_delta", "rank_now", "rank_prev",
+                "rank_move", "legs", "official_week"]
     ven, vdf = venues(), pd.DataFrame(vrows)
     fac = pd.DataFrame([dict(fact=k, value=v,
                              note="computed by pipeline/register_20261118.py from committed files and the "
@@ -1707,6 +1780,7 @@ def main() -> None:
         "register_ablation_2026_11_18.csv": pd.DataFrame(ab),
         "register_flags_2026_11_18.csv": pd.DataFrame(fl),
         "register_facts_2026_11_18.csv": fac,
+        "register_movement_2026_11_18.csv": pd.DataFrame(_mv_out, columns=_mv_cols),
     }
     for name, df in outs.items():
         df.to_csv(OUT / name, index=False)

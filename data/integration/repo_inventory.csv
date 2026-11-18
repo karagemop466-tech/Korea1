@@ -704,7 +704,7 @@ tests/test_no_lookahead.py,1-10 KB,Test,SOURCE · executed by make build / make 
 tests/test_origination_order.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/models.py; pipeline/register_20261118.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_price_snapshots.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_props_integrity.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/decision_readiness.py,NFL injuries,https://www.nfl.com/injuries/
-tests/test_request_register_2026_11_18.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+tests/test_request_register_2026_11_18.py,10-100 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_reserve_list.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_review_consolidated.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL scores,https://www.nfl.com/scores/
 tests/test_review_registers.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL scores,https://www.nfl.com/scores/
