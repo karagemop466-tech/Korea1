@@ -8,6 +8,10 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
+- **`requirement-annex-2026-11-18.html`** — the annex to the register above: the same brief traced
+  with every number recomputed on each build, the official pages re-read row by row (97 injury rows,
+  23 depth rows, three reserve-list month pages, one game centre), and the 12 decision-blocking
+  questions plus the 8 owner decisions in their own registers (added 2026-11-18)
 - **`review-queue.html`** — every proposal from all four suggestion registers merged into 14 topic
   clusters; each row keeps its source register, original id, writing session and published page, so a path
   is chosen here before any code changes (added 2026-11-13, `arena/132e7ca2-korea1`)

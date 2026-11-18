@@ -32,6 +32,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "results-feed.html", "correlation-official.html", "replacement-depth.html",
          "origination.html", "price-annex.html", "signal-staking.html", "demotion.html",
          "suggestions-review-2026-11-14.html",
+         "request-register-2026-11-18.html",
+         "requirement-annex-2026-11-18.html",
          "brief-2026-11-15.html",
          # CS5 (session arena/53ef9544-korea1): the 2026-11-18 request register.
          "request-register-2026-11-18.html",
