@@ -202,6 +202,90 @@ def _cs5_block():
     A('provenance) still fails for every candidate.')
     A('')
     return '\n'.join(L)
+def _current_status_2026_11_15_block():
+    """Current decision snapshot from the tracker and gate/forward registers; no values are inferred."""
+    import csv
+
+    def rows(path):
+        return list(csv.DictReader(open(path, encoding='utf-8-sig'))) if path.exists() else []
+
+    data = ROOT / 'data'
+    gates = rows(PROC / 'strategy_gates.csv')
+    brief = rows(data / 'integration' / 'brief_2026_11_15.csv')
+    demotion = rows(data / 'governance' / 'demotion_register.csv')
+    picks = rows(data / 'forward' / 'graded_picks.csv')
+    scoreboard = rows(data / 'forward' / 'scoreboard.csv')
+    if not (gates and brief and demotion):
+        return ''
+
+    def truth(value):
+        return str(value).strip().lower() in {'true', '1', 'yes'}
+
+    def cell(value):
+        return str(value or '').replace('|', r'\|').replace('\n', ' ').strip()
+
+    n_strat = len(gates)
+    n_validated = sum(row.get('verdict') == 'VALIDATED' for row in gates)
+    signal_cols = ('G2_leakage', 'G3_power', 'G4_significance', 'G5_luck',
+                   'G7_stability', 'G8_redundancy')
+    signal_qualified = sum(all(truth(row.get(col, '')) for col in signal_cols) for row in gates)
+    g1_failed = sum(not truth(row.get('G1_data', '')) for row in gates)
+    live = sum(row.get('current_status') == 'LIVE' for row in demotion)
+    paper = sum(row.get('current_status') == 'PAPER' for row in demotion)
+    settled = sum(row.get('status') == 'OFFICIAL' for row in picks)
+    opened = sum(row.get('status') == 'OPEN' for row in picks)
+    forward_validated = sum(row.get('verdict') == 'VALIDATED' for row in scoreboard)
+    tracker = {row.get('id'): row for row in brief}
+    b1 = tracker.get('B1', {})
+    b6 = tracker.get('B6', {})
+    b7 = tracker.get('B7', {})
+
+    rows_out = [
+        ('Signal qualification',
+         f'{signal_qualified} of {n_strat} pass the registered signal-gate set; '
+         f'{n_validated} pass all eight validation gates.',
+         'Signal qualification is not a staking status or a profitability claim. No candidate is validated and no reward is supported.',
+         '[Competition](competition.html) · [validation gates](validation.html) · '
+         '[White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping)'),
+        ('Staking and quote provenance',
+         f'{live} LIVE · {paper} PAPER · B6 {b6.get("status", "not recorded")} · {g1_failed} fail quote-provenance G1.',
+         'No authenticated, timestamped executable bookmaker quote archive is recorded. Signal qualification and paper/live state are shown separately; no live stake or reward is authorized.',
+         '[Price archive](price-archive.html) · [paper/live register](assets/data/demotion_register.csv) · '
+         '[NFL scores (settlement context)](https://www.nfl.com/scores/)'),
+        ('Prospective results',
+         (f'{settled} official-settled · {opened} open · {forward_validated} validated' if picks else 'Not recorded'),
+         'Official outcomes are used for settlement; open tickets remain open. The available prospective record does not validate a strategy or establish a repeatable edge.',
+         '[Forward ledger](forward.html) · [NFL Week 10 scores](https://www.nfl.com/scores/2026/week-10)'),
+        ('Injury, roster and depth blockers',
+         f'B1 {b1.get("status", "not recorded")}; B7 {b7.get("status", "not recorded")}.',
+         f'{cell(b1.get("blocking_gate", ""))}; {cell(b7.get("blocking_gate", ""))}. Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified.',
+         '[Brief tracker](brief-2026-11-15.html) · [NFL injury report](https://www.nfl.com/injuries/league/2026/reg10) · '
+         '[NFL reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11)'),
+        ('Parlay and player-prop priceability',
+         'UNVERIFIED — no executable price evidence.',
+         'Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established.',
+         '[Props](props.html) · [correlation rules](correlations.html) · [NFL injuries](https://www.nfl.com/injuries/)'),
+        ('F-38 competitive-display policy',
+         'Implemented in the 2026-11-15 update.',
+         'Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This is a display-policy change, not validation.',
+         '[Strategy leaderboard](strategies.html) · [competition standings](competition.html) · '
+         '[frozen thresholds](assets/data/validation_config.json) · [demotion register](assets/data/demotion_register.csv)'),
+    ]
+
+    lines = [
+        '## Current status — 2026-11-15',
+        '',
+        'This dated snapshot supersedes older status notes below. Counts come from the committed gate, '
+        'forward-ledger, demotion and brief registers. Unverified items remain flagged; no missing evidence '
+        'is filled in.',
+        '',
+        '| Area | Current status | Decision meaning / blocker | Sources |',
+        '|---|---|---|---|',
+    ]
+    for area, status, meaning, source in rows_out:
+        lines.append('| ' + ' | '.join(cell(x) for x in (area, status, meaning, source)) + ' |')
+    lines.append('')
+    return '\n'.join(lines)
 
 
 def main():
@@ -238,9 +322,10 @@ def main():
     _s = _session_block()
     _b = _bf_block()
     _cs5 = _cs5_block()
+    _q2 = _current_status_2026_11_15_block()
     text=f'''# Executive summary — NFL Line Lab
 
-Final integration: 2026-11-02. Research snapshot: `{src['upstream']['commit_sha']}`.
+Current status refreshed: 2026-11-15. Pinned research inputs: `{src['upstream']['commit_sha']}`.
 
 ## Decision
 
@@ -251,6 +336,8 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
+
+{_q2}
 
 ## Decision readiness & lineup follow-up — 2026-11-12
 
