@@ -60,6 +60,9 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | S15 | **2026-11-15 session**: take over X7's stale test-suite assertion (claim > 60 minutes old, status needs review), re-pin the injury-snapshot row count to the committed official capture (345 → 347), spot-verify key citations against live official pages, final integration + publish on this branch | **done** — sources: `nfl.com/injuries/league/2026/reg10`, `nfl.com/scores/2026/week-10`, `operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep` (all confirmed live, no cited value changed); verification: `make build` 52 pages / 0 failing checks, `make test` 166 passed, `check_links`/`check_sources`/`verify_site` green, Pages deployment success | `arena/e0763e1e-korea1` | `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, regenerated build outputs under `data/live/`, `assets/data/`, root `.html` |
 | S18 | **Depth-chart reconciliation + final verification + publish**: reconcile `data/availability/depth_charts.csv` (WAS/NYG/DET/NE rows) against the official club-chart extract `data/live/official_depth_extract_2026_11_13.csv` so the live-verification depth test passes; confirm `make build` + `make test` green; PR → `main`, merge, Pages deploy, record | **done** — PR #77 merged as `236d8c72b641bc11281d703889725edbb743b2a5`; sources: official club depth-chart pages (commanders.com, giants.com, detroitlions.com, patriots.com/team/depth-chart); verification: `make build` 52 pages / 0 failing checks, `make test` 189 passed, check_sources 44 pages / 5,541 rows, check_links 53 pages | `arena/27eca1b3-korea1` | `data/availability/depth_charts.csv`, `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, `scripts/reconcile_depth_charts.py` |
 | B45 | **2026-11-18 final integration + publish**: board read first; review and merge the four CI-green open PRs (#68, #70, #71, #73) as integration owner, assess the eight conflicting stale PRs (#19/#24/#30/#38/#47/#48/#56/#58) and record their disposition without touching their branches, full re-verify of the combined tree (`make build`, `make test`, `make verify`, `tests/check_rebuild.py`), fix any integration collision on this branch, then PR → `main`, merge without waiting, confirm GitHub Pages, record PR link + result | **in progress** | `arena/b450c57b-korea1` | `COORDINATION.md` (own section + this row only); sibling PRs merged only via `gh pr merge` (no sibling branch pushed to); content fixes only on `arena/b450c57b-korea1` if a collision forces one, logged here |
+| CR1 | **Request register (CS5 follow-through)** — `arena/db6cd525-korea1` deferred CS5 ("the request register … not done"); claim re-checked 2026-11-18T04:50Z and no live session holds it. One row per standing-request item (the 2026-11-18 request, items grouped REQ-01…): status (built / partly built / blocked / rejected as requested), repository evidence, the gate that blocks it, the number or condition that clears it, official source link where the item asserts an NFL fact, and the live spot-check verdict | **in progress** | `arena/f84bc1d7-korea1` | `pipeline/request_register.py` (new), `data/integration/request_register.csv` (new), `request-register.html` (new), `tests/test_request_register.py` (new) |
+| CR2 | **Live official-source spot-check behind CR1** — page-fetch reads of every official page the register cites (nfl.com injury report, reserve list, week scores, club depth charts, NFL Operations); verdict recorded per register row; nothing inferred, unconfirmed cells left blank and flagged | **in progress** | `arena/f84bc1d7-korea1` | `data/live/request_spotcheck_2026_11_18/**` (new), register rows of CR1 |
+| CR3 | **Final integration + publish for CR1–CR2** — NAV entry + one index card + page lists (`verify_site.py`, `check_sources.py`, `check_links.py`) + one Makefile line + README link + executive-summary section; merge `origin/main` first (keeping every sibling section), `make build` + `make test` + `tests/check_rebuild.py` green, PR → `main`, merge without waiting, Pages confirmed, record here | **in progress** | `arena/f84bc1d7-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one line), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch `arena/f84bc1d7-korea1` → `main` |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -3244,3 +3247,31 @@ branches, so neither session could see the other's claim first):
 - B45's own PR #80 was reduced to its unique content by the rebase: the `COORDINATION.md` claim and
   the PR #77 red-main diagnosis record (the regenerated artefacts it originally carried landed
   byte-identical on `main` first as `e775e52`, then again through #78's merge).
+## Session `arena/f84bc1d7-korea1` — 2026-11-18 request register (CR1–CR3) (claim)
+
+**Board read first (2026-11-18T04:50Z).** Read in full before any file change. Four sibling sessions are
+live on their own `arena/*` branches and own adjacent scopes; none is touched by this session:
+
+| Live sibling | Open PR | Scope it owns | Overlap with this session |
+|---|---|---|---|
+| `arena/b450c57b-korea1` | #80 | the post-`547d514` drift regeneration (the 9 derived files a rebuild changes) | none — this session's rebuild produced byte-identical files (`git diff pr-80` empty on all nine), so they were restored to `HEAD` and left to PR #80 |
+| `arena/99b908ab-korea1` | #82 | Game Book capture trigger/parser tests + published-evidence rebuild | none |
+| `arena/42b6f5e9-korea1` | #83 | stale-PR takeovers (#68/#71/#48), conflicting-PR disposition register | none — stale-PR disposition is left to that register |
+| `arena/8a075837-korea1` | #84 | date-matched depth checks, capture-provenance guards (closes #70/#73) | none |
+
+**Protocol note (recorded as every earlier session recorded it).** The platform pins this session to
+branch `arena/f84bc1d7-korea1` (base `main` = `547d514`, the reserve-list snapshot of 04:42Z). The
+`session-<id>/<task>` worktree pattern cannot be used; this branch is the task and integration branch.
+
+**Why this session exists.** `arena/db6cd525-korea1` deferred CS5 — "the request register (one row per
+request item, about 60 items)" — as **not done**. The standing request asks for exactly that artefact:
+"a clear list of questions, informations and answers that need to be addressed before any decision can
+be reasonably made based upon the information that we already have and do not have", with "the gate
+that blocks it and the number that would clear it". CR1 builds it; CR2 re-reads every official page it
+cites with the live page-fetch tool and records a verdict per row; CR3 integrates and publishes.
+
+**Baseline measured on this branch before any change (2026-11-18T04:55Z, from committed inputs).**
+`make build` exit 0 — `verify_site.py` 0 failing checks, `check_sources.py` 44 canonical pages /
+5,569 rows strict official/primary check passed, `check_links.py` 53 pages all resolve.
+`make test` 189 passed. A rebuild regenerates the nine derived files already claimed by PR #80
+(byte-identical, see above), so the working tree was restored to `HEAD` before claiming.
