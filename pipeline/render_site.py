@@ -68,7 +68,7 @@ NAV_GROUPS = [
     # NR3–NR5 (session arena/ceddf8d8-korea1, 2026-11-18): the request register, the two surfaces the
     # 2026-11-18 brief asked for that did not exist, and the brief's own numbers re-derived.
     ("Brief review (2026-11-18)", [
-        ("request-register.html", "Request register · 74 items"),
+        ("request-register.html", "Request register · verified"),
         ("matchup-matrix.html", "Matchup deficiency matrix"),
         ("consensus.html", "Vig-free vs fair line"),
     ]),

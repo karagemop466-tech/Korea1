@@ -258,7 +258,9 @@ def register_rows() -> list[dict]:
                 "leaderboard", "Gates", "BUILT",
         [ev("data/forward/prereg_audit.csv"), ev("data/forward/trial_registry.csv"),
          ev("data/processed/strategy_gates.csv")],
-        "none for the rule; the open PR #73 concerns a further wording change to the leaderboard",
+        "none for the rule; PR #73 (open at the last check on 2026-11-18: 'Remove backtest performance from "
+        "competitive leaderboards') would change the wording, not this artefact — PR states are not "
+        "re-checked at build time",
         "n/a", U["scores"], "NFL scores",
         "The registration is the commit: trial_registry.csv stores the commit for each frozen definition.")
     add("R-17", "Freeze a rule before it sees data (rule text, sample window and gates committed; the "
@@ -300,8 +302,8 @@ def register_rows() -> list[dict]:
     add("R-23", "Build the availability graph as a first-class dataset (who was expected to start, who "
                 "actually did)", "Availability", "NOT BUILT HERE",
         [absent("data/processed/availability_graph.csv"),
-         "sibling session `arena/99b908ab-korea1` owns this dataset (open PR #82); this session did not "
-         "create a competing file"],
+         "owner `arena/99b908ab-korea1`; PR #82 merged 2026-11-18T04:50Z with the capture job and the "
+         "parsers (see R-28/R-30), not with the graph itself, so no competing file was created here"],
         "The 'who actually started' side needs the official Game Book, which no committed artefact holds",
         "One parsed Game Book starting-lineup row per fixture — today 0 fixtures",
         U["gamebook"], "Official game centre (the Game Book is linked from it)",
@@ -860,7 +862,27 @@ def render(claims: list[dict], register: list[dict], suggestions: list[dict]) ->
 
     verdict_counts = Counter(c["verdict"] for c in claims)
 
-    body = f"""{flag("This is a register, not a changelog. Nothing here changes a published research "
+    # The same scope was claimed independently by CS5 (arena/53ef9544-korea1) and merged first, so both
+    # registers ship. The difference is stated rather than hidden: theirs is the item inventory pinned to a
+    # commit, this one re-opens the artefacts at every build and re-derives the brief's own numbers.
+    sib = ROOT / "data/integration/request_register_2026_11_18.csv"
+    sib_n = len(list(csv.DictReader(open(sib, encoding="utf-8")))) if sib.exists() else 0
+    sibling_note = (
+        '<p class="flag info">Two registers, one scope. The '
+        f'<a href="request-register-2026-11-18.html">2026-11-18 request register (CS5, {sib_n} items)</a> '
+        "was written independently and merged first: it inventories every item with the status recorded at "
+        "the commit it was written against, and prints rows with no official source as flagged text. This "
+        f"register ({len(register)} items) adds what that one does not: each status is re-derived by opening "
+        "the artefact at build time under a fail-closed contract (a cited file that disappears, or a "
+        "declared gap that appears, fails the build), the brief's own numeric claims are re-derived against "
+        f"verbatim official reads ({len(claims)} rows, section 2), and the two surfaces the brief asked for "
+        "that did not exist anywhere — the "
+        '<a href="matchup-matrix.html">deficiency matrix</a> and the '
+        '<a href="consensus.html">vig-free decomposition</a> — are built here. Where the two disagree, '
+        "the difference is the finding: read both.</p>")
+
+    body = f"""{sibling_note}
+{flag("This is a register, not a changelog. Nothing here changes a published research "
                    "number: the model, the frozen pin and the competition rules were left exactly as they "
                    "were. Statuses are re-derived from the files named in the Evidence column every time "
                    "the site builds — a cited artefact that disappears, or a 'not built' artefact that "
