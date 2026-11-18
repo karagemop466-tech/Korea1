@@ -2969,3 +2969,21 @@ unresolvable and never guessed at.
 **Pull request and merge:** PR #69 — https://github.com/karagemop466-tech/Korea1/pull/69 — `arena/120935ef-korea1` → `main`, merged without waiting at 2026-11-15 10:48:17 -0800 (18:48:17 UTC) as merge commit `ab8955eb5d97a87238ddba4d9cfd60eaedeb38b6`. Verification summary, sources used and flagged irregularities were carried in the PR body; all checks were green before merge (see session block above).
 
 **Pages:** GitHub Pages serves `main` / repository root (legacy branch build, `.github/workflows/pages.yml`); the push of `ab8955eb` triggered the build/deploy. Final Pages state could not be re-probed from this shell because the GitHub API is rate-limited for this user ID (403 on `GET /repos/:owner/:repo/pages`); prior merges on this repo show `pages/builds/latest` = `built` with `error: null` and the live site at https://karagemop466-tech.github.io/Korea1/ . Confirm against `https://github.com/karagemop466-tech/Korea1/actions` when the rate limit clears.
+
+---
+
+## Session `arena/42b6f5e9-korea1` — 2026-11-18 claim (full brief: verification, site, integration)
+
+**Board read first.** Every earlier row was read before claiming. Open PRs #19/#24/#30/#38/#47/#48/#56/#58 are CONFLICTING and owned by sessions with no commits since 2026-11-14 at the latest; PRs #68/#70/#71/#73 are MERGEABLE with green `verify` checks but their claims are >60 minutes old (last commits 2026-11-15, three days) with no newer owner activity — taken over per the board's 60-minute rule, handoff logged below. Unclaimed rows T22/T23 (status `unclaimed` on this board) are claimed by this session. No other session's branch is edited except where an explicit takeover merge is recorded.
+
+**Session ID:** `arena/42b6f5e9-korea1` · **Branch:** `arena/42b6f5e9-korea1` (base `main` = `5df9bab`)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| Z1 | **Takeover + sequential merge of the four stale mergeable integration PRs** #68 (brief text corrections), #70 (Makefile registers all tracked tests), #71 (2026-11-15 integration-verification record), #73 (remove backtest performance from competitive leaderboards): rebase each onto the new main, re-verify, merge in dependency order, rebuild shared generated outputs after each merge | **in progress** | `arena/42b6f5e9-korea1` | takeover merges of `arena/c79b2684-korea1`, `arena/d5b60b8c-korea1`, `arena/fc0eb232-korea1`, `arena/88a183ca-korea1` into `main`; regenerated shared outputs (`repo_inventory.csv`, `verification_report.csv`, root html) rebuilt here after the last merge |
+| Z2 | **T22 final verification pass** (unclaimed row): `make build`, `make test`, `make verify`, `tests/check_rebuild.py` on the combined tree; fix anything red; official-source spot checks on published values | **in progress** | `arena/42b6f5e9-korea1` | `pipeline/verify_site.py`, `tests/check_links.py`, `tests/check_sources.py` (repair only, if needed) |
+| Z3 | **Disposition of the eight CONFLICTING stale PRs** (#19/#24/#30/#38/#47/#48/#56/#58): for each, verify whether its content is already on `main`; close only those proven superseded with a comment linking the superseding work; leave unique-content PRs open and publish them on the Flagged-for-Review surface as `needs review` | **in progress** | `arena/42b6f5e9-korea1` | `COORDINATION.md` (this section), `flagged.html` rows only if additions are needed |
+| Z4 | **T23 final integration + publish** (unclaimed row): PR `arena/42b6f5e9-korea1` → `main` with change/ source/ irregularity summary, merge without waiting, confirm GitHub Pages deployment, record PR link + merge result here | **in progress** | `arena/42b6f5e9-korea1` | `COORDINATION.md`, PR record, live site confirmation |
+
+**Takeover log (Z1):** PRs #68/#70/#71/#73 last committed 2026-11-15 18:43–19:18 UTC with green `verify` checks and no commits in the three days since; claims treated as stale under the 60-minute rule. Each PR will be rebased onto the post-merge `main`, re-checked, and merged; no upstream commit is discarded.
+
