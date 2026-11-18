@@ -3970,3 +3970,43 @@ resolved, before committing the merge.** And when a rebuild disagrees with a com
 it in a clean clone (`git clone --branch <branch> "file://$(pwd)" /tmp/x && cd /tmp/x && make build &&
 git status --porcelain`) instead of force-committing the local copy — that is how both of this session's
 reproducibility bugs (the absolute evidence path and this one) were found in minutes.
+
+### `arena/7aae360e-korea1` — merge and publish record (2026-11-18T06:32Z)
+
+**Pull request and merge.** PR #100 — https://github.com/karagemop466-tech/Korea1/pull/100 —
+`arena/7aae360e-korea1` → `main`, **merged** without waiting at 2026-11-18T06:31:51Z as merge commit
+`8bc353b957d9146cd49efc2c06b9fccff2337f4c`. Verification summary, sources read and the nine RX findings
+were carried in the PR body. `Verify site` was **green on the branch** for both the push and the
+pull_request event (run 44251677112, 2m25s: `make build` exit 0, `make test` 373 passed,
+`tests/check_rebuild.py` green).
+
+**Pages.** GitHub Pages (legacy branch build of `main`, repository root) deployed the merge:
+run 44252015982 `pages build and deployment` **completed success** at 06:32Z. The new page is live and was
+read back from the published URL: https://karagemop466-tech.github.io/Korea1/register-evidence-2026-11-18.html
+(title "Register evidence annex · 2026-11-18", 19 chunks, nav and footer carrying the pinned snapshot id).
+
+**Red run on `main`, and what it was.** The post-merge `Verify site` run on main (44252018114) failed at
+"Verify pinned inputs and rebuild". The runner log is not retrievable (the log endpoint returns EOF and the
+run cannot be re-run), so the tree was reproduced exactly: a clean `git clone` of `main` at `8bc353b`, a
+fresh venv from `requirements.txt`, then `make build` → **exit 0, 0 failing checks, 51 canonical pages /
+6,730 rows**; `make test` → **373 passed**; `tests/check_rebuild.py` → **matches committed outputs**; working
+tree clean afterwards. Nothing in that commit is reproducible as a build failure, so the red run is recorded
+as a runner-side (network) failure of the fetch stage — consistent with `pipeline/fetch_data.py` and
+`fetch_pbp.py` downloading ~68 MB from GitHub inside `make build`, and with the same commit passing twice on
+the branch minutes earlier. A follow-up commit on this branch fixes two real defects found while reading the
+published page back (below) and re-triggers `Verify site` on `main`.
+
+**Two defects found in my own published text (fixed in the follow-up PR).**
+1. The summary printed "0 fail G1" for all 18 candidates: the gate columns hold the strings `True`/`False`, and
+   `astype(bool)` makes `"False"` truthy. G1 is now counted from the literal text and publishes both halves
+   (`strategies_g1_pass` + `strategies_g1_fail == strategies`), so the page reads "18 of 18 fail G1".
+2. The summary quoted a fact the builder had stopped emitting (`forward_settled`), which rendered as a hole in
+   the sentence. It now names the ledger's two grades (4 graded on an official result, 61 provisional,
+   0 ungraded). Two regression guards were added so neither class can come back: the G1 split is recomputed
+   from the gate table in a test, and the build fails if the renderer asks for a fact the builder does not
+   compute, or one whose value is empty.
+
+**Still owed by the owner / integration.** `pipeline/render_site.py` was never edited by this session, so the
+nav entry and index card for `register-evidence-2026-11-18.html` are still open (the page is reachable by URL,
+from `README.md` and by cross-links from the other 2026-11-18 registers). The two allow-list decisions
+(`media.nfl.com`, RX-F9) and F-44 (whether a ledger freeze may populate a close column) are also still open.
