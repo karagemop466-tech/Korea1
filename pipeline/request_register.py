@@ -1,0 +1,563 @@
+"""CR1 (session arena/f84bc1d7-korea1, 2026-11-18): the standing-request register.
+
+One row per request item of the 2026-11-18 standing request (REQ-01 .. REQ-81), in request
+order. Every row states what is built (with the repository evidence), the gate that blocks
+full delivery, the number or condition that would clear the gate, the official/primary source
+where the item asserts an outside fact, and the live spot-check verdict from CR2 (reads of
+the live official pages on 2026-11-18, committed under
+data/live/request_spotcheck_2026_11_18/). Nothing is inferred: where the repository or the
+official page does not confirm a value, the cell says so and points at the flag.
+
+Statuses (closed set, enforced by tests/test_request_register.py):
+  built                  delivered and published
+  partly built           delivered in part; the gate names the rest
+  not built              nothing in the repository delivers it yet
+  blocked (owner decision)  needs an owner decision or a paid/authorised source
+  rejected as requested  the request itself rejects a method; the rejection is recorded
+  process · executed     a process requirement; executed and recorded in COORDINATION.md
+
+Run:  python pipeline/request_register.py
+Outputs: request-register.html, data/integration/request_register.csv
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from render_site import ROOT, BLANK, e, src_link, table, layout, flag, kpi_grid, card  # noqa: E402
+
+SPOT = ROOT / "data" / "live" / "request_spotcheck_2026_11_18" / "spotcheck.csv"
+OUT_CSV = ROOT / "data" / "integration" / "request_register.csv"
+OUT_HTML = ROOT / "request-register.html"
+
+URL_INJ = "https://www.nfl.com/injuries/league/2026/reg10"
+URL_RES = "https://www.nfl.com/transactions/league/reserve-list/2026/11"
+URL_SCORES = "https://www.nfl.com/scores/2026/week-10"
+URL_SCHED = "https://www.nfl.com/schedules/2026/by-week/week-10"
+URL_GC = "https://www.nfl.com/games/commanders-at-giants-2026-reg-10"
+URL_HOU = "https://www.houstontexans.com/team/depth-chart"
+URL_BAL = "https://www.baltimoreravens.com/team/depth-chart"
+URL_WAS = "https://www.commanders.com/team/depth-chart"
+URL_OPS = "https://operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep"
+URL_RULES = "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook"
+URL_PAGES_DOC = "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
+URL_ACTIONS_DOC = "https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow"
+URL_WHITE = "https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping"
+URL_BLD = "https://www.pm-research.com/content/iijpormgmt/40/5/94"
+URL_BH = "https://cris.tau.ac.il/en/publications/controlling-the-false-discovery-rate-a-practical-and-powerful-app-2/"
+URL_FD = "https://support.fanduel.com/s/article/What-happens-if-my-FanDuel-parlay-is-a-push"
+
+# (id, category, request, status, published, gate, clears, flag, source label, source url, spot id)
+REQUESTS: list[tuple] = [
+    ("REQ-01", "Price data", "Add a price-snapshot store that records opening and closing numbers for every market we originate.",
+     "built", '<a href="price-snapshot.html">price-snapshot.html</a> + <a href="price-archive.html">price-archive.html</a> · data/processed/price_snapshot.csv, price_archive.csv',
+     "Authenticated bookmaker quotes (gate G1) still fail, so archived numbers are tier-labelled and closes are labelled LEDGER_MIRROR_CLOSE where a ledger freeze fills them.",
+     "G1 clears: ≥1 authenticated, timestamped, limit-aware quote per market.", "F-44",
+     "NFL.com scores (settlement source)", URL_SCORES, "S5"),
+    ("REQ-02", "Results", "Add a verified results feed so backtests and ROI can be computed at all.",
+     "built", '<a href="results-feed.html">results-feed.html</a> · data/processed/ (tiered feed, official game-centre reads)',
+     "Scheduled games are blank by design; 0 source conflicts in the published feed.",
+     "Every completed fixture graded from the official final (week 10 live-verified 2026-11-18).", "—",
+     "NFL week 10 scores", URL_SCORES, "S5"),
+    ("REQ-03", "Origination", "Originate the side first, then the total, then the moneyline.",
+     "built", '<a href="origination.html">origination.html</a> · pipeline/origination_order.py',
+     "No gate for the ordering itself; moneyline pricing needs the probability checks behind G1.",
+     "Already ordered side → total → moneyline in the published pipeline.", "—",
+     "NFL week 10 schedule (originated universe)", URL_SCHED, ""),
+    ("REQ-04", "Origination", "Publish the model's fair line, the market line, and the difference as separate columns.",
+     "built", '<a href="origination.html">origination.html</a> · data/processed/originated_lines.csv (fair_spread, market_spread, edge_spread, ml_diff_* columns)',
+     "No gate; the columns are published and machine-checked.",
+     "Done — three separate column families on every row.", "—",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-05", "Leaderboard", "Separate 'signal' from 'staking' in the leaderboard so a lucky staking run cannot mask a bad signal.",
+     "built", '<a href="signal-staking.html">signal-staking.html</a> · pipeline/signal_staking.py',
+     "No gate for the separation; validation still needs G1 to convert skill into a funded strategy.",
+     "Done — signal quality and staking quality are ranked separately.", "—",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-06", "Availability", "Track the depth of the replacement, not just the fact of a replacement.",
+     "built", '<a href="replacement-depth.html">replacement-depth.html</a> · data/gates/replacement_depth.csv (1st–4th string slots)',
+     "A replacement's identity must come from official evidence (Game Book / inactives), not chart order — the chart route is flagged where unconfirmed.",
+     "Every replacement row naming the actual replacement from official evidence.", "F-50",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-07", "Correlation", "Compute correlations only from officially sourced numbers and publish n with each value.",
+     "built", '<a href="correlation-official.html">correlation-official.html</a> · data/processed/corr_*.csv (n on every row)',
+     "Market-correlation rows still quote a community archive where no official price exists — evidence tier labelled on each row.",
+     "Official price source for market-correlation rows (ties to G1).", "—",
+     "NFL week 10 scores", URL_SCORES, "S5"),
+    ("REQ-08", "Gates", "Define a demotion gate that sends a live strategy back to paper.",
+     "built", '<a href="demotion.html">demotion.html</a> · pipeline/demotion_gate.py, demotion_rules.py',
+     "F-29: the demotion gate's live status awaits the first strategy that reaches live play.",
+     "A live strategy crossing the published trigger is demoted to paper and recorded.", "F-29",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-09", "Pre-registration", "Pre-register every strategy; forbid backtest numbers from ever appearing on the leaderboard.",
+     "partly built", '<a href="competition.html">competition.html</a> (pre-registration + gates) · <a href="forward.html">forward.html</a> (frozen forecasts) · <a href="strategies.html">strategies.html</a> (research library)',
+     "Pre-registration exists (rules frozen before the forward window; commit hash is the registration). The competition leaderboard ranks gates, not profit; labelled backtest statistics remain visible on the research library pages, and open PR #73 proposes removing them from competitive boards.",
+     "PR #73 disposition recorded, or an explicit owner decision to keep labelled research stats.", "—",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-10", "Availability", "Build the availability graph as a first-class dataset (who was expected to start, who actually did).",
+     "partly built", 'Expected side: <a href="availability.html">availability.html</a> (club charts, dated) · Actual side: Game Book capture layer merged (PR #78); parsed gamebook rows are open on PR #82',
+     "The joined expected-vs-actual dataset (data/processed/availability_graph.csv) does not exist on main yet; PR #82 is open on it.",
+     "32/32 clubs × games with expected starter (dated chart) joined to actual starter (Game Book).", "—",
+     "NFL game centre (WAS at NYG)", URL_GC, "S6"),
+    ("REQ-11", "Depth", "Do not model depth from jersey order; model it from playing time.",
+     "partly built", 'Jersey-order derivation rejected (REQ-50) and jersey prefixes stripped to player_raw · playing-time route blocked on official snap counts (<a href="lineup-deficiencies.html">lineup-deficiencies.html</a> notes)',
+     "No official snap-count source is captured (REQ-56), so playing time cannot yet define depth.",
+     "An official snap-count source verified for 32/32 clubs, then a depth-from-snaps column.", "F-46b",
+     "NFL game centre (WAS at NYG)", URL_GC, "S6"),
+    ("REQ-12", "Injury signal", "Make the injury signal a surprise, never a level.",
+     "built", '<a href="injury-deltas.html">injury-deltas.html</a> · data/processed/injury_deltas.csv (changes between dated captures; levels not published as signals)',
+     "No gate for the delta rule; surprise magnitudes need the designation calibration (REQ-44).",
+     "Done — signals are capture-to-capture deltas with hash + clock time on every change.", "—",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-13", "Coverage", "Run the 32-team roster/IR sweep before any team-level model is trusted.",
+     "partly built", 'Reserve-list capture (<a href="flagged.html">flagged.html</a> F-45) + league injury captures + 31/32 club depth charts · trust gate published in <a href="validation.html">validation.html</a>',
+     "Houston chart parses 0 rows (F-18); the reserve page is a rolling window, not a complete record (F-45).",
+     "32/32 charts with ≥1 ordered row and a complete IR record (or an explicit window policy).", "F-18, F-45",
+     "NFL reserve list (November 2026)", URL_RES, "S4"),
+    ("REQ-14", "Features", "Add a fixture-context feature set built only from published schedule facts.",
+     "partly built", 'Current features are schedule-derived (rest, division, kickoff) in data/processed/games_model.csv · the dedicated fixture_context table is open on PR #82',
+     "data/processed/fixture_context.csv (every column a printed schedule fact + URL per row) is not on main yet.",
+     "Fixture-context table published with an official URL on every row.", "—",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-15", "Model output", "Store every model output as a probability plus its inputs, not just a pick.",
+     "built", 'data/processed/originated_lines.csv stores p_home_cover, p_over, p_home_ml, p_push_*, fair lines and the full input row per game',
+     "No gate for storage; probabilities become decision-grade only after calibration (G1–G8).",
+     "Done — probability + inputs stored on every originated row.", "—",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-16", "Dashboard", "Compute and publish the \"removal of luck\" panel on the site dashboard.",
+     "built", '<a href="index.html">index.html</a> (panel) · <a href="validation.html">validation.html</a> (White reality check, DSR, Holm p, clustered bands)',
+     "No gate; panel values update with each build from committed outputs.",
+     "Done — panel live on the dashboard.", "—",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-17", "Strategies", "Add a two-sided \"what would change our mind\" field to every strategy entry.",
+     "built", '<a href="brief-2026-11-15.html">brief-2026-11-15.html</a> (mind-changers for all 18 candidates) · strategy entries on <a href="strategies.html">strategies.html</a>',
+     "No gate for the field; the second side (what would confirm) is kept beside the first on each entry.",
+     "Done — two-sided field published per candidate.", "—",
+     "Bailey & López de Prado (2014), publisher", URL_BLD, ""),
+    ("REQ-18", "Origination", "Price a line ourselves and publish the residual against the market, on a schedule, from day one.",
+     "built", '<a href="origination.html">origination.html</a> (fair/market/difference) · <a href="forward.html">forward.html</a> (scheduled freezes) · data/forward/published_lines.csv',
+     "Residuals against an unauthenticated market remain research-only (G1).",
+     "G1 clears → residuals become decision-grade.", "F-44",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-19", "Backtest corpus", "Turn the 136-game log into the pre-registered backtest corpus.",
+     "not built", 'No file, table or page in the repository identifies a \"136-game log\" (repository search 2026-11-18). The nearest corpora: 7,384-row games_model.csv and the week-10 forward slate.',
+     "The request's \"136-game log\" has no identified source; nothing is inferred in its place.",
+     "The brief author names the 136-game source; then a frozen corpus manifest with hashes.", "F-52",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-20", "Governance", "Decide the price-data policy before any backtest is published.",
+     "blocked (owner decision)", '<a href="DECISIONS.md">DECISIONS.md</a> has no price-data policy row; F-44 holds the question open',
+     "An owner decision is required: may a ledger freeze populate a close column at all, and what provenance qualifies a price for publication.",
+     "A dated D-row in DECISIONS.md stating the policy; then the archive labels follow it.", "F-44",
+     "GitHub Actions documentation (evidence-integrity reference)", URL_ACTIONS_DOC, ""),
+    ("REQ-21", "Injury signal", "Store every injury-hub read with its clock time and publish the delta, never the level.",
+     "built", '<a href="injury-deltas.html">injury-deltas.html</a> · data/availability/injuries.csv (retrieved_utc per row) + history captures with hashes',
+     "No gate; the capture ledger stores fetch clock time and raw hashes on every read.",
+     "Done — deltas published with clock times; levels kept in captures only.", "—",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-22", "Decision surface", "Put a decision-readiness table on the landing page: one row per requirement, with the gate that blocks it and the number that would clear it.",
+     "built", 'This register (<a href="request-register.html">request-register.html</a>) is that table; the landing page card links it (added at CR3 integration). Prior art: <a href="decision-readiness.html">decision-readiness.html</a>, <a href="requirements.html">requirements.html</a>',
+     "No gate; the register is regenerated from committed files at every build.",
+     "Done — 81 rows with gate + clearing number; link on the landing page.", "—",
+     "NFL week 10 schedule (row universe)", URL_SCHED, ""),
+    ("REQ-23", "Fixtures", "Transcribe the venue of every fixture from the official game centre and publish it.",
+     "partly built", 'Game-centre capture layer merged (PR #78); venue read live for WAS@NYG (LOCATION EAST RUTHERFORD, NJ · STADIUM METLIFE STADIUM, S6); per-fixture venue rows are open on PR #82',
+     "The parsed per-fixture venue table (data/processed/gamecentre_*.csv) is not on main yet; one fixture read live in CR2.",
+     "Venue + stadium columns with the game-centre URL per row for every fixture.", "—",
+     "NFL game centre (WAS at NYG)", URL_GC, "S6"),
+    ("REQ-24", "Fixtures", "Publish the league's dated schedule announcement beside the live schedule page.",
+     "not built", 'No dated league schedule-announcement capture exists in the repository; the schedule page itself is cited on <a href="availability.html">availability.html</a> and the forward board',
+     "The announcement (a dated league release) has never been captured; nothing is inferred about its content.",
+     "One hashed capture of the dated league announcement beside the live schedule citation.", "F-53",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-25", "Game Books", "Use official NFL Game Books for actual starters and game-day status; do not infer depth rank or snaps.",
+     "partly built", 'Capture layer merged (PR #78): .github/workflows/gamebooks.yml + fetch scripts; Game Book PDF link confirmed live (S6); parser outputs open on PR #82',
+     "Parsed Game Book fields (starters, Not Active list, Did Not Play) are not published on main yet; nothing is transcribed by eye (F-18 rule).",
+     "Parsed Game Book rows with the PDF hash + URL for every completed fixture.", "—",
+     "NFL game centre (WAS at NYG)", URL_GC, "S6"),
+    ("REQ-26", "Ratings", "Ingest game-level results to make the ratings opponent-aware.",
+     "built", 'data/processed/games_model.csv (7,384 game rows with elo_h / elo_a / elo_diff and results) feeding pipeline/models.py',
+     "No gate for ingestion; ratings quality is judged by the model gates (G2–G8).",
+     "Done — opponent-aware Elo inputs on every modelled game.", "—",
+     "NFL week 10 scores", URL_SCORES, "S5"),
+    ("REQ-27", "Ablations", "Add injury and personnel ablations instead of fixed penalties: test the same model with and without the personnel features and report the difference with uncertainty.",
+     "not built", 'No ablation code, table or page exists (repository search 2026-11-18). No fixed personnel penalty is used either — the features are held out entirely behind the availability gates.',
+     "The ablation harness (with/without personnel features, same folds) does not exist yet.",
+     "One ablation table: paired gap with CI, identical folds, personnel features on vs off.", "F-54",
+     "Bailey & López de Prado (2014), publisher", URL_BLD, ""),
+    ("REQ-28", "Ablations", "Add injury/depth ablations, not fixed penalties: compare identical models with and without verified availability features using chronological holdouts.",
+     "not built", 'Same as REQ-27 (one shared deliverable); chronological holdouts exist as walk-forward folds (fit_season, no-lookahead tests) but the ablation comparison is not built.',
+     "As REQ-27, run on chronological holdouts rather than random folds.",
+     "As REQ-27; fold dates published with the table.", "F-54",
+     "Bailey & López de Prado (2014), publisher", URL_BLD, ""),
+    ("REQ-29", "Snapshots", "Automate immutable multi-day availability snapshots: capture the official report and club depth pages at least daily with retained hashes, so practice designations can be replayed as they were known.",
+     "built", 'data/availability/history/ dated captures + manifest.json hashes · .github/workflows/availability.yml (twice daily + Wed–Sat) · <a href="injury-deltas.html">injury-deltas.html</a>',
+     "F-47: scheduled commits use GITHUB_TOKEN, so verify.yml does not re-check them automatically.",
+     "A token/process that re-verifies scheduled commits (owner decision).", "F-47",
+     "GitHub Actions documentation", URL_ACTIONS_DOC, ""),
+    ("REQ-30", "Snapshots", "Build immutable official availability snapshots: scheduled capture of NFL injury reports, club depth pages and inactive evidence with raw hashes, timestamps and conflict flags.",
+     "built", 'Same capture store as REQ-29; conflict flags in data/processed/availability_conflicts.csv and data/availability/manifest.json; inactive evidence via the Game Book layer (PR #78/#82)',
+     "Inactive evidence rows are captured as PDFs but not yet parsed on main (PR #82).",
+     "Parsed inactive rows joining the same hashed capture store.", "—",
+     "NFL reserve list (November 2026)", URL_RES, "S4"),
+    ("REQ-31", "Inactives & snaps", "Capture official inactive lists and snap counts.",
+     "partly built", 'Inactive lists: Game Book \"Not Active\" pages captured as PDFs (PR #78), parse open on PR #82 · Snap counts: no official source captured (F-55)',
+     "Snap counts have no verified official source in this repository; inactive lists await the PR #82 parser.",
+     "Inactive rows published per game; snap counts behind a verified official source (REQ-56).", "F-55",
+     "NFL game centre (WAS at NYG)", URL_GC, "S6"),
+    ("REQ-32", "Depth", "Fix the two depth-parsing failures before widening coverage: Houston publishes depth as an image; the Packers prepend jersey numbers.",
+     "partly built", 'Green Bay recovered: 54 rows with jersey prefixes stripped to player_raw (PR #67) · Houston still 0 rows (F-18), re-confirmed live 2026-11-18 (S7: \"Unofficial Depth Chart\" as one image)',
+     "The Texans image needs an authorised structured source; transcription by eye is forbidden (REQ-25 rule).",
+     "HOU ≥1 ordered row from an authorised structured source; GB already ≥1 (54 rows).", "F-18",
+     "Houston Texans club depth chart", URL_HOU, "S7"),
+    ("REQ-33", "Depth", "Model depth slots as groups, not a single starter (the request cites 149 club/unit/position slots with more than one rank-1 player).",
+     "partly built", 'Slots are stored as groups: 692 slots in data/availability/depth_charts.csv carry more than one player (e.g., SEA RG slot 5 lists Zabel | Bradford | Stephens); <a href="availability.html">availability.html</a> renders them unflattened',
+     "The request's \"149\" count is not reproduced from any capture (F-46b); the newest capture gives 161 multi-player groups under one definition.",
+     "A definition under which the count reproduces, or the request's source for 149.", "F-46b",
+     "Baltimore Ravens club depth chart", URL_BAL, "S8"),
+    ("REQ-34", "Roster events", "Treat roster turnover as a first-class data event (the request cites the Colts' Week 10 release with two starting-receiver trades).",
+     "not built", 'No roster-event register exists; depth/availability rows carry capture timestamps but are not versioned against a roster event log',
+     "No official Colts Week 10 release article was read here (F-56); no event-versioning schema exists.",
+     "A dated roster-event log (official transactions feed per club) with each capture pinned to its last event.", "F-56",
+     "NFL reserve list (November 2026)", URL_RES, "S4"),
+    ("REQ-35", "Shadow baseline", "Start with a singles-only shadow baseline: pre-register a simple team-strength model, freeze versions and record forecasts before kickoff.",
+     "built", '<a href="forward.html">forward.html</a> · data/forward/ledger.jsonl (append-only), prereg_audit.csv, trial_registry.csv',
+     "No gate for the baseline; 65 frozen singles forecasts registered, 4 settled against official finals at last integration.",
+     "Done — singles-only, frozen pre-kickoff, settled against official finals only.", "—",
+     "NFL week 10 scores", URL_SCORES, "S5"),
+    ("REQ-36", "Parlays", "Keep parlays and prop combos behind a joint-evidence gate: a combo may only be ranked when a directly validated joint probability and the operator's void/push rules are both available.",
+     "built", '<a href="validation.html">validation.html</a> · pipeline/parlays.py, props_model.py (joint-evidence gate) · <a href="props.html">props.html</a>',
+     "No combo passes the gate today: no validated joint probability exists; void/push rules are cited but unauthenticated.",
+     "One directly validated joint probability + the operator rule text per combo family.", "—",
+     "FanDuel push settlement rules", URL_FD, ""),
+    ("REQ-37", "Leaderboard", "Use proper-score leaderboard divisions: separate singles, game parlays, same-game parlays and prop combos; rank eligible strategies by benchmark-relative skill with uncertainty.",
+     "partly built", '<a href="competition.html">competition.html</a> (divisions + reward ladder) · <a href="strategies.html">strategies.html</a> (skill with uncertainty columns)',
+     "The published competition page groups three divisions (singles, parlays, props); same-game parlays are not split from game parlays as the request specifies.",
+     "A fourth division row (SGP) with its own eligibility gate.", "—",
+     "Bailey & López de Prado (2014), publisher", URL_BLD, ""),
+    ("REQ-38", "Leaderboard", "Rank with proper scores and uncertainty, not win rate: benchmark-relative Brier skill with a game-cluster lower bound and a multiplicity adjustment for the number of trials.",
+     "built", '<a href="validation.html">validation.html</a> · pipeline/stats_tools.py (White reality check, DSR, Holm/BH multiplicity, clustered bands); win rate printed as W–L–P only, never as rank',
+     "No gate for the method; no strategy passes the battery yet (0 of 18), so no ranking past gate counts is published.",
+     "A candidate clearing G2–G8 with a positive clustered lower bound after multiplicity correction.", "—",
+     "Benjamini & Hochberg (1995), university record", URL_BH, ""),
+    ("REQ-39", "Storage", "Add durable snapshot storage and alerts: store immutable captures outside the static site, monitor freshness and alert on source/schema changes.",
+     "partly built", 'Captures are immutable and hashed (data/availability/history, data/evidence) but live inside the published repository rather than a private store · freshness/schema alarms exist as pinned-row tests and .github/workflows/official-monitor.yml',
+     "The \"outside the static site\" half is not built (ties to REQ-40); alerting is test-and-workflow based, not push notifications.",
+     "A private retention store + an alert channel (owner decision on both).", "—",
+     "GitHub Actions documentation", URL_ACTIONS_DOC, ""),
+    ("REQ-40", "Site split", "Split the site into a public analysis layer and a private data layer: keep the public site to derived analysis and hold raw row-level data in a private store until the terms are read.",
+     "blocked (owner decision)", 'Single-layer publication today; every raw capture is in the public repository by the owner\'s \"publish it\" instruction',
+     "A private store requires an owner decision on retention and on the source sites' terms of use; the terms have not been read or recorded here.",
+     "Owner decision + a terms review note; then raw rows move behind the private store.", "F-57",
+     "GitHub Pages documentation", URL_PAGES_DOC, ""),
+    ("REQ-41", "Team view", "Add a per-team view: starters out, replacements named, net injury count.",
+     "built", '<a href="availability.html">availability.html</a> (per-club starter/2nd/3rd/4th + injury join) · data/processed/injury_team_status.csv, unit_summary.csv · <a href="lineup-deficiencies.html">lineup-deficiencies.html</a>',
+     "Replacements are named only where official evidence names them; otherwise the cell stays blank and flagged (F-50 rule).",
+     "Done for captured clubs; unconfirmed replacement cells stay blank by design.", "F-50",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-42", "Lineups", "Add an announced-starter evidence field (not an inferred replacement) (the request cites VR-24/VR-25 for Lock, McCord and Brissett).",
+     "not built", 'No announced-starter evidence field exists; the VR-* identifiers map to no repository artefact (F-48)',
+     "The claimed official starter-change articles for Lock/McCord/Brissett were never captured or linked; nothing is inferred in their place.",
+     "Dated official announcement URLs per starter change, then an evidence field keyed to them.", "F-48",
+     "Baltimore Ravens club depth chart", URL_BAL, "S8"),
+    ("REQ-43", "Depth", "Add an official depth-chart register with date and source per row.",
+     "built", 'data/availability/depth_charts.csv (source_url + retrieved_utc + player_raw per row, 1,831 rows / 31 clubs) · <a href="availability.html">availability.html</a>',
+     "F-19: some club pages label their own chart \"Unofficial\" (verified live for HOU, S7); labels are recorded, never used to rank sources.",
+     "Done — date and source on every row; the HOU gap remains F-18.", "F-18, F-19",
+     "Houston Texans club depth chart", URL_HOU, "S7"),
+    ("REQ-44", "Calibration", "Calibrate what \"Questionable\" means empirically instead of using old percentages.",
+     "not built", 'No designation calibration exists; designations are stored verbatim and never converted to percentages anywhere in the build',
+     "Calibration needs multi-season designation→outcome joins (REQ-66), which are not archived.",
+     "n designations joined to official inactives across ≥2 seasons, play rate per designation with CI.", "F-58",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-45", "Matchups", "Interactive Offense vs. Defense Matchup Deficiency Matrix (1st–4th String).",
+     "built", '<a href="lineup-deficiencies.html">lineup-deficiencies.html</a> (Week 10 matrix, 39 verified 1st–4th string entries across 8 clubs, filterable)',
+     "Coverage is 8 clubs of 32 for the verified matchup sample; cells without official evidence stay blank.",
+     "32/32 clubs in the matrix with official evidence per cell.", "—",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-46", "Staleness", "Flag stale depth rows against the official transactions log (the request cites Baltimore listing Lamar Jackson and Tyler Huntley).",
+     "partly built", 'Stale-row flagging exists across dated captures (<a href="flagged.html">flagged.html</a> F-42, F-50) · the cited Baltimore claim is refuted live (S8): the chart reads Brissett | Fagnano | Slovis and neither name appears on the November reserve page',
+     "No automated join to the official transactions log (Trades/Signings/Waivers/Terminations pages) exists; the request\'s VR-17/VR-26 claim is unverified (F-48).",
+     "A transactions-log join that auto-flags any chart row naming a player with a subsequent transaction.", "F-46a, F-48",
+     "Baltimore Ravens club depth chart", URL_BAL, "S8"),
+    ("REQ-47", "Snapshot ledger", "Point-in-Time Snapshot Ledger for Injuries, Depth Charts & Inactives (prevents lookahead leakage in backtests).",
+     "built", 'data/availability/history/* (dated, hashed) · data/processed/injury_capture_ledger.csv · tests/test_no_lookahead.py + test_live_verify.py date-matched comparisons',
+     "Inactive rows join the ledger once the PR #82 parser publishes them.",
+     "Done for injuries + depth; inactives pending PR #82.", "—",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-48", "Data repair", "Populate the three missing Lions game-status designations (Kerby Joseph, Cade Mays, D.J. Reed).",
+     "built", 'All three rows carry game_status=Out in data/availability/injuries.csv and data/processed/injuries_week10.csv; re-verified live 2026-11-18 (S1: all three Out on nfl.com)',
+     "No gate — the cells are populated and match the official page.",
+     "Done — verified live 2026-11-18.", "—",
+     "NFL injury report (2026 week 10)", URL_INJ, "S1"),
+    ("REQ-49", "Data repair", "Re-capture and republish the Week 10 injury tables (the request cites 254 rows / 4 no-injury sections vs 279 rows / 2 sections live).",
+     "partly built", 'Recaptured repeatedly (2026-11-17 and 2026-11-18 captures in data/availability/history; the working capture holds 347 rows); <a href="injuries.html">injuries.html</a> republishes each state',
+     "The request\'s 254/279 counts are not reproduced from any committed capture (F-59); captures grow as the week\'s designations change.",
+     "The brief author\'s source for 254/279, or acceptance of the dated captures as the record.", "F-59",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-50", "Rejection", "Reject: deriving depth order from jersey number, experience or salary (SG-05).",
+     "rejected as requested", 'Rejection recorded: <a href="brief-2026-11-15.html">brief-2026-11-15.html</a> B9 (\"rejected by design\"), enforced by the depth register coming from official charts only; jersey prefixes are stripped to player_raw, not ordered on',
+     "No gate — the rejection is the deliverable.",
+     "Done — the method is forbidden and no artefact uses it.", "—",
+     "NFL game centre (WAS at NYG)", URL_GC, "S6"),
+    ("REQ-51", "Depth", "Represent shared and empty depth slots faithfully (the request cites Seattle two players in one slot; Washington a slot left empty).",
+     "partly built", 'Shared slots are represented as multi-row groups (692 such slots; SEA WR slot 1 = Kupp + Shaheed both rank 1) · the WAS empty-slot case is not present in the newest capture to represent (F-46c)',
+     "Empty-slot fidelity can only be proven against a capture that contains one; the request\'s specific examples are not reproduced as stated.",
+     "A dated capture containing an empty official slot, shown as empty (not skipped).", "F-46c",
+     "Baltimore Ravens club depth chart", URL_BAL, "S8"),
+    ("REQ-52", "Depth", "Resolve the depth-order source before building the backup-deficiency feature (route (a) club charts verified club by club; route (b) snap counts).",
+     "partly built", 'Route (a) chosen and implemented (club charts, 31/32 captured); the deficiency feature exists (<a href="lineup-deficiencies.html">lineup-deficiencies.html</a>) on 8 fully verified clubs; route (b) unavailable (no snap source)',
+     "Club-by-club verification covers 4 clubs cell-by-cell at integration (WAS/NYG/DET/NE) plus 8 in the matchup sample; the remaining clubs are captured but not line-verified.",
+     "32/32 clubs line-verified against their live chart (or route (b) verified instead).", "F-18",
+     "Baltimore Ravens club depth chart", URL_BAL, "S8"),
+    ("REQ-53", "Calibration", "Score injury-designation reliability before using it as a feature (join several seasons of designations to official inactive lists; measure play rate per designation with CIs).",
+     "not built", 'Blocked at the data layer: only one season\'s designations are archived (REQ-66); no designation is used as a model feature anywhere today',
+     "Multi-season designation→inactive joins do not exist in the repository.",
+     "≥2 seasons joined; play rate per designation with CI; then a feature decision.", "F-58",
+     "NFL injury report (2019 week 5)", "https://www.nfl.com/injuries/league/2019/reg5", ""),
+    ("REQ-54", "Capture cadence", "Snapshot the nfl.com injury report every Wed, Thu and Fri and keep a dated history.",
+     "built", '.github/workflows/availability.yml cron \"17 21 * * 3-6\" (Wed–Sat) plus twice-daily \"17 11,23 * * *\" · history under data/availability/history/',
+     "F-47 (scheduled commits are not auto-re-verified) remains the only gap.",
+     "Done — Wed/Thu/Fri/Sat snapshot + dated history.", "F-47",
+     "GitHub Actions documentation", URL_ACTIONS_DOC, ""),
+    ("REQ-55", "Capture cadence", "Treat the injury report as a timestamped series, not a weekly snapshot (capture daily from Wednesday to kickoff with the fetch timestamp).",
+     "built", 'Every capture row carries retrieved_utc (data/availability/injuries.csv); <a href="injury-deltas.html">injury-deltas.html</a> renders the series as deltas',
+     "No gate for the series; the twice-daily cadence exceeds the requested Wednesday-to-kickoff window.",
+     "Done — timestamped series with deltas.", "—",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-56", "Depth", "Use snap counts as the starter proxy when the depth chart is unavailable.",
+     "not built", 'No snap-count source exists in the repository (F-55); the starter proxy remains the official club chart, never inferred',
+     "Snap counts require a verified official source; none has been found or cited.",
+     "An official snap-count page verified for all 32 clubs, then a snaps-derived starter flag.", "F-55",
+     "NFL game centre (WAS at NYG)", URL_GC, "S6"),
+    ("REQ-57", "Baselines", "Add a control baseline (random picks; favorites only) to every leaderboard run.",
+     "built", 'data/processed/control_baseline.csv (RANDOM_SIDE, FAVORITE_ONLY with clustered bands) · <a href="competition.html">competition.html</a> references the controls',
+     "The controls\' universe quotes a community archive (nflverse pin) — evidence tier labelled on the rows, not an official source.",
+     "Official closing prices for the control universe (ties to G1/F-44).", "F-44",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-58", "Weather", "Stadium Roof/Surface & NWS Hourly Wind/Precipitation Overlay (couple NWS forecast grids with official 90-minute stadium roof designations).",
+     "partly built", 'Roof + fold-safe temp/wind features exist in games_model.csv; the T-90m/roof operating rules are cited from NFL Operations (S9) · no NWS grid overlay is integrated',
+     "No NWS forecast data is ingested; the 90-minute roof designation line was not re-read in CR2 (page chunk limit).",
+     "An NWS-source hourly series joined per stadium + the roof designation captured per game.", "F-60",
+     "NFL Operations game and stadium prep", URL_OPS, "S9"),
+    ("REQ-59", "Leaderboard", "Two-Stage Skill Leaderboard (proper-score qualification → prospective CLV/ROI escrow).",
+     "partly built", 'Stage 1 exists: gates + proper scores + reward ladder (<a href="competition.html">competition.html</a>) · Stage 2 (CLV/ROI escrow) is defined but empty',
+     "CLV needs authenticated closing prices (G1/F-44); no prize pool is authorised (T5 = NOT FUNDED).",
+     "G1 clears + owner authorises a pool; then a prospective escrow window opens.", "F-44",
+     "FanDuel push settlement rules", URL_FD, ""),
+    ("REQ-60", "Decomposition", "Vig-Free Market Consensus vs. Originated Fair-Line Decomposition View (separate pricing divergence from operator vig before any bet structure).",
+     "built", '<a href="origination.html">origination.html</a> (fair vs market vs difference columns) · data/processed/vig_by_season.csv, corr_market.csv',
+     "Vig estimates come from archived market numbers of mixed provenance (tier labels per row).",
+     "Authenticated closing prices for the vig decomposition (ties to G1).", "F-44",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-61", "Diffing", "Publish a weekly 'what changed' diff instead of a static snapshot (rank change, rating change, availability change).",
+     "partly built", 'Availability changes: <a href="injury-deltas.html">injury-deltas.html</a> (capture-to-capture) · brief pages carry dated change rows · a combined weekly rank/rating diff is not published',
+     "The weekly diff combining rating and rank movement does not exist as a page or table.",
+     "One dated diff page per week: rating Δ, rank Δ, availability Δ with sources.", "—",
+     "NFL week 10 scores", URL_SCORES, "S5"),
+    ("REQ-62", "Totals", "Publish every model total twice until one wins (both estimators visible with a gap column; collapse only after a walk-forward comparison).",
+     "not built", 'One total estimator family is published (pred_total_ridge/matchup/ensemble are model variants, not the requested independent second estimator); no gap column exists',
+     "A second, independently specified total estimator does not exist in the repository.",
+     "Two estimator series + gap column + a walk-forward comparison table.", "F-61",
+     "NFL week 10 schedule", URL_SCHED, ""),
+    ("REQ-63", "Scrapers", "Add a drift alarm to every scraper: pin expected row counts and required fields; fail the build loudly when a field goes missing.",
+     "partly built", 'Pinned-count assertions exist for the injury snapshot and depth captures (tests/test_live_verify.py, test_current_snapshot_audit.py); check_rebuild.py fails on derived drift; monitor_official.yml watches sources',
+     "Not every scraper has a pinned schema; F-43 (commit-without-rebuild) was repaired but the guard is workflow-level only.",
+     "A pinned row-count + required-field assertion for each of the scrapers.", "F-43",
+     "GitHub Actions documentation", URL_ACTIONS_DOC, ""),
+    ("REQ-64", "Reserve list", "Capture the reserve list so 'not listed' never means 'available' (the request cites Malik Willis, VR-25/VQ-06).",
+     "built", '.github/workflows/reserve-list.yml + data/availability/reserve/ · Willis verified live 2026-11-18 (S3: MIA 11/10 Reserve/Injured) and absent from the week-10 report — exactly the flagged case',
+     "F-45: the monthly page behaves as a rolling window (25 rows); the record-vs-window question is an owner decision.",
+     "Owner rule: monthly page = complete record, or window with explicit semantics.", "F-45",
+     "NFL reserve list (November 2026)", URL_RES, "S3"),
+    ("REQ-65", "Rejection", "Reject: ranking strategies by season-long ROI (SG-03).",
+     "rejected as requested", 'Rejection recorded: <a href="brief-2026-11-15.html">brief-2026-11-15.html</a> B9 (\"no leaderboard ranks by ROI\"); <a href="competition.html">competition.html</a> ranks gates and proper scores only',
+     "No gate — the rejection is the deliverable.",
+     "Done — no board ranks by realised ROI.", "—",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-66", "Archive", "Archive weekly injury reports for past seasons (for Q06 — the only way to test whether designations change outcomes).",
+     "not built", 'One historical snapshot exists (data/processed/injury_snapshot_2019_wk5.csv); no multi-season archive is built (F-58)',
+     "Past-season reports must be captured week by week from the official pages; only 2019 week 5 has been captured as a proof of reachability.",
+     "≥2 complete past seasons archived with hashes (then REQ-44/REQ-53 unblock).", "F-58",
+     "NFL injury report (2019 week 5)", "https://www.nfl.com/injuries/league/2019/reg5", ""),
+    ("REQ-67", "Pre-registration", "Pre-register each strategy (definition frozen before results are seen).",
+     "built", '<a href="forward.html">forward.html</a> (append-only ledger.jsonl; commit hash is the registration) · <a href="competition.html">competition.html</a> T0 tier requires the frozen definition',
+     "No gate for the rule; enforcement is the ledger + tests/test_forward_capture.py.",
+     "Done — frozen definitions registered before the evaluation window opens.", "—",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-68", "Priors", "2026 Kickoff & Declared Onside-Kick Regime Priors Filter (avoids bias in originated totals and 4th-quarter comeback win-probability curves).",
+     "not built", 'No kickoff-regime or onside-prior filter exists; the topic appears only as an open question in <a href="questions.html">questions.html</a>/decision registers',
+     "The regime prior is not specified and no official rule change source has been captured here.",
+     "An official rules/declared-onside source + a frozen prior specification before any total is re-originated.", "F-62",
+     "NFL Operations 2026 rulebook", URL_RULES, ""),
+    ("REQ-69", "Pre-registration", "Freeze a rule before it sees data (commit the rule text, sample window and gates to git before the evaluation window opens; the commit hash is the registration).",
+     "built", 'Protocol documented in <a href="competition.html">competition.html</a> and enforced by data/forward/prereg_audit.csv + trial_registry.csv (registration hash per trial)',
+     "No gate for the protocol.",
+     "Done — hash-as-registration is the recorded rule.", "—",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-70", "Validation", "Split data into train, validation and final holdout seasons (protect out-of-sample testing).",
+     "partly built", 'Walk-forward chronological folds (fit_season per row) + tests/test_no_lookahead.py + fold-safe imputation; the three-way train/validation/final split is not labelled as such anywhere',
+     "An explicitly frozen final holdout season set is not published; folding is walk-forward rather than a named holdout.",
+     "A published season split (train/validation/final) frozen in the registry before evaluation.", "—",
+     "Bailey & López de Prado (2014), publisher", URL_BLD, ""),
+    ("REQ-71", "Suggestions", "Make suggestions on how to improve the site for decision-making and create a dedicated suggestions section where paths are reviewed and chosen before implementing.",
+     "built", '<a href="suggestions.html">suggestions.html</a> · <a href="review-queue.html">review-queue.html</a> · <a href="suggestions-review.html">suggestions-review.html</a> · <a href="decision-board.html">decision-board.html</a>',
+     "No gate — nothing is implemented without a recorded path choice (D-01 rule).",
+     "Done — four registers, one queue, one path selector.", "—",
+     "GitHub Pages documentation", URL_PAGES_DOC, ""),
+    ("REQ-72", "Questions", "A clear list of questions, information and answers that must be addressed before any decision, with suggestions to discover the missing information.",
+     "built", '<a href="answers.html">answers.html</a> (90 questions, have/have-not/answer/discovery step) · <a href="questions.html">questions.html</a> · <a href="open-questions.html">open-questions.html</a> · <a href="decision-readiness.html">decision-readiness.html</a>',
+     "No gate for the registers; 58 of 90 questions carry no answer on record — that is the published state, not a gap in the register.",
+     "Discovery steps executed as sources arrive; each answer dated and linked.", "—",
+     "NFL week 10 schedule (row universe)", URL_SCHED, ""),
+    ("REQ-73", "Programme", "Originate NFL lines; research strategies as a leaderboard competition (singles, parlays, player-prop combos) behind validation gates, with correlation values, luck removal and selectively skill-based construction.",
+     "built", 'The programme itself: <a href="lines.html">lines.html</a>, <a href="strategies.html">strategies.html</a>, <a href="competition.html">competition.html</a>, <a href="validation.html">validation.html</a>, <a href="correlations.html">correlations.html</a>, <a href="props.html">props.html</a>',
+     "No strategy passes the gates (0 of 18 validated; G1 fails for all) — the competition runs, the reward stays unawarded.",
+     "One candidate passing G1–G8 on authenticated prices.", "F-44",
+     "White (2000), Econometric Society", URL_WHITE, ""),
+    ("REQ-74", "Availability", "Track injuries and defensive/offensive deficiencies (2nd/3rd/4th-string backups replacing starters) across the league.",
+     "built", '<a href="availability.html">availability.html</a> · <a href="lineup-deficiencies.html">lineup-deficiencies.html</a> · <a href="replacement-depth.html">replacement-depth.html</a> (1st–4th string replacement tracking)',
+     "Coverage limits: HOU chart absent (F-18); unconfirmed replacements blank by rule (F-50).",
+     "32/32 clubs with confirmed replacement evidence.", "F-18, F-50",
+     "NFL injury report (2026 week 10)", URL_INJ, "S2"),
+    ("REQ-75", "Executive summary", "Create an executive summary outlining important details.",
+     "built", '<a href="executive-summary.html">executive-summary.html</a> + EXECUTIVE_SUMMARY.md (regenerated each build)',
+     "No gate.",
+     "Done.", "—",
+     "NFL week 10 scores (decision source)", URL_SCORES, "S5"),
+    ("REQ-76", "Process", "There should be no manual input: work autonomously to finish all tasks, line by line, verified from official sources, no hallucinations.",
+     "process · executed", '<a href="COORDINATION.md">COORDINATION.md</a> (session logs) · this register (line-by-line state) · <a href="referents.html">referents.html</a> (every citation resolved)',
+     "Unverifiable values are left blank and flagged — never inferred (this register\'s blank cells follow that rule).",
+     "Continuing process requirement; satisfied per session and recorded.", "—",
+     "GitHub Pages documentation", URL_PAGES_DOC, ""),
+    ("REQ-77", "Repo work", "Review the repo line by line, verifying from official sources with links for manual review; flag irregularities.",
+     "built", '<a href="repo-review.html">repo-review.html</a> (686 tracked files inventoried) · <a href="audit.html">audit.html</a> · <a href="referents.html">referents.html</a> · <a href="flagged.html">flagged.html</a>',
+     "Irregularities stay open on the flagged page until an owner closes them (F-18..F-62).",
+     "Done as a standing cycle; open flags listed for manual review.", "F-18..F-62",
+     "NFL reserve list (November 2026)", URL_RES, "S4"),
+    ("REQ-78", "Site creation", "Create a GitHub Pages live site with a clean landing page and category subpages, dashboard-simple, all entries in readable tables with analysis and findings.",
+     "built", '<a href="index.html">index.html</a> + 52 published pages in the grouped navigation · <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages">GitHub Pages documentation</a>',
+     "No gate.",
+     "Done — site live at the repository Pages URL.", "—",
+     "GitHub Pages documentation", URL_PAGES_DOC, ""),
+    ("REQ-79", "Verification", "Verify line by line: every table row a source link to an official site; unconfirmable values blank + flagged; never infer or fill.",
+     "built", 'Enforced by pipeline/verify_site.py (V1 every row official/primary, V1b unverified metrics blank), tests/check_sources.py (strict allow-list) and tests/check_links.py · <a href="verification.html">verification.html</a>',
+     "No gate — the checks fail the build when a row lacks a source.",
+     "Done — 5,569 rows strict-checked at the CR1 baseline build.", "—",
+     "GitHub Pages documentation", URL_PAGES_DOC, ""),
+    ("REQ-80", "Parallel sessions", "Parallel-session coordination via COORDINATION.md: claim tasks, non-overlapping scopes, small commits, rebase before push, no clobbering other sessions.",
+     "process · executed", '<a href="COORDINATION.md">COORDINATION.md</a> (task board + collision notices + this session\'s claim)',
+     "Platform limitation (recorded on the board): each session is pinned to one branch, so the session-<id>/<task> worktree pattern is approximated by branch-per-session.",
+     "Continuing process requirement; this session recorded its claim before any file change.", "—",
+     "GitHub Actions documentation", URL_ACTIONS_DOC, ""),
+    ("REQ-81", "Publish", "When all tasks are done: PR to main with summary/sources/flagged irregularities, merge without waiting, confirm GitHub Pages deploys, record in COORDINATION.md; flagged items publish on a Flagged for Review page and never block the merge; fix and retry until the site is live.",
+     "process · executed", 'This session\'s PR + merge recorded in <a href="COORDINATION.md">COORDINATION.md</a> (CR3) · <a href="flagged.html">flagged.html</a> is the Flagged for Review page',
+     "No gate — flagged items (F-18..F-62) are non-blocking by this rule.",
+     "Executed at CR3: PR link + merge SHA + Pages state recorded on the board.", "—",
+     "GitHub Pages documentation", URL_PAGES_DOC, ""),
+]
+
+COLS = ["req_id", "category", "request", "status", "published", "gate", "clears", "flag",
+        "source_label", "source_url", "live_check"]
+
+
+def load_spot() -> dict:
+    if not SPOT.exists():
+        return {}
+    d = pd.read_csv(SPOT, dtype=str, keep_default_na=False)
+    return {r["check_id"]: r for _, r in d.iterrows()}
+
+
+def live_cell(spot: dict, sid: str) -> str:
+    if not sid:
+        return "not read this session · repository evidence only"
+    r = spot.get(sid)
+    if r is None:
+        return f"{sid} missing from spot-check file"
+    return f'{e(r["verdict"])} · 2026-11-18 · <span class="small">{e(r["official_reading"][:180])}</span>'
+
+
+def main() -> int:
+    spot = load_spot()
+    df = pd.DataFrame([dict(zip(COLS, row)) for row in REQUESTS], columns=COLS)
+    OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(OUT_CSV, index=False)
+
+    counts = df.status.value_counts().to_dict()
+    order = ["built", "partly built", "not built", "blocked (owner decision)",
+             "rejected as requested", "process · executed"]
+    cards = kpi_grid([
+        card(str(len(df)), "request items", "one row per request line, in request order", "skill"),
+        card(str(counts.get("built", 0)), "built", "delivered and published", "skill"),
+        card(str(counts.get("partly built", 0)), "partly built", "gate names the rest", "warn"),
+        card(str(counts.get("not built", 0) + counts.get("blocked (owner decision)", 0)),
+             "not built / blocked", "blank cells stay blank until sourced", "warn"),
+        card(str(counts.get("rejected as requested", 0)), "rejected as requested",
+             "the request rejects the method; the rejection is recorded", "info"),
+        card(str(counts.get("process · executed", 0)), "process · executed", "recorded in COORDINATION.md", "info"),
+    ])
+
+    intro = flag(
+        "<strong>Request register · compiled 2026-11-18 (UTC).</strong> One row per line of the "
+        "standing request, in request order. <em>What is built</em> names the published evidence; "
+        "<em>the gate</em> is what blocks full delivery; <em>what would clear it</em> is the number "
+        "or condition, never a guess. Values that no official source confirms are left blank and "
+        "flagged (F-rows on <a href=\"flagged.html\">flagged.html</a>) — nothing is inferred. "
+        "The live-check column records CR2 reads of the live official pages on 2026-11-18 "
+        "(excerpts: data/live/request_spotcheck_2026_11_18/excerpts.md); rows without a live read "
+        "say so.", "info")
+
+    rows = []
+    for r in df.itertuples(index=False):
+        rows.append([
+            f"<strong>{e(r.req_id)}</strong>",
+            e(r.category),
+            e(r.request),
+            e(r.status),
+            r.published,
+            e(r.gate),
+            e(r.clears),
+            e(r.flag),
+            f'{src_link(r.source_url, r.source_label)}<br><span class="small">{live_cell(spot, r.live_check)}</span>',
+        ])
+
+    body = intro + cards
+    body += '<section><h2>Decision-readiness table — one row per requirement</h2>'
+    body += ('<p>Statuses: <strong>built</strong> (delivered and published) · <strong>partly built</strong> '
+             '(the gate names the rest) · <strong>not built</strong> · <strong>blocked (owner decision)</strong> · '
+             '<strong>rejected as requested</strong> (the request itself rejects the method) · '
+             '<strong>process · executed</strong> (a process requirement, recorded in COORDINATION.md). '
+             'A blank cell would mean unverified; the register instead names the flag that holds the gap.</p>')
+    body += '<label>Search register <input class="filter" type="search" placeholder="Try REQ-20, price-data policy, snap counts…"></label>'
+    body += table(rows, ["ID", "Category", "Request", "Status", "What is built (evidence)",
+                         "Gate that blocks it", "What would clear it", "Flag", "Official source · live check"],
+                  caption="Standing-request register 2026-11-18 — status, evidence, gate and clearing number per request item")
+    body += "</section>"
+
+    body += '<section><h2>Live official reads behind this register (CR2)</h2><p>Nine checks across eight '
+    body += 'official pages, read 2026-11-18 with the page-fetch tool; verbatim excerpts are committed beside this '
+    body += 'register. The checks confirm the three Lions <em>Out</em> cells, the Malik Willis reserve row, the '
+    body += 'WAS 24–21 settlement score, the game-centre venue fields and the Texans image chart; they refute the '
+    body += 'Baltimore stale-QB claim quoted in the request.</p>'
+    srows = []
+    for r in pd.read_csv(SPOT, dtype=str, keep_default_na=False).itertuples(index=False):
+        srows.append([e(r.check_id), e(r.source_label), e(r.fact_checked), e(r.official_reading),
+                      e(r.verdict), e(r.read_utc), src_link(r.source_url, "read the official page")])
+    body += table(srows, ["ID", "Official page", "Fact checked", "What the official page says", "Verdict",
+                          "Read (UTC)", "Manual review link"],
+                  caption="CR2 live spot-check reads, 2026-11-18 — excerpts in data/live/request_spotcheck_2026_11_18/")
+    body += "</section>"
+
+    html = layout("request-register.html", "Request register · decision readiness",
+                  "One row per request item: what is built, the gate that blocks it and the number that would "
+                  "clear it — verified line by line, blank and flagged where no official source confirms.",
+                  body, wide=True)
+    OUT_HTML.write_text(html, encoding="utf-8")
+    print(f"request register: {len(df)} rows -> {OUT_HTML.name} + {OUT_CSV.relative_to(ROOT)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
