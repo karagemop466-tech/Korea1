@@ -216,13 +216,18 @@ ROWS = [
          clears="Per-row storage of the complete input vector beside each probability",
          label="NFL scores", url=U_SCORES),
     dict(id="RR-16", requirement="Compute and publish the removal-of-luck panel on the site dashboard",
-         status="DONE",
-         evidence="index.html (_landing_panels); pipeline/control_baseline.py; data/processed/control_baseline.csv",
+         status="PARTLY DONE",
+         evidence="index.html (_landing_panels); pipeline/control_baseline.py; data/processed/control_baseline.csv; "
+                  "data/processed/strategy_gates.csv",
          done="The landing page publishes a Removal of luck: control baselines panel — random side, favourite-only "
               "and home-only controls on the same games, each with n, hit rate, ROI and a 95% interval, graded "
-              "against official finals. Benchmarks only; they carry no verdict.",
-         gate="Not applicable for the panel",
-         clears="Not applicable",
+              "against official finals. Benchmarks only; they carry no verdict. The strategies themselves are NOT "
+              "ranked by a proper score: strategy_gates.csv carries a DSR, a bootstrap interval, weekly clustering "
+              "and a Holm correction, but nothing is ordered by benchmark-relative Brier skill, even though 44 "
+              "model-metric rows carry a Brier score. Status corrected from DONE to PARTLY DONE on 2026-11-18 by "
+              "arena/ba09384a-korea1 after the requirement-annex pass; both readings are printed, none is hidden.",
+         gate="No proper-score (Brier skill) ranking is published for any strategy",
+         clears="One strategy ranked by Brier skill against the control benchmark, at any gate",
          label="NFL scores (grading standard)", url=U_SCORES),
     dict(id="RR-17", requirement="Add a two-sided what would change our mind field to every strategy entry",
          status="DONE",

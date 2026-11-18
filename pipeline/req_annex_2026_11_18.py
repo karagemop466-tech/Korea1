@@ -18,7 +18,7 @@ re-computes every number it prints, and writes:
 
 Official-source re-read (2026-11-18 ~04:52Z, page-fetch tool)
 -------------------------------------------------------------
-`data/live/spotcheck_2026_11_18_b/` holds verbatim transcriptions of four official pages read in
+`data/live/spotcheck_2026_11_18_b/` holds verbatim transcriptions of six official pages read in
 this session. The build sandbox shell cannot open www.nfl.com (TLS refused), so those files are the
 record of the read; the comparison below recomputes the agreement from them. A cell that was not
 transcribed is never counted as a match — omitted rows are named, not scored.
@@ -1092,12 +1092,13 @@ asked for something the evidence says must not be done; the rejection is recorde
 is the readable test, not a threshold invented here: it is the value the frozen configuration
 (<a href="assets/data/validation_config.json">validation_config.json</a>) or the next official capture would have to
 produce. No cell is filled by hand; every number in the evidence column is recomputed from the committed file
-named in the same row, and <code>tests/test_request_register_2026_11_18.py</code> fails the build if a row loses its
+named in the same row, and <code>tests/test_requirement_annex_2026_11_18.py</code> fails the build if a row loses its
 source or its clearing number.</p>
-<p><strong>Live check.</strong> At {CHECKED_UTC} this session re-read four official pages with the page-fetch tool:
-the NFL injury report ({f['inj_rows']} rows), the Commanders depth chart ({f['dep_rows']} rows, Offense and Defense),
-the November reserve list ({f['res_live']} rows) and one game centre (KC at ATL, printed
-{gc['away_score']}–{gc['home_score']} Final). The verbatim transcriptions are committed under
+<p><strong>Live check.</strong> At {CHECKED_UTC} this session re-read six official pages with the page-fetch tool:
+the NFL injury report ({f['inj_rows']} rows across {f['inj_clubs_live']} clubs), the Commanders depth chart
+({f['dep_rows']} rows, Offense and Defense), the reserve list for three months
+({f['res_live']} + {f['res_months'].get('2026-10', {}).get('n', 0)} + {f['res_months'].get('2026-09', {}).get('n', 0)}
+rows) and one game centre (KC at ATL, printed {gc['away_score']}–{gc['home_score']} Final). The verbatim transcriptions are committed under
 <code>data/live/spotcheck_2026_11_18_b/</code>; the comparison below is recomputed from those files on every build.</p>
 </section>"""
 
@@ -1217,7 +1218,7 @@ daily would turn this one-off into the drift alarm the brief asks for, and the t
 <h2>{5} · How this page verifies itself</h2>
 <ul>
 <li>Every number in the evidence column is read from a committed file in the same build; no value is typed in.
-<code>tests/test_request_register_2026_11_18.py</code> re-derives the headline numbers and fails on a mismatch.</li>
+<code>tests/test_requirement_annex_2026_11_18.py</code> re-derives the headline numbers and fails on a mismatch.</li>
 <li>Every row carries an official source URL, checked against the same allow-list as every other page.</li>
 <li>The live check is recomputed from the committed transcriptions, so the counts on this page and the counts
 in the CSV cannot drift apart.</li>
