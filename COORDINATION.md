@@ -3117,7 +3117,7 @@ reaches the official pages and was used to read the pages this session quotes.
 
 **Spot-check (CS4).** `pipeline/session_20261118.py` compares the verbatim excerpts in `data/live/spotcheck_2026_11_18/` with the committed files. Injury report, four clubs: 44 of 44 lines match the 2026-11-17 capture. Commanders Offense and Defense: 23 of 23 rows match. Reserve list, November: live page 25 rows, 2026-11-17 19:59Z capture 25 rows, 17 on both, 8 on the live page only, 8 in the capture only. Not checked: Special Teams, the other 28 clubs' charts, and the full 347-row injury report.
 
-**Still open, not done here.** CS5 (the 85-plus item request register) was not built. Most request items cannot be verified from the sources read. Items that need an owner or a new source are in F-42 to F-51 on `flagged.html`. Also open: the price-data policy (F-44; `DECISIONS.md` has none), the reserve-list source of record (F-45), and the request identifiers VR-*, VQ-*, SG-* (F-48), which map to no repository artefact.
+**Still open, not done here.** CS5 (the request register (one row per request item, about 60 items)) was not built. Most request items cannot be verified from the sources read. Items that need an owner or a new source are in F-42 to F-51 on `flagged.html`. Also open: the price-data policy (F-44; `DECISIONS.md` has none), the reserve-list source of record (F-45), and the request identifiers VR-*, VQ-*, SG-* (F-48), which map to no repository artefact.
 
 **Scheduled-job caveat (F-47).** The scheduled jobs commit with `GITHUB_TOKEN`. GitHub does not start workflows for those pushes, so `verify.yml` does not re-check the scheduled commits.
 
