@@ -3088,3 +3088,19 @@ reaches the official pages and was used to read the pages this session quotes.
 **Pull request and merge:** PR #81 — https://github.com/karagemop466-tech/Korea1/pull/81 — `arena/292f7ae1-korea1` → `main`, merged without waiting. Verification summary, sources used and flagged irregularities carried in the PR body; all checks green before merge.
 
 **Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard. Flagged items do not block merge.
+## Session `arena/db6cd525-korea1` — 2026-11-18 request register, drift repair and spot-check (claim)
+
+**Protocol deviation (recorded as every earlier session recorded it).** The platform pins this session to branch `arena/db6cd525-korea1` (base `main` = `5df9bab`). The `session-<id>/<task>` worktree pattern cannot be used; this branch is the task and integration branch. Sibling sessions were pushing to their own `arena/*` branches during this session (seen via `gh run list`); none of their branches or PRs is touched.
+
+**Why this session exists.** The 2026-11-18 request repeats the 2026-11-13 request in full. Most of it has been partly built by earlier sessions. This session (a) repairs two defects found while re-running the build, (b) spot-checks the live official pages against the committed captures, and (c) publishes one register that says, for every request item, what is built, what is partly built, what is blocked by a source and what was rejected as requested.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CS1 | Board claim and session log | **in progress** | `arena/db6cd525-korea1` | `COORDINATION.md` (own section only) |
+| CS2 | Repair: `test_depth_snapshot_matches_the_official_charts` compared a 2026-11-13 extract with the 2026-11-17 capture (comparison-date error). Compare with the same-date dated capture instead | **in progress** | `arena/db6cd525-korea1` | `tests/test_live_verify.py` (one test) |
+| CS3 | Repair: `availability.yml` committed raw captures but not the derived pages built from them (published tables lagged the captures). Scheduled job now regenerates and stages every derived output | **in progress** | `arena/db6cd525-korea1` | `.github/workflows/availability.yml` |
+| CS4 | Official spot-check of the 2026-11-17 capture against the live pages on 2026-11-18: 42 injury rows (WAS, NYG, NE, DET) and the Commanders depth chart | **in progress** | `arena/db6cd525-korea1` | `data/live/spotcheck_2026_11_18/**` (new), `pipeline/session_20261118.py` (new) |
+| CS5 | 2026-11-18 request register: one row per request item, with status, evidence file, clearing gate and official link; page and tests | **in progress** | `arena/db6cd525-korea1` | `pipeline/session_20261118.py` (new), `data/integration/request_register_2026_11_18.csv` (new), `request-register-2026-11-18.html` (new), `tests/test_request_register_2026_11_18.py` (new) |
+| CS6 | Flagged additions F-42 onward for irregularities found this session | **in progress** | `arena/db6cd525-korea1` | `data/integration/flagged_2026_11_18.csv` (new); `pipeline/render_site.py` (`build_flagged` one line) |
+| CS7 | Integration: nav entry, executive-summary addendum, Makefile wiring, page lists, README link | **in progress** | `arena/db6cd525-korea1` | `pipeline/render_site.py` (NAV only), `pipeline/render_summary.py` (addendum only), `Makefile`, `tests/check_*.py` and `pipeline/verify_site.py` (page lists), `README.md` (one line) |
+| CS8 | Final `make build`, `make test`, `check_rebuild`, PR to `main`, merge without waiting, Pages confirmed, record here | **in progress** | `arena/db6cd525-korea1` | `COORDINATION.md`, branch → `main` |
