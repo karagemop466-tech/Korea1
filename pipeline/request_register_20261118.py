@@ -341,15 +341,20 @@ def register_rows() -> list[dict]:
         U["schedule"], "Official schedule",
         "Sibling PR #82 (GB4) proposes exactly this from the game centre; this session does not duplicate it.")
     add("R-28", "Transcribe the venue of every fixture from the official game centre and publish it",
-        "Availability", "NOT BUILT HERE",
-        [absent("data/processed/gamecentre_rows.csv"), absent("data/evidence/gamecentres")],
-        "The capture belongs to PR #82 (GB1), which is open and unmerged",
-        "One venue row per fixture with the game-centre URL and a raw hash",
+        "Availability", "PARTLY — capture job merged, rows not yet published",
+        [ev("data/evidence/official_games/manifest.json", "schedule pages for Weeks 9–10, hashed"),
+         "pipeline/fetch_official_games.py and .github/workflows/gamebooks.yml (merged from PR #82 at "
+         "2026-11-18T04:50Z)",
+         absent("data/processed/gamecentre_rows.csv")],
+        "The workflow is merged and runs twice daily, but its evidence holds schedule pages only: no "
+        "game-centre page has been captured and committed yet",
+        "One venue row per fixture with the game-centre URL and a raw hash — the manifest's "
+        "schedule_pages count is the number to watch",
         U["schedule_w10"], "Official Week 10 schedule (venue printed per game)",
-        "This session re-read the official Week 10 page and recorded the one international fixture "
-        "(Patriots at Lions, section heading 'International Game, November 15th', Munich) in "
-        f"{READS}nfl_schedule_week10_2026_games_and_byes.md, so the venue claim has an official witness even "
-        "though the full capture is not ours to publish.")
+        "This session re-read the official Week 10 page independently and recorded the one international "
+        "fixture (Patriots at Lions, section heading 'International Game, November 15th', Munich) in "
+        f"{READS}nfl_schedule_week10_2026_games_and_byes.md, so the venue claim has an official witness while "
+        "the per-fixture rows wait for a scheduled run of the merged job.")
     add("R-29", "Publish the league's dated schedule announcement beside the live schedule page", "Site",
         "BUILT BY THIS SESSION",
         [f"{READS}nfl_schedule_week10_2026_games_and_byes.md (the flexible-scheduling notice is copied "
@@ -359,13 +364,20 @@ def register_rows() -> list[dict]:
         "no earlier than immediately after Weeks 14/15 — which is the dated announcement the item asks to "
         "keep beside the schedule.")
     add("R-30", "Use official NFL Game Books for actual starters and game-day status; do not infer depth "
-                "rank or snaps", "Availability", "NOT BUILT HERE",
-        [absent("data/processed/gamebook_rows.csv"), "sibling session `arena/99b908ab-korea1` (PR #82)"],
-        "The Game Book PDF is not fetched by any merged workflow",
-        "One parsed Game Book with a raw hash per completed fixture",
-        U["gamebook"], "Official game centre (Game Book link)")
+                "rank or snaps", "Availability", "PARTLY — fetcher and parsers merged, no parsed rows yet",
+        [absent("data/processed/gamebook_rows.csv"),
+         "pipeline/official_games.py (parse_game_book / parse_lineup_rows, merged from PR #82)",
+         ".github/workflows/gamebooks.yml (cron 47 3,15 * * *)"],
+        "The capture job exists but no Game Book evidence is committed yet, so there is no starter record to "
+        "publish",
+        "One parsed Game Book lineup set with a raw hash per completed fixture",
+        U["gamebook"], "Official game centre (Game Book link)",
+        "Left to that job rather than re-implemented here; the matrix this session added states on its own "
+        "page that it does not show starters (R-46).")
     add("R-31", "Capture official inactive lists and snap counts", "Availability", "OPEN",
         [absent("data/processed/inactives.csv"),
+         "pipeline/official_games.py carries the Game Book parser the inactive list comes from (merged with "
+         "PR #82), with no captured input yet",
          "the site's own text records that 'Only 6 of 254 report rows carry a game designation' for the "
          "frozen parse (C-01); the active capture has 171 designations of 347 rows (C-02)"],
         "No inactive-list artefact is captured on any schedule",
@@ -928,6 +940,38 @@ and the VR-/VQ-/SG- identifiers are recorded as unverified references (R-62, R-4
                   "choice before any change is implemented.", body, wide=True)
 
 
+def _reconcile_state() -> tuple[bool, bool]:
+    """(declares itself read-only, guarded by a test that the Makefile runs) — checked, not remembered."""
+    script = ROOT / "scripts/reconcile_depth_charts.py"
+    guard = ROOT / "tests/test_reconcile_depth_charts.py"
+    readonly = False
+    if script.exists():
+        text = script.read_text(encoding="utf-8")
+        writes = [m for m in ("to_csv(", 'open(PUBLISHED, "w"', 'open(DEPTH, "w"', "write_text(") if m in text]
+        readonly = ("Read-only" in text or "does not reconcile or rewrite" in text) and not writes
+    guarded = guard.exists() and "test_reconcile_depth_charts" in (ROOT / "Makefile").read_text(encoding="utf-8")
+    return readonly, guarded
+
+
+def _reconcile_severity() -> str:
+    readonly, guarded = _reconcile_state()
+    return "Info · closed on this branch" if (readonly and guarded) else "Medium · needs review"
+
+
+def _reconcile_finding() -> str:
+    readonly, guarded = _reconcile_state()
+    if readonly and guarded:
+        return ("Closed by the merged repair: scripts/reconcile_depth_charts.py compares the 2026-11-13 "
+                "official extract with the same-dated capture and rewrites nothing, and "
+                "tests/test_reconcile_depth_charts.py asserts that. This row is generated by reading the "
+                "script and the Makefile at build time, so it re-opens itself if either changes — it is not "
+                "a sentence someone remembered to delete.")
+    return ("scripts/reconcile_depth_charts.py can rewrite data/availability/depth_charts.csv, so a "
+            "scheduled capture could be overwritten by a dated extract. Status read from the file and the "
+            "Makefile at build time (read-only declared: "
+            f"{readonly}; guard test wired: {guarded}).")
+
+
 def write_flagged(claims: list[dict], register: list[dict]) -> Path:
     """Flagged rows for the 2026-11-18 register, generated from the re-derived claim values.
 
@@ -982,13 +1026,11 @@ def write_flagged(claims: list[dict], register: list[dict]) -> Path:
                   "division may be ranked on return.",
              source_label="NFL scores (the official settlement the archive is graded against)",
              source_url=U["scores"]),
-        dict(id="F-2026-11-18b-07", severity="Medium · needs review",
-             finding="Carried from the 2026-11-18 integration log and still true on this branch: "
-                     "scripts/reconcile_depth_charts.py rewrites data/availability/depth_charts.csv when run, "
-                     "so a scheduled capture can be overwritten by a dated extract.",
-             next="Owner to guard or remove the script (it is outside this session's claimed scope, so it "
-                  "was left in place).",
-             source_label="NFL.com injury report (the capture the script touches)",
+        dict(id="F-2026-11-18b-07", severity=_reconcile_severity(),
+             finding=_reconcile_finding(),
+             next="Re-opens by itself if the script gains a write path or the guard test leaves the Makefile; "
+                  "no further action while both hold.",
+             source_label="NFL.com injury report (the capture the script could touch)",
              source_url=U["injuries"]),
     ]
     OUT.mkdir(parents=True, exist_ok=True)
