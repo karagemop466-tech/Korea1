@@ -23,9 +23,6 @@ from common import ROOT  # noqa: E402
 SPOT = ROOT / "data" / "live" / "spotcheck_2026_11_18"
 AV = ROOT / "data" / "availability"
 HIST = AV / "history"
-RES_CAPTURE_LABEL = "2026-11-17T19:59:57Z capture"
-
-
 def newest_stamp(path: Path) -> str:
     """retrieved_utc of a committed capture, read from the file (never typed in)."""
     d = pd.read_csv(path, dtype=str, keep_default_na=False, usecols=["retrieved_utc"])
@@ -123,26 +120,47 @@ def compare_depth(live: list[dict], was: pd.DataFrame) -> list[dict]:
 
 
 def compare_reserve() -> tuple[list[dict], dict]:
+    """Compare one dated live-page excerpt with both the cited older capture and newest capture.
+
+    Never pair statistics from a rolling `latest.csv` with a narrative that names a
+    particular historical capture. Keeping the two comparisons separate preserves the
+    2026-11-17 discrepancy while recording what the 2026-11-18 recapture contains.
+    """
     live = pd.read_csv(SPOT / "nfl_reserve_list_2026_11_live_rows.csv", dtype=str, keep_default_na=False)
     live["date"] = "2026-11-" + live.date_as_printed.str.split("/").str[1]
-    cap = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
-    cap = cap[cap.month == "2026-11"]
-    kl = set(zip(live.date, live.club, live.player))
-    kc = set(zip(cap.date, cap.team, cap.player))
-    rows = []
-    for d, t, p in sorted(kl):
-        verdict = "ON BOTH" if (d, t, p) in kc else "ON LIVE PAGE ONLY"
-        rows.append(dict(check="reserve list", club=t, item=f"{p} ({d[5:]})", live="listed",
-                         capture="listed" if (d, t, p) in kc else "not in capture",
-                         verdict=verdict, retrieved="2026-11-18 page read", source_url=URL_RES))
-    for d, t, p in sorted(kc - kl):
-        rows.append(dict(check="reserve list", club=t, item=f"{p} ({d[5:]})", live="not on live page",
-                         capture="listed", verdict="CAPTURE ONLY", retrieved=RES_CAPTURE_LABEL, source_url=URL_RES))
-    stats = dict(live_rows=len(kl), capture_nov_rows=len(kc), both=len(kl & kc),
-                 live_only=len(kl - kc), capture_only=len(kc - kl),
-                 capture_only_names=sorted(f"{p} ({t}, {d[5:]})" for d, t, p in kc - kl),
-                 live_only_names=sorted(f"{p} ({t}, {d[5:]})" for d, t, p in kl - kc),
-                 capture_dates=sorted({d for d, _, _ in kc}))
+    historical = pd.read_csv(
+        AV / "reserve" / "history" / "2026-11-17T195957Z" / "reserve_list.csv",
+        dtype=str, keep_default_na=False,
+    )
+    latest = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    live_keys = set(zip(live.date, live.club, live.player))
+    rows: list[dict] = []
+    stats: dict = {"live_rows": len(live_keys)}
+
+    captures = [
+        ("2026-11-17T19:59:57Z capture", historical),
+        ("2026-11-18T04:42:01Z capture", latest),
+    ]
+    for label, captured in captures:
+        captured = captured[captured.month == "2026-11"]
+        capture_keys = set(zip(captured.date, captured.team, captured.player))
+        for d, t, p in sorted(live_keys):
+            on_capture = (d, t, p) in capture_keys
+            rows.append(dict(check=f"reserve list vs {label}", club=t, item=f"{p} ({d[5:]})",
+                             live="listed", capture="listed" if on_capture else "not in capture",
+                             verdict="ON BOTH" if on_capture else "ON LIVE PAGE ONLY",
+                             retrieved="2026-11-18 page read", source_url=URL_RES))
+        for d, t, p in sorted(capture_keys - live_keys):
+            rows.append(dict(check=f"reserve list vs {label}", club=t, item=f"{p} ({d[5:]})",
+                             live="not on live page", capture="listed", verdict="CAPTURE ONLY",
+                             retrieved=label, source_url=URL_RES))
+        key = "historical" if label.startswith("2026-11-17") else "latest"
+        stats[key] = dict(
+            label=label, rows=len(capture_keys), both=len(live_keys & capture_keys),
+            live_only=len(live_keys - capture_keys), capture_only=len(capture_keys - live_keys),
+            live_only_names=sorted(f"{p} ({t}, {d[5:]})" for d, t, p in live_keys - capture_keys),
+            capture_only_names=sorted(f"{p} ({t}, {d[5:]})" for d, t, p in capture_keys - live_keys),
+        )
     return rows, stats
 
 
@@ -233,13 +251,15 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
                       "This commit brings the committed CSV in line with the existing code (26 close cells changed in data/processed/price_archive.csv). It is not a new source capture."),
              next="Owner: decide whether a ledger freeze may populate a close column at all (the price-data policy in DECISIONS.md is still empty). If not, remove the fill in pipeline/price_archive.py and the cells go back to blank.",
              source_label="NFL.com scores (settlement source)", source_url="https://www.nfl.com/scores/2026/week-10"),
-        dict(id="F-45", severity="High · open",
-             finding=("The November reserve page is not a complete record. The live page read on 2026-11-18 lists "
-                      f"{res['live_rows']} November rows (dated 11/10 to 11/17). The 2026-11-17 19:59Z capture lists {res['capture_nov_rows']} November rows. "
-                      f"{res['both']} rows are on both. {res['capture_only']} capture rows are not on the live page ({'; '.join(res['capture_only_names'])}). "
-                      f"{res['live_only']} live rows are not in the capture ({'; '.join(res['live_only_names'])}). "
-                      "NFL does not state a reason on the page. A 25-row window is one possible explanation, not a verified rule."),
-             next="Keep every capture (done). Owner: decide whether the monthly page is the record or a window. Re-read the live page in a later session to see whether the mismatch persists. 'Not listed' does not mean available.",
+        dict(id="F-45", severity="Medium · historical discrepancy; retention policy open",
+             finding=("The live November reserve-page excerpt read on 2026-11-18 contains "
+                      f"{res['live_rows']} rows. The 2026-11-17T19:59:57Z capture has "
+                      f"{res['historical']['both']} of those rows in common, "
+                      f"{res['historical']['live_only']} live-page-only and {res['historical']['capture_only']} capture-only rows. "
+                      f"The later 2026-11-18T04:42:01Z capture has {res['latest']['both']} rows in common, "
+                      f"{res['latest']['live_only']} live-page-only and {res['latest']['capture_only']} capture-only rows. "
+                      "This later capture matches the sampled live-page rows; it does not establish the NFL page's retention or completeness policy."),
+             next="Keep both immutable captures. Confirm the source's retention semantics before treating a missing row as unavailable; do not infer that the monthly page is complete or a rolling window.",
              source_label="NFL.com reserve list, November 2026", source_url=URL_RES),
         dict(id="F-46", severity="High · open",
              finding=("Request claims that no source read here confirms. "
@@ -276,10 +296,10 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
                       "which is the source of record. That capture has no Daron Payne row, and the live Commanders page read on 2026-11-18 agrees with it on the rows compared (see spotcheck_rows.csv)."),
              next="Owner: confirm. Any reconciliation must be a new dated capture, never an edit of an older one. The S18 rows remain in git history.",
              source_label="Commanders club depth chart", source_url=URL_WAS),
-        dict(id="F-51", severity="Medium · open",
-             finding=("scripts/reconcile_depth_charts.py (from S18) still rewrites data/availability/depth_charts.csv when it is run, and it has no guard. "
-                      "It is not called by make build, but the next session that runs it will reintroduce the rewrite of F-50."),
-             next="Owner: remove the script, or make it refuse to write over a dated capture.",
+        dict(id="F-51", severity="Medium · repaired",
+             finding=("scripts/reconcile_depth_charts.py is now a read-only comparison against the same-date 2026-11-13 capture. "
+                      "It does not write the current or historical depth snapshots; a regression test verifies both files remain byte-identical."),
+             next="No further action for the overwrite hazard. Any new chart extraction must be captured as a new dated snapshot through the official-source workflow.",
              source_label="", source_url=""),
     ]
 
@@ -307,8 +327,12 @@ def main() -> None:
     n_dep = len(dep_v)
     n_dep_match = sum(r["verdict"] == "MATCH" for r in dep_v)
     print(f"injury lines {n_inj}, match {n_match}; depth rows {n_dep}, match {n_dep_match}")
-    print(f"reserve: live {res['live_rows']}, capture {res['capture_nov_rows']}, both {res['both']}, "
-          f"live-only {res['live_only']}, capture-only {res['capture_only']}")
+    print(f"reserve historical: live {res['live_rows']}, capture {res['historical']['rows']}, "
+          f"both {res['historical']['both']}, live-only {res['historical']['live_only']}, "
+          f"capture-only {res['historical']['capture_only']}")
+    print(f"reserve latest: live {res['live_rows']}, capture {res['latest']['rows']}, "
+          f"both {res['latest']['both']}, live-only {res['latest']['live_only']}, "
+          f"capture-only {res['latest']['capture_only']}")
     print(f"multi rank-1 groups: {f['multi_rank1_by_capture']}")
     print(f"payne: {f['payne_by_capture']}")
     print(f"bal: {f['bal_by_capture']}")
