@@ -3060,3 +3060,44 @@ No historical snapshot value or source file was changed; no player role or perfo
 **Flagged irregularities (do not block merge; published on `flagged.html` / `repo-review.html`):** pre-existing items only; none introduced by this change.
 
 **Decision state:** 0 of 18 strategies validated; no reward awarded; G1 (executable quote provenance) fails for all 18 candidates. Backtest numbers do not appear on the leaderboard.
+
+---
+
+---
+## Session `arena/99b908ab-korea1` — 2026-11-18 official game-centre / Game Book evidence layer
+
+**Board read first (2026-11-18T03:55Z).** Two sessions are active on this repo at the same time and
+own adjacent work; this session does **not** touch either scope:
+
+| Live sibling | Open PR | Scope it owns | Overlap with this session |
+|---|---|---|---|
+| `arena/51fae77c-korea1` | #74 (opened 2026-11-18T03:49:26Z) | `tests/test_live_verify.py`, `COORDINATION.md` claim row | none — it repairs the dated depth-snapshot test only |
+| `arena/cb61dcec-korea1` | #75 (opened 2026-11-18T03:54:53Z) | `tests/test_live_verify.py` + the regenerated artefacts (`data/live/depth_*`, `data/gates/replacement_*`, `data/integration/repo_inventory.csv`, `data/processed/price_archive*`, the matching root `*.html`) | none — this session does not edit any of those files |
+
+The depth-snapshot repair and the build-drift regeneration are therefore **left to those sessions**.
+This session takes an unclaimed scope: a new official-source layer built on the NFL **game centre**
+and the official **Game Book PDF**, which no session has claimed.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| GB1 | **Official game-centre capture**: fetch each published fixture's official NFL game-centre page, record the printed `LOCATION` and `STADIUM`, the printed section heading, the final score where the page shows one, and the official Game Book PDF link. Raw HTML is hashed and stored outside the static site; the parsed rows are committed with the official URL on every row | **in progress** | `arena/99b908ab-korea1` | `pipeline/fetch_gamecentres.py` (new), `pipeline/parse_gamecentre.py` (new), `.github/workflows/gamecentres.yml` (new), `data/evidence/gamecentres/**` (new), `data/processed/gamecentre_*.csv` (new) |
+| GB2 | **Official Game Book capture and parse**: download the official Game Book PDF for each completed fixture, hash the raw bytes, and parse the official fields the site is allowed to quote — the printed venue line, the game-day weather and roof/surface designation, the starting lineups (offence and defence), the substitution list, the "Did Not Play" list and the "Not Active" (inactive) list. Nothing is inferred: a field that does not parse stays blank and is flagged | **in progress** | `arena/99b908ab-korea1` | `pipeline/fetch_gamebooks.py` (new), `pipeline/parse_gamebook.py` (new), `.github/workflows/gamebooks.yml` (new), `data/evidence/gamebooks/**` (new), `data/processed/gamebook_*.csv` (new) |
+| GB3 | **Availability graph as a first-class dataset**: join the *expected* starter (the club's own published depth chart, captured daily) to the *actual* starter (the official Game Book) and to the official inactive list, per club, per game, per position. This is the "who was expected to start, who actually did" dataset; the replacement is read from the Game Book, never from chart order | **in progress** | `arena/99b908ab-korea1` | `pipeline/availability_graph.py` (new), `data/processed/availability_graph.csv` (new) |
+| GB4 | **Fixture-context feature set built only from published schedule facts**: a feature table whose every column is a fact printed by the league's own schedule or game centre (week, day, kickoff window, rest days, division flag, neutral site, venue, roof/surface designation), with the official URL per row and the feature dictionary updated | **in progress** | `arena/99b908ab-korea1` | `pipeline/fixture_context.py` (new), `data/processed/fixture_context.csv` (new), `data/processed/feature_dict.csv` (one additive row set) |
+| GB5 | **Publish**: a new page for the official game-centre / Game Book evidence and the availability graph, wired into the navigation, the source checks and the link checks | **in progress** | `arena/99b908ab-korea1` | `pipeline/render_gamebooks.py` (new), `gamebooks.html` (new), `pipeline/render_site.py` (NAV tuple + one index card only), `pipeline/verify_site.py` (page set only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one line) |
+| GB6 | **Tests and evidence integrity**: unit tests for the game-centre and Game Book parsers (mutation controls), a test that no published Game Book row may exist without an official URL, and a test that the availability graph never marks a replacement that the Game Book does not name | **in progress** | `arena/99b908ab-korea1` | `tests/test_gamebooks.py` (new) |
+| GB7 | **Integration and publish**: executive-summary section, README line, requirements rows, flagged rows for every unverified or irregular value, re-verify the combined data, open the pull request, merge it, confirm the Pages deployment and record the result here | **in progress** | `arena/99b908ab-korea1` | `EXECUTIVE_SUMMARY.md` (own section), `README.md` (one line), `pipeline/render_site.py` (flagged rows only), `COORDINATION.md` (own section), branch `arena/99b908ab-korea1` → `main` |
+
+**Why this scope.** The brief asks for actual starters and game-day status from official NFL Game
+Books, for the venue of every fixture from the official game centre, for the official inactive list,
+for a first-class availability graph, and for a fixture-context feature set built only from published
+schedule facts. The Game Book PDF published by the league for each game carries the starting lineups,
+the substitutions, the "Did Not Play" list, the "Not Active" list, the printed venue line and the
+game-day weather and roof designation — all from one official document per game, with a stable
+`static.www.nfl.com` URL. No session had claimed this layer.
+
+**Network reality.** The build sandbox cannot reach `www.nfl.com` or `static.www.nfl.com` (TLS
+refused, measured on 2026-11-18T03:47Z), so the capture runs on a GitHub-hosted runner through
+`.github/workflows/gamebooks.yml`, exactly like the existing availability tracker. The page-fetch tool
+reaches the official pages and was used to read the pages this session quotes.
+
