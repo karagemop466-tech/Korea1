@@ -59,6 +59,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | BF9 | **Final integration + publish**: nav, page lists (verify_site/check_sources/check_links), Makefile wiring, executive-summary line, `make build` + `make test`, PR → `main`, merge, Pages deploy, record | **done** (PR #59 merged 2026-11-14T21:49:08Z; CI fix PR #60 merged 2026-11-14T22:09:39Z; Verify site green on `main`; GitHub Pages redeployed and live) | `arena/bfcd9879-korea1` | `pipeline/render_site.py` (NAV + page registration only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (site recipe additions only), `EXECUTIVE_SUMMARY.md` (own section), `README.md` (one link), `COORDINATION.md`, branch `arena/bfcd9879-korea1` → `main` |
 | S15 | **2026-11-15 session**: take over X7's stale test-suite assertion (claim > 60 minutes old, status needs review), re-pin the injury-snapshot row count to the committed official capture (345 → 347), spot-verify key citations against live official pages, final integration + publish on this branch | **done** — sources: `nfl.com/injuries/league/2026/reg10`, `nfl.com/scores/2026/week-10`, `operations.nfl.com/game-operations-logistics/preparation-safety/game-and-stadium-prep` (all confirmed live, no cited value changed); verification: `make build` 52 pages / 0 failing checks, `make test` 166 passed, `check_links`/`check_sources`/`verify_site` green, Pages deployment success | `arena/e0763e1e-korea1` | `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, regenerated build outputs under `data/live/`, `assets/data/`, root `.html` |
 | S18 | **Depth-chart reconciliation + final verification + publish**: reconcile `data/availability/depth_charts.csv` (WAS/NYG/DET/NE rows) against the official club-chart extract `data/live/official_depth_extract_2026_11_13.csv` so the live-verification depth test passes; confirm `make build` + `make test` green; PR → `main`, merge, Pages deploy, record | **done** — PR #77 merged as `236d8c72b641bc11281d703889725edbb743b2a5`; sources: official club depth-chart pages (commanders.com, giants.com, detroitlions.com, patriots.com/team/depth-chart); verification: `make build` 52 pages / 0 failing checks, `make test` 189 passed, check_sources 44 pages / 5,541 rows, check_links 53 pages | `arena/27eca1b3-korea1` | `data/availability/depth_charts.csv`, `tests/test_live_verify.py`, `COORDINATION.md`, `EXECUTIVE_SUMMARY.md`, `scripts/reconcile_depth_charts.py` |
+| B45 | **2026-11-18 final integration + publish**: board read first; review and merge the four CI-green open PRs (#68, #70, #71, #73) as integration owner, assess the eight conflicting stale PRs (#19/#24/#30/#38/#47/#48/#56/#58) and record their disposition without touching their branches, full re-verify of the combined tree (`make build`, `make test`, `make verify`, `tests/check_rebuild.py`), fix any integration collision on this branch, then PR → `main`, merge without waiting, confirm GitHub Pages, record PR link + result | **in progress** | `arena/b450c57b-korea1` | `COORDINATION.md` (own section + this row only); sibling PRs merged only via `gh pr merge` (no sibling branch pushed to); content fixes only on `arena/b450c57b-korea1` if a collision forces one, logged here |
 
 **T-number collision (2026-11-12).** `arena/25460478-korea1` and `arena/c0528572-korea1` both numbered their tasks T14–T16/T17 on their own branches; both sets of rows are kept above and are distinguished by owner. Nothing was renumbered.
 
@@ -3202,3 +3203,62 @@ Method: for every file of each PR (GitHub file list), classified against current
 - **Duplicate claim noted:** `arena/6d716989-korea1` pushed a "T44 integrate abandoned PRs #68/#70/#71/#73" claim at ~04:24Z; #68/#71 were already incorporated here (pushed 04:02Z/04:06Z, merged in #83) — #70/#73 remain with `arena/8a075837-korea1` as recorded in the scope split.
 - **Carried forward (not this session's scope):** open PRs #80 (`arena/b450c57b-korea1`), #19/#24/#30/#38/#47/#56/#58 (needs review above); active sessions of 2026-11-18 (`ed0861c0`, `8a075837`, `53ef9544`, `f84bc1d7`, `87d27a1d`, `6d716989`); pre-existing flagged F-items on `flagged.html` (now including F-42..F-51 from merged PR #79).
 
+## arena/b450c57b-korea1 — 2026-11-18 final integration session (B45)
+
+**Claim pushed immediately** per board rule 2, before any other edit. Protocol deviation as every
+session records it: the Arena platform pins this session to `arena/b450c57b-korea1`, so the pinned
+branch is the task *and* integration branch.
+
+**Board read first (2026-11-18).** `main` = `5df9bab` (availability/reserve-list bot snapshots of
+2026-11-17). Every earlier task row is `done`, `needs review`, or a stale `in progress` label left
+by sessions whose work merged on 2026-11-01/02/13/15 (T8, T11, T24, FW1–FW5, V1–V3 — noted, not
+edited). Twelve sibling PRs are open: four are CI-green and mergeable against current `main`
+(#68, #70, #71, #73) and eight are conflicting and 3–6 days stale (#19, #24, #30, #38, #47, #48,
+#56, #58). No sibling branch has been pushed to since 2026-11-15; no session shows commits newer
+than the 2026-11-17 bot snapshots, so no active sibling claim is taken over.
+
+**Scope.** Integration only: merge the four green PRs, record the disposition of the eight
+conflicting ones, re-verify the combined tree line by line against committed inputs, publish via
+PR → `main`, and record the result here. No model, strategy, gate, or official value is changed
+by this session.
+
+### B45 outcome (1) — 2026-11-18: red-main repair after PR #77
+
+While this session was rebasing its claim, `arena/27eca1b3-korea1` merged **PR #77** (S18 depth-chart
+reconciliation) and the two subsequent `Verify site` runs on `main` **failed** (`check_rebuild.py`
+exit 1). Diagnosis performed here on a clean checkout of `30e74e8`:
+
+- `make build` — exit 0 (0 failing checks, 44 canonical pages / 5,545 rows, 53 pages linked).
+- `make test` — 189 passed (the S18 test repair works: depth extract vs published charts, 0 mismatches).
+- `tests/check_rebuild.py` — **exit 1, 12 drifted generated files**: PR #77 changed the committed inputs
+  (`data/availability/depth_charts.csv`, new `scripts/reconcile_depth_charts.py`) and regenerated *some*
+  outputs, but not `EXECUTIVE_SUMMARY.md` (file count 671 → 672), `assets/data/depth_slot_verification.csv`,
+  `assets/data/depth_verification_summary.{csv,json}`, `assets/data/replacement_defence.csv`
+  (WAS row: `OFFENCE_DEPLETED`/1.5 → `BALANCED`/0.5, derived from the reconciled WAS chart),
+  `assets/data/replacement_slots.csv`, both `repo_inventory.csv` copies, `verification_report.csv`
+  copies, and the three HTML pages (`executive-summary`, `live-verification`, `repo-review`).
+- Repair: full `make build` regeneration committed on this branch; second build is a fixed point;
+  `make test` 189 passed; `check_rebuild` 0 drifted files after commit.
+
+No official value was edited by hand: every changed cell is the deterministic product of the S18
+reconciled depth chart re-running through the unchanged build. Sources for the underlying
+reconciliation are recorded in S18's row above (official club depth-chart pages).
+
+**B45 collision notice (2026-11-18T04:2xZ, recorded, no branch touched).** While B45 was
+diagnosing the red `main`, five sibling sessions started on the same day's brief. Most importantly,
+`arena/42b6f5e9-korea1` opened **PR #83** ("2026-11-18 integration: stale-PR takeovers (#68/#71/#48),
+conflicting-PR disposition register, verified rebuild"), which overlaps B45's original claim of the
+four green PRs. Partition applied here, following the board's collision rules (claims live on
+branches, so neither session could see the other's claim first):
+
+- **#68, #71, #48 takeovers + the eight-stale-PR disposition register → `arena/42b6f5e9-korea1`
+  (PR #83).** B45 does not merge or edit those and does not write a competing register.
+- **#70 (register the two omitted test modules in `make test`) and #73 (remove backtest performance
+  from competitive leaderboards) → B45.** Neither is named in #83 or any other live claim; both
+  sessions' claims were pushed within minutes of each other, so B45 keeps only what nobody else
+  named.
+- **#79 (`arena/db6cd525-korea1`), #81 (`arena/292f7ae1-korea1`), #82/#78
+  (`arena/99b908ab-korea1`), #83 (`arena/42b6f5e9-korea1`) → their owners.** B45 merges none of them.
+- B45's own PR #80 was reduced to its unique content by the rebase: the `COORDINATION.md` claim and
+  the PR #77 red-main diagnosis record (the regenerated artefacts it originally carried landed
+  byte-identical on `main` first as `e775e52`, then again through #78's merge).
