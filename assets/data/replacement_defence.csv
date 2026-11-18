@@ -1,5 +1,5 @@
 team,opponent,offence_impact,defence_impact,net_impact,starters_out_off,starters_out_def,at_risk,unmatched,chart,verdict,source_url
-ARI,LA,1.0,0.0,1.0,1,0,4,4,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
+ARI,LA,1.0,0.0,1.0,1,0,5,3,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
 ATL,KC,0.5,1.0,-0.5,0,1,3,0,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 BAL,LAC,0.0,1.0,-1.0,0,1,0,1,published,DEFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
 BUF,NYJ,0.0,0.0,0.0,0,0,2,3,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
@@ -12,16 +12,16 @@ DEN,,0.0,0.0,0.0,0,0,0,0,published,BALANCED,https://www.nfl.com/injuries/league/
 DET,NE,1.0,1.0,0.0,1,1,2,1,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 GB,MIN,2.0,1.0,1.0,2,1,2,7,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
 HOU,CLE,0.0,0.0,0.0,0,0,0,11,none (chart published as an image),NO_CHART,https://www.nfl.com/injuries/league/2026/reg10
-IND,MIA,0.5,2.0,-1.5,0,2,1,2,published,DEFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
+IND,MIA,0.0,1.0,-1.0,0,1,1,4,published,DEFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
 JAX,TEN,0.0,0.0,0.0,0,0,1,3,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 KC,ATL,0.0,0.5,-0.5,0,0,2,3,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 LA,ARI,1.0,0.0,1.0,1,0,5,1,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
 LAC,BAL,0.5,0.333,0.167,0,0,3,5,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 LV,SEA,0.0,0.0,0.0,0,0,1,1,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 MIA,IND,2.5,0.0,2.5,2,0,0,1,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
-MIN,GB,3.0,2.0,1.0,3,2,1,2,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
+MIN,GB,2.5,2.0,0.5,2,2,1,2,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 NE,DET,1.0,1.0,0.0,0,1,5,4,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
-NO,CAR,1.333,0.5,0.833,1,0,0,3,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
+NO,CAR,1.333,0.0,1.333,1,0,0,4,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
 NYG,WAS,0.0,0.0,0.0,0,0,0,1,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 NYJ,BUF,0.0,0.5,-0.5,0,0,6,2,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 PHI,,0.0,0.0,0.0,0,0,0,0,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
@@ -30,4 +30,4 @@ SEA,LV,3.0,1.0,2.0,3,1,0,0,published,OFFENCE_DEPLETED,https://www.nfl.com/injuri
 SF,DAL,1.0,0.0,1.0,1,0,5,2,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
 TB,,0.0,0.0,0.0,0,0,0,0,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
 TEN,JAX,2.0,2.0,0.0,2,2,1,0,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
-WAS,NYG,0.5,0.0,0.5,0,0,0,1,published,BALANCED,https://www.nfl.com/injuries/league/2026/reg10
+WAS,NYG,1.5,0.0,1.5,1,0,0,0,published,OFFENCE_DEPLETED,https://www.nfl.com/injuries/league/2026/reg10
