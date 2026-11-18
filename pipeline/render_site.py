@@ -65,6 +65,13 @@ NAV_GROUPS = [
         ("signal-staking.html", "Signal vs staking"),
         ("demotion.html", "Demotion gate"),
     ]),
+    # NR3–NR5 (session arena/ceddf8d8-korea1, 2026-11-18): the request register, the two surfaces the
+    # 2026-11-18 brief asked for that did not exist, and the brief's own numbers re-derived.
+    ("Brief review (2026-11-18)", [
+        ("request-register.html", "Request register · 74 items"),
+        ("matchup-matrix.html", "Matchup deficiency matrix"),
+        ("consensus.html", "Vig-free vs fair line"),
+    ]),
     ("Brief review (2026-11-14)", [
         ("brief-2026-11-15.html", "2026-11-15 brief · tracker"),
         ("suggestions-review-2026-11-14.html", "Suggestions review · this brief"),
@@ -1176,6 +1183,7 @@ No manual input is required to use the current site. A correction must update th
 <a class="btn" href="https://github.com/karagemop466-tech/Korea1/issues">Open the issue tracker</a></section>"""
     body += _flagged_2026_11_15_section()
     body += _flagged_2026_11_18_section()
+    body += _flagged_2026_11_18b_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1636,6 +1644,31 @@ def _flagged_2026_11_15_section() -> str:
                     caption="Session findings with an official source") + listing + "</section>")
 
 
+def _flagged_2026_11_18b_section() -> str:
+    """NR2/NR3 (arena/ceddf8d8-korea1): findings re-derived while building the 2026-11-18 register.
+
+    Rows with no official source are shown as text, never as an unsourced table row.
+    """
+    fl = _read_integration("flagged_2026_11_18b.csv")
+    if fl is None or not len(fl):
+        return ""
+    sourced = fl[fl.source_url != ""]
+    rows = [[e(r.id), e(r.severity),
+             e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+             src_link(r.source_url, r.source_label)] for r in sourced.itertuples(index=False)]
+    text = [f"<strong>{e(r.id)}</strong> ({e(r.severity)}) {e(r.finding)} "
+            f"<span class=\"small\">No official source: shown as text. Next: {e(r.next)}</span>"
+            for r in fl[fl.source_url == ""].itertuples(index=False)]
+    listing = ("<ul class=\"findings\">" + "".join(f"<li>{x}</li>" for x in text) + "</ul>") if text else ""
+    return ("<section><h2>Findings from the 2026-11-18 register session</h2>"
+            "<p>Each row was re-derived from a committed artefact or from a verbatim official read under "
+            "<code>data/live/claim_reads_2026_11_18/</code>. None of these blocks a merge; the claim-check "
+            "register on <a href=\"request-register.html\">request-register.html</a> holds the working.</p>"
+            + (table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
+                      caption=f"{len(rows)} session findings with an official source") if rows else "")
+            + listing + "</section>")
+
+
 def _flagged_2026_11_18_section() -> str:
     """Flagged rows F-42 onward from the 2026-11-18 session (CS6). Rows with no source are shown as text."""
     fl = _read_integration("flagged_2026_11_18.csv")
@@ -1683,7 +1716,10 @@ def _landing_panels() -> str:
                          src_link(r.source_url, r.source_label)])
         parts.append("<section><h2>Decision readiness: one row per brief item</h2>"
                      "<p>Each row names the gate that blocks it and the number that clears it. "
-                     "Full sourcing is on the <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>.</p>"
+                     "Full sourcing is on the <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>. "
+                     "The <a href=\"request-register.html\">2026-11-18 request register</a> carries this "
+                     "form for all 74 items of the current request, with the artefact re-opened at build "
+                     "time and the brief's own numbers re-derived against the official pages.</p>"
                      + table(rows, ["ID", "Requirement", "Status", "Blocking gate", "Number that clears it", "Official source"],
                              caption="Brief items with an official source · status from the tracker")
                      + "<p class=\"small\">Two items have no official source (brief protocol and brief identifiers); they are listed as text on the brief page.</p></section>")

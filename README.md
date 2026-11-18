@@ -8,6 +8,16 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
+- **`request-register.html`** — **2026-11-18 request register**: one row per requirement in the current
+  request (74 items), each with the artefact that carries it re-opened at build time, the gate that blocks
+  it, the number that clears it and its official referent; plus the brief's own numbers re-derived against
+  verbatim official reads (15 claims) and 10 suggestions staged for a path choice (added 2026-11-18,
+  `arena/ceddf8d8-korea1`)
+- **`matchup-matrix.html`** — offensive groups against defensive groups (1st–4th string) for every fixture
+  the dated official captures support: printed ranks only, co-starters published as a count, designations
+  from the report with their capture times
+- **`consensus.html`** — vig-free market consensus against our originated fair line: posted break-even,
+  vig-free consensus and margin cost as separate columns, per season and market, n on every row
 - **`review-queue.html`** — every proposal from all four suggestion registers merged into 14 topic
   clusters; each row keeps its source register, original id, writing session and published page, so a path
   is chosen here before any code changes (added 2026-11-13, `arena/132e7ca2-korea1`)
