@@ -3101,3 +3101,24 @@ refused, measured on 2026-11-18T03:47Z), so the capture runs on a GitHub-hosted 
 `.github/workflows/gamebooks.yml`, exactly like the existing availability tracker. The page-fetch tool
 reaches the official pages and was used to read the pages this session quotes.
 
+
+### Z3 disposition register — eight CONFLICTING PRs assessed (2026-11-18, `arena/42b6f5e9-korea1`)
+
+Method: for every file of each PR (GitHub file list), classified against current `main` — identical / line-superseded (every line of the branch version present in main's version) / differs (unique lines sampled and inspected) / absent from main. No verdict was written without that evidence; comments carrying the full evidence were posted on each PR.
+
+| PR | Head (last commit) | Files vs main: identical / superseded / differs / absent | Unique remainder on the branch | Disposition |
+|----|--------------------|----------------------------------------------------------|--------------------------------|-------------|
+| #48 | `arena/beafe2ae-korea1` (2026-11-13) | 0 / 0 / 2 / 0 (1 shared doc) | T24 row "done" + `T24 complete: PR #40 merged…` section + final PR-#40 record line in `current_snapshot_audit.py` and the research audit md — **all absorbed into this branch with line-level proof (0 unique lines remain: 1540/1540 COORDINATION, 340/340 py, 77/77 md)** | **closed as superseded** — comment on PR #48 |
+| #74 | `arena/51fae77c-korea1` (2026-11-18 03:49) | competing replacement of `tests/test_live_verify.py::test_depth_snapshot_matches_the_official_charts` | Alternative date-matched fixture design; **superseded by PR #75's merged drift-aware design with mutation control** (main verify green: runs 44233710596, 44235719843) | **closed as superseded** — comment on PR #74 |
+| #19 | `arena/5b3f0799-korea1` (2026-11-02) | 0 / 0 / 40 / 5 | `reproducibility.html`, `research/06-independent-audit.md`, `data/processed/audit.json`, `data/lab/reference/teams_colors_logos.csv`(+provenance) | **needs review, left open** — likely superseded by merged #13/#16/#20/#21 but 5 unique files remain; owner decides archive-or-drop |
+| #24 | `arena/3e57f750-korea1` (2026-11-12) | 0 / 0 / 77 / 19 | Dated 2026-11-12 injury/depth artifacts + pages `availability-capture.html`, `decision-paths.html`, `depth-register.html` | **needs review, left open** — functions superseded by merged #29/#36/#39/#43; 3 pages not provably duplicated |
+| #30 | `arena/f115e6a2-korea1` (2026-11-12) | 0 / 2 / 81 / 13 | Dated week-10 injury/QB-audit tables + a `REQUIREMENTS.md` rewrite (+113 lines vs main's generated trace) | **needs review, left open** — owner line-reviews REQUIREMENTS rewrite, then close |
+| #38 | `arena/d58198fc-korea1` (2026-11-13) | 0 / 0 / 35 / 30 | Full `data/repo_audit/**` evidence corpus (claims/official_sources/captures OS-01…) + DECISIONS D-05 row | **needs review, left open** — genuine unique audit evidence; absorb into `data/audit/` or archive, do not drop |
+| #47 | `arena/534e771f-korea1` (2026-11-14) | 0 / 0 / 35 / 29 | Dated `data/review/**` registers + pages `decision-hub.html`, `gameday-deficiencies.html`, `improvements.html` | **needs review, left open** — hub function superseded by merged #43/#44/#46; 3 pages need owner confirmation |
+| #56 | `arena/7da09b4d-korea1` (2026-11-14) | 8 / 2 / 42 / 45 | `data/processed/{demotion_gate,demotion_rules,official_corr*}`, `data/prices/**`, staking/three-column tables | **needs review, left open** — thematic overlap with merged #52/#53/#54/#57; file-level equivalence unproven |
+| #58 | `arena/d0bec048-korea1` (2026-11-14) | 0 / 0 / 53 / 44 | `price_store`, `settlement_feed*`, `probability_alignment/calibration`, `official_roi`, `bet_expectations`… | **needs review, left open** — calibration/alignment tables unique on main; absorb then close |
+
+**Requests logged (not edited):** the Flagged-for-Review page should carry one `needs review` row per open disposition above (owner of `pipeline/render_site.py` `build_flagged` / CS6 claim `arena/db6cd525-korea1`); this session did not touch `flagged.html` generators to avoid scope collision.
+
+**Z1 result:** PR #68 and PR #71 taken over and incorporated into this branch with rebuild+full verification (brief text now reads "twelve rows (F-30 to F-41)" in all four places; `INTEGRATION_VERIFICATION.md` adopted, inventory/summary regenerated to 672 tracked files). Their original PRs are closed as superseded once this session's integration PR merges (comments reference it). PR #70 and PR #73 remain owned by `arena/8a075837-korea1` per the recorded scope split.
+
