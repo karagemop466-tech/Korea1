@@ -85,6 +85,9 @@ NAV_GROUPS = [
         ("suggestions-review.html", "Path selector"),
         ("suggestions.html", "Suggestions & paths"),
         ("decision-readiness.html", "Q&A + Week 8–9 audit"),
+        # CS5 (session arena/53ef9544-korea1): the full 2026-11-18 request register — one row
+        # per request item with its blocking gate and the number that clears it.
+        ("request-register-2026-11-18.html", "Request register · 2026-11-18"),
         ("questions.html", "Open questions"),
         ("decisions.html", "Decision readiness"),
         ("flagged.html", "Flagged for review"),
@@ -415,6 +418,7 @@ questions a decision actually asks.</p>
 <a class="minicard" href="suggestions-review.html"><strong>Interactive path selector</strong><span>Compare Path A / B / C across 12 staged improvements and export a decision JSON before changing code.</span></a>
 <a class="minicard" href="suggestions.html"><strong>Suggestions &amp; paths</strong><span>Twenty-two changes with cost, risk and dependencies, plus four coherent paths.</span></a>
 <a class="minicard" href="decision-readiness.html"><strong>Q&amp;A + Week 8–9 reconciliation</strong><span>14 pre-decision Q&amp;As, 8 missing-info discovery blueprints and all 28 settled post-pin NFL.com scores.</span></a>
+<a class="minicard" href="request-register-2026-11-18.html"><strong>2026-11-18 request register</strong><span>One row per request item: status, evidence file, the gate that blocks it and the number that clears it. Official source on every table row.</span></a>
 <a class="minicard" href="decisions.html"><strong>Decision readiness</strong><span>Twelve decision questions, known answers, missing inputs and a parallel eight-proposal register.</span></a>
 <a class="minicard" href="questions.html"><strong>Open questions</strong><span>What must be known first, what is answered, and what is blocked on data we do not have.</span></a>
 <a class="minicard" href="lineup-deficiencies.html"><strong>8-club 1st–4th string tracker</strong><span>39 Week 10 offensive &amp; defensive injury/depth entries across WAS, NYG, NE, DET, KC, ATL, MIN &amp; GB.</span></a>
