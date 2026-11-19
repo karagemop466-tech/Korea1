@@ -1,0 +1,54 @@
+name: Diag (arena/d64e3029-korea1)
+
+# TEMPORARY diagnostic workflow for session arena/d64e3029-korea1 (removed
+# before the final PR).  Why it exists: Verify site's strict step
+# "A rebuild must change nothing at all" fails on this branch while the same
+# rebuild is byte-clean in the session sandbox, and the Actions log download is
+# unreachable from the sandbox (results-receiver.actions.githubusercontent.com
+# is not an allowed host).  Annotations ARE readable through api.github.com,
+# so the job below runs the same build and surfaces the actual `git diff`
+# (stat + first/last hunks) as a ::notice:: annotation.
+
+on:
+  push:
+    branches: [arena/d64e3029-korea1]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  surface-rebuild-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Rebuild and surface the whole-tree diff
+        shell: bash
+        run: |
+          set -o pipefail
+          make build > /tmp/build.log 2>&1 || true
+          {
+            echo "== make build tail =="
+            tail -n 8 /tmp/build.log
+            echo "== git status =="
+            git status --porcelain | head -60
+            echo "== git diff --stat =="
+            git diff --stat | tail -40
+            echo "== git diff (first 4000 chars) =="
+            git diff | head -c 4000
+          } > /tmp/diff.txt
+          python3 - <<'PY'
+          import pathlib
+          body = pathlib.Path("/tmp/diff.txt").read_text(errors="replace")
+          if len(body) > 6000:
+              body = body[:2500] + "\n…TRUNCATED…\n" + body[-3400:]
+          msg = body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::notice title=rebuild diff on arena/d64e3029-korea1::{msg}")
+          PY
+          git diff --quiet || exit 1
+          echo "no drift"
