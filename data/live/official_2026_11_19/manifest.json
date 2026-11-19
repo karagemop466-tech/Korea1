@@ -1,0 +1,81 @@
+{
+ "captured_utc": "2026-11-19T12:29:19Z",
+ "runner": "GitHub Actions (.github/workflows/week11-capture.yml)",
+ "season": 2026,
+ "week": 11,
+ "rule": "responses are stored byte for byte; nothing is parsed, inferred or typed in; a failure is recorded as a failure and never overwrites a good capture",
+ "sources": [
+  {
+   "slug": "injury_report_week11_league_url",
+   "requested_url": "https://www.nfl.com/injuries/league/2026/reg11",
+   "final_url": "https://www.nfl.com/injuries/league/2026/reg11",
+   "note": "Official NFL injury report, Week 11 of the 2026 season (week-addressed URL)",
+   "http_status": 200,
+   "bytes": 374013,
+   "sha256": "1f71944eafdae974acbdb1bd9fcc4086913029cd414ec540bf82bd2d60273119",
+   "content_type": "text/html",
+   "error": ""
+  },
+  {
+   "slug": "injury_report_current",
+   "requested_url": "https://www.nfl.com/injuries/",
+   "final_url": "https://www.nfl.com/injuries/",
+   "note": "Official NFL injury report, current-week URL (nfl.com redirects this to the live week)",
+   "http_status": 200,
+   "bytes": 373969,
+   "sha256": "e11519c42b1dd9a31572cbca7f21e2cc1f85163450dc956ee88f8381fb1707dc",
+   "content_type": "text/html",
+   "error": ""
+  },
+  {
+   "slug": "schedule_week11_reg_form",
+   "requested_url": "https://www.nfl.com/schedules/2026/by-week/reg-11",
+   "final_url": "https://www.nfl.com/schedules/2026/by-week/week-11",
+   "note": "Official 2026 schedule, Week 11 (the URL form already cited in data/forward/official_schedule.csv)",
+   "http_status": 200,
+   "bytes": 2290318,
+   "sha256": "f9917fe24501e60552bb5c6462d2a7ad22c69de41219aa795a162a097aab6c4e",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "schedule_week11_week_form",
+   "requested_url": "https://www.nfl.com/schedules/2026/by-week/week-11",
+   "final_url": "https://www.nfl.com/schedules/2026/by-week/week-11",
+   "note": "Official 2026 schedule, Week 11 (numeric URL form)",
+   "http_status": 200,
+   "bytes": 2290318,
+   "sha256": "f9917fe24501e60552bb5c6462d2a7ad22c69de41219aa795a162a097aab6c4e",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "reserve_list_2026_11",
+   "requested_url": "https://www.nfl.com/transactions/league/reserve-list/2026/11",
+   "final_url": "https://www.nfl.com/transactions/league/reserve-list/2026/11",
+   "note": "Official NFL reserve list, November 2026",
+   "http_status": 200,
+   "bytes": 247942,
+   "sha256": "26dfc0c6ea8b6f996eb78d563960c7fba5e24513a03aadfa62a8f5f6adbdee08",
+   "content_type": "text/html",
+   "error": ""
+  },
+  {
+   "slug": "game_centre_index",
+   "requested_url": "",
+   "final_url": "",
+   "note": "discovery step",
+   "http_status": 0,
+   "bytes": 0,
+   "sha256": "",
+   "content_type": "",
+   "error": "no /games/...-2026-reg-11 anchor found on either schedule capture; game centres were NOT captured, and this is published as a gap"
+  }
+ ],
+ "game_centres_discovered": 0,
+ "summary": {
+  "ok": 5,
+  "failed": 1,
+  "game_centres": 0
+ }
+}

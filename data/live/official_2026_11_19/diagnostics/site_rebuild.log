@@ -1,0 +1,83 @@
+== make -o injuries site (offline rebuild of the committed capture) ==
+2026-11-19T12:29:34Z
+  matchup matrix: 154 rows, 6 excluded club-weeks -> matchup-matrix.html
+python3 pipeline/vigfree_decomposition.py
+  vig-free decomposition: 16,206 game × market rows, 63 summary rows -> consensus.html
+python3 pipeline/request_register_20261118.py
+  request register: 74 items, 10 suggestions, 15 claim checks -> verified-register-2026-11-18.html
+# db0e98e2 (2026-11-19): live reserve-page read vs retained captures; F-52/F-53 register.
+python3 pipeline/session_20261119.py
+live rows 25 · dropped 4 · added 4 · flags 2
+# R-2026-11-19 (arena/fea5cdab-korea1): re-read of the official injury report and reserve list
+# against the committed captures. Reads committed files only (no network, no clock).
+python3 pipeline/reread_2026_11_19.py
+injury rows: live 44, matched 44
+reserve rows: live 17, matched 17
+comparisons agreeing: 153 of 153 row-level checks
+python3 pipeline/render_site.py
+  wrote index.html (45,586 bytes)
+  wrote executive-summary.html (38,748 bytes)
+  wrote lines.html (81,351 bytes)
+  wrote price-snapshot.html (18,691 bytes)
+  wrote strategies.html (43,509 bytes)
+  wrote validation.html (30,305 bytes)
+  wrote correlations.html (16,797 bytes)
+  wrote props.html (14,134 bytes)
+  wrote methodology.html (16,349 bytes)
+  wrote flagged.html (82,624 bytes)
+  wrote sources.html (19,489 bytes)
+  wrote audit.html (39,249 bytes)
+  wrote requirements.html (30,113 bytes)
+  wrote verification.html (9,149 bytes)
+  wrote suggestions.html (40,303 bytes)
+  wrote questions.html (46,982 bytes)
+  wrote injuries.html (170,315 bytes)
+  wrote suggestions-review.html (38,848 bytes)
+  wrote decision-readiness.html (45,173 bytes)
+  wrote lineup-deficiencies.html (82,197 bytes)
+  wrote live-verification.html (72,738 bytes)
+  wrote requirement-annex-2026-11-18.html (121,126 bytes)
+  wrote review.html (80,703 bytes)
+# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed
+# originated lines and the forward cards only; no network.
+python3 pipeline/price_snapshots.py
+  price_snapshots.csv 18711 markets from 6237 games
+  opening verified 0 · closing verified 0
+# BF1/BF2 (arena/bfcd9879-korea1): archive-populated price store + its page,
+# and the full-history tiered results feed (published as section 5 of T43's
+# results-feed.html). Read committed files only; no network.
+python3 pipeline/price_archive.py
+price_archive: 29704 rows across 7426 games
+  open_price: 5886
+  archive_close: 11253
+  pin_close: 25658
+  freeze_market: 112
+  archive sha256[:12]=08271b4fe775 pin=a270278f3ac4
+python3 pipeline/render_price_archive.py
+  wrote price-archive.html (34,075 bytes)
+python3 pipeline/results_feed_history.py
+results_feed: 7548 games — official_read=30 pinned_archive=7383 scheduled=135
+  cross-check conflicts: 0
+python3 pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
+  wrote forward.html
+python3 pipeline/render_review.py
+  wrote availability.html (202,142 bytes)
+  wrote decision-board.html (25,742 bytes)
+  wrote open-questions.html (23,656 bytes)
+python3 pipeline/render_summary.py
+wrote EXECUTIVE_SUMMARY.md
+python3 pipeline/render_readiness.py
+  wrote decisions.html
+  wrote lineups.html
+python3 pipeline/render_annex.py
+Rendered strict public annex: 9 pages
+# RR1-RR3 (arena/7aae360e-korea1, 2026-11-18): the per-item request register for the current
+# brief — one row per request item with its gate and clearing number — plus this session's
+# official page reads, the venue transcription and the personnel-ablation contract. Reads
+# committed files and data/live/register_reads_2026_11_18/ only (no network, no clock), so
+# `make build` stays byte-reproducible and tests/check_rebuild.py keeps its teeth.
+python3 pipeline/register_evidence_20261118.py
+register rows 68 · verified lines 184 (injury 99/99 match) · venues 14 · flags 9 · questions 12 · suggestions 8
+python3 pipeline/render_register_evidence_20261118.py
+  wrote register-evidence-2026-11-18.html (197661 bytes)
+make-site-exit=0
