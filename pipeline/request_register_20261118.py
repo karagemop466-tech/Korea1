@@ -152,10 +152,11 @@ def register_rows() -> list[dict]:
         "PARTLY",
         [ev("data/processed/results_feed.csv"), ev("data/forward/official_results.csv")],
         "Settlement coverage of the current season in the forward ledger",
-        f"All 14 official Week 10 finals settled in the ledger — today 1 of 14 (C-13)",
+        # was "today 1 of 14 (C-13)" — settled 2026-11-19 (arena/7134ec74-korea1)
+        "All 14 official Week 10 finals settled in the ledger — done 2026-11-19, 14 of 14",
         U["schedule_w10"], "Official Week 10 schedule, finals and byes",
-        "Verified line by line on 2026-11-18 against the official schedule page: the one Week 10 result the "
-        "ledger holds reproduces exactly, and thirteen printed finals are not yet in it.")
+        "Verified line by line on 2026-11-19: all fourteen Week 10 finals in the ledger reproduce exactly "
+        "against three official artefacts each (scores page, committed schedule capture, Game Book).")
     add("R-03", "Decide the price-data policy before any backtest is published", "Price",
         "OPEN — owner decision",
         [ev("DECISIONS.md"), ev("data/processed/price_archive.csv")],

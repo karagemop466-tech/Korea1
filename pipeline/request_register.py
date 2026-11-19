@@ -58,9 +58,10 @@ REQUESTS: list[tuple] = [
      "G1 clears: ≥1 authenticated, timestamped, limit-aware quote per market.", "F-44",
      "NFL.com scores (settlement source)", URL_SCORES, "S5"),
     ("REQ-02", "Results", "Add a verified results feed so backtests and ROI can be computed at all.",
-     "built", '<a href="results-feed.html">results-feed.html</a> · data/processed/ (tiered feed, official game-centre reads)',
+     "built", '<a href="results-feed.html">results-feed.html</a> · <a href="forward.html">forward.html</a> · data/processed/results_feed.csv, data/forward/official_results.csv (settlement)',
      "Scheduled games are blank by design; 0 source conflicts in the published feed.",
-     "Every completed fixture graded from the official final (week 10 live-verified 2026-11-18).", "—",
+     "Every completed fixture graded from the official final — done for Week 10 on 2026-11-19: 14 of 14 "
+     "ledger finals, each agreed by three official artefacts.", "—",
      "NFL week 10 scores", URL_SCORES, "S5"),
     ("REQ-03", "Origination", "Originate the side first, then the total, then the moneyline.",
      "built", '<a href="origination.html">origination.html</a> · pipeline/origination_order.py',

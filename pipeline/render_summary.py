@@ -469,6 +469,38 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
   link per row and one SHA-256 per captured document. It renders an explicit waiting state until the
   scheduled runner capture commits genuine week-selecting evidence.
 
+## Update — 2026-11-19 (`arena/7134ec74-korea1`) — the Week 10 slate is settled, and the page that could not see it
+
+- **Decision unchanged.** Still no validated strategy and no reward. Settling fourteen games is a data
+  correction, not evidence of an edge: 65 tickets remain far below the declared horizon (150 singles or
+  60 parlays) and no significance number is printed anywhere.
+- **The page could not see settled games (F-2026-11-19-W10, High, repaired).** `forward.html` printed
+  *1 of 14 games with an official final* and *4 of 65 tickets settled* on 2026-11-19, while all fourteen
+  Week-10 fixtures had finished on 15–16 November and the scheduled runner already held captures of every
+  one. The cause was the promotion step: the fetcher archives pages and proposes scores but never writes
+  `official_results.csv`, so nothing settled without a human read. Repaired by
+  `pipeline/settle_week10_2026_11_19.py`, which promotes a fixture only when **three independent official
+  artefacts agree** — the live [scores page](https://www.nfl.com/scores/2026/week-10) read in full, the
+  committed byte capture of the league's [by-week schedule page](https://www.nfl.com/schedules/2026/by-week/reg-10)
+  (SHA-256 pinned in `data/evidence/official_games/manifest.json`), and page 1 of the fixture's own Game
+  Book PDF, whose printed VISITOR/HOME line must sum to its printed total. All 14 rows agree on all three;
+  `--recheck` prints it per row. The four unvalidated PROPOSED guesses in `official_candidates.csv`
+  (Buffalo 8 – Jets 2 among them) were removed, not trusted: the official page prints Buffalo 31 – Jets 12.
+- **A stale sentence class (F-2026-11-19-W11, Medium, repaired).** The same page said "three days old" and
+  "13 kick off 15–16 November" as typed strings, so the build republished two false statements after
+  settlement and no check failed. Both are now computed from the published tables and pinned by
+  `tests/test_scores_capture.py`, which also fails if any figure on the page disagrees with
+  `official_results.csv`.
+- **Availability graph: 578 rows said "no official Game Book captured" when the book was on disk
+  (F-2026-11-19-W13, Medium, repaired).** Of those 578, 465 are special-teams slots the Game Book never
+  prints, and 183 are slots the captured book does not print (a nickel back or fullback against a chart
+  that names one). Those rows now say `NOT CONFIRMABLE` with the reason, and the fixture table carries a
+  column proving its outcome counts add up to its row count. No cell was filled in: the starter columns stay
+  blank exactly as before.
+- **A surface improved, not claimed:** the forward page now prints each settled final beside the originator's
+  absolute error for that game. That is arithmetic on official finals; it is not a skill claim, and the page
+  says so.
+
 ## Decision readiness & lineup follow-up — 2026-11-12
 
 Four review registers sit in front of the research, generated from the same data as the pages, and none
@@ -557,7 +589,7 @@ against an official NFL.com final.
 | Item | State | Meaning |
 |---|---|---|
 | Frozen before kickoff | {f_declared} tickets across 18 strategies and 14 Week 10 games; written `2026-11-12T13:26:48Z`, received by GitHub `13:28:07Z`, 11.78 h before the first kickoff | The picks were public before the games started. The receipt time is GitHub's, not the committer's. [NFL week 10 schedule](https://www.nfl.com/schedules/2026/by-week/reg-10) |
-| Settled from an official final | **{f_settled} of {f_declared}** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | {f_open} tickets stay `OPEN`; {f_provisional} provisional, awaiting an official final; none is defaulted to a push or a void. Net {f_units:+.3f} units across the settled tickets. |
+| Settled from an official final | **{f_settled} of {f_declared}** — every Week 10 fixture, each from three agreeing official artefacts (the [week 10 scores page](https://www.nfl.com/scores/2026/week-10), the committed [by-week schedule capture](https://www.nfl.com/schedules/2026/by-week/reg-10) and the fixture's own Game Book PDF) | {f_open} tickets stay `OPEN`; {f_provisional} provisional; none is defaulted to a push or a void. Net {f_units:+.3f} units across the settled tickets — still not a verdict: {f_declared} tickets are far below the 150-single / 60-parlay horizon, and no significance number is printed. |
 | Strategies with a counted result | {f_strat_with} of {len(_sb) if len(_sb) else 18} | One ticket each is not a record. |
 | Validated strategies / rewards | **{f_validated} / none** | No strategy is past its declared horizon (150 single or 60 parlay tickets over 30 weeks); verdicts are withheld from the agent by ledger amendment A1. |
 | Gate F2 (official settlement) | PASS where a ticket has settled | Settlement now rests on an official page; before this pass the same 4 tickets were `PROVISIONAL`. |

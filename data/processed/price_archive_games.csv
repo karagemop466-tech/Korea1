@@ -7412,16 +7412,29 @@ game_id,season,week,gameday,matchup,game_status,official_url,official_url_kind
 2026_09_TB_CHI,2026,9,2026-11-08,TB @ CHI,SETTLED_POST_PIN_W8_W9 (our line from ledger set D),https://www.nfl.com/games/buccaneers-at-bears-2026-reg-9,official game centre read on NFL.com
 2026_09_BUF_MIN,2026,9,2026-11-09,BUF @ MIN,SETTLED_POST_PIN_W8_W9 (our line from ledger set D),https://www.nfl.com/games/bills-at-vikings-2026-reg-9,official game centre read on NFL.com
 2026_10_WAS_NYG,2026,10,2026-11-12,WAS @ NYG,SETTLED_POST_PIN_W10,https://www.nfl.com/games/commanders-at-giants-2026-reg-10,official game centre read on NFL.com
-2026_10_NE_DET,2026,10,2026-11-15,NE @ DET,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_BUF_NYJ,2026,10,2026-11-15,BUF @ NYJ,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_CAR_NO,2026,10,2026-11-15,CAR @ NO,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_HOU_CLE,2026,10,2026-11-15,HOU @ CLE,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_JAX_TEN,2026,10,2026-11-15,JAX @ TEN,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_KC_ATL,2026,10,2026-11-15,KC @ ATL,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_MIA_IND,2026,10,2026-11-15,MIA @ IND,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_MIN_GB,2026,10,2026-11-15,MIN @ GB,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_LA_ARI,2026,10,2026-11-15,LA @ ARI,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_SEA_LV,2026,10,2026-11-15,SEA @ LV,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_SF_DAL,2026,10,2026-11-15,SF @ DAL,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_PIT_CIN,2026,10,2026-11-15,PIT @ CIN,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
-2026_10_LAC_BAL,2026,10,2026-11-16,LAC @ BAL,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-10,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_10_NE_DET,2026,10,2026-11-15,NE @ DET,SETTLED_POST_PIN_W10,https://www.nfl.com/games/patriots-at-lions-2026-reg-10,official game centre read on NFL.com
+2026_10_BUF_NYJ,2026,10,2026-11-15,BUF @ NYJ,SETTLED_POST_PIN_W10,https://www.nfl.com/games/bills-at-jets-2026-reg-10,official game centre read on NFL.com
+2026_10_CAR_NO,2026,10,2026-11-15,CAR @ NO,SETTLED_POST_PIN_W10,https://www.nfl.com/games/panthers-at-saints-2026-reg-10,official game centre read on NFL.com
+2026_10_HOU_CLE,2026,10,2026-11-15,HOU @ CLE,SETTLED_POST_PIN_W10,https://www.nfl.com/games/texans-at-browns-2026-reg-10,official game centre read on NFL.com
+2026_10_JAX_TEN,2026,10,2026-11-15,JAX @ TEN,SETTLED_POST_PIN_W10,https://www.nfl.com/games/jaguars-at-titans-2026-reg-10,official game centre read on NFL.com
+2026_10_KC_ATL,2026,10,2026-11-15,KC @ ATL,SETTLED_POST_PIN_W10,https://www.nfl.com/games/chiefs-at-falcons-2026-reg-10,official game centre read on NFL.com
+2026_10_MIA_IND,2026,10,2026-11-15,MIA @ IND,SETTLED_POST_PIN_W10,https://www.nfl.com/games/dolphins-at-colts-2026-reg-10,official game centre read on NFL.com
+2026_10_MIN_GB,2026,10,2026-11-15,MIN @ GB,SETTLED_POST_PIN_W10,https://www.nfl.com/games/vikings-at-packers-2026-reg-10,official game centre read on NFL.com
+2026_10_LA_ARI,2026,10,2026-11-15,LA @ ARI,SETTLED_POST_PIN_W10,https://www.nfl.com/games/rams-at-cardinals-2026-reg-10,official game centre read on NFL.com
+2026_10_SEA_LV,2026,10,2026-11-15,SEA @ LV,SETTLED_POST_PIN_W10,https://www.nfl.com/games/seahawks-at-raiders-2026-reg-10,official game centre read on NFL.com
+2026_10_SF_DAL,2026,10,2026-11-15,SF @ DAL,SETTLED_POST_PIN_W10,https://www.nfl.com/games/49ers-at-cowboys-2026-reg-10,official game centre read on NFL.com
+2026_10_PIT_CIN,2026,10,2026-11-15,PIT @ CIN,SETTLED_POST_PIN_W10,https://www.nfl.com/games/steelers-at-bengals-2026-reg-10,official game centre read on NFL.com
+2026_10_LAC_BAL,2026,10,2026-11-16,LAC @ BAL,SETTLED_POST_PIN_W10,https://www.nfl.com/games/chargers-at-ravens-2026-reg-10,official game centre read on NFL.com
+2026_11_IND_HOU,2026,11,2026-11-19,IND @ HOU,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_ARI_KC,2026,11,2026-11-22,ARI @ KC,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_BAL_CAR,2026,11,2026-11-22,BAL @ CAR,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_JAX_NYG,2026,11,2026-11-22,JAX @ NYG,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_MIA_BUF,2026,11,2026-11-22,MIA @ BUF,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_NO_CHI,2026,11,2026-11-22,NO @ CHI,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_TB_DET,2026,11,2026-11-22,TB @ DET,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_TEN_DAL,2026,11,2026-11-22,TEN @ DAL,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_NYJ_LAC,2026,11,2026-11-22,NYJ @ LAC,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_LV_DEN,2026,11,2026-11-22,LV @ DEN,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_PIT_PHI,2026,11,2026-11-22,PIT @ PHI,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_MIN_SF,2026,11,2026-11-22,MIN @ SF,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
+2026_11_CIN_WAS,2026,11,2026-11-23,CIN @ WAS,SCHEDULED_W10_FREEZE,https://www.nfl.com/scores/2026/week-11,verified pattern: fetched 2026-11-14 for 2004 week 1
