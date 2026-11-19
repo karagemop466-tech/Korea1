@@ -20,6 +20,7 @@ HIST = AV / "reserve" / "history"
 SPOT = ROOT / "data" / "live" / "spotcheck_2026_11_19"
 INTEG = ROOT / "data" / "integration"
 URL_RES = "https://www.nfl.com/transactions/league/reserve-list/2026/11"
+URL_INJ = "https://www.nfl.com/injuries/league/2026/reg10"
 READ_UTC = "2026-11-19"  # date of the live read recorded below
 
 # Verbatim rows of the live page (date as printed, team abbreviation, player, transaction),
@@ -129,6 +130,23 @@ def flags(stats: dict) -> pd.DataFrame:
              finding=f53,
              next="No further action. The retained history folders are the only source for 2026-11-18 comparisons.",
              source_label="NFL.com reserve list, November 2026", source_url=URL_RES),
+        dict(id="F-2026-11-19-09", severity="High · repaired in this branch",
+             finding=(
+                 "Dated comparisons read the rolling availability files that the scheduled fetch rewrites, so "
+                 "the first fresh capture would have moved verified verdicts: pipeline/req_annex_2026_11_18.py "
+                 "died in every availability run since 2026-11-18T19:24Z (KC omission pin read 3 against an "
+                 "expected 1; runs 44380205336..44611301993, red at Makefile:94), and past that pin the same "
+                 "class would have flipped claim_checks C-07/C-11, reread F-2026-11-19-02, the 120-row "
+                 "spot-check, register-evidence R51 facts, the lineup-claim quote test and four live-verify "
+                 "grade tests (measured on the fresh-capture runner, runs 44617589555 and 44619561243: 4 failed, "
+                 "426 passed). Repaired by pinning every dated reader to data/availability/history/2026-11-18/ "
+                 "(C-02 keeps the active capture), plus a schema-stable internal-consistency CSV so a clean "
+                 "capture can no longer write a 0-byte file that aborts render_site. Verified by the "
+                 "fresh-capture runner: build and full suite green on a real fetched week-11 capture."),
+             next=("Never re-point a dated comparison at a rolling file; a new capture adds a new dated "
+                   "baseline, it does not move an old one. The scheduled availability job now converges the "
+                   "derived registers its capture feeds before it commits (reserve-list.yml)."),
+             source_label="NFL.com injury report (Week 10 URL)", source_url=URL_INJ),
     ]
     return pd.DataFrame(rows, columns=FLAG_COLS)
 
