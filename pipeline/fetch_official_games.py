@@ -46,7 +46,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from official_games import (html_to_text, parse_game_book, parse_game_centre,  # noqa: E402
                             parse_lineup_rows, parse_roster_entries, parse_schedule_page,
-                            parse_two_column_roster, split_columns, fixture_week, slug_of)
+                            parse_two_column_roster, split_columns, slug_of)
 from official_payload import (parse_game_centre_info, parse_schedule_payload,  # noqa: E402
                               parse_week_selector, published_week)
 
@@ -107,8 +107,17 @@ def date_fragment_printed(value: str) -> bool:
 
 # The league prints every fixture slug with the week it belongs to
 # (``<away>-at-<home>-<season>-reg-<week>``); the same pattern is what the
-# schedule-side slug pin (`book_week_slug`) already uses.
+# schedule-side slug pin (`book_week_slug`) already uses.  ``-pre-`` and
+# ``-post-`` are stamped the same way, so a slug of any phase can be
+# attributed to its week instead of being mistaken for this week's fixture.
 _SCORES_ANCHOR = re.compile(r'href="(?:https://www\.nfl\.com)?/games/([^"?#]+)"')
+_SLUG_WEEK = re.compile(r"-(?:reg|pre|post)-(\d+)$")
+
+
+def slug_week(slug: str) -> int | None:
+    """The week the league's own slug stamps on a fixture, or ``None``."""
+    m = _SLUG_WEEK.search(slug_of(slug))
+    return int(m.group(1)) if m else None
 
 
 def scores_week_diff(sched_slugs: set[str], scores_html: str,
@@ -137,7 +146,7 @@ def scores_week_diff(sched_slugs: set[str], scores_html: str,
     """
     score_all = {slug_of(m.group(1)) for m in _SCORES_ANCHOR.finditer(scores_html)}
     other_week = sorted(s for s in score_all
-                        if (fw := fixture_week(s)) is not None and fw != week)
+                        if (fw := slug_week(s)) is not None and fw != week)
     score_slugs = score_all - set(other_week)
     only_sched = sorted(sched_slugs - score_slugs)
     only_scores = sorted(score_slugs - sched_slugs)

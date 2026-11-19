@@ -560,3 +560,18 @@ def test_scores_crosscheck_treats_an_unstamped_games_link_as_comparable():
     assert only_sched == []
     assert only_scores == ["some-promo-game"]
     assert other == []
+
+
+def test_scores_crosscheck_attributes_preseason_and_postseason_slugs():
+    from fetch_official_games import scores_week_diff, slug_week
+    assert slug_week("a-at-b-2026-pre-2") == 2
+    assert slug_week("a-at-b-2026-post-1") == 1
+    assert slug_week("commanders-at-giants-2026-reg-10") == 10
+    assert slug_week("no-week-stamp") is None
+    # a score strip showing next week's preseason game is as foreign to this
+    # week's fixture set as a regular-season slug from another week
+    sched = {"a-at-b-2026-pre-1"}
+    html = _scores_page(["a-at-b-2026-pre-1", "c-at-d-2026-pre-2"])
+    only_sched, only_scores, other = scores_week_diff(sched, html, 1)
+    assert only_sched == [] and only_scores == []
+    assert other == ["c-at-d-2026-pre-2"]
