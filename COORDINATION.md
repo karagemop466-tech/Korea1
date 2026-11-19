@@ -4370,5 +4370,12 @@ therefore in use and both are cited by official records, so the capture now **tr
 one whose page publishes the week it asked for (`pipeline/fetch_official_games.py::week_path_forms`).
 The week is still read out of the page, never assumed from the URL.
 
+A second merge followed: PR #119 (`arena/6ec7369c-korea1`, the final integration record) landed on `main`
+while this branch was being pushed, and the board log conflicted again in the same way — both sides were
+kept and the derived outputs were regenerated once more. A `git pull --rebase` was attempted first and
+aborted for exactly that reason: rebasing replays this branch's commits and re-creates an append
+conflict on the same file. **Merging is the correct operation here**, because the board is an append-only
+log that several sessions write at the end of the file.
+
 **Verification after the merge.** `make build` exit 0 with 0 failing checks; `make test` **403 passed,
 1 skipped**; `tests/check_rebuild.py` 0 changed files.
