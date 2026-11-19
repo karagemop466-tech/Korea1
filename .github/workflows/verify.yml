@@ -54,7 +54,23 @@ jobs:
       - name: The committed tree must be a fixed point of its own generators
         run: python tests/check_rebuild.py
       - name: A rebuild must change nothing at all
+        # Broader than check_rebuild.py on purpose: that script compares the tables under assets/
+        # and data/processed/, not every tracked file. This step prints what moved BEFORE it fails,
+        # so a red run names the files instead of only saying "drift".
         run: |
-          git diff --quiet && echo "no drift: committed outputs equal a fresh build"
-          git diff --stat
-          git diff --quiet
+          git diff --exit-code || {
+            echo "::error::a fresh build changed committed files:"
+            git diff --stat
+            exit 1
+          }
+          echo "no drift: a fresh build reproduces the committed tree byte for byte"
+      - name: Report (do not fail on) untracked build artefacts
+        if: always()
+        run: |
+          git status --porcelain | awk '$1=="??"' > /tmp/untracked.txt
+          if [ -s /tmp/untracked.txt ]; then
+            echo "::warning::a fresh build wrote untracked files (they are not published and do not block):"
+            cat /tmp/untracked.txt
+          else
+            echo "no untracked artefacts"
+          fi
