@@ -34,6 +34,11 @@ def test_settled_game_score_matches_the_official_row():
     o = _official()
     r = o[o.game_id == "2026_10_WAS_NYG"]
     assert len(r) == 1, "the official result for the first settled game must exist exactly once"
+    # Updated 2026-11-19 (arena/7134ec74-korea1): the whole Week-10 slate now has an official
+    # final, so the file no longer holds one row. The earlier assertion ("exactly one") encoded
+    # the stale state; exactly-once-per-game is the invariant that matters.
+    assert not o.game_id.duplicated().any(), "an official result must exist at most once per game"
+    assert len(o[o.week.astype(str) == "10"]) == 14, "all fourteen Week-10 finals must be present"
     r = r.iloc[0]
     assert (r.away_team, int(r.away_score)) == ("WAS", 24)
     assert (r.home_team, int(r.home_score)) == ("NYG", 21)
@@ -78,6 +83,13 @@ def test_every_graded_pick_has_a_status_and_settled_ones_have_numbers():
     assert set(picks.status) <= {"OFFICIAL", "PROVISIONAL", "OPEN", "VOID", "CONFLICT"}
     settled = picks[picks.status == "OFFICIAL"]
     assert len(settled) > 0, "this test is meaningless once the first game settles; keep it honest"
+    # Updated 2026-11-19: with the Week-10 slate settled, the check is that no ticket is left
+    # dangling in PROVISIONAL while an official final for its game exists (F2's whole point).
+    if "PROVISIONAL" in set(picks.status):
+        finals = fg.official_finals()
+        stale = [r["pick_id"] for r in picks[picks.status == "PROVISIONAL"].to_dict("records")
+                 if all(g in finals for g in r["game_ids"].split("|"))]
+        assert not stale, f"tickets still PROVISIONAL although every leg has an official final: {stale}"
     for col in ("outcome", "pnl", "pnl_stress"):
         assert (settled[col].str.strip() != "").all(), f"settled picks must carry {col}"
     open_ = picks[picks.status == "OPEN"]

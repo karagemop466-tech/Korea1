@@ -103,6 +103,10 @@ def render() -> dict[str, str]:
         first = grp.iloc[0]
         confirmed = int((grp.outcome.astype(str).str.startswith("CONFIRMED")).sum())
         replaced = int((grp.outcome.astype(str).str.startswith("REPLACEMENT")).sum())
+        # 2026-11-19 (arena/7134ec74-korea1): rows whose book is captured but whose slot the
+        # book does not print are "NOT CONFIRMABLE" — a different fact from "no book captured".
+        # Both are counted here so the per-fixture columns still sum to the row count.
+        not_confirmable = int((grp.outcome.astype(str).str.startswith("NOT CONFIRMABLE")).sum())
         unconfirmed = int((grp.outcome.astype(str).str.startswith("NOT CONFIRMED")).sum())
         co = int((grp.outcome.astype(str).str.startswith("CO-STARTERS")).sum())
         summary_rows.append([
@@ -110,7 +114,10 @@ def render() -> dict[str, str]:
             e(str(first.week)),
             e(str(grp.club.nunique())),
             e(str(len(grp))),
-            e(str(confirmed)), e(str(replaced)), e(str(co)), e(str(unconfirmed)),
+            e(str(confirmed)), e(str(replaced)), e(str(co)), e(str(not_confirmable)),
+            e(str(unconfirmed)),
+            # the four outcome columns must account for every row of the fixture
+            e("OK" if confirmed + replaced + co + not_confirmable + unconfirmed == len(grp) else "MISMATCH"),
             src_link(str(first.fixture_url), "game centre"),
         ])
 
@@ -262,7 +269,8 @@ Book writes <em>B.Coleman</em> — so a row is confirmed only when the surnames 
 Book's initial equals the first letter of the chart's first name; a different surname is always
 a replacement, and nothing else is treated as a match.</p>
 {table(summary_rows, ["Fixture", "Week", "Clubs", "Graph rows", "Confirmed", "Replacements",
-                       "Co-starters", "Not confirmed", "Official source"],
+                       "Co-starters", "Not confirmable (slot not printed)", "Not confirmed (no book)",
+                       "Rows accounted for", "Official source"],
        caption="Availability graph by fixture — the actual side needs the league's Game Book")}
 <h3>Rows where the actual starter is official</h3>
 {table(confirmed_rows, ["Fixture", "Club", "Unit", "Position", "Expected starter (club chart)",

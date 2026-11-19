@@ -269,6 +269,7 @@ def build() -> dict:
     for fx in fixtures.itertuples() if not fixtures.empty else []:
         slug = str(fx.slug)
         kickoff = str(fx.kickoff_utc)
+        book_captured = any(k[0] == slug for k in starters)
         for club, side in ((str(fx.away_team), "away"), (str(fx.home_team), "home")):
             for (chart_club, unit, position), exp in expectation.items():
                 if chart_club != club:
@@ -278,7 +279,24 @@ def build() -> dict:
                 expected_name = exp["expected_starter"]
                 actual_name = actual.get("player", "")
                 note = ""
-                if not actual:
+                unit_label = str(getattr(fx, "week", "")) and unit
+                if not actual and unit == "Special Teams":
+                    # The Game Book's lineup columns print Offense and Defense only: no
+                    # special-teams starter is ever listed, so a captured book can never
+                    # confirm one. The earlier label said "no Game Book captured", which was
+                    # false whenever the book *was* captured (measured 2026-11-19: 151 of 240
+                    # Week-10 unconfirmed rows were special teams in fixtures whose books were
+                    # on disk). The cell stays blank; only the stated reason is corrected.
+                    outcome = ("NOT CONFIRMABLE — special-teams slots are not printed in the Game "
+                               "Book lineup")
+                elif not actual and book_captured:
+                    # The book is on disk for this fixture; the Game Book prints eleven
+                    # defenders but no nickel back, fullback, etc.  The depth chart names a
+                    # starter at a slot the book does not print, so the row cannot be
+                    # confirmed from official evidence.  The cell stays blank.
+                    outcome = ("NOT CONFIRMABLE — the Game Book captured for this fixture prints "
+                               "no starter in this slot")
+                elif not actual:
                     outcome = "NOT CONFIRMED — no official Game Book captured"
                 elif not expected_name:
                     outcome = "NO EXPECTATION — position absent from the club's chart"

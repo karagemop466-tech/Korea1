@@ -234,7 +234,7 @@ def test_a_position_with_several_rank_one_players_is_not_collapsed():
         return
     for row in multi.itertuples():
         assert ";" in row.expected_starter, row.expected_starter
-        assert row.outcome.startswith(("CO-STARTERS", "NOT CONFIRMED")), row.outcome
+        assert row.outcome.startswith(("CO-STARTERS", "NOT CONFIRMED", "NOT CONFIRMABLE")), row.outcome
 
 
 def test_the_graph_is_point_in_time_or_flagged():

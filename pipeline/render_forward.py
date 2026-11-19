@@ -48,6 +48,10 @@ def _csv(name: str) -> pd.DataFrame:
     return pd.read_csv(p, dtype=str, keep_default_na=False) if p.exists() else pd.DataFrame()
 
 
+def _csv_p(p: Path) -> pd.DataFrame:
+    return pd.read_csv(p, dtype=str, keep_default_na=False) if p.exists() else pd.DataFrame()
+
+
 def _num(x, nd: int = 2) -> str:
     """Format a number, or an em dash when the engine left it blank."""
     try:
@@ -113,10 +117,22 @@ def render() -> dict[str, str]:
     games_total = len(cards)
 
     # ---------------------------------------------------------------- summary
+    # Every sentence below is computed from the published tables, never typed. A previous revision
+    # hard-coded "three days old" and "13 kick off 15-16 November"; after the Week-10 finals were
+    # settled (2026-11-19) those two claims became false while the build still passed, because a
+    # static string cannot fail a check. tests/test_scores_capture.py now pins the computed form.
+    n_unsettled = games_total - games_official
+    last_utc = ""
+    if len(cards):
+        vals = [str(x).strip() for x in cards.anchor_utc.tolist() if str(x).strip()] if "anchor_utc" in cards else []
+        last_utc = max(vals) if vals else ""
     body = flag(
-        "<strong>This is a forward test, and it is three days old.</strong> "
+        "<strong>This is a forward test.</strong> "
         f"<strong>{n_official}</strong> of <strong>{n_declared}</strong> frozen tickets have settled from an "
-        "official NFL.com final. That is not evidence for or against any strategy, and this page does not "
+        "official NFL.com final"
+        + (f", the last of them frozen at <code>{e(last_utc)}</code> against a game that has since finished"
+           if last_utc else "")
+        + ". That is not evidence for or against any strategy, and this page does not "
         "treat it as such. It is published because a prospective record that is not shown cannot be audited "
         "later, and because <em>nothing below was selected after the fact</em>.", "info")
 
@@ -125,7 +141,8 @@ def render() -> dict[str, str]:
         f'<div class="card-note">{n}</div></div>'
         for v, l, n in [
             (f"{n_official}/{n_declared}", "frozen tickets settled", "official NFL.com final only"),
-            (f"{games_official}/{games_total}", "games with an official final", "13 kick off 15–16 November"),
+            (f"{games_official}/{games_total}", "games with an official final",
+             f"{n_unsettled} awaiting an official final" if n_unsettled else "every frozen game settled"),
             (f"{len(sb)}", "strategies on the record", "all 18 registered before kickoff"),
             ("0", "strategies validated", "no horizon reached; verdicts withheld"),
         ]) + "</div>"
@@ -182,6 +199,65 @@ def render() -> dict[str, str]:
                      f"community-mirror figure, so under the verification rule it stays blank until an official or "
                      f"operator-timestamped close exists. One game settles nothing either way.</p>")
     body += "</section>"
+
+    # ---------------------------------------------------------------- full slate settlement (W10S)
+    # Session arena/7134ec74-korea1, 2026-11-19: every Week-10 fixture settled from three
+    # independent official artefacts. The table prints the score, the status word, the official
+    # page, the committed byte capture and the Game Book, so one row can be re-checked without
+    # trusting pipeline/settle_week10_2026_11_19.py.
+    W10S_SLATE = "https://www.nfl.com/scores/2026/week-10"
+    W10S_SCHED = "https://www.nfl.com/schedules/2026/by-week/reg-10"
+    if len(official) and len(cards):
+        w10 = official[official.week.astype(str) == "10"]
+        if len(w10):
+            body += "<section><h2>All fourteen Week 10 finals, each from three agreeing official artefacts</h2>"
+            body += ("<p>On 2026-11-19 this page printed <em>1 of 14</em> games with an official final while all "
+                     "fourteen had finished on 15–16 November. The gap was process, not data: the scheduled "
+                     "fetcher archives pages and proposes scores but never promotes one, because its extractor is "
+                     "unvalidated. Every row below was promoted only after three artefacts agreed — the live "
+                     f"{src_link(W10S_SLATE, 'scores page')} read in full, the committed byte capture of the "
+                     f"{src_link(W10S_SCHED, 'league by-week schedule page')} fetched by the runner (SHA-256 in "
+                     "<code>data/evidence/official_games/manifest.json</code>), and the fixture's own Game Book page 1. "
+                     "A fixture missing from any of the three, or disagreeing with it, would have been withheld and "
+                     "listed with the reason; none was.</p>")
+            # The Game Book URL is the one the game centre published and the runner captured
+            # (data/processed/official_gamecentres.csv). It is never composed from the slug: a
+            # guessed URL is exactly the fabrication this project's rules forbid.
+            centres = _csv_p(ROOT / "data" / "processed" / "official_gamecentres.csv")
+            book_url = dict(zip(centres["slug"], centres["gamebook_url"])) if len(centres) else {}
+            book_pin = dict(zip(centres["slug"], centres["raw_sha256"])) if len(centres) else {}
+            rows10, missing_book = [], []
+            for r in w10.to_dict("records"):
+                slug = r["official_url"].rstrip("/").rsplit("/", 1)[-1]
+                c = cards[cards.game_id == r["game_id"]]
+                err_s = _num(c.iloc[0].abs_err_spread) if len(c) else DASH
+                err_t = _num(c.iloc[0].abs_err_total) if len(c) else DASH
+                url = book_url.get(slug, "")
+                if not url:
+                    missing_book.append(slug)
+                    book_cell = '<span class="pill unverified">UNVERIFIED · no captured URL</span>'
+                else:
+                    book_cell = src_link(url, "Game Book PDF")
+                rows10.append([
+                    e(r["game_id"]), e(f"{r['away_team']} {_int(r['away_score'])} – {_int(r['home_score'])} {r['home_team']}"),
+                    e(r["status_on_page"]), err_s, err_t,
+                    src_link(r["official_url"], "Game Center"),
+                    src_link(W10S_SCHED, "schedule capture"),
+                    book_cell,
+                ])
+            body += table(rows10, ["Game", "Printed final", "Status as printed", "Model spread error (pts)",
+                                   "Model total error (pts)", "Official page", "Committed capture",
+                                   "Game Book (as published)"],
+                          caption="Week 10: printed final, status word and three source links per game")
+            body += ("<p class=\"muted\">The Game Book's first page prints the date, kickoff, venue, officials and "
+                     "both lineups but <em>no final score</em>, so it corroborates that the fixture was played and "
+                     "which clubs played it — never the number. The number rests on the scores page agreeing with "
+                     "the committed schedule capture, fixture by fixture. Mean absolute error of the originated "
+                     f"line over the {len(w10)} settled games is printed here because it is arithmetic on official "
+                     "finals: it is <strong>not</strong> a skill claim — the lines were originated after those games "
+                     "had been played in model-history terms, and no significance test is printed before the "
+                     "declared horizon.</p>")
+            body += "</section>"
 
     # ---------------------------------------------------------------- fair vs market, separately (U4)
     body += "<section><h2>Fair line, market line and difference — separate columns</h2>"
@@ -387,6 +463,28 @@ def flagged_rows() -> list[list[str]]:
          "are validated on a runner, a session must confirm each proposal against the archived page before it "
          "enters official_results.csv. That step is deliberate, not an unfinished chore.",
          src_link("https://www.nfl.com/scores/", "NFL.com scores")],
+        ["F-2026-11-19-W10", "High · repaired", 
+         "This page printed \"1 of 14 games with an official final\" and \"4 of 65 frozen tickets settled\" on "
+         "2026-11-19 while all fourteen Week-10 fixtures had finished on 15–16 November and the scheduled runner "
+         "held byte captures of twelve of them. The promotion step was manual by design, so nothing settled. "
+         "Repaired: the fourteen finals were settled from three agreeing official artefacts "
+         "(pipeline/settle_week10_2026_11_19.py), and the four unvalidated PROPOSED score guesses in "
+         "official_candidates.csv (e.g. Buffalo 8 – Jets 2) were removed rather than trusted — the official "
+         "scores page prints Buffalo 31 – Jets 12.",
+         src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
+        ["F-2026-11-19-W11", "Medium · open",
+         "The page's own summary text said \"three days old\" and \"13 kick off 15–16 November\", typed as static "
+         "strings, so the build republished two false statements after settlement without failing a check. "
+         "Repaired: both are computed from the published tables and pinned by tests/test_scores_capture.py. "
+         "The general lesson stays open — other pages may still carry typed dates.",
+         src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
+        ["F-2026-11-19-W12", "Medium · open",
+         "The scheduled fetcher (pipeline/fetch_official_games.py) captures the scores page only as a fixture-set "
+         "cross-check: it stores the SHA-256, never the bytes, and parses no score from it. Settlement therefore "
+         "depends on the by-week schedule page, whose '<club> <pts>, <club> <pts>, FINAL' cards are the only "
+         "machine-readable official finals the pipeline holds. Fix is scheduled work (store the bytes and parse "
+         "the score block), not a data gap; the twelve Game Book captures already on disk carry no score.",
+         src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
     ]
 
 

@@ -109,5 +109,5 @@ season,market,games,open_snapshots,archive_closes,pin_closes,freeze_snapshots,ar
 2025,TOTAL,285,0,0,285,0,08271b4fe775,a270278f3ac4,"NOT AN AUTHENTICATED BOOKMAKER QUOTE · third-party archive, pinned community close or ledger freeze · gate G1 fails"
 2026,ML_AWAY,150,0,0,108,14,08271b4fe775,a270278f3ac4,"NOT AN AUTHENTICATED BOOKMAKER QUOTE · third-party archive, pinned community close or ledger freeze · gate G1 fails"
 2026,ML_HOME,150,0,0,108,14,08271b4fe775,a270278f3ac4,"NOT AN AUTHENTICATED BOOKMAKER QUOTE · third-party archive, pinned community close or ledger freeze · gate G1 fails"
-2026,SPREAD,150,0,0,150,42,08271b4fe775,a270278f3ac4,"NOT AN AUTHENTICATED BOOKMAKER QUOTE · third-party archive, pinned community close or ledger freeze · gate G1 fails"
-2026,TOTAL,150,0,0,150,42,08271b4fe775,a270278f3ac4,"NOT AN AUTHENTICATED BOOKMAKER QUOTE · third-party archive, pinned community close or ledger freeze · gate G1 fails"
+2026,SPREAD,150,0,0,136,42,08271b4fe775,a270278f3ac4,"NOT AN AUTHENTICATED BOOKMAKER QUOTE · third-party archive, pinned community close or ledger freeze · gate G1 fails"
+2026,TOTAL,150,0,0,136,42,08271b4fe775,a270278f3ac4,"NOT AN AUTHENTICATED BOOKMAKER QUOTE · third-party archive, pinned community close or ledger freeze · gate G1 fails"

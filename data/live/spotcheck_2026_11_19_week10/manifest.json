@@ -1,0 +1,18 @@
+{
+  "read_utc": "2026-11-19T20:10Z",
+  "reader": "Arena page-fetch tool (agent), full page, both chunks",
+  "sources": [
+    "https://www.nfl.com/scores/2026/week-10",
+    "https://www.nfl.com/games/commanders-at-giants-2026-reg-10",
+    "https://www.nfl.com/games/patriots-at-lions-2026-reg-10"
+  ],
+  "fixtures": 14,
+  "byes": 4,
+  "game_centres_read": 2,
+  "limitation": "The page-read tool returns text; no HTTP status line, headers or raw bytes are exposed, so no SHA-256 of the wire response can be attached to these rows. Byte-level captures of the same pages exist separately under data/evidence/official_games/ (schedule page) and are sha-pinned in its manifest.",
+  "files": {
+    "game_centre_headers.csv": "ba3c0be66a49c279566ce4a715ce221b46a671156f2a6e99501328a5f271086d",
+    "scores_page_byes.csv": "61f78c7b5b10d4f77a1bbf2d62ce1dbb7dc5cb17967b7a2cab9267e10fe27690",
+    "scores_page_rows.csv": "781db75cde9596db676017ad2c1fd63cfaf21e9868b0ba4abdb700fdd6998d55"
+  }
+}
