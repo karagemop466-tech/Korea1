@@ -1353,6 +1353,7 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_18b_section()
     body += _flagged_2026_11_18_b_section()
     body += _flagged_2026_11_19_section()
+    body += _flagged_2026_11_19_register_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1815,7 +1816,7 @@ def _flagged_2026_11_15_section() -> str:
                     caption="Session findings with an official source") + listing + "</section>")
 
 
-def _flagged_2026_11_19_section() -> str:
+def _flagged_2026_11_19_register_section() -> str:
     """Session arena/db0e98e2-korea1 (2026-11-19): reserve-page row retention and the latest.csv repair."""
     fl = _read_integration("flagged_2026_11_19.csv")
     if fl is None or not len(fl):
