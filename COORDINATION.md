@@ -4193,3 +4193,16 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 | I1 | Re-run deterministic build + full test suite on the 2026-11-19 base; independently re-read three official NFL.com pages (Week 10 injury report, November reserve list, KC-at-ATL game centre) and compare against committed captures; record verdicts with source links; final integration: PR to `main`, merge, confirm Pages deploy | **in progress** | `arena/6ec7369c-korea1` | `COORDINATION.md` (this session's section only), `data/live/spotcheck_2026_11_19/spotcheck_2026_11_19.csv` (new) |
 
 **Starting state:** branch `arena/6ec7369c-korea1` at `3c02fb2` (gamebooks capture 2026-11-19T12:14Z), equal to `origin/main`. `make build` (0 failing checks) and `make test` (382 passed, 1 skipped) both green before any edit; `git status` clean after build (committed outputs match a fresh build). Pages API reports `status: built`, source `main:/`, latest build 2026-11-19T12:14:36Z. Sandbox egress is limited to GitHub/npm/PyPI hosts, so the live site cannot be curled from here; official pages are re-read with the page-fetch tool instead.
+
+**Spot-check results (independent re-reads, 2026-11-19, `data/live/spotcheck_2026_11_19/spotcheck_2026_11_19.csv`):**
+
+| Check | Official page | Verdict |
+|---|---|---|
+| SC-01 Lions trio (Joseph / Mays / Reed) game status | [NFL Week 10 injury report](https://www.nfl.com/injuries/league/2026/reg10) | **MATCH** — live Out/Out/Out = committed 2026-11-18 capture; the 2026-11-12 blanks are correctly preserved as point-in-time evidence |
+| SC-02 WAS/NYG report shape | [NFL Week 10 injury report](https://www.nfl.com/injuries/league/2026/reg10) | **MATCH** — 2 Out (Patrick, Yankoff) + 1 Questionable (Harrison) |
+| SC-03 Malik Willis on November reserve page | [NFL reserve list, Nov 2026](https://www.nfl.com/transactions/league/reserve-list/2026/11) | **CONFIRMS FLAG F-2026-11-19-06** — absent from the live rolling window; absence is not availability |
+| SC-04 KC-at-ATL venue | [NFL game centre](https://www.nfl.com/games/chiefs-at-falcons-2026-reg-10) | **MATCH** — ATLANTA, GA / MERCEDES-BENZ STADIUM |
+| SC-05 KC-at-ATL final (35–13) vs results feed | [NFL game centre](https://www.nfl.com/games/chiefs-at-falcons-2026-reg-10) | **SOURCE MOVED** — committed row is a correct pre-kickoff freeze; settlement is a forward-ledger/CI step, no evidence file hand-edited |
+| SC-06 Live site serving | [GitHub Pages API](https://api.github.com/repos/karagemop466-tech/Korea1/pages) | **MATCH** — `status: built`, source `main:/` |
+
+No value on any page was changed by this check. No dated capture was overwritten. Betting-strategy gates remain fail-closed: no strategy is newly declared validated and no reward is awarded by this integration pass.
