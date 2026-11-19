@@ -4140,4 +4140,14 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 
 | # | Task | Status | Owner | File scope |
 |---|------|--------|-------|-----------|
-| Q1 | REQ-37 — add the same-game-parlay division (fourth division, zero registered candidates, joint-evidence gate stated per the brief) to `competition.html`; update the REQ-37 gate text | **in progress** | `arena/58529315-korea1` | `pipeline/session_competition.py`, `pipeline/request_register.py` (REQ-37 row only), regenerated outputs |
+| Q1 | REQ-37 — add the same-game-parlay division (fourth division, zero registered candidates, joint-evidence gate stated per the brief) to `competition.html`; update the REQ-37 gate text | **done** (status stays `partly built`: the division is empty, and no ranking with uncertainty exists for any division) | `arena/58529315-korea1` | `pipeline/session_competition.py`, `pipeline/request_register.py` (REQ-37 row only), regenerated outputs |
+
+**Q1 record.** Change: `pipeline/session_competition.py` adds "Division Y — same-game parlays" (prose only; no candidate, joint-probability gate not evaluated, void/push rules not recorded); `pipeline/request_register.py` REQ-37 row now states four divisions and the remaining gate; `pipeline/req_annex_2026_11_18.py` R10 text changed from "three divisions" to "four divisions (same-game parlays empty)" because that line is generated on every build and would otherwise be stale.
+
+**Sources.** The gate rule is the project brief item "Keep parlays and prop combos behind a joint-evidence gate". It is an internal requirement, not an official source, and it is labelled as such on the page. No official operator void/push source was read, so none is cited, and the page says so.
+
+**Verification.** `make build` exit 0, 0 failing checks (one intermediate failure was a table row without a source link; it was converted to prose, which is the correct form for a gate statement, not a sourced value). Second `make build` changed 0 files (fixed point). `make test`: 382 passed, 1 skipped.
+
+**Irregularities for review (unchanged, not resolved here).** The brief's counts (149 multi-player slots; 254/279 injury rows; 136-game log) and its VR-/VQ-/SG- identifiers are not reproduced in the repository (see REQ-19, REQ-33, REQ-49 and F-46 to F-48). The Houston depth chart remains unparsed (F-18). Nothing in this session was taken from a non-official source.
+
+**Not done in this session (stated, not claimed).** The remaining about 70 register items stay as recorded in `request_register.csv`, with their blocking gates. Most need official pages captured in bulk (32-club chart and injury sweep, game-centre venues, Game Book parsing, snap counts, reserve-list history), which the bash egress allow-list cannot reach and the page-read tool cannot finish in one session.
