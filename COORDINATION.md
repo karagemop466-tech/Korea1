@@ -4207,6 +4207,14 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 
 No value on any page was changed by this check. No dated capture was overwritten. Betting-strategy gates remain fail-closed: no strategy is newly declared validated and no reward is awarded by this integration pass.
 
+**I1 outcome.**
+
+- **PR [#114](https://github.com/karagemop466-tech/Korea1/pull/114)** from `arena/6ec7369c-korea1` → `main`; CI `verify` **pass** (run [44525414134](https://github.com/karagemop466-tech/Korea1/actions/runs/44525414134), 3m30s). Merged without waiting at 2026-11-19T12:40Z as merge commit `ddfeb7e7999b7dc34d8baa97d92e1e8461496f29` (`gh pr merge 114 --merge`).
+- **Conflict resolved, sibling work kept:** `main` advanced to `dbaf615` (PR #117, session `arena/9b56a906-korea1`) after the branch was opened. `COORDINATION.md` conflicted; the rebase kept **both** sections (631c3566/9b56a906 records preserved verbatim, this session's section appended). Nothing was discarded. After the rebase: `make build` 0 failing checks (6,768 rows, 61 pages), `make test` 382 passed / 1 skipped, and the build was a fixed point (0 changed files).
+- **Post-merge checks on `ddfeb7e`:** `Verify site` **success** (push event); `pages build and deployment` **success**. Pages API: `status: built`, source `main:/`. Latest build `2026-11-19T12:40:04Z` = `ddfeb7e`.
+- **Live read-back:** https://karagemop466-tech.github.io/Korea1/ served the merged dashboard — research-only banner, 0 validated strategies, 18 research candidates, the strict evidence view with blank ROI/adjusted-p cells and a White (2000) reference per row, and the 2026-11-14 brief cards. The status quo is unchanged and correct: no edge is claimed.
+- **Task I1: done.** No page value changed; no dated capture overwritten; no strategy validated; no reward awarded.
+
 ---
 
 ## Session `arena/eeba949e-korea1` — 2026-11-19: repair the official Game Book capture chain and publish the consumer half (claim)
