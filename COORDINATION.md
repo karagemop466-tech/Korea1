@@ -4062,7 +4062,7 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 
 **PR and deployment record:**
 - **[PR #106](https://github.com/karagemop466-tech/Korea1/pull/106)** from `arena/8d55e319-korea1` to `main` merged without waiting at 2026-11-19T07:09:30Z as merge commit `85564cd77f975a60dd5c59c792e53e7e3e3f6b03`.
-- PR verification passed: [run 44477142941](https://github.com/karagemop466-tech/Korea1/actions/runs/44477142941). A prior run failed during the in-flight generated-output refresh; after a clean-clone build reproduced successfully and the regenerated outputs were committed, the passing run is the final PR check.
+- PR verification passed: [run 44477142941](https://github.com/karagemop466-tech/Korea1/actions/runs/44477142941). Earlier run [44476839573](https://github.com/karagemop466-tech/Korea1/actions/runs/44476839573) failed at the rebuild step, but its log was unavailable from the Actions log receiver; the failure cause is undetermined. A clean-clone build then passed, and run 44477142941 passed on the same branch head. No cause is attributed to the earlier failure.
 - Post-merge `main` verification passed: [run 44477447938](https://github.com/karagemop466-tech/Korea1/actions/runs/44477447938). Pages deployment passed: [run 44477446616](https://github.com/karagemop466-tech/Korea1/actions/runs/44477446616).
 - Live site fetch confirmed the root dashboard is served at https://karagemop466-tech.github.io/Korea1/ and presents the research-only warning, no validated strategies, and links to the decision/requirements pages.
 - This post-merge record is being published in a documentation-only follow-up PR; the active code change and published site are already deployed.
