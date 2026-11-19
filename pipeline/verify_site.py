@@ -86,7 +86,9 @@ def main():
               # GC2 (arena/7cbb2e60-korea1, 2026-11-19): official game-centre / Game Book evidence.
               "gamecentre.html",
               # E5 (arena/eeba949e-korea1): the official Game Book evidence page.
-              "gamebooks.html"}
+              "gamebooks.html",
+              # DT4 (arena/a0e376ae-korea1): REQ-62 — second total estimator + walk-forward verdict.
+              "dual-totals.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

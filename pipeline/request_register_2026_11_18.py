@@ -631,12 +631,16 @@ ROWS = [
          clears="Not applicable",
          label="NFL injuries", url=U_INJ),
     dict(id="RR-62", requirement="Publish every model total twice until one wins",
-         status="NOT STARTED",
-         evidence="",
-         done="Not implemented. Only one model total is published per market. Keeping two estimators visible with a "
-              "gap column and collapsing to one only after a walk-forward comparison has not been done.",
-         gate="No dual-estimator harness",
-         clears="A second pre-registered estimator with a walk-forward comparison",
+         status="DONE",
+         evidence="dual-totals.html; data/processed/dual_totals_walkforward.csv; data/processed/dual_totals.csv; "
+                  "data/processed/dual_totals_upcoming.csv; research/dual-totals-prereg.md",
+         done="Two independent total estimators are published with the gap column (lines.html upcoming board) and the "
+              "pre-registered walk-forward comparison is published on dual-totals.html: pooled verdict A wins over "
+              "5819 games, ΔMAE +0.314 [95% CI +0.233, +0.394]; outcomes are pinned-community finals except the "
+              "officially read tier, so the verdict prints PROVISIONAL and no collapse was executed.",
+         gate="None for publication; the collapse decision itself stays owner-gated on the pre-registered rule "
+              "(pooled CI names a winner and that winner takes at least two-thirds of seasons)",
+         clears="Delivered — collapse only after the pre-registered gate passes and an owner records it in DECISIONS.md",
          label="No official source: a modelling decision", url=None),
     dict(id="RR-63", requirement="Add a drift alarm to every scraper",
          status="PARTLY DONE",

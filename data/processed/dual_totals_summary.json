@@ -1,0 +1,44 @@
+{
+  "registration_commit": "b364c23706a46f7b04173370f88b2f4a22a44aac",
+  "prereg_sha256": "4bc158f9f3af8cb2a560c10fdad163c52b3c7c5a7e07a96ff206200198b0fb43",
+  "window": "2004-2026 regular season; both estimators on the same games",
+  "n_evaluated": 5819,
+  "n_b_unavailable": 0,
+  "seasons_evaluated": 23,
+  "seasons_a_won": 9,
+  "seasons_b_won": 0,
+  "seasons_no_separation": 14,
+  "pooled": {
+    "mae_a": 10.757594173038513,
+    "mae_b": 11.071409682541388,
+    "rmse_a": 13.582358958935714,
+    "rmse_b": 13.946636626348402,
+    "delta_mae": 0.3138155095028748,
+    "ci_low": 0.2334385283349903,
+    "ci_high": 0.3941924906707593,
+    "verdict": "A wins"
+  },
+  "outcome_tiers": {
+    "official_read": 31,
+    "pinned_community": 5788
+  },
+  "verdict_status": "PROVISIONAL",
+  "collapse": {
+    "candidate": false,
+    "reason": "A wins pooled gate but no season supermajority",
+    "executed": false,
+    "rule": "pooled CI names a winner and that winner takes >= 2/3 of seasons; the collapse itself is an owner decision (DECISIONS.md)"
+  },
+  "upcoming_rows": 164,
+  "upcoming_b_available": 164,
+  "estimators": {
+    "A": "pred_total_ensemble as published on lines.html (not retrained here)",
+    "B": "mean of each team's up-to-5 most recent regular-season totals strictly before the game; league-mean fallback; zero fitted parameters"
+  },
+  "inputs": {
+    "originated_lines": "data/processed/originated_lines.csv",
+    "games_model": "data/processed/games_model.csv",
+    "verified_results": "data/results/verified_results.csv",
+    "score_audit": "data/audit/nfl_com_score_audit.csv"
+  }
+}
