@@ -34,3 +34,19 @@ def test_flag_rows_have_official_source_and_ids():
     df = pd.read_csv(ROOT / "data/integration/flagged_2026_11_19.csv", dtype=str, keep_default_na=False)
     assert list(df.id) == ["F-52", "F-53"]
     assert (df.source_url.str.startswith("https://www.nfl.com/")).all()
+
+
+def test_render_site_has_no_shadowed_2026_11_19_section_functions():
+    """Two sections named _flagged_2026_11_19_section silently shadowed each other on main (PR #108 + this branch).
+    Every module-level function name in render_site.py must be unique."""
+    import ast
+    tree = ast.parse((ROOT / "pipeline" / "render_site.py").read_text(encoding="utf-8"))
+    names = [n.name for n in tree.body if isinstance(n, ast.FunctionDef)]
+    dupes = sorted({n for n in names if names.count(n) > 1})
+    assert dupes == [], dupes
+
+
+def test_built_flagged_page_renders_both_2026_11_19_sections():
+    html = (ROOT / "flagged.html").read_text(encoding="utf-8")
+    assert "Findings from the 2026-11-19 re-read" in html
+    assert "Findings from the 2026-11-19 session" in html
