@@ -126,9 +126,18 @@ def test_kansas_city_omitted_row_is_not_counted_as_a_match():
 
 
 def test_outputs_that_block_many_rows_are_still_missing():
-    """The blocked rows cite missing artefacts; if one appears, the register must be updated."""
-    assert not (ROOT / "data" / "processed" / "official_gamebook_rosters.csv").exists(), (
-        "a Game Book capture now exists — rows R28/R45/R60/R62 must be re-classified, not left BLOCKED")
+    """The blocked rows cite missing artefacts; if one changes, the register must be updated.
+
+    2026-11-19: the Game Book captures and the structured roster table are committed (75ea927).
+    The table is partial (29 of 42 games; 348 unreadable lineup blocks), so R28/R62 stay BLOCKED and
+    the rows are re-described, not re-classified to done. Any change in these counts must be reviewed.
+    """
+    gb = pd.read_csv(ROOT / "assets" / "data" / "official_gamebooks.csv", dtype=str)
+    assert len(gb) == 42
+    ro = pd.read_csv(ROOT / "data" / "processed" / "official_gamebook_rosters.csv", dtype=str)
+    assert len(ro) == 2295 and ro["slug"].nunique() == 29
+    assert int((ro["roster_block"] == "lineup_unreadable").sum()) == 348, (
+        "Game Book unreadable-block count changed: re-read R28/R62 before editing their text")
     assert int((_dep().team == "HOU").sum()) == 0, (
         "Houston depth rows exist now — R33/R36/R37/R40/R52 must be re-classified")
 

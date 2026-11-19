@@ -534,7 +534,7 @@ def build_register(m: dict, f: dict) -> list[dict]:
            "https://github.com/karagemop466-tech/Korea1/blob/main/data/processed/strategy_gates.csv",
            "strategy_gates.csv"))
     A(item("R10", "Use proper-score leaderboard divisions (singles, game parlays, same-game parlays, prop combos)",
-           ST["partial"], f"competition.html defines three divisions; the forward record holds "
+           ST["partial"], f"competition.html defines four divisions (same-game parlays empty); the forward record holds "
            f"{m['picks'] - m['picks_2leg'] - m['picks_3leg']} singles, {m['picks_2leg']} two-leg and "
            f"{m['picks_3leg']} three-leg entries; prop-combo division empty",
            "G1; no prop prices at all", "One settled entry in every division, including a prop combo with a joint price",
@@ -638,8 +638,8 @@ def build_register(m: dict, f: dict) -> list[dict]:
     # ---- availability ------------------------------------------------------
     A(item("R28", "Build the availability graph as a first-class dataset (expected starter, actual starter)",
            ST["blocked_src"], f"depth captures ({m['dep_dates']} dates) + injury captures ({m['inj_dates']} dates); "
-           f"Game Book lineups parsed but no official capture has been committed (0 official_gamebook_rosters.csv)",
-           "No official Game Book capture; no inactive list", "One committed Game Book lineup table joined to a dated depth capture",
+           f"42 official Game Book PDFs captured with raw sha256 (assets/data/official_gamebooks.csv); structured roster table committed (data/processed/official_gamebook_rosters.csv: 2,295 rows over 29 games; 348 lineup blocks unreadable); no expected-vs-actual join yet",
+           "348 Game Book lineup blocks unreadable (29 of 42 games parsed) and no expected-vs-actual join", "One committed Game Book lineup table joined to a dated depth capture",
            "https://github.com/karagemop466-tech/Korea1/blob/main/.github/workflows/gamebooks.yml", "gamebooks.yml"))
     A(item("R29", "Do not model depth from jersey order; model it from playing time",
            ST["done"], f"jersey prefixes stripped into player_raw ({m['gb_jersey']} of {m['gb_rows']} GB rows "
@@ -717,7 +717,7 @@ def build_register(m: dict, f: dict) -> list[dict]:
            U_OPS, "NFL Operations"))
     A(item("R45", "Represent announced starters (a dated starter change), not an inferred replacement",
            ST["blocked_src"], "Game Book lineups are parsed by code but no capture has been committed; the "
-           "replacement columns stay blank", "No committed Game Book capture",
+           "replacement columns stay blank", "No dated official starter-change announcement captured",
            "One committed Game Book lineup table", U_SCHED, "NFL schedule"))
     A(item("R46", "Add an official depth-chart register with date and source per row",
            ST["verified"], f"{m['dep_rows']} rows, each with source_url and retrieved_utc "
@@ -795,7 +795,7 @@ def build_register(m: dict, f: dict) -> list[dict]:
            "One dated official announcement beside the live page", U_SCHED, "NFL schedule"))
     A(item("R62", "Use official Game Books for actual starters and game-day status; do not infer",
            ST["blocked_src"], "the parser exists and is tested, but the workflow has not produced a committed "
-           "capture, so nothing is inferred and nothing is published", "No committed Game Book capture",
+           "capture, so nothing is inferred and nothing is published", "348 unreadable lineup blocks; 13 of 42 games not in the roster table",
            "One committed Game Book roster table",
            "https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/official_games.py", "official_games.py"))
     A(item("R63", "Stadium roof/surface and NWS hourly wind/precipitation overlay",
@@ -983,10 +983,11 @@ def build_findings(m: dict, f: dict) -> list[dict]:
              nxt="Keep the mapping explicit in the parser (done in this session's comparison) and note AZ in the source register.",
              url=U_RES, label="NFL reserve list"),
         dict(id="F-54", sev="Medium · open",
-             text=("The official Game Book capture has never produced a committed table: "
-                   "data/processed/official_gamebook_rosters.csv does not exist, so R28, R45, R60 and R62 are "
-                   "all blocked on one missing run, not on missing code."),
-             nxt="Run .github/workflows/gamebooks.yml for weeks 1-11 and commit what it writes.",
+             text=("The Game Book captures are committed: 42 official PDFs with raw sha256 hashes "
+                   "(assets/data/official_gamebooks.csv). The structured table data/processed/official_gamebook_rosters.csv "
+                   "has 2,295 rows over 29 games, and 348 of its rows are lineup blocks marked unreadable. R28, R62 "
+                   "remain blocked on the unreadable blocks and the missing join; R60 remains blocked on venue coverage."),
+             nxt="Re-read the 348 unreadable blocks from the committed PDFs and build the expected-vs-actual join, then re-classify.",
              url=U_GH_PAGES, label="GitHub documentation (workflow evidence)"),
         dict(id="F-55", sev="Low · repaired (re-reported)",
              text=(f"The Lions trio (Kerby Joseph, Cade Mays, D.J. Reed) shows a game status on every capture "

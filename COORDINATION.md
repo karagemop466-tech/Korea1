@@ -4132,6 +4132,25 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 - Board rule, repeated: run `make build` in a fresh clone before any PR, and re-check `main` immediately before merging, because sibling sessions merged to `main` four times during this session.
 - **ID correction (this branch, 2026-11-19):** the reserve-window and latest.csv flags were first labelled F-52 and F-53 in this log and on the Flagged page. Those IDs collided with existing rows (F-53 is the AZ/ARI mapping; F-57 already records the same rolling-window pattern). They are renamed **F-2026-11-19-06** and **F-2026-11-19-07**. Earlier entries in this log that say F-52/F-53 mean these two rows. The executive-summary block is now generated from `pipeline/render_summary.py`, because `EXECUTIVE_SUMMARY.md` is overwritten on every build; the earlier hand edit never reached a commit.
 
+## Session `arena/58529315-korea1` — 2026-11-19 claim (narrow scope)
+
+**Scope and honesty.** The brief in this session lists about 80 items. The repository already tracks them in `data/integration/request_register.csv` (REQ-01…REQ-81) with the gate that blocks each one. Most open items need official data this sandbox cannot fetch in bulk (bash egress is limited to github, npm and pypi; nfl.com is reachable only through the page-read tool, chunk by chunk). This session therefore closes only what can be done from committed evidence without inference. The session stays on the single pinned branch `arena/58529315-korea1`; the `session-<id>/<task>` branch convention in the brief is not used, because the platform pins each session to one branch.
+
+**Baseline verified first (base `3c02fb2`, = `origin/main`).** Fresh `.venv` from `requirements.txt`; `make test`: 381 passed, 2 skipped; `make build`: 0 failing checks, `check_sources` 51 pages / 6,764 rows, `check_links` 61 pages, clean tree after build.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| Q1 | REQ-37 — add the same-game-parlay division (fourth division, zero registered candidates, joint-evidence gate stated per the brief) to `competition.html`; update the REQ-37 gate text | **done** (status stays `partly built`: the division is empty, and no ranking with uncertainty exists for any division) | `arena/58529315-korea1` | `pipeline/session_competition.py`, `pipeline/request_register.py` (REQ-37 row only), regenerated outputs |
+
+**Q1 record.** Change: `pipeline/session_competition.py` adds "Division Y — same-game parlays" (prose only; no candidate, joint-probability gate not evaluated, void/push rules not recorded); `pipeline/request_register.py` REQ-37 row now states four divisions and the remaining gate; `pipeline/req_annex_2026_11_18.py` R10 text changed from "three divisions" to "four divisions (same-game parlays empty)" because that line is generated on every build and would otherwise be stale.
+
+**Sources.** The gate rule is the project brief item "Keep parlays and prop combos behind a joint-evidence gate". It is an internal requirement, not an official source, and it is labelled as such on the page. No official operator void/push source was read, so none is cited, and the page says so.
+
+**Verification.** `make build` exit 0, 0 failing checks (one intermediate failure was a table row without a source link; it was converted to prose, which is the correct form for a gate statement, not a sourced value). Second `make build` changed 0 files (fixed point). `make test`: 382 passed, 1 skipped.
+
+**Irregularities for review (unchanged, not resolved here).** The brief's counts (149 multi-player slots; 254/279 injury rows; 136-game log) and its VR-/VQ-/SG- identifiers are not reproduced in the repository (see REQ-19, REQ-33, REQ-49 and F-46 to F-48). The Houston depth chart remains unparsed (F-18). Nothing in this session was taken from a non-official source.
+
+**Not done in this session (stated, not claimed).** The remaining about 70 register items stay as recorded in `request_register.csv`, with their blocking gates. Most need official pages captured in bulk (32-club chart and injury sweep, game-centre venues, Game Book parsing, snap counts, reserve-list history), which the bash egress allow-list cannot reach and the page-read tool cannot finish in one session.
 ## Session `arena/831c3566-korea1` — 2026-11-19 final integration, verification and publish (claim)
 
 **Board read first.** The branch was pinned at `3c02fb2` (equal to `main` and `origin/main`). No sibling session holds an active claim on `pipeline/`, `data/`, the root HTML or the shared build files this session touches. Claimed the final integration scope: re-verify the committed build end to end, verify key official sources, confirm the site is clean and category-organised, publish to GitHub Pages, and record the PR and merge result here.
