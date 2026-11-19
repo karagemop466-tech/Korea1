@@ -126,7 +126,7 @@ def pdf_text(data: bytes, pages: int = 2) -> tuple[str, str]:
 
 
 def week_paths(season: int, week: int) -> str:
-    """The league's own URL for one week's schedule.
+    """The league's own URL for one week's schedule (the ``reg-<week>`` form).
 
     The form is the one the league's own game-centre records cite
     (``data/forward/official_schedule.csv`` → ``source_page``):
@@ -139,6 +139,25 @@ def week_paths(season: int, week: int) -> str:
     to read the published week out of the page instead of trusting the URL.
     """
     return f"https://www.nfl.com/schedules/{season}/by-week/reg-{week}"
+
+
+def week_path_forms(season: int, week: int) -> list[str]:
+    """The URL forms the league serves a week under.
+
+    Two forms are in use and both are cited by official records in this
+    repository: ``by-week/reg-<week>`` (the ``source_page`` column of
+    ``data/forward/official_schedule.csv``) and ``by-week/week-<week>`` (the
+    form read live by the session ``arena/831c3566-korea1`` on 2026-11-19,
+    which confirmed the Week 10 schedule with all fourteen games final).
+
+    The capture tries them in order and keeps the one whose page publishes the
+    week that was asked for.  It never assumes: the week is read out of the
+    page, and if no form publishes the requested week the capture records the
+    mismatch rather than labelling one week's fixtures with another week's
+    number.
+    """
+    return [f"https://www.nfl.com/schedules/{season}/by-week/reg-{week}",
+            f"https://www.nfl.com/schedules/{season}/by-week/week-{week}"]
 
 
 def parse_week_spec(spec: str) -> list[int]:
@@ -176,13 +195,33 @@ def main() -> int:
     fixtures: list[dict] = []
     weeks_meta: list[dict] = []
     for week in weeks:
-        url = week_paths(season, week)
-        try:
-            raw, status = http_get(url)
-        except RuntimeError as exc:
-            manifest["errors"].append(dict(url=url, stage="schedule", error=str(exc)))
+        # Try each URL form the league serves a week under and keep the one
+        # whose page publishes the week that was asked for.
+        raw = b""
+        status = 0
+        url = ""
+        html = ""
+        published = ""
+        forms_tried: list[str] = []
+        for candidate in week_path_forms(season, week):
+            forms_tried.append(candidate)
+            try:
+                body, code = http_get(candidate)
+            except RuntimeError as exc:
+                manifest["errors"].append(dict(url=candidate, stage="schedule", error=str(exc)))
+                continue
+            if code != 200 or not body:
+                manifest["errors"].append(dict(url=candidate, stage="schedule",
+                                               error=f"http status {code}"))
+                continue
+            candidate_html = body.decode("utf-8", "replace")
+            candidate_week = published_week(candidate_html)
+            raw, status, url, html = body, code, candidate, candidate_html
+            published = candidate_week
+            if str(candidate_week) == str(week):
+                break
+        if not html:
             continue
-        html = raw.decode("utf-8", "replace")
         text = html_to_text(html)
         write_raw(RAW_DIR / "schedule" / f"reg{week}.html", raw)
         nb, sh = write_gz(EVIDENCE / f"schedule/reg{week}.txt.gz", text)
@@ -190,8 +229,8 @@ def main() -> int:
         # The week the page publishes is read out of the page, not assumed
         # from the URL: the league's schedule application does not always
         # serve the week the path names.
-        published = published_week(html)
         manifest["schedule_pages"].append(dict(week=week, url=url, http_status=status,
+                                               url_forms_tried=";".join(forms_tried),
                                                published_week=published,
                                                week_matches_url=(str(week) == str(published)),
                                                raw_bytes=len(raw), raw_sha256=sha256_bytes(raw),

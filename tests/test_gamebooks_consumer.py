@@ -115,6 +115,16 @@ def test_the_capture_url_is_the_leagues_own_weekly_form():
     assert "by-week" in url
 
 
+def test_both_weekly_url_forms_are_tried_and_the_week_is_read_from_the_page():
+    """Two forms are cited by official records; the capture keeps the one that
+    publishes the week it asked for, and never assumes from the URL."""
+    forms = fetch_official_games.week_path_forms(2026, 10)
+    assert "https://www.nfl.com/schedules/2026/by-week/reg-10" in forms
+    assert "https://www.nfl.com/schedules/2026/by-week/week-10" in forms
+    assert all("/by-week/" in f for f in forms)
+    assert "/REG" not in forms, "the old form serves the current week whatever week it names"
+
+
 def test_the_game_centre_prints_its_venue_and_its_game_book_link():
     pages = sorted(RAW_CAPTURES.glob("*.html"))
     assert pages, "no committed official game-centre capture to read"
