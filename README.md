@@ -43,7 +43,9 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `price-archive.html` — opening and closing numbers we actually hold: 2011–2021 archive opens,
   archive and pinned closes, forward-ledger freezes — each row tier-labelled, each blank explained (added 2026-11-14)
 - `strategies.html` — complete candidate library and competition rules
-- `forward.html` — **forward test**: picks frozen before kickoff, settled only against official NFL.com finals (4 of 65 settled; no verdicts, no rewards)
+- `forward.html` — **forward test**: picks frozen before kickoff, settled only against official NFL.com
+  finals (**65 of 65 settled**, 14 of 14 Week 10 games, each final certified by two official documents —
+  the league's scores page and the league's own hash-pinned Game Book; 0 verdicts, 0 rewards)
 - `results-feed.html` — **one joinable table of graded outcomes**: official game-centre reads, the
   hash-verified pinned archive (flagged not re-read per row), scheduled games blank by design; 0 source
   conflicts, 18 rows spot re-read on nfl.com (added 2026-11-14)

@@ -40,6 +40,11 @@ jobs:
         run: |
           make -o injuries verify
           python -m pytest -q tests/test_availability_tracker.py tests/test_live_verify.py
+      # FI2 (arena/79a986b7-korea1, 2026-11-20): the capture must leave the tree a fixed point of its
+      # own generators, and the run must say so before it commits. A capture that commits a snapshot
+      # but not the tables derived from it is the defect this guard exists to make impossible.
+      - name: The committed tree must be a fixed point of its own generators
+        run: python tests/check_rebuild.py
       - name: Commit snapshot
         run: |
           git config user.name "availability-bot"

@@ -124,6 +124,13 @@ site: injuries review reviewall
 	$(PY) pipeline/price_archive.py
 	$(PY) pipeline/render_price_archive.py
 	$(PY) pipeline/results_feed_history.py
+	# FI3 (arena/79a986b7-korea1, 2026-11-20): the Week 10 official finals, certified by TWO official
+	# documents (the league's scores page and the league's own hash-pinned Game Book) before a single
+	# row is written. Without it 64 of 65 frozen tickets had no final and no ROI could be computed at
+	# all. Idempotent and fail-loud; reads committed files only (no network), so the build stays
+	# byte-reproducible. Must run before render_forward.py and before the register that counts them.
+	$(PY) pipeline/finals_2026_11_20.py
+	cp data/forward/week10_finals_2026_11_20.csv assets/data/week10_finals_2026_11_20.csv  # the site's copy, so the flagged page can link it
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	# GC2 (arena/7cbb2e60-korea1): gamecentre.html from the committed official game-centre /
 	# Game Book capture.  Reads data/processed/official_*.csv and the evidence manifest only
@@ -160,7 +167,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_gamebooks.py tests/test_request_register.py tests/test_reconcile_depth_charts.py tests/test_request_register_2026_11_18.py tests/test_current_snapshot_audit.py tests/test_forward_ledger.py tests/test_requirement_annex_2026_11_18.py tests/test_claim_checks.py tests/test_verified_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py tests/test_register_evidence_2026_11_18.py tests/test_reread_2026_11_19.py tests/test_session_20261119.py tests/test_gamebooks_consumer.py tests/test_dual_totals.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_gamebooks.py tests/test_request_register.py tests/test_reconcile_depth_charts.py tests/test_request_register_2026_11_18.py tests/test_current_snapshot_audit.py tests/test_forward_ledger.py tests/test_requirement_annex_2026_11_18.py tests/test_claim_checks.py tests/test_verified_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py tests/test_register_evidence_2026_11_18.py tests/test_reread_2026_11_19.py tests/test_session_20261119.py tests/test_gamebooks_consumer.py tests/test_dual_totals.py tests/test_finals_2026_11_20.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives

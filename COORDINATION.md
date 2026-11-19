@@ -4635,3 +4635,150 @@ four red runs — repaired here; next successful tracker run commits the Week-11
 F-2026-11-19-11 (the scores-page extra-week links — repaired here; the next scheduled capture must complete with
 the extras recorded). Both are also visible on the executive summary. The research verdict is unchanged: 0 of 18
 canonical strategies validated, no reward, no funding.
+
+---
+
+## Session `arena/79a986b7-korea1` — 2026-11-19/20: final integration, reproducibility repair and owner-facing consolidation (claim)
+
+**Board read first.** Every row above was read before claiming. Branch `arena/79a986b7-korea1`
+branched from `main` = `f6971b0` ("reserve-list: official snapshot 2026-11-19T19:37Z"). No branch is
+edited outside the scope below; the twelve open PRs (#19 #24 #30 #38 #47 #56 #58 #70 #73 #84 #87 #102)
+are **not** touched or closed by this session — they are dispositioned on `flagged.html`, not merged
+into this tree.
+
+**Baseline measured before any edit** (in this sandbox, `python3 -m venv .venv` + `pip install -r
+requirements.txt`):
+
+| Check | Result on the base commit `f6971b0` |
+|---|---|
+| `make build` | exit 0, **0 failing checks**, `tests/check_sources.py` 53 canonical pages / 10,111 rows, `tests/check_links.py` 63 pages |
+| `make test` (all of `tests/`) | **422 passed, 1 skipped** |
+| `git status --porcelain` after `make build` | **15 files modified — the committed tree is NOT a fixed point of its own generators** |
+
+That last cell is a measured defect, not an opinion, and it is the first item this session repairs.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| FI1 | Board claim + session log | **in progress** | `arena/79a986b7-korea1` | `COORDINATION.md` (own section only) |
+| FI2 | **Repair the non-fixed-point build.** The scheduled `reserve-list` capture commits only `data/availability/reserve/**`, so every later build rewrites two derived files that pin its newest capture: `repo-review.html` (tracked-file count + artefact mix) and `assets/data/verification_report.csv`, plus the register-evidence row counts that read `EXECUTIVE_SUMMARY.md`. Measured on `f6971b0`: 944 → 946 tracked files, and 60 rows of `register_evidence_verify_2026_11_18.csv` rewritten. Fix: the capture workflow regenerates and commits the derived files it invalidates, and `tests/check_rebuild.py` runs in CI so the class cannot return silently | **done** | `arena/79a986b7-korea1` | `.github/workflows/reserve-list.yml`, `.github/workflows/availability.yml`, `.github/workflows/verify.yml` |
+| FI3 | **Every published prediction carries its outcome, or says why not.** The brief asks for "a verified results feed so backtests and ROI can be computed at all" and for the leaderboard to be earned. A forward pick whose game has been played and whose official final is on record must show that final, the margin and a graded verdict — or an explicit blank with the reason | **done** | `arena/79a986b7-korea1` | `pipeline/finals_2026_11_20.py`, `tests/test_finals_2026_11_20.py`, `data/forward/week10_finals_2026_11_20.csv`, `Makefile` (one `site` step + one `test` module) |
+| FI4 | **Executive summary refresh** — the owner-facing document must state the current research verdict, what changed in this pass, and what is still blocked, with the official source for each claim | **done** | `arena/79a986b7-korea1` | `EXECUTIVE_SUMMARY.md` (own block), `executive-summary.html` |
+| FI5 | **Final integration + publish**: `make build` / `make test` / `check_rebuild` in a clean clone, PR → `main`, merge without waiting for approval, confirm the GitHub Pages deployment, record PR link + merge commit + Pages status here | **in progress** | `arena/79a986b7-korea1` | `COORDINATION.md`, `README.md`, `flagged.html` rows only if a finding needs one |
+
+**Non-overlap statement.** No other session on this board owns a workflow file, the forward-ledger
+grading path, or `EXECUTIVE_SUMMARY.md` beyond a dated block; sessions `arena/eeba949e-korea1`,
+`arena/7cbb2e60-korea1` and `arena/6ec7369c-korea1` are merged or recorded `done`. This session adds
+files and appends blocks; it does not renumber, re-rank or delete any other session's register row.
+
+### FI1–FI4 session log (`arena/79a986b7-korea1`, 2026-11-19/20)
+
+**Baseline measured on `f6971b0` before any edit** (this sandbox: `python3 -m venv .venv`,
+`pip install -r requirements.txt`): `make build` exit 0 with **0 failing checks**, 53 canonical pages /
+10,111 strict rows, 63 pages link-checked; `make test` **422 passed, 1 skipped**. The shell cannot reach
+`www.nfl.com` (TLS refused, `curl` 35) or `karagemop466-tech.github.io` — official pages and the live
+site are therefore read with the page-reading tool, exactly as earlier sessions recorded. GitHub API
+and `gh` work; **workflow run logs do not** (`results-receiver.actions.githubusercontent.com` is outside
+the allowlist, `EOF` on every attempt), so a red CI run cannot be read from here — it is reproduced on
+the ground instead.
+
+#### FI2 — the committed tree was not a fixed point of its own generators (measured, then repaired)
+
+A plain `make build` on the untouched base commit modified **15 tracked files**; `git stash` and rebuild
+reproduced the same 15. `tests/check_rebuild.py` already existed and already caught it — but **no
+workflow ran it**, so the drift was invisible on `main`.
+
+Root cause found by rebuilding one generator at a time: `.github/workflows/reserve-list.yml` committed
+**only** `data/availability/reserve/**`, while two derived artefacts read the newest capture — the
+tracked-file inventory (`repo_inventory.csv`, 944→946 files) and `repo-review.html`. Each bot capture
+therefore moved counts that nothing regenerated. The same class of defect, one layer deeper: several
+registers count **tracked files**, so a build that adds a file changes the counts it just wrote, and a
+single pass can never converge.
+
+Repaired:
+* `verify.yml` — build **twice** (documented reason: self-referential counts), then `check_rebuild.py`,
+  then a strict `git diff --quiet`, so residual drift fails the build instead of shipping;
+* `reserve-list.yml` — rebuild the derived tables, run `check_rebuild.py`, `git add -A`;
+* `availability.yml` — `check_rebuild.py` as a guard before its commit.
+
+Verified: two consecutive builds now leave `git status` **empty** and `check_rebuild.py` reports
+`Rebuild matches committed outputs (0 changed files compared)`. This session hit the same two-pass
+class itself twice while adding files; both times the second build converged and the guard was left
+green rather than waived.
+
+#### FI3 — a verified final for every Week 10 fixture, from two official documents
+
+**The gap, measured before the fix:** `data/forward/official_results.csv` held exactly **one** Week 10
+final (`2026_10_WAS_NYG`). Of the **65** picks frozen before kickoff, **64** had no official final, so
+they sat `OPEN`: no accuracy, no Brier score, no ROI and no CLV could be computed for them. This is the
+literal blocker behind "a verified results feed so backtests and ROI can be computed at all".
+
+`pipeline/finals_2026_11_20.py` (new) accepts a final only when **two independent official documents**
+print the same thing:
+
+| Document | What is read | Provenance |
+|---|---|---|
+| The league's Week 10 scores page | the printed section heading, the two clubs and the two scores, transcribed verbatim | <https://www.nfl.com/scores/2026/week-10>, read 2026-11-20 with the page-reading tool |
+| The league's own Game Book PDF | the printed `VISITOR:` / `HOME:` line and its `Total` column | `data/evidence/official_games/gamebooks/<slug>-2026-reg-10.p1.txt.gz` — the bytes the scheduled capture committed, hashed in the repository |
+
+The module raises and **writes nothing** on: a missing Game Book, a Game Book for a different fixture
+(club identity is checked *before* the scores, so a numeric coincidence cannot pass), any score
+disagreement, an equal score, a fixture set that is not 14, or a score already in the file that the new
+read would change. Twelve tests in `tests/test_finals_2026_11_20.py` pin these, including two mutation
+controls (flip one point → refuses; swap the club name → refuses) and an overwrite control.
+
+**Result, all three numbers read back from the files the engine wrote:**
+
+| | Before | After |
+|---|---|---|
+| Week 10 official finals published | 1 | **14** |
+| Frozen tickets settled against an official final | 1 | **65 of 65** |
+| Fixtures where both official documents agree | — | **14 of 14** |
+| Strategies validated / rewards awarded | 0 / none | **0 / none** |
+
+Third-surface agreement: all 14 finals also match `data/results/verified_results.csv`, which a
+different module builds from a different capture and which feeds `results-feed.html` — checked in a
+test, so two published tables cannot silently disagree.
+
+**A source conflict found and left flagged.** `forward.html` states the first kickoff it prices is
+`2026-11-13T01:15:00Z` (WAS@NYG). The committed forward schedule records `8:15 PM ET` on 2026-11-12.
+The two cannot both be right — one is off by a day (probable cause: a `PM` read as `AM`). This session
+did **not** change either value: the schedule times are carried over **and labelled** with the page
+they came from, and the discrepancy is recorded as a finding for review rather than silently repaired.
+The pre-kickoff conclusion survives either way: the latest plausible kickoff (`PIT@CIN`, 8:20 PM ET on
+2026-11-15) is still ~40 h after the freeze anchor of `2026-11-12T13:28:07Z`.
+
+**What is deliberately not claimed.** 65 settled tickets across 14 games is one week. No verdict, no
+p-value, no ROI claim and no reward is derived from it; the win/loss line the summary prints is
+arithmetic, not skill. Kickoff times are labelled, not re-asserted. The Game Book totals are read from
+committed bytes, not re-typed from the PDF by eye.
+
+#### FI4 — executive summary
+
+`EXECUTIVE_SUMMARY.md` (generated by `pipeline/render_summary.py`) gains a dated block whose every
+number is read back from `data/forward/*.csv`, and one **stale sentence was corrected**: the forward
+table still said the only settlement was "WAS 24–21 NYG" while it already reported 65 of 65. It now
+names both official documents and the comparison file. `0 of 18 validated, no reward` is unchanged and
+is not softened by the new record.
+
+#### FI5 — integration record: main moved under this branch, and the merge is verified, not assumed
+
+While this session was working, `main` advanced from `f6971b0` to `1c8a7a1` (PR #128, session
+`arena/35c0fd93-korea1`, plus the 2026-11-19T20:46Z Game Book capture). Two things follow, and both were
+handled explicitly rather than asserted:
+
+1. **The conflict was an append collision, not a disagreement.** Both sessions appended a section to the
+   end of this file. The rebase kept **both**: `arena/0dc8c41e-korea1`'s integration/reproducibility audit
+   (PR #124 — that session reached the same fixed-point finding independently, and its history is
+   preserved verbatim) and this session's section. Nothing was renumbered, rewritten or dropped.
+   The generated HTML conflicts were resolved by rebuilding from the merged inputs, so no page is a
+   human-merged artefact: 58 derived files changed on the merged tree and were regenerated wholesale.
+2. **Verification was re-run on the merged tree, not carried over.** Measured after the rebase and a full
+   regeneration: `make build` exit 0 with **0 failing checks**, `tests/check_sources.py` **53 canonical
+   pages / 10,124 strict rows**, `tests/check_links.py` **63 pages**, `make test` **442 passed**, and
+   `tests/check_rebuild.py` **"Rebuild matches committed outputs (0 changed files compared)"** with an
+   empty `git status` — i.e. the merged tree is a fixed point of its own generators, which the base commit
+   was not.
+
+The research verdict is unchanged and is not softened anywhere: **0 of 18 strategies validated, no
+reward, no funding.** What changed is that the evidence those verdicts rest on is now (a) complete for
+Week 10 and (b) reproducible.

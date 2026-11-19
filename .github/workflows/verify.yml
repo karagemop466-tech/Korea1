@@ -40,9 +40,21 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Verify pinned inputs and rebuild
+      - name: Verify pinned inputs — pass 1 (a generation run)
+        # Two passes by construction, not by accident: a handful of registers count tracked files,
+        # so a build that adds files changes the counts it just wrote. Pass 1 generates the files,
+        # pass 2 converges the self-referential counts. `check_rebuild.py` below is what proves the
+        # second pass reached a fixed point -- without it, drift like the 2026-11-19 reserve-list
+        # capture (which committed a snapshot but not the tables derived from it) is invisible.
+        run: make build
+      - name: Verify pinned inputs — pass 2 (self-referential counts converge)
         run: make build
       - name: Regression tests
         run: make test
-      - name: Verify committed generated outputs
+      - name: The committed tree must be a fixed point of its own generators
         run: python tests/check_rebuild.py
+      - name: A rebuild must change nothing at all
+        run: |
+          git diff --quiet && echo "no drift: committed outputs equal a fresh build"
+          git diff --stat
+          git diff --quiet

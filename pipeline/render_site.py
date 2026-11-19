@@ -1521,6 +1521,7 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_19_gc_section()
     body += _flagged_2026_11_19_rollover_section()
     body += _flagged_2026_11_19_dt_section()
+    body += _flagged_2026_11_20_fi_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1984,6 +1985,38 @@ def _flagged_2026_11_15_section() -> str:
             "Details and the brief tracker: <a href=\"brief-2026-11-15.html\">2026-11-15 brief</a>.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Source"],
                     caption="Session findings with an official source") + listing + "</section>")
+
+
+def _flagged_2026_11_20_fi_section() -> str:
+    """FI1-FI4 (arena/79a986b7-korea1, 2026-11-20): findings from the finals certification pass.
+
+    Read from data/integration/flagged_2026_11_20.csv so a reviewer can change a finding without
+    touching this renderer. Every row carries an official or primary source, per the house rule.
+    """
+    fl = _read_integration("flagged_2026_11_20.csv")
+    if fl is None or not len(fl):
+        return ""
+    rows = [[e(r.id), e(r.severity),
+             e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+             src_link(r.source_url, r.source_label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the 2026-11-20 finals pass</h2>"
+            "<p>Week 10's official finals were certified by two official documents before any row was "
+            "written; the comparison is published as "
+            "<a href=\"assets/data/week10_finals_2026_11_20.csv\">week10_finals_2026_11_20.csv</a>. The "
+            "rows below are the findings that pass leaves open and that have an official or primary "
+            "source to point at.</p>"
+            "<p><strong>F-2026-11-20-02 · Medium · reproducibility, repaired in the workflow and still "
+            "being watched.</strong> The committed tree was not a fixed point of its own generators: a "
+            "plain <code>make build</code> on <code>f6971b0</code> modified 15 tracked files, and the "
+            "verify workflow never ran the repository's own <code>tests/check_rebuild.py</code>, so the "
+            "drift could not be seen. One source was the reserve-list capture committing a snapshot but "
+            "not the two derived tables that read it. <code>verify.yml</code> now builds twice, runs "
+            "<code>check_rebuild.py</code> and fails on any residual <code>git diff</code>; both capture "
+            "workflows run the same check before committing. <em>This row is printed as text, not as a "
+            "table row, because a repository-process fact has no official source to cite — the same rule "
+            "F-2026-11-19-09 follows here.</em></p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                    caption=f"{len(rows)} findings from the 2026-11-20 finals pass") + "</section>")
 
 
 def _flagged_2026_11_19_register_section() -> str:
