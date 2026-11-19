@@ -111,11 +111,11 @@ def flags(stats: dict) -> pd.DataFrame:
         "2026-11-18 capture."
     )
     f53 = (
-        "Repaired in this session: data/availability/reserve/latest.csv is a rolling file. Once the 2026-11-19 "
-        "capture overwrote it, the code that labelled it as the 2026-11-18 capture (pipeline/session_20261118.py, "
-        "pipeline/req_annex_2026_11_18.py) and tests/test_reconcile_depth_charts.py failed on main. The 2026-11-18 "
-        "comparisons are now pinned to history/2026-11-18T044201Z, and the newest capture is reported under its own "
-        "capture time."
+        "Repaired: data/availability/reserve/latest.csv is a rolling file. Once the 2026-11-19 capture overwrote it, "
+        "code that labelled it as the 2026-11-18 capture and tests/test_reconcile_depth_charts.py failed on main "
+        "(base commit 311d9b5). The sibling session's commit 37816e4 pins compare_reserve() to "
+        "history/2026-11-18T044201Z and reports the rolling file as 'recapture'. This branch pins the remaining reader "
+        "(the F-48 narrative in pipeline/session_20261118.py facts()) to the same immutable capture."
     )
     rows = [
         dict(id="F-52", severity="High · open",

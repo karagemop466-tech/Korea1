@@ -34,8 +34,9 @@ def test_reconciliation_utility_is_read_only_and_checks_same_date_capture():
     assert before == {path: _sha256(path) for path in PROTECTED}
 
 
-def test_reserve_spotcheck_separates_the_cited_historical_capture_from_latest():
+def test_reserve_spotcheck_uses_the_named_immutable_captures_not_rolling_latest():
     sys.path.insert(0, str(ROOT / "pipeline"))
+    import pandas as pd
     import session_20261118 as session
 
     rows, stats = session.compare_reserve()
@@ -43,16 +44,17 @@ def test_reserve_spotcheck_separates_the_cited_historical_capture_from_latest():
     assert stats["historical"]["both"] == 17
     assert stats["historical"]["live_only"] == 8
     assert stats["historical"]["capture_only"] == 8
-    assert stats["latest"]["label"] == "2026-11-18T04:42:01Z capture"
-    assert stats["latest"]["both"] == 25
-    assert stats["latest"]["live_only"] == 0
-    assert stats["latest"]["capture_only"] == 0
-    # The rolling latest.csv now holds the 2026-11-19 capture: it is reported under its own
-    # capture time, never under the 2026-11-18 label.
-    assert stats["newest"]["label"] == "2026-11-19T04:30:02Z capture (latest.csv)"
-    assert stats["newest"]["both"] == 21
+    assert stats["recapture"]["label"] == "2026-11-18T04:42:01Z capture"
+    assert stats["recapture"]["both"] == 25
+    assert stats["recapture"]["live_only"] == 0
+    assert stats["recapture"]["capture_only"] == 0
+
+    # The scheduled job has advanced the rolling pointer since the comparison was
+    # registered. This fixture makes accidental reuse of latest.csv observable.
+    rolling = pd.read_csv(ROOT / "data" / "availability" / "reserve" / "latest.csv",
+                          dtype=str, keep_default_na=False)
+    assert rolling.capture_utc.max() > "2026-11-18T04:42:01Z"
     assert {row["check"] for row in rows} == {
         "reserve list vs 2026-11-17T19:59:57Z capture",
         "reserve list vs 2026-11-18T04:42:01Z capture",
-        "reserve list vs 2026-11-19T04:30:02Z capture (latest.csv)",
     }
