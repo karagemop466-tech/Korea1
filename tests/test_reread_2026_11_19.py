@@ -39,3 +39,16 @@ def test_findings_have_official_links_and_unique_ids():
 def test_rolling_reserve_file_is_not_used_as_a_dated_reference():
     src = (ROOT / "pipeline/session_20261118.py").read_text()
     assert "reserve\" / \"latest.csv\"" not in src.split("def compare_reserve")[1].split("def ")[0]
+
+
+def test_injury_comparison_is_pinned_to_the_dated_capture():
+    """W1 source-level guard (same class as the reserve guard above): the 2026-11-19
+    injury rows were read from the WEEK 10 report, so the comparator must read the
+    dated Week-10 capture folder — never the rolling injuries.csv, which the
+    availability tracker overwrites with the newest week (the Week-11 rollover made
+    four scheduled availability runs red through exactly this defect class)."""
+    src = (ROOT / "pipeline/reread_2026_11_19.py").read_text()
+    assert 'INJ = ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv"' in src
+    body = src.split("def compare", 1)[1].split("\ndef ", 1)[0]
+    assert '"availability" / "injuries.csv"' not in body and "latest.csv" not in body
+    assert (ROOT / "data/availability/history/2026-11-18/injuries.csv").exists()

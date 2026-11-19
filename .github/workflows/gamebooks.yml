@@ -15,6 +15,14 @@ name: Official game centre and Game Book capture
 # the fixture each abort the run with exit 2 — no evidence is written and the
 # workflow goes red instead of committing a blank.
 #
+# Same-week cross-check (W1, arena/35c0fd93-korea1, 2026-11-19): after the league
+# flips to a new week, the scores page for a PAST week still lists that week's
+# fixtures but its HTML also carries the current week's /games/ links — measured
+# on the failing runs 44555092023/44556979069 ("only schedule: []; only scores:
+# [13 reg-11 slugs]").  The cross-check therefore compares slugs OF THE REQUESTED
+# WEEK only and records the extra-week links in the manifest; every same-week
+# disagreement, and the per-slug schedule-week check, stay fatal.
+#
 # The build sandbox cannot reach www.nfl.com or static.www.nfl.com (TLS refused,
 # measured 2026-11-18), so this runs on a GitHub-hosted runner and commits what it
 # captured: the flattened official text, its SHA-256, and the parsed rows.

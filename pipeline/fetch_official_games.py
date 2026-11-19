@@ -101,6 +101,51 @@ def book_week_slug(slug: str, week: object) -> bool:
     return not m or str(int(m.group(1))) == str(week)
 
 
+def slug_names_week(slug: str, week: object) -> bool:
+    """True only when a ``-reg-<n>`` slug names exactly ``week``.
+
+    A slug with no ``-reg-<n>`` suffix names no week at all and is therefore excluded
+    from a same-week comparison: it cannot be attributed to any week.
+    """
+    m = re.search(r"-reg-(\d+)$", str(slug or ""))
+    return bool(m) and str(int(m.group(1))) == str(week)
+
+
+def scores_crosscheck_verdict(score_slugs: set[str], sched_slugs: set[str],
+                              week: object) -> dict:
+    """Compare the schedule and scores fixture sets **for the requested week only**.
+
+    Measured source behaviour (runs 44555092023 / 44556979069, 2026-11-19, from the
+    fail-loud ``::error::`` annotations): once the league flips to a new week, the
+    scores page for a PAST week still lists that week's fixtures, but the page's HTML
+    also carries the current week's ``/games/`` links — the annotations read
+    ``only schedule: []`` (the schedule side contributed nothing foreign) against
+    ``only scores: [13 × 2026-reg-11 slugs]``.  The raw whole-page comparison therefore
+    fails every run after the flip, while the comparison this cross-check exists for —
+    same-week fixture integrity, the F-2026-11-19-08 lesson — is unaffected.
+
+    Both sets are reduced to slugs that name the requested week before comparing; the
+    ignored extra-week links are returned so the manifest can record them.  Every
+    same-week disagreement stays fatal:
+
+    * the schedule page serving another week's fixtures is already caught per-slug by
+      ``book_week_slug`` upstream, and a same-week shortfall still fires here;
+    * the scores page listing no fixture of the requested week at all (the redirect
+      case) leaves ``score_week`` empty against a populated schedule set — fatal.
+    """
+    score_week = {s for s in score_slugs if slug_names_week(s, week)}
+    sched_week = {s for s in sched_slugs if slug_names_week(s, week)}
+    extras = sorted(score_slugs - score_week)
+    if score_week != sched_week:
+        return dict(
+            fatal=(f"week {week}: schedule page and scores page disagree on "
+                   f"the fixture set of week {week} (only schedule: "
+                   f"{sorted(sched_week - score_week)}; only scores: "
+                   f"{sorted(score_week - sched_week)})"),
+            extra_week_links=extras)
+    return dict(fatal="", extra_week_links=extras)
+
+
 def date_fragment_printed(value: str) -> bool:
     """The printed date line carries the league's own M/D/YYYY date."""
     return bool(re.search(r"\d{1,2}/\d{1,2}/\d{4}", str(value or "")))
@@ -341,12 +386,14 @@ def main() -> int:
                 sraw.decode("utf-8", "replace")))
             sched_slugs = {str(r.get("official_url", "")).rstrip("/").rsplit("/", 1)[-1]
                            for r in rows}
-            if score_slugs != sched_slugs:
-                only_sched = sorted(sched_slugs - score_slugs)
-                only_scores = sorted(score_slugs - sched_slugs)
-                die(f"week {week}: schedule page and scores page disagree on "
-                    f"the fixture set (only schedule: {only_sched}; only "
-                    f"scores: {only_scores})")
+            # F-2026-11-19-08 lesson: one page can disagree with another about which
+            # fixtures exist. Since the league's week flip a past-week scores page also
+            # links the *current* week's games (CI runs 44555092023 / 44556979069), so the
+            # comparison is reduced to slugs that name the requested week; every same-week
+            # disagreement stays fatal and the ignored extras are recorded, not failed on.
+            verdict = scores_crosscheck_verdict(score_slugs, sched_slugs, week)
+            if verdict["fatal"]:
+                die(verdict["fatal"])
             # F-2026-11-19-W12 (arena/7134ec74-korea1): the bytes used to be thrown away,
             # so settlement depended on the schedule page alone.  Keep them, and parse the
             # printed finals out of the same document that proves the fixture set.
@@ -387,7 +434,11 @@ def main() -> int:
             manifest.setdefault("scores_finals", []).extend(scores_rows)
             manifest["scores_pages"].append(dict(
                 week=week, url=scores_url, http_status=scode,
-                fixtures=len(score_slugs), finals_read=len(parsed_finals),
+                fixtures=len(score_slugs),
+                fixtures_for_week=len(score_slugs) - len(verdict["extra_week_links"]),
+                extra_week_links=len(verdict["extra_week_links"]),
+                extra_week_slugs_sample=verdict["extra_week_links"][:5],
+                finals_read=len(parsed_finals),
                 raw_bytes=len(sraw), raw_sha256=sha256_bytes(sraw),
                 text_bytes=nb_s, text_sha256=sh_s,
                 html_bytes=hb_s, html_sha256=hh_s,

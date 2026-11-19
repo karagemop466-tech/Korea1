@@ -57,6 +57,31 @@ availability graph is complete for the fixtures read; the actual side is blank o
 because no official Game Book has been captured yet, and each such row says so.
 
 
+## Update - 2026-11-19 (`arena/35c0fd93-korea1`): the Week-11 rollover repair (W1)
+
+**Both scheduled capture chains went red when the league flipped its pages to Week 11, and
+neither published wrong data.** The availability tracker failed four consecutive runs at the
+rebuild step because a comparator pinned to the 2026-11-18 official read derived its KC
+omission arithmetic from the **rolling** capture (reproduced offline: one added KC row raises
+`SystemExit("KC omission count is 2, expected 1")`); every dated comparator now reads the
+dated `history/2026-11-18/` snapshot, guarded by source-level tests. The Game Book capture
+failed twice on its own fail-loud contract because the scores-page cross-check collected the
+current week's links that the league's post-flip scores pages carry beside the requested
+week's fixtures (the runs' own annotations record `only schedule: []; only scores:
+[13 reg-11 slugs]`); the cross-check now compares same-week slugs only, records the extras,
+and keeps every same-week disagreement fatal. At repair time the rolling capture and the
+dated snapshot hold the same rows: yes.
+
+| Capture reference | Rows | KC rows | Week label |
+|---|---|---|---|
+| Dated snapshot `history/2026-11-18` (the pinned comparator reference) | 347 | 13 | WEEK 10 |
+| Rolling top-level capture (the tracker overwrites it with the newest week) | 347 | 13 | WEEK 10 |
+
+The research verdict is unchanged: no strategy is validated, no reward is authorized, and no
+published research number moved — the repair changes which capture a dated comparison reads,
+not any value.
+
+
 ## Update — 2026-11-19 (`arena/db0e98e2-korea1`)
 
 - **Decision unchanged.** Still no validated strategy and no reward. Nothing in this update adds evidence for an edge.

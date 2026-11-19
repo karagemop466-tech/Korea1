@@ -327,6 +327,50 @@ def _cr1_block():
     return '\n'.join(L)
 
 
+def _w1_block():
+    """W1 (arena/35c0fd93-korea1, 2026-11-19) - the Week-11 rollover repair.
+
+    Counts read from the committed artefacts and the failing runs' own records; nothing retyped.
+    """
+    import pandas as pd
+    dated_inj = ROOT / 'data' / 'availability' / 'history' / '2026-11-18' / 'injuries.csv'
+    rolling_inj = ROOT / 'data' / 'availability' / 'injuries.csv'
+    if not (dated_inj.exists() and rolling_inj.exists()):
+        return ''
+    dated = pd.read_csv(dated_inj, dtype=str, keep_default_na=False)
+    rolling = pd.read_csv(rolling_inj, dtype=str, keep_default_na=False)
+    same = (dated_inj.read_bytes() == rolling_inj.read_bytes())
+    L = []
+    A = L.append
+    A('## Update - 2026-11-19 (`arena/35c0fd93-korea1`): the Week-11 rollover repair (W1)')
+    A('')
+    A('**Both scheduled capture chains went red when the league flipped its pages to Week 11, and')
+    A('neither published wrong data.** The availability tracker failed four consecutive runs at the')
+    A('rebuild step because a comparator pinned to the 2026-11-18 official read derived its KC')
+    A('omission arithmetic from the **rolling** capture (reproduced offline: one added KC row raises')
+    A('`SystemExit("KC omission count is 2, expected 1")`); every dated comparator now reads the')
+    A('dated `history/2026-11-18/` snapshot, guarded by source-level tests. The Game Book capture')
+    A('failed twice on its own fail-loud contract because the scores-page cross-check collected the')
+    A('current week\'s links that the league\'s post-flip scores pages carry beside the requested')
+    A('week\'s fixtures (the runs\' own annotations record `only schedule: []; only scores:')
+    A('[13 reg-11 slugs]`); the cross-check now compares same-week slugs only, records the extras,')
+    A('and keeps every same-week disagreement fatal. At repair time the rolling capture and the')
+    A('dated snapshot hold the same rows: ' + ('yes' if same else 'no (the tracker has rolled on)') + '.')
+    A('')
+    A('| Capture reference | Rows | KC rows | Week label |')
+    A('|---|---|---|---|')
+    A('| Dated snapshot `history/2026-11-18` (the pinned comparator reference) | ' + str(len(dated))
+      + ' | ' + str(int((dated.team == 'KC').sum())) + ' | ' + str(dated.week.max() if len(dated) else '') + ' |')
+    A('| Rolling top-level capture (the tracker overwrites it with the newest week) | ' + str(len(rolling))
+      + ' | ' + str(int((rolling.team == 'KC').sum())) + ' | ' + str(rolling.week.max() if len(rolling) else '') + ' |')
+    A('')
+    A('The research verdict is unchanged: no strategy is validated, no reward is authorized, and no')
+    A('published research number moved — the repair changes which capture a dated comparison reads,')
+    A('not any value.')
+    A('')
+    return '\n'.join(L)
+
+
 def _gamebooks_block():
     """E2-E5 (arena/eeba949e-korea1) - the official Game Book evidence layer.
 
@@ -425,6 +469,7 @@ def main():
     _cs5 = _cs5_block()
     _q2 = _current_status_2026_11_15_block()
     _gb = _gamebooks_block()
+    _w1 = _w1_block()
     text=f'''# Executive summary — NFL Line Lab
 
 Current status refreshed: 2026-11-15. Pinned research inputs: `{src['upstream']['commit_sha']}`.
@@ -442,6 +487,8 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 {_q2}
 
 {_gb}
+
+{_w1}
 
 ## Update — 2026-11-19 (`arena/db0e98e2-korea1`)
 
