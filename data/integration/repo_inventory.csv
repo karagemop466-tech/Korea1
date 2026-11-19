@@ -598,6 +598,10 @@ data/live/spotcheck_2026_11_18_b/nfl_reserve_list_2026_11.md,1-10 KB,Data,AUTHOR
 data/live/spotcheck_2026_11_18_b/spotcheck_rows.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/register_evidence_20261118.py; pipeline/render_site.py; pipeline/req_annex_2026_11_18.py,NFL scores,https://www.nfl.com/scores/
 data/live/spotcheck_2026_11_19/reserve_list_2026_11_live_read.csv,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/session_20261119.py,NFL scores,https://www.nfl.com/scores/
 data/live/spotcheck_2026_11_19/spotcheck_2026_11_19.csv,1-10 KB,Data,SOURCE · read and cross-checked,—,NFL scores,https://www.nfl.com/scores/
+data/live/spotcheck_2026_11_19_week10/game_centre_headers.csv,under 1 KB,Data,SOURCE · read and cross-checked,—,NFL scores,https://www.nfl.com/scores/
+data/live/spotcheck_2026_11_19_week10/manifest.json,under 1 KB,Data,SOURCE · read and cross-checked,pipeline/claim_checks_20261118.py; pipeline/current_snapshot_audit.py; pipeline/fetch_availability.py,NFL scores,https://www.nfl.com/scores/
+data/live/spotcheck_2026_11_19_week10/scores_page_byes.csv,under 1 KB,Data,SOURCE · read and cross-checked,—,NFL scores,https://www.nfl.com/scores/
+data/live/spotcheck_2026_11_19_week10/scores_page_rows.csv,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/settle_week10_2026_11_19.py,NFL scores,https://www.nfl.com/scores/
 data/live/suggestions_consolidated.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/render_live.py; pipeline/review_consolidated.py,NFL scores,https://www.nfl.com/scores/
 data/live/verification_summary.json,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/live_verify.py; pipeline/live_verify_depth.py; pipeline/render_live.py,NFL scores,https://www.nfl.com/scores/
 data/prices/price_snapshot_coverage.csv,under 1 KB,Data,SOURCE · read and cross-checked,pipeline/price_annex.py; pipeline/price_snapshots.py; pipeline/render_forward.py,NFL scores,https://www.nfl.com/scores/
@@ -834,6 +838,7 @@ pipeline/session_common.py,1-10 KB,Source code,SOURCE · executed by make build 
 pipeline/session_competition.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile; pipeline/demotion_register.py; pipeline/register_evidence_20261118.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/session_decide.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile; pipeline/session_decide.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/session_review.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile; pipeline/render_site.py; pipeline/session_review.py,NFL scores,https://www.nfl.com/scores/
+pipeline/settle_week10_2026_11_19.py,10-100 KB,Source code,SOURCE · executed by make build / make test,pipeline/render_forward.py; pipeline/render_summary.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/signal_staking.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile; pipeline/demotion_rules.py; pipeline/request_register.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/stats_tools.py,1-10 KB,Source code,SOURCE · executed by make build / make test,pipeline/request_register.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/strategies.py,10-100 KB,Source code,SOURCE · executed by make build / make test,pipeline/decision_readiness.py; pipeline/forward_ledger.py; scripts/03_strategies.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
@@ -938,6 +943,7 @@ tests/test_reread_2026_11_19.py,1-10 KB,Test,SOURCE · executed by make build / 
 tests/test_reserve_list.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/request_register_2026_11_18.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_review_consolidated.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL scores,https://www.nfl.com/scores/
 tests/test_review_registers.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL scores,https://www.nfl.com/scores/
+tests/test_scores_capture.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/render_forward.py; pipeline/render_summary.py,NFL scores,https://www.nfl.com/scores/
 tests/test_session_20261119.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_verified_register.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_vigfree_decomposition.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,"White (2000), Econometric Society",https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping
