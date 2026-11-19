@@ -1,9 +1,19 @@
 name: Official game centre and Game Book capture
 
 # Reads the league's own documents with no manual input:
-#   https://www.nfl.com/schedules/<season>/REG<week>   (the published schedule)
-#   https://www.nfl.com/games/<slug>                  (the fixture's game centre)
-#   the Game Book PDF the game centre links            (lineups, inactives, conditions)
+#   https://www.nfl.com/schedules/<season>/by-week/week-<n>  (the week-selecting schedule;
+#       the older /schedules/<season>/REG<week> path was measured 2026-11-19 to ignore the
+#       week — flag F-2026-11-19-08 — so it is no longer used)
+#   https://www.nfl.com/scores/<season>/week-<n>             (independent fixture-set cross-check)
+#   https://www.nfl.com/games/<slug>                         (the fixture's game centre)
+#   the Game Book PDF the game centre links                   (lineups, inactives, conditions)
+#
+# Fail-loud contract (REQ-63, repaired 2026-11-19 by session arena/7cbb2e60-korea1):
+# a week with 0 fixtures, a slug whose week disagrees with the request, a
+# schedule/scores fixture-set disagreement, a blank venue, a finished fixture
+# with no Game Book link, or a Game Book whose printed matchup does not match
+# the fixture each abort the run with exit 2 — no evidence is written and the
+# workflow goes red instead of committing a blank.
 #
 # The build sandbox cannot reach www.nfl.com or static.www.nfl.com (TLS refused,
 # measured 2026-11-18), so this runs on a GitHub-hosted runner and commits what it

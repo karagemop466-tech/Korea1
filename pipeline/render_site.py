@@ -57,6 +57,9 @@ NAV_GROUPS = [
         ("results-feed.html", "Verified results feed"),
         ("correlation-official.html", "Correlations (n on every row)"),
         ("replacement-depth.html", "Replacement depth"),
+        # GC2 (arena/7cbb2e60-korea1, 2026-11-19): venue per fixture from the official
+        # game centre; starters / Not Active from the official Game Book.
+        ("gamecentre.html", "Game centre & Game Books"),
     ]),
     ("Price it · origination", [
         ("origination.html", "Fair / market / difference"),
@@ -461,6 +464,7 @@ questions a decision actually asks.</p>
 <a class="minicard" href="correlations.html"><strong>Correlations & parlays</strong><span>Joint probabilities, leg dependence and settlement rules.</span></a>
 <a class="minicard" href="props.html"><strong>Player props</strong><span>Calculated research lines, combo design and missing price evidence.</span></a>
 <a class="minicard" href="audit.html"><strong>Official-source audit</strong><span>Game-level NFL.com comparisons and provenance checks.</span></a>
+<a class="minicard" href="gamecentre.html"><strong>Game centre & Game Books</strong><span>Venue per fixture from the official game centre; starters, Not Active and Did Not Play from the official Game Book — one link and one SHA-256 per captured document.</span></a>
 <a class="minicard" href="competition.html"><strong>Competition &amp; rewards</strong><span>Rules, the reward ladder, the luck-removal battery and the standings.</span></a>
 <a class="minicard" href="repo-review.html"><strong>Repository review</strong><span>Every file inventoried, official-source checks and the irregularity register.</span></a>
 <a class="minicard" href="flagged.html"><strong>Flagged for review</strong><span>Every material limitation, with a source and next action.</span></a>
@@ -1354,6 +1358,7 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_18_b_section()
     body += _flagged_2026_11_19_section()
     body += _flagged_2026_11_19_register_section()
+    body += _flagged_2026_11_19_gc_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1829,6 +1834,48 @@ def _flagged_2026_11_19_register_section() -> str:
             "captures. The read and the comparison are in <code>data/live/spotcheck_2026_11_19/</code>.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
                     caption=f"{len(rows)} findings from the 2026-11-19 session") + "</section>")
+
+
+def _flagged_2026_11_19_gc_section() -> str:
+    """GC1/GC3 (arena/7cbb2e60-korea1, 2026-11-19): the schedule-capture defects.
+
+    Row F-2026-11-19-08 carries an official source (the by-week schedule page
+    that *does* select the week).  The second finding is a repository-process
+    fact — a capture that published a blank while exiting 0 — so, per the
+    house rule, it is printed as text, never as an unsourced table row.
+    """
+    rows = [[
+        "F-2026-11-19-08", "High · repair shipped, runner recapture pending",
+        "The capture URL <code>/schedules/&lt;season&gt;/REG&lt;week&gt;</code> did not select the week "
+        "for the capture client: the committed REG9 and REG10 evidence files were byte-identical "
+        "(raw SHA-256 <code>6ad52b574dd3f6c8…</code>, text SHA-256 <code>0e15c190a005f82c…</code>, "
+        "2,291,069 raw bytes each) and both contained Week-11 fixture cards (<code>*-2026-reg-11</code>) "
+        "while labelled weeks 9 and 10. The repaired capture reads the by-week URL, requires every "
+        "fixture slug to print the requested week, and cross-checks the fixture set against the week's "
+        "scores page before anything is written. Superseded bytes are retained under "
+        "<code>data/evidence/official_games/superseded/</code>; the originals remain in git history at "
+        "commit <code>3c02fb2</code>. Next: confirm the scheduled runner capture commits genuine "
+        "week-selecting evidence, then close this row.",
+        src_link("https://www.nfl.com/schedules/2026/by-week/week-10",
+                 "NFL by-week schedule (week 10)"),
+    ]]
+    table_html = table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                        caption="1 schedule-capture finding with an official source")
+    prose = (
+        "<strong>F-2026-11-19-09</strong> (Medium · repaired on this branch) — the 2026-11-19 "
+        "gamebooks run committed <code>game_centres: []</code> and <code>game_books: []</code> while "
+        "exiting 0: a blank capture published as a success, because <code>parse_schedule_page</code> "
+        "returned 0 rows on relative hrefs and nothing pinned the output. The capture now fails with "
+        "exit 2 and writes no evidence when a week yields 0 fixtures, a slug's week disagrees with "
+        "the request, the schedule and scores fixture sets differ, a venue prints blank, a finished "
+        "fixture has no Game Book link, or a Game Book's printed matchup does not match the fixture. "
+        "No official source exists for a repository-process fact, so this row is text, not a table row. "
+        "Next: a deliberately empty week must now fail the run — verify on the next scheduled capture.")
+    return ("<section><h2>Findings from the 2026-11-19 game-centre capture repair</h2>"
+            "<p>The official schedule/game-centre/Game Book capture was repaired after the committed "
+            "evidence showed the week was not being selected (see also "
+            "<a href=\"gamecentre.html\">gamecentre.html</a> for the page this feeds).</p>"
+            + table_html + f"<p>{prose}</p></section>")
 
 
 def _flagged_2026_11_18b_section() -> str:

@@ -116,6 +116,11 @@ site: injuries review reviewall
 	$(PY) pipeline/render_price_archive.py
 	$(PY) pipeline/results_feed_history.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
+	# GC2 (arena/7cbb2e60-korea1): gamecentre.html from the committed official game-centre /
+	# Game Book capture.  Reads data/processed/official_*.csv and the evidence manifest only
+	# (no network), so `make build` stays byte-reproducible; empty-state safe before the first
+	# runner capture.
+	$(PY) pipeline/render_gamebooks.py
 	$(PY) pipeline/render_review.py
 	$(PY) pipeline/render_summary.py
 	$(PY) pipeline/render_readiness.py
