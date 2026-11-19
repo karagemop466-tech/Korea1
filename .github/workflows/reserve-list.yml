@@ -39,3 +39,49 @@ jobs:
           git commit -m "reserve-list: official snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+      # W5 (arena/3e95bcb7-korea1, 2026-11-19): a new dated reserve capture
+      # changes counts several derived registers print (repo_inventory file
+      # rows, register_evidence reserve_captures / newest-capture stamp, the
+      # "(N entries)" evidence strings). Pushes made with GITHUB_TOKEN do not
+      # trigger verify.yml (irregularity F-47), so without this step every
+      # capture silently re-drifts main and the next human PR fails
+      # check_rebuild (measured 2026-11-19 after capture f6971b0: 13 derived
+      # files stale). The capture above is already pushed when this runs, so
+      # a rebuild failure can never lose a capture — it only turns the run
+      # red with the failing command in an annotation.
+      - name: Converge the derived registers the capture feeds
+        shell: bash
+        run: |
+          set -o pipefail
+          set +e
+          make -o injuries site 2>&1 | tee /tmp/build.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            {
+              echo "make error lines:"
+              grep -n "make: \*\*\*\|Error [0-9]\|error:" /tmp/build.log | tail -n 12 || echo "(none matched)"
+              echo "---- last 60 lines ----"
+              tail -n 60 /tmp/build.log
+            } > /tmp/err.txt
+            RC="$rc" python3 - <<'PY'
+          import os, pathlib
+          body = pathlib.Path("/tmp/err.txt").read_text(errors="replace")
+          if len(body) > 3600:
+              body = "…TRUNCATED…\n" + body[-3500:]
+          msg = body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=reserve-list derived rebuild failed (exit {os.environ['RC']})::{msg}")
+          PY
+            exit "$rc"
+          fi
+          make -o injuries verify
+          git config user.name "availability-bot"
+          git config user.email "availability-bot@users.noreply.github.com"
+          git add -A data assets ./*.html EXECUTIVE_SUMMARY.md
+          if git diff --cached --quiet; then
+            echo "derived outputs already converged"
+            exit 0
+          fi
+          git commit -m "reserve-list: converge derived registers after the capture (W5)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

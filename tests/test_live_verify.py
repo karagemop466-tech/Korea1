@@ -282,3 +282,46 @@ def test_no_claim_is_labelled_contradicted_without_evidence():
     assert (d.verdict == "CONTRADICTED").sum() == 0
     # every non-confirmed verdict must carry a written reason
     assert d[d.verdict != "CONFIRMED"].note.str.len().min() > 20
+
+
+# --------------------------------------------------------------------------- #
+# W1 (arena/3e95bcb7-korea1, 2026-11-19): a clean capture must not abort the build.
+# The availability rebuild died in render_site with pandas.errors.EmptyDataError
+# because internal_consistency wrote a 0-byte CSV when a fresh capture carried
+# zero contradictions (run 44611301993 after the req-annex pin was repaired).
+
+def test_internal_consistency_zero_issue_frame_round_trips_through_csv(tmp_path):
+    """Zero issues still means a header: an empty frame without columns writes
+    nothing, and pd.read_csv then raises EmptyDataError in the page builder."""
+    pub = pd.DataFrame([
+        dict(team="KC", player="A Player", position="QB", injury="Knee",
+             practice_status="Limited Participation in Practice",
+             game_status="Questionable", source_url="https://www.nfl.com/injuries/"),
+        dict(team="KC", player="B Player", position="CB", injury="",
+             practice_status="Full Participation in Practice",
+             game_status="", source_url="https://www.nfl.com/injuries/"),
+    ])
+    issues, stats = lv.internal_consistency(pub)
+    assert issues.empty, issues
+    assert stats["contradictions"] == 0 and stats["vocabulary"] == 0 and stats["duplicates"] == 0
+    assert list(issues.columns) == lv.CONSISTENCY_COLS
+    path = tmp_path / "internal_consistency.csv"
+    issues.to_csv(path, index=False)
+    assert path.stat().st_size > 0, "a zero-row table must still write its header"
+    back = pd.read_csv(path, dtype=str, keep_default_na=False)
+    assert list(back.columns) == lv.CONSISTENCY_COLS
+    assert back.empty
+
+
+def test_render_live_read_tolerates_a_zero_byte_or_absent_csv(tmp_path):
+    """Defense in depth for the page builder: an empty file means no rows."""
+    import render_live
+    zero = tmp_path / "internal_consistency.csv"
+    zero.write_bytes(b"")
+    assert render_live._read(zero).empty
+    assert render_live._read(tmp_path / "never_written.csv").empty
+    # and a real file still parses
+    real = tmp_path / "real.csv"
+    real.write_text("club,player\nKC,A\n", encoding="utf-8")
+    got = render_live._read(real)
+    assert list(got.columns) == ["club", "player"] and len(got) == 1

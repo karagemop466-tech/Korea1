@@ -32,7 +32,13 @@ def e(x) -> str:
 
 
 def _read(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, dtype=str, keep_default_na=False) if path.exists() else pd.DataFrame()
+    # An absent file and a 0-byte file both mean "no rows": a producer that
+    # found zero issues may leave an empty file behind, and pd.read_csv on a
+    # file with no header raises EmptyDataError, which would abort the whole
+    # build inside render_site (measured 2026-11-19, run 44611301993).
+    if not path.exists() or path.stat().st_size == 0:
+        return pd.DataFrame()
+    return pd.read_csv(path, dtype=str, keep_default_na=False)
 
 
 def _pill(verdict: str) -> str:

@@ -55,6 +55,12 @@ METHOD = ("read the official NFL.com Week 10 injury report in full with the page
           "tool; all four matchup sections transcribed cell by cell; blank official "
           "cells left blank, never guessed")
 FIELDS = ["position", "injury", "practice_status", "game_status"]
+# The internal-consistency table always carries its schema, even when a clean
+# capture yields zero issues: `pd.DataFrame([])` writes a 0-byte file that
+# later readers reject with EmptyDataError (measured 2026-11-19 — the
+# availability rebuild died in render_site exactly there, run 44611301993).
+CONSISTENCY_COLS = ["club", "player", "check", "severity", "practice_status",
+                    "game_status", "injury", "source_url", "note"]
 # A player in one of these states did not play, so a later capture cannot make him
 # a full participant. Differences on these rows are not drift.
 INACTIVE = {"out", "doubtful", "ir", "injured reserve", "sus", "suspended"}
@@ -226,7 +232,7 @@ def internal_consistency(published: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     add(p.injury.str.lower().isin(["none", "n/a", "na", "unknown"]), "placeholder_injury",
         "vocabulary", "an injury text that is a placeholder rather than an official value")
 
-    out = pd.DataFrame(issues)
+    out = pd.DataFrame(issues, columns=CONSISTENCY_COLS)
     stats = dict(rows=int(len(p)), clubs=int(p.team.nunique()),
                  contradictions=int((out.severity == "contradiction").sum())
                  if not out.empty else 0,

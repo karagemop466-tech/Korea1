@@ -33,9 +33,35 @@ jobs:
       # CS3 (arena/db6cd525-korea1, 2026-11-18): rebuild every page and table built from the captures,
       # not only the availability page. `make -o injuries` treats the injury-download target as up to
       # date, so the nfl.com fetch above is not repeated; every other step of `make site` is offline.
+      # W1 (arena/3e95bcb7-korea1, 2026-11-19): the four runs that died here (44380205336 …
+      # 44598915891) printed only "Process completed with exit code 2" — the Actions log download is
+      # unreachable from the session sandbox, so the failing command now surfaces as an annotation
+      # (the check-runs API returns those) instead of vanishing into an unreadable log.
       - name: Rebuild every table and page built from the captures
+        shell: bash
         run: |
-          make -o injuries site
+          set -o pipefail
+          set +e
+          make -o injuries site 2>&1 | tee /tmp/build.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            {
+              echo "make error lines:"
+              grep -n "make: \*\*\*\|Error [0-9]\|error:" /tmp/build.log | tail -n 12 || echo "(none matched)"
+              echo "---- last 60 lines ----"
+              tail -n 60 /tmp/build.log
+            } > /tmp/err.txt
+            RC="$rc" python3 - <<'PY'
+          import os, pathlib
+          body = pathlib.Path("/tmp/err.txt").read_text(errors="replace")
+          if len(body) > 3600:
+              body = "…TRUNCATED…\n" + body[-3500:]
+          msg = body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=availability rebuild failed (exit {os.environ['RC']})::{msg}")
+          PY
+            exit "$rc"
+          fi
       - name: Verify (row sources, links, captions) before publishing
         run: |
           make -o injuries verify
