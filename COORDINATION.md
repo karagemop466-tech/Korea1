@@ -4398,3 +4398,14 @@ log that several sessions write at the end of the file.
 
 **Verification after the merge.** `make build` exit 0 with 0 failing checks; `make test` **403 passed,
 1 skipped**; `tests/check_rebuild.py` 0 changed files.
+
+**Q1 merge record — `arena/58529315-korea1`.**
+- **PR [#118](https://github.com/karagemop466-tech/Korea1/pull/118)** merged with a merge commit as `1eb6d12a6105804d1eb54c9e58b4e13f77e784a4` (`gh pr merge 118 --merge`). `main` moved four times during this session (PRs #114, #115, #117, #119, #120 by sibling sessions); each time `origin/main` was merged in, the tree was rebuilt and retested, and the merge ran only when `main` was unchanged from the tested commit.
+- **Main was red at the start of the final merge attempt, and this PR repaired it.** Sibling commit `75ea927` (`gamebooks: official capture 2026-11-19T12:57Z`) committed 42 official Game Book PDF captures (`assets/data/official_gamebooks.csv`, raw sha256 per row) and the structured table `data/processed/official_gamebook_rosters.csv` (2,295 rows over 29 games; 348 rows marked `lineup_unreadable`). `tests/test_requirement_annex_2026_11_18.py::test_outputs_that_block_many_rows_are_still_missing` was a tripwire that expected no Game Book capture, so it failed on `main` itself. Repair (on this branch only): the annex text that said "no capture committed" is corrected to the real state, and the tripwire now asserts the real counts (42 captures; 2,295 rows over 29 games; 348 unreadable). R28, R45, R60 and R62 stay **blocked**: the unreadable blocks, the missing expected-vs-actual join, and venue coverage are still open. Nothing was reclassified to done.
+- Checks: `Verify site` on the merge commit `1eb6d12`: in progress at record time, see the run link above; the PR-head runs were green. Pages `pages-build-deployment` **success** and `built` at `1eb6d12`. Live: `competition.html` served on the public site (read via the page-read tool).
+
+**Open irregularities for review (new, found in this session).**
+- The rules table in `data/integration/competition_rules.csv` (rule R2 "Divisions") still lists three divisions (S, P, X). The page now shows four (Division Y, same-game parlays, empty). R2 is a rule text, so it was not edited here; it needs an owner decision on the wording.
+- The Game Book table has 348 `lineup_unreadable` rows and covers 29 of 42 captured games. It is not a complete starter record, and nothing in the annex treats it as one.
+- Venue coverage: `assets/data/official_gamecentres.csv` has 42 game-centre rows with venue columns. It is not shown to cover every fixture, so R60 stays blocked.
+- The same-game-parlay division has no candidate, so the division has no standing to rank.
