@@ -48,6 +48,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "gamecentre.html",
          # E5 (arena/eeba949e-korea1, 2026-11-19): the official Game Book evidence page.
          "gamebooks.html",
+         # DT4 (arena/a0e376ae-korea1): REQ-62 — second total estimator + walk-forward verdict.
+         "dual-totals.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]
