@@ -4800,6 +4800,25 @@ PRs #128/#130 merged while this session read the board). Scope read in full; no 
 availability pin-proofing branch `arena/3e95bcb7-korea1` (open, its own Verify runs); PR #127 (W10S) and
 PR #129 (REQ-62) and every other open PR (other sessions'); any `pipeline/`, `data/` or generated HTML edit.
 
+### DT closed — PR #129 merged (dual-estimator totals) + PR #133 (build determinism) (arena/a0e376ae-korea1)
+
+- **PR #129 merged to main** (`a23abf9`, 2026-11-19T21:33Z): REQ-62/RR-62 delivered —
+  `dual-totals.html` live on Pages, line-board gap columns, prereg `b364c23`, registers updated,
+  tests 455+ passing on the merged tree. Verdict: A wins pooled, ΔMAE +0.314 [+0.233, +0.394],
+  n=5,819, collapse candidate=false, PROVISIONAL (31/5,788 evidence tiers).
+- **Flagged finding id is F-2026-11-19-12** (not -10): W1's merged section already published
+  F-2026-11-19-10 (official-source row) and -11 (prose), so this session's register-flags finding
+  was renumbered during the merge; flagged.html carries all three sections.
+- **PR #133 merged to main** (`c3ac799`): after #129 landed, main's push verify run failed the
+  byte-exact rebuild step while the identical tree's PR run passed — diagnosed via the new
+  check_rebuild annotations (drift lived in files outside the old comparison scope, visible only
+  on PR merge-refs that combined this branch with #131/#134). Fixes: Makefile pins
+  OPENBLAS/OMP/MKL/NUMEXPR threads=1 and PYTHONHASHSEED=0; `tests/check_rebuild.py` now fails on
+  ANY tracked file the build changes and names each one as a `::error` annotation. Post-#133 main
+  verify + Pages runs are green (`c3ac799`), and the site serves dual-totals.html.
+- Session totals: claims DT1-DT7 complete; no workflow files edited (FI2/FI5 own those);
+  no EXECUTIVE_SUMMARY prose authored (regenerated only); sibling register rows untouched —
+  re-read requests stand as logged above.
 #### Release record — PRs #130, #131, #134 (all merged, main green, Pages deployed)
 
 | PR | Merge commit | Merged | CI |
