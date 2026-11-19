@@ -132,14 +132,20 @@ def compare_reserve() -> tuple[list[dict], dict]:
         AV / "reserve" / "history" / "2026-11-17T195957Z" / "reserve_list.csv",
         dtype=str, keep_default_na=False,
     )
-    latest = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    # The comparison is explicitly against the 2026-11-18 recapture. `latest.csv` is
+    # a rolling pointer and must not be used for a dated claim: the scheduled job can
+    # advance it after this live-page excerpt was recorded.
+    recapture = pd.read_csv(
+        AV / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+        dtype=str, keep_default_na=False,
+    )
     live_keys = set(zip(live.date, live.club, live.player))
     rows: list[dict] = []
     stats: dict = {"live_rows": len(live_keys)}
 
     captures = [
         ("2026-11-17T19:59:57Z capture", historical),
-        ("2026-11-18T04:42:01Z capture", latest),
+        ("2026-11-18T04:42:01Z capture", recapture),
     ]
     for label, captured in captures:
         captured = captured[captured.month == "2026-11"]
@@ -154,7 +160,7 @@ def compare_reserve() -> tuple[list[dict], dict]:
             rows.append(dict(check=f"reserve list vs {label}", club=t, item=f"{p} ({d[5:]})",
                              live="not on live page", capture="listed", verdict="CAPTURE ONLY",
                              retrieved=label, source_url=URL_RES))
-        key = "historical" if label.startswith("2026-11-17") else "latest"
+        key = "historical" if label.startswith("2026-11-17") else "recapture"
         stats[key] = dict(
             label=label, rows=len(capture_keys), both=len(live_keys & capture_keys),
             live_only=len(live_keys - capture_keys), capture_only=len(capture_keys - live_keys),
@@ -256,8 +262,8 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
                       f"{res['live_rows']} rows. The 2026-11-17T19:59:57Z capture has "
                       f"{res['historical']['both']} of those rows in common, "
                       f"{res['historical']['live_only']} live-page-only and {res['historical']['capture_only']} capture-only rows. "
-                      f"The later 2026-11-18T04:42:01Z capture has {res['latest']['both']} rows in common, "
-                      f"{res['latest']['live_only']} live-page-only and {res['latest']['capture_only']} capture-only rows. "
+                      f"The 2026-11-18T04:42:01Z recapture has {res['recapture']['both']} rows in common, "
+                      f"{res['recapture']['live_only']} live-page-only and {res['recapture']['capture_only']} capture-only rows. "
                       "This later capture matches the sampled live-page rows; it does not establish the NFL page's retention or completeness policy."),
              next="Keep both immutable captures. Confirm the source's retention semantics before treating a missing row as unavailable; do not infer that the monthly page is complete or a rolling window.",
              source_label="NFL.com reserve list, November 2026", source_url=URL_RES),
@@ -330,9 +336,9 @@ def main() -> None:
     print(f"reserve historical: live {res['live_rows']}, capture {res['historical']['rows']}, "
           f"both {res['historical']['both']}, live-only {res['historical']['live_only']}, "
           f"capture-only {res['historical']['capture_only']}")
-    print(f"reserve latest: live {res['live_rows']}, capture {res['latest']['rows']}, "
-          f"both {res['latest']['both']}, live-only {res['latest']['live_only']}, "
-          f"capture-only {res['latest']['capture_only']}")
+    print(f"reserve 2026-11-18 recapture: live {res['live_rows']}, capture {res['recapture']['rows']}, "
+          f"both {res['recapture']['both']}, live-only {res['recapture']['live_only']}, "
+          f"capture-only {res['recapture']['capture_only']}")
     print(f"multi rank-1 groups: {f['multi_rank1_by_capture']}")
     print(f"payne: {f['payne_by_capture']}")
     print(f"bal: {f['bal_by_capture']}")
