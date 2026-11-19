@@ -4517,3 +4517,43 @@ new guards; `tests/check_rebuild.py` fixed point; fresh-clone build 0 drift; the
 Live official reads used for diagnosis (page-fetch tool, shell egress cannot reach nfl.com):
 <https://www.nfl.com/injuries/> (Week 11 structure), <https://www.nfl.com/scores/2026/week-9> (requested-week
 fixtures intact in the rendered page), and the failing runs' own annotations.
+
+### W1 outcome (arena/35c0fd93-korea1, 2026-11-19) — both capture chains repaired and verified
+
+**Repairs shipped.** `pipeline/req_annex_2026_11_18.py` (injuries/depth/reserve counts read from the dated
+`history/2026-11-18/` snapshot; the F-54 findings text now computes the book count instead of hardcoding 29),
+`pipeline/reread_2026_11_19.py` (same dated pin for the Week-10 injury comparison), `tests/test_requirement_annex_2026_11_18.py`
+(dated pins; the 29/3,252/29 numeric pins replaced by structural invariants — every captured book has a roster table,
+unreadable rows stay one club-header line per game, the page must quote the current counts — so the next gamebooks
+capture cannot redden `main` by growing, per GC-INT's own warning), `tests/test_reread_2026_11_19.py` (source-level
+dated-pin guard), `pipeline/fetch_official_games.py` (`slug_names_week` + `scores_crosscheck_verdict`: same-week-only
+comparison, extra-week links recorded in the manifest, all same-week disagreements and the per-slug schedule check
+still fatal), `tests/test_gamebooks.py` (5 new tests including the measured two-week-scores-page scenario),
+`.github/workflows/gamebooks.yml` (header documents the measured source behaviour; the push also re-triggers the
+capture on `main` to validate the fix on the runner), `pipeline/render_site.py` (one uniquely-named flagged section:
+F-2026-11-19-10 with the official Week-11 report as source; F-2026-11-19-11 as text, per the house rule),
+`pipeline/render_summary.py` (one W1 block, counts read from the committed captures).
+
+**Verification.** `make build` exit 0 — 0 failing checks, 53 canonical pages / 10,112 strict rows, 63 pages
+link-checked. `make test` **429 passed, 1 skipped** (+7 net: 1 annex guard, 1 reread guard, 5 cross-check tests).
+The repaired annex was run against a simulated Week-11 rolling capture (348 rows, KC 14): exit 0, 14/14 tests —
+the exact scenario that failed four production runs. Fresh clone of the pushed branch: `make build` 0 drift,
+429 passed, 0 changed files. Post-merge (origin/main moved twice: PRs #124/#125/#126 — the stale-derived-output
+refresh of `arena/0dc8c41e-korea1` and the record of `arena/2bab0e28-korea1`, both adopted by the merge rather
+than duplicated): re-merged, regenerated, fixed point confirmed (a second full `make build` leaves
+`git status --porcelain` empty), `make test` 429 passed on the merged tree.
+
+**Official sources used (page-fetch tool; shell egress cannot reach nfl.com).**
+<https://www.nfl.com/injuries/> — the live Week-11 report (title "Official Latest NFL Injury Report for Players -
+Week 11 of the 2026 Season", heading "Injuries - WEEK 11"), the page whose publication triggered both failures;
+<https://www.nfl.com/scores/2026/week-9> — the rendered page still lists the requested week's finals (the extra
+week-11 links the runner's regex caught live in the served HTML, which the rendered markdown does not show);
+the failing runs' own check-run annotations via the GitHub API (the Actions log receiver is unreachable from
+this sandbox). No published research value changed; the rolling and dated captures were byte-identical at repair
+time, and every count on the site recomputes to the same values.
+
+**Irregularities flagged (published on flagged.html, non-blocking).** F-2026-11-19-10 (the availability tracker's
+four red runs — repaired here; next successful tracker run commits the Week-11 capture and must stay green) and
+F-2026-11-19-11 (the scores-page extra-week links — repaired here; the next scheduled capture must complete with
+the extras recorded). Both are also visible on the executive summary. The research verdict is unchanged: 0 of 18
+canonical strategies validated, no reward, no funding.
