@@ -914,6 +914,7 @@ tests/check_sources.py,1-10 KB,Test,SOURCE · executed by make build / make test
 tests/test_availability_tracker.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL injuries,https://www.nfl.com/injuries/
 tests/test_brief_2026_11_14.py,10-100 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_brief_2026_11_15.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+tests/test_capture_pairing.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_claim_checks.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_control_baseline.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/register_evidence_20261118.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_current_snapshot_audit.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/request_register.py,NFL scores,https://www.nfl.com/scores/
