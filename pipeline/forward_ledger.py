@@ -276,7 +276,20 @@ def fetch_snapshot(sha: str) -> dict:
         if manifest["files"] != files:
             raise RuntimeError(f"snapshot {sha[:12]} no longer matches its recorded hashes")
         return manifest
-    manifest = {"repo": UPSTREAM, "sha": sha, "commit_time_utc": commit_time(sha),
+    # `commit_time_utc` used to come from an API call made only when the record was first
+    # written, so a clone that rebuilt the record produced null in the same place and
+    # tests/check_rebuild.py failed on a *clean* checkout (measured in CI run 44608725080,
+    # 2026-11-19: repo_inventory row-count drift and a README count that fed EXECUTIVE_SUMMARY).
+    # The commit time is a property of the commit, not of this run: it is taken from the
+    # record already in the tree when there is one, so a rebuild reproduces the same bytes.
+    prev = {}
+    if record.exists():
+        try:
+            prev = json.loads(record.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            prev = {}
+    manifest = {"repo": UPSTREAM, "sha": sha,
+                "commit_time_utc": prev.get("commit_time_utc", commit_time(sha)),
                 "browse_url": f"https://github.com/{UPSTREAM}/blob/{sha}/data/games.csv",
                 "archive_url": f"https://codeload.github.com/{UPSTREAM}/tar.gz/{sha}",
                 "evidence_class": "C - community mirror, not an official NFL source",
