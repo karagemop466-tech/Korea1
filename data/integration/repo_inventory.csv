@@ -804,6 +804,7 @@ pipeline/render_audit.py,10-100 KB,Source code,SOURCE · executed by make build 
 pipeline/render_decisions.py,10-100 KB,Source code,SOURCE · executed by make build / make test,pipeline/decisions.py; pipeline/render_readiness.py; pipeline/session_20261115.py,NFL scores,https://www.nfl.com/scores/
 pipeline/render_forward.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile,NFL schedule,https://www.nfl.com/schedules/
 pipeline/render_gamebooks.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile; pipeline/render_gamebooks.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+pipeline/render_gamecentre.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/render_governance.py,10-100 KB,Source code,SOURCE · executed by make build / make test,—,NFL scores,https://www.nfl.com/scores/
 pipeline/render_live.py,10-100 KB,Source code,SOURCE · executed by make build / make test,pipeline/render_live.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 pipeline/render_price_archive.py,10-100 KB,Source code,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
