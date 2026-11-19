@@ -1,4 +1,13 @@
 PY ?= python3
+# Deterministic builds across machines (2026-11-19): single-threaded BLAS keeps float
+# reductions byte-identical between sandboxes and CI runners, and a fixed hash seed
+# keeps set iteration stable. check_rebuild tolerates last-bit CSV drift but the
+# verify workflow's final `git diff --quiet` does not, so builds must be byte-exact.
+export OPENBLAS_NUM_THREADS := 1
+export OMP_NUM_THREADS := 1
+export MKL_NUM_THREADS := 1
+export NUMEXPR_NUM_THREADS := 1
+export PYTHONHASHSEED := 0
 ifeq ($(wildcard .venv/bin/python),)
 PY := python3
 else
