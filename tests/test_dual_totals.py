@@ -240,5 +240,7 @@ def test_line_board_publishes_both_estimates_with_the_gap():
 
 def test_flagged_page_carries_the_register_flag_finding():
     text = FLAGGED.read_text(encoding="utf-8")
-    assert "F-2026-11-19-10" in text
+    # W1 published F-2026-11-19-10/-11 first, so this finding carries -12 after the merge
+    assert "F-2026-11-19-12" in text
+    assert "F-58" in text and "F-62" in text
     assert "F-58" in text and "F-62" in text

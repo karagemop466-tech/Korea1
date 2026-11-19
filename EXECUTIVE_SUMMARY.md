@@ -57,6 +57,31 @@ availability graph is complete for the fixtures read; the actual side is blank o
 because no official Game Book has been captured yet, and each such row says so.
 
 
+## Update - 2026-11-19 (`arena/35c0fd93-korea1`): the Week-11 rollover repair (W1)
+
+**Both scheduled capture chains went red when the league flipped its pages to Week 11, and
+neither published wrong data.** The availability tracker failed four consecutive runs at the
+rebuild step because a comparator pinned to the 2026-11-18 official read derived its KC
+omission arithmetic from the **rolling** capture (reproduced offline: one added KC row raises
+`SystemExit("KC omission count is 2, expected 1")`); every dated comparator now reads the
+dated `history/2026-11-18/` snapshot, guarded by source-level tests. The Game Book capture
+failed twice on its own fail-loud contract because the scores-page cross-check collected the
+current week's links that the league's post-flip scores pages carry beside the requested
+week's fixtures (the runs' own annotations record `only schedule: []; only scores:
+[13 reg-11 slugs]`); the cross-check now compares same-week slugs only, records the extras,
+and keeps every same-week disagreement fatal. At repair time the rolling capture and the
+dated snapshot hold the same rows: yes.
+
+| Capture reference | Rows | KC rows | Week label |
+|---|---|---|---|
+| Dated snapshot `history/2026-11-18` (the pinned comparator reference) | 347 | 13 | WEEK 10 |
+| Rolling top-level capture (the tracker overwrites it with the newest week) | 347 | 13 | WEEK 10 |
+
+The research verdict is unchanged: no strategy is validated, no reward is authorized, and no
+published research number moved — the repair changes which capture a dated comparison reads,
+not any value.
+
+
 ## Update — 2026-11-19 (`arena/db0e98e2-korea1`)
 
 - **Decision unchanged.** Still no validated strategy and no reward. Nothing in this update adds evidence for an edge.
@@ -218,7 +243,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 947 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 946 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -268,7 +293,7 @@ faithful transcriptions of a pairing that is itself contradictory on the officia
 
 CS5 (the request register) was deferred as "not done" by the 2026-11-18 session log; this
 session builds it. **`request-register.html`** now carries one row per standing-request item
-(81 rows, REQ-01..REQ-81), each with the status (43 built, 20 partly built, 11 not built, 2 blocked on an owner decision, 2 rejected as requested, 3 process), the repository
+(81 rows, REQ-01..REQ-81), each with the status (42 built, 20 partly built, 12 not built, 2 blocked on an owner decision, 2 rejected as requested, 3 process), the repository
 evidence, the gate that blocks full delivery and the number or condition that would clear it.
 The landing page links it as the decision-readiness table the request asked for.
 
@@ -286,8 +311,8 @@ request item with its status, the evidence file that supports it, the gate that 
 it and the number that would clear it. It is published on
 `request-register-2026-11-18.html` and in `data/integration/request_register_2026_11_18.csv`.
 
-**81 request items** - 38 done, 30 partly done, 0 built on open PR #82 (not
-merged to main), 9 blocked or not started, 3 rejected by design,
+**81 request items** - 37 done, 30 partly done, 0 built on open PR #82 (not
+merged to main), 10 blocked or not started, 3 rejected by design,
 1 needing an owner decision. 74 rows carry an official/primary source link;
 7 rows have no official source and are printed as flagged text, never filled in.
 
