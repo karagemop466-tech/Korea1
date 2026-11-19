@@ -121,6 +121,12 @@ site: injuries review reviewall
 	$(PY) pipeline/price_archive.py
 	$(PY) pipeline/render_price_archive.py
 	$(PY) pipeline/results_feed_history.py
+	# FI3 (arena/79a986b7-korea1, 2026-11-20): the Week 10 official finals, certified by TWO official
+	# documents (the league's scores page and the league's own hash-pinned Game Book) before a single
+	# row is written. Without it 64 of 65 frozen tickets had no final and no ROI could be computed at
+	# all. Idempotent and fail-loud; reads committed files only (no network), so the build stays
+	# byte-reproducible. Must run before render_forward.py and before the register that counts them.
+	$(PY) pipeline/finals_2026_11_20.py
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	# GC2 (arena/7cbb2e60-korea1): gamecentre.html from the committed official game-centre /
 	# Game Book capture.  Reads data/processed/official_*.csv and the evidence manifest only
