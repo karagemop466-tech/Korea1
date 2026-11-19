@@ -534,7 +534,7 @@ def build_register(m: dict, f: dict) -> list[dict]:
            "https://github.com/karagemop466-tech/Korea1/blob/main/data/processed/strategy_gates.csv",
            "strategy_gates.csv"))
     A(item("R10", "Use proper-score leaderboard divisions (singles, game parlays, same-game parlays, prop combos)",
-           ST["partial"], f"competition.html defines three divisions; the forward record holds "
+           ST["partial"], f"competition.html defines four divisions (same-game parlays empty); the forward record holds "
            f"{m['picks'] - m['picks_2leg'] - m['picks_3leg']} singles, {m['picks_2leg']} two-leg and "
            f"{m['picks_3leg']} three-leg entries; prop-combo division empty",
            "G1; no prop prices at all", "One settled entry in every division, including a prop combo with a joint price",
