@@ -487,3 +487,76 @@ def test_fail_loud_pins_accept_the_real_capture_and_reject_the_defects():
     assert not book_week_slug("commanders-at-giants-2026-reg-10", "9")
     assert date_fragment_printed("Thursday, 11/12/2026")
     assert not date_fragment_printed("no date here")
+
+
+# --------------------------------------------------------------------------- scores
+# The fixture-set cross-check between the schedule page and the scores page
+# (runs 44555092023 / 44556979069, 2026-11-19): the scores page for week 9 and
+# week 10 also links every week-11 fixture, and the naive whole-page set
+# equality rejected two documents that agree about the requested week.  Each
+# test below plants the page shape and then mutates one side, so a comparison
+# that was inverted or disabled would fail here.
+
+def _scores_page(slugs: list[str]) -> str:
+    return ("<html><body>" + "".join(
+        f'<a href="https://www.nfl.com/games/{s}">game</a>' for s in slugs) +
+        "</body></html>")
+
+
+def test_scores_crosscheck_ignores_other_week_links_the_page_also_prints():
+    from fetch_official_games import scores_week_diff
+    sched = {"a-at-b-2026-reg-9", "c-at-d-2026-reg-9"}
+    # measured shape: the week-9 scores page carries the week-9 fixtures AND
+    # every week-11 fixture (13 slugs in the real failure annotation).
+    html = _scores_page(["a-at-b-2026-reg-9", "c-at-d-2026-reg-9",
+                         "x-at-y-2026-reg-11", "p-at-q-2026-reg-11"])
+    only_sched, only_scores, other = scores_week_diff(sched, html, 9)
+    assert only_sched == [] and only_scores == []
+    assert other == ["p-at-q-2026-reg-11", "x-at-y-2026-reg-11"]
+
+
+def test_scores_crosscheck_still_fails_when_a_fixture_is_missing():
+    from fetch_official_games import scores_week_diff
+    sched = {"a-at-b-2026-reg-9", "c-at-d-2026-reg-9"}
+    # mutation: the scores page drops one week-9 fixture
+    html = _scores_page(["a-at-b-2026-reg-9", "x-at-y-2026-reg-11"])
+    only_sched, only_scores, other = scores_week_diff(sched, html, 9)
+    assert only_sched == ["c-at-d-2026-reg-9"]
+    assert only_scores == []
+    assert other == ["x-at-y-2026-reg-11"]
+
+
+def test_scores_crosscheck_still_fails_on_an_extra_same_week_fixture():
+    from fetch_official_games import scores_week_diff
+    sched = {"a-at-b-2026-reg-9"}
+    # mutation: the scores page prints a week-9 fixture the schedule does not
+    html = _scores_page(["a-at-b-2026-reg-9", "e-at-f-2026-reg-9"])
+    only_sched, only_scores, other = scores_week_diff(sched, html, 9)
+    assert only_sched == []
+    assert only_scores == ["e-at-f-2026-reg-9"]
+
+
+def test_scores_crosscheck_fails_loud_when_the_page_served_another_week():
+    from fetch_official_games import scores_week_diff
+    sched = {"a-at-b-2026-reg-9", "c-at-d-2026-reg-9"}
+    # the scores URL ignored the week: only week-11 fixtures come back, so
+    # every schedule fixture is missing from the page (the pin must fire —
+    # ignoring other-week links must not turn a wrong-week page into a pass).
+    html = _scores_page(["x-at-y-2026-reg-11", "p-at-q-2026-reg-11"])
+    only_sched, only_scores, other = scores_week_diff(sched, html, 9)
+    assert only_sched == ["a-at-b-2026-reg-9", "c-at-d-2026-reg-9"]
+    assert only_scores == []
+    assert len(other) == 2
+
+
+def test_scores_crosscheck_treats_an_unstamped_games_link_as_comparable():
+    from fetch_official_games import scores_week_diff
+    # A /games/ link the league's slug does not stamp with a week cannot be
+    # attributed to another week, so it stays in the comparison: if it is not
+    # on the schedule, the pin fires rather than the link being ignored.
+    sched = {"a-at-b-2026-reg-9"}
+    html = _scores_page(["a-at-b-2026-reg-9", "some-promo-game"])
+    only_sched, only_scores, other = scores_week_diff(sched, html, 9)
+    assert only_sched == []
+    assert only_scores == ["some-promo-game"]
+    assert other == []

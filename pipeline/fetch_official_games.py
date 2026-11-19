@@ -46,7 +46,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from official_games import (html_to_text, parse_game_book, parse_game_centre,  # noqa: E402
                             parse_lineup_rows, parse_roster_entries, parse_schedule_page,
-                            parse_two_column_roster, split_columns)
+                            parse_two_column_roster, split_columns, fixture_week, slug_of)
 from official_payload import (parse_game_centre_info, parse_schedule_payload,  # noqa: E402
                               parse_week_selector, published_week)
 
@@ -103,6 +103,45 @@ def book_week_slug(slug: str, week: object) -> bool:
 def date_fragment_printed(value: str) -> bool:
     """The printed date line carries the league's own M/D/YYYY date."""
     return bool(re.search(r"\d{1,2}/\d{1,2}/\d{4}", str(value or "")))
+
+
+# The league prints every fixture slug with the week it belongs to
+# (``<away>-at-<home>-<season>-reg-<week>``); the same pattern is what the
+# schedule-side slug pin (`book_week_slug`) already uses.
+_SCORES_ANCHOR = re.compile(r'href="(?:https://www\.nfl\.com)?/games/([^"?#]+)"')
+
+
+def scores_week_diff(sched_slugs: set[str], scores_html: str,
+                     week: int) -> tuple[list[str], list[str], list[str]]:
+    """Fixture-set difference between the schedule page and the scores page.
+
+    Returns ``(only_schedule, only_scores, other_week)`` for the requested
+    week.  Three facts are measured, never assumed:
+
+    * the scores page is fetched at ``/scores/<season>/week-<n>``, but its
+      markup also links fixtures of *other* weeks — measured 2026-11-19: the
+      week-9 and week-10 pages each carried all thirteen ``*-2026-reg-11``
+      slugs, which made the naive whole-page set equality reject two
+      documents that agree about the requested week (runs 44555092023 and
+      44556979069);
+    * a slug the league stamps with another week is therefore excluded from
+      the comparison and reported separately, so the disagreement signal for
+      the requested week is unchanged: a fixture the schedule prints that the
+      scores page does not, or vice versa, still fails the pin;
+    * a scores page that carries *no* requested-week fixture at all (a page
+      that ignored the week) fails the pin too, because every schedule slug
+      then lands in ``only_schedule``.
+
+    The week is read from the league's own slug, never from the URL the page
+    was requested with.
+    """
+    score_all = {slug_of(m.group(1)) for m in _SCORES_ANCHOR.finditer(scores_html)}
+    other_week = sorted(s for s in score_all
+                        if (fw := fixture_week(s)) is not None and fw != week)
+    score_slugs = score_all - set(other_week)
+    only_sched = sorted(sched_slugs - score_slugs)
+    only_scores = sorted(score_slugs - sched_slugs)
+    return only_sched, only_scores, other_week
 
 
 def http_get(url: str, tries: int = 3) -> tuple[bytes, int]:
@@ -335,21 +374,27 @@ def main() -> int:
             die(f"week {week}: scores cross-check unreachable ({scores_url}: {exc})")
             sraw, scode = b"", 0
         if sraw and scode == 200:
-            score_slugs = set(re.findall(
-                r'href="(?:https://www\.nfl\.com)?/games/([^"?#]+)"',
-                sraw.decode("utf-8", "replace")))
-            sched_slugs = {str(r.get("official_url", "")).rstrip("/").rsplit("/", 1)[-1]
-                           for r in rows}
-            if score_slugs != sched_slugs:
-                only_sched = sorted(sched_slugs - score_slugs)
-                only_scores = sorted(score_slugs - sched_slugs)
+            scores_html = sraw.decode("utf-8", "replace")
+            sched_slugs = {slug_of(str(r.get("official_url", ""))) for r in rows}
+            only_sched, only_scores, other_week = scores_week_diff(
+                sched_slugs, scores_html, week)
+            if only_sched or only_scores:
                 die(f"week {week}: schedule page and scores page disagree on "
                     f"the fixture set (only schedule: {only_sched}; only "
                     f"scores: {only_scores})")
+            # The scores page is kept next to the schedule page so this
+            # cross-check can be replayed from committed bytes later; the
+            # raw response stays in the gitignored raw dir / workflow
+            # artifact, and the hash here proves which bytes were compared.
+            write_raw(RAW_DIR / "scores" / f"week{week}.html", sraw)
+            sb, sh_s = write_gz(EVIDENCE / f"scores/week{week}.html.gz", scores_html)
             manifest["scores_pages"].append(dict(
                 week=week, url=scores_url, http_status=scode,
-                fixtures=len(score_slugs),
-                raw_sha256=sha256_bytes(sraw), retrieved_utc=stamp))
+                fixtures=len(sched_slugs),
+                other_week_slugs=";".join(other_week),
+                raw_bytes=len(sraw), raw_sha256=sha256_bytes(sraw),
+                html_bytes=sb, html_sha256=sh_s,
+                retrieved_utc=stamp))
         elif scode:
             die(f"week {week}: scores cross-check http status {scode} ({scores_url})")
         # The same page publishes the season's week windows and the clubs on a
