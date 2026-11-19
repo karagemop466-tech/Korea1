@@ -13,7 +13,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import PROC, ROOT, read_json
 
-ALLOW = {"www.nfl.com", "nfl.com", "www.commanders.com", "www.giants.com",
+ALLOW = {"www.nfl.com", "nfl.com", "static.www.nfl.com", "www.commanders.com", "www.giants.com",
          "www.patriots.com", "www.detroitlions.com", "www.chiefs.com",
          "www.atlantafalcons.com", "www.vikings.com", "www.packers.com",
          "operations.nfl.com", "www.econometricsociety.org",
@@ -84,7 +84,9 @@ def main():
               # the vig-free view. Named apart from CR1's and CS5's registers; all three are verified pages.
               "verified-register-2026-11-18.html", "matchup-matrix.html", "consensus.html",
               # GC2 (arena/7cbb2e60-korea1, 2026-11-19): official game-centre / Game Book evidence.
-              "gamecentre.html"}
+              "gamecentre.html",
+              # E5 (arena/eeba949e-korea1): the official Game Book evidence page.
+              "gamebooks.html"}
     results=[]; failures=0
     missing=expected-{p.name for p in pages}
     if missing: print("Missing pages:",missing); failures+=len(missing)

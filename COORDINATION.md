@@ -4132,6 +4132,283 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 - Board rule, repeated: run `make build` in a fresh clone before any PR, and re-check `main` immediately before merging, because sibling sessions merged to `main` four times during this session.
 - **ID correction (this branch, 2026-11-19):** the reserve-window and latest.csv flags were first labelled F-52 and F-53 in this log and on the Flagged page. Those IDs collided with existing rows (F-53 is the AZ/ARI mapping; F-57 already records the same rolling-window pattern). They are renamed **F-2026-11-19-06** and **F-2026-11-19-07**. Earlier entries in this log that say F-52/F-53 mean these two rows. The executive-summary block is now generated from `pipeline/render_summary.py`, because `EXECUTIVE_SUMMARY.md` is overwritten on every build; the earlier hand edit never reached a commit.
 
+## Session `arena/58529315-korea1` — 2026-11-19 claim (narrow scope)
+
+**Scope and honesty.** The brief in this session lists about 80 items. The repository already tracks them in `data/integration/request_register.csv` (REQ-01…REQ-81) with the gate that blocks each one. Most open items need official data this sandbox cannot fetch in bulk (bash egress is limited to github, npm and pypi; nfl.com is reachable only through the page-read tool, chunk by chunk). This session therefore closes only what can be done from committed evidence without inference. The session stays on the single pinned branch `arena/58529315-korea1`; the `session-<id>/<task>` branch convention in the brief is not used, because the platform pins each session to one branch.
+
+**Baseline verified first (base `3c02fb2`, = `origin/main`).** Fresh `.venv` from `requirements.txt`; `make test`: 381 passed, 2 skipped; `make build`: 0 failing checks, `check_sources` 51 pages / 6,764 rows, `check_links` 61 pages, clean tree after build.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| Q1 | REQ-37 — add the same-game-parlay division (fourth division, zero registered candidates, joint-evidence gate stated per the brief) to `competition.html`; update the REQ-37 gate text | **done** (status stays `partly built`: the division is empty, and no ranking with uncertainty exists for any division) | `arena/58529315-korea1` | `pipeline/session_competition.py`, `pipeline/request_register.py` (REQ-37 row only), regenerated outputs |
+
+**Q1 record.** Change: `pipeline/session_competition.py` adds "Division Y — same-game parlays" (prose only; no candidate, joint-probability gate not evaluated, void/push rules not recorded); `pipeline/request_register.py` REQ-37 row now states four divisions and the remaining gate; `pipeline/req_annex_2026_11_18.py` R10 text changed from "three divisions" to "four divisions (same-game parlays empty)" because that line is generated on every build and would otherwise be stale.
+
+**Sources.** The gate rule is the project brief item "Keep parlays and prop combos behind a joint-evidence gate". It is an internal requirement, not an official source, and it is labelled as such on the page. No official operator void/push source was read, so none is cited, and the page says so.
+
+**Verification.** `make build` exit 0, 0 failing checks (one intermediate failure was a table row without a source link; it was converted to prose, which is the correct form for a gate statement, not a sourced value). Second `make build` changed 0 files (fixed point). `make test`: 382 passed, 1 skipped.
+
+**Irregularities for review (unchanged, not resolved here).** The brief's counts (149 multi-player slots; 254/279 injury rows; 136-game log) and its VR-/VQ-/SG- identifiers are not reproduced in the repository (see REQ-19, REQ-33, REQ-49 and F-46 to F-48). The Houston depth chart remains unparsed (F-18). Nothing in this session was taken from a non-official source.
+
+**Not done in this session (stated, not claimed).** The remaining about 70 register items stay as recorded in `request_register.csv`, with their blocking gates. Most need official pages captured in bulk (32-club chart and injury sweep, game-centre venues, Game Book parsing, snap counts, reserve-list history), which the bash egress allow-list cannot reach and the page-read tool cannot finish in one session.
+## Session `arena/831c3566-korea1` — 2026-11-19 final integration, verification and publish (claim)
+
+**Board read first.** The branch was pinned at `3c02fb2` (equal to `main` and `origin/main`). No sibling session holds an active claim on `pipeline/`, `data/`, the root HTML or the shared build files this session touches. Claimed the final integration scope: re-verify the committed build end to end, verify key official sources, confirm the site is clean and category-organised, publish to GitHub Pages, and record the PR and merge result here.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| P1 | Final integration claim + session log | **done** | `arena/831c3566-korea1` | `COORDINATION.md` (this section only) |
+| P2 | End-to-end build + test + link/source verification | **done** | `arena/831c3566-korea1` | `Makefile`, `pipeline/*`, `tests/*`, generated root HTML |
+| P3 | Official-source verification of the pages the site cites | **done** | `arena/831c3566-korea1` | no file change; cites recorded below |
+| P4 | Publish to GitHub Pages (main / repository root) and confirm deploy | pending | `arena/831c3566-korea1` | PR `arena/831c3566-korea1` → `main`, merge, Pages |
+| P5 | Record PR link + merge result in COORDINATION.md | pending | `arena/831c3566-korea1` | `COORDINATION.md` |
+
+**P2 — end-to-end verification (local).**
+- `make build`: exit 0, **0 failing checks**, 51 canonical pages, 6,764 table rows, every row with an official/primary reference, 61 pages, all internal links/anchors/assets resolve, no external CDN.
+- `make test`: **382 passed, 1 skipped**.
+- `tests/check_rebuild.py`: 0 changed files (build is a fixed point).
+- Verified before commit: working tree clean apart from this session's COORDINATION.md record.
+
+**P3 — official sources read live (page-fetch tool; the sandbox shell cannot reach nfl.com — TLS refused — so reads were made through the page-fetch tool and are quoted by URL).**
+- https://www.nfl.com/injuries/league/2026/reg10 — Week 10 injury report. Confirmed: WAS Lucas Patrick (C, Concussion, DNP, Out); WAS Colson Yankoff (TE, Knee, DNP, Out); NYG Malik Harrison (LB, Groin, Limited Participation, Questionable); NE Carlton Davis III (CB, Knee, DNP, Out); NE TreVeyon Henderson (RB, Illness, DNP, Out); DET Kerby Joseph (S, Knee, DNP, Out); DET Cade Mays (C, Ankle, DNP, Out); DET D.J. Reed (CB, Hip, DNP, Out). Every cited value matches the committed capture. Note: the page `<title>` reads "Week 11 of the 2026 Season" while the heading reads "Injuries - WEEK 10" — this is the already-flagged F-2026-11-19-01, no value changed.
+- https://www.nfl.com/scores/2026/week-10 — Week 10 scores. Confirmed: Commanders 24–21 Giants (Final); Patriots 10–35 Lions (Final); Chiefs 35–13 Falcons (Final); Texans 24–27 Browns (Final); Vikings 30–10 Packers (Final); Dolphins 22–24 Colts (Final); Panthers 20–17 Saints (Final); Bills 31–12 Jets (Final); Jaguars 40–23 Titans (Final). Matches the committed results feed and forward ledger.
+- https://www.nfl.com/schedules/2026/by-week/week-10 — Week 10 schedule. Confirmed all 14 games show FINAL with the same scores. Note: the schedule prints the Cardinals as "AZ" while the repo uses "ARI" — this is the already-flagged F-53 (AZ/ARI mapping), no value changed.
+
+**Irregularities.** None introduced by this session. The pre-existing flagged register on `flagged.html` (F-01…F-57 plus session findings F-2026-11-14-*, F-2026-11-18-*, F-2026-11-19-*) is unchanged; flagged items do not block merge. The two confirmations above (F-2026-11-19-01 week-title mismatch; F-53 AZ/ARI code difference) are re-stated with live sources.
+
+**Research verdict (unchanged).** 0 of 18 canonical strategies pass all eight fail-closed gates. No prize, capital allocation or profitable recommendation is authorized. The model trails the closing market on all three originated markets. No backtest number appears on the leaderboard.
+
+**P4 — publish.** `main`/`origin/main` is at `3c02fb2`; this branch is at the same commit, so this session's commit (this record) makes the branch ahead of `main`. PR opened from `arena/831c3566-korea1` to `main`, merged without waiting, Pages deployment confirmed, PR link and merge result recorded below (P5).
+
+## Session `arena/9b56a906-korea1` — 2026-11-19 executive summary update, verification and PR/merge
+
+**Board read first.** No active sibling claim on the executive summary or render_site.py. Claimed the 2026-11-19 update scope: add the reserve-list rolling-window finding and live re-read agreement to the executive summary, verify against official sources, rebuild, test, and merge to main.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| Q1 | Executive summary 2026-11-19 update (reserve list, live re-read, URL ambiguity) | **done** | `arena/9b56a906-korea1` | `pipeline/render_site.py`, `executive-summary.html` |
+| Q2 | End-to-end build + test + link/source verification | **done** | `arena/9b56a906-korea1` | `Makefile`, `pipeline/*`, `tests/*`, generated root HTML |
+| Q3 | Official-source verification of pages the site cites | **done** | `arena/9b56a906-korea1` | nfl.com injuries Week 10, nfl.com scores Week 10 |
+| Q4 | PR + merge to main | **done** | `arena/9b56a906-korea1` | PR #116 → main, merged as 2d960be |
+
+**Q2 — end-to-end verification (local).**
+- `make build`: exit 0, **0 failing checks**, 51 canonical pages, 6,767 table rows, every row with an official/primary reference, 61 pages, all internal links/anchors/assets resolve, no external CDN.
+- `make test`: **382 passed, 1 skipped**.
+- `tests/check_rebuild.py`: 0 changed files (build is a fixed point).
+
+**Q3 — official sources read live (page-fetch tool; the sandbox shell cannot reach nfl.com — TLS refused — so reads were made through the page-fetch tool and are quoted by URL).**
+- https://www.nfl.com/injuries/league/2026/reg10 — Week 10 injury report. Confirmed: DET Kerby Joseph (Out), DET Cade Mays (Out), DET D.J. Reed (Out), plus WAS/NYG/NE rows. Every cited value matches the committed capture.
+- https://www.nfl.com/scores/2026/week-10 — Week 10 scores. Confirmed: Commanders 24–21 Giants, Patriots 10–35 Lions, Chiefs 35–13 Falcons, and all other Week 10 finals. Matches the committed results feed and forward ledger.
+
+**Irregularities.** None introduced by this session. The pre-existing flagged register on `flagged.html` is unchanged; flagged items do not block merge.
+
+**Research verdict (unchanged).** 0 of 18 canonical strategies pass all eight fail-closed gates. No prize, capital allocation or profitable recommendation is authorized. The model trails the closing market on all three originated markets. No backtest number appears on the leaderboard.
+
+**Q4 — PR and merge.** PR #116 opened from `arena/9b56a906-korea1` to `main`: https://github.com/karagemop466-tech/Korea1/pull/116. Merged without waiting as merge commit 2d960be. `main`/`origin/main` now at 2d960be.
+## Session `arena/6ec7369c-korea1` — 2026-11-19 final integration + independent official-source spot-check (claim)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| I1 | Re-run deterministic build + full test suite on the 2026-11-19 base; independently re-read three official NFL.com pages (Week 10 injury report, November reserve list, KC-at-ATL game centre) and compare against committed captures; record verdicts with source links; final integration: PR to `main`, merge, confirm Pages deploy | **in progress** | `arena/6ec7369c-korea1` | `COORDINATION.md` (this session's section only), `data/live/spotcheck_2026_11_19/spotcheck_2026_11_19.csv` (new) |
+
+**Starting state:** branch `arena/6ec7369c-korea1` at `3c02fb2` (gamebooks capture 2026-11-19T12:14Z), equal to `origin/main`. `make build` (0 failing checks) and `make test` (382 passed, 1 skipped) both green before any edit; `git status` clean after build (committed outputs match a fresh build). Pages API reports `status: built`, source `main:/`, latest build 2026-11-19T12:14:36Z. Sandbox egress is limited to GitHub/npm/PyPI hosts, so the live site cannot be curled from here; official pages are re-read with the page-fetch tool instead.
+
+**Spot-check results (independent re-reads, 2026-11-19, `data/live/spotcheck_2026_11_19/spotcheck_2026_11_19.csv`):**
+
+| Check | Official page | Verdict |
+|---|---|---|
+| SC-01 Lions trio (Joseph / Mays / Reed) game status | [NFL Week 10 injury report](https://www.nfl.com/injuries/league/2026/reg10) | **MATCH** — live Out/Out/Out = committed 2026-11-18 capture; the 2026-11-12 blanks are correctly preserved as point-in-time evidence |
+| SC-02 WAS/NYG report shape | [NFL Week 10 injury report](https://www.nfl.com/injuries/league/2026/reg10) | **MATCH** — 2 Out (Patrick, Yankoff) + 1 Questionable (Harrison) |
+| SC-03 Malik Willis on November reserve page | [NFL reserve list, Nov 2026](https://www.nfl.com/transactions/league/reserve-list/2026/11) | **CONFIRMS FLAG F-2026-11-19-06** — absent from the live rolling window; absence is not availability |
+| SC-04 KC-at-ATL venue | [NFL game centre](https://www.nfl.com/games/chiefs-at-falcons-2026-reg-10) | **MATCH** — ATLANTA, GA / MERCEDES-BENZ STADIUM |
+| SC-05 KC-at-ATL final (35–13) vs results feed | [NFL game centre](https://www.nfl.com/games/chiefs-at-falcons-2026-reg-10) | **SOURCE MOVED** — committed row is a correct pre-kickoff freeze; settlement is a forward-ledger/CI step, no evidence file hand-edited |
+| SC-06 Live site serving | [GitHub Pages API](https://api.github.com/repos/karagemop466-tech/Korea1/pages) | **MATCH** — `status: built`, source `main:/` |
+
+No value on any page was changed by this check. No dated capture was overwritten. Betting-strategy gates remain fail-closed: no strategy is newly declared validated and no reward is awarded by this integration pass.
+
+**I1 outcome.**
+
+- **PR [#114](https://github.com/karagemop466-tech/Korea1/pull/114)** from `arena/6ec7369c-korea1` → `main`; CI `verify` **pass** (run [44525414134](https://github.com/karagemop466-tech/Korea1/actions/runs/44525414134), 3m30s). Merged without waiting at 2026-11-19T12:40Z as merge commit `ddfeb7e7999b7dc34d8baa97d92e1e8461496f29` (`gh pr merge 114 --merge`).
+- **Conflict resolved, sibling work kept:** `main` advanced to `dbaf615` (PR #117, session `arena/9b56a906-korea1`) after the branch was opened. `COORDINATION.md` conflicted; the rebase kept **both** sections (631c3566/9b56a906 records preserved verbatim, this session's section appended). Nothing was discarded. After the rebase: `make build` 0 failing checks (6,768 rows, 61 pages), `make test` 382 passed / 1 skipped, and the build was a fixed point (0 changed files).
+- **Post-merge checks on `ddfeb7e`:** `Verify site` **success** (push event); `pages build and deployment` **success**. Pages API: `status: built`, source `main:/`. Latest build `2026-11-19T12:40:04Z` = `ddfeb7e`.
+- **Live read-back:** https://karagemop466-tech.github.io/Korea1/ served the merged dashboard — research-only banner, 0 validated strategies, 18 research candidates, the strict evidence view with blank ROI/adjusted-p cells and a White (2000) reference per row, and the 2026-11-14 brief cards. The status quo is unchanged and correct: no edge is claimed.
+- **Task I1: done.** No page value changed; no dated capture overwritten; no strategy validated; no reward awarded.
+
+---
+
+## Session `arena/eeba949e-korea1` — 2026-11-19: repair the official Game Book capture chain and publish the consumer half (claim)
+
+**Board read first.** The last session log on this board is 2026-11-19T08:10Z (`arena/db0e98e2-korea1`, PR #113).
+Three sibling pull requests are still open (#84, #87, #102, all last updated 2026-11-18) and are **not** touched by this
+session; none of them claims the scope below. Baseline verified before the claim: `make build` exit 0, 0 failing checks,
+`tests/check_sources.py` 51 canonical pages / 6,764 rows, `tests/check_links.py` 61 pages, `git status --porcelain`
+empty (the committed tree is a fixed point of the generators).
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| E1 | Board claim + session log | **in progress** | `arena/eeba949e-korea1` | `COORDINATION.md` (own section only) |
+| E2 | **Repair the official schedule / game-centre readers** so the league's published fixture facts are actually read (the capture currently parses 0 fixtures), and fix the capture URL and Game Book link extraction | **unclaimed** | `arena/eeba949e-korea1` | `pipeline/official_games.py`, `pipeline/fetch_official_games.py`, `tests/test_gamebooks_consumer.py` (new) |
+| E3 | **Fixture-context feature set built only from published schedule facts** (RX-14) | **unclaimed** | `arena/eeba949e-korea1` | `pipeline/fixture_context.py` (new), `data/processed/fixture_context.csv` (new) |
+| E4 | **Availability graph as a first-class dataset** — who was expected to start, who actually did (RX-10) | **unclaimed** | `arena/eeba949e-korea1` | `pipeline/availability_graph.py` (new), `data/processed/availability_graph.csv` (new) |
+| E5 | **Publish the official-evidence page** (captured documents, fixtures, fixture context, availability graph) | **unclaimed** | `arena/eeba949e-korea1` | `pipeline/render_gamebooks.py` (new), `gamebooks.html` (new) |
+| E6 | Integration: NAV entry, one index card, page lists, Makefile, README link, executive-summary block, workflow trigger; PR → `main`, merge, Pages | **unclaimed** | `arena/eeba949e-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `pipeline/render_summary.py` (own block only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile`, `.github/workflows/gamebooks.yml`, `README.md` (one link), `COORDINATION.md` |
+
+**Why this scope, and the defect that defines it.** The Game Book capture layer was built and merged by
+`arena/99b908ab-korea1` (PRs #78 and #82), and its own workflow, `.github/workflows/gamebooks.yml`, already calls three
+modules that do not exist: `pipeline/availability_graph.py`, `pipeline/fixture_context.py` and
+`pipeline/render_gamebooks.py`. The capture runs (the last run committed at `3c02fb2`, 2026-11-19T12:14Z) but it
+captures **nothing usable**:
+
+* `data/evidence/official_games/manifest.json` records `game_centres: []` and `game_books: []` — zero game centres and
+  zero Game Books were ever read;
+* the two captured schedule pages have **identical** `raw_sha256` (`6ad52b57…`) and identical byte counts, so the
+  capture read the same document twice;
+* that document is the league's current-week schedule page, not the requested week's page, and it contains **no**
+  `/games/` anchor at all (0 matches), so `parse_schedule_page()` returns an empty list and the whole chain is dead.
+
+This is a measured defect, not an assumption: the capture is on the league's own site, which moved its schedule page to a
+server-rendered Next.js app whose fixture data lives in the page's RSC payload. The fix is in the readers, and the
+consumer half (the datasets and the page the workflow already expects) is what this session builds.
+
+**Sources for everything in scope (official NFL documents only).**
+
+* the league's own weekly schedule page, e.g. <https://www.nfl.com/schedules/2026/by-week/reg-10> — the form the league's
+  own game-centre records already cite in `data/forward/official_schedule.csv` (`source_page`);
+* the fixture's game centre, e.g. <https://www.nfl.com/games/bills-at-jets-2026-reg-10> — the league's Game Info block
+  (`LOCATION`, `STADIUM`), the `GameBook` module and its "Download Game Book (PDF)" link;
+* the official Game Book PDF the game centre links, e.g.
+  <https://static.www.nfl.com/image/upload/v1794829722/gamecenter/ab789ac9-4feb-11f1-abca-2c54536568a9.pdf> — date, start
+  time and time zone, officials, game-day weather, roof and surface designation, venue line, both starting lineups, the
+  substitution lists, the "Did Not Play" lists and the "Not Active" lists.
+
+**Verification corpus available without the network.** The sandbox cannot reach `www.nfl.com` or
+`static.www.nfl.com` (TLS refused, curl error 35, measured 2026-11-19T12:18Z), so the readers are exercised against
+documents the repository already holds and hashes: the committed official schedule capture
+(`data/evidence/official_games/schedule/REG10.html.gz`, SHA-256 recorded in the manifest) and the thirteen committed
+official game-centre captures under `data/forward/raw_captures/` (each with its HTTP status, byte count and SHA-256 in
+`data/forward/official_candidates.csv`).
+
+**Rules this session holds itself to.** Nothing is inferred: a field the official document does not print stays blank and
+the row says why. No page is published without an official source link on every table row. `make build` and `make test`
+must be green, and `tests/check_rebuild.py` must report no drift, before any pull request is opened.
+
+**2026-11-19 session log — `arena/eeba949e-korea1` (E1–E6).**
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| E1 | Board claim + session log | **done** | `arena/eeba949e-korea1` | `COORDINATION.md` (own section only) |
+| E2 | Repair the official schedule / game-centre readers and the capture URL + Game Book link extraction | **done** | `arena/eeba949e-korea1` | `pipeline/official_payload.py` (new), `pipeline/fetch_official_games.py`, `tests/test_gamebooks_consumer.py` (new) |
+| E3 | Fixture-context feature set built only from published schedule facts (RX-14) | **done** | `arena/eeba949e-korea1` | `pipeline/fixture_context.py` (new), `data/processed/fixture_context.csv`, `data/processed/week_windows.csv`, `data/processed/official_documents.csv` |
+| E4 | Availability graph as a first-class dataset (RX-10) | **done** — the expectation side; the actual side waits on the league's Game Book | `arena/eeba949e-korea1` | `pipeline/availability_graph.py` (new), `data/processed/availability_graph.csv`, `data/processed/official_inactive_lists.csv` |
+| E5 | Published page for the layer | **done** | `arena/eeba949e-korea1` | `pipeline/render_gamebooks.py` (new), `gamebooks.html` (new) |
+| E6 | Integration: NAV entry, one index card, page lists, Makefile, README link, executive-summary block, workflow trigger | **done** | `arena/eeba949e-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list + one allow-list host only), `pipeline/render_summary.py` (own block only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile`, `.github/workflows/gamebooks.yml`, `README.md` |
+
+**The defect this session found, measured not assumed.** The Game Book capture layer was merged by
+`arena/99b908ab-korea1` (PRs #78, #82) and its own workflow already called three modules that did not
+exist (`pipeline/availability_graph.py`, `pipeline/fixture_context.py`, `pipeline/render_gamebooks.py`).
+The capture itself ran but read nothing usable:
+
+- `data/evidence/official_games/manifest.json` — `game_centres: []`, `game_books: []`;
+- the two captured schedule pages share the SHA-256 `6ad52b574dd3f6c8bc84442c3ce3d2a4e2c7c4a4855d69d9d02a22fc5d637fce`
+  and the same byte count — the same document was captured twice;
+- that document is the league's **current-week** page, not the requested week's page: the capture asked
+  for Weeks 9 and 10 and was served Week 11 for both;
+- the page contains **no** `/games/` anchor (0 matches in 2,290,985 bytes), so `parse_schedule_page()`
+  returned an empty list and the chain was dead end to end.
+
+**The fix, and why it is a reader fix.** nfl.com serves the schedule as a server-rendered Next.js
+application; the week's fixtures live in the page's RSC flight payload, not in the markup. The new
+`pipeline/official_payload.py` reads that payload — the league's own published JSON — and merges the
+page's two complementary copies of each fixture (one carries the week, the venue, the status and the
+kickoff instant; the other carries the club abbreviations, the league's Elias and GSIS identifiers and
+the flexibility flags). The capture now uses the URL form the league's own game-centre records already
+cite (`https://www.nfl.com/schedules/<season>/by-week/reg-<week>`, see `source_page` in
+`data/forward/official_schedule.csv`) and reads the Game Book from the game centre's own
+"Download Game Book (PDF)" module rather than from the first PDF URL that happens to be in the markup.
+
+**Verified against documents the repository already holds (no network).** The sandbox cannot reach
+`www.nfl.com` or `static.www.nfl.com` (curl error 35, `SSL_ERROR_SYSCALL`, measured 2026-11-19T12:18Z),
+so the readers were exercised against the committed official captures: the schedule page
+(`data/evidence/official_games/schedule/REG10.html.gz`, hashed in the manifest) and the thirteen committed
+game-centre pages under `data/forward/raw_captures/`. The game-centre reader returns the league's
+`LOCATION` and `STADIUM` and the Game Book PDF link for all thirteen.
+
+**What is published now.** 13 fixtures for Week 11 2026 read from the league's own schedule payload —
+both clubs, the kickoff instant, the week, the status, the category, the venue, the broadcast networks,
+the Elias and GSIS identifiers and the clubs on a bye — and 544 availability-graph rows joining the
+club's own depth chart (rank 1, with the chart's capture time and whether it was known before kickoff) to
+the Game Book's actual starter. The actual side is **blank on every row**, because no official Game Book
+has been captured; each row says so, and the page prints the gate and the number that would clear it.
+
+**Irregularity published, not corrected by assumption.** The capture requested Weeks 9 and 10 and was
+served the Week 11 document for both. The document register publishes the requested week, the published
+week and the disagreement; the fixture rows carry both weeks and `week_matches_url = NO`. This is a
+finding about the capture, not a fact about the schedule, and it is left visible.
+
+**Cross-session edits, recorded as the board requires.** Three request registers (CR1
+`pipeline/request_register.py`, CS5 `pipeline/request_register_2026_11_18.py`, NR
+`pipeline/request_register_20261118.py`) stated that these artefacts did not exist. The NR register
+carries a **fail-closed contract** (`absent(...)` + `assert_contract`): the build failed with
+`R-23: a file the register says is absent now exists — update the row`, which is the contract working
+as designed. The rows were therefore re-derived against the artefacts — R-23, R-27, R-28, R-30, R-31 in
+the NR register; REQ-10, REQ-14, REQ-23, REQ-25 in CR1; RR-10, RR-14, RR-23, RR-25 in CS5 — and the
+CS5 status vocabulary was closed back to its allowed set (`DONE` / `PARTLY DONE`), with the
+explanation moved into the `done` field. No other session's file content was discarded and no sibling
+branch was touched.
+
+**Open items (published, not blocking).** No official Game Book has been captured, so no actual starter
+is confirmed, no inactive list is published and no replacement depth is computed. The capture job now
+re-runs whenever a reader changes, so the next scheduled run (03:47 and 15:47 UTC) reads the repaired
+reader and commits what it captures.
+
+**2026-11-19 merge record — `arena/eeba949e-korea1`.** While PR #120 was open, `main` advanced twice with
+sibling sessions' work: PR #114 (`arena/6ec7369c-korea1`, the 2026-11-19 independent spot-check
+SC-01…SC-06 and the new `data/live/spotcheck_2026_11_19/` evidence) and PR #117
+(`arena/9b56a906-korea1`, the executive-summary update), plus `arena/831c3566-korea1`'s integration
+record. This branch was merged with `origin/main`; the conflicts and how each was resolved:
+
+| File | Conflict | Resolution |
+|---|---|---|
+| `COORDINATION.md` | both sides appended a session section | **both kept**: the three sibling sections and this session's section are all present, sibling sections first |
+| `EXECUTIVE_SUMMARY.md` | both sides rewrote the same generated file | regenerated from `pipeline/render_summary.py`, which carries this session's block *and* the sibling's 2026-11-19 update |
+| `assets/data/verification_report.csv`, `data/processed/verification_report.csv` | both sides regenerated | regenerated by `pipeline/verify_site.py` after the merge |
+| `repo-review.html` | both sides regenerated | regenerated by `pipeline/session_review.py` after the merge |
+| `pipeline/render_site.py` | auto-merged | verified: this session's NAV entry and index card **and** the sibling's executive-summary section are both in the file |
+| `data/live/spotcheck_2026_11_19/spotcheck_2026_11_18.csv` | added by the sibling | kept unchanged |
+
+No sibling content was discarded and no sibling branch was pushed to, closed or rebased. The build was
+re-run **after** the last conflict was resolved, as the board rule requires, and the derived outputs were
+regenerated rather than hand-merged.
+
+**One fact the sibling's record corrected, and which this session adopted.** Session
+`arena/831c3566-korea1` read the league's weekly schedule page live on 2026-11-19 at
+`https://www.nfl.com/schedules/2026/by-week/week-10` and confirmed the Week 10 schedule with all
+fourteen games final. This session had used the `by-week/reg-<week>` form — the form the league's own
+game-centre records cite in `data/forward/official_schedule.csv` (`source_page`). Both forms are
+therefore in use and both are cited by official records, so the capture now **tries both** and keeps the
+one whose page publishes the week it asked for (`pipeline/fetch_official_games.py::week_path_forms`).
+The week is still read out of the page, never assumed from the URL.
+
+A second merge followed: PR #119 (`arena/6ec7369c-korea1`, the final integration record) landed on `main`
+while this branch was being pushed, and the board log conflicted again in the same way — both sides were
+kept and the derived outputs were regenerated once more. A `git pull --rebase` was attempted first and
+aborted for exactly that reason: rebasing replays this branch's commits and re-creates an append
+conflict on the same file. **Merging is the correct operation here**, because the board is an append-only
+log that several sessions write at the end of the file.
+
+**Verification after the merge.** `make build` exit 0 with 0 failing checks; `make test` **403 passed,
+1 skipped**; `tests/check_rebuild.py` 0 changed files.
+
+**Q1 merge record — `arena/58529315-korea1`.**
+- **PR [#118](https://github.com/karagemop466-tech/Korea1/pull/118)** merged with a merge commit as `1eb6d12a6105804d1eb54c9e58b4e13f77e784a4` (`gh pr merge 118 --merge`). `main` moved four times during this session (PRs #114, #115, #117, #119, #120 by sibling sessions); each time `origin/main` was merged in, the tree was rebuilt and retested, and the merge ran only when `main` was unchanged from the tested commit.
+- **Main was red at the start of the final merge attempt, and this PR repaired it.** Sibling commit `75ea927` (`gamebooks: official capture 2026-11-19T12:57Z`) committed 42 official Game Book PDF captures (`assets/data/official_gamebooks.csv`, raw sha256 per row) and the structured table `data/processed/official_gamebook_rosters.csv` (2,295 rows over 29 games; 348 rows marked `lineup_unreadable`). `tests/test_requirement_annex_2026_11_18.py::test_outputs_that_block_many_rows_are_still_missing` was a tripwire that expected no Game Book capture, so it failed on `main` itself. Repair (on this branch only): the annex text that said "no capture committed" is corrected to the real state, and the tripwire now asserts the real counts (42 captures; 2,295 rows over 29 games; 348 unreadable). R28, R45, R60 and R62 stay **blocked**: the unreadable blocks, the missing expected-vs-actual join, and venue coverage are still open. Nothing was reclassified to done.
+- Checks: `Verify site` on the merge commit `1eb6d12`: in progress at record time, see the run link above; the PR-head runs were green. Pages `pages-build-deployment` **success** and `built` at `1eb6d12`. Live: `competition.html` served on the public site (read via the page-read tool).
+
+**Open irregularities for review (new, found in this session).**
+- The rules table in `data/integration/competition_rules.csv` (rule R2 "Divisions") still lists three divisions (S, P, X). The page now shows four (Division Y, same-game parlays, empty). R2 is a rule text, so it was not edited here; it needs an owner decision on the wording.
+- The Game Book table has 348 `lineup_unreadable` rows and covers 29 of 42 captured games. It is not a complete starter record, and nothing in the annex treats it as one.
+- Venue coverage: `assets/data/official_gamecentres.csv` has 42 game-centre rows with venue columns. It is not shown to cover every fixture, so R60 stays blocked.
+- The same-game-parlay division has no candidate, so the division has no standing to rank.
 ## Session `arena/7cbb2e60-korea1` — 2026-11-19 official schedule / game-centre / Game Book capture repair (claim)
 
 **Board read first.** Every task row above was read before claiming; open PRs #19/#24/#30/#38/#47/#47/#56/#58/#70/#73/#84/#87/#102 belong to other sessions and are not touched. A sibling session `arena/e6daadf0-korea1` is running an independent current-tree release audit (commit observed on its branch today); this session's scope below does not overlap its docs/audit scope except in append-only `COORDINATION.md`. The Arena platform pins this session to branch `arena/7cbb2e60-korea1`, so that is both the task and the integration branch.
@@ -4167,3 +4444,22 @@ Nothing above changes a published value; the repair and the new page follow in t
 **Verification.** `make build`: exit 0, 0 failing checks, 52 canonical pages / 6,767 rows strict source-checked, 62 pages link-checked. `make test`: **396 passed, 1 skipped** (35 in `tests/test_gamebooks.py`, including mutation-style parser tests and a week-agnostic test on the committed capture). Rebuild is a fixed point: second build → 0 changed files, `tests/check_rebuild.py` exit 0. **Fresh clone** of the pushed branch (`/tmp/fresh-korea1`): `make build` exit 0 with 0 drift, `make test` 396 passed, `check_rebuild` exit 0. One one-build register lag was observed and converged (R-70 counts `EXECUTIVE_SUMMARY.md` rows; `request_register_20261118.py` runs before `render_summary.py` in the `site` target — pre-existing ordering, not changed here).
 
 **Not claimed (stated honestly).** No game-centre or Game Book row is published yet: the sandbox cannot reach nfl.com, so real captures come from the scheduled runner after merge (the workflow-file edit re-triggers it on push to `main`). REQ-10/REQ-14/REQ-23/REQ-25 register statuses stay as published until that capture is verified; closing those rows is follow-up work, not this session's claim. No strategy, gate, reward or published research number was changed.
+
+### GC-INT (arena/7cbb2e60-korea1, 2026-11-19): merge of `origin/main` `a6d6a18` (PR #121, sibling `arena/58529315-korea1` / `arena/eeba949e-korea1` work) into this branch — integration record
+
+**What was taken from main (sibling work preserved, never discarded):** `pipeline/official_payload.py` (RSC-flight payload reader), their `pipeline/fetch_official_games.py` structure (by-week `reg-N` + `week-N` forms, `published_week` read from the page, roster/CSV outputs), their `pipeline/render_gamebooks.py` → `gamebooks.html` (fixture context, availability graph, inactive lists, week windows, gates), their `tests/test_gamebooks_consumer.py`, their committed captures (42 centres, by-week schedule pages weeks 9/10/11 all `week_matches_url=true`), NAV/minicard/Makefile registrations for `gamebooks.html`. This branch's work kept: `official_games.py` parser repairs (their fetch already calls `parse_schedule_page` as fallback — the fix upgrades their chain), fail-loud pins, `gamecentre.html` (renamed renderer `pipeline/render_gamecentre.py`), flags F-2026-11-19-08/-09, executive-summary block.
+
+**Irregularities found during integration and repaired (evidence first):**
+1. **Thirteen future fixtures published as "Game Book captured" were the league's Record & Fact Book.** Root cause: `official_payload._PDF_HREF` matched *any* static PDF, and the unplayed game-centre page references `…/media-guides/2026/2026-Record-and-Fact-Book.pdf`. Measured: `official_gamebooks.csv` week-11 rows (13) all pointed at that one URL; first wrong file sha256 `0fe438899c8d18ece74ff5d50427ada4a936502f6a5c510290e6cfea2a0a336d`. Repaired: pattern now requires `/gamecenter/`, fetch rejects and records `gamebook_url_rejected`, the 13 evidence files removed, centres/manifest blanked, books CSV 42 → **29** (the 29 genuine finished-game books).
+2. **Zero readable starters in the committed roster table (348 `lineup_unreadable`).** Measured: real books pad inside the cell (`WR     14 A.Williams`, five spaces) and print four-letter `EDGE`; the two-space column split cannot read that. Repaired: `_CELL_TOLERANT` (four pos-jersey-name cells left-to-right, wide-gap split retained as fallback) + two-word surnames (`G.Van Roten`, `A.St. Brown`). Offline re-read of the committed captures (same bytes, fixed parser): **1,276 printed starters over 29 games (44 per game), 29 unreadable rows = the one club-header line per game**.
+3. **Game Book identification strip shares one printed line** (`Date: …  Club at Club  Start Time: …`, venue on the next line): title/date/start were swallowing each other. Repaired with `_BOOK_DATELINE` / `_BOOK_VENUE_AT` (own-line forms kept for the synthetic fixtures).
+4. **Availability graph could never join (1,714/1,714 "NOT CONFIRMED")** — starters were keyed by printed club name while the graph is keyed by club code. Repaired: side-based keys. Then **name format**: chart prints `Brandon Coleman`, book prints `B.Coleman` → `_same_player` (surname equality + initial or prefix + printed-fragment check; suffixes dropped). Outcomes now: **356 CONFIRMED, 75 REPLACEMENT, 240 CO-STARTERS, 1,043 NOT CONFIRMED (unplayed week-11 fixtures only)**. Spot-checked: `Travis Kelce → N.Gray` (rank 2, listed) is a real replacement; `Brandon Coleman → B.Coleman` is a real confirmation.
+5. **`gamebooks.html` gates printed "not captured" for Game Books/centres/inactives while 29/42/348 rows were held** — hardcoded `EMPTY` states. Repaired: data-driven counts from `official_documents.csv` / the inactive table.
+6. **Register re-read (their own rule: "any change in these counts must be reviewed"):** R28 and R62 re-classified **BLOCKED → DONE** with reviewed counts (join built; roster readable), F-54 **open → repaired (2026-11-19)** with the full account above; `tests/test_requirement_annex_2026_11_18.py` pinned counts updated (29 books / 3,252 rows / 29 unreadable) — **note for the next session: the next capture changes these counts again and the pinned test will go red by design; re-read before editing.**
+7. Their `official_inactive_lists.csv` club column was polluted with the date line — same root as (3) (book titles swallowed the date); the re-read fixes it through the roster table their builder reads.
+
+**Fail-loud contract (REQ-63) grafted onto their fetch:** exit 2, no CSV/manifest written, `manifest-rejected.json` diagnostics — fatal on: week with no readable schedule page; published week ≠ requested; 0 fixtures parsed; slug-week mismatch; schedule vs `/scores/<season>/week-<n>` fixture-set disagreement (new scores cross-check recorded in the manifest); centre with no printed venue; FINAL fixture (league's own word on the same page) with no Game Book link; book whose printed matchup fails the slug check; no M/D/YYYY date line; <40 readable starter cells; missing Not Active list; any manifest error. Their own `return 0`-despite-errors behaviour is gone.
+
+**Cross-scope edits logged (file → why):** `pipeline/render_gamebooks.py` (their E5 page: gate states made factual; name-rule sentence added to the graph prose), `pipeline/availability_graph.py` (join keys + `_same_player` — REQ-25 cannot work otherwise), `pipeline/official_payload.py` (gamebook link pattern — root cause of the Fact Book capture), `pipeline/req_annex_2026_11_18.py` (R28/R62/F-54 re-read, their own instruction), `tests/test_gamebooks_consumer.py` (premise "anchor reader finds nothing" is obsolete — replaced with payload/anchor agreement test), `tests/test_requirement_annex_2026_11_18.py` (pinned counts reviewed). In every case sibling data and structure were extended, not deleted; both `gamebooks.html` and `gamecentre.html` ship, cross-linked.
+
+**Verification at this commit:** `make build` exit 0 — 0 failing checks, **53 canonical pages / 10,011 strict rows / 63 pages link-checked**; `make test` **422 passed, 1 skipped**; rebuild is a fixed point (tree hash identical across consecutive builds). Post-commit: `check_rebuild.py` + fresh clone (recorded in the next entry). Honest limits: the new fetch has not yet run on the runner (next scheduled 03:47/15:47 UTC; the push to main re-triggers it via the workflow paths) — if it goes red, the printed reasons are the review list; the 1,043 NOT CONFIRMED graph rows are unplayed week-11 fixtures, not a defect.

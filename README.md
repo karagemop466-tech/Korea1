@@ -28,6 +28,12 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `decision-board.html` — suggestions with options, to review and choose before any change is made
 - `open-questions.html` — what is known, what is missing, how to find it
 - `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
+- **`gamebooks.html`** — **the official Game Book evidence layer**: the league's own schedule page, game
+  centre and Game Book, each captured with its URL, HTTP status, byte count and SHA-256; the fixture
+  context built only from published schedule facts; and the availability graph — who the club's own depth
+  chart expected to start against who the league's Game Book says actually started. The actual side is
+  blank on every row until a Game Book is captured, and each blank says why (added 2026-11-19,
+  `arena/eeba949e-korea1`)
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
 - `price-archive.html` — opening and closing numbers we actually hold: 2011–2021 archive opens,

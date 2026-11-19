@@ -29,12 +29,17 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/gamebooks.yml'
+      # The capture re-runs when a reader changes: a parser fix is only
+      # useful if the documents are read again with it (arena/eeba949e-korea1).
+      - 'pipeline/fetch_official_games.py'
+      - 'pipeline/official_games.py'
+      - 'pipeline/official_payload.py'
   workflow_dispatch:
     inputs:
       weeks:
-        description: "Regular-season weeks to capture (e.g. 1-11, or 9,10)"
+        description: "Regular-season weeks to capture (e.g. 1-11, or 9,10,11)"
         required: false
-        default: "9,10"
+        default: "9,10,11"
       gamebook_weeks:
         description: "Weeks whose Game Book PDFs are captured (blank = every finished game)"
         required: false
@@ -69,13 +74,15 @@ jobs:
         run: |
           python pipeline/fetch_official_games.py \
             --season 2026 \
-            --weeks "${{ github.event.inputs.weeks || '9,10' }}" \
+            --weeks "${{ github.event.inputs.weeks || '9,10,11' }}" \
             ${{ github.event.inputs.gamebook_weeks && format('--gamebook-weeks {0}', github.event.inputs.gamebook_weeks) || '' }}
       - name: Rebuild the official-evidence tables and the published pages
         run: |
+          # The fixture context is read first: the availability graph is
+          # keyed on it (arena/eeba949e-korea1).
           if [ -f pipeline/render_gamebooks.py ]; then
-            python pipeline/availability_graph.py
             python pipeline/fixture_context.py
+            python pipeline/availability_graph.py
             python pipeline/render_gamebooks.py
           fi
           make build
@@ -84,7 +91,7 @@ jobs:
           python pipeline/verify_site.py
           python tests/check_sources.py
           python tests/check_links.py
-          python -m pytest -q tests/test_gamebooks.py
+          python -m pytest -q tests/test_gamebooks.py tests/test_gamebooks_consumer.py
       - name: Keep the raw official response bytes as an artifact
         if: always()
         uses: actions/upload-artifact@v4

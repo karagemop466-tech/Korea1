@@ -24,7 +24,9 @@ PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html",
        # RX1 (arena/7aae360e-korea1, 2026-11-18): the register evidence annex.
        "register-evidence-2026-11-18.html",
        # GC2 (arena/7cbb2e60-korea1, 2026-11-19): official game-centre / Game Book evidence.
-       "gamecentre.html"]
+       "gamecentre.html",
+       # E5 (arena/eeba949e-korea1, 2026-11-19): the official Game Book evidence page.
+       "gamebooks.html"]
 def main():
     problems=[]; total=0
     for name in PAGES:

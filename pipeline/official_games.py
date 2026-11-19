@@ -272,6 +272,13 @@ _BOOK_TITLE = re.compile(r"^(?P<away>.+?)\s+at\s+(?P<home>.+?)\s*$", re.M)
 _BOOK_DATE = re.compile(r"^\s*Date:\s*(?P<v>.+?)\s*$", re.M)
 _BOOK_START = re.compile(r"^\s*Start Time:\s*(?P<v>.+?)\s*$", re.M)
 _BOOK_VENUE = re.compile(r"^\s*(?P<v>\d{1,2}/\d{1,2}/\d{4}\s+at\s+.+?)\s*$", re.M)
+# The real capture prints date, matchup and start time on ONE line, and the
+# venue alone on the next (``at MetLife Stadium, East Rutherford, NJ``).
+_BOOK_DATELINE = re.compile(
+    r"^\s*Date:\s*(?P<date>[A-Za-z]+day,\s*\d{1,2}/\d{1,2}/\d{4})\s+"
+    r"(?P<away>.+?)\s+at\s+(?P<home>.+?)\s+Start Time:\s*(?P<time>\d{1,2}:\d{2}\s*[AP]M\s*\w*)\s*$",
+    re.M)
+_BOOK_VENUE_AT = re.compile(r"^\s*at\s+(?P<v>[A-Z].+?)\s*$", re.M)
 _BOOK_WEATHER = re.compile(r"^Game Weather:\s*(?P<v>.*?)(?:\s+Temp:|\s*$)", re.M)
 _BOOK_TEMP = re.compile(r"Temp:\s*(?P<t>[-\d]+)°\s*F.*?Wind:\s*(?P<w>[A-Za-z]+\s+\d+)\s*mph", re.S)
 _BOOK_ROOF = re.compile(r"^\s*(?P<v>(?:Retractable Roof|Dome|Roof).*?)\s*$", re.M)
@@ -279,11 +286,27 @@ _BOOK_SURFACE = re.compile(r"on\s+(?P<v>Grass|Field Turf|Turf|AstroTurf|Syntheti
 _BOOK_ATTEND = re.compile(r"^\s*Paid Attendance:\s*(?P<v>[\d,]+)\s*$", re.M)
 _BOOK_OFFICIALS = re.compile(r"^\s*Referee:\s*(?P<v>.+?)\s*$", re.M)
 
-_NAME = r"[A-Z][A-Za-z'\-]*\.[A-Za-z'\-]+"
+# Initial.Surname, extended for the two-word surnames the real books print
+# (``G.Van Roten``, ``A.St. Brown``).  An extra word must contain a lowercase
+# letter, so an all-caps position token (``CB``, ``OLB``, ``EDGE``) or a
+# single-letter position (``S``) still ends the name.
+_NAME = (r"[A-Z][A-Za-z'\-]*\.[A-Za-z'\-]+"
+        r"(?:[ .]+[A-Z]?[a-z][A-Za-z'\-]*)*")
 _CELL = re.compile(
     r"(?P<pos>(?:\d?[A-Z]{1,3}|OL B|CB|FS|SS))\s+"
     r"(?P<num>\d{1,2})\s+"
     rf"(?P<name>{_NAME})")
+# The four-column lineup grid pads inside a cell too: the committed Game Book
+# bytes print ``     WR     14 A.Williams`` — five spaces between position and
+# jersey — while the gap between two printed columns is about twenty.  A run
+# of two spaces therefore cannot be a column boundary here (that is why the
+# captured lineups parsed as ``lineup_unreadable`` before this pattern).
+# Measured on ``data/evidence/official_games/gamebooks/``; nothing is guessed:
+# a row that does not yield exactly four pos-jersey-name cells still falls
+# back to the wide-gap split and is flagged unreadable if it does not read.
+_CELL_TOLERANT = re.compile(
+    rf"(?<![\w.])(?P<pos>(?:\d?[A-Z]{{1,4}}|OL B|CB|FS|SS))\s+"
+    rf"(?P<num>\d{{1,2}})\s+(?P<name>{_NAME})")
 
 
 def _split_block(text: str, start_marker: str, end_markers: Iterable[str]) -> str:
@@ -307,17 +330,34 @@ def parse_game_book(text: str) -> dict:
         roof_as_printed="", surface_as_printed="", attendance_as_printed="",
         referee_as_printed="", lineups="", substitutions="", did_not_play="", not_active="",
     )
-    m = _BOOK_TITLE.search(text)
+    # The league prints the whole identification strip on one line in the
+    # captured PDFs — ``Date: Thursday, 11/12/2026   Washington Commanders at
+    # New York Giants   Start Time: 8:15 PM EST`` — with the venue on the
+    # following line (``at MetLife Stadium, East Rutherford, NJ``).  That
+    # combined line is read first so the title and date cannot swallow each
+    # other; the three own-line forms below remain as the fallback for prints
+    # (and the repository's synthetic fixtures) that set them on separate
+    # lines.  Measured on ``data/evidence/official_games/gamebooks/``.
+    m = _BOOK_DATELINE.search(text)
     if m:
+        out["date_as_printed"] = m.group("date").strip()
         out["away_as_printed"] = m.group("away").strip()
         out["home_as_printed"] = m.group("home").strip()
-    m = _BOOK_DATE.search(text)
-    if m:
-        out["date_as_printed"] = m.group("v").strip()
-    m = _BOOK_START.search(text)
-    if m:
-        out["start_time_as_printed"] = m.group("v").strip()
+        out["start_time_as_printed"] = m.group("time").strip()
+    else:
+        m = _BOOK_TITLE.search(text)
+        if m:
+            out["away_as_printed"] = m.group("away").strip()
+            out["home_as_printed"] = m.group("home").strip()
+        m = _BOOK_DATE.search(text)
+        if m:
+            out["date_as_printed"] = m.group("v").strip()
+        m = _BOOK_START.search(text)
+        if m:
+            out["start_time_as_printed"] = m.group("v").strip()
     m = _BOOK_VENUE.search(text)
+    if not m:
+        m = _BOOK_VENUE_AT.search(text)
     if m:
         out["venue_as_printed"] = m.group("v").strip()
     m = _BOOK_WEATHER.search(text)
@@ -407,6 +447,15 @@ def parse_lineup_rows(block: str) -> list[dict]:
     for line in block.splitlines():
         line = line.strip()
         if not line or re.match(r"^(Offense|Defense|Special Teams)\b", line):
+            continue
+        # Preferred path: four pos-jersey-name cells found left to right, in
+        # printed order.  It survives the padded position-to-jersey gaps the
+        # real PDF prints, which the wide-gap split cannot separate.
+        cells = list(_CELL_TOLERANT.finditer(line))
+        if len(cells) == 4:
+            for idx, m in enumerate(cells):
+                rows.append(dict(column=idx, position=m.group("pos"), jersey=m.group("num"),
+                                 player=m.group("name"), raw=m.group(0).strip()))
             continue
         cols = split_columns(line)
         if len(cols) != 4:

@@ -119,6 +119,8 @@ NAV_GROUPS = [
     ]),
     ("Availability", [
         ("availability.html", "Injuries & depth · all clubs"),
+        # E5 (arena/eeba949e-korea1): the official schedule / game centre / Game Book layer.
+        ("gamebooks.html", "Official Game Book evidence"),
         ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
         ("injury-deltas.html", "Injury & depth changes"),
         ("injuries.html", "Injury source audit"),
@@ -483,6 +485,7 @@ questions a decision actually asks.</p>
 <a class="minicard" href="lineup-deficiencies.html"><strong>8-club 1st–4th string tracker</strong><span>39 Week 10 offensive &amp; defensive injury/depth entries across WAS, NYG, NE, DET, KC, ATL, MIN &amp; GB.</span></a>
 <a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Seven official injury observations plus two club depth charts; confirmed roles stay blank.</span></a>
 <a class="minicard" href="availability.html"><strong>Injuries &amp; depth · all clubs</strong><span>Scheduled capture of the official injury report and club depth charts: who is out, who is listed next.</span></a>
+<a class="minicard" href="gamebooks.html"><strong>Official Game Book evidence</strong><span>The league's own schedule page, game centre and Game Book: the fixture context, and who was expected to start against who actually did.</span></a>
 <a class="minicard" href="injuries.html"><strong>Injury source audit</strong><span>Twelve verified official sources, two exact captures and the availability signal register.</span></a>
 </div></section>
 {_landing_governance_sections()}
@@ -713,7 +716,16 @@ every build and carried <code>"sha256": null</code> for one of the two files it 
 <li>Official game results and timestamped player availability, with archived player statistics and prop settlement rules.</li>
 <li>A frozen prospective registry of all strategy trials, followed by untouched paper-trading replication.</li>
 <li>Joint prop outcomes and actual SGP prices to test correlation rather than assume independence.</li>
-</ol><p><a class="btn" href="requirements.html">See the complete requirements matrix →</a></p></section>"""
+</ol><p><a class="btn" href="requirements.html">See the complete requirements matrix →</a></p></section>
+<section id="update-2026-11-19"><h2>Update — 2026-11-19</h2>
+<p><strong>Decision unchanged.</strong> Still no validated strategy and no reward. Nothing in this update adds evidence for an edge.</p>
+<div class="tablewrap"><table class=""><caption>Official pages re-read 2026-11-19 against committed captures</caption><thead><tr><th>Finding</th><th>Status</th><th>Official source</th></tr></thead><tbody>
+<tr><td>Reserve list — rolling window, not a complete record. The NFL.com November reserve page read live on 2026-11-19 matches the 2026-11-19 capture row for row (25 November rows). Four rows dated 11/10 from the 2026-11-18 capture are no longer on the page: Gardner Minshew (ARI), Malik Willis (MIA), Zach Sieler (MIA) and Gracen Halton (SF). Four rows dated 11/18 were added: Aidan Hutchinson (DET), Jared Wiley (KC), Bo Richter (MIN) and Mason McCormick (PIT). An absent row means not on the page at capture time — never evidence of availability.</td><td>High · open (F-2026-11-19-06)</td><td><a href="https://www.nfl.com/transactions/league/reserve-list/2026/11" target="_blank" rel="noopener">NFL.com reserve list, November 2026</a></td></tr>
+<tr><td>Live re-read agreement: 44 injury-report rows (WAS, NYG, NE, DET) and 17 November reserve-list rows compared field by field — 153 of 153 comparisons agree. Kerby Joseph, Cade Mays and D.J. Reed read Out on the live page, matching the committed capture.</td><td>Info · closed</td><td><a href="https://www.nfl.com/injuries/league/2026/reg10" target="_blank" rel="noopener">NFL.com injury report, Week 10</a></td></tr>
+<tr><td>Week 10 injury-report URL now shows page title "Week 11 of the 2026 Season" while the heading still reads "Injuries - WEEK 10". No Week 11 capture is held; the week of the page is ambiguous as read today.</td><td>Medium · open (F-2026-11-19-01)</td><td><a href="https://www.nfl.com/injuries/league/2026/reg10" target="_blank" rel="noopener">NFL.com injury report</a></td></tr>
+</tbody></table></div>
+<p class="small">All comparisons are in <code>data/live/reread_2026_11_19/comparison.csv</code> and <code>data/live/spotcheck_2026_11_19/</code>. Reads are transcriptions through a tool without attached SHA-256 or HTTP status — dated reads, not archived captures.</p>
+</section>"""
     body += _exec_verification_section()
     body += _exec_requirement_register_section()
     return layout("executive-summary.html", "Executive summary", "The decision, the evidence and the limits—without a promised betting edge.", body)
@@ -1845,7 +1857,7 @@ def _flagged_2026_11_19_gc_section() -> str:
     house rule, it is printed as text, never as an unsourced table row.
     """
     rows = [[
-        "F-2026-11-19-08", "High · repair shipped, runner recapture pending",
+        "F-2026-11-19-08", "High · repair shipped, by-week recapture committed, fail-loud re-check next",
         "The capture URL <code>/schedules/&lt;season&gt;/REG&lt;week&gt;</code> did not select the week "
         "for the capture client: the committed REG9 and REG10 evidence files were byte-identical "
         "(raw SHA-256 <code>6ad52b574dd3f6c8…</code>, text SHA-256 <code>0e15c190a005f82c…</code>, "
@@ -1854,8 +1866,11 @@ def _flagged_2026_11_19_gc_section() -> str:
         "fixture slug to print the requested week, and cross-checks the fixture set against the week's "
         "scores page before anything is written. Superseded bytes are retained under "
         "<code>data/evidence/official_games/superseded/</code>; the originals remain in git history at "
-        "commit <code>3c02fb2</code>. Next: confirm the scheduled runner capture commits genuine "
-        "week-selecting evidence, then close this row.",
+        "commit <code>3c02fb2</code>. The 2026-11-19T12:53Z runner capture (session "
+        "<code>arena/58529315-korea1</code>) then committed by-week pages whose published weeks match "
+        "the requested weeks 9, 10 and 11 (manifest <code>week_matches_url=true</code>), and the "
+        "fail-loud fetch merged in this PR re-asserts every check on the next scheduled run. Next: "
+        "confirm that run stays green, then close this row.",
         src_link("https://www.nfl.com/schedules/2026/by-week/week-10",
                  "NFL by-week schedule (week 10)"),
     ]]

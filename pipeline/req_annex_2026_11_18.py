@@ -407,7 +407,29 @@ def measure(f: dict) -> dict:
     metrics = pd.read_csv(PROC / "model_metrics.csv", dtype=str, keep_default_na=False)
     multi_rank1 = (dep[dep.depth_rank.astype(int) == 1]
                    .groupby(["team", "unit", "position"]).size() > 1).sum()
+    # Game Book roster + availability-graph state (re-read 2026-11-19 after the
+    # lineup parser repair: padded position/jersey gaps and two-word surnames
+    # now parse, and the graph's expected-vs-actual join is built).
+    roster = pd.read_csv(ROOT / "data" / "processed" / "official_gamebook_rosters.csv",
+                         dtype=str, keep_default_na=False)
+    graph = pd.read_csv(ROOT / "data" / "processed" / "availability_graph.csv",
+                        dtype=str, keep_default_na=False)
+    gb_starters = int((roster.roster_block == "starter").sum())
+    gb_unreadable = int((roster.roster_block == "lineup_unreadable").sum())
+    gb_inactive = int((roster.roster_block == "not_active").sum())
+    gb_dnp = int((roster.roster_block == "did_not_play").sum())
+    gb_games = int(roster.slug.nunique())
+    gb_books = int(len(pd.read_csv(ROOT / "assets" / "data" / "official_gamebooks.csv",
+                                   dtype=str, keep_default_na=False)))
+    graph_conf = int(graph.outcome.str.startswith("CONFIRMED").sum())
+    graph_repl = int(graph.outcome.str.startswith("REPLACEMENT").sum())
+    graph_co = int(graph.outcome.str.startswith("CO-STARTERS").sum())
+    graph_joined = graph_conf + graph_repl + graph_co
     return dict(
+        gb_roster_rows=len(roster), gb_starters=gb_starters, gb_unreadable=gb_unreadable,
+        gb_inactive=gb_inactive, gb_dnp=gb_dnp,
+        gb_games=gb_games, gb_books=gb_books, graph_joined=graph_joined,
+        graph_conf=graph_conf, graph_repl=graph_repl, graph_co=graph_co,
         inj_rows=len(inj), inj_clubs=int(inj.team.nunique()),
         inj_designated=int((inj.game_status.str.strip() != "").sum()),
         inj_blank=int((inj.game_status.str.strip() == "").sum()),
@@ -534,7 +556,7 @@ def build_register(m: dict, f: dict) -> list[dict]:
            "https://github.com/karagemop466-tech/Korea1/blob/main/data/processed/strategy_gates.csv",
            "strategy_gates.csv"))
     A(item("R10", "Use proper-score leaderboard divisions (singles, game parlays, same-game parlays, prop combos)",
-           ST["partial"], f"competition.html defines three divisions; the forward record holds "
+           ST["partial"], f"competition.html defines four divisions (same-game parlays empty); the forward record holds "
            f"{m['picks'] - m['picks_2leg'] - m['picks_3leg']} singles, {m['picks_2leg']} two-leg and "
            f"{m['picks_3leg']} three-leg entries; prop-combo division empty",
            "G1; no prop prices at all", "One settled entry in every division, including a prop combo with a joint price",
@@ -637,10 +659,15 @@ def build_register(m: dict, f: dict) -> list[dict]:
            "strategy_gates.csv"))
     # ---- availability ------------------------------------------------------
     A(item("R28", "Build the availability graph as a first-class dataset (expected starter, actual starter)",
-           ST["blocked_src"], f"depth captures ({m['dep_dates']} dates) + injury captures ({m['inj_dates']} dates); "
-           f"Game Book lineups parsed but no official capture has been committed (0 official_gamebook_rosters.csv)",
-           "No official Game Book capture; no inactive list", "One committed Game Book lineup table joined to a dated depth capture",
-           "https://github.com/karagemop466-tech/Korea1/blob/main/.github/workflows/gamebooks.yml", "gamebooks.yml"))
+           ST["done"], f"depth captures ({m['dep_dates']} dates) + injury captures ({m['inj_dates']} dates); "
+           f"{m['gb_books']} official Game Books with raw sha256 (assets/data/official_gamebooks.csv); roster table committed "
+           f"(data/processed/official_gamebook_rosters.csv: {m['gb_roster_rows']} rows over {m['gb_games']} games; "
+           f"{m['gb_starters']} printed starters readable; {m['gb_unreadable']} team-header rows flagged unreadable); "
+           f"availability_graph.csv joins expected vs actual for {m['graph_joined']} position rows "
+           f"({m['graph_conf']} confirmed, {m['graph_repl']} replacements, {m['graph_co']} co-starter rows) — re-read 2026-11-19",
+           "Cleared 2026-11-19: the committed roster table is joined to the dated depth captures in availability_graph.csv",
+           "One committed Game Book lineup table joined to a dated depth capture",
+           "https://github.com/karagemop466-tech/Korea1/blob/main/data/processed/availability_graph.csv", "availability_graph.csv"))
     A(item("R29", "Do not model depth from jersey order; model it from playing time",
            ST["done"], f"jersey prefixes stripped into player_raw ({m['gb_jersey']} of {m['gb_rows']} GB rows "
            f"carried one); no jersey, experience or salary input exists in any model feature list",
@@ -717,7 +744,7 @@ def build_register(m: dict, f: dict) -> list[dict]:
            U_OPS, "NFL Operations"))
     A(item("R45", "Represent announced starters (a dated starter change), not an inferred replacement",
            ST["blocked_src"], "Game Book lineups are parsed by code but no capture has been committed; the "
-           "replacement columns stay blank", "No committed Game Book capture",
+           "replacement columns stay blank", "No dated official starter-change announcement captured",
            "One committed Game Book lineup table", U_SCHED, "NFL schedule"))
     A(item("R46", "Add an official depth-chart register with date and source per row",
            ST["verified"], f"{m['dep_rows']} rows, each with source_url and retrieved_utc "
@@ -794,8 +821,11 @@ def build_register(m: dict, f: dict) -> list[dict]:
            "clock per fixture; no dated announcement document is captured", "No announcement capture",
            "One dated official announcement beside the live page", U_SCHED, "NFL schedule"))
     A(item("R62", "Use official Game Books for actual starters and game-day status; do not infer",
-           ST["blocked_src"], "the parser exists and is tested, but the workflow has not produced a committed "
-           "capture, so nothing is inferred and nothing is published", "No committed Game Book capture",
+           ST["done"], f"{m['gb_books']} Game Books parsed from the committed captures: {m['gb_starters']} printed "
+           f"starter rows, {m['gb_inactive']} Not Active and "
+           f"{m['gb_dnp']} Did Not Play rows published on gamecentre.html "
+           f"and gamebooks.html with an official link per row; nothing inferred — re-read 2026-11-19",
+           "Cleared 2026-11-19: every captured book yields a readable lineup, a Not Active list and a Did Not Play list",
            "One committed Game Book roster table",
            "https://github.com/karagemop466-tech/Korea1/blob/main/pipeline/official_games.py", "official_games.py"))
     A(item("R63", "Stadium roof/surface and NWS hourly wind/precipitation overlay",
@@ -982,11 +1012,18 @@ def build_findings(m: dict, f: dict) -> list[dict]:
                    f"against the printed code will silently drop Arizona rows."),
              nxt="Keep the mapping explicit in the parser (done in this session's comparison) and note AZ in the source register.",
              url=U_RES, label="NFL reserve list"),
-        dict(id="F-54", sev="Medium · open",
-             text=("The official Game Book capture has never produced a committed table: "
-                   "data/processed/official_gamebook_rosters.csv does not exist, so R28, R45, R60 and R62 are "
-                   "all blocked on one missing run, not on missing code."),
-             nxt="Run .github/workflows/gamebooks.yml for weeks 1-11 and commit what it writes.",
+        dict(id="F-54", sev="Medium · repaired (2026-11-19)",
+             text=(f"Re-read reviewed 2026-11-19: the roster table now holds {m['gb_roster_rows']} rows over "
+                   f"{m['gb_games']} games with {m['gb_starters']} readable printed starters (the former 348 "
+                   f"unreadable blocks were the padded position-to-jersey gaps in the PDF layout; "
+                   f"{m['gb_unreadable']} remaining unreadable rows are the one club-header line per game, flagged, "
+                   f"never guessed). Thirteen of the former 42 'Game Books' were the league's Record & Fact Book "
+                   f"mis-captured for unplayed fixtures and were removed (29 genuine books remain). The "
+                   f"expected-vs-actual join is built: availability_graph.csv carries {m['graph_joined']} joined "
+                   f"position rows ({m['graph_conf']} confirmed, {m['graph_repl']} replacements, "
+                   f"{m['graph_co']} co-starters). R28 and R62 re-classified to DONE; R60 remains blocked on "
+                   f"venue coverage."),
+             nxt="Closed by the 2026-11-19 re-read; the next capture is held to the fail-loud pins (starters, venue, week, matchup).",
              url=U_GH_PAGES, label="GitHub documentation (workflow evidence)"),
         dict(id="F-55", sev="Low · repaired (re-reported)",
              text=(f"The Lions trio (Kerby Joseph, Cade Mays, D.J. Reed) shows a game status on every capture "

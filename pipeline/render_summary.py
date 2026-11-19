@@ -327,6 +327,67 @@ def _cr1_block():
     return '\n'.join(L)
 
 
+def _gamebooks_block():
+    """E2-E5 (arena/eeba949e-korea1) - the official Game Book evidence layer.
+
+    Every count is read from the committed artefacts; nothing is retyped.
+    """
+    import pandas as pd
+    docs_p = PROC / 'official_documents.csv'
+    fx_p = PROC / 'fixture_context.csv'
+    graph_p = PROC / 'availability_graph.csv'
+    inact_p = PROC / 'official_inactive_lists.csv'
+    if not (docs_p.exists() and fx_p.exists()):
+        return ''
+    docs = pd.read_csv(docs_p, dtype=str, keep_default_na=False)
+    fx = pd.read_csv(fx_p, dtype=str, keep_default_na=False)
+    graph = pd.read_csv(graph_p, dtype=str, keep_default_na=False) if graph_p.exists() else pd.DataFrame()
+    inact = pd.read_csv(inact_p, dtype=str, keep_default_na=False) if inact_p.exists() else pd.DataFrame()
+    n_docs = len(docs)
+    n_fx = len(fx)
+    n_graph = len(graph)
+    drift = int((docs.week_matches_url.astype(str) == 'False').sum()) if len(docs) else 0
+    n_books = int((fx.gamebook_captured.astype(str) == 'YES').sum()) if len(fx) else 0
+    n_centres = int((fx.game_centre_captured.astype(str) == 'YES').sum()) if len(fx) else 0
+    confirmed = int(graph.outcome.astype(str).str.startswith('CONFIRMED').sum()) if len(graph) else 0
+    co = int(graph.outcome.astype(str).str.startswith('CO-STARTERS').sum()) if len(graph) else 0
+    n_inact = len(inact)
+    L = []
+    A = L.append
+    A('## Update - 2026-11-19 (`arena/eeba949e-korea1`): the official Game Book evidence layer')
+    A('')
+    A('**The capture chain was dead and is now repaired.** The league\'s schedule page no longer')
+    A('prints `/games/` anchors, so the old reader found no fixture at all: the capture had stored')
+    A('two byte-identical documents and zero game centres and zero Game Books. The reader now reads')
+    A('the league\'s own published schedule payload, and the capture uses the league\'s own weekly URL')
+    A('form (`/schedules/<season>/by-week/reg-<week>`), which is the form the league\'s own game-centre')
+    A('records already cite.')
+    A('')
+    A('| What | Count | Note |')
+    A('|---|---|---|')
+    A('| Official documents captured | ' + str(n_docs) + ' | each with its URL, HTTP status, byte count and SHA-256 |')
+    A('| Fixtures published from the league\'s schedule page | ' + str(n_fx) + ' | every column printed by the league |')
+    A('| Availability-graph rows (expected starter) | ' + str(n_graph) + ' | the club\'s own depth chart, with its capture time |')
+    A('| Confirmed starters | ' + str(confirmed) + ' | needs an official Game Book |')
+    A('| Co-starter positions | ' + str(co) + ' | the club named more than one first player; none is chosen |')
+    A('| Game centres captured | ' + str(n_centres) + ' | of the fixtures above |')
+    A('| Game Books captured | ' + str(n_books) + ' | of the fixtures above |')
+    A('| Inactive / did-not-play rows | ' + str(n_inact) + ' | the league\'s game-day lists |')
+    A('')
+    if drift:
+        A('**Drift, published rather than hidden.** ' + str(drift) + ' captured schedule page(s) served a')
+        A('week other than the one the capture asked for: the 2026-11-19 capture requested Weeks 9 and 10')
+        A('and was served the same Week 11 document for both (identical SHA-256). The document register')
+        A('publishes the requested week, the published week and the disagreement, and the fixture rows')
+        A('carry both. This is recorded as an open irregularity, not corrected by assumption.')
+        A('')
+    A('The page is [Official Game Book evidence](gamebooks.html). The expectation side of the')
+    A('availability graph is complete for the fixtures read; the actual side is blank on every row')
+    A('because no official Game Book has been captured yet, and each such row says so.')
+    A('')
+    return '\n'.join(L)
+
+
 def main():
     gates=pd.read_csv(PROC/'strategy_gates.csv')
     scores=pd.read_csv(ROOT/'data/audit/nfl_com_score_audit.csv')
@@ -363,6 +424,7 @@ def main():
     _c = _cr1_block()
     _cs5 = _cs5_block()
     _q2 = _current_status_2026_11_15_block()
+    _gb = _gamebooks_block()
     text=f'''# Executive summary — NFL Line Lab
 
 Current status refreshed: 2026-11-15. Pinned research inputs: `{src['upstream']['commit_sha']}`.
@@ -378,6 +440,8 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
 {_q2}
+
+{_gb}
 
 ## Update — 2026-11-19 (`arena/db0e98e2-korea1`)
 

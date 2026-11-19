@@ -1,0 +1,932 @@
+away_as_printed,home_as_printed,date_as_printed,start_time_as_printed,venue_as_printed,weather_as_printed,temp_f,wind_as_printed,roof_as_printed,surface_as_printed,attendance_as_printed,referee_as_printed,lineups,substitutions,did_not_play,not_active,slug,season,week,official_url,game_centre_url,raw_bytes,raw_sha256,text_sha256,extraction_method,retrieved_utc
+Jacksonville Jaguars,Baltimore Ravens,"Thursday, 11/5/2026",8:16 PM EST,"M&T Bank Stadium, Baltimore, MD",Rain,70,N 4,,,,"Allen, Brad (122)                                Umpire: Woods, Marcus (71)                          Down Judge: Thomas, Sarah (53)","
+
+                             Jacksonville Jaguars                                                                 Baltimore Ravens
+                Offense                                   Defense                                       Offense                               Defense
+      TE    87 N.Boerkircher                     DE   44 T.Walker                            QB    12   J.Fagnano                    OLB   91 T.Hendrickson
+       LT   72 W.Little                          DT   93 M.Dickerson                         WR     4   Z.Flowers                     DL   96 B.Washington
+      LG    75 E.Pregnon                         DT   91 A.Armstead                           LT   79   R.Stanley                     DL   98 T.Jones
+        C   73 R.Hainsey                         DE   41 J.Hines-Allen                       LG    74   J.Simpson                     DL   92 N.Madubuike
+      RG    76 E.Cleveland                       LB   47 D.Gardeck                             C   64   C.Jurgens                    OLB   15 M.Green
+      RT    70 C.Van Lanen                       LB   23 F.Oluokun                           RG    71   O.Ioane                      ILB   32 T.Simpson
+      TE    85 B.Strange                         LB   51 V.Miller                            RT    70   R.Rosengarten                ILB    0 R.Smith
+      WR    11 P.Washington                      CB   12 T.Hunter                            TE    88   M.Hibner                      CB    3 C.Awuzie
+      TE    88 T.Koziol                          CB    1 M.Brown                             TE    87   N.Vannett                     CB   44 M.Humphrey
+      QB    16 T.Lawrence                         S   26 K.Merriweather                      WR     7   R.Bateman                      S   24 M.Starks
+      RB    33 B.Tuten                            S    6 A.Johnson                           RB    22   D.Henry                        S   14 K.Hamilton
+
+
+                                   ","                                                                    Substitutions
+CB 2 J.Lewis, WR 3 J.Meyers, CB 4 Jar.Jones, RB 5 L.Allen, WR 7 Bri.Thomas,          WR 6 J.Lane, OLB 9 Z.Young, WR 10 L.Wester, S 25 K.Wallace, RB 26 R.Ali,
+P 9 L.Cooke, WR 19 J.Cameron, RB 20 A.Abdullah, S 22 J.Huskey, RB 24                 CB 27 T.Tampa, CB 29 C.Rivers, P 30 R.Eckley, CB 38 K.Martin, S 39
+C.Rodriguez, S 25 R.Lane, LB 31 J.Tavai, LB 35 J.Mcleod, CB 36 Jay.Jones, K          K.Jackson, ILB 40 T.Buchanan, RB 43 J.Hill, K 45 J.Moody, LS 46 N.Moore, ILB
+39 C.Little, LS 46 R.Matiscik, LB 50 B.Combs, DE 57 Bry.Thomas, OL 60                49 J.Higgins, OLB 50 A.Isaac, G 72 A.Vorhees, T 76 C.Vinson, WR 81
+J.Monheim, OL 64 W.Milum, OL 68 D.Faalele, TE 80 Q.Morris, DE 92                     D.Walker, TE 85 J.Cuevas, TE 89 M.Andrews, DL 93 C.Campbell, NT 94
+D.Striggow, DT 98 A.Regis, DT 99 R.Orhorhoro                                         J.Jenkins, OLB 97 E.Burke
+
+                                   ","                                                                      Did Not Play
+QB 10 Q.Ewers                                                                        QB 16 A.Reed, G 60 K.Hergel
+
+                                    ","                                                                          Not Active
+WR 18 C.Williams, CB 21 A.Huzzie, S 42 C.Silmon-Craig, DE 90 W.Williams              CB 2 N.Wiggins, WR 13 E.Sarratt, 3QB 18 K.Slovis, S 21 J.Hawkins, G/T 51
+                                                                                     E.Jones, DL 90 A.Peebles
+                                                                   ",jaguars-at-ravens-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1793965716/gamecenter/ab380826-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/jaguars-at-ravens-2026-reg-9,339412,88f002bb2f72bdce2b0efd9ed9ab94b28fa21dad1fc3b9867071545162907c60,f7c0fbeb95da8c7c0a3622275ca731566a70ddb72fdb6ac5686d70b129d3abf6,pdftotext -layout,2026-11-19T12:53:47Z
+Cincinnati Bengals,Atlanta Falcons,"Sunday, 11/8/2026",3:34 PM CET,"Bernabéu Stadium, Madrid, Spain",Wind: mph,,,"Retractable Roof - Closed on Natural Grass                                                         Outdoor Weather: 60 deg F, Winds NE at 4mph, Humidity 66%",,,"Wrolstad, Craig (4)                              Umpire: Cruse, Brandon (22)                        Down Judge: Turner, Patrick (13)","
+
+                               Cincinnati Bengals                                                                    Atlanta Falcons
+               Offense                                     Defense                                     Offense                                  Defense
+     WR     1 J.Chase                          LDE      99 M.Murphy                         TE    89   C.Woerner                       DL   54 B.Dorlus
+    LOT    75 O.Brown                           DT      93 J.Allen                          TE     8   K.Pitts                         DL   92 M.Smith
+     LG    63 D.Fairchild                       NT      97 D.Lawrence                        LT   70   J.Matthews                      DT   95 G.Dexter
+      C    64 T.Karras                          DT      92 B.Hill                           LG    65   M.Bergeron                      DE   99 C.Thomas
+     RG    66 D.Risner                         RDE      53 B.Mafe                             C   64   R.Neuzil                       ILB    0 D.Deablo
+    ROT    71 A.Mims                            LB      49 B.Carter                         RG    63   C.Lindstrom                     LB   56 H.Perkins
+     TE    84 J.Endries                         LB      44 D.Knight                         RT    71   J.Taylor                        DB   29 S.Brown
+     WR    86 C.Young                           CB      23 D.Hill                           WR     5   D.London                        CB   24 A.Terrell
+     WR     5 T.Higgins                         CB       0 D.Turner                         WR     4   J.Dotson                        CB   26 C.Henderson
+     QB     9 J.Burrow                           S       6 B.Cook                           QB     9   M.Penix                          S   31 X.Watts
+     HB    30 C.Brown                            S      27 J.Battle                         RB     7   B.Robinson                       S    3 J.Bates
+
+
+                                   ","                                                                      Substitutions
+K 2 E.McPherson, P 8 R.Rehkow, CB 20 T.Davis, S 22 R.Yeast, HB 25 T.Brooks,        K 6 N.Folk, CB 12 Av.Terrell, WR 14 O.Zaccheaus, P 16 J.Bailey, WR 19 C.Blair,
+CB 28 J.Newton, HB 34 S.Perine, S 37 P.Jules, CB 38 D.Ivey, LB 42 O.Burks,         CB 21 M.Hughes, LB 22 Y.Abdullah, S 23 D.Hellams, RB 25 K.Herbert, DE 27
+LB 43 J.Giles-Harris, LB 45 J.Kiser, LS 46 W.Wagner, DE 52 C.Johnson, G 69         J.Pearce, CB 28 M.Ford, LB 42 J.Woods, LB 45 C.Harris, DE 47 C.Snowden, LS
+J.Bayer, G 74 J.Rivers, WR 81 D.Meyers, WR 82 M.Tinsley, TE 85 C.Grandy, TE        49 L.McCullough, LB 53 K.Daniels, DE 55 Z.Smith, C/G 62 C.Levin, OL 68
+88 M.Gesicki, TE 89 D.Sample, DT 90 K.Jenkins, DE 94 S.Stewart, DT 98              K.Hinton, T 75 E.Onianwa, TE 81 A.Hooper, TE 87 N.Muse, WR 88 B.Collins,
+T.Slaton                                                                           DL 94 L.London, DL 96 Z.Harrison
+
+                                   ","                                                                       Did Not Play
+QB 16 J.Flacco, T 73 J.Foster                                                      QB 1 T.Tagovailoa
+
+                                    ","                                                                         Not Active
+S 29 K.Dugger, C 65 C.Lew, T 77 M.Hinton, DT 96 L.Robinson                         3QB 13 A.Dalton, WR 17 Z.Branch, QB 18 J.Strand, CB 33 B.Bowman, CB 37
+                                                                                   R.Longerbeam, DE 91 D.Jackson
+                                                                 ",bengals-at-falcons-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224918/gamecenter/ab380bc7-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/bengals-at-falcons-2026-reg-9,333732,7af51dc2f80215d9b79bf7d75f2d9ac0c2c50d6aa68103978e6dbf707ef5e142,9a2b3d0e7bb0b8c7f86846f54613cdf8a09bdea2eb38cab50ca3fd4c6d2c9f03,pdftotext -layout,2026-11-19T12:53:47Z
+Denver Broncos,Carolina Panthers,"Sunday, 11/8/2026",1:03 PM EST,11/8/2026 at Bank of America Stadium,Sunny,63,SW 6,,,,"Eck, Alan (76)                                   Umpire: Malepeai, Ian (136)                         Down Judge: Oliver, David (24)","
+
+                                Denver Broncos                                                                       Carolina Panthers
+               Offense                                     Defense                                      Offense                                 Defense
+     WR    14 C.Sutton                         OLB      15 N.Bonitto                        WR      4   T.McMillan                     OLB   91 P.Jones
+      LT   72 G.Bolles                          DL      99 Z.Allen                          TE     81   F.Franks                        DT   95 D.Brown
+     LG    74 B.Powers                          DT      93 D.Jones                           LT    63   R.Walker                        DT   98 T.Wharton
+       C   60 L.Wattenberg                      DE      95 S.Jones                          LG     65   T.Simpkins                     OLB    3 P.Umanmielen
+     RG    77 Q.Meinerz                        OLB       0 J.Cooper                           C    77   L.Fortner                       LB   33 T.Dodson
+     RT    69 M.McGlinchey                     ILB      40 J.Strnad                         RG     50   R.Hunt                          LB   55 D.Lloyd
+     TE    82 A.Trautman                       ILB      49 A.Singleton                      RT     57   M.Freeling                      CB   31 C.Thornton
+     WR    13 P.Bryant                          DB      26 D.Key                            TE     84   M.Evans                         CB   26 C.Smith-Wade
+     WR    17 J.Waddle                          CB       2 P.Surtain                        TE     82   T.Tremble                       CB   35 M.Wilson
+     QB    10 B.Nix                             CB      21 R.Moss                           QB      9   B.Young                          S    7 T.Moehrig
+     RB    20 J.Coleman                          S      34 J.Skinner                        RB     30   C.Hubbard                        S   21 N.Scott
+
+
+                                   ","                                                                       Substitutions
+TE 1 E.Engram, K 3 W.Lutz, S 6 T.Anderson, WR 11 T.Franklin, P 16                   TE 0 J.Sanders, P 6 S.Martin, K 10 R.Fitzgerald, WR 13 J.Metchie, WR 18
+J.Crawshaw, WR 19 M.Mims, CB 23 J.Barron, RB 25 C.Schrader, RB 27                   J.Coker, S 20 Z.Wheatley, S 22 L.Ransom, RB 23 T.Etienne, S 27 I.Simmons,
+J.Dobbins, CB 29 J.McMillian, S 30 T.Rapp, DB 37 S.Fresch, TE 45 N.Adkins, FB       RB 34 A.Tyus, CB 36 M.DeWalt, OLB 39 N.Hampton, LS 44 J.Jansen, LB 46
+46 A.Prentice, ILB 47 K.Reid, LS 48 M.Fraboni, OLB 51 Q.Robinson, C 54              J.Kuwatch, OLB 52 T.Gipson, LB 54 B.Martin-Scott, T 67 C.Bullock, T 73
+A.Forsyth, ILB 55 J.Turner, T 63 A.Palczewski, T 79 M.Peart, OLB 92 D.Tillman,      S.Forsythe, C 75 S.Hecht, WR 83 D.Moore, WR 87 B.Tremayne, TE 88
+DL 94 J.Jackson, DT 97 M.Roach, DT 98 T.Onyedim                                     D.Waller, DT 92 L.Hunter, DT 94 A.Hall, DT 97 B.Brown
+
+                                   ","                                                                         Did Not Play
+QB 8 J.Stidham                                                                      QB 12 K.Pickett
+
+                                    ","                                                                          Not Active
+3QB 4 S.Ehlinger, WR 5 L.Humphrey, S 9 T.Hufanga, S 22 B.Jones, CB 31               OLB 5 J.Phillips, 3QB 16 H.King, CB 24 W.Lee, RB 28 A.Dillon, LB 58
+K.Abrams-Draine, OL 78 K.Casey, TE 89 D.Bentley                                     B.Okereke, G 68 D.Lewis, DT 93 T.Edwards
+                                                                  ",broncos-at-panthers-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224920/gamecenter/ab380efd-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/broncos-at-panthers-2026-reg-9,339806,713f8b211cbafd7000b959644bce06e399c9d6927c754c95d026a4fa29334e57,6b15b8be5fafc8f8b17608374c6b582a89a8f2f32354711a5f7e5e0022ac3aca,pdftotext -layout,2026-11-19T12:53:47Z
+Dallas Cowboys,Indianapolis Colts,"Sunday, 11/8/2026",1:03 PM EST,"Lucas Oil Stadium, Indianapolis, IN",Sunny,54,SW 10,"Retractable Roof - Open on Field Turf                                                                       Outdoor Weather: Sunny, 54 degr. Wind SW at 10 mph",Field Turf,,"Martin, Clay (19)                               Umpire: Woods, Steven (54)                         Down Judge: Phillips, Jerod (6)","
+
+                               Dallas Cowboys                                                                     Indianapolis Colts
+               Offense                                  Defense                                         Offense                               Defense
+     WR    18 J.Mingo                         OLB    6 D.Ezeiruaku                        WR     2      J.Downs                       DE   97 L.Latu
+     WR    19 R.Flournoy                       DT   92 Q.Williams                         TE    85      A.Ogletree                    DT   90 G.Stewart
+      LT   60 T.Guyton                         DT   97 K.Clark                             LT   79      B.Raimann                     DT   95 A.Adebawore
+     LG    73 T.Smith                          DT   91 O.Ogbonnia                         LG    62      J.Farmer                      DE   91 J.Tuimoloau
+       C   56 C.Beebe                         OLB    7 R.Gary                               C   60      T.Bortolini                   LB   50 B.Boettcher
+     RG    52 T.Booker                         LB   53 D.Winters                          RG    71      M.Goncalves                   LB   57 J.Carlies
+     RT    78 T.Steele                         LB   50 S.James                            RT    75      J.Travis                      LB   53 C.Allen
+       T   77 B.Jones                          DB   13 C.Downs                            TE    81      M.Alie-Cox                    CB    1 A.Gardner
+     WR    88 C.Lamb                           CB    2 C.Durant                           WR    13      L.Treadwell                   CB    7 C.Ward
+     QB     4 D.Prescott                       CB   26 D.Bland                            QB    17      D.Jones                        S    0 C.Bynum
+     RB    33 J.Williams                        S   24 M.Hooker                           RB    28      J.Taylor                       S   30 H.Wohler
+
+
+                                  ","                                                                       Substitutions
+S 1 P.Locke, P 5 B.Anger, S 11 A.Clark, S 14 M.Bell, K 17 B.Aubrey, CB 23          K 3 S.Shrader, WR 6 A.Gould, P 8 R.Sanchez, WR 10 K.Allen, WR 16 A.Dulin,
+A.Speed, CB 28 S.Revel, FB 30 H.Luepke, RB 32 T.Goodson, OLB 35 M.Liufau,          RB 20 S.McGowan, CB 33 K.Harris, CB 34 K.Gushiken, CB 35 J.Edwards, S 38
+OLB 40 V.Miller, OLB 41 J.Houston, S 43 J.Thomas, LS 44 T.Sieg, LB 45              J.Owens, S 41 T.Washington, LB 44 T.Chambers, LS 46 L.Rhodes, DE 52
+J.Barron, LB 55 J.Barham, G 66 T.Bass, T 67 D.Shelton, WR 80 C.Brown, WR           G.Gumbs, DE 55 C.Curry, LB 58 A.Ajiake, T 67 L.Tenuta, G 68 D.Tucker, DT 74
+81 J.Hudson, TE 84 J.Mitchell, TE 87 J.Ferguson, TE 89 B.Spann-Ford, DT 93         K.Givens, WR 80 D.Burks, TE 84 T.Warren, DT 93 T.Smith, DT 94 J.Tillery
+E.Garcia, DT 99 L.Overton
+
+                                  ","                                                                        Did Not Play
+QB 16 S.Howell                                                                     QB 5 A.Richardson, RB 21 D.Giddens, C 63 S.Van Pran-Granger
+
+                                   ","                                                                          Not Active
+LB 0 D.Overshown, WR 3 G.Pickens, WR 9 K.Turpin, CB 25 J.Porter, OLB 59            3QB 15 R.Leonard, S 25 A.Haulcy, CB 27 J.Walley, TE 49 P.Brown, LB 51
+T.Wheat, T 65 A.Cornelius, TE 86 L.Schoonmaker                                     A.Davis-Gaither, T 73 C.Heck, TE 86 W.Mallory
+                                                                ",cowboys-at-colts-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224921/gamecenter/ab38123a-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/cowboys-at-colts-2026-reg-9,340484,b170db43856ed5bd8cc9a428f9b3382842adb4bd27660e3660314c5deda6daa4,aa2cda2370a4914ec780aa90186b5391b494ff12022356b2e4a801eaa1579cd7,pdftotext -layout,2026-11-19T12:53:47Z
+New York Jets,Kansas City Chiefs,"Sunday, 11/8/2026",12:02 PM CST,"Arrowhead Stadium, Kansas City, MO","Temp: 57° F (13.9° C) Humidity: 63%, Wind: NW 3 mph",57,NW 3,,,,"Hill, Adrian (29)                                 Umpire: Ellison, Roy (81)                        Down Judge: Short, Danny (113)","
+
+                                     New York Jets                                                                   Kansas City Chiefs
+                  Offense                                    Defense                                     Offense                                  Defense
+         TE    16 K.Sadiq                            DE   52 K.Enagbare                       WR     4   R.Rice                         DE    56 G.Karlaftis
+         TE    85 M.Taylor                           DL   91 J.Briggs                          LT   70   K.Benson                       NT    92 K.Tonga
+          LT   74 O.Fashanu                          DL   97 H.Phillips                       LG    76   K.Suamataia                    DT    95 C.Jones
+         LG    64 D.Parham                           DE   31 D.Bailey                           C   52   C.Humphrey                     DE    91 F.Anudike-Uzomah
+           C   71 J.Myers                            LB   44 J.Sherwood                       RG    65   Tr.Smith                       LB    23 D.Tranquill
+         RG    66 J.Tippmann                         LB   56 D.Davis                          RT    77   J.Moore                        LB    32 N.Bolton
+         RT    70 A.Membou                           CB   23 D.Ponds                          TE    87   T.Kelce                        DB    27 C.Conner
+         WR    11 O.Cooper                           CB   21 B.Stephens                       WR    13   C.Allen                        DB    20 N.Williams
+         WR    15 A.Mitchell                         CB    1 A.Thomas                         WR     1   X.Worthy                       CB    30 C.Roland-Wallace
+         QB     7 G.Smith                             S    6 D.Belton                         QB    15   P.Mahomes                      CB     8 K.Fulton
+         RB    20 B.Hall                              S   29 M.Fitzpatrick                    RB     9   K.Walker                        S    17 A.Gilman
+
+
+                                     ","                                                                      Substitutions
+RB 0 B.Allen, DB 2 J.Brownlee, RB 3 K.Nwangwu, S 8 A.Cisco, DE 9                      QB 6 J.Fields, K 7 H.Butker, RB 10 E.Johnson, WR 11 J.Royals, TE 12 J.Wiley,
+W.McDonald, P 14 A.McNamara, WR 18 I.Williams, K 19 J.Sanders, DB 27                  P 14 M.Araiza, DB 21 J.Hicks, DB 22 J.Canady, S 29 X.Nwankpa, LB 31
+M.Moore, RB 32 I.Davis, CB 37 Q.Stiggers, LS 42 T.Hennessy, FB 47 A.Beck,             J.Bassa, RB 34 J.Ott, CB 39 M.Smith, LS 41 J.Winchester, LB 43 J.Cochrane, LB
+LB 48 J.Keller, LB 50 T.Reeder, OL 79 C.Okorafor, WR 84 M.McClain, TE 86              44 C.McDonald, DE 51 R.Thomas, OL 64 H.Nourzad, OL 66 M.Caliendo, OL 73
+J.Woods, TE 89 J.Ruckert, DE 92 N.Lynn, DL 95 D.Jackson, DL 96 J.Heflin, DL           J.Ezeudu, WR 81 N.Remigio, TE 83 N.Gray, WR 85 A.Armstrong, TE 88
+98 P.Page                                                                             J.Briningstool, DT 94 B.Eason, DT 96 M.Harris, DE 97 A.Gillotte
+
+                                      ","                                                                      Did Not Play
+QB 10 C.Klubnik, OL 67 J.Meredith, OL 75 B.Banks
+
+                                        ","                                                                       Not Active
+WR 5 G.Wilson, WR 17 T.Patrick, DB 26 N.Wright, DE 46 J.Ossai, LB 49                  CB 5 M.Delane, 3QB 19 G.Nussmeier, FB 47 B.VanSumeren, DE 54 J.Pyburn, T
+T.Wallace, OL 60 K.Levao, T 76 B.Freeland                                             61 D.Pounds, DL 99 P.Woods
+                                                                     ",jets-at-chiefs-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224919/gamecenter/ab381724-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/jets-at-chiefs-2026-reg-9,339351,1df30a17cd7d4253fecea982385c5ff5e05761f1dd926ca51414253fc1426dc8,e373ebb0dcbcf0c20404ed55395bb96ff92ab68c17ce9c50a99fa33c498ef920,pdftotext -layout,2026-11-19T12:53:47Z
+Detroit Lions,Miami Dolphins,"Sunday, 11/8/2026",1:02 PM EST,11/8/2026 at Hard Rock Stadium,Partly Cloudy,84,NE 8,,,,"Clark, Land (130)                                  Umpire: Pellis, Mark (131)                          Down Judge: Keller, Dale (9)","
+
+                                  Detroit Lions                                                                        Miami Dolphins
+               Offense                                      Defense                                        Offense                                Defense
+     WR    18 I.TeSlaa                             DE   97 A.Hutchinson                       WR       6   M.Washington                   DE    9 J.Uche
+     WR    14 A.St. Brown                          DL   54 A.McNeill                          WR       7   C.Douglas                      DL   94 J.Phillips
+      LT   58 P.Sewell                             DL   91 T.Williams                         TE      85   G.Dulcich                      DL   92 Z.Sieler
+     LG    71 M.Frazier                            DL   93 T.Lacy                              LT     52   P.Paul                         DE   44 C.Robinson
+       C   70 J.Scruggs                            LB   53 T.Nowaske                          LG      74   K.Proctor                     ILB   10 J.Rodriguez
+     RG    69 T.Ratledge                           LB   44 M.Rodriguez                          C     55   A.Brewer                      ILB   20 J.Brooks
+     RT    76 B.Miller                             LB   55 D.Barnes                           RG      71   J.Savaiinaea                   CB    3 C.Johnson
+     TE    87 S.LaPorta                            DB   32 B.Branch                           RT      73   A.Jackson                      CB    8 J.Brents
+     WR     1 J.Williams                           CB   23 R.Ya-Sin                           TE      89   W.Kacmarek                      S   16 M.Taaffe
+     QB    16 J.Goff                               CB   21 R.McCreary                         QB       2   M.Willis                        S   11 D.Trader
+     RB     0 J.Gibbs                               S   36 C.Clark                            RB       0   O.Gordon                        S   19 K.Louis
+
+
+                                  ","                                                                         Substitutions
+CB 2 E.Rakestraw, P 3 J.Fox, DB 5 C.Izien, CB 6 K.Abney, DE 8 D.Moore, WR             CB 4 J.Marshall, WR 18 C.Bell, WR 21 K.Coleman, S 23 Z.Anderson, S 25
+17 T.Martin, RB 26 J.Small, CB 30 K.Dorsey, RB 33 S.Vaki, LB 35 J.Bachie, CB          J.Wood, RB 26 C.Washington, RB 30 K.Allen, K 31 Z.Gonzalez, CB 32
+38 N.Whiteside, K 39 J.Bates, LB 40 K.Britt, LS 49 H.Hatten, DL 50 S.Gill-            J.Simpson, FB 34 D.Herman, ILB 40 W.Gay, ILB 42 J.Woodard, LB 45
+Howard, LB 57 A.Ogbongbemiga, DE 61 A.Lucas, DE 66 E.O'Neill, OL 73                   S.Heyward, LS 46 T.Addington, P 48 B.Pinion, DE 58 J.Kromah, DE 59
+C.Mahogany, OL 79 L.Borom, TE 83 T.Conklin, WR 86 D.Carter, TE 89                     R.McGraw, C 60 A.Meyer, G/T 62 J.Kingston, G/T 77 C.Wallace, DL 78 K.Grant,
+B.Wright, DL 95 L.Onwuzurike                                                          TE 83 S.Traore, WR 86 J.Wayne, DE 90 M.Herring, DL 93 Z.Biggers
+
+                                     ","                                                                         Did Not Play
+QB 11 J.Dobbs, C 65 S.McLaughlin                                                      QB 14 K.McCord
+
+                                      ","                                                                          Not Active
+CB 4 D.Reed, TE 13 J.Meeks, RB 25 J.Saylors, C 64 C.Mays, DL 94 M.Wingo,              WR 1 J.Tolbert, RB 5 J.Wright, CB 24 M.Dial, CB 35 R.Taylor, G 64 C.Haynes, T
+DE 98 D.Wonnum, DE 99 A.Hassanein                                                     79 C.Godrick, TE 80 J.Joly
+                                                                    ",lions-at-dolphins-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224917/gamecenter/ab381a59-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/lions-at-dolphins-2026-reg-9,331805,3f3f3a818f0891b87a4ca914a16d02ea2fae96f86906ec5829398565c48fb0aa,92d4c49e55c780b84829eb48c43ff2f5f8190b9ee0f5c3f941a13abbd2c18001,pdftotext -layout,2026-11-19T12:53:47Z
+Cleveland Browns,New Orleans Saints,"Sunday, 11/8/2026",12:02 PM CST,"Caesars Superdome, New Orleans, LA",Fair,64,N 8,,,,"Hochuli, Shawn (83)                             Umpire: Slaughter, Tab (110)                      Down Judge: Holt, Patrick (106)","
+
+                               Cleveland Browns                                                                   New Orleans Saints
+               Offense                                  Defense                                         Offense                                Defense
+     WR    12 D.Boston                         DE    8 J.Verse                            WR       14   D.Vele                       DE    99 C.Young
+      LT   55 S.Fano                           DT   94 M.Graham                           TE       87   N.Fant                       DL    93 N.Shepherd
+     LG    77 Z.Johnson                        DT   51 M.Hall                              LT      71   K.Banks                      DL    91 V.Broughton
+       C   74 E.Jenkins                        DE   57 I.McGuire                          LG       76   D.Edwards                    DE    96 C.Granderson
+     RG    58 A.Barber                         LB    5 Q.Williams                           C      78   E.McCoy                      LB    55 K.Elliss
+     RT    71 T.Howard                         LB   49 C.Schwesinger                      RG       51   C.Ruiz                       LB    20 P.Werner
+     TE    86 B.Whiteheart                     CB   26 M.Harden                           RT       75   T.Fuaga                      CB    22 M.Emerson
+     WR     3 J.Jeudy                          CB   21 D.Ward                             WR       12   C.Olave                      CB     1 K.McKinstry
+     WR     1 K.Concepcion                     CB    7 T.Campbell                         WR       18   B.Lance                       S    23 J.Blackmon
+     QB     2 S.Sanders                         S   33 R.Hickman                          QB        6   T.Shough                      S    21 J.Reid
+     RB    10 Q.Judkins                         S    9 G.Delpit                           RB       30   A.Estime                      S     7 J.Sanker
+
+
+                                 ","                                                                       Substitutions
+WR 0 I.Bond, WR 11 M.Corley, P 13 C.Bojorquez, WR 16 T.Wallace, RB 22              WR 0 J.Tyson, TE 4 O.Delp, P 17 R.Wright, WR/RS 19 B.Brown, CB 25
+D.Sampson, S 24 D.Thomas, K 25 A.Szmyt, S 28 E.McNeil-Warren, CB 29                D.Richardson, RB 26 Z.White, LB 28 D.Stutsman, CB 29 Q.Riley, DB 31
+M.Blackmon, S 31 D.McMillon, FB 34 M.Burton, CB 35 T.Pride, LB 42                  J.Howden, DE 33 A.Jennings, DB 36 L.Styles, K 39 C.Smyth, RB 41 A.Kamara,
+E.Mascarenas-Arnold, TE 44 H.Fannin, TE 48 C.Ryan, LS 50 R.Sunahara, DE 54         LB 44 I.Stalbird, LS 49 Z.Wood, DL 50 C.Wooden, LB 58 C.Rumph, G 65
+S.Williams, C 56 L.Wypler, LB 59 W.Reid, G 70 Z.Zinter, T 79 D.Jones, DT 92        J.Wright, G 66 W.Sherman, OL 72 A.Richards, TE 83 J.Johnson, DL 92
+S.Kamara, DE 97 D.Barnett, DT 98 A.Huntington                                      D.Godchaux, DE 94 C.Jordan, DL 97 K.Boyd, DE 98 T.Wilson
+
+                                 ","                                                                        Did Not Play
+QB 6 D.Gabriel, RB 38 J.McLaughlin                                                 QB 2 S.Rattler
+
+                                  ","                                                                          Not Active
+QB 4 D.Watson, 3QB 15 T.Green, LB 17 J.Jefferson, CB 20 N.Igbinoghene, C           3QB 11 Z.Wilson, S 42 M.Reid, RB 43 C.Donaldson, DL 52 C.Miller, LB 53
+52 P.Brailsford, DT 96 M.Collins                                                   J.Ford, T 74 M.Murphy, DL 95 J.Ridgeway
+                                                                ",browns-at-saints-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794257318/gamecenter/ab381d58-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/browns-at-saints-2026-reg-9,364793,868b36be59c73509bb280756956e97d47164b9fc4305ae1b70344a1a19167c73,6d9c7b3236a1b61211ca004be1eddcd365461832040831fd663fc927d2f91104,pdftotext -layout,2026-11-19T12:53:47Z
+New York Giants,Philadelphia Eagles,"Sunday, 11/8/2026",1:02 PM EST,11/8/2026 at Lincoln Financial Field,Sunny,57,W 11,,,,"Vinovich, Bill (52)                              Umpire: Morton, Mike (89)                             Down Judge: LeBlanc, Frank (44)","
+
+                                  New York Giants                                                                       Philadelphia Eagles
+                 Offense                                    Defense                                           Offense                               Defense
+     WR        1 M.Nabers                         OLB    3 A.Carter                                WR     0   M.Brown                      OLB   52 J.Greenard
+     TE        9 I.Likely                          DL   98 D.Reader                                WR     9   M.Lemon                       DT   97 M.Ojomo
+      LT      78 A.Thomas                          DL   93 S.Harris                                 LT   68   J.Mailata                     DT   90 J.Davis
+     LG       76 J.Runyan                         OLB    5 K.Thibodeaux                            LG    69   L.Dickerson                   DT   98 J.Carter
+       C      60 B.Hudson                          LB   41 M.McFadden                                C   66   D.Kendall                    OLB    3 N.Smith
+     RG       65 F.Mauigoa                         LB   52 A.Reese                                 RG    56   T.Steen                       LB   53 Z.Baun
+     RT       72 J.Eluemunor                       CB   20 G.Newsome                               RT    72   M.Bell                        LB   54 J.Trotter
+     TE       85 C.Manhertz                        CB   22 A.Phillips                              TE    88   D.Goedert                     DB   33 C.DeJean
+     FB       45 P.Ricard                          CB    2 D.Banks                                 WR    80   D.Cooper                      CB    2 T.Woolen
+     QB       18 J.McCarthy                         S    8 J.Holland                               QB    14   J.Milton                      CB   27 Q.Mitchell
+     RB       26 D.Singletary                       S   24 A.Washington                            RB    26   S.Barkley                      S   24 A.Mukuba
+
+
+                                     ","                                                                          Substitutions
+P 15 J.Stout, WR 17 D.Mooney, QB 19 J.Winston, CB 21 P.Adebo, S 25                     K 4 J.Elliott, CB 7 K.Ringo, P 10 B.Mann, OLB 17 A.Ebiketie, WR 19 E.Moore,
+J.Pinnock, S 27 T.Nubin, DB 28 E.Campbell, RB 30 G.Desrosiers, CB 31                   CB 22 M.McWilliams, DB 23 K.Moore, S 29 M.Epps, RB 30 J.Blue, S 38
+N.Jones, K 34 D.Zvada, RB 36 P.Mafah, LB 46 Z.Barnes, OLB 48 T.Ford, LB 51             C.Wisniewski, LS 41 R.Underwood, LB 42 S.Mondon, RB 49 E.Mitchell, OLB 57
+J.Kelly, LB 54 M.Harrison, LS 58 B.Mann, OL 64 A.Stinnie, OL 74 J.Davis, WR            A.Epenesa, OLB 58 J.Hunt, C/G 61 W.Lampkin, T 74 F.Johnson, G 76 M.Morris,
+81 J.Hyatt, TE 84 T.Johnson, WR 88 M.Fields, WR 89 C.Jones, DL 91                      TE 81 G.Calcaterra, TE 83 J.Mundt, TE 87 E.Stowers, DT 94 B.Young, DT 95
+D.Alexander, OLB 96 D.Smoot, DL 97 B.Jamison-Travis                                    T.Robinson
+
+                                     ","                                                                           Did Not Play
+C 61 J.Schmitz                                                                         QB 16 T.McKee, QB 18 C.Payton, C/G 75 J.Majors
+
+                                      ","                                                                             Not Active
+CB 12 C.Hood, CB 35 N.Reed, RB 44 C.Skattebo, OL 67 J.Sills, OL 71 M.Mbow,             WR 6 D.Smith, LB 11 J.Campbell, WR 13 D.Wicks, CB 31 J.Jones, DB 35
+TE 86 T.Fidone, DL 99 B.Okoye                                                          M.Carter, T 65 L.Johnson, WR 85 B.Covey
+                                                                     ",giants-at-eagles-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224920/gamecenter/ab38203e-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/giants-at-eagles-2026-reg-9,338961,737f2f8da91e1fabe96d9e0a5b9afa87d8ca98f6c4ea6cba0c6016fe7dd7d7c0,6a55c5f3eb6690717083e4b1f578bb9e0256bbb133be935d65cf12713515a1fc,pdftotext -layout,2026-11-19T12:53:47Z
+Los Angeles Rams,Washington Commanders,"Sunday, 11/8/2026",1:03 PM EST,11/8/2026 at Northwest Stadium,,59,NW 8,,,,"Hussey, John (35)                               Umpire: Heydt, Duane (42)                          Down Judge: Richeson, Robert (100)","
+
+                              Los Angeles Rams                                                               Washington Commanders
+               Offense                                    Defense                                       Offense                               Defense
+     WR    12 P.Nacua                         OLB       0 B.Young                         TE    87   J.Bates                         OLB   98 O.Oweh
+     TE    87 D.Allen                          DE      55 B.Fiske                          LT   74   B.Coleman                        DE   90 C.Omenihu
+     TE    84 C.Parkinson                      DE      90 T.Davis                         LG    75   C.Paul                           DT   96 S.Tuttle
+      LT   77 A.Jackson                        DE      99 A.Donald                          C   63   L.Patrick                        DT   97 T.Settle
+     LG    73 S.Avila                         OLB      95 M.Garrett                       RG    76   S.Cosmi                         OLB   45 K.Chaisson
+       C   65 C.Shelton                       ILB      48 O.Speights                      RT    72   J.Conerly                        LB   52 S.Styles
+     RG    69 K.Dotson                        ILB      53 N.Landman                       TE    82   B.Sinnott                        LB    4 F.Luvu
+     RT    71 W.McClendon                      CB      30 J.Wallace                       TE    85   C.Okonkwo                        CB   23 T.Amos
+     TE    89 T.Higbee                         CB       1 E.Forbes                        WR    12   V.Jefferson                      CB    2 A.Robertson
+     QB     9 M.Stafford                        S      37 Q.Lake                          QB     5   J.Daniels                         S   39 J.Reaves
+     RB    23 K.Williams                        S       3 K.Curl                          RB     1   R.White                           S   25 N.Cross
+
+
+                                  ","                                                                       Substitutions
+S 2 J.McCollough, WR 4 K.Mumpfield, S 5 K.Kinchens, WR 6 C.Daniels, WR 8          CB 0 M.Sainristil, WR 3 S.Diggs, P 10 T.Way, WR 11 L.McCaffrey, WR 14
+T.Atwell, OLB 10 J.Stewart, K 16 J.Karty, K 19 B.McManus, RB 20 R.Rivers, CB      A.Williams, S 18 T.Owens, K 19 D.Stevens, S 20 Q.Martin, CB 29 R.Douglas,
+21 C.Lampkin, RB 24 B.Corum, CB 26 D.Williams, S 36 M.Pulley, P 42 E.Evans,       RB 30 A.Ekeler, S 35 P.Butler, OLB 48 J.Josephs, DT 50 R.Barber, LB 56
+LS 43 J.McQuaide, ILB 44 G.Stuard, OLB 47 W.Bailey, OL 50 B.Limmer, DE 52         K.Medrano, LB 58 J.Magee, C 66 M.Gulbin, C/G 67 N.Allegretti, LS 69 T.Ott,
+L.Murchison, ILB 56 S.Dolac, NT 57 T.Hamilton, OL 63 D.McMahon, OL 68             T/G 71 A.Wylie, TE 80 C.Yankoff, WR 86 J.Bradley, DE 91 D.Wise, OLB 92
+D.Quessenberry, TE 86 M.Klare, WR 88 J.Whittington                                D.Armstrong, DT 95 J.Newton
+
+                                  ","                                                                        Did Not Play
+QB 13 S.Bennett                                                                   QB 8 M.Mariota, RB 34 R.Henry
+
+                                   ","                                                                          Not Active
+3QB 15 T.Simpson, CB 22 T.McDuffie, LS 49 J.Cardona, OLB 59 D.Peterson, OL        WR 13 T.Burks, 3QB 16 A.Kaliakmanis, CB 24 F.Moreau, CB 37 I.Yiadom, G 62
+66 B.Murray, OL 79 K.Trost, OLB 94 D.Johnson                                      T.Togiai
+                                                                ",rams-at-commanders-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224919/gamecenter/ab382331-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/rams-at-commanders-2026-reg-9,336886,0d7dc87b284d96a36ca49a3f89a8b4ed7538a74c05bb084b027edd34022b9009,3fab9da6633874db19bf66be3c0d8618263403cffb8ae19f5089e356a30fc1d1,pdftotext -layout,2026-11-19T12:53:47Z
+Houston Texans,Los Angeles Chargers,"Sunday, 11/8/2026",1:05 PM PST,"SoFi Stadium, Inglewood, CA",Sunny,86,SW 2,,,,"Moore, Alex (49)                                   Umpire: Killens Jr., Terry (77)                      Down Judge: Griebel, Matthew (135)","
+
+                                Houston Texans                                                                      Los Angeles Chargers
+                 Offense                                   Defense                                           Offense                               Defense
+     WR       12 N.Collins                        DE   55 D.Hunter                            WR         1   Q.Johnston                   OLB   45 T.Tuipulotu
+     TE       86 D.Schultz                        DT   72 T.Togiai                            FB        44   S.Matlock                     DL   94 D.Tomlinson
+      LT      79 A.Ersery                         DT   98 S.Rankins                            LT       76   J.Alt                         DL   93 T.Tart
+     LG       66 K.Rutledge                       DE   51 W.Anderson                          LG        65   L.Taylor                     OLB   52 K.Mack
+       C      63 E.Brown                          LB   35 J.Hansen                              C       66   J.Slaughter                   LB   53 D.Phillips
+     RG       69 E.Ingram                         LB   39 H.To'oTo'o                          RG        69   C.Strange                     LB    0 D.Henley
+     RT       77 T.Brown                          LB    0 A.Al-Shaair                         RT        77   T.Burke                       DB    2 E.Molden
+     WR        1 T.Dell                           CB   24 D.Stingley                          TE        88   C.Kolar                       CB   26 D.Jackson
+     WR       19 X.Hutchinson                     CB    3 K.Lassiter                          WR         9   T.Harris                      CB    4 T.Still
+     QB        7 C.Stroud                          S    5 J.Pitre                             QB        10   J.Herbert                     CB   20 C.Hart
+     RB        4 W.Marks                           S    2 C.Bullock                           RB         8   O.Hampton                      S   23 T.Jefferson
+
+
+                                   ","                                                                           Substitutions
+TE 9 B.Jordan, QB 10 D.Mills, CB 11 T.Smith, WR 14 K.Boutte, K 15                      QB 7 D.Uiagalelei, K 11 C.Dicker, WR 12 D.Davis, P 16 J.Scott, S 22 G.Smith,
+K.Fairbairn, WR 18 M.Harrison, S 20 J.Ingram, RB 21 E.Demercado, RB 23                 CB 24 R.Shelley, S 27 R.Mickens, RB 28 K.Vidal, RB 34 K.Mitchell, CB 37
+D.Ogunbowale, S 27 K.Ramsey, S 29 M.Stewart, LB 30 W.Woodaz, P 38                      I.Waxter, TE 40 H.Rucci, LB 43 T.Dye, LS 47 J.Harris, OLB 48 B.Dupree, OLB
+K.Kroeger, LS 40 A.Brinkman, LB 49 C.Muma, DE 54 S.Harsh, T 57 B.Fisher, C             50 C.Murphy, LB 58 M.Wax, C 60 J.Spomer, G 71 B.Taylor, G 73 A.Harkey, WR
+60 J.Andrews, G 75 W.Teller, TE 83 M.Klein, TE 87 F.Moreau, DE 90                      84 K.Lambert-Smith, TE 86 O.Gadsden, OLB 90 A.Mesidor, DL 91 N.Barrett, DL
+J.Clowney, DT 91 N.Jones, DT 93 K.McDonald, DE 94 D.Robinson, DT 96 L.Hall             92 J.Eboigbe, DL 99 J.Caldwell
+
+                                   ","                                                                            Did Not Play
+                                                                                       WR 15 L.McConkey
+
+                                    ","                                                                              Not Active
+S 6 R.Blankenship, TE 8 C.Stover, RB 32 D.Montgomery, G 64 F.Nwaiwu, T 71              S 32 K.Williamson, DB 33 D.Leonard, G 74 K.Awosika, WR 82 T.Wease, WR 89
+B.Smith, T 78 N.Thomas                                                                 B.Thompson
+                                                                   ",texans-at-chargers-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794257318/gamecenter/ab580cb7-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/texans-at-chargers-2026-reg-9,345009,a4f337554ea07b4e0f7c951fecb7114e6ee59ad1cae3c7dee338788956943791,4910f892076423c7045b1c604d62f57a42125096a16a074ad7544d345e31ddab,pdftotext -layout,2026-11-19T12:53:47Z
+Las Vegas Raiders,San Francisco 49ers,"Sunday, 11/8/2026",1:25 PM PST,"Levi's Stadium, Santa Clara, CA",,70,NW 4,,,,"Novak, Scott (1)                                 Umpire: Campbell, Scott (127)                      Down Judge: Sakowski, Brian (112)","
+
+                                Las Vegas Raiders                                                                  San Francisco 49ers
+                 Offense                                    Defense                                      Offense                               Defense
+        WR     1 T.Tucker                           DE   98 M.Crosby                        WR    84    B.Cooks                        DL   56 K.White
+        TE    89 B.Bowers                           DT   94 F.Fatukasi                      WR    17    J.Watkins                      DL   99 D.Buckner
+        TE    87 M.Mayer                            DT   91 T.Keenan                         LT   71    T.Williams                     DL   92 O.Odighizuwa
+         LT   74 K.Miller                           DT   69 A.Butler                        LG    75    C.Colby                        DL   97 N.Bosa
+        LG    70 S.Burford                          LB   44 T.Eichenberg                      C   64    J.Brendel                      LB   57 D.Greenlaw
+          C   65 T.Linderbaum                       LB   17 N.Dean                          RG    77    D.Puni                         LB   54 F.Warner
+        RG    66 T.Zuhn                             LB    7 Q.Walker                        RT    68    C.McKivitz                     DB    2 D.Lenoir
+        RT    71 D.Glaze                            CB   26 D.Porter                        FB    44    K.Juszczyk                     CB   20 U.Stout
+        WR     9 J.Nailor                           CB    5 E.Stokes                        TE    85    G.Kittle                       CB    0 R.Green
+        QB     8 K.Cousins                           S   11 J.Chinn                         QB    13    B.Purdy                         S   27 J.Brown
+        RB     2 A.Jeanty                            S   31 T.Stukes                        RB    23    C.McCaffrey                     S    6 M.Mustapha
+
+
+                                   ","                                                                       Substitutions
+CB 3 T.Johnson, RB 4 M.Washington, P 6 A.Cole, K 14 M.Gay, WR 18 J.Bech, S           WR 4 J.Cowing, TE 9 B.Willis, QB 10 M.Jones, WR 11 D.Robinson, P 15
+20 I.Pola-Mao, RB 23 D.Laube, CB 25 D.Luter, CB 28 J.McCoy, FB 34                    C.Waitman, K 18 E.Pineiro, S 24 A.Davis, RB 26 K.Black, CB 28 E.Prysock, RB
+C.Heyward, CB 35 H.Masses, LS 47 A.Ward, LB 50 S.Olubi, DE 51 M.Koonce,              29 J.James, DB 33 S.Neal, S 36 M.Sigle, LS 46 J.Weeks, LB 49 G.Wallow, LB
+LB 55 C.Lindenberg, G/C 58 J.Powers-Johnson, T 60 C.Grant, G 76 C.Rogers,            51 L.Gifford, LB 53 J.Dugger, DL 55 S.Valdez, OL 58 J.Patterson, OL 74
+TE 80 I.Thomas, WR 81 D.Young, WR 82 C.White, DT 92 J.Pegues, DE 95                  C.Willis, OL 76 V.Lowe, WR 86 K.Hodge, TE 89 L.Farrell, DL 93 G.Halton, DL
+K.Paye, DT 97 T.Hemingway                                                            94 R.Height, DL 96 J.Thompson, DL 98 M.Williams
+
+                                   ","                                                                         Did Not Play
+QB 15 F.Mendoza, S 27 T.McCollum
+
+                                    ","                                                                           Not Active
+WR 10 D.Thornton, 3QB 12 A.O'Connell, WR 19 M.Benson, S 43 D.Johnson, G              WR 5 M.Evans, 3QB 14 K.Rourke, WR 19 D.Samuel, DL 47 K.Kareem, LB 48
+77 B.Cabeldue, DT 99 T.Booker                                                        T.Bethune, OL 69 E.Cruz
+                                                                   ",raiders-at-49ers-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224923/gamecenter/ab581766-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/raiders-at-49ers-2026-reg-9,334626,0e1895910aefbeda55a1a93ea670e5adebccc040a16c86a25d90534186dbec42,02356c25c4c0597626675bdb4bc976d956bbafc04a6b5953527419297b474875,pdftotext -layout,2026-11-19T12:53:47Z
+Green Bay Packers,New England Patriots,"Sunday, 11/8/2026",4:25 PM EST,"Gillette Stadium, Foxborough, MA",Clear,52,NW 15,,,,"Kemp, Alex (55)                                   Umpire: Ellison, Brandon (128)                   Down Judge: Carr, Mike (63)","
+
+                              Green Bay Packers                                                                New England Patriots
+               Offense                                    Defense                                       Offense                               Defense
+      WR    16 B.Melton                       EDGE    99 B.Sorrell                           LT   66    W.Campbell                   OLB    5 Dr.Jones
+       LT   77 J.Morgan                         DT    94 K.Brooks                            LG   77    B.Brown                       DT   94 C.Durden
+      LG    65 A.Banks                          DT    95 D.Wyatt                              C   55    J.Wilson                      DT   97 M.Williams
+        C   73 J.Williams                     EDGE    90 L.Van Ness                          RG   65    M.Pryor                      OLB   91 E.Ponder
+      RG    72 L.Tomlinson                      LB    58 I.McDuffie                          RT   76    M.Moses                      ILB   14 R.Spillane
+      RT    71 A.Belton                         LB    59 T.Hopper                         OL/TE   74    C.Lomu                       ILB   53 C.Elliss
+      TE    85 T.Kraft                          CB     2 B.Cisse                             TE   84    T.Arkin                       CB   25 M.Jones
+      WR     9 C.Watson                         CB    25 K.Nixon                             QB   10    D.Maye                        CB    0 C.Gonzalez
+      WR    83 S.Williams                        S    29 X.McKinney                          RB   38    R.Stevenson                   CB    7 C.Davis
+      QB    10 J.Love                            S    33 E.Williams                         WR    13    M.Hollins                      S    4 C.Woodson
+      RB     8 J.Jacobs                          S     7 J.Bullard                          WR    18    K.Williams                     S   31 K.Byard
+
+
+                                  ","                                                                       Substitutions
+WR 0 M.Golden, QB 6 T.Taylor, WR 13 C.Owen, TE 18 J.Smith, P 19                     WR 3 D.Douglas, K 8 A.Borregales, RB 9 C.Kiner, QB 16 T.DeVito, P 19
+D.Whelan, CB 21 B.St-Juste, RB 22 P.Strong, CB 24 C.Valentine, RB 26                M.Wishnowsky, CB 21 K.Prunty, S 23 J.Reed, CB 29 C.Canada, S 33 M.Brown,
+K.Johnson, S 27 K.Oladapo, K 28 T.Smack, LB 31 N.Niemann, CB 36                     RB 34 L.Larison, TE 36 C.Latu, S 41 B.Schooler, LS 47 J.Ashby, LB 48
+K.Hadden, LS 42 M.Orzech, TE 49 D.Dabney, DE 51 D.Dennis-Sutton, C/G 52             N.Obiazor, LB 49 E.Hunter, LB 50 G.Jacas, T 52 M.Bryant, LB 54 D.Muasau, OL
+J.Burton, LB 54 K.Welch, DT 55 C.McClellan, DE 57 B.Cox, G 70 K.Zeitler, G 74       72 W.Rouse, TE 82 E.Raridon, TE 85 H.Henry, WR 86 E.Chism, DT 90
+M.Becton, TE 86 M.Redman, WR 87 J.Sturdivant, DT 93 A.Campbell, DT 97               C.Barmore, DT 92 J.Farmer, DL 93 L.Taylor, DT 99 Da.Jones
+J.Riley
+
+                                  ","                                                                        Did Not Play
+
+
+                                   ","                                                                          Not Active
+RB 32 M.Lloyd, LB 44 Z.Franklin, G/T 67 D.Jennings, C/G 75 S.Rhyan, G/T 79          WR 1 A.Brown, 3QB 15 B.Morton, CB 22 C.Woods, RB 32 T.Henderson, T 68
+T.Glover, TE 81 J.Whyle                                                             D.Crownover
+                                                                  ",packers-at-patriots-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224923/gamecenter/ab581b93-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/packers-at-patriots-2026-reg-9,340554,bd057892de1778997c53a5a8ac0e5dc1fefe389ab8f1a982031fa0700256e655,312c755b52d46e13f2d47bc8886569b739d688f77274e959c911496635a9d883,pdftotext -layout,2026-11-19T12:53:47Z
+Arizona Cardinals,Seattle Seahawks,"Sunday, 11/8/2026",1:25 PM PST,11/8/2026 at Lumen Field,Cloudy,56,SW 13,,,,"Blakeman, Clete (34)                           Umpire: Walker, Scott (11)                             Down Judge: Warner, Andy (64)","
+
+                               Arizona Cardinals                                                                  Seattle Seahawks
+               Offense                                  Defense                                         Offense                                 Defense
+     WR     14 Mi.Wilson                      OLB     5 B.Browning                           TE    81   E.Saubert                       LB    0 D.Lawrence
+     TE     85 T.McBride                       DT    55 D.Stills                             WR    10   C.Kupp                          DE   91 B.Murphy
+      LT    78 J.Fryar                         NT    51 R.Lopez                              WR    11   J.Smith-Njigba                  DE   90 J.Reed
+     LG     73 I.Seumalo                       DL    97 W.Nolen                               LT   74   J.Jones                         LB   58 D.Hall
+       C    72 H.Froholdt                     OLB    10 J.Sweat                              LG    76   G.Zabel                         LB   32 D.Thomas
+     RG     74 I.Adams                        ILB    50 J.Gibbens                              C   61   J.Sundell                       LB   13 E.Jones
+     RT     65 E.Wilkinson                    ILB     1 Ma.Wilson                            RG    75   A.Bradford                      CB   21 D.Witherspoon
+     TE     47 T.Quitoriano                    CB    29 D.Burke                              RT    72   A.Lucas                         CB   29 J.Jobe
+     TE     84 E.Higgins                       CB    16 M.Melton                             TE    88   A.Barner                         S    3 N.Emmanwori
+     QB     15 G.Minshew                        S    28 A.Wingard                            QB     2   D.Lock                           S   39 T.Okada
+     RB     22 T.Allgeier                       S     3 B.Baker                              RB    26   Z.Charbonnet                     S   20 J.Love
+
+
+                                  ","                                                                      Substitutions
+ILB 0 C.Simon, P 12 B.Gillikin, CB 13 K.Clark, CB 21 G.Williams, OLB 25            P 4 M.Dickson, K 5 J.Myers, RB 8 J.Price, WR 15 T.Horton, S 24 R.Thomas, CB
+Z.Collins, RB 26 E.Hull, CB 35 K.King, S 36 K.Crawford, K 38 C.Ryland, S 42        27 A.Smith, CB 28 N.Pritchett, RB 36 G.Holani, FB 38 B.Russell, LS 41 C.Stoll,
+D.Taylor-Demerson, ILB 43 K.Sharar, TE 44 S.Bowman, OLB 52 J.Burch, DL 56          LB 44 C.Surratt, LB 48 T.Knight, LB 52 P.O'Connell, C 55 O.Oluwatimi, LB 56
+D.Robinson, OL 58 H.Conner, LS 59 C.Kreiter, OL 64 K.Eguakun, OL 79 J.Wills,       D.Fowler, LB 57 C.O'Toole, T 68 B.Hart, G 70 B.Stephens, WR 85 I.Charles,
+WR 80 S.Fehoko, WR 81 D.Duvernay, WR 82 R.Virgil, WR 83 H.Wallace, DL 91           WR 87 M.Foster, TE 89 N.Kallerup, DE 94 M.Morris, DT 98 R.Mills
+L.Collier, DL 95 A.Billings
+
+                                  ","                                                                           Did Not Play
+QB 19 C.Beck, RB 34 J.Ford                                                         QB 6 J.Milroe, RB 23 E.Wilson, NT 97 D.Eastern
+
+                                    ","                                                                           Not Active
+RB 20 Z.Knight, CB 24 S.Thomas, OLB 54 E.Leota, OL 66 J.Williams, OL 71            LB 7 U.Nwosu, QB 14 S.Darnold, WR 22 R.Shaheed, G 53 Q.Nelson, T 67
+J.Gaines, OL 76 A.Reese                                                            C.Cross, NT 95 B.Pili, DT 99 L.Williams
+                                                               ",cardinals-at-seahawks-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224924/gamecenter/ab581f17-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/cardinals-at-seahawks-2026-reg-9,332860,6cad3f8fb51222dab9169ff90731552855f332f49f42bbd7c8064a838686a048,fa616e4da57df6e3d7860e29fce8cb9f81596ed555c53a51fd2405996ae45d47,pdftotext -layout,2026-11-19T12:53:47Z
+Tampa Bay Buccaneers,Chicago Bears,"Sunday, 11/8/2026",7:23 PM CST,"Soldier Field, Chicago, IL",Clear,53,NW 5,,,,"Torbert, Ronald (62)                             Umpire: Anderson, Barry (20)                        Down Judge: Bilbo, Jay (84)","
+
+                            Tampa Bay Buccaneers                                                                        Chicago Bears
+                 Offense                                  Defense                                          Offense                                Defense
+        WR    14 C.Godwin                       OLB   98 A.Nelson                            WR       10   L.Burden                      DL   97 J.Lynch
+        TE    88 C.Otton                         NT   50 V.Vea                               WR       14   K.Raymond                     DL   50 G.Jarrett
+         LT   78 T.Wirfs                         DL   94 C.Kancey                            TE       84   C.Loveland                    DL   99 J.Simmons
+        LG    68 B.Bredeson                     OLB    3 R.Bain                               LT      79   T.Benedet                     DL   98 M.Sweat
+          C   62 G.Barton                        LB   45 J.Trotter                           LG       62   J.Thuney                      LB   53 T.Edwards
+        RG    69 C.Mauch                         LB   34 A.Anzalone                            C      67   G.Bradbury                    LB   12 D.Bush
+        RT    67 L.Goedeke                       DB   22 K.Scott                             RG       73   J.Jackson                     DB    6 K.Gordon
+        WR     2 E.Egbuka                        CB   25 J.Parrish                           RT       58   D.Wright                      DB   29 T.Stevenson
+        QB     6 B.Mayfield                      CB   27 Z.McCollum                          WR       15   R.Odunze                      DB   21 C.Lewis
+        RB     7 B.Irving                         S   23 T.Smith                             QB       18   C.Williams                    DB    1 J.Johnson
+        RB     1 K.Gainwell                       S   31 A.Winfield                          RB        4   D.Swift                       DB   31 D.Thieneman
+
+
+                                   ","                                                                         Substitutions
+K 4 C.McLaughlin, S 5 I.Melifonwu, LB 8 S.Dennis, P 9 R.Dixon, WR 15                 K 8 C.Santos, WR 9 J.Walker, WR 13 Z.Thomas, P 19 T.Taylor, DB 20
+T.Johnson, WR 17 T.Hurst, WR 19 K.Johnson, CB 21 B.Morrison, S 29                    C.Phillips, DB 22 E.Hicks, RB 23 R.Johnson, RB 36 S.Ahmed, DB 38 S.Thomas,
+M.Killebrew, CB 38 K.Knowles, TE 41 K.Kieft, RB 44 S.Tucker, OLB 51                  DB 39 J.Blackwell, LB 44 N.Sewell, LS 46 S.Daly, LB 48 D.Jackson, OL 54
+D.Walker, DL 56 R.Nunez-Roches, T 70 B.Chukwuma, T 77 J.Skule, WR 80                 L.Jones, LB 57 J.Sanborn, OL 65 L.Newman, OL 74 J.McFadden, OL 75
+D.Sills, TE 84 B.Sharp, LS 86 E.Deckers, TE 87 P.Durham, DL 91 A.Robinson,           O.Trapilo, TE 87 S.Roush, TE 88 S.Carlson, DL 90 N.Gallimore, DL 92 D.Hardy,
+DL 92 E.Simmons, DL 95 E.Roberts, OLB 97 A.Muhammad                                  DL 94 A.Booker, DL 95 S.Turner, DL 96 J.van den Berg
+
+                                   ","                                                                          Did Not Play
+QB 10 J.Daniels, G 65 D.Feeney                                                       QB 17 T.Bagent
+
+                                       ","                                                                         Not Active
+OLB 0 Y.Diaby, CB 24 A.Garnes, G 64 T.Keegan, G 75 B.Schrauth, DL 90                 3QB 11 C.Keenum, DB 24 M.Muhammad, RB 25 K.Monangai, LB 49 K.Elliott,
+D.Capehart                                                                           DL 91 J.Loving
+                                                                  ",buccaneers-at-bears-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794224924/gamecenter/ab582247-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/buccaneers-at-bears-2026-reg-9,340993,e3601a28db9fe2d84d7964ecbf452dbf0c06acc84db9de5938469c9505429aeb,cfb58104ff4e64dbc31b4784e71be0a6fbe78f80c994c1e4464362bad3bea583,pdftotext -layout,2026-11-19T12:53:47Z
+Buffalo Bills,Minnesota Vikings,"Monday, 11/9/2026",7:16 PM CST,11/9/2026 at U.S. Bank Stadium,,52,W 6,,,,"Cheffers, Carl (51)                              Umpire: Anderson, Derek (66)                     Down Judge: Bowers, Derick (74)","
+
+                                    Buffalo Bills                                                                  Minnesota Vikings
+                 Offense                                   Defense                                       Offense                               Defense
+        WR     2 D.Moore                        OLB    15 G.Rousseau                         WR    18   J.Jefferson                  OLB   43 A.Van Ginkel
+         LT   68 T.Grable                        DL    91 E.Oliver                            LT   71   C.Darrisaw                    DL   90 T.Ingram-Dawkins
+        LG    63 A.Corbett                       DL    96 D.Walker                           LG    60   J.Huber                       DL   50 L.Rodriguez
+          C   66 C.McGovern                      DL    98 T.Sanders                            C   64   B.Brandel                     DL   61 J.Redmond
+        RG    64 O.Torrence                     OLB     9 B.Chubb                            RG    76   W.Fries                      OLB   15 D.Turner
+        RT    79 S.Brown                        ILB     8 T.Bernard                          RT    75   B.O'Neill                     LB   51 B.Cashman
+        TE    85 J.Hawes                         CB    23 D.Alford                           TE    87   T.Hockenson                   LB   55 E.Wilson
+        TE    88 D.Knox                          CB    21 D.Igbinosun                        WR     3   J.Addison                     CB    2 I.Rodgers
+        WR     0 K.Coleman                       CB    47 C.Benford                          WR     4   M.Price                       CB    7 B.Murphy
+        QB    17 J.Allen                          S    24 C.Bishop                           QB    11   C.Wentz                        S   29 Jac.Thomas
+        RB     4 J.Cook                           S     3 D.Hamlin                           RB    33   A.Jones                        S   44 J.Metellus
+
+
+                                    ","                                                                     Substitutions
+ CB 1 M.Hairston, RB 7 R.Davis, WR 10 K.Shakir, QB 11 K.Allen, K 16 T.Bass,           LB 0 I.Pace, CB 5 Z.Vaughn, WR 9 O.Beckham, QB 12 M.Brosmer, WR 13
+ WR 18 T.Sherfield, WR 19 G.Dortch, S 25 G.Stone, RB 26 T.Johnson, DB 28              T.Felton, K 16 W.Reichard, OLB 17 K.Van Noy, P 19 B.Thorson, S 22 H.Smith,
+ S.Franklin, DB 33 T.Couch, P 39 T.Doman, ILB 42 D.Williams, ILB 44                   CB 23 J.Pierre, S 24 J.Ward, RB 27 J.Mason, RB 31 D.Dallas, OLB 32
+ J.Andreessen, LB 52 K.Elarms-Orr, C 53 L.Cushenberry, OLB 55 M.Hoecht, OLB           C.Chambliss, S 37 T.Thomas, LB 41 J.Golday, LS 42 A.DePaola, FB 45
+ 56 J.Solomon, G 60 A.Reed-Adams, LS 69 R.Ferguson, T/G 74 J.Bowry, TE 83             M.Bredeson, C 65 M.Jurgens, T 72 R.Van Demark, T 78 C.Tiernan, TE 85
+ K.Latu, TE 86 D.Kincaid, DL 90 D.Carter, DL 94 L.Jackson, OLB 99 T.Parker            B.Yurosek, TE 86 G.Bartholomew, DL 97 D.Orange, OLB 98 B.Richter, DL 99
+                                                                                      E.Williams
+
+                                    ","                                                                      Did Not Play
+
+
+                                     ","                                                                        Not Active
+ WR 13 S.Bell, S 29 J.Kilgore, OLB 51 M.Danna, C/G 70 A.Anderson, T 73                QB 1 K.Murray, S 8 Jak.Thomas, WR 14 J.Jennings, CB 20 C.Demmings, S 26
+ D.Dawkins, DL 97 G.Gaines                                                            T.Jackson, DL 95 C.Banks
+                                                                  ",bills-at-vikings-2026-reg-9,2026,9,https://static.www.nfl.com/image/upload/v1794311318/gamecenter/ab5825a7-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/bills-at-vikings-2026-reg-9,337597,496d35ac3187d1bc596cf6a9b8adaefd0c1af184fb5b59fc2774f6e9d0629f5f,9b2db8c81c2c4bf095b916081fbc6e83278a49f65dc5b1334ea6d260c839bbf5,pdftotext -layout,2026-11-19T12:53:47Z
+Washington Commanders,New York Giants,"Thursday, 11/12/2026",8:15 PM EST,11/12/2026 at MetLife Stadium,Light Rain Fog/Mist,48,NE 9,,,,"Rogers, Brad (126)                             Umpire: Neale, Bryan (92)                           Down Judge: Turner, Patrick (13)","
+
+                          Washington Commanders                                                                   New York Giants
+                Offense                                  Defense                                        Offense                               Defense
+     WR     14 A.Williams                     OLB    98 O.Oweh                            WR     17     D.Mooney                     OLB    5 K.Thibodeaux
+     TE     87 J.Bates                         DT    97 T.Settle                          TE     84     T.Johnson                     DL   93 S.Harris
+      LT    74 B.Coleman                       DT    96 S.Tuttle                           LT    78     A.Thomas                      DL   97 B.Jamison-Travis
+     LG     75 C.Paul                         OLB    45 K.Chaisson                        LG     76     J.Runyan                      DL   98 D.Reader
+       C    67 N.Allegretti                    LB    52 S.Styles                            C    60     B.Hudson                     OLB    3 A.Carter
+     RG     76 S.Cosmi                         LB     4 F.Luvu                            RG     65     F.Mauigoa                     LB   41 M.McFadden
+     RT     72 J.Conerly                       CB    23 T.Amos                            RT     72     J.Eluemunor                   LB   52 A.Reese
+     TE     82 B.Sinnott                       CB     2 A.Robertson                       WR      1     M.Nabers                      CB   20 G.Newsome
+     WR     13 T.Burks                          S    39 J.Reaves                          TE      9     I.Likely                      CB    2 D.Banks
+     QB      5 J.Daniels                        S    25 N.Cross                           QB     18     J.McCarthy                     S    8 J.Holland
+     RB      1 R.White                          S    20 Q.Martin                          RB     44     C.Skattebo                     S   24 A.Washington
+
+
+                                  ","                                                                       Substitutions
+CB 0 M.Sainristil, WR 3 S.Diggs, P 10 T.Way, WR 11 L.McCaffrey, WR 12              CB 12 C.Hood, P 15 J.Stout, QB 19 J.Winston, CB 22 A.Phillips, S 25 J.Pinnock,
+V.Jefferson, S 18 T.Owens, K 19 D.Stevens, CB 24 F.Moreau, CB 29 R.Douglas,        RB 26 D.Singletary, S 27 T.Nubin, DB 28 E.Campbell, RB 30 G.Desrosiers, CB
+RB 30 A.Ekeler, RB 34 R.Henry, S 35 P.Butler, OLB 48 J.Josephs, LB 51              31 N.Jones, K 34 D.Zvada, FB 45 P.Ricard, LB 46 Z.Barnes, OLB 48 T.Ford, LB
+A.Kaho, LB 56 K.Medrano, LB 58 J.Magee, LS 69 T.Ott, T/G 71 A.Wylie, TE 85         51 J.Kelly, LB 55 C.Martin, LS 58 B.Mann, OL 64 A.Stinnie, OL 71 M.Mbow, WR
+C.Okonkwo, DE 90 C.Omenihu, DE 91 D.Wise, OLB 92 D.Armstrong, DT 95                81 J.Hyatt, TE 85 C.Manhertz, WR 88 M.Fields, WR 89 C.Jones, DL 91
+J.Newton                                                                           D.Alexander, OLB 96 D.Smoot
+
+                                  ","                                                                        Did Not Play
+QB 8 M.Mariota, C/G 61 J.Good-Jones, C 66 M.Gulbin                                 C 61 J.Schmitz
+
+                                   ","                                                                          Not Active
+3QB 16 A.Kaliakmanis, CB 37 I.Yiadom, DT 50 R.Barber, G 62 T.Togiai, G 63          CB 21 P.Adebo, CB 35 N.Reed, LB 54 M.Harrison, OL 67 J.Sills, OL 74 J.Davis,
+L.Patrick, TE 80 C.Yankoff                                                         TE 86 T.Fidone, DL 99 B.Okoye
+                                                                ",commanders-at-giants-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794570519/gamecenter/ab5828d9-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/commanders-at-giants-2026-reg-10,337942,12c818cc26344849773621c74100defb2ad8e5cecfb343b8e28a9df44a8f0d3f,3f230fc2e61ef5058af6ebe7828ee9c8acdb78ca3b87b9c354c105ab5b1a3770,pdftotext -layout,2026-11-19T12:53:47Z
+New England Patriots,Detroit Lions,"Sunday, 11/15/2026",3:33 PM CET,11/15/2026 at Allianz Arena,Cloudy,52,SE 3,,,,"Martin, Clay (19)                                 Umpire: Woods, Steven (54)                        Down Judge: Phillips, Jerod (6)","
+
+                            New England Patriots                                                                       Detroit Lions
+               Offense                                      Defense                                      Offense                                Defense
+       LT   66 W.Campbell                        OLB     5 Dr.Jones                          WR     18   I.TeSlaa                      DE   97 A.Hutchinson
+      LG    70 G.Van Roten                        DT    97 M.Williams                        TE     87   S.LaPorta                     DL   54 A.McNeill
+        C   55 J.Wilson                           DT    94 C.Durden                           LT    58   P.Sewell                      DL   91 T.Williams
+      RG    65 M.Pryor                           OLB    91 E.Ponder                          LG     73   C.Mahogany                    DL   93 T.Lacy
+      RT    76 M.Moses                            LB    14 R.Spillane                          C    70   J.Scruggs                     LB   53 T.Nowaske
+      TE    85 H.Henry                            LB    53 C.Elliss                          RG     69   T.Ratledge                    LB   44 M.Rodriguez
+      TE    82 E.Raridon                          CB     0 C.Gonzalez                        RT     76   B.Miller                      LB   55 D.Barnes
+      QB    10 D.Maye                             CB    25 M.Jones                           WR      1   J.Williams                    DB   32 B.Branch
+      RB    38 R.Stevenson                        CB    22 C.Woods                           WR     14   A.St. Brown                   CB   23 R.Ya-Sin
+      WR     1 A.Brown                             S     4 C.Woodson                         QB     16   J.Goff                        CB   21 R.McCreary
+      WR    13 M.Hollins                           S    31 K.Byard                           RB      0   J.Gibbs                        S   36 C.Clark
+
+
+                                  ","                                                                        Substitutions
+WR 3 D.Douglas, K 8 A.Borregales, RB 9 C.Kiner, QB 16 T.DeVito, WR 18                 CB 2 E.Rakestraw, P 3 J.Fox, DB 5 C.Izien, DE 8 D.Moore, QB 11 J.Dobbs, WR
+K.Williams, P 19 M.Wishnowsky, CB 21 K.Prunty, S 23 J.Reed, CB 29                     17 T.Martin, RB 25 J.Saylors, S 28 A.Cisco, CB 30 K.Dorsey, RB 33 S.Vaki, LB
+C.Canada, S 33 M.Brown, RB 34 L.Larison, TE 36 C.Latu, FB 44 R.Gilliam, LS            35 J.Bachie, CB 38 N.Whiteside, K 39 J.Bates, LB 40 K.Britt, LS 49 H.Hatten,
+47 J.Ashby, LB 48 N.Obiazor, LB 49 E.Hunter, LB 50 G.Jacas, T 52 M.Bryant,            DL 50 S.Gill-Howard, LB 51 O.Pappoe, C 65 S.McLaughlin, DE 66 E.O'Neill, OL
+LB 54 D.Muasau, G 67 A.Rupcich, T 74 C.Lomu, WR 86 E.Chism, DT 90                     71 M.Frazier, OL 79 L.Borom, TE 83 T.Conklin, WR 86 D.Carter, TE 89
+C.Barmore, DT 92 J.Farmer, DL 93 L.Taylor, DT 99 Da.Jones                             B.Wright, DL 95 L.Onwuzurike, DE 98 D.Wonnum
+
+                                     ","                                                                      Did Not Play
+
+
+                                      ","                                                                        Not Active
+CB 7 C.Davis, 3QB 15 B.Morton, S 41 B.Schooler, T 68 D.Crownover, OL 72               CB 4 D.Reed, CB 6 K.Abney, LB 57 A.Ogbongbemiga, C 64 C.Mays, DL 94
+W.Rouse, C 77 B.Brown                                                                 M.Wingo, DE 99 A.Hassanein
+                                                                   ",patriots-at-lions-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829721/gamecenter/ab582c2f-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/patriots-at-lions-2026-reg-10,337187,26b3c925e5cd0fd34d3eebae219faa6e98bd6c6dbe64b902ae677d7f8af225a0,118513a3a4453588fcd02147f14f7e4887d268a742f3fb8aa9de725488048dbd,pdftotext -layout,2026-11-19T12:53:47Z
+Kansas City Chiefs,Atlanta Falcons,"Sunday, 11/15/2026",1:02 PM EST,11/15/2026 at Mercedes-Benz Stadium,,,,Retractable Roof - Closed on Field Turf,Field Turf,,"Eck, Alan (76)                                Umpire: Woods, Marcus (71)                           Down Judge: Short, Danny (113)","
+
+                              Kansas City Chiefs                                                                    Atlanta Falcons
+               Offense                                  Defense                                       Offense                                 Defense
+     WR     1 X.Worthy                          DE   56 G.Karlaftis                      WR       4   J.Dotson                        DL   54 B.Dorlus
+     TE    87 T.Kelce                           NT   92 K.Tonga                          TE       8   K.Pitts                         DL   92 M.Smith
+      LT   70 K.Benson                          DT   95 C.Jones                           LT     70   J.Matthews                      DT   95 G.Dexter
+     LG    76 K.Suamataia                       DE   91 F.Anudike-Uzomah                 LG      65   M.Bergeron                      DE   99 C.Thomas
+       C   52 C.Humphrey                        LB   43 J.Cochrane                         C     62   C.Levin                         LB   53 K.Daniels
+     RG    65 Tr.Smith                          LB   23 D.Tranquill                      RG      63   C.Lindstrom                     LB   42 J.Woods
+     RT    73 J.Ezeudu                          LB   32 N.Bolton                         RT      71   J.Taylor                        DB   29 S.Brown
+     TE    83 N.Gray                            DB   27 C.Conner                         TE      89   C.Woerner                       CB   24 A.Terrell
+     WR     4 R.Rice                            DB   20 N.Williams                       WR       5   D.London                        CB   26 C.Henderson
+     RB    10 E.Johnson                         CB    5 M.Delane                         QB       9   M.Penix                          S   23 D.Hellams
+     QB    15 P.Mahomes                          S   17 A.Gilman                         RB       7   B.Robinson                       S   31 X.Watts
+
+
+                                  ","                                                                      Substitutions
+QB 6 J.Fields, K 7 H.Butker, CB 8 K.Fulton, WR 11 J.Royals, WR 12 J.Downs,       WR 14 O.Zaccheaus, P 16 J.Bailey, WR 19 C.Blair, CB 21 M.Hughes, LB 22
+WR 13 C.Allen, P 14 M.Araiza, DB 21 J.Hicks, DB 22 J.Canady, S 29                Y.Abdullah, RB 25 K.Herbert, DE 27 J.Pearce, CB 28 M.Ford, CB 33 B.Bowman,
+X.Nwankpa, CB 30 C.Roland-Wallace, LB 31 J.Bassa, RB 35 N.Carter, LS 41          S 34 J.Robinson, K 39 J.Moody, LB 43 T.Quinn, LB 45 C.Harris, DE 47
+J.Winchester, LB 44 C.McDonald, DE 51 R.Thomas, T 61 D.Pounds, OL 64             C.Snowden, LS 49 L.McCullough, DE 55 Z.Smith, LB 56 H.Perkins, OL 68
+H.Nourzad, OL 66 M.Caliendo, WR 82 J.De Jesus, WR 85 A.Armstrong, TE 88          K.Hinton, G 74 A.Vorhees, T 75 E.Onianwa, TE 81 A.Hooper, TE 87 N.Muse,
+J.Briningstool, TE 89 J.Wiley, DT 94 B.Eason, DT 96 M.Harris, DE 97 A.Gillotte   WR 88 B.Collins, DL 94 L.London, DL 96 Z.Harrison
+
+                                  ","                                                                       Did Not Play
+                                                                                 QB 1 T.Tagovailoa
+
+                                   ","                                                                         Not Active
+RB 9 K.Walker, 3QB 19 G.Nussmeier, RB 34 J.Ott, CB 39 M.Smith, FB 47             ILB 0 D.Deablo, CB 12 Av.Terrell, 3QB 13 A.Dalton, WR 17 Z.Branch, QB 18
+B.VanSumeren, OL 77 J.Moore, DL 99 P.Woods                                       J.Strand, CB 37 R.Longerbeam, T 73 C.Williams
+                                                               ",chiefs-at-falcons-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829722/gamecenter/ab582f5b-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/chiefs-at-falcons-2026-reg-10,338813,387e0e0fc327989a835c824064d1b3527e0c7aa284c3782ef8dd3ea0e7e59741,b88f058e4c4b9b8ea9af4c6ebb9949f93c0ce20431c906577d0e4ecd8020a9a5,pdftotext -layout,2026-11-19T12:53:47Z
+Houston Texans,Cleveland Browns,"Sunday, 11/15/2026",1:02 PM EST,"Huntington Bank Field, Cleveland, OH",Cloudy,46,NW 15,,,,"Smith, Shawn (14)                                Umpire: Pellis, Mark (131)                          Down Judge: Allen, Marcus (0)","
+
+                                Houston Texans                                                                      Cleveland Browns
+                 Offense                                   Defense                                     Offense                                   Defense
+     WR       12 N.Collins                         DE   90 J.Clowney                       TE    44    H.Fannin                        DE    8 J.Verse
+      LT      79 A.Ersery                          DT   72 T.Togiai                         LT   55    S.Fano                          DT   94 M.Graham
+     LG       64 F.Nwaiwu                          DT   98 S.Rankins                       LG    77    Z.Johnson                       DT   96 M.Collins
+       C      63 E.Brown                           DE   51 W.Anderson                        C   74    E.Jenkins                       DE   57 I.McGuire
+     RG       69 E.Ingram                          CB   24 D.Stingley                      RG    58    A.Barber                        LB    5 Q.Williams
+     RT       77 T.Brown                           CB    3 K.Lassiter                      RT    71    T.Howard                        LB   49 C.Schwesinger
+     TE       86 D.Schultz                         LB   35 J.Hansen                        TE    86    B.Whiteheart                    CB   26 M.Harden
+     WR       14 K.Boutte                          LB   39 H.To'oTo'o                      WR     1    K.Concepcion                    CB   21 D.Ward
+     WR       19 X.Hutchinson                       S    2 C.Bullock                       WR    12    D.Boston                        CB    7 T.Campbell
+     QB        7 C.Stroud                           S    5 J.Pitre                         QB     4    D.Watson                         S   28 E.McNeil-Warren
+     RB        4 W.Marks                            S   29 M.Stewart                       RB    10    Q.Judkins                        S    9 G.Delpit
+
+
+                                   ","                                                                       Substitutions
+WR 1 T.Dell, S 6 R.Blankenship, TE 8 C.Stover, CB 11 T.Smith, K 15                 WR 0 I.Bond, WR 3 J.Jeudy, WR 11 M.Corley, P 13 C.Bojorquez, WR 16
+K.Fairbairn, S 20 J.Ingram, RB 21 E.Demercado, RB 23 D.Ogunbowale, S 27            T.Wallace, RB 22 D.Sampson, S 24 D.Thomas, K 25 A.Szmyt, CB 29
+K.Ramsey, LB 30 W.Woodaz, LB 33 J.Hummel, P 38 K.Kroeger, LS 40                    M.Blackmon, S 31 D.McMillon, CB 35 T.Pride, RB 38 J.McLaughlin, LB 42
+A.Brinkman, LB 49 C.Muma, T 57 B.Fisher, C 60 J.Andrews, T 78 N.Thomas,            E.Mascarenas-Arnold, TE 48 C.Ryan, LS 50 R.Sunahara, DT 51 M.Hall, DE 54
+TE 83 M.Klein, TE 87 F.Moreau, WR 88 N.Remigio, DT 91 N.Jones, DT 93               S.Williams, C 56 L.Wypler, LB 59 W.Reid, G 70 Z.Zinter, T 79 D.Jones, TE 80
+K.McDonald, DE 94 D.Robinson, DT 96 L.Hall                                         Z.Mitchell-Paden, DT 92 S.Kamara, DE 97 D.Barnett, DT 98 A.Huntington
+
+                                   ","                                                                         Did Not Play
+QB 10 D.Mills, T 71 B.Smith                                                        QB 2 S.Sanders
+
+                                    ","                                                                           Not Active
+LB 0 A.Al-Shaair, TE 9 B.Jordan, WR 18 M.Harrison, RB 32 D.Montgomery, DE          3QB 6 D.Gabriel, QB 15 T.Green, LB 17 J.Jefferson, CB 20 N.Igbinoghene, S 33
+55 D.Hunter, C/G 66 K.Rutledge, G 75 W.Teller                                      R.Hickman, C 52 P.Brailsford
+                                                                 ",texans-at-browns-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829724/gamecenter/ab583279-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/texans-at-browns-2026-reg-10,342918,c46193bbb201a09c90657693c75a2ab2fa7c96dda0cca612a7b1529ad2374b40,439dd02c19020c46ef0245d189ac0d2a1f3bc742e9b0f3f7cfc33801507b200a,pdftotext -layout,2026-11-19T12:53:47Z
+Minnesota Vikings,Green Bay Packers,"Sunday, 11/15/2026",12:02 PM CST,11/15/2026 at Lambeau Field,Sunny,45,NW 5,,,,"Blakeman, Clete (34)                            Umpire: Kemp, Alex (55)                            Down Judge: Sutter, Tripp (37)","
+
+                              Minnesota Vikings                                                                   Green Bay Packers
+                Offense                                 Defense                                         Offense                               Defense
+      TE     85 B.Yurosek                     OLB   15 D.Turner                           WR        0   M.Golden                  EDGE    90 L.Van Ness
+       LT    71 C.Darrisaw                     DL   95 C.Banks                             LT      77   J.Morgan                    DT    94 K.Brooks
+      LG     60 J.Huber                        DL   50 L.Rodriguez                        LG       72   L.Tomlinson                 DT    95 D.Wyatt
+        C    64 B.Brandel                      DL   61 J.Redmond                            C      73   J.Williams                  DT    55 C.McClellan
+      RG     76 W.Fries                       OLB   43 A.Van Ginkel                       RG       79   T.Glover                  EDGE    99 B.Sorrell
+      RT     75 B.O'Neill                      LB    0 I.Pace                             RT       71   A.Belton                    LB    58 I.McDuffie
+      WR     18 J.Jefferson                    LB   55 E.Wilson                           TE       85   T.Kraft                     LB    59 T.Hopper
+      WR     13 T.Felton                       CB    2 I.Rodgers                          WR        9   C.Watson                    CB     2 B.Cisse
+      QB      8 K.Cousins                      CB    7 B.Murphy                           TE       86   M.Redman                    CB    25 K.Nixon
+      RB     33 A.Jones                         S   26 T.Jackson                          QB       10   J.Love                       S    29 X.McKinney
+      FB     45 M.Bredeson                      S   44 J.Metellus                         RB       30   C.Brooks                     S    33 E.Williams
+
+
+                                  ","                                                                       Substitutions
+WR 4 M.Price, CB 5 Z.Vaughn, S 6 Jak.Thomas, K 16 W.Reichard, OLB 17              QB 6 T.Taylor, S 7 J.Bullard, WR 16 B.Melton, TE 18 J.Smith, P 19 D.Whelan,
+K.Van Noy, P 19 B.Thorson, CB 20 C.Demmings, S 22 H.Smith, CB 23 J.Pierre,        CB 21 B.St-Juste, WR 23 S.Moore, CB 24 C.Valentine, RB 26 K.Johnson, S 27
+S 24 J.Ward, RB 27 J.Mason, S 29 Jac.Thomas, RB 31 D.Dallas, OLB 32               K.Oladapo, K 28 T.Smack, LB 31 N.Niemann, RB 32 M.Lloyd, CB 36 K.Hadden,
+C.Chambliss, LB 41 J.Golday, LS 42 A.DePaola, TE 48 D.Culp, C 65 M.Jurgens,       LS 42 M.Orzech, TE 49 D.Dabney, DE 51 D.Dennis-Sutton, LB 54 K.Welch, DE
+T 72 R.Van Demark, T 78 C.Tiernan, WR 82 J.Jones, TE 86 G.Bartholomew, DL         57 B.Cox, G 65 A.Banks, G 74 M.Becton, WR 83 S.Williams, WR 87
+97 D.Orange, OLB 98 B.Richter, DL 99 E.Williams                                   J.Sturdivant, DT 93 A.Campbell, DT 97 J.Riley
+
+                                  ","                                                                        Did Not Play
+QB 11 C.Wentz                                                                     C/G 52 J.Burton
+
+                                   ","                                                                          Not Active
+QB 1 K.Murray, WR 3 J.Addison, 3QB 12 M.Brosmer, WR 14 J.Jennings, LB 51          RB 8 J.Jacobs, RB 22 P.Strong, LB 44 Z.Franklin, G/T 67 D.Jennings, G 70
+B.Cashman, TE 87 T.Hockenson, DL 90 T.Ingram-Dawkins                              K.Zeitler, C/G 75 S.Rhyan
+                                                                ",vikings-at-packers-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829721/gamecenter/ab788967-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/vikings-at-packers-2026-reg-10,336524,d19ef8d9871d04eac9da1a14eec1d9cea99e027bb9d683b0192a1665413c4189,603592c7114161d49d71fd6ca94657c4816a79f428c43f1595b6fb5598e38d87,pdftotext -layout,2026-11-19T12:53:47Z
+Miami Dolphins,Indianapolis Colts,"Sunday, 11/15/2026",1:03 PM EST,11/15/2026 at Lucas Oil Stadium,Cloudy,48,N 6,"Retractable Roof - Closed on Field Turf                                                    Outdoor Weather: Cloudy, 48 degr. Wind North at 6 mph, Wind Chill: 45",Field Turf,,"Willard, Don (58)                               Umpire: Killens Jr., Terry (77)                      Down Judge: Griebel, Matthew (135)","
+
+                                 Miami Dolphins                                                                     Indianapolis Colts
+                Offense                                   Defense                                         Offense                               Defense
+     WR       7 C.Douglas                         DE    9 J.Uche                           WR        80   D.Burks                       DE   98 A.Key
+      LT     52 P.Paul                            DL   94 J.Phillips                       WR        13   L.Treadwell                   DT   74 K.Givens
+     LG      74 K.Proctor                         DL   78 K.Grant                          TE        84   T.Warren                      DT   90 G.Stewart
+       C     60 A.Meyer                           DE   44 C.Robinson                        LT       79   B.Raimann                     DT   95 A.Adebawore
+     RG      71 J.Savaiinaea                     ILB   10 J.Rodriguez                      LG        62   J.Farmer                      DE   97 L.Latu
+     RT      73 A.Jackson                        ILB   20 J.Brooks                           C       60   T.Bortolini                   LB   50 B.Boettcher
+     TE      85 G.Dulcich                         CB    3 C.Johnson                        RG        68   D.Tucker                      LB   53 C.Allen
+     FB      34 D.Herman                          CB    8 J.Brents                         RT        71   M.Goncalves                   CB    1 A.Gardner
+     WR       6 M.Washington                       S   16 M.Taaffe                         WR         6   A.Gould                       CB    7 C.Ward
+     QB      14 K.McCord                           S   11 D.Trader                         QB        17   D.Jones                        S   25 A.Haulcy
+     RB       0 O.Gordon                           S   19 K.Louis                          RB        28   J.Taylor                       S    0 C.Bynum
+
+
+                                   ","                                                                        Substitutions
+WR 1 J.Tolbert, CB 4 J.Marshall, RB 5 J.Wright, WR 21 K.Coleman, S 23               K 3 S.Shrader, P 8 R.Sanchez, WR 12 N.Westbrook-Ikhine, WR 16 A.Dulin, RB
+Z.Anderson, S 25 J.Wood, RB 30 K.Allen, K 31 Z.Gonzalez, CB 32 J.Simpson,           20 S.McGowan, RB 21 D.Giddens, CB 27 J.Walley, S 30 H.Wohler, CB 33
+ILB 40 W.Gay, ILB 42 J.Woodard, LB 45 S.Heyward, LS 46 T.Addington, P 48            K.Harris, CB 34 K.Gushiken, S 38 J.Owens, LB 44 T.Chambers, LB 47
+B.Pinion, DE 58 J.Kromah, DE 59 R.McGraw, G/T 62 J.Kingston, T 79                   W.Weeks, LS 48 J.Bobenmoyer, TE 49 P.Brown, DE 52 G.Gumbs, DE 55
+C.Godrick, TE 83 S.Traore, WR 88 J.Reagor, TE 89 W.Kacmarek, DE 90                  C.Curry, LB 58 A.Ajiake, C 63 S.Van Pran-Granger, T 67 L.Tenuta, TE 85
+M.Herring, DL 93 Z.Biggers, DL 97 K.Cooper                                          A.Ogletree, DE 91 J.Tuimoloau, DT 93 T.Smith
+
+                                   ","                                                                         Did Not Play
+QB 15 B.Cook, G 64 C.Haynes                                                         QB 5 A.Richardson, WR 9 Q.Watkins, T 73 C.Heck
+
+                                    ","                                                                           Not Active
+WR 18 C.Bell, CB 24 M.Dial, C 55 A.Brewer, G/T 77 C.Wallace, TE 80 J.Joly,          3QB 15 R.Leonard, LS 46 L.Rhodes, LB 57 J.Carlies, T 75 J.Travis, TE 86
+WR 86 J.Wayne                                                                       W.Mallory, DT 94 J.Tillery
+                                                                 ",dolphins-at-colts-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829723/gamecenter/ab789365-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/dolphins-at-colts-2026-reg-10,339059,107be568d8049a10fa4a02b35b37392815424e95f8f3cb8125165b4bbd4798fc,9a43fbd1afe0a8076d5fb6e66cef90938eedf9046e091c997caa73a4ef5900a7,pdftotext -layout,2026-11-19T12:53:47Z
+Carolina Panthers,New Orleans Saints,"Sunday, 11/15/2026",12:02 PM CST,11/15/2026 at Caesars Superdome,,,,,,,"Heydt, Duane (42)                                Umpire: Anderson, Derek (66)                  Down Judge: Thomas, Sarah (53)","
+
+                               Carolina Panthers                                                               New Orleans Saints
+               Offense                                   Defense                                     Offense                                Defense
+     TE    88 D.Waller                         OLB   91 P.Jones                           TE    83   J.Johnson                    DE    99 C.Young
+      LT   63 R.Walker                          DT   98 T.Wharton                         TE    87   N.Fant                       DL    93 N.Shepherd
+     LG    68 D.Lewis                           DT   95 D.Brown                            LT   71   K.Banks                      DL    91 V.Broughton
+       C   77 L.Fortner                        OLB    5 J.Phillips                        LG    76   D.Edwards                    DE    96 C.Granderson
+     RG    50 R.Hunt                            LB   33 T.Dodson                            C   51   C.Ruiz                       LB    55 K.Elliss
+     RT    57 M.Freeling                        LB   55 D.Lloyd                           RG    65   J.Wright                     LB    20 P.Werner
+     TE    82 T.Tremble                         CB   26 C.Smith-Wade                      RT    72   A.Richards                   CB    22 M.Emerson
+     WR    18 J.Coker                           CB   35 M.Wilson                          WR    14   D.Vele                       CB     1 K.McKinstry
+     WR     4 T.McMillan                         S   20 Z.Wheatley                        WR    12   C.Olave                       S    23 J.Blackmon
+     QB     9 B.Young                            S    7 T.Moehrig                         QB     6   T.Shough                      S    21 J.Reid
+     RB    30 C.Hubbard                          S   21 N.Scott                           RB     3   T.Etienne                     S     7 J.Sanker
+
+
+                                   ","                                                                  Substitutions
+OLB 3 P.Umanmielen, P 6 S.Martin, K 10 R.Fitzgerald, WR 13 J.Metchie, WR 17       WR 0 J.Tyson, TE 4 O.Delp, P 17 R.Wright, WR 18 B.Lance, WR/RS 19
+X.Legette, S 22 L.Ransom, RB 23 T.Etienne, S 27 I.Simmons, CB 31                  B.Brown, CB 25 D.Richardson, LB 28 D.Stutsman, CB 29 Q.Riley, RB 30
+C.Thornton, RB 34 A.Tyus, CB 36 M.DeWalt, OLB 39 N.Hampton, LS 44                 A.Estime, DB 31 J.Howden, DE 33 A.Jennings, DB 36 L.Styles, K 39 C.Smyth,
+J.Jansen, LB 46 J.Kuwatch, OLB 52 T.Gipson, LB 54 B.Martin-Scott, G 65            RB 41 A.Kamara, LB 44 I.Stalbird, LS 49 Z.Wood, DL 50 C.Wooden, LB 58
+T.Simpkins, T 67 C.Bullock, T 73 S.Forsythe, TE 81 F.Franks, TE 84 M.Evans,       C.Rumph, G 66 W.Sherman, T 73 E.Kilty, T 74 M.Murphy, DE 94 C.Jordan, DL
+WR 87 B.Tremayne, DT 92 L.Hunter, DT 94 A.Hall, DT 97 B.Brown                     95 J.Ridgeway, DL 97 K.Boyd, DE 98 T.Wilson
+
+                                   ","                                                                   Did Not Play
+QB 12 K.Pickett                                                                   QB 2 S.Rattler
+
+                                    ","                                                                     Not Active
+TE 0 J.Sanders, 3QB 16 H.King, CB 24 W.Lee, RB 28 A.Dillon, LB 58                 3QB 11 Z.Wilson, S 42 M.Reid, RB 43 C.Donaldson, LB 53 J.Ford, T 75
+B.Okereke, C 75 S.Hecht, DT 93 T.Edwards                                          T.Fuaga, C 78 E.McCoy
+                                                                 ",panthers-at-saints-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829721/gamecenter/ab789769-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/panthers-at-saints-2026-reg-10,336490,0145bf25a0105f8c54ea0a2c59fa8f8434b921236dff5c7dcbc8f823ac6c2e1f,3611182a4f939117f3b0e73b75b5fbe8e4bd9fe93569064802b1ea7642819934,pdftotext -layout,2026-11-19T12:53:47Z
+Buffalo Bills,New York Jets,"Sunday, 11/15/2026",1:03 PM EST,"MetLife Stadium, East Rutherford, NJ",,49,NW 11,,,,"Torbert, Ronald (62)                               Umpire: King, Paul (121)                         Down Judge: Sakowski, Brian (112)","
+
+                                       Buffalo Bills                                                                   New York Jets
+                 Offense                                      Defense                                     Offense                               Defense
+        TE    88 D.Knox                            OLB    15 G.Rousseau                        WR     5   G.Wilson                     DE   52 K.Enagbare
+         LT   73 D.Dawkins                          DL    91 E.Oliver                           LT   74   O.Fashanu                    DL   91 J.Briggs
+        LG    70 A.Anderson                         DL    96 D.Walker                          LG    64   D.Parham                     DL   95 D.Jackson
+          C   66 C.McGovern                         DL    94 L.Jackson                           C   71   J.Myers                      DL   97 H.Phillips
+        RG    64 O.Torrence                        OLB     9 B.Chubb                           RG    66   J.Tippmann                   DE   31 D.Bailey
+        RT    79 S.Brown                           ILB     8 T.Bernard                         RT    70   A.Membou                     LB   44 J.Sherwood
+        WR     0 K.Coleman                          CB    23 D.Alford                          TE    85   M.Taylor                     LB   56 D.Davis
+        TE    86 D.Kincaid                          CB    21 D.Igbinosun                       WR    11   O.Cooper                     CB   21 B.Stephens
+        WR     2 D.Moore                            CB    47 C.Benford                         TE    16   K.Sadiq                      CB    1 A.Thomas
+        QB    17 J.Allen                             S    24 C.Bishop                          QB     7   G.Smith                       S    6 D.Belton
+        RB     4 J.Cook                              S    22 A.Hooker                          RB    20   B.Hall                        S   29 M.Fitzpatrick
+
+
+                                       ","                                                                   Substitutions
+ CB 1 M.Hairston, S 3 D.Hamlin, RB 7 R.Davis, WR 10 K.Shakir, QB 11 K.Allen,            RB 0 B.Allen, RB 3 K.Nwangwu, DE 9 W.McDonald, QB 10 C.Klubnik, P 14
+ WR 13 S.Bell, K 16 T.Bass, WR 19 G.Dortch, RB 26 T.Johnson, DB 28                      A.McNamara, WR 15 A.Mitchell, WR 18 I.Williams, K 19 J.Sanders, CB 23
+ S.Franklin, DB 37 J.Hancock, P 39 T.Doman, ILB 42 D.Williams, ILB 44                   D.Ponds, DB 26 N.Wright, DB 27 M.Moore, RB 32 I.Davis, S 34 V.Payne, CB 37
+ J.Andreessen, LB 52 K.Elarms-Orr, C 53 L.Cushenberry, OLB 55 M.Hoecht, OLB             Q.Stiggers, LS 42 T.Hennessy, DE 46 J.Ossai, FB 47 A.Beck, LB 48 J.Keller, LB
+ 56 J.Solomon, G/C 63 A.Corbett, T/G 68 T.Grable, LS 69 R.Ferguson, TE 83               50 T.Reeder, OL 67 J.Meredith, OL 79 C.Okorafor, WR 84 M.McClain, TE 89
+ K.Latu, TE 85 J.Hawes, DL 90 D.Carter, DL 98 T.Sanders, OLB 99 T.Parker                J.Ruckert, DL 96 J.Heflin, DL 98 P.Page
+
+                                       ","                                                                     Did Not Play
+                                                                                        T 76 B.Freeland
+
+                                        ","                                                                       Not Active
+ QB 6 S.Buechele, S 29 J.Kilgore, OLB 51 M.Danna, G 60 A.Reed-Adams, T/G                DB 2 J.Brownlee, WR 17 T.Patrick, LB 49 T.Wallace, TE 86 J.Woods, DE 92
+ 74 J.Bowry, DL 97 G.Gaines                                                             N.Lynn
+                                                                     ",bills-at-jets-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829722/gamecenter/ab789ac9-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/bills-at-jets-2026-reg-10,340017,19f04098343b73fd0633519f68469a65e877a9a7270b5e299b167cbbcb947527,14ab3f00de65157f6109d1e26249a22069bed36bb1dcff09239b3d6e4cd6aeaa,pdftotext -layout,2026-11-19T12:53:47Z
+Jacksonville Jaguars,Tennessee Titans,"Sunday, 11/15/2026",12:02 PM CST,"Nissan Stadium, Nashville, TN",Sunny,50,NE 4,,,,"Anderson, Barry (20)                             Umpire: Morton, Mike (89)                             Down Judge: Baynes, Rusty (59)","
+
+                             Jacksonville Jaguars                                                                    Tennessee Titans
+                Offense                                   Defense                                         Offense                                  Defense
+      WR     3 J.Meyers                          DE   41 J.Hines-Allen                        TE     82   D.Bellinger                    DE    57 J.Martin
+      TE    85 B.Strange                         DT   91 A.Armstead                           TE     84   G.Helm                         DL    91 J.Franklin-Myers
+       LT   72 W.Little                          DT   93 M.Dickerson                          WR     17   C.Dike                         DT    90 S.Thomas
+      LG    75 E.Pregnon                         DE   44 T.Walker                              LT    75   D.Moore                        DE    11 J.Johnson
+        C   73 R.Hainsey                         LB   23 F.Oluokun                            LG     76   C.Zavala                       LB    33 C.Gray
+      RG    76 E.Cleveland                       LB   51 V.Miller                               C    51   A.Schlottmann                  LB    54 D.Mausi
+      RT    70 C.Van Lanen                       CB   12 T.Hunter                             RG     70   A.Mafi                         CB    25 Jo.Williams
+      WR    11 P.Washington                      CB    1 M.Brown                              RT     55   J.Latham                       CB    24 A.Taylor
+      WR     7 Bri.Thomas                         S   26 K.Merriweather                       WR      5   E.Ayomanor                     CB    18 C.Flott
+      QB    16 T.Lawrence                         S    6 A.Johnson                            QB      1   C.Ward                          S    29 T.Adams
+      RB    33 B.Tuten                            S   25 R.Lane                               RB     20   T.Pollard                       S    23 K.Winston
+
+
+                                   ","                                                                        Substitutions
+CB 2 J.Lewis, CB 4 Jar.Jones, RB 5 L.Allen, P 9 L.Cooke, WR 19 J.Cameron, RB         WR 0 C.Ridley, RB 2 T.Spears, WR 4 W.Robinson, K 6 J.Slye, DE 7 O.Oladejo,
+20 A.Abdullah, S 22 J.Huskey, RB 24 C.Rodriguez, LB 31 J.Tavai, LB 35                P 13 T.Morstead, DE 15 K.Faulk, CB 21 M.Robinson, CB 26 M.Harris, S 28
+J.Mcleod, CB 36 Jay.Jones, K 39 C.Little, LS 46 R.Matiscik, LB 47 D.Gardeck,         I.Oliver, RB 36 J.Chestnut, S 38 T.Burgess, LB 40 D.Hampton, LB 44
+LB 50 B.Combs, DE 57 Bry.Thomas, OL 60 J.Monheim, OL 64 W.Milum, OL 68               M.Diabate, LS 46 M.Cox, DE 56 T.Jones, T 59 J.Hudson, G 71 G.Dellinger, C 79
+D.Faalele, TE 80 Q.Morris, TE 87 N.Boerkircher, TE 88 T.Koziol, DE 92                P.Coogan, TE 86 K.Granson, WR 87 X.Restrepo, TE 88 D.Martin-Robinson, DT
+D.Striggow, DT 94 D.Godchaux, DT 99 R.Orhorhoro                                      93 N.Stackhouse, DT 94 T.Horne, DT 99 J.Laulu
+
+                                   ","                                                                           Did Not Play
+QB 10 Q.Ewers                                                                        QB 10 M.Trubisky
+
+                                    ","                                                                            Not Active
+S 0 J.Bates, WR 18 C.Williams, DT 90 J.Davis, DE 97 W.Williams, DT 98                WR 14 C.Tate, RB 32 N.Singleton, CB 42 J.Jones, LB 50 C.Barton, LB 53 A.Hill,
+A.Regis                                                                              T 78 B.Crenshaw-Dickson, DT 96 J.Marshall
+                                                                   ",jaguars-at-titans-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829722/gamecenter/ab789e15-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/jaguars-at-titans-2026-reg-10,336598,a3307c0f336e8dbb48a99238294203479ad9faa8a6120012170018b5dcd5565a,b3b4fbff4a77b393f08218bf5b21489d853b62bd06bf47a2d9e1ef29d7a7e149,pdftotext -layout,2026-11-19T12:53:47Z
+Los Angeles Rams,Arizona Cardinals,"Sunday, 11/15/2026",2:05 PM MST,11/15/2026 at State Farm Stadium,Sunny,75,E 3,Retractable Roof - Open on Natural Grass,,,"Clark, Land (130)                                Umpire: Cruse, Brandon (22)                      Down Judge: Warner, Andy (64)","
+
+                               Los Angeles Rams                                                                  Arizona Cardinals
+               Offense                                     Defense                                     Offense                                Defense
+      WR     4 K.Mumpfield                     OLB      95 M.Garrett                       WR    80    S.Fehoko                     OLB   10 J.Sweat
+       LT   77 A.Jackson                        DE      99 A.Donald                        TE    84    E.Higgins                     DT   97 W.Nolen
+      LG    50 B.Limmer                         DE      90 T.Davis                         TE    89    H.Long                        DT   55 D.Stills
+        C   65 C.Shelton                        DE      55 B.Fiske                          LT   78    J.Fryar                      OLB   25 Z.Collins
+      RG    69 K.Dotson                        OLB       0 B.Young                         LG    73    I.Seumalo                    ILB   50 J.Gibbens
+      RT    71 W.McClendon                     ILB      48 O.Speights                        C   58    H.Conner                     ILB    1 Ma.Wilson
+      WR    14 X.Smith                         ILB      53 N.Landman                       RG    74    I.Adams                       CB   35 K.King
+      WR     6 C.Daniels                        CB      30 J.Wallace                       RT    65    E.Wilkinson                   CB   29 D.Burke
+      QB     9 M.Stafford                       CB      22 T.McDuffie                      TE    85    T.McBride                     CB   13 K.Clark
+      RB    24 B.Corum                           S      37 Q.Lake                          QB    19    C.Beck                         S   28 A.Wingard
+      RB    23 K.Williams                        S       3 K.Curl                          RB    22    T.Allgeier                     S    3 B.Baker
+
+
+                                   ","                                                                     Substitutions
+CB 1 E.Forbes, S 2 J.McCollough, S 5 K.Kinchens, WR 8 T.Atwell, OLB 10             ILB 0 C.Simon, OLB 5 B.Browning, WR 7 Z.Jones, P 12 B.Gillikin, CB 16
+J.Stewart, K 16 J.Karty, K 19 B.McManus, RB 20 R.Rivers, CB 21 C.Lampkin,          M.Melton, RB 20 Z.Knight, CB 21 G.Williams, RB 26 E.Hull, S 36 K.Crawford, K
+CB 26 D.Williams, P 42 E.Evans, LS 43 J.McQuaide, ILB 44 G.Stuard, OLB 47          38 C.Ryland, S 42 D.Taylor-Demerson, ILB 43 K.Sharar, TE 47 T.Quitoriano,
+W.Bailey, DE 52 L.Murchison, ILB 56 S.Dolac, NT 57 T.Hamilton, OL 63               DL 51 R.Lopez, OLB 52 J.Burch, DL 56 D.Robinson, LS 59 C.Kreiter, OL 64
+D.McMahon, OL 66 B.Murray, OL 68 D.Quessenberry, WR 81 B.Presley, TE 84            K.Eguakun, OL 79 J.Wills, WR 81 D.Duvernay, WR 82 R.Virgil, WR 83
+C.Parkinson, TE 86 M.Klare, TE 87 D.Allen, TE 89 T.Higbee                          H.Wallace, DL 91 L.Collier, DL 95 A.Billings
+
+                                   ","                                                                      Did Not Play
+QB 13 S.Bennett                                                                    QB 9 J.Johnson, OL 76 A.Reese
+
+                                    ","                                                                        Not Active
+3QB 15 T.Simpson, S 36 M.Pulley, LS 49 J.Cardona, OLB 59 D.Peterson, OL 73         3QB 18 J.Aguilar, CB 24 S.Thomas, OLB 54 E.Leota, OL 66 J.Williams, OL 71
+S.Avila, OL 79 K.Trost, OLB 94 D.Johnson                                           J.Gaines, OL 72 H.Froholdt
+                                                                 ",rams-at-cardinals-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794854921/gamecenter/ab78a133-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/rams-at-cardinals-2026-reg-10,334342,5bc5f89cde8e0cdb66ffac14e63808d85197c5652abd9cbade4346ea1ecaf8fa,67ab4236b4ea9b4c647fb72233eaceb024995c0b24f398dc51523d775932e625,pdftotext -layout,2026-11-19T12:53:47Z
+Seattle Seahawks,Las Vegas Raiders,"Sunday, 11/15/2026",1:05 PM PST,11/15/2026 at Allegiant Stadium,Cloudy,65,NE 6,,,,"Vinovich, Bill (52)                            Umpire: Cheffers, Carl (51)                         Down Judge: Turner, Patrick (13)","
+
+                              Seattle Seahawks                                                                   Las Vegas Raiders
+               Offense                                  Defense                                        Offense                                Defense
+     WR    11 J.Smith-Njigba                    DE   91 B.Murphy                           TE     89   B.Bowers                       DE   95 K.Paye
+     WR    10 C.Kupp                            DE   90 J.Reed                              LT    74   K.Miller                       DT   94 F.Fatukasi
+     TE    81 E.Saubert                         LB    0 D.Lawrence                         LG     70   S.Burford                      DT   69 A.Butler
+      LT   74 J.Jones                           LB   58 D.Hall                               C    65   T.Linderbaum                   DE   98 M.Crosby
+     LG    76 G.Zabel                           LB   32 D.Thomas                           RG     66   T.Zuhn                         LB   17 N.Dean
+       C   61 J.Sundell                         LB   13 E.Jones                            RT     71   D.Glaze                        LB    7 Q.Walker
+     RG    75 A.Bradford                        CB   21 D.Witherspoon                      TE     87   M.Mayer                        CB   35 H.Masses
+     RT    72 A.Lucas                           CB   29 J.Jobe                             WR      1   T.Tucker                       CB    3 T.Johnson
+     TE    88 A.Barner                           S    3 N.Emmanwori                        QB     15   F.Mendoza                      CB    5 E.Stokes
+     QB     2 D.Lock                             S   39 T.Okada                            FB     34   C.Heyward                       S   11 J.Chinn
+     RB    26 Z.Charbonnet                       S   20 J.Love                             RB      2   A.Jeanty                        S   31 T.Stukes
+
+
+                                  ","                                                                       Substitutions
+P 4 M.Dickson, K 5 J.Myers, LB 7 U.Nwosu, RB 8 J.Price, WR 15 T.Horton, CB         RB 4 M.Washington, P 6 A.Cole, WR 9 J.Nailor, K 14 M.Gay, WR 18 J.Bech, S
+16 T.Diggs, WR 22 R.Shaheed, S 24 R.Thomas, CB 28 N.Pritchett, RB 36               20 I.Pola-Mao, RB 23 D.Laube, CB 25 D.Luter, CB 26 D.Porter, CB 28 J.McCoy,
+G.Holani, FB 38 B.Russell, LS 41 C.Stoll, LB 44 C.Surratt, LB 48 T.Knight, LB 52   LB 44 T.Eichenberg, LS 47 A.Ward, LB 50 S.Olubi, DE 51 M.Koonce, LB 55
+P.O'Connell, LB 56 D.Fowler, LB 57 C.O'Toole, T 68 B.Hart, G 70 B.Stephens,        C.Lindenberg, G/C 58 J.Powers-Johnson, T 60 C.Grant, G 76 C.Rogers, TE 80
+WR 85 I.Charles, TE 89 N.Kallerup, DE 94 M.Morris, NT 95 B.Pili, DT 98 R.Mills     I.Thomas, WR 81 D.Young, WR 82 C.White, TE 84 C.Runyon, DT 91 T.Keenan,
+                                                                                   DT 92 J.Pegues, DT 97 T.Hemingway
+
+                                  ","                                                                        Did Not Play
+QB 6 J.Milroe, C 55 O.Oluwatimi                                                    QB 12 A.O'Connell
+
+                                   ","                                                                          Not Active
+QB 14 S.Darnold, RB 23 E.Wilson, CB 27 A.Smith, G 53 Q.Nelson, T 67                WR 10 D.Thornton, WR 19 M.Benson, S 27 T.McCollum, S 43 D.Johnson, G 77
+C.Cross, NT 97 D.Eastern, DT 99 L.Williams                                         B.Cabeldue, DT 99 T.Booker
+                                                                ",seahawks-at-raiders-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829726/gamecenter/ab78a43c-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/seahawks-at-raiders-2026-reg-10,327750,2e5c44630e0f55fa54b0794451168da1a88eccc42ea0dda90be5beb0221298d3,c84907fb021707391866bd64d8466915d80a5a86c664ca58bb7ef47fbd22820c,pdftotext -layout,2026-11-19T12:53:47Z
+San Francisco 49ers,Dallas Cowboys,"Sunday, 11/15/2026",3:25 PM CST,"AT&T Stadium, Arlington, TX",Rainy,49,NE 3,Retractable Roof - Closed on Field Turf                                                                                                             Wind Chill: 49,Field Turf,,"Hussey, John (35)                                Umpire: Slaughter, Tab (110)                      Down Judge: Bowers, Derick (74)","
+
+                             San Francisco 49ers                                                                    Dallas Cowboys
+                Offense                                    Defense                                     Offense                                 Defense
+     WR     19 D.Samuel                            DL   97 N.Bosa                           WR    88   C.Lamb                        OLB   40 V.Miller
+     FB     44 K.Juszczyk                          DL   99 D.Buckner                        WR    19   R.Flournoy                     DT   92 Q.Williams
+     TE     85 G.Kittle                            DL   92 O.Odighizuwa                      LT   60   T.Guyton                       DT   97 K.Clark
+      LT    71 T.Williams                          DL   56 K.White                          LG    73   T.Smith                       OLB    7 R.Gary
+     LG     75 C.Colby                             LB   57 D.Greenlaw                         C   56   C.Beebe                        LB   53 D.Winters
+       C    64 J.Brendel                           LB   54 F.Warner                         RG    52   T.Booker                       LB   50 S.James
+     RG     77 D.Puni                              DB    2 D.Lenoir                         RT    78   T.Steele                       DB   13 C.Downs
+     RT     68 C.McKivitz                          CB   20 U.Stout                          TE    89   B.Spann-Ford                   CB   25 J.Porter
+     WR     17 J.Watkins                           CB    0 R.Green                          WR     3   G.Pickens                      CB   26 D.Bland
+     QB     13 B.Purdy                              S   27 J.Brown                          QB     4   D.Prescott                      S   14 M.Bell
+     RB     23 C.McCaffrey                          S    6 M.Mustapha                       RB    33   J.Williams                      S   24 M.Hooker
+
+
+                                  ","                                                                       Substitutions
+WR 3 K.Allen, WR 4 J.Cowing, TE 9 B.Willis, WR 11 D.Robinson, P 15                   LB 0 D.Overshown, CB 2 C.Durant, P 5 B.Anger, WR 9 K.Turpin, S 11 A.Clark,
+C.Waitman, K 18 E.Pineiro, S 24 A.Davis, RB 26 K.Black, CB 28 E.Prysock, RB          K 17 B.Aubrey, CB 23 A.Speed, CB 28 S.Revel, FB 30 H.Luepke, OLB 35
+29 J.James, DB 33 S.Neal, S 36 M.Sigle, LS 46 J.Weeks, DL 47 K.Kareem, LB            M.Liufau, RB 37 I.Abanikanda, OLB 41 J.Houston, LS 44 T.Sieg, LB 45
+49 G.Wallow, LB 51 L.Gifford, LB 53 J.Dugger, DL 55 S.Valdez, OL 58                  J.Barron, LB 55 J.Barham, G 66 T.Bass, T 67 D.Shelton, T 77 B.Jones, WR 80
+J.Patterson, OL 74 C.Willis, OL 76 V.Lowe, TE 89 L.Farrell, DL 94 R.Height, DL       C.Brown, TE 84 J.Mitchell, TE 86 L.Schoonmaker, DT 90 J.Bullard, DT 91
+96 J.Thompson, DL 98 M.Williams                                                      O.Ogbonnia, DT 93 E.Garcia, DT 99 L.Overton
+
+                                  ","                                                                        Did Not Play
+QB 10 M.Jones                                                                        QB 16 S.Howell
+
+                                   ","                                                                          Not Active
+WR 5 M.Evans, 3QB 14 K.Rourke, LB 48 T.Bethune, OL 69 E.Cruz, WR 84                  S 1 P.Locke, OLB 6 D.Ezeiruaku, CB 15 D.Kendrick, WR 18 J.Mingo, S 43
+B.Cooks                                                                              J.Thomas, T 65 A.Cornelius, TE 87 J.Ferguson
+                                                                 ",49ers-at-cowboys-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829724/gamecenter/ab78a748-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/49ers-at-cowboys-2026-reg-10,345842,c5378c33a7fcac7cc0c2dde42e6a89640252f86325f192692a577d37b4cdc651,3008cfe3b967e0681a39b263098a8452065fe950e7947d854f22c1512f56dd10,pdftotext -layout,2026-11-19T12:53:47Z
+Pittsburgh Steelers,Cincinnati Bengals,"Sunday, 11/15/2026",8:22 PM EST,"Paycor Stadium, Cincinnati, OH",Partly Cloudy,42,NE 2,,,,"Willard, Don (58)                                 Umpire: Killens Jr., Terry (77)                         Down Judge: McKenzie, Dana (8)","
+
+                              Pittsburgh Steelers                                                                         Cincinnati Bengals
+               Offense                                      Defense                                         Offense                                 Defense
+      WR     4 D.Metcalf                            LB   56 A.Highsmith                       WR        1   J.Chase                        LDE   99 M.Murphy
+       LT   76 T.Fautanu                            DT   97 C.Heyward                        LOT       75   O.Brown                         DT   93 J.Allen
+      LG    66 M.McCormick                          DT   95 K.Benton                          LG       63   D.Fairchild                     NT   97 D.Lawrence
+        C   54 Z.Frazier                            LB   90 T.Watt                             C       64   T.Karras                        DT   92 B.Hill
+      RG    67 B.Hoffman                            LB   41 P.Wilson                          RG       66   D.Risner                       RDE   53 B.Mafe
+      RT    71 M.Iheanachor                         LB    6 P.Queen                          ROT       71   A.Mims                          LB   49 B.Carter
+      TE    80 D.Washington                         CB   35 J.Dean                            TE       88   M.Gesicki                       LB   44 D.Knight
+      TE    88 P.Freiermuth                         CB   22 A.Samuel                          WR       81   D.Meyers                        CB   23 D.Hill
+      WR    17 G.Bernard                            CB    5 J.Ramsey                          WR        5   T.Higgins                       CB    0 D.Turner
+      QB     8 A.Rodgers                             S   28 R.Spears-Jennings                 QB        9   J.Burrow                         S    6 B.Cook
+      RB    30 J.Warren                              S    3 J.Brisker                         HB       30   C.Brown                          S   27 J.Battle
+
+
+                                   ","                                                                            Substitutions
+QB 2 M.Rudolph, K 9 C.Boswell, WR 10 K.Wetjen, RB 13 R.Dowdle, WR 15                  K 2 E.McPherson, P 8 R.Rehkow, QB 16 J.Flacco, CB 20 T.Davis, S 22 R.Yeast,
+B.Skowronek, P 19 C.Johnston, RB 21 T.Homer, CB 23 D.Everette, CB 26                  HB 25 T.Brooks, CB 28 J.Newton, HB 34 S.Perine, S 37 P.Jules, CB 38 D.Ivey,
+B.Echols, RB 31 L.Nichols, LB 33 J.Sawyer, FB 37 R.Nowakowski, DB 40                  LB 42 O.Burks, LB 43 J.Giles-Harris, LB 45 J.Kiser, LS 46 W.Wagner, DE 52
+D.Slaughter, LB 44 C.Bruener, LS 46 C.Kuntz, LB 51 N.Herbig, LB 55                    C.Johnson, G 69 J.Bayer, T 73 J.Foster, G 74 J.Rivers, WR 82 M.Tinsley, TE 84
+C.Holcomb, T 60 D.Cook, C 62 R.McCollum, OL 74 S.Anderson, TE 85                      J.Endries, TE 85 C.Grandy, WR 86 C.Young, TE 89 D.Sample, DT 90 K.Jenkins,
+R.Tonyan, WR 87 B.Smith, DL 92 K.Jobity, DL 94 Y.Black, DE 96 G.Rubio, DT             DE 94 S.Stewart, DT 98 T.Slaton
+99 D.Harmon
+
+                                   ","                                                                              Did Not Play
+
+
+                                    ","                                                                                Not Active
+QB 16 D.Allar, 3QB 18 W.Howard, S 25 D.Elliott, CB 27 S.Murphy-Bunting,               S 29 K.Dugger, C 65 C.Lew, T 77 M.Hinton, DT 96 L.Robinson
+RB/WR 29 E.Heidenreich
+                                                                   ",steelers-at-bengals-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794829727/gamecenter/ab78aa48-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/steelers-at-bengals-2026-reg-10,336838,ac36c23ed9f831d9684fdb474a7503313d035012a5ce52a6755690f8936e6e1d,3736d16a905dfe51533698a646bd533c0f4977a45dfc8a372a0ce65f0e7edba9,pdftotext -layout,2026-11-19T12:53:47Z
+Los Angeles Chargers,Baltimore Ravens,"Monday, 11/16/2026",8:16 PM EST,"M&T Bank Stadium, Baltimore, MD",Clear,49,NW 2,,,,"Hill, Adrian (29)                                Umpire: Ellison, Roy (81)                          Down Judge: Holt, Patrick (106)","
+
+                            Los Angeles Chargers                                                                   Baltimore Ravens
+               Offense                                   Defense                                      Offense                                  Defense
+     WR     1 Q.Johnston                       OLB   45 T.Tuipulotu                        WR     4   Z.Flowers                       OLB   91 T.Hendrickson
+     WR     9 T.Harris                          DL   93 T.Tart                             TE    85   J.Cuevas                         DL   96 B.Washington
+     TE    88 C.Kolar                           DL   94 D.Tomlinson                         LT   79   R.Stanley                        DL   98 T.Jones
+      LT   76 J.Alt                            OLB   52 K.Mack                             LG    74   J.Simpson                        DL   92 N.Madubuike
+     LG    65 L.Taylor                          LB   53 D.Phillips                           C   64   C.Jurgens                       OLB   15 M.Green
+       C   66 J.Slaughter                       LB    0 D.Henley                           RG    71   O.Ioane                         ILB   32 T.Simpson
+     RG    69 C.Strange                         DB    2 E.Molden                           RT    70   R.Rosengarten                   ILB    0 R.Smith
+     RT    77 T.Burke                           CB   26 D.Jackson                          WR     6   J.Lane                           CB    2 N.Wiggins
+     QB    10 J.Herbert                         CB    4 T.Still                            WR     7   R.Bateman                        CB   44 M.Humphrey
+     FB    44 S.Matlock                         CB   20 C.Hart                             QB    11   J.Brissett                        S   24 M.Starks
+     RB     8 O.Hampton                          S   23 T.Jefferson                        RB    22   D.Henry                           S   14 K.Hamilton
+
+
+                                 ","                                                                        Substitutions
+LB 6 D.Perryman, K 11 C.Dicker, WR 12 D.Davis, P 16 J.Scott, S 22 G.Smith,         CB 3 C.Awuzie, OLB 9 Z.Young, WR 10 L.Wester, WR 17 C.Moore, S 25
+CB 24 R.Shelley, S 27 R.Mickens, RB 28 K.Vidal, DB 33 D.Leonard, RB 34             K.Wallace, RB 26 R.Ali, CB 27 T.Tampa, P 30 R.Eckley, K 35 R.Patterson, CB
+K.Mitchell, LB 43 T.Dye, LS 47 J.Harris, OLB 50 C.Murphy, LB 58 M.Wax, G 74        38 K.Martin, S 39 K.Jackson, ILB 40 T.Buchanan, RB 43 J.Hill, LS 46 N.Moore,
+K.Awosika, WR 82 T.Wease, TE 83 D.Njoku, WR 84 K.Lambert-Smith, TE 86              ILB 49 J.Higgins, T 62 C.Edoga, T 76 C.Vinson, WR 81 D.Walker, TE 87
+O.Gadsden, OLB 90 A.Mesidor, DL 91 N.Barrett, DL 96 M.Adams, DL 99                 N.Vannett, TE 88 M.Hibner, TE 89 M.Andrews, DL 93 C.Campbell, NT 94
+J.Caldwell                                                                         J.Jenkins, OLB 97 E.Burke
+
+                                 ","                                                                          Did Not Play
+QB 7 D.Uiagalelei, C 60 J.Spomer, G 73 A.Harkey                                    QB 12 J.Fagnano, OL 58 R.Neuzil
+
+                                  ","                                                                            Not Active
+WR 15 L.McConkey, S 32 K.Williamson, CB 37 I.Waxter, OLB 48 B.Dupree, WR           WR 13 E.Sarratt, 3QB 18 K.Slovis, S 21 J.Hawkins, CB 29 C.Rivers, G/T 51
+89 B.Thompson, DL 92 J.Eboigbe                                                     E.Jones, DL 90 A.Peebles
+                                                                 ",chargers-at-ravens-2026-reg-10,2026,10,https://static.www.nfl.com/image/upload/v1794916121/gamecenter/ab78ad5a-4feb-11f1-abca-2c54536568a9.pdf,https://www.nfl.com/games/chargers-at-ravens-2026-reg-10,338047,a208d7cc02dbe9502d3ff0e3125eabe890c74a0fe132bec844e4eda231a2dbd7,bb208ad5a4ddc059368d857c8a88b79e1995bb0f3b924f9c761b7ff4d5c0dc4f,pdftotext -layout,2026-11-19T12:53:47Z
