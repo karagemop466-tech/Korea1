@@ -487,3 +487,68 @@ def test_fail_loud_pins_accept_the_real_capture_and_reject_the_defects():
     assert not book_week_slug("commanders-at-giants-2026-reg-10", "9")
     assert date_fragment_printed("Thursday, 11/12/2026")
     assert not date_fragment_printed("no date here")
+
+
+def test_slug_names_week_and_rejects_other_weeks_and_suffixless_slugs():
+    """The same-week filter used by the scores cross-check."""
+    from fetch_official_games import slug_names_week
+    assert slug_names_week("commanders-at-giants-2026-reg-10", 10)
+    assert slug_names_week("commanders-at-giants-2026-reg-10", "10")
+    assert not slug_names_week("commanders-at-giants-2026-reg-10", 9)
+    assert not slug_names_week("bengals-at-falcons", 9), "a suffixless slug names no week"
+
+
+def test_scores_crosscheck_tolerates_the_leagues_extra_week_links():
+    """The measured 2026-11-19 failure: after the league flips to Week 11, the scores
+    page for week 9/10 still lists that week's fixtures but the page HTML also carries
+    the current week's /games/ links.  Runs 44555092023 and 44556979069 died on
+    ``only schedule: []; only scores: [13 reg-11 slugs]``.  The cross-check must compare
+    same-week slugs and record the extras, not fail."""
+    from fetch_official_games import scores_crosscheck_verdict
+    week9 = {f"game-{i}-2026-reg-9" for i in range(13)}
+    week11 = {f"game-{i}-2026-reg-11" for i in range(13)}
+    v = scores_crosscheck_verdict(week9 | week11, week9, 9)
+    assert v["fatal"] == "", v["fatal"]
+    assert set(v["extra_week_links"]) == week11
+    # and the reverse flip: the extra links on the schedule side never come from the
+    # scores page (the schedule's per-slug check catches those upstream), so extras
+    # are only ever recorded from the scores side.
+    v = scores_crosscheck_verdict(week11, week11, 11)
+    assert v["fatal"] == "" and v["extra_week_links"] == []
+
+
+def test_scores_crosscheck_still_fails_on_a_same_week_disagreement():
+    """A missing or extra fixture OF the requested week stays fatal (F-2026-11-19-08)."""
+    from fetch_official_games import scores_crosscheck_verdict
+    week9 = {f"game-{i}-2026-reg-9" for i in range(13)}
+    week11 = {f"game-{i}-2026-reg-11" for i in range(13)}
+    # one week-9 fixture missing from the scores page
+    short = week9 - {"game-3-2026-reg-9"}
+    v = scores_crosscheck_verdict(short | week11, week9, 9)
+    assert "disagree on the fixture set of week 9" in v["fatal"]
+    assert "game-3-2026-reg-9" in v["fatal"] and v["extra_week_links"] == sorted(week11)
+    # one week-9 fixture only on the schedule side's extras path
+    v = scores_crosscheck_verdict(week9 | {"extra-2026-reg-9"}, week9, 9)
+    assert "only scores: ['extra-2026-reg-9']" in v["fatal"]
+
+
+def test_scores_crosscheck_fails_when_the_scores_page_serves_another_week_only():
+    """The redirect case: a scores page that lists no fixture of the requested week at
+    all leaves an empty same-week set against a populated schedule set — fatal, because
+    that page cannot verify the week's fixture set."""
+    from fetch_official_games import scores_crosscheck_verdict
+    week9 = {f"game-{i}-2026-reg-9" for i in range(13)}
+    week11 = {f"game-{i}-2026-reg-11" for i in range(13)}
+    v = scores_crosscheck_verdict(week11, week9, 9)
+    assert "disagree on the fixture set of week 9" in v["fatal"]
+    assert "only scores: []" in v["fatal"]
+
+
+def test_scores_crosscheck_ignores_suffixless_slugs_on_both_sides():
+    """A slug that names no week cannot be attributed to the requested week and is
+    excluded from the comparison on both sides (recorded as an extra from scores)."""
+    from fetch_official_games import scores_crosscheck_verdict
+    week9 = {f"game-{i}-2026-reg-9" for i in range(13)}
+    v = scores_crosscheck_verdict(week9 | {"nfl-redzone-stream"}, week9, 9)
+    assert v["fatal"] == ""
+    assert v["extra_week_links"] == ["nfl-redzone-stream"]

@@ -40,6 +40,10 @@ from common import PROC, ROOT  # noqa: E402
 
 SPOT = ROOT / "data" / "live" / "spotcheck_2026_11_18_b"
 AVAIL = ROOT / "data" / "availability"
+# The dated availability snapshot the 2026-11-18 official read is checked against. Every
+# comparator in this module that pins a claim to 2026-11-18 reads this folder, never the
+# rolling top-level capture the scheduled tracker overwrites with the newest week.
+DATED_CAPTURE = AVAIL / "history" / "2026-11-18"
 INTEG = ROOT / "data" / "integration"
 GATES = ROOT / "data" / "gates"
 OUT_HTML = ROOT / "requirement-annex-2026-11-18.html"
@@ -254,9 +258,20 @@ def parse_gamecentre(path: Path) -> dict:
 
 
 def compare_official() -> tuple[list[dict], dict]:
-    """Compare the 2026-11-18 official read with the committed capture. Recomputed every run."""
-    inj = pd.read_csv(AVAIL / "injuries.csv", dtype=str, keep_default_na=False)
-    dep = pd.read_csv(AVAIL / "depth_charts.csv", dtype=str, keep_default_na=False)
+    """Compare the 2026-11-18 official read with the committed capture. Recomputed every run.
+
+    The capture this comparison is checked against is the **dated** one,
+    ``data/availability/history/2026-11-18/`` — the snapshot the 2026-11-18 transcription
+    was taken beside — never the rolling top-level ``injuries.csv`` /
+    ``depth_charts.csv``. The availability tracker overwrites those rolling files with
+    the newest week on every successful run: when the league's report rolled to
+    WEEK 11 (first served 2026-11-18T19:24Z), the rolling KC row count moved, the
+    pinned omission arithmetic below raised ``SystemExit``, and the scheduled rebuild
+    failed four consecutive runs (44380205336, 44445480402, 44456709590, 44598915891).
+    Same defect class as F-2026-11-19-06/07 and the PR #106/#107 ``compare_reserve`` repair.
+    """
+    inj = pd.read_csv(DATED_CAPTURE / "injuries.csv", dtype=str, keep_default_na=False)
+    dep = pd.read_csv(DATED_CAPTURE / "depth_charts.csv", dtype=str, keep_default_na=False)
     # Pinned to the 2026-11-18 capture: this comparison is against the 2026-11-18 official read.
     res = pd.read_csv(AVAIL / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
                       dtype=str, keep_default_na=False)
@@ -390,8 +405,12 @@ def _dg(m: dict) -> tuple[int, int]:
 
 
 def measure(f: dict) -> dict:
-    inj = pd.read_csv(AVAIL / "injuries.csv", dtype=str, keep_default_na=False)
-    dep = pd.read_csv(AVAIL / "depth_charts.csv", dtype=str, keep_default_na=False)
+    # The register's counts describe the 2026-11-18 snapshot the dated official read was
+    # checked against (R34/R38/R39/R51), so they are computed from the dated capture —
+    # never from the rolling top-level file the availability tracker overwrites with the
+    # newest week (see compare_official for the measured failure this prevents).
+    inj = pd.read_csv(DATED_CAPTURE / "injuries.csv", dtype=str, keep_default_na=False)
+    dep = pd.read_csv(DATED_CAPTURE / "depth_charts.csv", dtype=str, keep_default_na=False)
     gates = pd.read_csv(PROC / "strategy_gates.csv", dtype=str, keep_default_na=False)
     cfg = pd.read_json(PROC / "validation_config.json", typ="series")
     acc = pd.read_csv(GATES / "origination_accuracy.csv", dtype=str, keep_default_na=False)
@@ -456,8 +475,11 @@ def measure(f: dict) -> dict:
         corr_rows=len(corr), corr_n=corr.n.tolist(), corr_weeks=corr.n_weeks.tolist(),
         corr_zero=int((corr.zero_in_ci.astype(str).str.lower() == "true").sum()),
         dg_rules=pd.read_csv(INTEG / "demotion_rules.csv", dtype=str, keep_default_na=False),
-        res_cap=int((pd.read_csv(AVAIL / "reserve" / "latest.csv", dtype=str,
-                                 keep_default_na=False).month == "2026-11").sum()),
+        # Same dated pin as the reserve comparison above: the sentence on the page pairs
+        # this count with the dated capture's own stamp (res_cap_stamp), so the count must
+        # come from that same dated folder, not from the rolling reserve/latest.csv.
+        res_cap=int((pd.read_csv(AVAIL / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+                                 dtype=str, keep_default_na=False).month == "2026-11").sum()),
         repl_rows=len(repl),
         metrics_brier_rows=int((metrics.brier.str.strip() != "").sum()),
         lineup_claims=len(pd.read_csv(ROOT / "data" / "live" / "lineup_claim_verification.csv",
@@ -1018,7 +1040,7 @@ def build_findings(m: dict, f: dict) -> list[dict]:
                    f"unreadable blocks were the padded position-to-jersey gaps in the PDF layout; "
                    f"{m['gb_unreadable']} remaining unreadable rows are the one club-header line per game, flagged, "
                    f"never guessed). Thirteen of the former 42 'Game Books' were the league's Record & Fact Book "
-                   f"mis-captured for unplayed fixtures and were removed (29 genuine books remain). The "
+                   f"mis-captured for unplayed fixtures and were removed ({m['gb_books']} genuine books remain). The "
                    f"expected-vs-actual join is built: availability_graph.csv carries {m['graph_joined']} joined "
                    f"position rows ({m['graph_conf']} confirmed, {m['graph_repl']} replacements, "
                    f"{m['graph_co']} co-starters). R28 and R62 re-classified to DONE; R60 remains blocked on "

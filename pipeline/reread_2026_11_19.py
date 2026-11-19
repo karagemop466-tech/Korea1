@@ -3,7 +3,8 @@
 Reads ONLY committed files (no network, no clock), so `make build` stays reproducible:
   * data/live/reread_2026_11_19/official_rows_read.csv  - rows transcribed from the official
     pages as read on 2026-11-19 (nfl.com injury report, Week 10 URL; nfl.com November reserve list)
-  * data/availability/injuries.csv                       - committed injury capture
+  * data/availability/history/2026-11-18/injuries.csv    - the DATED injury capture the read
+    is compared against (the Week-10 snapshot; W1 pin, see below)
   * data/availability/reserve/history/2026-11-19T043002Z - committed reserve-list capture
 
 Writes:
@@ -12,6 +13,12 @@ Writes:
 
 Limitation (recorded as a finding): the live rows are transcriptions of a tool read, not
 byte-level captures, so no SHA-256 can be attached to them.
+
+W1 pin (arena/35c0fd93-korea1, 2026-11-19): the injury rows were read from the WEEK 10
+report, so the comparison is pinned to the dated Week-10 capture folder — never the
+rolling top-level injuries.csv, which the availability tracker overwrites with the
+newest week on every successful run. The same defect class failed four scheduled
+availability runs during the Week-11 rollover (see req_annex_2026_11_18.py).
 """
 from __future__ import annotations
 
@@ -24,7 +31,10 @@ ROOT = Path(__file__).resolve().parents[1]
 LIVE = ROOT / "data" / "live" / "reread_2026_11_19"
 INTEG = ROOT / "data" / "integration"
 READ = LIVE / "official_rows_read.csv"
-INJ = ROOT / "data" / "availability" / "injuries.csv"
+# Dated Week-10 capture: the snapshot the 2026-11-19 transcription was taken beside.
+# The rolling data/availability/injuries.csv moves to the newest week on every
+# successful tracker run and cannot be a dated reference.
+INJ = ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv"
 RES = ROOT / "data" / "availability" / "reserve" / "history" / "2026-11-19T043002Z" / "reserve_list.csv"
 INJ_URL = "https://www.nfl.com/injuries/league/2026/reg10"
 RES_URL = "https://www.nfl.com/transactions/league/reserve-list/2026/11"

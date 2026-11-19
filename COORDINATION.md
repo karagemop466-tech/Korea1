@@ -65,6 +65,7 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`
 | CR3 | **Final integration + publish for CR1–CR2** — NAV entry + one index card + page lists (`verify_site.py`, `check_sources.py`, `check_links.py`) + one Makefile line + README link + executive-summary section; merge `origin/main` first (keeping every sibling section), `make build` + `make test` + `tests/check_rebuild.py` green, PR → `main`, merge without waiting, Pages confirmed, record here | **done** — PR #89 merged as `4b5981d` 2026-11-18T05:59:26Z; verification: `make build` 0 failing checks, `check_sources` 46→46 pages / 5,752 rows at PR head (56 pages / 325 tests on the final merged tree), PR-event verify green on head `54fe37d4`; Pages deployment `7875532706` **success** 05:59:58Z, live page confirmed | `arena/f84bc1d7-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one line), `README.md` (one link), `EXECUTIVE_SUMMARY.md` (own section), `COORDINATION.md`, branch `arena/f84bc1d7-korea1` → `main` |
 
 | T44 | **Integration of the four abandoned 2026-11-15 pull requests (#68, #70, #71, #73) + full verification + publish.** All four branches have had no commits since 2026-11-15 (>60 minutes, status open, checks green at the time), so per board rule 3 their open work is taken over here: merge each into this integration branch in order (#68 brief text correction → #70 Makefile test registration → #71 integration-verification record → #73 leaderboard backtest-value removal), resolve generated-file conflicts by regenerating with `make build`, run `make build` + `make test` + `tests/check_rebuild.py`, PR → `main`, merge, confirm Pages deploy, record | **done** — PR #96 merged as `c4f5c9a`; `Verify site` success; Pages `built` at `c4f5c9a`; 305 tests; `check_rebuild` 0 drift | `arena/6d716989-korea1` | `COORDINATION.md` (board row + own session section), files of PRs #68/#70/#71/#73 as merged (`pipeline/render_site.py`, `pipeline/render_summary.py`, `pipeline/session_competition.py`, `pipeline/session_20261115.py`, `Makefile`, `tests/test_brief_2026_11_15.py`, `INTEGRATION_VERIFICATION.md`, generated `*.html`/`assets/data/*`/`data/{processed,integration}/*` outputs), branch `arena/6d716989-korea1` → `main` |
+| W1 | **2026-11-19 Week-11 rollover repair: two scheduled capture chains went red on `main` and no capture has committed since.** (a) Availability tracker failed 4 consecutive runs since 2026-11-18T19:24Z (runs 44380205336/44445480402/44456709590/44598915891, step `make -o injuries site`, exit 2): `pipeline/req_annex_2026_11_18.py::compare_official()` derives `kc_printed` from the **rolling** `data/availability/injuries.csv` while the comparison is pinned to the 2026-11-18 official read; the league's report rolled to WEEK 11, KC's row count changed, and the pinned arithmetic (`kc_printed − transcribed == 1`) raised SystemExit — reproduced locally (exit 1, `KC omission count is 2, expected 1`). Repair = the established PR #106/#107 pattern: pin the dated comparison to `data/availability/history/2026-11-18/` and guard it with a source-level test. (b) Game Book capture failed 2 consecutive runs since 2026-11-19T15:28Z (runs 44555092023/44556979069): the fail-loud annotations record `week 9/10: schedule page and scores page disagree on the fixture set (only schedule: []; only scores: [13 reg-11 slugs])` — the league's post-flip scores pages carry the requested week's fixtures **plus** the current week's `/games/` links, which the cross-check regex collected wholesale. Repair = the cross-check compares **same-week slugs only** (per the check's own F-2026-11-19-08 purpose), records extra-week links in the manifest, and keeps every same-week disagreement fatal. Both repairs verified offline; no published number changes (the rolling capture is byte-identical to the dated one today). Final integration: `make build` + `make test` + `check_rebuild`, PR → `main`, merge without waiting, Pages confirmed, recorded | **in progress** | `arena/35c0fd93-korea1` | `pipeline/req_annex_2026_11_18.py` (dated capture pin + computed findings text only), `tests/test_requirement_annex_2026_11_18.py` (dated pins + parity guards), `pipeline/fetch_official_games.py` (scores cross-check same-week filter), `tests/test_gamebooks.py` (cross-check tests), `pipeline/reread_2026_11_19.py` (same dated-pin class), `tests/test_reread_2026_11_19.py` (source-level guard), `.github/workflows/gamebooks.yml` (header comment only), `pipeline/render_site.py` (one uniquely-named flagged section only), `COORDINATION.md`, regenerated build outputs, PR record |
 
 **2026-11-18 claim — `arena/6d716989-korea1` (T44).** Board read first. `main` at claim time is `e775e52` (PR #77 S18 + artifact regeneration; Verify site green). Takeover basis for PRs #68/#70/#71/#73: branches `arena/c79b2684-korea1`, `arena/d5b60b8c-korea1`, `arena/fc0eb232-korea1`, `arena/88a183ca-korea1` all last committed 2026-11-15, well over 60 minutes with no newer commits, and each PR is `MERGEABLE` with a passing `verify` check. **Not touched:** PR #74 (`arena/51fae77c-korea1`) — that session committed within the hour and its claim is live; PRs #19/#24/#30/#38/#47/#48/#56/#58 are `CONFLICTING` against `main` and their superseded-vs-unique content is assessed in this session's log below rather than force-merged.
 
@@ -4489,3 +4490,70 @@ Nothing above changes a published value; the repair and the new page follow in t
 This session's initial build found the same stale derived counts as A1. During work, `arena/0dc8c41e-korea1` independently completed the refresh and merged PR #124 to `main`, including the same 946-file inventory, eight retained reserve captures and updated review pages/tables. We compared its commit (`654322e`) with our generated outputs: the data and rendered-page changes are identical, so no second copy of those changes is required. This branch retains only the coordination record; the already-merged output is adopted rather than overwritten.
 
 **Source and verification record.** Official source: [NFL.com Transactions — Reserve List](https://www.nfl.com/transactions/league/reserve-list/2026/11); retained capture timestamp/raw hash: `data/availability/reserve/history/2026-11-19T193734Z/manifest.json`. On our working tree before the sibling merge, `make build` passed (0 failing checks; 53 canonical pages / 10,111 sourced rows; 63 pages link-checked), `make test` passed (422 passed, 1 skipped), and a repeated full build left the generated diff unchanged. After the sibling merge, the remaining task was only this coordination record; A1's clean-clone verification and PR #124's merged state govern the adopted outputs. This was not a live NFL re-fetch. No model values, gates or strategy rankings changed. Existing evidence gaps remain flagged and non-blocking.
+## Session `arena/35c0fd93-korea1` — 2026-11-19 claim: Week-11 rollover repair (W1)
+
+**Board read first (2026-11-19T19:50–20:10Z).** Branch pinned at `f6971b0` (= `origin/main`, the reserve-list
+snapshot 19:37Z). Baseline verified before any edit: `make -o injuries site` exit 0 from committed inputs (so the
+committed tree builds); the two red scheduled workflows were diagnosed from the check-runs API (the Actions log
+receiver is unreachable from this sandbox — known limitation, recorded by earlier sessions), not from logs.
+
+**Diagnosis (both failures reproduced or measured, no guessing):**
+
+| Failure | Evidence | Root cause |
+|---|---|---|
+| Availability tracker, 4 runs red since 2026-11-18T19:24Z (44380205336, 44445480402, 44456709590, 44598915891), step "Rebuild every table and page built from the captures", exit 2 | job steps: fetch **succeeded**, rebuild failed; `make` exits 2 on any recipe failure; the only capture-derived `raise` in the site recipe is `req_annex_2026_11_18.py`'s KC omission check | `compare_official()` reads the **rolling** `data/availability/injuries.csv` for `kc_printed` while the read it is checked against is the pinned 2026-11-18 transcription; the league's report rolled to WEEK 11 (live page read: title "Week 11 of the 2026 Season", heading "Injuries - WEEK 11"), so KC's row count changed and `kc_printed − transcribed == 1` broke. Reproduced locally: one added KC row → `SystemExit("KC omission count is 2, expected 1")`, exit 1 |
+| Game Book capture, 2 runs red since 2026-11-19T15:28Z (44555092023, 44556979069), step "Capture the official schedule…", exit 2 | the fail-loud `::error::` annotations (check-runs API): `week 10/9: schedule page and scores page disagree on the fixture set (only schedule: []; only scores: [13 × 2026-reg-11 slugs])` | the scores-page cross-check regex collects **every** `/games/` href on the page; after the league flipped to Week 11, the scores pages for weeks 9/10 carry the requested week's fixtures **plus** the current week's links, so `score_slugs − sched_slugs` = the 13 reg-11 slugs while `sched_slugs − score_slugs` = [] (the schedule pages themselves still published the requested week — the per-slug and published-week checks passed). No evidence was written (the fail-loud contract worked); the runs are red, not corrupt |
+
+**Repair (task W1 row above for file scope):** dated-capture pinning for every comparator that checks a dated
+official read against a capture (req_annex injuries/depth → `data/availability/history/2026-11-18/`, following the
+PR #106/#107 `compare_reserve` precedent; `reread_2026_11_19.py` same class), source-level tests that fail if a
+dated comparator reverts to a rolling file, and a same-week-only scores cross-check that records extra-week links
+instead of failing on them. The rolling top-level captures stay exactly where they are for the pages that
+deliberately publish the newest week.
+
+**Verification (offline, reproducible):** `make build` exit 0 / 0 failing checks; `make test` green including the
+new guards; `tests/check_rebuild.py` fixed point; fresh-clone build 0 drift; the two repaired behaviours unit-tested
+(the KC tripwire against a simulated Week-11 capture; the cross-check against a synthetic two-week scores page).
+Live official reads used for diagnosis (page-fetch tool, shell egress cannot reach nfl.com):
+<https://www.nfl.com/injuries/> (Week 11 structure), <https://www.nfl.com/scores/2026/week-9> (requested-week
+fixtures intact in the rendered page), and the failing runs' own annotations.
+
+### W1 outcome (arena/35c0fd93-korea1, 2026-11-19) — both capture chains repaired and verified
+
+**Repairs shipped.** `pipeline/req_annex_2026_11_18.py` (injuries/depth/reserve counts read from the dated
+`history/2026-11-18/` snapshot; the F-54 findings text now computes the book count instead of hardcoding 29),
+`pipeline/reread_2026_11_19.py` (same dated pin for the Week-10 injury comparison), `tests/test_requirement_annex_2026_11_18.py`
+(dated pins; the 29/3,252/29 numeric pins replaced by structural invariants — every captured book has a roster table,
+unreadable rows stay one club-header line per game, the page must quote the current counts — so the next gamebooks
+capture cannot redden `main` by growing, per GC-INT's own warning), `tests/test_reread_2026_11_19.py` (source-level
+dated-pin guard), `pipeline/fetch_official_games.py` (`slug_names_week` + `scores_crosscheck_verdict`: same-week-only
+comparison, extra-week links recorded in the manifest, all same-week disagreements and the per-slug schedule check
+still fatal), `tests/test_gamebooks.py` (5 new tests including the measured two-week-scores-page scenario),
+`.github/workflows/gamebooks.yml` (header documents the measured source behaviour; the push also re-triggers the
+capture on `main` to validate the fix on the runner), `pipeline/render_site.py` (one uniquely-named flagged section:
+F-2026-11-19-10 with the official Week-11 report as source; F-2026-11-19-11 as text, per the house rule),
+`pipeline/render_summary.py` (one W1 block, counts read from the committed captures).
+
+**Verification.** `make build` exit 0 — 0 failing checks, 53 canonical pages / 10,112 strict rows, 63 pages
+link-checked. `make test` **429 passed, 1 skipped** (+7 net: 1 annex guard, 1 reread guard, 5 cross-check tests).
+The repaired annex was run against a simulated Week-11 rolling capture (348 rows, KC 14): exit 0, 14/14 tests —
+the exact scenario that failed four production runs. Fresh clone of the pushed branch: `make build` 0 drift,
+429 passed, 0 changed files. Post-merge (origin/main moved twice: PRs #124/#125/#126 — the stale-derived-output
+refresh of `arena/0dc8c41e-korea1` and the record of `arena/2bab0e28-korea1`, both adopted by the merge rather
+than duplicated): re-merged, regenerated, fixed point confirmed (a second full `make build` leaves
+`git status --porcelain` empty), `make test` 429 passed on the merged tree.
+
+**Official sources used (page-fetch tool; shell egress cannot reach nfl.com).**
+<https://www.nfl.com/injuries/> — the live Week-11 report (title "Official Latest NFL Injury Report for Players -
+Week 11 of the 2026 Season", heading "Injuries - WEEK 11"), the page whose publication triggered both failures;
+<https://www.nfl.com/scores/2026/week-9> — the rendered page still lists the requested week's finals (the extra
+week-11 links the runner's regex caught live in the served HTML, which the rendered markdown does not show);
+the failing runs' own check-run annotations via the GitHub API (the Actions log receiver is unreachable from
+this sandbox). No published research value changed; the rolling and dated captures were byte-identical at repair
+time, and every count on the site recomputes to the same values.
+
+**Irregularities flagged (published on flagged.html, non-blocking).** F-2026-11-19-10 (the availability tracker's
+four red runs — repaired here; next successful tracker run commits the Week-11 capture and must stay green) and
+F-2026-11-19-11 (the scores-page extra-week links — repaired here; the next scheduled capture must complete with
+the extras recorded). Both are also visible on the executive summary. The research verdict is unchanged: 0 of 18
+canonical strategies validated, no reward, no funding.
