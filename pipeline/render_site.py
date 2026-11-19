@@ -1352,6 +1352,7 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_18_section()
     body += _flagged_2026_11_18b_section()
     body += _flagged_2026_11_18_b_section()
+    body += _flagged_2026_11_19_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1872,6 +1873,21 @@ def _flagged_2026_11_18_b_section() -> str:
             "<a href=\"request-register-2026-11-18.html\">requirement register</a>. None blocks merge.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
                     caption="Requirement-pass findings with an official source · F-52 onward") + "</section>")
+
+
+def _flagged_2026_11_19_section() -> str:
+    """Findings F-2026-11-19-* from the re-read of official pages (arena/fea5cdab-korea1)."""
+    fl = _read_integration("findings_2026_11_19.csv")
+    if fl is None:
+        return ""
+    rows = [[e(r.id), e(r.sev), e(r.text) + (f"<br><span class=\"small\">Next: {e(r.nxt)}</span>" if r.nxt else ""),
+             src_link(r.url, r.label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the 2026-11-19 re-read</h2>"
+            "<p>Official pages re-read on 2026-11-19 and compared with the committed captures. "
+            "Row-level comparison: <code>data/live/reread_2026_11_19/comparison.csv</code>. None blocks merge.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                    caption="Re-read findings with an official source · 2026-11-19")
+            + "</section>")
 
 
 def _landing_panels() -> str:

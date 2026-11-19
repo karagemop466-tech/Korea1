@@ -132,7 +132,13 @@ def compare_reserve() -> tuple[list[dict], dict]:
         AV / "reserve" / "history" / "2026-11-17T195957Z" / "reserve_list.csv",
         dtype=str, keep_default_na=False,
     )
-    latest = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    # Pinned to the dated capture named in the label. The rolling reserve/latest.csv is
+    # overwritten by every scheduled capture (2026-11-19T04:30Z is now newest), so reading it
+    # here would silently change this comparison's meaning.
+    latest = pd.read_csv(
+        AV / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+        dtype=str, keep_default_na=False,
+    )
     live_keys = set(zip(live.date, live.club, live.player))
     rows: list[dict] = []
     stats: dict = {"live_rows": len(live_keys)}
