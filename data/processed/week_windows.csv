@@ -1,0 +1,23 @@
+week,week_label,week_type,season,season_type,date_begin,date_end,teams_on_bye,evidence_path
+0,Hall Of Fame,HOF,2026,PRE,2026-08-07T00:00:00Z,,,data/evidence/official_games/schedule/REG10.html.gz
+1,Preseason Week 1,PRE,2026,PRE,2026-08-13T23:00:00Z,2026-08-16T00:00:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+2,Preseason Week 2,PRE,2026,PRE,2026-08-21T00:00:00Z,2026-08-24T00:00:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+3,Preseason Week 3,PRE,2026,PRE,2026-08-27T23:00:00Z,2026-08-29T22:00:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+1,Week 1,REG,2026,REG,2026-09-10T00:20:00Z,2026-09-15T00:15:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+2,Week 2,REG,2026,REG,2026-09-18T00:15:00Z,2026-09-22T00:15:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+3,Week 3,REG,2026,REG,2026-09-25T00:15:00Z,2026-09-29T00:15:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+4,Week 4,REG,2026,REG,2026-10-02T00:15:00Z,2026-10-06T00:15:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+5,Week 5,REG,2026,REG,2026-10-09T00:15:00Z,2026-10-13T00:15:00Z,"CAR,KC",data/evidence/official_games/schedule/REG10.html.gz
+6,Week 6,REG,2026,REG,2026-10-16T00:15:00Z,2026-10-20T00:15:00Z,"CIN,DET,MIA,MIN",data/evidence/official_games/schedule/REG10.html.gz
+7,Week 7,REG,2026,REG,2026-10-23T00:15:00Z,2026-10-27T00:15:00Z,"BUF,JAX,LAC,WAS",data/evidence/official_games/schedule/REG10.html.gz
+8,Week 8,REG,2026,REG,2026-10-30T00:15:00Z,2026-11-03T01:15:00Z,"HOU,NO,NYG,SF",data/evidence/official_games/schedule/REG10.html.gz
+9,Week 9,REG,2026,REG,2026-11-06T01:15:00Z,2026-11-10T01:15:00Z,"PIT,TEN",data/evidence/official_games/schedule/REG10.html.gz
+10,Week 10,REG,2026,REG,2026-11-13T01:15:00Z,2026-11-17T01:15:00Z,"CHI,DEN,PHI,TB",data/evidence/official_games/schedule/REG10.html.gz
+11,Week 11,REG,2026,REG,2026-11-20T01:15:00Z,2026-11-24T01:15:00Z,"ATL,CLE,GB,LAR,NE,SEA",data/evidence/official_games/schedule/REG10.html.gz
+12,Week 12,REG,2026,REG,2026-11-26T01:00:00Z,2026-12-01T01:15:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+13,Week 13,REG,2026,REG,2026-12-04T01:15:00Z,2026-12-08T01:15:00Z,"BAL,IND,LV,NYJ",data/evidence/official_games/schedule/REG10.html.gz
+14,Week 14,REG,2026,REG,2026-12-11T01:15:00Z,2026-12-15T01:15:00Z,"AZ,DAL",data/evidence/official_games/schedule/REG10.html.gz
+15,Week 15,REG,2026,REG,2026-12-18T01:15:00Z,2026-12-22T01:15:00Z,,data/evidence/official_games/schedule/REG10.html.gz
+16,Week 16,REG,2026,REG,2026-12-25T01:15:00Z,2026-12-30,,data/evidence/official_games/schedule/REG10.html.gz
+17,Week 17,REG,2026,REG,2027-01-01T01:15:00Z,2027-01-06,,data/evidence/official_games/schedule/REG10.html.gz
+18,Week 18,REG,2026,REG,2027-01-06,2027-01-13,,data/evidence/official_games/schedule/REG10.html.gz

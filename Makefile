@@ -102,6 +102,12 @@ site: injuries review reviewall
 	$(PY) pipeline/request_register_20261118.py
 	# db0e98e2 (2026-11-19): live reserve-page read vs retained captures; F-52/F-53 register.
 	$(PY) pipeline/session_20261119.py
+	# E2-E5 (arena/eeba949e-korea1): the official Game Book evidence layer. Reads the
+	# committed official captures under data/evidence/official_games/ only (no network), so
+	# `make build` stays reproducible in CI and the committed site stays a fixed point.
+	$(PY) pipeline/fixture_context.py
+	$(PY) pipeline/availability_graph.py
+	$(PY) pipeline/render_gamebooks.py
 	# R-2026-11-19 (arena/fea5cdab-korea1): re-read of the official injury report and reserve list
 	# against the committed captures. Reads committed files only (no network, no clock).
 	$(PY) pipeline/reread_2026_11_19.py
@@ -146,7 +152,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_gamebooks.py tests/test_request_register.py tests/test_reconcile_depth_charts.py tests/test_request_register_2026_11_18.py tests/test_current_snapshot_audit.py tests/test_forward_ledger.py tests/test_requirement_annex_2026_11_18.py tests/test_claim_checks.py tests/test_verified_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py tests/test_register_evidence_2026_11_18.py tests/test_reread_2026_11_19.py tests/test_session_20261119.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_gamebooks.py tests/test_request_register.py tests/test_reconcile_depth_charts.py tests/test_request_register_2026_11_18.py tests/test_current_snapshot_audit.py tests/test_forward_ledger.py tests/test_requirement_annex_2026_11_18.py tests/test_claim_checks.py tests/test_verified_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py tests/test_register_evidence_2026_11_18.py tests/test_reread_2026_11_19.py tests/test_session_20261119.py tests/test_gamebooks_consumer.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives

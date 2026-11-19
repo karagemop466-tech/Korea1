@@ -22,7 +22,9 @@ PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html",
        # row. Listed apart from CR1's and CS5's registers, which check the same request from the other side.
        "verified-register-2026-11-18.html", "matchup-matrix.html", "consensus.html",
        # RX1 (arena/7aae360e-korea1, 2026-11-18): the register evidence annex.
-       "register-evidence-2026-11-18.html"]
+       "register-evidence-2026-11-18.html",
+       # E5 (arena/eeba949e-korea1, 2026-11-19): the official Game Book evidence page.
+       "gamebooks.html"]
 def main():
     problems=[]; total=0
     for name in PAGES:
