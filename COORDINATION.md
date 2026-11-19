@@ -4681,3 +4681,26 @@ number is read back from `data/forward/*.csv`, and one **stale sentence was corr
 table still said the only settlement was "WAS 24–21 NYG" while it already reported 65 of 65. It now
 names both official documents and the comparison file. `0 of 18 validated, no reward` is unchanged and
 is not softened by the new record.
+
+#### FI5 — integration record: main moved under this branch, and the merge is verified, not assumed
+
+While this session was working, `main` advanced from `f6971b0` to `1c8a7a1` (PR #128, session
+`arena/35c0fd93-korea1`, plus the 2026-11-19T20:46Z Game Book capture). Two things follow, and both were
+handled explicitly rather than asserted:
+
+1. **The conflict was an append collision, not a disagreement.** Both sessions appended a section to the
+   end of this file. The rebase kept **both**: `arena/0dc8c41e-korea1`'s integration/reproducibility audit
+   (PR #124 — that session reached the same fixed-point finding independently, and its history is
+   preserved verbatim) and this session's section. Nothing was renumbered, rewritten or dropped.
+   The generated HTML conflicts were resolved by rebuilding from the merged inputs, so no page is a
+   human-merged artefact: 58 derived files changed on the merged tree and were regenerated wholesale.
+2. **Verification was re-run on the merged tree, not carried over.** Measured after the rebase and a full
+   regeneration: `make build` exit 0 with **0 failing checks**, `tests/check_sources.py` **53 canonical
+   pages / 10,124 strict rows**, `tests/check_links.py` **63 pages**, `make test` **442 passed**, and
+   `tests/check_rebuild.py` **"Rebuild matches committed outputs (0 changed files compared)"** with an
+   empty `git status` — i.e. the merged tree is a fixed point of its own generators, which the base commit
+   was not.
+
+The research verdict is unchanged and is not softened anywhere: **0 of 18 strategies validated, no
+reward, no funding.** What changed is that the evidence those verdicts rest on is now (a) complete for
+Week 10 and (b) reproducible.
