@@ -4839,9 +4839,12 @@ Week-11 rows) — consistent with the pinning repairs. `nfl.com/scores/2026/week
 matching the committed ledger: WAS 24-21 NYG, NE 10-35 DET, KC 35-13 ATL, HOU 24-27 CLE, MIN 30-10 GB,
 MIA 22-24 IND, CAR 20-17 NO, BUF 31-12 NYJ, JAX 40-23 TEN.
 
-**V5 — PR:** [#137](https://github.com/karagemop466-tech/Korea1/pull/137) opened 2026-11-19T23:3xZ
-from `arena/d64e3029-korea1` → `main` (merge without waiting per house rule); Pages deploy and merge
-result recorded in the PR checks and the comment appended after merge.
+**V5 — PR: [#137](https://github.com/karagemop466-tech/Korea1/pull/137) MERGED** into `main` at
+2026-11-19T23:42:02Z as `b65b387` (merge without waiting per house rule, both `verify` runs on the PR
+head green: 44639129666/44639136423). **Pages:** `pages build and deployment` for `b65b387` succeeded
+(run 44639843729), Pages API `status: built`, source `main:/`, and a live read-back of
+`https://karagemop466-tech.github.io/Korea1/` serves the dashboard (leaderboard, gates, brief blocks all
+present). **Post-merge `main` verify for `b65b387`: success** (run 44639845002).
 
 **Not claimed / not touched:** the W1 repair code itself (merged in PR #128, `arena/35c0fd93-korea1`); the
 availability pin-proofing branch `arena/3e95bcb7-korea1` (open, its own Verify runs); PR #127 (W10S) and
