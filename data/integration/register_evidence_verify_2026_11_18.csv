@@ -109,32 +109,36 @@ note,check,club,item,official,committed,verdict,as_of,source_url
 ,club row count,IND,Colts rows on the official page vs capture,9,14,"PARTIAL READ — the fetched chunk cut this club's table short, so the short count is the read, not the source",2026-11-18T04:24:05Z capture vs 2026-11-18T04:47Z–04:52Z read,https://www.nfl.com/injuries/league/2026/reg10
 ,published table vs capture,SEA,Seattle Week 10 rows,15,0,MISMATCH — 15 official player rows are not in the published table,2026-11-18T04:24:05Z capture vs 2026-11-18 derived table,https://www.nfl.com/injuries/league/2026/reg10
 ,published table vs capture,CIN,Cincinnati Week 10 rows,9,0,MISMATCH — 9 official player rows are not in the published table,2026-11-18T04:24:05Z capture vs 2026-11-18 derived table,https://www.nfl.com/injuries/league/2026/reg10
-,reserve list vs newest capture,ARI,Gardner Minshew (11-10),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,MIA,Jordan Whittington (11-10),listed,not in capture,LIVE PAGE ONLY,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,MIA,Malik Willis (11-10),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,MIA,Zach Sieler (11-10),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,SF,Gracen Halton (11-10),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,LA,Puka Nacua (11-12),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,CLE,Michael Burton (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,DAL,Tyler Goodson (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,GB,Josh Whyle (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,IND,Akeem Davis-Gaither (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,IND,Mo Alie-Cox (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,NE,TreVeyon Henderson (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,NO,Christen Miller (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,TEN,Peter Skoronski (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,TEN,Tommy Townsend (11-14),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,LA,Dylan McMahon (11-16),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,LAC,Branson Taylor (11-16),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,ARI,Andrew Wingard (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,ARI,Jordan Burch (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,BUF,Ar'maj Reed-Adams (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,HOU,Azeez Al-Shaair (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,IND,Jaylon Carlies (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,MIA,Jordan Phillips (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,MIA,Zeek Biggers (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,TEN,Wan'Dale Robinson (11-17),listed,listed,ON BOTH,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
-,reserve list vs newest capture,LA,Jordan Whittington (11-10),not on live page,listed,CAPTURE ONLY,6 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,ARI,Gardner Minshew (11-10),listed,not in capture,LIVE PAGE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,MIA,Jordan Whittington (11-10),listed,not in capture,LIVE PAGE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,MIA,Malik Willis (11-10),listed,not in capture,LIVE PAGE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,MIA,Zach Sieler (11-10),listed,not in capture,LIVE PAGE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,SF,Gracen Halton (11-10),listed,not in capture,LIVE PAGE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,LA,Puka Nacua (11-12),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,CLE,Michael Burton (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,DAL,Tyler Goodson (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,GB,Josh Whyle (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,IND,Akeem Davis-Gaither (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,IND,Mo Alie-Cox (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,NE,TreVeyon Henderson (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,NO,Christen Miller (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,TEN,Peter Skoronski (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,TEN,Tommy Townsend (11-14),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,LA,Dylan McMahon (11-16),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,LAC,Branson Taylor (11-16),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,ARI,Andrew Wingard (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,ARI,Jordan Burch (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,BUF,Ar'maj Reed-Adams (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,HOU,Azeez Al-Shaair (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,IND,Jaylon Carlies (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,MIA,Jordan Phillips (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,MIA,Zeek Biggers (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,TEN,Wan'Dale Robinson (11-17),listed,listed,ON BOTH,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,LA,Jordan Whittington (11-10),not on live page,listed,CAPTURE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,DET,Aidan Hutchinson (11-18),not on live page,listed,CAPTURE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,KC,Jared Wiley (11-18),not on live page,listed,CAPTURE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,MIN,Bo Richter (11-18),not on live page,listed,CAPTURE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
+,reserve list vs newest capture,PIT,Mason McCormick (11-18),not on live page,listed,CAPTURE ONLY,7 captures; newest 2026-11-18,https://www.nfl.com/transactions/league/reserve-list/2026/11
 ,game centre venue vs committed capture,WAS@NYG,LOCATION / STADIUM as printed on the official game centre,"EAST RUTHERFORD, NJ / METLIFE STADIUM",WAS 24 at NYG 21 (Final),MATCH on the score the capture records; the capture stores no venue field,captured 2026-11-13T23:10:00Z; venue read 2026-11-18T04:47Z–04:52Z,https://www.nfl.com/games/commanders-at-giants-2026-reg-10
 ,Houston depth source shape,HOU,does the club page print machine-readable depth rows?,heading 'Unofficial Depth Chart' over one image; no table,0 parsed rows in 2026-11-18T04:24:05Z capture,"CONFIRMED SOURCE SHAPE — the club page prints an image, so 0 parsed rows is the correct output of a faithful parser, not a parser defect",club page read 2026-11-18T04:47Z–04:52Z; capture 2026-11-18T04:24:05Z,https://www.houstontexans.com/team/depth-chart
 report coverage agrees with the fixture list,report rows vs the official week schedule,ARI,has a Week 10 fixture? / rows in the capture,in the week schedule,15 rows,MATCH — in the week schedule with 15 report rows,2026-11-18T04:24:05Z capture vs the committed official week schedule,https://www.nfl.com/scores/2026/week-10
