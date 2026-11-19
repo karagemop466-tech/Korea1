@@ -196,7 +196,7 @@ against an official NFL.com final.
 | Item | State | Meaning |
 |---|---|---|
 | Frozen before kickoff | 65 tickets across 18 strategies and 14 Week 10 games; written `2026-11-12T13:26:48Z`, received by GitHub `13:28:07Z`, 11.78 h before the first kickoff | The picks were public before the games started. The receipt time is GitHub's, not the committer's. [NFL week 10 schedule](https://www.nfl.com/schedules/2026/by-week/reg-10) |
-| Settled from an official final | **65 of 65** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | 0 tickets stay `OPEN`; 0 provisional, awaiting an official final; none is defaulted to a push or a void. Net +3.110 units across the settled tickets. |
+| Settled from an official final | **65 of 65** — every Week 10 final is certified by two official documents (the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) and the league's own Game Book, hash-pinned in this repository) | 0 tickets stay `OPEN`; 0 provisional, awaiting an official final; none is defaulted to a push or a void. Net +3.110 units across the settled tickets. |
 | Strategies with a counted result | 14 of 18 | One ticket each is not a record. |
 | Validated strategies / rewards | **0 / none** | No strategy is past its declared horizon (150 single or 60 parlay tickets over 30 weeks); verdicts are withheld from the agent by ledger amendment A1. |
 | Gate F2 (official settlement) | PASS where a ticket has settled | Settlement now rests on an official page; before this pass the same 4 tickets were `PROVISIONAL`. |
@@ -321,6 +321,41 @@ information and answers that must be resolved before a decision, plus the sugges
 that discover the missing information. It does not change any research number: the
 verdict stays **0 of 18 strategies validated, no reward**, and gate G1 (executable quote
 provenance) still fails for every candidate.
+
+
+## Update — 2026-11-20 (`arena/79a986b7-korea1`): every frozen ticket can now be graded
+
+The forward test held frozen picks that could not be settled, so no accuracy, no ROI, no Brier
+score and no closing-line value existed for them. That is now closed for Week 10, and closed by
+two official documents rather than one.
+
+| What | Count | How it is known | Official source |
+|---|---|---|---|
+| Week 10 finals published | **14 of 14** | one row per fixture, each certified by two documents | [week 10 scores page](https://www.nfl.com/scores/2026/week-10) |
+| Fixtures where both documents agree | **14 of 14** | the league's scores page and the league's own Game Book print the same final; a disagreement writes nothing and fails the build | [the comparison table](assets/data/week10_finals_2026_11_20.csv) |
+| Frozen tickets settled against an official final | **65 of 65** | the grading engine labels a ticket `OFFICIAL` only from a recorded official final | [forward test](forward.html) |
+| Tickets that finished ahead | 32 of 65 | win/loss only; **not** evidence of skill | [NFL scores](https://www.nfl.com/scores/2026/week-10) |
+| Net units across settled tickets | +3.110 | research arithmetic at the frozen prices; the prices are not authenticated quotes | [competition rules](competition.html) |
+| Strategies validated / rewarded | **0 of 18 / none** | sample horizons are not reached; no gate is waived | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+
+**How a final is accepted.** `pipeline/finals_2026_11_20.py` reads the league's scores page and the
+league's own Game Book — the same PDF bytes the scheduled capture committed, checked by SHA-256 —
+and writes a row only when the club identities and both scores agree. It raises, and writes nothing,
+if a fixture is missing from either document, if a club name does not match, if a score disagrees,
+or if a score already in the file would be overwritten. Eleven adversarial tests pin those rules,
+including a mutation test that flips one point and asserts the build refuses the row.
+
+**What this does not mean.** 65 settled tickets at 14 games is one week. It is a starting record,
+not a result: no p-value, no ROI claim and no verdict is published from it, and the win/loss line
+above is arithmetic, not skill. The staking and signal columns stay separate on every surface so a
+lucky run cannot be read as a good signal.
+
+**A process defect repaired on the way.** The committed tree was not a fixed point of its own
+generators: a plain `make build` on this base modified 15 tracked files, and `tests/check_rebuild.py`
+was never run by the verify workflow, so the drift was invisible. One source was the reserve-list
+capture workflow, which committed a snapshot but not the two derived files that read it. The verify
+workflow now builds twice (self-referential counts), runs `check_rebuild.py`, and fails on any
+residual `git diff`; both capture workflows do the same before they commit.
 
 ## Material audit corrections
 
