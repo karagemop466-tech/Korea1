@@ -254,9 +254,20 @@ def parse_gamecentre(path: Path) -> dict:
 
 
 def compare_official() -> tuple[list[dict], dict]:
-    """Compare the 2026-11-18 official read with the committed capture. Recomputed every run."""
-    inj = pd.read_csv(AVAIL / "injuries.csv", dtype=str, keep_default_na=False)
-    dep = pd.read_csv(AVAIL / "depth_charts.csv", dtype=str, keep_default_na=False)
+    """Compare the 2026-11-18 official read with the committed capture. Recomputed every run.
+
+    Every capture read here is the **dated** one the spot check was taken
+    against (2026-11-18), never the rolling ``data/availability/*.csv``
+    pointer: the scheduled availability job rewrites the rolling files on
+    every run, and a pinned transcript compared against a moving target is
+    the F-2026-11-19-03 defect class (measured 2026-11-19: with the rolling
+    file refreshed, the KC omission pin read 3 instead of 1 and the whole
+    ``make site`` aborted — runs 44380205336, 44445480402, 44456709590,
+    44598915891).
+    """
+    pinned = AVAIL / "history" / "2026-11-18"
+    inj = pd.read_csv(pinned / "injuries.csv", dtype=str, keep_default_na=False)
+    dep = pd.read_csv(pinned / "depth_charts.csv", dtype=str, keep_default_na=False)
     # Pinned to the 2026-11-18 capture: this comparison is against the 2026-11-18 official read.
     res = pd.read_csv(AVAIL / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
                       dtype=str, keep_default_na=False)

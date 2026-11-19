@@ -33,6 +33,19 @@ def _inj() -> pd.DataFrame:
     return pd.read_csv(AV / "injuries.csv", dtype=str, keep_default_na=False)
 
 
+def _inj_pinned() -> pd.DataFrame:
+    """The dated 2026-11-18 capture the spot check was taken against.
+
+    The rolling ``data/availability/injuries.csv`` is rewritten by every
+    scheduled availability run, so any assertion that pairs it with the
+    pinned 2026-11-18 spot transcripts must read the dated snapshot instead
+    (the F-2026-11-19-03 defect class; measured red 2026-11-19 when the
+    refreshed KC rows made the omission pin read 3, runs 44380205336+).
+    """
+    return pd.read_csv(AV / "history" / "2026-11-18" / "injuries.csv",
+                       dtype=str, keep_default_na=False)
+
+
 def _dep() -> pd.DataFrame:
     return pd.read_csv(AV / "depth_charts.csv", dtype=str, keep_default_na=False)
 
@@ -108,7 +121,12 @@ def test_reserve_comparison_is_symmetric_and_dated():
     on_both = int((res.verdict == "ON BOTH").sum())
     live_only = int((res.verdict == "ON LIVE PAGE ONLY").sum())
     cap_only = int((res.verdict == "CAPTURE ONLY").sum())
-    cap = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    # The verdicts were computed against the dated 2026-11-18T04:42:01Z
+    # capture; the rolling latest.csv advances with every scheduled reserve
+    # run, so pairing it with those verdicts re-creates the F-2026-11-19-03
+    # defect (a moving target under a pinned comparison).
+    cap = pd.read_csv(AV / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+                      dtype=str, keep_default_na=False)
     assert on_both + cap_only == int((cap.month == "2026-11").sum())
     r = _reg().set_index("id")
     assert f"{on_both} of {on_both + live_only}" in r.loc["R56", "evidence"]
@@ -116,7 +134,10 @@ def test_reserve_comparison_is_symmetric_and_dated():
 
 def test_kansas_city_omitted_row_is_not_counted_as_a_match():
     """The reader cut one KC row mid-cell; it must be absent from the comparison, not scored."""
-    inj = _inj()
+    # Pinned capture: the spot transcripts are dated 2026-11-18, so the KC
+    # count they are compared against is that day's capture, not whatever the
+    # next scheduled refresh writes into the rolling file.
+    inj = _inj_pinned()
     kc_capture = int((inj.team == "KC").sum())
     spot = _spot()
     kc_compared = int(((spot["check"] == "injury report") & (spot["club"] == "KC")).sum())
@@ -172,3 +193,23 @@ def test_findings_match_the_flagged_page_contract():
         assert re.match(r"^F-\d+$", row["id"]), row["id"]
         assert row["url"].startswith("https://")
         assert row["nxt"].strip() and row["text"].strip()
+
+
+def test_compare_official_reads_dated_captures_never_the_rolling_pointer():
+    """Regression for the 2026-11-19 red availability runs (44380205336+).
+
+    compare_official() pairs the pinned 2026-11-18 spot transcripts with a
+    capture; if that capture is the rolling file the scheduled job rewrites,
+    the KC omission pin read 3 instead of 1 after a refresh and the whole
+    `make site` aborted. The function must read the dated snapshot.
+    """
+    src = (ROOT / "pipeline" / "req_annex_2026_11_18.py").read_text(encoding="utf-8")
+    body = src.split("def compare_official", 1)[1].split("\ndef ", 1)[0]
+    assert 'AVAIL / "injuries.csv"' not in body, "compare_official reads the rolling injuries file"
+    assert 'AVAIL / "depth_charts.csv"' not in body, "compare_official reads the rolling depth file"
+    assert '"history" / "2026-11-18"' in body, "compare_official is not pinned to the dated capture"
+    # and the pinned run must actually succeed with the KC pin intact
+    import req_annex_2026_11_18 as annex
+    rows, facts = annex.compare_official()
+    assert facts["inj_rows_omitted"] == 1, facts["inj_rows_omitted"]
+    assert facts["kc_printed"] == 13, facts["kc_printed"]
