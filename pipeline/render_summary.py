@@ -386,6 +386,25 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 - **Repair (F-2026-11-19-07).** The rolling `latest.csv` had been overwritten, so code labelled it as the 2026-11-18 capture and one test failed on `main`. The sibling session's fix (`37816e4`) pins the comparison to the 2026-11-18 history folder; the remaining reader is pinned in this branch. Build and tests are green.
 - Flags and the live read are on [Flagged for review](flagged.html) and in `data/live/spotcheck_2026_11_19/`.
 
+## Update — 2026-11-19 (`arena/7cbb2e60-korea1`) — official capture repair
+
+- **Decision unchanged.** Still no validated strategy and no reward; nothing here adds evidence for an edge.
+- **The schedule capture did not select the week (F-2026-11-19-08, High).** The committed REG9 and REG10
+  evidence files were byte-identical (raw SHA-256 `6ad52b57…`, 2,291,069 bytes each) and both contained
+  Week-11 fixture cards while labelled weeks 9 and 10, because `/schedules/<season>/REG<week>` ignored the
+  week for the capture client. The capture now reads the league's by-week URL, requires every fixture slug
+  to print the requested week, and cross-checks the fixture set against the week's scores page before
+  anything is written. Source: [NFL by-week schedule, week 10](https://www.nfl.com/schedules/2026/by-week/week-10).
+- **A blank capture published as a success (F-2026-11-19-09, Medium, repaired).** The parser returned 0 rows
+  on the real page shape (relative hrefs, labels nested in `sr-only` spans) and the run still exited 0 with
+  `game_centres: []`. The capture now aborts with exit 2 and writes no evidence on any missing field —
+  zero fixtures, week mismatch, schedule/scores disagreement, blank venue, finished fixture without a Game
+  Book link, or a Game Book that does not match the fixture.
+- **New page: [gamecentre.html](gamecentre.html)** — venue per fixture from the official game centre
+  (REQ-23) and the Game Book's printed starters, Not Active and Did Not Play lists (REQ-25), one official
+  link per row and one SHA-256 per captured document. It renders an explicit waiting state until the
+  scheduled runner capture commits genuine week-selecting evidence.
+
 ## Decision readiness & lineup follow-up — 2026-11-12
 
 Four review registers sit in front of the research, generated from the same data as the pages, and none
