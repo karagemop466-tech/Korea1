@@ -75,10 +75,21 @@ def main()->int:
             lines.append(f"- `{n}` — {mark}")
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
             fh.write("\n".join(lines) + "\n")
+    # Any tracked change after the build is a failure, in scope or not: the workflow's
+    # final `git diff --quiet` fails on all of them, and this step is where the file
+    # names must become visible (as ::error annotations, which the run page shows even
+    # when the job log itself needs sign-in). Previously out-of-scope dirty files were
+    # silently ignored here and only surfaced as a bare exit 1 in the next step.
+    in_scope = set(targets)
+    for n in names:
+        if n not in in_scope:
+            errors.append(f"{n}: changed by the build but outside the comparison scope (raw git diff fails on it)")
     if errors:
         print("Rebuild drift check failed:")
-        for e in errors[:50]: print(" -",e)
+        for e in errors[:50]:
+            print(" -", e)
+            print(f"::error title=Rebuild drift::{e}")
         return 1
-    print(f"Rebuild matches committed outputs ({checked} changed files compared; numeric rtol={RTOL}, atol={ATOL}).")
+    print(f"Rebuild matches committed outputs ({checked} changed files compared; numeric rtol={RTOL}, atol={ATOL}); no other tracked file changed.")
     return 0
 if __name__=="__main__":sys.exit(main())
