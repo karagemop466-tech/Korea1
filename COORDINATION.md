@@ -4042,3 +4042,22 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 - Post-merge on `main`: Verify site run [44257195616](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195616) **success** (red `main` from run 44252018114 on `8bc353b` is cleared — suspected-transient diagnosis confirmed); Pages run [44257195568](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195568) **success** at 07:13:30Z.
 - Live confirmation (page-fetch tool, read after deploy): `https://karagemop466-tech.github.io/Korea1/` serves the dashboard, and `request-register-2026-11-18.html` serves the sibling 81-row register (title, stat cards and row table all render). `curl` from this sandbox cannot reach `github.io` (connection blocked, status-code output `000`), so no curl-derived status code is claimed here.
 - This record rides to `main` in the record-only follow-up PR opened from this branch after the merge.
+
+---
+
+## Session `arena/8d55e319-korea1` — 2026-11-19 reproducibility and release-readiness audit (claim)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| N1 | Re-run the published repository's deterministic build, tests and link/source checks on the 2026-11-19 base; document any blockers and verified outcomes without changing other sessions' generated pages or data | **done** | `arena/8d55e319-korea1` | `COORDINATION.md` (this session's section only) |
+| N2 | Fix the reserve-list review comparator so it reads the named 2026-11-18 immutable capture rather than the rolling `latest.csv`; retain regression coverage against the 2026-11-19 rolling snapshot | **done** | `arena/8d55e319-korea1` | `pipeline/session_20261118.py`, `tests/test_reconcile_depth_charts.py`, generated outputs from the final `make build` (integration only) |
+
+**Starting state:** read this board and the existing root dashboard/README first. Checkout `arena/8d55e319-korea1` started at `311d9b5`, equal to `origin/main`. The first clean `make build` required the pinned data dependencies; system pip correctly refused under PEP 668, so dependencies were installed in ignored `.venv/`. Initial full tests found one stale-capture regression: a 2026-11-18 comparison label was paired with rolling `latest.csv`.
+
+**Fix and official provenance:** `pipeline/session_20261118.py::compare_reserve()` now reads the immutable `history/2026-11-18T044201Z/reserve_list.csv`; its result key and printed/public wording say `recapture`, not `latest`. `tests/test_reconcile_depth_charts.py` asserts the dated comparison and verifies the rolling pointer has advanced, preventing another mismatch. The official source is the NFL [November 2026 reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11); the pinned 2026-11-19 capture manifest records HTTP 200, page hashes, and 25 rows per month page. The 2026-11-18 live excerpt remains compared with its own dated 2026-11-17 and 2026-11-18 captures (17/25 and 25/25 common rows respectively); it is not compared to the later rolling snapshot. The generated registers were rebuilt from committed captures, not manually edited.
+
+**Verification (local, isolated Python environment):** `make build` passed (0 failing checks, 51 canonical pages / 6,752 table rows pass strict source checks; 61 pages pass internal-link/asset checks); `make test` passed (**372 passed, 1 skipped**); `tests/check_rebuild.py` passed with 0 changed files after regenerated outputs were committed; `pipeline/verify_site.py`, `tests/check_sources.py`, and `tests/check_links.py` each passed. `git diff --check` passed. The initial rebuild drift was the expected consequence of newly tracked code and the 2026-11-19 official capture; all derived outputs were regenerated and the clean fixed-point check then passed.
+
+**Irregularity retained for review, not represented as resolved:** the NFL reserve-list page is a rolling source and does not establish a 32-club complete reserve census; current capture has 50 rows across 27 clubs. Do not infer availability from absence. The capture's own source link and timestamp remain published. Betting-strategy gates remain fail-closed: no strategy is newly declared validated and no reward is awarded by this maintenance pass.
+
+**PR/deployment:** pending final integration PR and GitHub Actions / Pages result; do not claim a deploy until the workflow outcome is observed.
