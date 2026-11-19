@@ -4463,3 +4463,50 @@ Nothing above changes a published value; the repair and the new page follow in t
 **Cross-scope edits logged (file → why):** `pipeline/render_gamebooks.py` (their E5 page: gate states made factual; name-rule sentence added to the graph prose), `pipeline/availability_graph.py` (join keys + `_same_player` — REQ-25 cannot work otherwise), `pipeline/official_payload.py` (gamebook link pattern — root cause of the Fact Book capture), `pipeline/req_annex_2026_11_18.py` (R28/R62/F-54 re-read, their own instruction), `tests/test_gamebooks_consumer.py` (premise "anchor reader finds nothing" is obsolete — replaced with payload/anchor agreement test), `tests/test_requirement_annex_2026_11_18.py` (pinned counts reviewed). In every case sibling data and structure were extended, not deleted; both `gamebooks.html` and `gamecentre.html` ship, cross-linked.
 
 **Verification at this commit:** `make build` exit 0 — 0 failing checks, **53 canonical pages / 10,011 strict rows / 63 pages link-checked**; `make test` **422 passed, 1 skipped**; rebuild is a fixed point (tree hash identical across consecutive builds). Post-commit: `check_rebuild.py` + fresh clone (recorded in the next entry). Honest limits: the new fetch has not yet run on the runner (next scheduled 03:47/15:47 UTC; the push to main re-triggers it via the workflow paths) — if it goes red, the printed reasons are the review list; the 1,043 NOT CONFIRMED graph rows are unplayed week-11 fixtures, not a defect.
+
+---
+
+## Session `arena/a0e376ae-korea1` — 2026-11-19: dual-estimator totals (REQ-62) — claim
+
+**Board read first.** Every task row above was read before claiming. Branch `arena/a0e376ae-korea1`
+branched from `main` = `f6971b0` ("reserve-list: official snapshot 2026-11-19T19:37Z"). The twelve
+open PRs (#19 #24 #30 #38 #47 #56 #58 #70 #73 #84 #87 #102) belong to other sessions and are **not**
+touched. Sibling `arena/79a986b7-korea1` has claimed FI1–FI5 (workflows / fixed-point repair,
+forward-pick outcomes, `EXECUTIVE_SUMMARY.md`, final integration + publish); sibling
+`arena/93930c14-korea1` is running a read-only injury-capture audit. This session's scope below
+does not overlap either.
+
+**Baseline measured before any edit** (venv from `requirements.txt`):
+
+| Check | Result on the base commit `f6971b0` |
+|---|---|
+| `make build` | exit 0, **0 failing checks**, 53 canonical pages / 10,111 strict rows, 63 pages link-checked |
+| `make test` | **422 passed, 1 skipped** |
+| `git status --porcelain` after `make build` | 15 files rewritten — the pre-existing non-fixed-point drift caused by the 19:37 reserve-list capture (FI2's scope). Those rewrites were reverted; this session never commits them. |
+| Official pages read live (page tool) | `nfl.com/transactions/league/reserve-list/2026/11`, `nfl.com/standings/league/2026/REG` (title "2026 NFL League Standings"), `nfl.com/scores/2004/week-17` (title "NFL 2004 Week 17 Scores", finals printed) |
+
+**The gap this session closes.** The standing register `pipeline/request_register.py` row **REQ-62**
+("Publish every model total twice until one wins … both estimators visible with the gap column …
+collapse only after a walk-forward comparison") and the 2026-11-18 register row **RR-62** both read
+**not built**: one total-ensemble family is published, no second independent estimator, no gap column,
+no walk-forward comparison. No other session has claimed this item (board grep for "second estimator",
+"dual estimator", "two totals" finds only the register rows).
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| DT1 | Board claim + session log | **in progress** | `arena/a0e376ae-korea1` | `COORDINATION.md` (own section only) |
+| DT2 | **Pre-register the second estimator** — rule text, sample window, verdict gates committed to git *before* the evaluation code runs (the commit hash is the registration) | **unclaimed** | `arena/a0e376ae-korea1` | `research/dual-totals-prereg.md` (new) |
+| DT3 | **Build `pipeline/dual_totals.py`** — estimator B (parameter-free season-to-date form model, strictly chronological, pre-registered fallbacks), join to the published ensemble fair total, per-game gap, per-season walk-forward MAE/RMSE + paired 95% CI + verdict, outcome evidence tiers | **unclaimed** | `arena/a0e376ae-korea1` | `pipeline/dual_totals.py` (new), `data/processed/dual_totals.csv` + `data/processed/dual_totals_walkforward.csv` (new), `assets/data/*` mirrors |
+| DT4 | **Publish** — new page `dual-totals.html` (one official `nfl.com/standings/league/<season>/REG` link per row, outcome tier labelled, verdict marked provisional until outcomes are officially read) plus two columns (second estimate, gap) on the `lines.html` upcoming research board; register the page in NAV, `verify_site.py`, `check_sources.py`, `check_links.py`, `Makefile`, one `README.md` line | **unclaimed** | `arena/a0e376ae-korea1` | `pipeline/render_site.py` (NAV + `build_lines` + one builder), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one step), `README.md` (one line) |
+| DT5 | **Register rows** — REQ-62 / RR-62 re-read: status `not built` → `built` with the evidence file and the honest caveat; pinned tests updated | **unclaimed** | `arena/a0e376ae-korea1` | `pipeline/request_register.py` (REQ-62 row only), `pipeline/request_register_2026_11_18.py` (RR-62 row only), their tests |
+| DT6 | **Tests** — chronology/no-lookahead (B for game g reads only games dated before g), fallback chain, verdict logic, every published row carries an official link | **unclaimed** | `arena/a0e376ae-korea1` | `tests/test_dual_totals.py` (new), `Makefile` (test list only) |
+| DT7 | **Verify + publish** — `make build` / `make test`, drift-set comparison against the base (no *new* drift), line-by-line spot-check of committed outcomes against the official scores page, PR → `main`, merge, confirm Pages deploy, record here | **unclaimed** | `arena/a0e376ae-korea1` | `COORDINATION.md`, PR record |
+
+**Evidence rules this session keeps.** Outcomes behind the walk-forward table come from the pinned
+community archive (`data/raw/games.csv`, nflverse pin) and are labelled **UNVERIFIED (pinned
+community final)** on every row, with the official `nfl.com` scores/standings link printed for manual
+review; rows whose game is in the officially read set (`data/results/verified_results.csv`,
+`data/audit/nfl_com_score_audit.csv`) are tiered **OFFICIAL_READ**. The verdict prints as
+**PROVISIONAL** until official reads cover the evaluated rows. No market price is used anywhere in
+the comparison, so no benchmark archive is involved. Nothing here is a strategy, a leaderboard row,
+a validation gate change or a reward.
