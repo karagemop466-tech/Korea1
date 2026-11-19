@@ -4186,3 +4186,10 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 **Research verdict (unchanged).** 0 of 18 canonical strategies pass all eight fail-closed gates. No prize, capital allocation or profitable recommendation is authorized. The model trails the closing market on all three originated markets. No backtest number appears on the leaderboard.
 
 **Q4 — PR and merge.** PR #116 opened from `arena/9b56a906-korea1` to `main`: https://github.com/karagemop466-tech/Korea1/pull/116. Merged without waiting as merge commit 2d960be. `main`/`origin/main` now at 2d960be.
+## Session `arena/6ec7369c-korea1` — 2026-11-19 final integration + independent official-source spot-check (claim)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| I1 | Re-run deterministic build + full test suite on the 2026-11-19 base; independently re-read three official NFL.com pages (Week 10 injury report, November reserve list, KC-at-ATL game centre) and compare against committed captures; record verdicts with source links; final integration: PR to `main`, merge, confirm Pages deploy | **in progress** | `arena/6ec7369c-korea1` | `COORDINATION.md` (this session's section only), `data/live/spotcheck_2026_11_19/spotcheck_2026_11_19.csv` (new) |
+
+**Starting state:** branch `arena/6ec7369c-korea1` at `3c02fb2` (gamebooks capture 2026-11-19T12:14Z), equal to `origin/main`. `make build` (0 failing checks) and `make test` (382 passed, 1 skipped) both green before any edit; `git status` clean after build (committed outputs match a fresh build). Pages API reports `status: built`, source `main:/`, latest build 2026-11-19T12:14:36Z. Sandbox egress is limited to GitHub/npm/PyPI hosts, so the live site cannot be curled from here; official pages are re-read with the page-fetch tool instead.
