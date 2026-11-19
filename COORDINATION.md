@@ -4465,6 +4465,31 @@ Nothing above changes a published value; the repair and the new page follow in t
 
 **Verification at this commit:** `make build` exit 0 — 0 failing checks, **53 canonical pages / 10,011 strict rows / 63 pages link-checked**; `make test` **422 passed, 1 skipped**; rebuild is a fixed point (tree hash identical across consecutive builds). Post-commit: `check_rebuild.py` + fresh clone (recorded in the next entry). Honest limits: the new fetch has not yet run on the runner (next scheduled 03:47/15:47 UTC; the push to main re-triggers it via the workflow paths) — if it goes red, the printed reasons are the review list; the 1,043 NOT CONFIRMED graph rows are unplayed week-11 fixtures, not a defect.
 
+### Session `arena/0dc8c41e-korea1` — integration/reproducibility audit (2026-11-19)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| A1 | Rebuild the checked-in site outputs against the current committed evidence and restore a reproducible clean-build fixed point; verify site, tests and links. | **done** — PR #124 merged; verify + Pages succeeded | `arena/0dc8c41e-korea1` | Generated root HTML/`EXECUTIVE_SUMMARY.md`, generated `assets/data/**`, `data/integration/**`, `data/processed/verification_report.csv`; this session's `COORDINATION.md` section only. |
+
+**Initial finding (before changes).** On clean base `f6971b0`, `make build` passed source/link checks but regenerated derived outputs from committed evidence. The reserve capture history changed from 7 to 8 captures (latest 2026-11-19T19:37:34Z), inventory counts from 944 to 946 tracked files, and derived verification row counts changed. `tests/check_rebuild.py` failed on those stale generated outputs; this was an integration gap, not a new official-source claim. `make test`: 422 passed, 1 skipped.
+
+**Verification environment.** Runtime dependencies were installed from pinned `requirements.txt` into ignored `.venv/`; no source data or raw capture was altered. The build reads committed evidence and does not fetch external data.
+
+**Rebuild and integration verification.** Regenerated derived outputs from committed evidence, including reserve-history comparison and repository inventory/verification counts. No raw evidence, model, strategy, or source assertion was edited. The output has 946 inventory rows, eight retained reserve captures, 53 canonical pages / 10,111 rows strict source checked, and 63 pages link checked. A fresh clone passed `make build`, `make test` (422 passed, 1 skipped), and `tests/check_rebuild.py` (0 changed files); `git diff --check` passed. This is reproducibility verification, **not** a new live NFL page read. Official reference recorded in the evidence rows: https://www.nfl.com/transactions/league/reserve-list/2026/11.
+
+**Final publish record.** PR #124 (https://github.com/karagemop466-tech/Korea1/pull/124) merged into `main` at 2026-11-19T20:03:02Z as `8b978b872eb4febfcdd7a146411c5c6e2eecf928`. `Verify site` and GitHub Pages deployment succeeded; Pages source is `main:/`, public URL https://karagemop466-tech.github.io/Korea1/. No new official-source values were asserted; open findings and evidence limits remain on the existing Flagged for Review and readiness pages.
+
+---
+
+## Session `arena/2bab0e28-korea1` — generated-evidence refresh follow-up (2026-11-19)
+
+| Task | Status | Owner | File scope |
+|---|---|---|---|
+| P1 | Refresh generated repo inventory and reserve-list comparison from the committed capture; record the outcome and integrate without duplicating sibling work | **done (adopted in PR #124)** | `COORDINATION.md` (this section only); generated outputs were refreshed identically by `arena/0dc8c41e-korea1` and are already on `main` |
+
+This session's initial build found the same stale derived counts as A1. During work, `arena/0dc8c41e-korea1` independently completed the refresh and merged PR #124 to `main`, including the same 946-file inventory, eight retained reserve captures and updated review pages/tables. We compared its commit (`654322e`) with our generated outputs: the data and rendered-page changes are identical, so no second copy of those changes is required. This branch retains only the coordination record; the already-merged output is adopted rather than overwritten.
+
+**Source and verification record.** Official source: [NFL.com Transactions — Reserve List](https://www.nfl.com/transactions/league/reserve-list/2026/11); retained capture timestamp/raw hash: `data/availability/reserve/history/2026-11-19T193734Z/manifest.json`. On our working tree before the sibling merge, `make build` passed (0 failing checks; 53 canonical pages / 10,111 sourced rows; 63 pages link-checked), `make test` passed (422 passed, 1 skipped), and a repeated full build left the generated diff unchanged. After the sibling merge, the remaining task was only this coordination record; A1's clean-clone verification and PR #124's merged state govern the adopted outputs. This was not a live NFL re-fetch. No model values, gates or strategy rankings changed. Existing evidence gaps remain flagged and non-blocking.
 ## Session `arena/35c0fd93-korea1` — 2026-11-19 claim: Week-11 rollover repair (W1)
 
 **Board read first (2026-11-19T19:50–20:10Z).** Branch pinned at `f6971b0` (= `origin/main`, the reserve-list
