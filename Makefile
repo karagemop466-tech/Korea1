@@ -118,6 +118,9 @@ site: injuries review reviewall
 	# official capture in data/live/official_2026_11_19/. Reads committed bytes only (no
 	# network, no clock), so `make build` stays byte-reproducible.
 	$(PY) pipeline/week11_20261119.py
+	# W5 (arena/c83ada84-korea1): findings F-2026-11-19-08..-14, the Week 11 stats register and
+	# the pre-kickoff freeze. Committed files only.
+	$(PY) pipeline/session_20261119_week11.py
 	$(PY) pipeline/render_site.py
 	# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed
 	# originated lines and the forward cards only; no network.

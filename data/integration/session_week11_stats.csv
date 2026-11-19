@@ -1,0 +1,12 @@
+metric,value,note
+capture_utc,2026-11-19T12:44:02Z,clock time of the official capture
+sources_read,18,every source stored with a SHA-256
+sources_attempted,18,including any that failed
+injury_rows,253,Week 11 report rows
+injury_clubs,24,clubs appearing on the report
+game_designations,16,rows carrying Out / Doubtful / Questionable
+blank_game_status,237,rows with a blank game status
+fixtures,13,parsed as: anchors with printed labels
+venues,13,fixtures with a captured game centre
+week10_shared_players,134,on both the 2026-11-18T04:24:05Z and the 2026-11-19T12:44:02Z capture
+freeze_rows,253,data/forward/week11_prekickoff.csv

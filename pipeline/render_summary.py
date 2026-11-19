@@ -443,6 +443,32 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 
 {_gb}
 
+## Update — 2026-11-19 Week 11 layer (`arena/c83ada84-korea1`)
+
+- **Decision unchanged.** Still no validated strategy and no reward. The Week 11 work adds *evidence
+  currency*, not an edge.
+- **The site's evidence is now current.** Week 11 kicked off 2026-11-19T20:15 ET (2026-11-20T01:15Z).
+  Before this session the newest football evidence in the repository was the Week 10 report captured
+  2026-11-18T04:24:05Z. The official Week 11 report, both official schedule URL forms, the November
+  reserve list and all 13 game centres were captured at 2026-11-19T12:32:32Z, stored byte for byte with
+  their SHA-256, and published on [Week 11](week-11.html): 253 designations over 24 clubs, of which only
+  16 carry a game designation, and 13 fixtures with the league's own printed date, time, broadcaster and
+  venue. Source: [NFL Week 11 injury report](https://www.nfl.com/injuries/league/2026/reg11).
+- **Repair that matters more than the data (F-2026-11-19-08, Critical, repaired).** The scheduled
+  availability capture had failed on every run since 2026-11-18T19:24Z, at the step that rebuilds the
+  site from the new capture: a *dated* comparison was reading a *rolling* file, so when the workflow
+  finally captured a new week the comparison aborted (`KC omission count is 3, expected 1`). Seven
+  modules now read the dated capture they compare against, and a new guard
+  (`tests/test_capture_pairing.py`) forces the rolling file to another week and asserts every dated
+  reader still agrees. Reproduced on a runner from this branch; the log is committed at
+  `data/live/official_2026_11_19/diagnostics/availability_rebuild.log`.
+- **A decision surface, not a ninth register.** [Suggestions hub](suggestions-hub.html) indexes all four
+  suggestion registers and all four question registers: 76 proposals, 90 questions, 12 clusters still
+  awaiting a path, each with the register's own gate and the step that clears it.
+- **Pre-kickoff freeze.** Week 11's designations are frozen at `data/forward/week11_prekickoff.csv`,
+  keyed to the capture clock and the report's SHA-256, so a later read cannot turn a pre-kickoff feature
+  into hindsight.
+
 ## Update — 2026-11-19 (`arena/db0e98e2-korea1`)
 
 - **Decision unchanged.** Still no validated strategy and no reward. Nothing in this update adds evidence for an edge.

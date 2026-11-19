@@ -8,6 +8,17 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 
 ## Explore
 
+- **`week-11.html`** — **this week, from official captures** (added 2026-11-19, `arena/c83ada84-korea1`):
+  253 Week 11 designations across 24 clubs and all 13 fixtures with their printed kick-off, date,
+  broadcaster and venue, parsed from official NFL pages captured at `2026-11-19T12:32:32Z` and stored
+  byte for byte with their SHA-256 (`data/live/official_2026_11_19/`). Week 10 → Week 11 movement is
+  published as a delta between two dated reads, never as a level, and the report's blank game-status
+  cells are counted rather than filled. The Week 11 facts are frozen pre-kickoff at
+  `data/forward/week11_prekickoff.csv`.
+- **`suggestions-hub.html`** — **choose a path before anything changes** (added 2026-11-19,
+  `arena/c83ada84-korea1`): one index over all four suggestion registers and all four question
+  registers — 76 proposals, 90 questions, 12 topic clusters still awaiting a path, each with the gate
+  on the register and the step that would clear it. It adds no proposal of its own.
 - **`requirement-annex-2026-11-18.html`** — the annex to the register above: the same brief traced
   with every number recomputed on each build, the official pages re-read row by row (97 injury rows,
   23 depth rows, three reserve-list month pages, one game centre), and the 12 decision-blocking

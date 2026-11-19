@@ -1485,6 +1485,7 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_18_b_section()
     body += _flagged_2026_11_19_section()
     body += _flagged_2026_11_19_register_section()
+    body += _flagged_2026_11_19_week11_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -2034,6 +2035,28 @@ def _flagged_2026_11_19_section() -> str:
             "Row-level comparison: <code>data/live/reread_2026_11_19/comparison.csv</code>. None blocks merge.</p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
                     caption="Re-read findings with an official source · 2026-11-19")
+            + "</section>")
+
+
+def _flagged_2026_11_19_week11_section() -> str:
+    """Findings F-2026-11-19-08 … -14 from the Week 11 layer (arena/c83ada84-korea1).
+
+    Named apart from `_flagged_2026_11_19_section` above on purpose: a duplicate function name
+    silently shadowed a sibling's register once already (recorded in COORDINATION.md), so every
+    flagged block has its own name and every one is called explicitly.
+    """
+    fl = _read_integration("findings_2026_11_19_week11.csv")
+    if fl is None:
+        return ""
+    rows = [[e(r.id), e(r.sev), e(r.text) + (f"<br><span class=\"small\">Next: {e(r.nxt)}</span>" if r.nxt else ""),
+             src_link(r.url, r.label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the 2026-11-19 Week 11 layer</h2>"
+            "<p>Found while capturing the current NFL week and repairing the scheduled capture. "
+            "Evidence: <code>data/live/official_2026_11_19/</code>, "
+            "<code>data/integration/session_week11_stats.csv</code>, "
+            "<code>data/forward/week11_prekickoff.csv</code>. None blocks merge.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                    caption="Week 11 findings with an official source · F-2026-11-19-08 onward")
             + "</section>")
 
 
