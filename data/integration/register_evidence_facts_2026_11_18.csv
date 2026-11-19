@@ -42,7 +42,7 @@ depth_slot_groups,697,computed by pipeline/register_evidence_20261118.py from co
 flagged_rows_1118,10,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 forward_official,65,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 forward_official_weeks,1,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-forward_open,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+forward_open,73,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 forward_provisional,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 forward_results_rows,43,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 forward_schedule_rows,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
@@ -83,7 +83,7 @@ multirank_max,161,computed by pipeline/register_evidence_20261118.py from commit
 multirank_min,159,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 mv_picks_official,65,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 mv_picks_provisional,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-mv_strategies,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+mv_strategies,16,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 mv_strategies_movable,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 mv_strategies_ranked,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 mv_strategies_with_official,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
@@ -98,7 +98,7 @@ personnel_features,0,computed by pipeline/register_evidence_20261118.py from com
 pinned_none_clubs,"Seahawks, Bengals, Chargers, Ravens",computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 pinned_none_n,4,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 pinned_stamp,2026-11-12T13:06:29Z,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-prereg_picks,65,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+prereg_picks,138,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 prereg_sets,3,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 prereg_trial_rows,18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 price_close_filled,13472,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/

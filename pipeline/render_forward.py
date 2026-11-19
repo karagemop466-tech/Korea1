@@ -478,12 +478,30 @@ def flagged_rows() -> list[list[str]]:
          "Repaired: both are computed from the published tables and pinned by tests/test_scores_capture.py. "
          "The general lesson stays open — other pages may still carry typed dates.",
          src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
-        ["F-2026-11-19-W12", "Medium · open",
-         "The scheduled fetcher (pipeline/fetch_official_games.py) captures the scores page only as a fixture-set "
-         "cross-check: it stores the SHA-256, never the bytes, and parses no score from it. Settlement therefore "
-         "depends on the by-week schedule page, whose '<club> <pts>, <club> <pts>, FINAL' cards are the only "
-         "machine-readable official finals the pipeline holds. Fix is scheduled work (store the bytes and parse "
-         "the score block), not a data gap; the twelve Game Book captures already on disk carry no score.",
+        ["F-2026-11-19-W12", "Medium · repaired in the capture code (awaits a runner run)",
+         "The scheduled fetcher (pipeline/fetch_official_games.py) captured the scores page only as a fixture-set "
+         "cross-check: it kept the SHA-256, threw the bytes away, and parsed no score from it, so settlement "
+         "depended on the by-week schedule page alone. Repaired: the fetcher now stores the page's bytes and text "
+         "(.gz + SHA-256), parses its printed finals into data/processed/official_scores_finals.csv, and fails the "
+         "run (exit 2, nothing written) when a fixture the page marks FINAL cannot be read back or a label does "
+         "not name its slug's clubs. The contract is pinned by tests; it cannot be executed from this sandbox "
+         "because nfl.com is unreachable here.",
+         src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
+        ["F-2026-11-19-W13", "High · repaired",
+         "The Week-11 slate had never been registered: the ledger held one freeze (Week 10, 2026-11-12) while the "
+         "2026-11-19 Thursday game kicked off about three hours into this session. REQ-35 (a singles-only shadow "
+         "baseline, pre-registered and frozen before kickoff) was therefore unmet for every game after Week 10, by "
+         "omission rather than policy. Repaired: entry 3 of the append-only ledger, written 2026-11-19T20:21:23Z, "
+         "freezes 13 Week-11 fixtures (73 tickets across the same 18 registered strategies) 4.9 hours before the "
+         "first kickoff it prices (IND at HOU, 2026-11-20T01:15:00Z). No line, pick or strategy was edited to make "
+         "it fit; the canonical originate() ran on the pinned mirror snapshot 1d4f6ac.",
+         src_link("https://www.nfl.com/schedules/2026/by-week/week-11", "NFL by-week schedule, week 11")],
+        ["F-2026-11-19-W14", "Medium · open",
+         "A frozen card cannot be read back from the published tables: data/forward/cards.csv carries no "
+         "fair_spread / fair_total value for the Week-11 rows, so the page's fair-line table stops at Week 10 while "
+         "the ledger entry body holds those numbers. Not repaired here — the card writer lives in "
+         "pipeline/forward_ledger.py, outside this session's scope, and a silent column change would alter Week-10 "
+         "rows already published. Recorded so the next forward-ledger session fixes it at the source.",
          src_link("https://www.nfl.com/scores/2026/week-10", "NFL.com week 10 scores")],
     ]
 
