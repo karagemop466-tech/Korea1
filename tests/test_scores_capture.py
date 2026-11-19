@@ -176,3 +176,53 @@ def test_live_transcription_is_labelled_as_a_transcription_not_a_capture():
     rows = pd.read_csv(LIVE / "scores_page_rows.csv", dtype=str, keep_default_na=False)
     assert len(rows) == 14
     assert set(rows.status_as_printed) == {"Final"}
+
+
+# --------------------------------------------------------------------- the scheduled fetcher
+def test_the_scheduled_fetcher_keeps_the_scores_page_and_parses_its_finals():
+    """F-2026-11-19-W12: the bytes used to be discarded, so settlement had one parsed source.
+
+    This is a *source* test, not a data test: the runner's capture cannot execute here (nfl.com
+    is unreachable from the build shell), so the contract is pinned in the code that runs there.
+    """
+    src = (ROOT / "pipeline" / "fetch_official_games.py").read_text(encoding="utf-8")
+    assert "parse_scores_page" in src, "the fetcher must parse finals from the scores page"
+    assert "scores/week{week}.html.gz" in src, "the scores page must be stored, not only hashed"
+    assert "official_scores_finals.csv" in src, "the parsed finals must be published"
+    assert "could not be read (score block or Final word missing)" in src, (
+        "a finished fixture the scores page links to but the parser cannot read must fail the run")
+
+
+def test_scores_page_parser_reads_the_printed_shape_and_refuses_a_mismatch():
+    import official_games as og
+    doc = ("<html><body>"
+           '<a href="/games/bills-at-jets-2026-reg-10"><span class="sr-only">View Bills Jets game</span></a>'
+           "<div>BILLS Buffalo Bills BUF</div><div>31</div><div>31 points</div>"
+           "<div>JETS New York Jets NYJ</div><div>12</div><div>12 points</div><div>Final</div>"
+           '<a href="https://www.nfl.com/games/patriots-at-lions-2026-reg-10">'
+           '<span class="sr-only">View Patriots Lions game</span></a>'
+           "<div>PATRIOTS New England Patriots NE</div><div>10</div>"
+           "<div>LIONS Detroit Lions DET</div><div>35</div><div>Final</div>"
+           # a third block whose label names the wrong clubs: the pairing must be refused
+           '<a href="/games/rams-at-cardinals-2026-reg-10">'
+           '<span class="sr-only">View Seahawks Raiders game</span></a>'
+           "<div>RAMS Los Angeles Rams LA</div><div>34</div>"
+           "<div>CARDINALS Arizona Cardinals AZ</div><div>6</div><div>Final</div>"
+           "</body></html>")
+    rows = {r["slug"]: r for r in og.parse_scores_page(doc)}
+    assert (rows["bills-at-jets-2026-reg-10"]["away_score_as_printed"],
+            rows["bills-at-jets-2026-reg-10"]["home_score_as_printed"]) == ("31", "12")
+    assert rows["patriots-at-lions-2026-reg-10"]["status_as_printed"] == "Final"
+    assert rows["rams-at-cardinals-2026-reg-10"]["label_matches_slug"] == 0, (
+        "a label naming other clubs must not be paired with this fixture")
+
+
+def test_an_unplayed_fixture_yields_blank_scores_never_zero():
+    import official_games as og
+    doc = ('<a href="/games/panthers-at-saints-2026-reg-10">'
+           '<span class="sr-only">View Panthers Saints game</span></a>'
+           "<div>PANTHERS Carolina Panthers CAR</div><div>SAINTS New Orleans Saints NO</div>"
+           "<div>In Progress</div>")
+    r = og.parse_scores_page(doc)[0]
+    assert r["away_score_as_printed"] == "" and r["home_score_as_printed"] == ""
+    assert r["status_as_printed"] == "In Progress"

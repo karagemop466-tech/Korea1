@@ -943,7 +943,7 @@ tests/test_reread_2026_11_19.py,1-10 KB,Test,SOURCE · executed by make build / 
 tests/test_reserve_list.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/request_register_2026_11_18.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_review_consolidated.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL scores,https://www.nfl.com/scores/
 tests/test_review_registers.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,NFL scores,https://www.nfl.com/scores/
-tests/test_scores_capture.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/render_forward.py; pipeline/render_summary.py,NFL scores,https://www.nfl.com/scores/
+tests/test_scores_capture.py,10-100 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/render_forward.py; pipeline/render_summary.py,NFL scores,https://www.nfl.com/scores/
 tests/test_session_20261119.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_verified_register.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_vigfree_decomposition.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,"White (2000), Econometric Society",https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping

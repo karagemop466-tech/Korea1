@@ -219,6 +219,100 @@ def parse_schedule_page(raw_html: str) -> list[dict]:
     return rows
 
 
+def parse_scores_page(raw_html: str) -> list[dict]:
+    """Finals printed on an official NFL scores page, one row per fixture.
+
+    Added 2026-11-19 (session `arena/7134ec74-korea1`, flag F-2026-11-19-W12).
+    The scheduled fetcher already downloads this page every run and threw the
+    bytes away, keeping only a SHA-256; settlement therefore rested on the
+    by-week schedule page alone.  The scores page prints, per fixture, in this
+    order (verbatim shape read live 2026-11-19):
+
+        - [View Commanders Giants game](/games/commanders-at-giants-2026-reg-10)
+        COMMANDERS Washington Commanders WAS Washington Commanders
+        24
+        24 points
+        GIANTS New York Giants NYG New York Giants
+        21
+        21 points
+        Final
+
+    Pairing is **positional**: the i-th "View … game" label belongs to the
+    i-th fixture link, because that is the order the page prints them in.  The
+    pairing is then checked against the link's own slug; a label that does not
+    name the slug's clubs is returned blank with ``label_matches_slug = 0``.
+
+    Conservative by design: a block whose pure-integer lines are not exactly
+    two carries blank scores.  Nothing is inferred and no value is defaulted.
+    """
+    text = html_to_text(raw_html)
+    lines = text.split("\n")
+    # The label may share its line with the first club block when the page prints the
+    # anchor and the block without a block-level break, so the pattern is anchored at the
+    # start of the line and takes the first ``game`` as its end.
+    label_pat = re.compile(r"^\s*(?:-\s*)?View\s+(?P<label>.+?)\s+game\b", re.I)
+    label_idx = [k for k, ln in enumerate(lines) if label_pat.match(ln)]
+    slugs = [slug_of(m.group("url")) for m in _ANCHOR.finditer(raw_html)]
+    out: list[dict] = []
+    for i, slug in enumerate(slugs):
+        row = dict(slug=slug, away_as_printed="", home_as_printed="",
+                   away_score_as_printed="", home_score_as_printed="",
+                   status_as_printed="", score_block_found=0, label_matches_slug=0)
+        if i >= len(label_idx):
+            out.append(row)
+            continue
+        k = label_idx[i]
+        label = label_pat.match(lines[k]).group("label").strip()
+        away, home = _split_fixture_label(label, slug)
+        stop = label_idx[i + 1] if i + 1 < len(label_idx) else min(k + 60, len(lines))
+        block = [ln.strip() for ln in lines[k + 1:stop]]
+        nums = [ln for ln in block if re.fullmatch(r"\d{1,3}", ln)]
+        status = next((ln for ln in block if ln.lower() in
+                       ("final", "final/ot", "in progress", "pregame", "postponed")), "")
+        row.update(
+            away_as_printed=away, home_as_printed=home,
+            status_as_printed=status,
+            label_matches_slug=int(_slug_names_clubs(slug, away, home)),
+        )
+        if len(nums) == 2:
+            row.update(away_score_as_printed=nums[0], home_score_as_printed=nums[1],
+                       score_block_found=1)
+        out.append(row)
+    return out
+
+
+def _slug_names_clubs(slug: str, away: str, home: str) -> bool:
+    """Does ``<away>-at-<home>-<season>-reg-<week>`` print these two club words?"""
+    m = re.match(r"(.+)-at-(.+)-(\d{4})-reg-(\d+)$", slug)
+    if not m:
+        return False
+    norm = lambda t: re.sub(r"[^a-z0-9]", "", t.lower())            # noqa: E731
+    return norm(m.group(1)) == norm(away) and norm(m.group(2)) == norm(home)
+
+
+def _split_fixture_label(label: str, slug: str) -> tuple[str, str]:
+    """Split ``Commanders Giants`` into the visiting and home club as printed.
+
+    The slug (``commanders-at-giants-2026-reg-10``) carries the clubs in order
+    and is the league's own identifier, so it is used to decide which half of
+    the printed label is the visitor.  The label itself is returned unchanged.
+    """
+    parts = label.split()
+    m = re.match(r"(.+)-at-(.+)-\d{4}-reg-\d+$", slug)
+    if not m:
+        return (parts[0] if parts else ""), (parts[1] if len(parts) > 1 else "")
+    away_key, home_key = m.group(1), m.group(2)
+    mid = None
+    for k in range(1, len(parts)):
+        left = "-".join(parts[:k]).lower().replace(" ", "-")
+        if left == away_key:
+            mid = k
+            break
+    if mid is None:
+        return (parts[0] if parts else ""), (parts[1] if len(parts) > 1 else "")
+    return " ".join(parts[:mid]), " ".join(parts[mid:])
+
+
 # --------------------------------------------------------------------------
 # Game centre page
 # --------------------------------------------------------------------------

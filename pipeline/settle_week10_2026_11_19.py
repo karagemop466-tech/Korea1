@@ -98,6 +98,20 @@ def _read_scores_live() -> dict[str, dict]:
     return out
 
 
+def _read_committed_scores_finals() -> dict[str, dict]:
+    """Optional fourth artefact: what the *scheduled fetcher* parsed from the scores page.
+
+    Present only after a runner capture that includes the scores-page parser (added
+    2026-11-19). When absent the three-source gate still applies; when present it is
+    cross-checked like any other source, so a parser drift is caught rather than trusted.
+    """
+    p = ROOT / "data" / "processed" / "official_scores_finals.csv"
+    if not p.exists():
+        return {}
+    df = pd.read_csv(p, dtype=str, keep_default_na=False)
+    return {r["slug"]: r for r in df.to_dict("records")}
+
+
 def _read_schedule_capture() -> dict[str, dict]:
     """Source B — the committed byte capture of the league's by-week schedule page."""
     import gzip
@@ -156,6 +170,7 @@ def _book_score(text: str) -> dict | None:
 def verify() -> tuple[list[dict], list[dict]]:
     live = _read_scores_live()
     sched = _read_schedule_capture()
+    committed = _read_committed_scores_finals()
     schedcsv = pd.read_csv(SCHEDULE, dtype=str, keep_default_na=False)
     already = pd.read_csv(OFFICIAL, dtype=str, keep_default_na=False) if OFFICIAL.exists() else pd.DataFrame(columns=COLUMNS)
     done = set(already.game_id)
@@ -196,6 +211,14 @@ def verify() -> tuple[list[dict], list[dict]]:
                                   ("status", (b["status_as_printed"],), ("FINAL",))):
                 if got != exp:
                     reasons.append(f"source A and source B disagree on {src}: {got} vs {exp}")
+        # D (optional) — the runner's own parse of the scores page must agree too.
+        d = committed.get(slug)
+        if d is not None and a is not None:
+            if (d["away_score_as_printed"], d["home_score_as_printed"]) != \
+                    (a["away_score_as_printed"], a["home_score_as_printed"]):
+                reasons.append(f"the runner's parsed scores page disagrees with the live transcription: "
+                               f"{d['away_score_as_printed']}-{d['home_score_as_printed']} vs "
+                               f"{a['away_score_as_printed']}-{a['home_score_as_printed']}")
         # C vs the fixture identity AND the number: the Game Book is a third independent score.
         cb = _book_score(book) if book else None
         if book and cb is None:

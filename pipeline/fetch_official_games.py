@@ -45,6 +45,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from official_games import (html_to_text, parse_game_book, parse_game_centre,  # noqa: E402
+                            parse_scores_page,
                             parse_lineup_rows, parse_roster_entries, parse_schedule_page,
                             parse_two_column_roster, split_columns)
 from official_payload import (parse_game_centre_info, parse_schedule_payload,  # noqa: E402
@@ -346,10 +347,51 @@ def main() -> int:
                 die(f"week {week}: schedule page and scores page disagree on "
                     f"the fixture set (only schedule: {only_sched}; only "
                     f"scores: {only_scores})")
+            # F-2026-11-19-W12 (arena/7134ec74-korea1): the bytes used to be thrown away,
+            # so settlement depended on the schedule page alone.  Keep them, and parse the
+            # printed finals out of the same document that proves the fixture set.
+            shtml = sraw.decode("utf-8", "replace")
+            write_raw(RAW_DIR / "scores" / f"week{week}.html", sraw)
+            s_text = html_to_text(shtml)
+            nb_s, sh_s = write_gz(EVIDENCE / f"scores/week{week}.txt.gz", s_text)
+            hb_s, hh_s = write_gz(EVIDENCE / f"scores/week{week}.html.gz", shtml)
+            finals = parse_scores_page(shtml)
+            parsed_finals = {r["slug"]: r for r in finals if r.get("score_block_found") == 1
+                             and str(r.get("status_as_printed", "")).strip().lower() == "final"}
+            # A finished fixture the scores page links to but cannot read is a parser gap,
+            # not a silent blank: record it and fail the run so it is fixed before it can
+            # ever be used to settle anything.
+            sched_final_slugs = {str(r.get("official_url", "")).rstrip("/").rsplit("/", 1)[-1]
+                                 for r in rows
+                                 if str(r.get("status_as_printed", "")).upper() == "FINAL"}
+            unread = sorted(sched_final_slugs - set(parsed_finals))
+            if unread:
+                die(f"week {week}: the scores page marks {len(unread)} finished fixture(s) that "
+                    f"could not be read (score block or Final word missing): {unread}")
+            scores_rows = []
+            for slug, r in parsed_finals.items():
+                scores_rows.append(dict(slug=slug, week_requested=week, season=season,
+                                        away_as_printed=r["away_as_printed"],
+                                        home_as_printed=r["home_as_printed"],
+                                        away_score_as_printed=r["away_score_as_printed"],
+                                        home_score_as_printed=r["home_score_as_printed"],
+                                        status_as_printed=r["status_as_printed"],
+                                        label_matches_slug=r["label_matches_slug"],
+                                        scores_url=scores_url,
+                                        official_url=f"https://www.nfl.com/games/{slug}",
+                                        retrieved_utc=stamp))
+            for sr in scores_rows:
+                if not sr["label_matches_slug"]:
+                    die(f"week {week}: scores-page label for {sr['slug']} does not name that "
+                        f"fixture's clubs — refusing to publish the pairing")
+            manifest.setdefault("scores_finals", []).extend(scores_rows)
             manifest["scores_pages"].append(dict(
                 week=week, url=scores_url, http_status=scode,
-                fixtures=len(score_slugs),
-                raw_sha256=sha256_bytes(sraw), retrieved_utc=stamp))
+                fixtures=len(score_slugs), finals_read=len(parsed_finals),
+                raw_bytes=len(sraw), raw_sha256=sha256_bytes(sraw),
+                text_bytes=nb_s, text_sha256=sh_s,
+                html_bytes=hb_s, html_sha256=hh_s,
+                retrieved_utc=stamp))
         elif scode:
             die(f"week {week}: scores cross-check http status {scode} ({scores_url})")
         # The same page publishes the season's week windows and the clubs on a
@@ -587,6 +629,9 @@ def main() -> int:
         pd.DataFrame(books).to_csv(PROC / "official_gamebooks.csv", index=False)
     if roster_rows:
         pd.DataFrame(roster_rows).to_csv(PROC / "official_gamebook_rosters.csv", index=False)
+    if manifest.get("scores_finals"):
+        pd.DataFrame(manifest["scores_finals"]).to_csv(
+            PROC / "official_scores_finals.csv", index=False)
     (EVIDENCE).mkdir(parents=True, exist_ok=True)
     (EVIDENCE / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(f"manifest errors: {len(manifest['errors'])}")
