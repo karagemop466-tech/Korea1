@@ -18,6 +18,62 @@ permissions:
   contents: read
 
 jobs:
+  # W1 acceptance (V2 of arena/d64e3029-korea1): the scheduled Availability
+  # tracker has been delayed ~8h by GitHub today (11:17 cron fired 19:29 UTC),
+  # so reproduce its exact failing sequence here instead — fresh official
+  # capture, then `make -o injuries site` — and surface the result either way.
+  availability-tracker-repro:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Fresh official capture (same as the scheduled tracker)
+        run: python pipeline/fetch_availability.py
+      - name: Rebuild with the fresh capture (same as the scheduled tracker)
+        shell: bash
+        run: |
+          set +e
+          make -o injuries site > /tmp/tracker.log 2>&1
+          rc=$?
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            {
+              echo "tracker rebuild failed (exit $rc); make error lines:"
+              grep -n "make: \*\*\*\|Error [0-9]\|error:\|SystemExit" /tmp/tracker.log | tail -n 12 || true
+              echo "---- last 50 lines ----"
+              tail -n 50 /tmp/tracker.log
+            } > /tmp/err.txt
+            RC="$rc" python3 - <<'PY'
+          import os, pathlib
+          body = pathlib.Path("/tmp/err.txt").read_text(errors="replace")
+          if len(body) > 3600:
+              body = "…TRUNCATED…\n" + body[-3500:]
+          msg = body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=availability tracker repro failed (exit {os.environ['RC']})::{msg}")
+          PY
+            exit "$rc"
+          fi
+          echo "::notice title=availability tracker repro OK::fresh capture + make -o injuries site exited 0 on the runner (Week-11 rolling capture)"
+      - name: Report the fresh capture shape
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv, json, pathlib
+          out = pathlib.Path("data/availability")
+          def n(p):
+              try:
+                  with open(p, newline="", encoding="utf-8") as fh:
+                      return sum(1 for _ in csv.reader(fh)) - 1
+              except Exception as exc:
+                  return f"ERR {exc}"
+          s = json.loads((out / "manifest.json").read_text()) if (out / "manifest.json").exists() else {}
+          print(f"::notice title=fresh capture shape::injuries.csv rows={n(out/'injuries.csv')} depth_charts.csv rows={n(out/'depth_charts.csv')} manifest keys={sorted(s)[:8]}")
+          PY
+
   surface-rebuild-diff:
     runs-on: ubuntu-latest
     steps:
