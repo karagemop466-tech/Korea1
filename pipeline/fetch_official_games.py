@@ -547,16 +547,26 @@ def main() -> int:
     if not ok:
         # Nothing is published: the committed CSVs, evidence and manifest stay
         # exactly as they are, and the run exits 2 so the workflow stops
-        # before its commit step.
+        # before its commit step.  The reasons are printed three ways so they
+        # are actually visible from CI: stderr for the log, GitHub
+        # ``::error::`` annotations (the check-runs API returns them even when
+        # the log download is blocked), and a rejected manifest next to the
+        # raw bytes that the always-run artifact step uploads.
         EVIDENCE.mkdir(parents=True, exist_ok=True)
+        rejected = dict(manifest, fatal=fatal)
         (EVIDENCE / "manifest-rejected.json").write_text(
-            json.dumps(dict(manifest, fatal=fatal), indent=2), encoding="utf-8")
+            json.dumps(rejected, indent=2), encoding="utf-8")
+        RAW_DIR.mkdir(parents=True, exist_ok=True)
+        (RAW_DIR / "manifest-rejected.json").write_text(
+            json.dumps(rejected, indent=2), encoding="utf-8")
         print("FATAL — capture rejected; no CSV or manifest was written "
               "(the workflow stops before its commit step):", file=sys.stderr)
         for reason in fatal:
             print(f"  - {reason}", file=sys.stderr)
+            print(f"::error title=gamebooks capture rejected::{reason}")
         for err in manifest["errors"]:
             print(f"  - error: {err}", file=sys.stderr)
+            print(f"::error title=gamebooks capture error::{err}")
         return 2
     PROC.mkdir(parents=True, exist_ok=True)
     fx = pd.DataFrame(fixtures)
