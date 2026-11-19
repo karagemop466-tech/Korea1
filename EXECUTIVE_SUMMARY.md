@@ -37,14 +37,14 @@ records already cite.
 
 | What | Count | Note |
 |---|---|---|
-| Official documents captured | 2 | each with its URL, HTTP status, byte count and SHA-256 |
-| Fixtures published from the league's schedule page | 13 | every column printed by the league |
-| Availability-graph rows (expected starter) | 544 | the club's own depth chart, with its capture time |
+| Official documents captured | 89 | each with its URL, HTTP status, byte count and SHA-256 |
+| Fixtures published from the league's schedule page | 42 | every column printed by the league |
+| Availability-graph rows (expected starter) | 1714 | the club's own depth chart, with its capture time |
 | Confirmed starters | 0 | needs an official Game Book |
 | Co-starter positions | 0 | the club named more than one first player; none is chosen |
-| Game centres captured | 0 | of the fixtures above |
-| Game Books captured | 0 | of the fixtures above |
-| Inactive / did-not-play rows | 0 | the league's game-day lists |
+| Game centres captured | 42 | of the fixtures above |
+| Game Books captured | 42 | of the fixtures above |
+| Inactive / did-not-play rows | 412 | the league's game-day lists |
 
 **Drift, published rather than hidden.** 2 captured schedule page(s) served a
 week other than the one the capture asked for: the 2026-11-19 capture requested Weeks 9 and 10
