@@ -20,7 +20,7 @@ This dated snapshot supersedes older status notes below. Counts come from the co
 |---|---|---|---|
 | Signal qualification | 0 of 18 pass the registered signal-gate set; 0 pass all eight validation gates. | Signal qualification is not a staking status or a profitability claim. No candidate is validated and no reward is supported. | [Competition](competition.html) · [validation gates](validation.html) · [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Staking and quote provenance | 0 LIVE · 18 PAPER · B6 BLOCKED · 18 fail quote-provenance G1. | No authenticated, timestamped executable bookmaker quote archive is recorded. Signal qualification and paper/live state are shown separately; no live stake or reward is authorized. | [Price archive](price-archive.html) · [paper/live register](assets/data/demotion_register.csv) · [NFL scores (settlement context)](https://www.nfl.com/scores/) |
-| Prospective results | 4 official-settled · 0 open · 0 validated | Official outcomes are used for settlement; open tickets remain open. The available prospective record does not validate a strategy or establish a repeatable edge. | [Forward ledger](forward.html) · [NFL Week 10 scores](https://www.nfl.com/scores/2026/week-10) |
+| Prospective results | 65 official-settled · 0 open · 0 validated | Official outcomes are used for settlement; open tickets remain open. The available prospective record does not validate a strategy or establish a repeatable edge. | [Forward ledger](forward.html) · [NFL Week 10 scores](https://www.nfl.com/scores/2026/week-10) |
 | Injury, roster and depth blockers | B1 PARTLY DONE; B7 PARTLY DONE. | Reserve-list live capture (CI) has not run; chunk 0 re-read is partial in this session; Reserve-list CI run; HOU depth chart (0 rows); 2026-11-12 coverage gap cause (unverified). Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified. | [Brief tracker](brief-2026-11-15.html) · [NFL injury report](https://www.nfl.com/injuries/league/2026/reg10) · [NFL reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11) |
 | Parlay and player-prop priceability | UNVERIFIED — no executable price evidence. | Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established. | [Props](props.html) · [correlation rules](correlations.html) · [NFL injuries](https://www.nfl.com/injuries/) |
 | F-38 competitive-display policy | Implemented in the 2026-11-15 update. | Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This is a display-policy change, not validation. | [Strategy leaderboard](strategies.html) · [competition standings](competition.html) · [frozen thresholds](assets/data/validation_config.json) · [demotion register](assets/data/demotion_register.csv) |
@@ -196,13 +196,13 @@ against an official NFL.com final.
 | Item | State | Meaning |
 |---|---|---|
 | Frozen before kickoff | 65 tickets across 18 strategies and 14 Week 10 games; written `2026-11-12T13:26:48Z`, received by GitHub `13:28:07Z`, 11.78 h before the first kickoff | The picks were public before the games started. The receipt time is GitHub's, not the committer's. [NFL week 10 schedule](https://www.nfl.com/schedules/2026/by-week/reg-10) |
-| Settled from an official final | **4 of 65** — WAS 24–21 NYG, read on the [Game Center](https://www.nfl.com/games/commanders-at-giants-2026-reg-10) and the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) | 0 tickets stay `OPEN`; 61 provisional, awaiting an official final; none is defaulted to a push or a void. Net -0.305 units across the settled tickets. |
-| Strategies with a counted result | 4 of 18 | One ticket each is not a record. |
+| Settled from an official final | **65 of 65** — every Week 10 final is certified by two official documents (the [week 10 scores page](https://www.nfl.com/scores/2026/week-10) and the league's own Game Book, hash-pinned in this repository) | 0 tickets stay `OPEN`; 0 provisional, awaiting an official final; none is defaulted to a push or a void. Net +3.110 units across the settled tickets. |
+| Strategies with a counted result | 14 of 18 | One ticket each is not a record. |
 | Validated strategies / rewards | **0 / none** | No strategy is past its declared horizon (150 single or 60 parlay tickets over 30 weeks); verdicts are withheld from the agent by ledger amendment A1. |
 | Gate F2 (official settlement) | PASS where a ticket has settled | Settlement now rests on an official page; before this pass the same 4 tickets were `PROVISIONAL`. |
 | Gate F6 (quote provenance) | FAIL for all strategies | Frozen prices are community-mirror values, not authenticated bookmaker quotes. |
 
-**What this does not mean.** 4 tickets at one game is not a sample, and a 2–2 split is
+**What this does not mean.** 65 tickets at one game is not a sample, and a 2–2 split is
 indistinguishable from chance. `forward.html` prints no p-value, no ROI and no verdict, and awards
 nothing. The honest reading is that the forward clock has started and the record can now be audited;
 nothing about the strategy library has been demonstrated.
@@ -243,7 +243,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 946 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 952 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -274,7 +274,7 @@ session added on top, verified in `make build` and `make test` (140 tests):
 | Requirement | Where it stands after this session |
 |---|---|
 | Price-snapshot store | `price-snapshot.html` keeps the strict blank-cell store; **`price-archive.html`** now publishes the archive-populated view: 29704 snapshot rows over 7426 games - 5886 opening prices (2011-2021 archive), 11253 archive closes, 25658 pinned closes, 112 forward freezes - each row tier-labelled and flagged NOT AN AUTHENTICATED QUOTE (G1 fails) |
-| Verified results feed | **`results-feed.html`**: 7548 games in three never-mixed tiers (30 official game-centre reads, 7383 pinned-archive finals, 135 scheduled with blank scores), 0 source conflicts, and 18 rows spot re-read on nfl.com this session - all agree |
+| Verified results feed | **`results-feed.html`**: 7548 games in three never-mixed tiers (43 official game-centre reads, 7383 pinned-archive finals, 122 scheduled with blank scores), 0 source conflicts, and 18 rows spot re-read on nfl.com this session - all agree |
 | Origination order (side then total then moneyline) | Already the code order; now asserted by `tests/test_origination_order.py` (source order + output columns) |
 | Fair / market / difference columns | `lines.html` publishes all three per market (spread and total in points, moneyline in price and probability points); the test pins the columns and their arithmetic |
 | Signal vs staking on the leaderboard | `strategies.html` prints Units staked and Mean signal edge beside blank ROI: a lucky staking run cannot be read as signal |
@@ -321,6 +321,41 @@ information and answers that must be resolved before a decision, plus the sugges
 that discover the missing information. It does not change any research number: the
 verdict stays **0 of 18 strategies validated, no reward**, and gate G1 (executable quote
 provenance) still fails for every candidate.
+
+
+## Update — 2026-11-20 (`arena/79a986b7-korea1`): every frozen ticket can now be graded
+
+The forward test held frozen picks that could not be settled, so no accuracy, no ROI, no Brier
+score and no closing-line value existed for them. That is now closed for Week 10, and closed by
+two official documents rather than one.
+
+| What | Count | How it is known | Official source |
+|---|---|---|---|
+| Week 10 finals published | **14 of 14** | one row per fixture, each certified by two documents | [week 10 scores page](https://www.nfl.com/scores/2026/week-10) |
+| Fixtures where both documents agree | **14 of 14** | the league's scores page and the league's own Game Book print the same final; a disagreement writes nothing and fails the build | [the comparison table](assets/data/week10_finals_2026_11_20.csv) |
+| Frozen tickets settled against an official final | **65 of 65** | the grading engine labels a ticket `OFFICIAL` only from a recorded official final | [forward test](forward.html) |
+| Tickets that finished ahead | 32 of 65 | win/loss only; **not** evidence of skill | [NFL scores](https://www.nfl.com/scores/2026/week-10) |
+| Net units across settled tickets | +3.110 | research arithmetic at the frozen prices; the prices are not authenticated quotes | [competition rules](competition.html) |
+| Strategies validated / rewarded | **0 of 18 / none** | sample horizons are not reached; no gate is waived | [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
+
+**How a final is accepted.** `pipeline/finals_2026_11_20.py` reads the league's scores page and the
+league's own Game Book — the same PDF bytes the scheduled capture committed, checked by SHA-256 —
+and writes a row only when the club identities and both scores agree. It raises, and writes nothing,
+if a fixture is missing from either document, if a club name does not match, if a score disagrees,
+or if a score already in the file would be overwritten. Eleven adversarial tests pin those rules,
+including a mutation test that flips one point and asserts the build refuses the row.
+
+**What this does not mean.** 65 settled tickets at 14 games is one week. It is a starting record,
+not a result: no p-value, no ROI claim and no verdict is published from it, and the win/loss line
+above is arithmetic, not skill. The staking and signal columns stay separate on every surface so a
+lucky run cannot be read as a good signal.
+
+**A process defect repaired on the way.** The committed tree was not a fixed point of its own
+generators: a plain `make build` on this base modified 15 tracked files, and `tests/check_rebuild.py`
+was never run by the verify workflow, so the drift was invisible. One source was the reserve-list
+capture workflow, which committed a snapshot but not the two derived files that read it. The verify
+workflow now builds twice (self-referential counts), runs `check_rebuild.py`, and fails on any
+residual `git diff`; both capture workflows do the same before they commit.
 
 ## Material audit corrections
 
