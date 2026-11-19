@@ -203,7 +203,9 @@ def bal_qbs(d: pd.DataFrame) -> str:
 def facts() -> dict:
     inj = pd.read_csv(AV / "injuries.csv", dtype=str, keep_default_na=False)
     latest = pd.read_csv(AV / "depth_charts.csv", dtype=str, keep_default_na=False)
-    res_cap = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    # Pinned: the F-48 narrative compares against the 2026-11-18 capture, not the rolling latest.csv.
+    res_cap = pd.read_csv(AV / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+                          dtype=str, keep_default_na=False)
     sea5 = latest[(latest.team == "SEA") & (latest.unit == "Offense") & (latest.slot == "5")]
     f = dict(
         injury_rows=len(inj), injury_clubs=int(inj.team.nunique()),

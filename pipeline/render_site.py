@@ -1815,6 +1815,21 @@ def _flagged_2026_11_15_section() -> str:
                     caption="Session findings with an official source") + listing + "</section>")
 
 
+def _flagged_2026_11_19_section() -> str:
+    """Session arena/db0e98e2-korea1 (2026-11-19): reserve-page row retention and the latest.csv repair."""
+    fl = _read_integration("flagged_2026_11_19.csv")
+    if fl is None or not len(fl):
+        return ""
+    rows = [[e(r.id), e(r.severity),
+             e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+             src_link(r.source_url, r.source_label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the 2026-11-19 session</h2>"
+            "<p>The live NFL.com November reserve page was re-read and compared row by row with the retained "
+            "captures. The read and the comparison are in <code>data/live/spotcheck_2026_11_19/</code>.</p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                    caption=f"{len(rows)} findings from the 2026-11-19 session") + "</section>")
+
+
 def _flagged_2026_11_18b_section() -> str:
     """NR2/NR3 (arena/ceddf8d8-korea1): findings generated from the re-derived claim values.
 
