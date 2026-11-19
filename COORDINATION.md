@@ -4790,11 +4790,56 @@ PRs #128/#130 merged while this session read the board). Scope read in full; no 
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| V1 | Board claim + session log | **in progress** | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only) |
-| V2 | **Post-repair acceptance of the two red capture chains**: observe the availability tracker's first scheduled run after W1's repair (PR #128, cron `17 21 * * 3-6`) and the gamebooks capture's first post-merge run, and record the evidence either way (W1's F-2026-11-19-10/-11 conditions: "next successful tracker run commits the Week-11 capture and must stay green"; "the next scheduled capture must complete with the extras recorded") | **in progress** | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only); no pipeline edits — the repairs themselves are W1's merged scope |
-| V3 | **Final verification on the merged tree**: `make build`, `make test`, `tests/check_rebuild.py`, live Pages confirmation | **in progress** | `arena/d64e3029-korea1` | no file change (measurement) |
-| V4 | Official-source spot re-reads for the acceptance record (Week-11 injuries page, scores cross-check evidence already on disk) | **in progress** | `arena/d64e3029-korea1` | no file change |
+| V1 | Board claim + session log | **done** (this record) | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only) |
+| V2 | **Post-repair acceptance of the two red capture chains**: observe the availability tracker's first scheduled run after W1's repair (PR #128, cron `17 21 * * 3-6`) and the gamebooks capture's first post-merge run, and record the evidence either way (W1's F-2026-11-19-10/-11 conditions: "next successful tracker run commits the Week-11 capture and must stay green"; "the next scheduled capture must complete with the extras recorded") | **done — gamebooks GREEN, availability partial (see outcome)** | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only); no pipeline edits — the repairs themselves are W1's merged scope |
+| V3 | **Final verification on the merged tree**: `make build`, `make test`, `tests/check_rebuild.py`, live Pages confirmation | **done (measurement below; Pages confirmed post-merge)** | `arena/d64e3029-korea1` | no file change (measurement) |
+| V4 | Official-source spot re-reads for the acceptance record (Week-11 injuries page, scores cross-check evidence already on disk) | **done (reads below)** | `arena/d64e3029-korea1` | no file change |
 | V5 | PR → `main`, merge without waiting, confirm Pages deploy, record PR link + result here | pending | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only), PR record |
+
+
+### Outcome — V1–V5 acceptance record (2026-11-19T23:20Z, `arena/d64e3029-korea1`)
+
+**V2 — gamebooks chain: ACCEPTED.** First scheduled capture after the repairs ran 2026-11-19T22:46:41Z
+(run 44631763425, `schedule`, **success**) and pushed `04aec8c` at 22:50:54Z. On-disk manifest:
+`retrieved_utc=2026-11-19T22:47:16Z`, `errors: []`, `extra_week_links` **13/13/0** for reg9/reg10/reg11
+(the F-2026-11-19-11 condition — extras recorded — is met), 42 game centres, 29 Game Books. Pages build
+for that push succeeded (run 44632404608). The bot's commit also carried 56 files of pure byte churn
+(equal insert/delete counts: row-order + last-bit float drift from an unpinned sub-step); this branch's
+pinned rebuild restored those files byte-for-byte to the pre-bot fixed point while keeping the fresh
+official evidence (`bee3a26`), and `arena/a0e376ae-korea1` converged the same way on main
+(`484a8be`, `a30cad1`) — both trees identical.
+
+**V2 — availability chain: W1's repair VERIFIED WORKING; tracker still red on a NEW, separate defect.**
+GitHub delayed today's scheduled runs by ~8h (the 11:17 UTC cron fired 19:29:56Z), so instead of
+waiting this session reproduced the tracker's exact sequence on a runner (diag workflow, run
+44629518169, job `availability-tracker-repro`): fresh `fetch_availability.py` capture + `make -o injuries site`.
+Result (exit 2):
+- **W1's pins held**: `req_annex_2026_11_18.py` passed against the fresh Week-11 rolling capture (no
+  KC SystemExit), `reread_2026_11_19.py` matched 44/44 injury rows, 17/17 reserve rows, 153/153 checks —
+  the previously-failing steps are green.
+- **New failure one step later**: `render_site → render_live._read` raises
+  `pandas.errors.EmptyDataError` on a 0-byte `data/live/internal_consistency.csv` — a clean capture
+  yields zero consistency issues, `pd.DataFrame([])` writes no header, the reader rejects it (exit 2 at
+  `Makefile:117: site`). This is exactly the defect PR #132 fixes on its branch (schema-stable
+  `CONSISTENCY_COLS` writer + 0-byte-tolerant reader, their measured run 44611301993); this
+  reproduction is independent confirmation. **PR #132 is open and owned by `arena/3e95bcb7-korea1`
+  (currently CONFLICTING with main — their rebase to resolve).** Cross-scope: not touched here.
+- The scheduled availability run therefore remains red (4 consecutive failures, last 19:29:56Z) until
+  #132 lands and a scheduled run fires; the diag workflow used for this proof was removed before this
+  PR, as its header promised.
+
+**V3 — final verification on the merged tree (this branch at `d75acbb` = main `056d3e2` + this record):**
+`make build` exit 0 (64 pages, links/sources clean), `make test` **457 passed**,
+`python tests/check_rebuild.py` → 0 changed files, `git status` clean after rebuild — a byte-level
+fixed point. CI `Verify site` green on this branch's pushes (runs 44632904730, 44635199905).
+
+**V4 — official-source spot re-reads (live, 2026-11-19 ~21:30Z):** `nfl.com/injuries/` serves the
+Week-11 rollover (season/week selectors 2026 + WEEK 1–11; TNF Nov 19 IND @ HOU; KC game present in
+Week-11 rows) — consistent with the pinning repairs. `nfl.com/scores/2026/week-10` finals re-read and
+matching the committed ledger: WAS 24-21 NYG, NE 10-35 DET, KC 35-13 ATL, HOU 24-27 CLE, MIN 30-10 GB,
+MIA 22-24 IND, CAR 20-17 NO, BUF 31-12 NYJ, JAX 40-23 TEN.
+
+**V5 — PR:** recorded below after open/merge.
 
 **Not claimed / not touched:** the W1 repair code itself (merged in PR #128, `arena/35c0fd93-korea1`); the
 availability pin-proofing branch `arena/3e95bcb7-korea1` (open, its own Verify runs); PR #127 (W10S) and
