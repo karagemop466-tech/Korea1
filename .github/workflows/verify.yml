@@ -54,7 +54,37 @@ jobs:
       - name: The committed tree must be a fixed point of its own generators
         run: python tests/check_rebuild.py
       - name: A rebuild must change nothing at all
+        # Broader than check_rebuild.py on purpose: that script compares the tables under assets/
+        # and data/processed/, not every tracked file. Evidence is written to a file and uploaded
+        # (next step) BEFORE the exit, because a runner's log is not always readable by a reviewer.
         run: |
-          git diff --quiet && echo "no drift: committed outputs equal a fresh build"
-          git diff --stat
-          git diff --quiet
+          set +e
+          { echo "## git status --porcelain"; git status --porcelain;
+            echo; echo "## git diff --stat"; git diff --stat;
+            echo; echo "## git diff"; git diff; } > /tmp/drift.txt 2>&1
+          if git diff --quiet; then
+            echo "no drift: a fresh build reproduces the committed tree byte for byte"
+            exit 0
+          fi
+          echo "::error::a fresh build changed committed files (see the drift-evidence artifact):"
+          cat /tmp/drift.txt
+          exit 1
+      - name: Upload the drift evidence
+        # So a red run is diagnosable from the API alone: the file list and the diff, not a log
+        # that may be unreachable. Downloaded with `gh run download <id> -n drift-evidence`.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-evidence
+          path: /tmp/drift.txt
+          if-no-files-found: warn
+      - name: Report (do not fail on) untracked build artefacts
+        if: always()
+        run: |
+          git status --porcelain | awk '$1=="??"' > /tmp/untracked.txt
+          if [ -s /tmp/untracked.txt ]; then
+            echo "::warning::a fresh build wrote untracked files (they are not published and do not block):"
+            cat /tmp/untracked.txt
+          else
+            echo "no untracked artefacts"
+          fi

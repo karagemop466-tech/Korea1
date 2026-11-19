@@ -181,6 +181,34 @@ def render() -> dict[str, str]:
                      f"{_num(c.abs_err_total)}). A closing-market comparison is not printed: the closing value is a "
                      f"community-mirror figure, so under the verification rule it stays blank until an official or "
                      f"operator-timestamped close exists. One game settles nothing either way.</p>")
+    # FI3 (arena/79a986b7-korea1, 2026-11-20): every certified final, not only the first one.
+    # Before this block the page showed one settled game while reporting 65 of 65 tickets settled,
+    # because no other Week 10 final existed. Each final below is certified by two official
+    # documents in data/forward/week10_finals_2026_11_20.csv.
+    settled = cards[cards.status == "OFFICIAL"] if len(cards) else cards
+    if len(settled) > 1:
+        srows = []
+        for c in settled.to_dict("records"):
+            srows.append([
+                e(c["game_id"]), e(f"{c['away_team']} at {c['home_team']}"),
+                f"{_num(c['fair_spread'])} / {_num(c['fair_total'])}",
+                f"{c['away_team']} {_int(c['official_away_score'])} – {c['home_team']} {_int(c['official_home_score'])}",
+                _num(c["abs_err_spread"]), _num(c["abs_err_total"]),
+                src_link(c["official_url"], "NFL.com game centre"),
+            ])
+        body += ("<h3>Every certified final on the record</h3>"
+                 "<p>Each row's final is printed by <strong>two</strong> official documents — the league's "
+                 f"{src_link('https://www.nfl.com/scores/2026/week-10', 'week-10 scores page')} and the "
+                 "league's own Game Book, captured and hash-pinned in this repository — and the comparison "
+                 "is published as <a href=\"assets/data/week10_finals_2026_11_20.csv\">"
+                 "week10_finals_2026_11_20.csv</a>. A disagreement between the two would have written "
+                 "nothing and failed the build.</p>")
+        body += table(srows, ["Game", "Matchup", "Originated spread / total", "Official final",
+                              "Spread abs. error", "Total abs. error", "Official source"],
+                      caption="All settled games: originated line against the official final")
+        body += ("<p class=\"muted\">Read this as a scoring record, not a result. Absolute error on a "
+                 "handful of games measures nothing on its own; the sample gates (150 single or 60 parlay "
+                 "tickets over 30 weeks) are what decide a verdict, and none is reached.</p>")
     body += "</section>"
 
     # ---------------------------------------------------------------- fair vs market, separately (U4)

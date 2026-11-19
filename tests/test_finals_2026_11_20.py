@@ -164,3 +164,19 @@ def test_the_finals_agree_with_the_third_result_surface_on_the_site():
         assert r["game_id"] in seen, f"{r['game_id']}: certified here, absent from the results feed"
         assert (int(r["away_score"]), int(r["home_score"])) == seen[r["game_id"]], (
             f"{r['game_id']}: two published tables disagree")
+
+
+# ------------------------------------------------------------------ the page must show them
+def test_the_published_forward_page_shows_every_settled_game():
+    """The defect this guards: the page reported 65 of 65 settled while printing one settled game.
+
+    A reader could not check the claim against the page, which is the failure mode this project
+    exists to avoid. The rendered HTML must name each settled game and its score.
+    """
+    html = (ROOT / "forward.html").read_text(encoding="utf-8", errors="replace")
+    picks = pd.read_csv(FWD / "graded_picks.csv", dtype=str, keep_default_na=False)
+    games = sorted({g for row in picks[picks.n_legs == "1"].game_ids for g in [row]})
+    assert "Every certified final on the record" in html, (
+        "the forward page must print a table of every settled game, not only the first")
+    for gid in games:
+        assert gid in html, f"{gid} is settled but not printed on forward.html"

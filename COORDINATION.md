@@ -4799,3 +4799,39 @@ PRs #128/#130 merged while this session read the board). Scope read in full; no 
 **Not claimed / not touched:** the W1 repair code itself (merged in PR #128, `arena/35c0fd93-korea1`); the
 availability pin-proofing branch `arena/3e95bcb7-korea1` (open, its own Verify runs); PR #127 (W10S) and
 PR #129 (REQ-62) and every other open PR (other sessions'); any `pipeline/`, `data/` or generated HTML edit.
+
+#### Release record — PRs #130, #131, #134 (all merged, main green, Pages deployed)
+
+| PR | Merge commit | Merged | CI |
+|---|---|---|---|
+| [#130](https://github.com/karagemop466-tech/Korea1/pull/130) — Week 10 finals certified by two official documents; reproducible build | `38cb774` | 2026-11-19T21:09:42Z | `verify` **pass** (run [44614912672](https://github.com/karagemop466-tech/Korea1/actions/runs/44614912672)) |
+| [#131](https://github.com/karagemop466-tech/Korea1/pull/131) — `forward.html` prints every certified final, not only the first | `7b3169b` | 2026-11-19T22:00:09Z | `verify` **pass** (run [44623267491](https://github.com/karagemop466-tech/Korea1/actions/runs/44623267491)) |
+| [#134](https://github.com/karagemop466-tech/Korea1/pull/134) — make the fixed-point gate diagnosable | `57c05cb` | 2026-11-19T22:26:08Z | `verify` **pass** (run [44627451424](https://github.com/karagemop466-tech/Korea1/actions/runs/44627451424)) |
+
+**Final state of `main`: `57c05cb` — `Verify site` success, `pages build and deployment` success, Pages API
+`status: built`, source `main:/`.** Live read-back of `executive-summary.html` and `forward.html` on the
+published site confirms the new blocks are served.
+
+**Two failures I caused, and what they taught (recorded rather than hidden).**
+
+1. **PR #131's first CI run went red on the strict gate I had just added.** The guard tested
+   `git status --porcelain`, which counts **untracked** files: a fresh clone left
+   `data/forward/snapshots/3af8ab79cc74.json` behind (the ledger's snapshot recorder writes it when
+   `forward_grade.py` runs). It was *dust, not drift* — `check_rebuild.py` and `git diff` both passed.
+   The guard now fails on `git diff --exit-code` only, and reports untracked files in a separate
+   non-blocking step that names them.
+2. **`main` then went red at `7b3169b` on that same strict step, and stayed red.** This sandbox cannot
+   read Actions logs (`results-receiver.actions.githubusercontent.com` is outside the egress
+   allowlist), and I could **not** reproduce it on a fresh clone of `7b3169b` (`make build` ×2 →
+   `make test` → `make build`: no tracked drift, no untracked files). Rather than guess, #134 makes the
+   failure self-describing: the step writes `git status` + the full `git diff` and uploads it as the
+   `drift-evidence` artifact before exiting. `main` is green at `57c05cb`; if the step fails again, the
+   artifact names the files and the next session does not have to reproduce blind.
+
+**A correction to this section's own earlier claim.** Before PR #131, `forward.html` reported "65 of 65
+settled" while printing exactly one settled game. The claim was true and the page could not show it.
+That is now fixed and a test fails if a settled game is missing from the page — a good example of the
+rule this project runs on: a number is not published unless the artefact behind it is visible.
+
+**Board status: FI1–FI5 done.** No strategy is validated, no gate waived, no reward awarded, and no
+research number was moved by any of these three PRs.
