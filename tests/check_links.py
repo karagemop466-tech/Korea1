@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # Updated by the integration session arena/ea02c4fb-korea1: pipeline/render_site.py replaced the
 # original nine pages with its own ten; the list below is the page set that actually ships, plus the
 # annex pages in lab/. Every href on these pages (including the nav entry to lab/) is resolved.
-PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "executive-summary.html",
+PAGES = ["week-11.html", "suggestions-hub.html", "decisions.html", "suggestions.html", "lineups.html", "index.html", "executive-summary.html",
          "lines.html", "price-snapshot.html", "price-archive.html", "results-feed.html", "strategies.html", "validation.html", "correlations.html", "props.html",
          "methodology.html", "requirements.html", "verification.html", "flagged.html", "sources.html",
          "audit.html", "availability.html", "decision-board.html", "open-questions.html",

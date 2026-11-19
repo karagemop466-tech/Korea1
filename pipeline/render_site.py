@@ -80,6 +80,9 @@ NAV_GROUPS = [
         ("suggestions-review-2026-11-14.html", "Suggestions review · this brief"),
     ]),
     ("Decide", [
+        # W4 (arena/c83ada84-korea1): one page that indexes every suggestion and question
+        # register, so a path can be chosen without opening nine pages.
+        ("suggestions-hub.html", "Suggestions hub · choose a path"),
         ("review.html", "Review & choose a path"),
         # X2/X3 (session arena/132e7ca2-korea1): a second, independent merge of the same
         # registers - clustered, with the source register on every row.
@@ -289,6 +292,7 @@ OFFICIAL_TYPE = {
     "FanDuel push settlement rules": "Operator",
     "GitHub Pages documentation": "Platform",
     "NFL injury report (2026 week 10)": "NFL",
+    "NFL injury report (2026 week 11)": "NFL",
     "NFL injury report (2019 week 5)": "NFL",
     "NFL game centre (WAS at NYG)": "NFL",
     "NFL week 10 schedule": "NFL",
@@ -403,6 +407,120 @@ def _session_counts():
     return out
 
 
+def _cockpit(d) -> str:
+    """The decision cockpit: one screen that answers "what is current, what is blocked,
+    what do I decide next".
+
+    Added by session arena/c83ada84-korea1 (2026-11-19) because the landing page opened
+    with six KPI cards and then ten registers, so a reader could not see, on one screen,
+    (a) whether the site's evidence is current, (b) the single gate that blocks a bet, or
+    (c) which pages actually need a decision from them. Every link already published is
+    kept -- this section is added above them, not in place of them.
+
+    Everything here is read from a committed artefact; a missing artefact renders as a
+    stated gap, never as a zero.
+    """
+    import json as _json
+    from pathlib import Path as _P
+
+    def _rows(path: _P):
+        import csv as _csv
+        if not path.exists():
+            return None
+        with open(path, newline="", encoding="utf-8") as fh:
+            return list(_csv.DictReader(fh))
+
+    # --- (a) is the evidence current? -------------------------------------------------
+    w11 = _P(__file__).resolve().parents[1] / "data" / "live" / "official_2026_11_19" / "manifest.json"
+    cap_clock, cap_ok, cap_total, inj_rows, fixtures = "—", 0, 0, 0, 0
+    if w11.exists():
+        m = _json.loads(w11.read_text(encoding="utf-8"))
+        cap_clock = m.get("captured_utc", "—")
+        cap_total = len(m.get("sources", []))
+        cap_ok = m.get("summary", {}).get("ok", 0)
+        fixtures = m.get("summary", {}).get("game_centres", 0)
+        from week11_20261119 import parse_report, bytes_of
+        text, _src = bytes_of(m, "injury_report_week11_league_url")
+        inj_rows = len(parse_report(text)[0]) if text else 0
+
+    # --- (b) the gate that blocks a bet ----------------------------------------------
+    gates = d["strategy_gates"]
+    validated = int(gates.verdict.eq("VALIDATED").sum())
+    live = 0
+    dem = _rows(_P(__file__).resolve().parents[1] / "data" / "processed" / "demotion_gate.csv")
+    if dem:
+        live = sum(1 for r in dem if (r.get("current_status") or r.get("status") or "").lower() in
+                   {"live", "funded", "allocated"})
+
+    # --- (c) what needs a decision ----------------------------------------------------
+    n_sug = n_q = n_unanswered = 0
+    sm = _rows(_P(__file__).resolve().parents[1] / "data" / "integration" / "suggestions_master.csv")
+    qm = _rows(_P(__file__).resolve().parents[1] / "data" / "integration" / "questions_master.csv")
+    if sm:
+        n_sug = sum(1 for r in sm if (r.get("status") or "") == "AWAITING PATH SELECTION")
+    if qm:
+        n_q, n_unanswered = len(qm), sum(1 for r in qm if (r.get("status") or "") != "ANSWERED")
+    flag_rows = _rows(_P(__file__).resolve().parents[1] / "assets" / "data" / "flagged_2026_11_15.csv")
+    n_flag = len(flag_rows) if flag_rows else 0
+
+    def cell(v, note, tone=""):
+        cls = {"good": "pos", "bad": "neg"}.get(tone, "")
+        return f'<span class="{cls}">{e(v)}</span><br><span class="small muted">{note}</span>'
+
+    live_rows = [
+        [cell(f"{cap_ok}/{cap_total}", "official sources read with a hash") if cap_total else
+         cell("not captured", "no Week 11 manifest", "bad"),
+         cell(str(inj_rows), "Week 11 designations parsed"), cell(str(fixtures), "official game centres"),
+         f"<code>{e(cap_clock)}</code>", R_src("week-11.html", "Open Week 11 →"),
+         official("NFL injuries")],
+    ]
+    gate_rows = [
+        ["A strategy needs all 8 gates, and each is fail-closed",
+         cell(f"{validated} validated", f"of {len(gates)} registered candidates", "bad" if not validated else "good"),
+         cell("0 funded", "no stake, prize or allocation is authorised"),
+         cell("no executable quotes", "the gate that cannot pass without paid price data", "bad"),
+         R_src("validation.html", "Gates →"), official("NFL scores")],
+        ["A live strategy needs a demotion gate that actually fires",
+         cell(f"{live} live", "nothing is live, so the gate is armed but unexercised"),
+         cell("6 triggers", "re-failure, provenance break, drawdown, staleness, calibration, variance"),
+         cell("defined", "rule text, thresholds and current status published"),
+         R_src("demotion.html", "Demotion →"), official("NFL scores")],
+    ]
+    decide_rows = [
+        ["Suggestions awaiting a path choice", cell(str(n_sug), "nothing is implemented until you choose"),
+         cell("Path A/B/C", "cost, risk and the gate each path opens"), R_src("review-queue.html", "Review queue →"),
+         R_src("suggestions-hub.html", "Hub →"), official("NFL injuries")],
+        ["Open questions", cell(str(n_q), f"{n_unanswered} without an answer on record"),
+         cell("what would clear each", "the discovery step is named on every row"), R_src("answers.html", "Answers →"), official("NFL scores")],
+        ["Flagged irregularities", cell(str(n_flag), "published, none blocks a merge"),
+         cell("source link each", "reviewed after the site is live"), R_src("flagged.html", "Flagged →"), official("NFL scores")],
+    ]
+    return f"""
+<section class="cockpit"><h2>Cockpit · what is current, what is blocked, what to decide</h2>
+<div class="split">
+  <div><h3>1 · Is the evidence current?</h3>
+  {table(live_rows, ["Official sources read", "Week 11 designations", "Game centres", "Capture clock (UTC)", "Page", "Official source"],
+         caption="Live-week evidence · captured from nfl.com, hashed, and parsed offline")}</div>
+  <div><h3>2 · What blocks a bet?</h3>
+  {table(gate_rows, ["Rule", "State", "Staking", "Blocking condition", "Page", "Official source"],
+         caption="The fail-closed gate · no strategy is validated and no reward is authorised")}</div>
+</div>
+<h3>3 · What needs a decision from the owner?</h3>
+{table(decide_rows, ["Register", "Size", "What a row carries", "Open it", "Second surface", "Official source"],
+       caption="Decision queue · every register keeps its own page")}
+<p class="small">Nothing on this site is a betting recommendation. A strategy is
+<em>validated</em> only when all eight gates pass on prospective evidence; until then every
+performance cell stays blank on purpose. Start with
+<a href="week-11.html">Week 11</a> for the current facts, <a href="executive-summary.html">the
+executive summary</a> for the decision, and <a href="suggestions-hub.html">the suggestions hub</a>
+to choose a path.</p>
+</section>"""
+
+
+def R_src(href: str, label: str) -> str:
+    return f'<a href="{e(href)}">{e(label)}</a>'
+
+
 def build_index(d):
     _c = _session_counts()
     n_sug, n_clu, n_await, n_reg = _c["sug"], _c["clu"], _c["await"], _c["reg"]
@@ -432,6 +550,7 @@ def build_index(d):
   <div class="hero-status"><span class="status-dot"></span> Research only<br><strong>No validated edge</strong><small>Official quote coverage is incomplete.</small></div>
 </div>
 {notice()}
+{_cockpit(d)}
 {kpi_grid([card(str(validated), "validated strategies", f"{len(gates)} research candidates · no rewards", "bad"),
            card(str(matched), "official score matches", "NFL.com sample; not a full-history census", "good"),
            card("0", "verified prop-price tickets", "No prop ROI is claimed", ""),

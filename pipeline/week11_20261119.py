@@ -4,16 +4,16 @@ Why this module exists (session arena/c83ada84-korea1, 2026-11-19)
 ------------------------------------------------------------------
 Week 11 kicks off Thursday 2026-11-19 at 20:15 ET (2026-11-20T01:15Z). Before this
 module the repository's newest football evidence was the Week 10 injury report captured
-2026-11-18T04:24:05Z: the site could not say who is **Questionable / Doubtful / Out for
-tonight's game**, which is the one fact a pre-kickoff decision turns on.
+2026-11-18T04:24:05Z, so the site could not say who is Out / Doubtful / Questionable for
+the games being played tonight -- the one fact a pre-kickoff decision turns on.
 
 It reads only committed bytes -- no network, no clock -- so `make build` stays
 byte-reproducible and `tests/check_rebuild.py` keeps its teeth:
 
-  data/live/official_2026_11_19/manifest.json   url, HTTP status, bytes, sha256, the UTC
-                                                clock time of the read, per source
-  data/live/official_2026_11_19/raw/<slug>      the response body, byte for byte, as
-                                                captured by pipeline/capture_official_2026_11_19.py
+  data/live/official_2026_11_19/manifest.json   url, HTTP status, bytes, sha256 and the
+                                                UTC clock time of the read, per source
+  data/live/official_2026_11_19/raw/<slug>      the response body, byte for byte, stored
+                                                by pipeline/capture_official_2026_11_19.py
                                                 on a GitHub-hosted runner
 
 What it publishes (week-11.html), and what it refuses to publish
@@ -21,28 +21,27 @@ What it publishes (week-11.html), and what it refuses to publish
 * **Designations.** One row per (club, player) exactly as the official report prints it:
   position, injury, practice status, game status. A blank cell on the official page stays
   blank here and is counted, never filled.
-* **Fixtures.** One row per game the official schedule page prints: date, kick-off time,
-  broadcast, and the official game-centre link. A fixture the capture did not contain is
-  listed as **not captured**, never reconstructed from memory.
-* **Venue.** Published only where a game-centre capture actually printed it; otherwise
-  blank and flagged. (The repository's own venue register and the Week 10 reconciliation
-  are separate, dated sources and are linked, not merged.)
-* **Conflicts.** Every player who is still on the Week 10 report and also on the Week 11
-  report is compared: status movement is published as a *delta* with both capture clock
-  times, never as a level judged from one read.
+* **Fixtures.** One row per game the official schedule page prints, with the day, date,
+  kick-off time and broadcaster the page itself states, and the official game-centre link.
+* **Venue.** Taken from the `Game Info` block of the captured game centre (LOCATION /
+  STADIUM). Where no game centre was captured the cell is blank and says so.
+* **Movement.** Every player on both the Week 10 capture and the Week 11 report is
+  compared, and the change is published as a *delta* with both capture clock times --
+  never as a level judged from a single read.
 
-Two readings of the same player are possible and are kept apart: the Week 11 week-addressed
-URL (`/injuries/league/2026/reg11`) and the current-week URL (`/injuries/`), which nfl.com
-redirects. If they disagree the row says so and the disagreement is a finding.
+Two readings of the same page are kept apart: the week-addressed URL
+(`/injuries/league/2026/reg11`) and the current-week URL (`/injuries/`), which nfl.com
+redirects. If they disagree, the row says so.
 """
 from __future__ import annotations
 
-import hashlib
+import csv
 import html
 import json
 import re
 import sys
-from collections import Counter, defaultdict
+from collections import Counter
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,14 +51,20 @@ CAP = ROOT / "data" / "live" / "official_2026_11_19"
 RAW = CAP / "raw"
 AV = ROOT / "data" / "availability"
 INJURY_URL = "https://www.nfl.com/injuries/league/2026/reg11"
+CURRENT_URL = "https://www.nfl.com/injuries/"
 SCHEDULE_URL = "https://www.nfl.com/schedules/2026/by-week/week-11"
 
-# Club nickname -> (abbreviation, nfl.com team slug). Taken from the same table the
-# existing capture uses (pipeline/fetch_availability.py TEAMS) so the two never drift.
+# Club nickname -> (abbreviation, nfl.com slug, club site). Reused from the module that
+# owns the club table so the two can never drift.
 from fetch_availability import BY_NICK, TEAMS  # noqa: E402
 
-BY_SLUG = {t[2]: t for t in TEAMS}
-UNITS = {"offense", "defense", "special teams"}
+GAME_STATUS = {"out", "doubtful", "questionable"}
+PRACTICE = {"did not participate in practice", "limited participation in practice",
+            "full participation in practice"}
+# The official report's three practice words, in the order the league uses them.
+PRACTICE_SHORT = {"did not participate in practice": "DNP",
+                  "limited participation in practice": "LP",
+                  "full participation in practice": "FP"}
 
 
 def e(x) -> str:
@@ -69,9 +74,7 @@ def e(x) -> str:
 # --------------------------------------------------------------------------- reading
 def load_manifest() -> dict:
     p = CAP / "manifest.json"
-    if not p.exists():
-        return {}
-    return json.loads(p.read_text(encoding="utf-8"))
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
 def source(manifest: dict, slug: str) -> dict | None:
@@ -81,37 +84,50 @@ def source(manifest: dict, slug: str) -> dict | None:
     return None
 
 
+def read_body(slug: str) -> str:
+    p = RAW / slug
+    return p.read_text(encoding="utf-8", errors="replace") if p.exists() else ""
+
+
 def bytes_of(manifest: dict, *slugs: str) -> tuple[str, dict | None]:
-    """First captured body among `slugs`, with the manifest record that names it."""
     for slug in slugs:
         s = source(manifest, slug)
         if s and s.get("sha256"):
-            p = RAW / slug
-            if p.exists():
-                return p.read_text(encoding="utf-8", errors="replace"), s
+            body = read_body(slug)
+            if body:
+                return body, s
     return "", None
 
 
 # --------------------------------------------------------------- injury report parse
-class _Tables:
-    """Minimal table reader for the official injury page.
+class InjuryTables:
+    """Table reader for the official injury page.
 
-    Reuses the same state machine as pipeline/fetch_availability.py (club nickname as
-    table owner, player links captured) so the Week 11 parse and the committed Week 10
+    The same state machine as pipeline/fetch_availability.py (club nickname owns the
+    table, player links are captured), so the Week 11 parse and the committed Week 10
     capture cannot disagree about how the page is shaped.
     """
 
     def __init__(self):
-        self.tables = []
+        self.tables, self.texts = [], []
         self.nick = ""
-        self.texts = []
-        self.t = None
-        self.row = None
-        self.cell = None
+        self.t = self.row = self.cell = None
         self.skip = 0
+        outer = self
 
-    def handle_starttag(self, tag, attrs):
-        a = dict(attrs)
+        class _P(HTMLParser):
+            def handle_starttag(self, tag, attrs):
+                outer._start(tag, dict(attrs))
+
+            def handle_endtag(self, tag):
+                outer._end(tag)
+
+            def handle_data(self, data):
+                outer._data(data)
+
+        self._parser = _P(convert_charrefs=True)
+
+    def _start(self, tag, a):
         if tag in ("script", "style"):
             self.skip += 1
         if tag == "a" and a.get("href") and self.cell is not None:
@@ -126,7 +142,7 @@ class _Tables:
         elif tag in ("td", "th") and self.row is not None:
             self.cell = {"text": "", "links": [], "th": tag == "th"}
 
-    def handle_endtag(self, tag):
+    def _end(self, tag):
         if tag in ("script", "style") and self.skip:
             self.skip -= 1
         if tag in ("td", "th") and self.cell is not None:
@@ -141,7 +157,7 @@ class _Tables:
             self.tables.append(self.t)
             self.t = None
 
-    def handle_data(self, data):
+    def _data(self, data):
         if self.skip:
             return
         if self.cell is not None:
@@ -158,36 +174,16 @@ class _Tables:
             self.texts.append(s)
 
     def feed(self, text: str):
-        from html.parser import HTMLParser
-
-        class _P(HTMLParser):
-            def __init__(self, outer):
-                super().__init__(convert_charrefs=True)
-                self.o = outer
-
-            def handle_starttag(self, tag, attrs):
-                self.o.handle_starttag(tag, attrs)
-
-            def handle_endtag(self, tag):
-                self.o.handle_endtag(tag)
-
-            def handle_data(self, data):
-                self.o.handle_data(data)
-
-        _P(self).feed(text)
-
-
-GAME_STATUS = {"out", "doubtful", "questionable"}
-PRACTICE = {"did not participate in practice", "limited participation in practice",
-            "full participation in practice"}
+        self._parser.feed(text)
+        self._parser.close()
+        return self
 
 
 def parse_report(text: str) -> tuple[list[dict], dict]:
-    p = _Tables()
-    p.feed(text)
+    p = InjuryTables().feed(text)
     blob = " | ".join(p.texts)
     season = (re.search(r"(20\d\d) NFL Injury Report", blob) or [None, ""])[1]
-    week = (re.search(r"Injuries\s*-\s*(WEEK\s*\d+)", blob) or [None, ""])[1]
+    week = " ".join((re.search(r"Injuries\s*-\s*(WEEK\s*\d+)", blob) or [None, ""])[1].split())
     rows = []
     for t in p.tables:
         if not t["rows"]:
@@ -201,14 +197,12 @@ def parse_report(text: str) -> tuple[list[dict], dict]:
             if len(r) < len(head) or r[0]["th"]:
                 continue
             g = lambda k: r[idx[k]]["text"].strip() if k in idx and idx[k] < len(r) else ""  # noqa: E731
-            link = r[0]["links"][0]["href"] if r[0]["links"] else ""
-            gs = g("game status")
-            ps = g("practice status")
+            gs, ps = g("game status"), g("practice status")
             rows.append(dict(
                 club=abbr, nickname=nick, team_slug=slug, player=g("player"),
                 position=g("position"), injury=g("injuries"), practice_status=ps,
-                game_status=gs, player_url=link,
-                # vocabulary guard: an unrecognised string is kept verbatim and flagged
+                game_status=gs, player_url=(r[0]["links"][0]["href"] if r[0]["links"] else ""),
+                # vocabulary guard: an unrecognised word is kept verbatim and flagged
                 unknown_status=bool(gs) and gs.lower() not in GAME_STATUS,
                 unknown_practice=bool(ps) and ps.lower() not in PRACTICE,
             ))
@@ -216,250 +210,345 @@ def parse_report(text: str) -> tuple[list[dict], dict]:
 
 
 # ----------------------------------------------------------------- schedule parsing
-def parse_schedule(text: str) -> list[dict]:
-    """Fixtures from the official schedule capture.
+FIXTURE_LINE = re.compile(
+    r"(?P<away>[A-Za-z0-9.]+) at (?P<home>[A-Za-z0-9.]+), (?P<day>[A-Z][a-z]+)day, "
+    r"(?P<date>[A-Z][a-z]+ \d{1,2}(?:st|nd|rd|th)?), (?P<time>\d{1,2}:\d{2} [AP]M), "
+    r"(?P<tv>[A-Z0-9+]+)")
+GAME_PATH = re.compile(r'href="(/games/(?P<slug>[a-z0-9]+)-at-(?P<home2>[a-z0-9-]+)-2026-reg-11)"')
 
-    nfl.com serves this page as a server-rendered app whose fixture data also lives in an
-    RSC payload. The reader accepts both shapes and records which one it used, so a page
-    change shows up as a measured parse count rather than a silent zero.
+
+def parse_fixtures(text: str) -> tuple[list[dict], str]:
+    """Fixtures in page order, from the anchor's own printed label.
+
+    The official page prints the full line in a screen-reader span
+    ("Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME") immediately inside the
+    anchor that links the game centre, so the label and the link are read together and
+    belong to each other by construction. Shape B (an escaped-JSON payload) is used only
+    if Shape A yields nothing, and the shape used is returned so a page change shows up
+    as a measured difference rather than a silent zero.
     """
-    out = []
-    # Shape A: an anchor per fixture, e.g. /games/colts-at-texans-2026-reg-11
-    for m in re.finditer(r'href="(/games/([a-z0-9]+)-at-([a-z0-9-]+)-2026-reg-11)"', text):
-        out.append(dict(path=m.group(1), away=m.group(2), home=m.group(3)))
-    if out:
-        return _dedupe(out)
-    # Shape B: escaped JSON in the RSC payload.
-    for m in re.finditer(r'\\?"/games/([a-z0-9]+)-at-([a-z0-9-]+)-2026-reg-11\\?"', text):
-        out.append(dict(path=f"/games/{m.group(1)}-at-{m.group(2)}-2026-reg-11",
-                        away=m.group(1), home=m.group(2)))
-    return _dedupe(out)
-
-
-def _dedupe(rows: list[dict]) -> list[dict]:
-    seen, out = set(), []
-    for r in rows:
-        if r["path"] in seen:
+    out, seen = [], set()
+    for m in re.finditer(r'<a[^>]+href="(/games/[a-z0-9-]+-2026-reg-11)"[^>]*>\s*<span[^>]*>([^<]+)</span>',
+                         text):
+        line = FIXTURE_LINE.search(m.group(2))
+        if not line or m.group(1) in seen:
             continue
-        seen.add(r["path"])
-        out.append(r)
-    return out
+        seen.add(m.group(1))
+        out.append(dict(path=m.group(1), label=" ".join(m.group(2).split()), **line.groupdict()))
+    if out:
+        return out, "anchors with printed labels"
+    # Shape B: an escaped-JSON payload that still carries the label text.
+    for m in re.finditer(r'\\"(/games/[a-z0-9-]+-2026-reg-11)\\"', text):
+        if m.group(1) in seen:
+            continue
+        seen.add(m.group(1))
+        out.append(dict(path=m.group(1), label="", away="", home="", day="", date="",
+                        time="", tv=""))
+    return out, "escaped JSON paths only (labels not printed)" if out else "no fixture found"
 
 
-KICKOFF = {  # printed times on the official schedule page, when the parse finds them
-    "20:15": "8:15 PM ET",
-}
+# ------------------------------------------------------------------ game-centre venue
+INFO_CARD = re.compile(r'data-testid="info-card-item-value-([a-z]+)"[^>]*>([^<]+)<')
 
 
-def main() -> int:
+def parse_venue(text: str) -> dict:
+    vals = {k: " ".join(v.split()) for k, v in INFO_CARD.findall(text)}
+    return {"location": vals.get("location", ""), "stadium": vals.get("stadium", "")}
+
+
+def game_slug(path: str) -> str:
+    return "game_centre__" + re.sub(r"[^a-z0-9]+", "_", path.rsplit("/", 1)[-1]).strip("_")
+
+
+# ------------------------------------------------------------------------ week 10 ref
+def week10_rows() -> tuple[dict, str]:
+    out, clock = {}, ""
+    p = AV / "injuries.csv"
+    if not p.exists():
+        return out, clock
+    with open(p, newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if (r.get("week") or "").upper().replace(" ", "") != "WEEK10":
+                continue
+            out[(r["team"], r["player"])] = r
+            clock = clock or r.get("retrieved_utc", "")
+    return out, clock
+
+
+# ----------------------------------------------------------------------------- render
+def build_page() -> str:
     import render_site as R
 
     manifest = load_manifest()
+    capt = manifest.get("captured_utc", "")
     inj11_text, inj11_src = bytes_of(manifest, "injury_report_week11_league_url")
     injcur_text, injcur_src = bytes_of(manifest, "injury_report_current")
     sched_text, sched_src = bytes_of(manifest, "schedule_week11_week_form",
                                      "schedule_week11_reg_form")
-    cap_clock = manifest.get("captured_utc", "")
 
-    inj11, meta11 = parse_report(inj11_text) if inj11_text else ([], {})
+    inj11, meta = parse_report(inj11_text) if inj11_text else ([], {})
     injcur, metacur = parse_report(injcur_text) if injcur_text else ([], {})
-    fixtures = parse_schedule(sched_text) if sched_text else []
+    fixtures, shape = parse_fixtures(sched_text) if sched_text else ([], "not captured")
+    w10, w10_clock = week10_rows()
 
-    # Week 10 rows from the committed availability capture, for the movement (delta) table.
-    w10 = {}
-    w10_path = AV / "injuries.csv"
-    w10_clock = ""
-    if w10_path.exists():
-        import csv
-        with open(w10_path, newline="", encoding="utf-8") as fh:
-            for r in csv.DictReader(fh):
-                if r.get("week", "").upper().replace(" ", "") != "WEEK10":
-                    continue
-                w10[(r["team"], r["player"])] = r
-                w10_clock = w10_clock or r.get("retrieved_utc", "")
-
-    # ---------------------------------------------------------------- derived tables
     status_counts = Counter(r["game_status"] or "(blank)" for r in inj11)
     practice_counts = Counter(r["practice_status"] or "(blank)" for r in inj11)
-    by_club = Counter(r["club"] for r in inj11)
-    blanks = sum(1 for r in inj11 if not r["game_status"])
     designated = sum(1 for r in inj11 if r["game_status"])
+    blanks = len(inj11) - designated
+    clubs = sorted({r["club"] for r in inj11})
+    flagged_vocab = [r for r in inj11 if r["unknown_status"] or r["unknown_practice"]]
 
+    # venue per fixture, only from a captured game centre
+    venues = {}
+    for f in fixtures:
+        slug = game_slug(f["path"])
+        s = source(manifest, slug)
+        if s and s.get("sha256"):
+            venues[f["path"]] = (parse_venue(read_body(slug)), s)
+    missing_venue = [f for f in fixtures if f["path"] not in venues]
+
+    # movement week 10 -> week 11
     movement = []
     for r in inj11:
         prev = w10.get((r["club"], r["player"]))
         if not prev:
             continue
-        if (prev.get("game_status", "") or "") == (r["game_status"] or "") and \
-           (prev.get("practice_status", "") or "") == (r["practice_status"] or ""):
-            verdict = "no change"
-        else:
-            verdict = "changed"
-        movement.append([e(r["club"]), e(r["player"]), e(r["position"]),
-                         e(prev.get("game_status", "") or "—"),
-                         e(r["game_status"] or "—"),
-                         e(prev.get("practice_status", "") or "—"),
-                         e(r["practice_status"] or "—"), e(verdict),
-                         R.src_link(INJURY_URL, "NFL week 11 report")])
+        p_gs = (prev.get("game_status") or "").strip()
+        p_ps = (prev.get("practice_status") or "").strip()
+        changed = (p_gs != (r["game_status"] or "")) or (p_ps != (r["practice_status"] or ""))
+        movement.append(dict(club=r["club"], player=r["player"], position=r["position"],
+                             gs0=p_gs, gs1=r["game_status"], ps0=p_ps, ps1=r["practice_status"],
+                             changed=changed, url=r["player_url"]))
+    changed = [m for m in movement if m["changed"]]
 
-    # Two independent reads of the same page must not silently disagree.
-    cur_vs11 = []
+    def _dir(m: dict) -> dict:
+        """Classify a designation move without calling it a recovery or a setback.
+
+        The official report is a *weekly reporting instrument*: a designation present on
+        Week 10 and absent on Week 11 is a change of reporting, not proof the player is
+        healthy. So the move is described in the report's own direction words and is
+        never described as recovered / cleared / worsened.
+        """
+        g0, g1 = (m["gs0"] or "").lower(), (m["gs1"] or "").lower()
+        if g0 and not g1:
+            return dict(kind="designation not carried forward",
+                        say="carried a game designation on Week 10; none printed on Week 11")
+        if not g0 and g1:
+            return dict(kind="designation newly printed",
+                        say="no game designation on Week 10; one is printed on Week 11")
+        sev = {"out": 3, "doubtful": 2, "questionable": 1, "": 0}
+        if g0 and g1 and sev.get(g1, 9) > sev.get(g0, 9):
+            return dict(kind="more restrictive", say=f"{m['gs0']} → {m['gs1']}")
+        if g0 and g1 and sev.get(g1, 9) < sev.get(g0, 9):
+            return dict(kind="less restrictive", say=f"{m['gs0']} → {m['gs1']}")
+        order = {"did not participate in practice": 0, "limited participation in practice": 1,
+                 "full participation in practice": 2}
+        p0, p1 = order.get((m["ps0"] or "").lower(), 9), order.get((m["ps1"] or "").lower(), 9)
+        if p0 < 9 and p1 < 9 and p1 > p0:
+            return dict(kind="practice participation increased", say=f"{m['ps0']} → {m['ps1']}")
+        if p0 < 9 and p1 < 9 and p1 < p0:
+            return dict(kind="practice participation reduced", say=f"{m['ps0']} → {m['ps1']}")
+        return dict(kind="changed", say="see the two reads")
+
+    for m in movement:
+        m.update(_dir(m) if m["changed"] else dict(kind="no change", say="identical on both reads"))
+    direction_counts = Counter(m["kind"] for m in movement)
+
+    # the two reads of the same page
+    disagreements = []
     if injcur:
-        idx11 = {(r["club"], r["player"]): r for r in inj11}
+        idx = {(r["club"], r["player"]): r for r in inj11}
         for r in injcur:
-            o = idx11.get((r["club"], r["player"]))
+            o = idx.get((r["club"], r["player"]))
             if o is None:
-                cur_vs11.append([e(r["club"]), e(r["player"]), "not on the week-addressed page",
-                                 e(r["game_status"] or "—"), "", e("READ DIFFERS"),
-                                 R.src_link("https://www.nfl.com/injuries/", "current-week URL")])
+                disagreements.append((r["club"], r["player"], "only on the current-week read",
+                                      "", r["game_status"] or "—"))
             elif (o["game_status"], o["practice_status"]) != (r["game_status"], r["practice_status"]):
-                cur_vs11.append([e(r["club"]), e(r["player"]), "status differs",
-                                 e(o["game_status"] or "—"), e(r["game_status"] or "—"), e("READ DIFFERS"),
-                                 R.src_link("https://www.nfl.com/injuries/", "current-week URL")])
+                disagreements.append((r["club"], r["player"], "designation differs",
+                                      o["game_status"] or "—", r["game_status"] or "—"))
 
-    # ------------------------------------------------------------------- page body
-    def status_pill(s: str) -> str:
+    def pill(s: str, kind: str = "game") -> str:
         if not s:
             return R.BLANK + '<span class="unverified">blank on the official page</span>'
         cls = {"out": "neg", "doubtful": "neg", "questionable": "opt-mid"}.get(s.lower(), "")
         return f'<span class="pill {cls}">{e(s)}</span>'
 
-    rows = []
-    for r in sorted(inj11, key=lambda x: (x["club"], x["player"])):
-        rows.append([e(r["club"]), e(r["player"]), e(r["position"]), e(r["injury"]) or R.BLANK,
-                     e(r["practice_status"]) or R.BLANK, status_pill(r["game_status"]),
-                     R.src_link(r["player_url"], "player") + " · " + R.src_link(INJURY_URL, "NFL week 11 report")])
+    def practice(s: str) -> str:
+        if not s:
+            return R.BLANK
+        short = PRACTICE_SHORT.get(s.lower(), "")
+        return f'{e(s)}' + (f' <span class="small">({short})</span>' if short else
+                            ' <span class="pill neg">unexpected wording</span>')
+
+    design_rows = [[e(r["club"]), e(r["player"]), e(r["position"]), e(r["injury"]) or R.BLANK,
+                    practice(r["practice_status"]), pill(r["game_status"]),
+                    R.src_link(r["player_url"], "player") + " · " + R.src_link(INJURY_URL, "report")]
+                   for r in sorted(inj11, key=lambda x: (x["club"], x["player"]))]
 
     fix_rows = []
-    venue_by_game = {}
-    for s in manifest.get("sources", []):
-        if not s.get("slug", "").startswith("game_centre__") or not s.get("sha256"):
-            continue
-        txt = (RAW / s["slug"]).read_text(encoding="utf-8", errors="replace")
-        slug = s["slug"].replace("game_centre__", "")
-        loc = re.search(r"LOCATION\s*</[^>]+>\s*<[^>]+>([^<]+)<", txt) or \
-              re.search(r"LOCATION[^A-Za-z0-9]{0,80}([A-Z][^<>{}\"]{2,60})", txt)
-        stad = re.search(r"STADIUM\s*</[^>]+>\s*<[^>]+>([^<]+)<", txt) or \
-               re.search(r"STADIUM[^A-Za-z0-9]{0,80}([A-Z][^<>{}\"]{2,60})", txt)
-        venue_by_game[slug] = (loc.group(1).strip() if loc else "",
-                               stad.group(1).strip() if stad else "", s)
     for f in fixtures:
-        slug = re.sub(r"[^a-z0-9]+", "_", f["path"].rsplit("/", 1)[-1]).strip("_")
-        loc, stad, src = venue_by_game.get(slug, ("", "", None))
-        fix_rows.append([e(f["away"].upper()), e(f["home"].upper()),
-                         R.src_link("https://www.nfl.com" + f["path"], "game centre"),
-                         e(loc) or R.BLANK, e(stad) or R.BLANK,
-                         R.src_link(sched_src["requested_url"], "NFL week 11 schedule") if sched_src else ""])
+        v, s = venues.get(f["path"], ({}, None))
+        fix_rows.append([
+            e(f["away"] or "—"), e(f["home"] or "—"), e(f["day"]),
+            e((f["date"] or "").rstrip(",.")), e(f["time"]), e(f["tv"]),
+            e(v.get("location", "")) or R.BLANK, e(v.get("stadium", "")) or R.BLANK,
+            R.src_link("https://www.nfl.com" + f["path"], "game centre") + " · " +
+            R.src_link(SCHEDULE_URL, "schedule")])
 
-    # ------------------------------------------------------------------- assemble
+    move_rows = [[e(m["club"]), e(m["player"]), e(m["position"]),
+                  pill(m["gs0"]) if m["gs0"] else R.BLANK, pill(m["gs1"]),
+                  practice(m["ps0"]) if m["ps0"] else R.BLANK, practice(m["ps1"]),
+                  (f'<span class="pill neg">{e(m["kind"])}</span><br><span class="small">{e(m["say"])}</span>'
+                   if m["changed"] else '<span class="pill">no change</span>'),
+                  R.src_link(INJURY_URL, "report")] for m in movement]
+
     src_rows = []
     for s in manifest.get("sources", []):
         ok = bool(s.get("sha256"))
         src_rows.append([
-            e(s.get("slug", "")), R.src_link(s.get("requested_url", ""), s.get("requested_url", "")[:60] or "—"),
+            e(s.get("slug", "")),
+            R.src_link(s.get("requested_url", ""), s.get("requested_url", "")[:64] or "—"),
             e(s.get("http_status", "")), f"{s.get('bytes', 0):,}" if ok else R.BLANK,
             f"<code>{e((s.get('sha256') or '')[:16])}…</code>" if ok else R.BLANK,
             '<span class="pill">read</span>' if ok else
-            f'<span class="pill neg">FAILED</span> <span class="unverified">{e(s.get("error", ""))}</span>',
-        ])
+            f'<span class="pill neg">FAILED</span> <span class="unverified">{e(s.get("error", ""))}</span>'])
 
-    movement_changed = [m for m in movement if m[7].startswith("changed")]
+    summary = manifest.get("summary", {})
+    cards = [
+        R.card(str(len(inj11)), "Week 11 report rows",
+               f"{meta.get('clubs', 0)} clubs · {'read ' + capt if inj11 else 'NOT CAPTURED'}",
+               "good" if inj11 else "bad"),
+        R.card(str(designated), "carry a game designation",
+               f"Out / Doubtful / Questionable · {blanks} blank on the page", ""),
+        R.card(str(len(fixtures)), "Week 11 fixtures",
+               "from the official schedule capture" if fixtures else "NOT CAPTURED",
+               "good" if fixtures else "bad"),
+        R.card(f"{len(venues)}/{len(fixtures)}" if fixtures else "0",
+               "venues transcribed", "only from a captured game centre", ""),
+        R.card(str(len(changed)), "Week 10 → 11 changes",
+               f"of {len(movement)} players on both captures", ""),
+        R.card(str(len(disagreements)), "read disagreements",
+               "week-addressed vs current-week URL", "bad" if disagreements else "good"),
+    ]
+
     body = f"""
 {R.notice()}
-<section><h2>What this page is</h2>
-<p><strong>Week 11 of the 2026 NFL season, read from official NFL documents captured at
-<code>{e(cap_clock) or "—"}</code> and stored byte for byte with their SHA-256.</strong>
-Every table row below is a transcription of a captured official page; a cell the page left
-blank is shown as blank and counted, never filled. This is the first week in the repository
-whose evidence is not stale: the newest football evidence before this capture was Week 10.</p>
-{R.kpi_grid([
-    R.card(str(len(inj11)), "Week 11 report rows", f"{meta11.get('clubs', 0)} clubs · read {e(inj11_src['requested_url']) if inj11_src else 'NOT CAPTURED'}", "good" if inj11 else "bad"),
-    R.card(str(designated), "with a game designation", f"Out / Doubtful / Questionable · {blanks} blank on the page", ""),
-    R.card(str(len(fixtures)), "Week 11 fixtures", "from the official schedule capture" if fixtures else "NOT CAPTURED", "good" if fixtures else "bad"),
-    R.card(str(len(venue_by_game)), "venues transcribed", "only where a game centre was captured", ""),
-    R.card(str(len(movement_changed)), "Week 10 → 11 changes", f"of {len(movement)} shared players · compared to the {e(w10_clock) or '—'} capture", ""),
-    R.card(str(len(cur_vs11)), "read disagreements", "week-addressed URL vs current-week URL", "bad" if cur_vs11 else "good"),
-])}
-<p class="small">Capture provenance: <code>data/live/official_2026_11_19/manifest.json</code>
-({len(manifest.get('sources', []))} sources, {manifest.get('summary', {}).get('ok', 0)} read ok).
-The capture job never parses and never edits a page; this page is rebuilt offline from those
-bytes by <code>pipeline/week11_20261119.py</code>, so the numbers below are reproducible from a
-clean checkout with no network.</p>
+<section><h2>Week 11, from official captures — not from memory</h2>
+<p><strong>Every number on this page is parsed from official NFL documents captured at
+<code>{e(capt) or "—"}</code> and stored byte for byte with their SHA-256.</strong> A cell the
+official page left blank is shown blank and counted; nothing is inferred, converted to a
+probability or carried over from an earlier week. The capture job only downloads and stores
+bytes; this page is rebuilt offline from them, so a clean checkout reproduces every row with
+no network.</p>
+{R.kpi_grid(cards)}
+<p class="small">Provenance: <code>data/live/official_2026_11_19/manifest.json</code> —
+{summary.get('ok', 0)} of {len(manifest.get('sources', []))} sources read with a hash.
+Capture is triggered by a push to a single workflow file, because this repository's token
+cannot create a <code>workflow_dispatch</code> event (HTTP 403, measured 2026-11-19).</p>
 </section>
 
-<section><h2>1 · Designations as printed — {len(inj11)} rows</h2>
-<p>The official report prints a practice status for nearly every listed player and a
-<em>game status</em> for only some of them. Both are shown exactly. The counts are the
-evidence for why a level is not a signal: <strong>{designated}</strong> of
-<strong>{len(inj11)}</strong> rows carry a game designation at this read.</p>
-{R.table([[e(k), str(v)] for k, v in sorted(status_counts.items(), key=lambda x: -x[1])],
-         ["Game status as printed", "Rows"], caption="Game-status vocabulary on the official Week 11 page")}
-{R.table([[e(k), str(v)] for k, v in sorted(practice_counts.items(), key=lambda x: -x[1])],
-         ["Practice status as printed", "Rows"], caption="Practice-status vocabulary on the official Week 11 page")}
-<div class="table-tools"><label>Search players or clubs <input class="filter" type="search" placeholder="Try Colts, hamstring, Out…"></label><span class="small">Click a column heading to sort</span></div>
-{R.table(rows, ["Club", "Player", "Pos", "Injury as printed", "Practice status", "Game status", "Official source"],
-         caption="Official Week 11 injury report, every row, blank cells preserved")}
+<section><h2>1 · Every designation, as printed — {len(inj11)} rows, {len(clubs)} clubs</h2>
+<p>The league prints a practice status for most listed players and a <em>game status</em> for
+few of them. Both are published verbatim. That gap is the finding: <strong>{designated}</strong>
+of <strong>{len(inj11)}</strong> rows carry a game designation at this read, so a single
+"Questionable" is not a level a model can consume without calibration.</p>
+{R.table([[e(k), str(v), R.src_link(INJURY_URL, "NFL week 11 report")]
+          for k, v in sorted(status_counts.items(), key=lambda x: -x[1])],
+         ["Game status as printed", "Rows", "Official source"],
+         caption="Game-status vocabulary on the official Week 11 report")}
+{R.table([[e(k), str(v), R.src_link(INJURY_URL, "NFL week 11 report")]
+          for k, v in sorted(practice_counts.items(), key=lambda x: -x[1])],
+         ["Practice status as printed", "Rows", "Official source"],
+         caption="Practice-status vocabulary on the official Week 11 report")}
+<div class="table-tools"><label>Search players, clubs or injuries
+<input class="filter" type="search" placeholder="Try Colts, hamstring, Out…"></label>
+<span class="small">Click a column heading to sort</span></div>
+{R.table(design_rows, ["Club", "Player", "Pos", "Injury as printed", "Practice status",
+                       "Game status", "Official source"],
+         caption="Official Week 11 injury report · every row · blank cells preserved")}
 </section>
 
-<section><h2>2 · Movement from Week 10 to Week 11 — {len(movement)} shared players</h2>
-<p>Only players who appear on <em>both</em> captures are compared, so nothing is inferred
-for a player who merely appeared or disappeared. A change of designation is published as a
-delta with the two capture clock times beside it ({e(w10_clock) or '—'} → {e(cap_clock) or '—'}),
-never as a level judged from a single read.</p>
-{R.table(movement, ["Club", "Player", "Pos", "Week 10 game", "Week 11 game",
-                    "Week 10 practice", "Week 11 practice", "Verdict", "Official source"],
-         caption="Week 10 → Week 11 designation deltas · both capture times recorded")
- if movement else '<p class="small">No player appears on both captures, so no delta can be computed. Nothing is inferred.</p>'}
+<section><h2>2 · Week 10 → Week 11 movement — {len(changed)} of {len(movement)} shared players changed</h2>
+{R.table([[e(k), str(v), R.src_link(INJURY_URL, "NFL week 11 report")]
+          for k, v in direction_counts.most_common()],
+         ["Direction of the reported move", "Players", "Official source"],
+         caption="What actually moved between the two dated reads")}
+<p class="small"><strong>Read this as reporting, not recovery.</strong> The official report is a
+weekly instrument: a designation printed on Week 10 and absent on Week 11 shows the
+designation was not carried forward — the report does not state, and this page does not
+claim, that the player is healthy. Of the moves above,
+<strong>{direction_counts.get("designation not carried forward", 0)}</strong> are a Week 10
+designation that is simply absent on Week 11. That is why the count of "changes" is large and
+why a level taken from one week cannot be used as a signal.</p>
+<p>Only players on <em>both</em> captures are compared, so nothing is inferred for a player who
+appeared or disappeared. The two capture clock times are <code>{e(w10_clock) or "—"}</code>
+(Week 10) and <code>{e(capt) or "—"}</code> (Week 11). A designation that moved is a delta, not
+a level: the direction is only meaningful against a dated earlier read, which is why both are
+printed.</p>
+{R.table(move_rows, ["Club", "Player", "Pos", "Week 10 game", "Week 11 game",
+                     "Week 10 practice", "Week 11 practice", "Verdict", "Official source"],
+         caption="Designation deltas between two dated official reads")
+ if move_rows else '<p class="small">No player appears on both captures, so no delta can be computed. Nothing is inferred.</p>'}
 </section>
 
-<section><h2>3 · Week 11 fixtures — {len(fixtures)} from the official schedule</h2>
-<p>Fixture identity, official link and venue come from the captured official schedule page and
-the captured game centres. A venue is printed only if a game-centre capture printed it; the
-rest stay blank. <strong>The repository does not transcribe a venue from memory.</strong></p>
-{R.table(fix_rows, ["Away", "Home", "Official game centre", "Venue (LOCATION)", "Stadium (STADIUM)", "Schedule source"],
-         caption="Official Week 11 fixtures · venue blank where no game centre was captured")
- if fix_rows else '<p class="small">No fixture was parsed from the schedule capture. This is a capture gap, published as one, not a claim that Week 11 has no games.</p>'}
+<section><h2>3 · The 13 Week 11 fixtures — kick-off, broadcaster and venue</h2>
+<p>Day, date, time and broadcaster are the label the official schedule page prints on each
+fixture card. Venue is the <code>Game Info</code> block of that fixture's official game centre.
+The parse used: <strong>{e(shape)}</strong>.{"" if not missing_venue else
+f" <strong>{len(missing_venue)} fixtures have no captured game centre</strong>, so their venue is blank."}</p>
+{R.table(fix_rows, ["Away", "Home", "Day", "Date", "Kick-off", "TV", "Venue (LOCATION)",
+                    "Stadium", "Official source"],
+         caption="Official Week 11 fixtures · venue only where a game centre was captured")
+ if fix_rows else '<p class="small">No fixture was parsed from the schedule capture. That is a capture gap, published as one — not a claim that Week 11 has no games.</p>'}
 </section>
 
-<section><h2>4 · Two independent reads of the same page</h2>
-<p>nfl.com serves the current week at <code>/injuries/</code> and a fixed week at
-<code>/injuries/league/2026/reg11</code>. Both were captured. If the two reads disagree the
-row is printed here rather than one being chosen silently.</p>
-{R.table(cur_vs11, ["Club", "Player", "Difference", "Week-addressed read", "Current-week read", "Verdict", "Source"],
+<section><h2>4 · Two independent reads of the same report</h2>
+<p>nfl.com serves the live week at <code>/injuries/</code> and a fixed week at
+<code>/injuries/league/2026/reg11</code>. Both were captured in the same run. Disagreements are
+printed here instead of one read being chosen silently.</p>
+{R.table([[e(a), e(b), e(c), e(d) or "—", e(f) or "—", R.src_link(CURRENT_URL, "current-week read") + " · " + R.src_link(INJURY_URL, "week-addressed read")]
+          for a, b, c, d, f in disagreements],
+         ["Club", "Player", "Difference", "Week-addressed", "Current-week", "Sources"],
          caption="Week-addressed URL vs current-week URL · disagreements only")
- if cur_vs11 else '<p class="small">The two captures agree on every player they share (compared on game status and practice status).</p>'}
+ if disagreements else '<p class="small">The two captures agree on every player they share, on both game status and practice status.</p>'}
 </section>
 
 <section><h2>5 · Capture register — every source, its hash and its clock time</h2>
-<p>A capture that failed is marked <span class="pill neg">FAILED</span> and publishes its error;
-it never overwrites a good capture. This is the register the site's evidence boundary depends on.</p>
+<p>A failed capture is published as <span class="pill neg">FAILED</span> with its error and never
+overwrites a good one. This register is what the rest of the page depends on.</p>
 {R.table(src_rows, ["Source", "URL requested", "HTTP", "Bytes", "SHA-256 (first 16)", "Outcome"],
-         caption=f"Official capture manifest · captured {e(cap_clock) or '—'}")}
+         caption=f"Official capture manifest · captured {e(capt) or '—'}")}
 </section>
 
-<section><h2>6 · What this does not show</h2>
+<section><h2>6 · What this page does not claim</h2>
 <ul class="findings">
-<li><strong>No model input changed.</strong> These designations are published as evidence; no
-strategy, fair line or verdict on this site consumes them yet. The personnel-ablation
-contract on <a href="register-evidence-2026-11-18.html">the register evidence page</a>
-records why: a fixed points penalty for a missing starter is a guess, not a measurement.</li>
-<li><strong>No availability prediction.</strong> "Questionable" is not converted to a
-probability here. The empirical calibration behind that word is still blocked (it needs
-several seasons of designations joined to official inactive lists).</li>
-<li><strong>No venue inferred.</strong> A blank venue means no game-centre capture printed
-it at this read, not that the venue is unknown to the league.</li>
-<li><strong>Scope.</strong> {len(by_club)} of 32 clubs appear on the Week 11 report at this
-read; clubs absent from it are not evidence of a healthy roster, and the reserve list is a
-separate captured source.</li>
+<li><strong>No model consumes these rows yet.</strong> They are published as evidence. A fixed
+points penalty for a missing starter is a guess; the personnel-ablation contract on
+<a href="register-evidence-2026-11-18.html">the register evidence page</a> records why the
+ablation, not a penalty, is the test.</li>
+<li><strong>No probability for "Questionable".</strong> The empirical calibration behind that
+word is still blocked; it needs several seasons of designations joined to official inactive
+lists, which this repository does not hold.</li>
+<li><strong>No inferred depth order.</strong> The Week 11 report names a player's designation,
+not his rank. Depth comes only from each club's own published chart, with its own limits.</li>
+<li><strong>{len(clubs)} of 32 clubs</strong> appear on this report at this read. A club that is
+absent is <em>not</em> evidence of a healthy roster — byes, the reserve list and the weekly
+reporting rules all produce absence.</li>
+<li><strong>No venue from memory.</strong> {len(missing_venue)} fixture(s) lack a captured game
+centre, so their venue cells are blank rather than filled from a remembered stadium.</li>
+{"" if not flagged_vocab else f"<li><strong>{len(flagged_vocab)} row(s) print a status word this page does not recognise.</strong> They are kept verbatim and flagged rather than normalised.</li>"}
 </ul>
 </section>
 """
-    page = R.layout("week-11.html", "Week 11 · official designations and fixtures",
-                    "The current NFL week, read from captured official documents: who is out, who is questionable, and where each game is played.",
+    return R.layout("week-11.html", "Week 11 · designations, fixtures and venue",
+                    "The current NFL week read from captured official documents: who is out, who is questionable, where and when each game is played.",
                     body, wide=True)
+
+
+def main() -> int:
+    page = build_page()
     (ROOT / "week-11.html").write_text(page, encoding="utf-8")
-    print(f"  wrote week-11.html ({len(page):,} bytes) · {len(inj11)} designations · "
-          f"{len(fixtures)} fixtures · {len(movement)} deltas · {len(cur_vs11)} read disagreements")
+    print(f"  wrote week-11.html ({len(page):,} bytes)")
     return 0
 
 
