@@ -1,5 +1,5 @@
 == python pipeline/fetch_availability.py ==
-2026-11-19T12:45:24Z
+2026-11-19T13:31:10Z
 ARI  depth rows= 58 status=200 
 ATL  depth rows= 59 status=200 
 BAL  depth rows= 61 status=200 
@@ -36,127 +36,127 @@ injury rows=253 ({'season': '2026', 'week': 'WEEK 11'}); depth charts parsed for
 fetch-exit=0
 
 == make -o injuries site (exact command of the failing step) ==
-NE vs DET       LG2 Walter Rouse DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
-NE vs DET          RB1 Stevenson DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
-NE vs DET  CB2 Charles Woods Limited Limited Participation in Practice    Full Participation in Practice        STALE
-NE vs DET     S1 Kevin Byard Limited Limited Participation in Practice    Full Participation in Practice        STALE
-NE vs DET    S3 Brenden Schooler DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
- KC @ ATL ILB1 Divine Deablo Limited Limited Participation in Practice   Did Not Participate In Practice        STALE
- KC @ ATL        ILB3 Josh Woods DNP   Did Not Participate In Practice    Full Participation in Practice        STALE
- KC @ ATL  (-> 2nd Christian Harris)                                                                     OUT_OF_SCOPE
- KC @ ATL    DE2 Za'Darius Smith DNP   Did Not Participate In Practice    Full Participation in Practice        STALE
- KC @ ATL   DE3 James Pearce Jr. DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
- KC @ ATL  DL2 Gervon Dexter Sr. DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
- MIN @ GB   QB2 Carson Wentz Limited Limited Participation in Practice    Full Participation in Practice        STALE
- MIN @ GB  LB2 Ty'Ron Hopper Limited Limited Participation in Practice    Full Participation in Practice        STALE
- MIN @ GB   EDGE1 Lukas Van Ness DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
- MIN @ GB      NB1 Javon Bullard DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
- MIN @ GB      LB1 Blake Cashman DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
- MIN @ GB      OLB2 Kyle Van Noy DNP   Did Not Participate In Practice Limited Participation in Practice        STALE
- MIN @ GB        S2 Jay Ward Limited Limited Participation in Practice    Full Participation in Practice        STALE
-python3 pipeline/review_consolidated.py
-76 proposals in 4 registers · 74 questions in 3 registers
-                            topic  proposals  registers_agreeing  questions  blocked_questions  priority_score
-       Prices & executable quotes         11                   4         17                  8              16
-   Injuries, depth & availability         18                   4         13                  4              12
-Validation, luck & trial registry         15                   4         14                  4              12
-      Data freshness & provenance         15                   4         15                  2              10
-      Site, workflow & governance          9                   4         10                  1               9
-                     Unclassified          7                   3          4                  0               6
-                     Player props          1                   1          1                  1               3
-
-recommended first move: Prices & executable quotes
-python3 data/review/_author.py
-17 suggestions, 20 questions
-# CS4/CS6 (arena/db6cd525-korea1): official spot-check rows and flagged rows F-42 onward.
-# Reads committed captures and data/live/spotcheck_2026_11_18/ only (no network).
-python3 pipeline/session_20261118.py
-injury lines 44, match 1; depth rows 23, match 23
-reserve historical: live 25, capture 25, both 17, live-only 8, capture-only 8
-reserve 2026-11-18 recapture: live 25, capture 25, both 25, live-only 0, capture-only 0
-multi rank-1 groups: {'2026-11-12': 159, '2026-11-13': 160, '2026-11-14': 160, '2026-11-15': 160, '2026-11-16': 161, '2026-11-17': 161, '2026-11-18': 161, '2026-11-19': 161}
-payne: {'2026-11-12': 'Defense DL slot 13 rank 1', '2026-11-13': 'Defense DL slot 13 rank 1', '2026-11-14': 'Defense DL slot 13 rank 1', '2026-11-15': 'Defense DL slot 13 rank 1', '2026-11-16': 'absent', '2026-11-17': 'absent', '2026-11-18': 'absent', '2026-11-19': 'absent'}
-bal: {'2026-11-12': 'QB1 Lamar Jackson · QB2 Tyler Huntley · QB3 Joe Fagnano', '2026-11-13': 'QB1 Jacoby Brissett · QB2 Joe Fagnano · QB3 Kedon Slovis', '2026-11-14': 'QB1 Jacoby Brissett · QB2 Joe Fagnano · QB3 Kedon Slovis', '2026-11-15': 'QB1 Jacoby Brissett · QB2 Joe Fagnano · QB3 Kedon Slovis', '2026-11-16': 'QB1 Jacoby Brissett · QB2 Joe Fagnano · QB3 Kedon Slovis', '2026-11-17': 'QB1 Jacoby Brissett · QB2 Joe Fagnano · QB3 Kedon Slovis', '2026-11-18': 'QB1 Jacoby Brissett · QB2 Joe Fagnano · QB3 Kedon Slovis', '2026-11-19': 'QB1 Jacoby Brissett · QB2 Joe Fagnano · QB3 Kedon Slovis'}
-sea offense slot 5: 3 players
-# CR1 (arena/f84bc1d7-korea1): the standing-request register (one row per request item,
-# with the gate that blocks it and the number that would clear it). Reads only committed
-# files, including the CR2 live spot-check excerpts (no network).
-python3 pipeline/request_register.py
-request register: 81 rows -> request-register.html + data/integration/request_register.csv
-python3 pipeline/depth_status.py
-availability: {'injury_rows': 253, 'depth_rows': 1841, 'slots': 910, 'slots_flagged': 65, 'first_listed_out': 3, 'unmatched_report_players': 44, 'teams_on_injury_report': 24, 'clubs_with_depth_chart': 31}
-python3 pipeline/lineup_deficiencies.py
-wrote 39 official Week 10 injury/depth-chart rows and 9 PBP summary rows to /home/runner/work/Korea1/Korea1/data/lineups
-python3 pipeline/decision_readiness.py
-wrote governance tables to /home/runner/work/Korea1/Korea1/data/governance: 12 suggestions, 14 questions, 8 discovery protocols, 28 post-pin NFL.com scores, 9 repo checks
-# T40 (arena/84e42ecc-korea1): the referent register must be part of the build.
-# It reads the committed probe output only (no network), so it is reproducible.
-# Without this line the page went stale while verify_site.py counted its rows,
-# which is exactly the drift tests/check_rebuild.py caught on PR #50.
-python3 pipeline/render_referents.py
-referents.html written
-# X1-X4 (session arena/132e7ca2-korea1), additive: repository review, merged
-# suggestion / question registers, competition page. Every existing recipe step
-# is unchanged and still runs first.
-python3 pipeline/session_review.py
-  repo_inventory.csv        822 files
-  verification_log.csv      8 checks
-  irregularities.csv        6 findings
-  official_injury_check.csv 134 comparisons (54 exact)
-  official_score_check.csv  9 games (8 exact)
-  wrote repo-review.html (346,015 bytes)
-python3 pipeline/session_decide.py
-  suggestions_master.csv  76 rows / 14 clusters
-  questions_master.csv    90 rows / 14 clusters
-  discovery_master.csv    8 rows
-  wrote review-queue.html (73,095 bytes)
-  wrote answers.html (86,895 bytes)
-python3 pipeline/session_competition.py
-  leaderboard_master.csv 18 rows
-  reward_tiers.csv       7 rows
-  competition_rules.csv  9 rows
-  wrote competition.html (79,427 bytes)
-# T43 (session arena/6b1f0c9a-korea1): the nine requirement pages. All read committed data
-# only (no network), so `make build` stays reproducible in CI.
-python3 pipeline/price_annex.py
-python3 pipeline/results_feed.py
-  verified_results.csv 150 rows (29 final, 13 future)
-python3 pipeline/origination_order.py
-  origination_order.csv    6,073 games
-  Side (spread): fair 10.523 vs market 10.215 | Total: fair 10.762 vs market 10.527 | Moneyline: fair 0.449 vs market 0.424
-python3 pipeline/signal_staking.py
-  signal_staking.csv 18 strategies; 1 show signal evidence; 1 are luck-risk
-python3 pipeline/replacement_depth.py
-  replacement_depth.csv   96 club×unit rows; 2 verified, 3 no chart
-  replacement_slots.csv   16 unavailable/at-risk players, 7 matched to a slot
-python3 pipeline/corr_official.py
-  margin vs total                    n= 5213 weeks=425 rho=+0.014 -> NOT_DISTINGUISHABLE_FROM_ZERO
-  home covers vs over                n= 5213 weeks=425 rho=-0.002 -> NOT_DISTINGUISHABLE_FROM_ZERO
-  home covers vs home ML win         n= 5213 weeks=425 rho=+0.806 -> REPORTED
-  spread line vs total line          n= 5213 weeks=425 rho=-0.002 -> NOT_DISTINGUISHABLE_FROM_ZERO
-  moneyline reveals margin           n= 5213 weeks=425 rho=-0.441 -> REPORTED
-  signed model edge vs realised margin n= 5213 weeks=425 rho=+0.178 -> REPORTED
-python3 pipeline/demotion_rules.py
-  demotion_gate.csv  18 strategies; 0 demotions; 0 live
-python3 pipeline/session_20261114.py
-  brief 9 · suggestions 11 · questions 9
-# CB1/CB6/CB8 (arena/c79b2684-korea1, 2026-11-15): brief tracker, mind-changers, flagged rows.
-# Must run before render_site.py, which reads the CSVs it writes.
-python3 pipeline/session_20261115.py
-{
- "brief_rows": 9,
- "mind_changers": 18,
- "flagged": 12
-}
-# CS5 (arena/53ef9544-korea1): the 2026-11-18 request register writes its CSV before render_site.
-python3 pipeline/request_register_2026_11_18.py
-rows 81 (74 sourced, 7 flagged as text)
-# D2/D6 (arena/ba09384a-korea1): the requirement ANNEX — recomputed evidence, official re-read,
-# questions and owner-decision registers. Committed files only; no network.
-python3 pipeline/req_annex_2026_11_18.py
-KC omission count is 3, expected 1
-make: *** [Makefile:94: site] Error 1
-make-site-exit=2
+   C-05  CONFIRMED              0 HOU rows parsed; manifest records rows: 0 for HOU
+   C-06  CONFIRMED              54 GB rows; 54 carry a leading jersey number in player_raw; 0 still have a
+   C-07  CLOSED                 Cade Mays = Out; D.J. Reed = Out; Kerby Joseph = Out
+   C-08  MATCHES                9 of 9 official rows agree on player, practice status and game status
+   C-09  SUPERSEDED             rank 1 Jacoby Brissett / rank 2 Joe Fagnano / rank 3 Kedon Slovis
+   C-10  PARTLY_MATCHES         active capture: SEA 15 rows, CIN 9 rows
+   C-11  EXPLAINED              28 of 32 clubs carry a row; clubs with no row: CHI, DEN, PHI, TB
+   C-12  OPEN                   50 dated reserve rows over 27 clubs (ARI, ATL, BAL, BUF, CAR, CIN, CLE, DA
+   C-13  PARTLY                 1 of the 14 official Week 10 games are in the settlement ledger; the canon
+   C-14  NOT_CHECKABLE          84 published line rows over 28 games; 65 frozen picks; 3 ledger events
+   C-15  MATCHES                8 dated captures (2026-11-12, 2026-11-13, 2026-11-14, 2026-11-15, 2026-11-
+python3 pipeline/matchup_matrix.py
+  matchup matrix: 130 rows, 10 excluded club-weeks -> matchup-matrix.html
+python3 pipeline/vigfree_decomposition.py
+  vig-free decomposition: 16,206 game × market rows, 63 summary rows -> consensus.html
+python3 pipeline/request_register_20261118.py
+  request register: 74 items, 10 suggestions, 15 claim checks -> verified-register-2026-11-18.html
+# db0e98e2 (2026-11-19): live reserve-page read vs retained captures; F-52/F-53 register.
+python3 pipeline/session_20261119.py
+live rows 25 · dropped 4 · added 4 · flags 2
+# E2-E5 (arena/eeba949e-korea1): the official Game Book evidence layer. Reads the
+# committed official captures under data/evidence/official_games/ only (no network), so
+# `make build` stays reproducible in CI and the committed site stays a fixed point.
+python3 pipeline/fixture_context.py
+official documents: 89
+fixtures: 42
+week windows: 22
+game centres captured: 42
+game books captured: 42
+python3 pipeline/availability_graph.py
+availability graph rows: 1714
+inactive / did-not-play rows: 412
+Game Book starters read: 0
+python3 pipeline/render_gamebooks.py
+  wrote gamebooks.html (234,007 bytes)
+# R-2026-11-19 (arena/fea5cdab-korea1): re-read of the official injury report and reserve list
+# against the committed captures. Reads committed files only (no network, no clock).
+python3 pipeline/reread_2026_11_19.py
+injury rows: live 44, matched 44
+reserve rows: live 17, matched 17
+comparisons agreeing: 153 of 153 row-level checks
+# W4 (arena/c83ada84-korea1, 2026-11-19): the suggestions hub — an index of the four
+# suggestion registers and four question registers, counts re-derived at build time.
+python3 pipeline/suggestions_hub.py
+  wrote suggestions-hub.html (34,298 bytes)
+# W2 (arena/c83ada84-korea1, 2026-11-19): the current week, parsed from the committed
+# official capture in data/live/official_2026_11_19/. Reads committed bytes only (no
+# network, no clock), so `make build` stays byte-reproducible.
+python3 pipeline/week11_20261119.py
+  wrote week-11.html (239,780 bytes)
+# W5 (arena/c83ada84-korea1): findings F-2026-11-19-08..-14, the Week 11 stats register and
+# the pre-kickoff freeze. Committed files only.
+python3 pipeline/session_20261119_week11.py
+week11 register: 7 findings · 253 frozen rows · 253 designations / 24 clubs / 13 fixtures · diagnostic log found
+python3 pipeline/render_site.py
+  wrote index.html (50,667 bytes)
+  wrote executive-summary.html (41,272 bytes)
+  wrote lines.html (81,505 bytes)
+  wrote price-snapshot.html (18,845 bytes)
+  wrote strategies.html (43,663 bytes)
+  wrote validation.html (30,459 bytes)
+  wrote correlations.html (16,951 bytes)
+  wrote props.html (14,288 bytes)
+  wrote methodology.html (16,503 bytes)
+  wrote flagged.html (88,775 bytes)
+  wrote sources.html (19,643 bytes)
+  wrote audit.html (39,403 bytes)
+  wrote requirements.html (30,267 bytes)
+  wrote verification.html (9,303 bytes)
+  wrote suggestions.html (40,457 bytes)
+  wrote questions.html (47,136 bytes)
+  wrote injuries.html (170,469 bytes)
+  wrote suggestions-review.html (39,002 bytes)
+  wrote decision-readiness.html (45,327 bytes)
+  wrote lineup-deficiencies.html (82,351 bytes)
+  wrote live-verification.html (91,888 bytes)
+  wrote requirement-annex-2026-11-18.html (121,895 bytes)
+  wrote review.html (80,857 bytes)
+# U3 (arena/fcba7eb5-korea1): price-snapshot store, one row per originated market. Reads committed
+# originated lines and the forward cards only; no network.
+python3 pipeline/price_snapshots.py
+  price_snapshots.csv 18711 markets from 6237 games
+  opening verified 0 · closing verified 0
+# BF1/BF2 (arena/bfcd9879-korea1): archive-populated price store + its page,
+# and the full-history tiered results feed (published as section 5 of T43's
+# results-feed.html). Read committed files only; no network.
+python3 pipeline/price_archive.py
+price_archive: 29704 rows across 7426 games
+  open_price: 5886
+  archive_close: 11253
+  pin_close: 25658
+  freeze_market: 112
+  archive sha256[:12]=08271b4fe775 pin=a270278f3ac4
+python3 pipeline/render_price_archive.py
+  wrote price-archive.html (34,229 bytes)
+python3 pipeline/results_feed_history.py
+results_feed: 7548 games — official_read=30 pinned_archive=7383 scheduled=135
+  cross-check conflicts: 0
+python3 pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
+  wrote forward.html
+python3 pipeline/render_review.py
+  wrote availability.html (144,846 bytes)
+  wrote decision-board.html (25,896 bytes)
+  wrote open-questions.html (23,810 bytes)
+python3 pipeline/render_summary.py
+wrote EXECUTIVE_SUMMARY.md
+python3 pipeline/render_readiness.py
+  wrote decisions.html
+  wrote lineups.html
+python3 pipeline/render_annex.py
+Rendered strict public annex: 9 pages
+# RR1-RR3 (arena/7aae360e-korea1, 2026-11-18): the per-item request register for the current
+# brief — one row per request item with its gate and clearing number — plus this session's
+# official page reads, the venue transcription and the personnel-ablation contract. Reads
+# committed files and data/live/register_reads_2026_11_18/ only (no network, no clock), so
+# `make build` stays byte-reproducible and tests/check_rebuild.py keeps its teeth.
+python3 pipeline/register_evidence_20261118.py
+register rows 68 · verified lines 184 (injury 5/99 match) · venues 14 · flags 9 · questions 12 · suggestions 8
+python3 pipeline/render_register_evidence_20261118.py
+  wrote register-evidence-2026-11-18.html (201899 bytes)
+make-site-exit=0
 
 == make -o injuries verify ==
 [PASS] request-register.html rows=90 official_missing=0 broken=0
@@ -194,40 +194,17 @@ make-site-exit=2
 
 0 failing checks
 python3 tests/check_sources.py
-checked 53 canonical pages, 7163 rows
+checked 54 canonical pages, 7823 rows
 strict official/primary reference check passed
 python3 tests/check_links.py
-checked 63 pages
+checked 64 pages
 all internal links, anchors and assets resolve; no external dependencies
 make-verify-exit=0
 
 == the two pytest modules the workflow runs ==
-    
-        Parameters
-        ----------
-        key : int
-            Requested position.
-        axis : int
-            Desired axis.
-    
-        Raises
-        ------
-        IndexError
-            If 'key' is not a valid position in axis 'axis'.
-        """
-        len_axis = len(self.obj._get_axis(axis))
-        if key >= len_axis or key < -len_axis:
->           raise IndexError("single positional indexer is out-of-bounds")
-E           IndexError: single positional indexer is out-of-bounds
-
-/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pandas/core/indexing.py:2365: IndexError
-=========================== short test summary info ============================
-FAILED tests/test_live_verify.py::test_identical_value_is_a_match - IndexError: single positional indexer is out-of-bounds
-FAILED tests/test_live_verify.py::test_blank_official_cell_never_confirms - IndexError: single positional indexer is out-of-bounds
-FAILED tests/test_live_verify.py::test_drift_is_not_counted_as_a_defect - IndexError: single positional indexer is out-of-bounds
-FAILED tests/test_live_verify.py::test_missing_player_row_is_unresolved_not_a_defect - IndexError: single positional indexer is out-of-bounds
-4 failed, 19 passed in 1.33s
-pytest-exit=1
+.......................                                                  [100%]
+23 passed in 0.83s
+pytest-exit=0
 
 == resulting capture summary ==
 {
