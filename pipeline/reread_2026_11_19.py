@@ -122,8 +122,9 @@ def main() -> int:
         dict(id="F-2026-11-19-03", sev="Medium · repaired",
              text=("main was red at commit 311d9b5. tests/test_reconcile_depth_charts.py read the rolling "
                    "reserve/latest.csv as 'latest', and the scheduled capture had overwritten it with the "
-                   "2026-11-19T04:30Z snapshot, so the test's 25-row expectation failed (21 rows). Repaired by "
-                   "pinning that comparison to the dated 2026-11-18T04:42:01Z history folder that its label names."),
+                   "2026-11-19T04:30Z snapshot, so the test's 25-row expectation failed (21 rows). Repaired on main "
+                   "by PRs #106/#107 (arena/8d55e319-korea1): the comparison is pinned to the dated "
+                   "2026-11-18T04:42:01Z recapture folder, and the test asserts that the rolling file is not read."),
              nxt="No action open. The rolling latest.csv must not be used as a dated reference.",
              url=RES_URL, label="NFL.com reserve list (November)"),
         dict(id="F-2026-11-19-04", sev="Medium · open",
