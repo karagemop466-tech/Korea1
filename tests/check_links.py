@@ -44,6 +44,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          # RX1 (arena/7aae360e-korea1, 2026-11-18): the register evidence annex — verification lines,
          # venues, the prospective escrow ledger and the ablation contract behind the 2026-11-18 registers.
          "register-evidence-2026-11-18.html",
+         # GC2 (arena/7cbb2e60-korea1, 2026-11-19): official game-centre / Game Book evidence.
+         "gamecentre.html",
          # E5 (arena/eeba949e-korea1, 2026-11-19): the official Game Book evidence page.
          "gamebooks.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",

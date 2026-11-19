@@ -37,13 +37,13 @@ records already cite.
 
 | What | Count | Note |
 |---|---|---|
-| Official documents captured | 89 | each with its URL, HTTP status, byte count and SHA-256 |
+| Official documents captured | 76 | each with its URL, HTTP status, byte count and SHA-256 |
 | Fixtures published from the league's schedule page | 42 | every column printed by the league |
 | Availability-graph rows (expected starter) | 1714 | the club's own depth chart, with its capture time |
-| Confirmed starters | 0 | needs an official Game Book |
-| Co-starter positions | 0 | the club named more than one first player; none is chosen |
+| Confirmed starters | 356 | needs an official Game Book |
+| Co-starter positions | 240 | the club named more than one first player; none is chosen |
 | Game centres captured | 42 | of the fixtures above |
-| Game Books captured | 42 | of the fixtures above |
+| Game Books captured | 29 | of the fixtures above |
 | Inactive / did-not-play rows | 412 | the league's game-day lists |
 
 **Drift, published rather than hidden.** 2 captured schedule page(s) served a
@@ -63,6 +63,25 @@ because no official Game Book has been captured yet, and each such row says so.
 - **Reserve list is not a complete record (F-2026-11-19-06, High, open; same pattern as F-57).** The live NFL.com November reserve page, read on 2026-11-19, matches the 2026-11-19 capture row for row (25 rows). Four rows dated 11/10 that were on the 2026-11-18 capture are gone, including Malik Willis (MIA), and four dated 11/18 were added. A row that is absent is therefore *not on the page at capture time*. It is never evidence of availability. Source: [NFL.com reserve list, November 2026](https://www.nfl.com/transactions/league/reserve-list/2026/11).
 - **Repair (F-2026-11-19-07).** The rolling `latest.csv` had been overwritten, so code labelled it as the 2026-11-18 capture and one test failed on `main`. The sibling session's fix (`37816e4`) pins the comparison to the 2026-11-18 history folder; the remaining reader is pinned in this branch. Build and tests are green.
 - Flags and the live read are on [Flagged for review](flagged.html) and in `data/live/spotcheck_2026_11_19/`.
+
+## Update — 2026-11-19 (`arena/7cbb2e60-korea1`) — official capture repair
+
+- **Decision unchanged.** Still no validated strategy and no reward; nothing here adds evidence for an edge.
+- **The schedule capture did not select the week (F-2026-11-19-08, High).** The committed REG9 and REG10
+  evidence files were byte-identical (raw SHA-256 `6ad52b57…`, 2,291,069 bytes each) and both contained
+  Week-11 fixture cards while labelled weeks 9 and 10, because `/schedules/<season>/REG<week>` ignored the
+  week for the capture client. The capture now reads the league's by-week URL, requires every fixture slug
+  to print the requested week, and cross-checks the fixture set against the week's scores page before
+  anything is written. Source: [NFL by-week schedule, week 10](https://www.nfl.com/schedules/2026/by-week/week-10).
+- **A blank capture published as a success (F-2026-11-19-09, Medium, repaired).** The parser returned 0 rows
+  on the real page shape (relative hrefs, labels nested in `sr-only` spans) and the run still exited 0 with
+  `game_centres: []`. The capture now aborts with exit 2 and writes no evidence on any missing field —
+  zero fixtures, week mismatch, schedule/scores disagreement, blank venue, finished fixture without a Game
+  Book link, or a Game Book that does not match the fixture.
+- **New page: [gamecentre.html](gamecentre.html)** — venue per fixture from the official game centre
+  (REQ-23) and the Game Book's printed starters, Not Active and Did Not Play lists (REQ-25), one official
+  link per row and one SHA-256 per captured document. It renders an explicit waiting state until the
+  scheduled runner capture commits genuine week-selecting evidence.
 
 ## Decision readiness & lineup follow-up — 2026-11-12
 
@@ -199,7 +218,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 952 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 944 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 

@@ -48,7 +48,13 @@ _INFO_VALUE = re.compile(
 
 # The game centre's own "Download Game Book (PDF)" module.
 _GAMEBOOK_MODULE = re.compile(r'data-testid="GameBook-\d+"')
-_PDF_HREF = re.compile(r'href="(https://static\.www\.nfl\.com/[^"]+\.pdf)"')
+# Only the league's Game Book links live under ``/gamecenter/``.  A looser
+# "any PDF" pattern picked up the Record & Fact Book media-guide PDF that the
+# game-centre page also references for an unplayed fixture, and thirteen
+# future games were captured as if they had a Game Book (measured 2026-11-19;
+# repaired by session arena/7cbb2e60-korea1).
+_PDF_HREF = re.compile(
+    r'href="(https://static\.www\.nfl\.com/[^"]*/gamecenter/[^"]+\.pdf)"')
 _CANONICAL = re.compile(r'<link[^>]+rel="canonical"[^>]+href="([^"]+)"')
 _TITLE = re.compile(r"<title>(.*?)</title>", re.S)
 

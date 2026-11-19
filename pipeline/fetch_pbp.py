@@ -25,7 +25,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -60,12 +62,34 @@ def sha256_of(path: Path) -> str:
     return h.hexdigest()
 
 
-def download_blob(blob_sha: str, dest: Path) -> None:
-    """Fetch one git blob as raw bytes through api.github.com (allowlisted)."""
+def download_blob(blob_sha: str, dest: Path, tries: int = 4) -> None:
+    """Fetch one git blob as raw bytes through api.github.com (allowlisted).
+
+    Two stability measures, added 2026-11-19 after paired verify runs failed
+    ~50% of the time on CI: authenticate with the workflow token when one is
+    present (unauthenticated api.github.com allows 60 requests/hour per IP and
+    concurrent push+pull_request runs share runner IP pools), and retry with
+    backoff on transient failures.  The bytes are pinned by blob SHA, so a
+    retry can never change what is written.
+    """
     url = f"https://api.github.com/repos/{REPO}/git/blobs/{blob_sha}"
-    req = urllib.request.Request(url, headers={"Accept": "application/vnd.github.raw"})
-    with urllib.request.urlopen(req, timeout=600) as resp, open(dest, "wb") as fh:
-        fh.write(resp.read())
+    headers = {"Accept": "application/vnd.github.raw"}
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    last: Exception | None = None
+    for attempt in range(tries):
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=600) as resp, open(dest, "wb") as fh:
+                fh.write(resp.read())
+            return
+        except Exception as exc:          # transient network / rate limit
+            last = exc
+            dest.unlink(missing_ok=True)
+            print(f"    blob fetch attempt {attempt + 1}/{tries} failed: {exc}")
+            time.sleep(5 * (attempt + 1))
+    raise RuntimeError(f"could not fetch blob {blob_sha} after {tries} tries: {last}")
 
 
 def main() -> int:

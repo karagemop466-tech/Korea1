@@ -24,6 +24,7 @@ import json
 import subprocess
 import sys
 import tarfile
+import time
 import urllib.request
 
 import pandas as pd
@@ -44,22 +45,43 @@ FILES = [
 ]
 
 
-def resolve_sha() -> str:
-    """Pin the exact upstream commit with git (github.com is reachable)."""
-    out = subprocess.run(
-        ["git", "ls-remote", f"https://github.com/{REPO}", f"refs/heads/{BRANCH}"],
-        capture_output=True, text=True, timeout=120, check=True,
-    ).stdout.strip()
-    if not out:
-        raise RuntimeError("could not resolve upstream ref")
-    return out.split()[0]
+def resolve_sha(tries: int = 3) -> str:
+    """Pin the exact upstream commit with git (github.com is reachable).
+
+    Retried with backoff (added 2026-11-19): paired verify runs on CI can hit
+    a transient ls-remote failure, and a failed acquisition must not fail the
+    whole build when the pinned bytes themselves are unchanged.
+    """
+    last: Exception | None = None
+    for attempt in range(tries):
+        try:
+            out = subprocess.run(
+                ["git", "ls-remote", f"https://github.com/{REPO}", f"refs/heads/{BRANCH}"],
+                capture_output=True, text=True, timeout=120, check=True,
+            ).stdout.strip()
+            if not out:
+                raise RuntimeError("could not resolve upstream ref")
+            return out.split()[0]
+        except Exception as exc:
+            last = exc
+            time.sleep(5 * (attempt + 1))
+    raise RuntimeError(f"could not resolve upstream ref after {tries} tries: {last}")
 
 
-def download_archive(sha: str) -> bytes:
+def download_archive(sha: str, tries: int = 3) -> bytes:
+    """The pinned tarball from codeload; retried with backoff on transient
+    failures (2026-11-19).  The SHA fixes the bytes, so a retry is safe."""
     url = f"https://codeload.github.com/{REPO}/tar.gz/{sha}"
-    req = urllib.request.Request(url, headers={"User-Agent": "arena-agent/1.0"})
-    with urllib.request.urlopen(req, timeout=300) as resp:
-        return resp.read()
+    last: Exception | None = None
+    for attempt in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "arena-agent/1.0"})
+            with urllib.request.urlopen(req, timeout=300) as resp:
+                return resp.read()
+        except Exception as exc:
+            last = exc
+            time.sleep(5 * (attempt + 1))
+    raise RuntimeError(f"could not download {url} after {tries} tries: {last}")
 
 
 def main() -> None:

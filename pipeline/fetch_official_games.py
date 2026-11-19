@@ -59,6 +59,52 @@ UA = "nfl-line-lab/1.0 (research; contact: repository owner)"
 TIMEOUT = 60
 
 
+# ---------------------------------------------------------------------------
+# Fail-loud pins (REQ-63).  Every one of these is a condition the official
+# documents themselves establish; nothing here infers a value.  A failed pin
+# aborts the run with exit 2 before any CSV or manifest is written, so the
+# workflow goes red instead of committing a silent blank.
+# ---------------------------------------------------------------------------
+
+def _norm(s: object) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower()).strip()
+
+
+def book_matches_fixture(book: dict, slug: str) -> str:
+    """The Game Book's printed matchup must belong to this fixture's slug.
+
+    Returns ``""`` when the printed club names carry every club token of the
+    slug, otherwise the reason the book must be rejected.  The slug is the
+    league's own stable identity for the fixture, so the check does not
+    depend on how the club names are styled in the PDF.
+    """
+    away = _norm(book.get("away_as_printed"))
+    home = _norm(book.get("home_as_printed"))
+    if not away or not home:
+        return f"Game Book prints no matchup (away={away!r}, home={home!r})"
+    structural = {"at", "reg", "pre", "post", "pro", "bowl"}
+    club_tokens = {t for t in _norm(slug).split()
+                   if t not in structural and not t.isdigit()}
+    if not club_tokens:
+        return f"slug {slug!r} carries no club tokens to check against"
+    printed = set(away.split()) | set(home.split())
+    if not club_tokens <= printed:
+        return (f"Game Book prints {away} at {home} but the fixture slug is "
+                f"{slug} — a document for another game")
+    return ""
+
+
+def book_week_slug(slug: str, week: object) -> bool:
+    """A ``-reg-<n>`` slug must name the week that was requested."""
+    m = re.search(r"-reg-(\d+)$", str(slug or ""))
+    return not m or str(int(m.group(1))) == str(week)
+
+
+def date_fragment_printed(value: str) -> bool:
+    """The printed date line carries the league's own M/D/YYYY date."""
+    return bool(re.search(r"\d{1,2}/\d{1,2}/\d{4}", str(value or "")))
+
+
 def http_get(url: str, tries: int = 3) -> tuple[bytes, int]:
     last = None
     for attempt in range(tries):
@@ -189,30 +235,38 @@ def main() -> int:
     season = args.season
     stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     manifest = dict(season=season, retrieved_utc=stamp, runner="GitHub Actions",
-                    schedule_pages=[], game_centres=[], game_books=[], errors=[])
+                    schedule_pages=[], scores_pages=[], game_centres=[], game_books=[], errors=[])
+    fatal: list[str] = []
+
+    def die(reason: str) -> None:
+        """Record a reason the run must stop before anything is published."""
+        fatal.append(reason)
 
     # ---------------------------------------------------------------- schedule
     fixtures: list[dict] = []
     weeks_meta: list[dict] = []
+    final_slugs: set[str] = set()
     for week in weeks:
         # Try each URL form the league serves a week under and keep the one
-        # whose page publishes the week that was asked for.
+        # whose page publishes the week that was asked for.  A form that
+        # fails is remembered only until a later form succeeds — a working
+        # second form is not an error.
         raw = b""
         status = 0
         url = ""
         html = ""
         published = ""
         forms_tried: list[str] = []
+        form_errors: list[str] = []
         for candidate in week_path_forms(season, week):
             forms_tried.append(candidate)
             try:
                 body, code = http_get(candidate)
             except RuntimeError as exc:
-                manifest["errors"].append(dict(url=candidate, stage="schedule", error=str(exc)))
+                form_errors.append(f"{candidate}: {exc}")
                 continue
             if code != 200 or not body:
-                manifest["errors"].append(dict(url=candidate, stage="schedule",
-                                               error=f"http status {code}"))
+                form_errors.append(f"{candidate}: http status {code}")
                 continue
             candidate_html = body.decode("utf-8", "replace")
             candidate_week = published_week(candidate_html)
@@ -221,7 +275,12 @@ def main() -> int:
             if str(candidate_week) == str(week):
                 break
         if not html:
+            die(f"week {week}: no schedule page readable ({'; '.join(form_errors)})")
             continue
+        if str(published) != str(week):
+            die(f"week {week}: the page at {url} publishes week {published!r}, "
+                f"not the requested week — refusing to label one week's fixtures "
+                f"with another week's number")
         text = html_to_text(html)
         write_raw(RAW_DIR / "schedule" / f"reg{week}.html", raw)
         nb, sh = write_gz(EVIDENCE / f"schedule/reg{week}.txt.gz", text)
@@ -241,13 +300,58 @@ def main() -> int:
         if not rows:
             # Fall back to the anchor form, for a page served as plain markup.
             rows = parse_schedule_page(html)
+        if not rows:
+            die(f"week {week}: 0 fixtures parsed from {url} — the page shape "
+                f"changed or the week did not render; refusing to write an "
+                f"empty week")
         for row in rows:
             row.update(schedule_url=url, retrieved_utc=stamp,
                        week_requested=week, week_published=published,
                        week_matches_url=(str(week) == str(published)))
+            # A slug the league prints as ``...-reg-<n>`` must name the week
+            # that was requested; the REG9/REG10 defect (F-2026-11-19-08) was
+            # exactly this disagreement going unnoticed.
+            if not book_week_slug(str(row.get("official_url", "")).rstrip("/").rsplit("/", 1)[-1], week):
+                die(f"week {week}: slug {row.get('official_url')!r} does not "
+                    f"name week {week} — the schedule page served a fixture "
+                    f"from another week")
         fixtures.extend(rows)
         print(f"schedule reg{week}: {len(rows)} fixtures (page publishes week {published})",
               flush=True)
+        # The anchor form of the SAME captured page also prints ``FINAL`` beside
+        # a finished game; those slugs form the finished set the Game Book must
+        # cover.  The word is the league's own, transcribed, never derived from
+        # a clock.
+        for row in parse_schedule_page(html):
+            if str(row.get("status_as_printed", "")).upper() == "FINAL":
+                final_slugs.add(str(row.get("official_url", "")).rstrip("/").rsplit("/", 1)[-1])
+        # Independent fixture-set cross-check against the league's scores page
+        # for the same week (F-2026-11-19-08's lesson: one page can disagree
+        # with another about which fixtures exist).
+        scores_url = f"https://www.nfl.com/scores/{season}/week-{week}"
+        try:
+            sraw, scode = http_get(scores_url)
+        except RuntimeError as exc:
+            die(f"week {week}: scores cross-check unreachable ({scores_url}: {exc})")
+            sraw, scode = b"", 0
+        if sraw and scode == 200:
+            score_slugs = set(re.findall(
+                r'href="(?:https://www\.nfl\.com)?/games/([^"?#]+)"',
+                sraw.decode("utf-8", "replace")))
+            sched_slugs = {str(r.get("official_url", "")).rstrip("/").rsplit("/", 1)[-1]
+                           for r in rows}
+            if score_slugs != sched_slugs:
+                only_sched = sorted(sched_slugs - score_slugs)
+                only_scores = sorted(score_slugs - sched_slugs)
+                die(f"week {week}: schedule page and scores page disagree on "
+                    f"the fixture set (only schedule: {only_sched}; only "
+                    f"scores: {only_scores})")
+            manifest["scores_pages"].append(dict(
+                week=week, url=scores_url, http_status=scode,
+                fixtures=len(score_slugs),
+                raw_sha256=sha256_bytes(sraw), retrieved_utc=stamp))
+        elif scode:
+            die(f"week {week}: scores cross-check http status {scode} ({scores_url})")
         # The same page publishes the season's week windows and the clubs on a
         # bye in each week; they are read from the page that was captured.
         for window in parse_week_selector(html):
@@ -292,9 +396,23 @@ def main() -> int:
             parsed["venue_location"] = info["venue_location"]
         if info["venue_stadium"] and not parsed.get("venue_stadium"):
             parsed["venue_stadium"] = info["venue_stadium"]
-        if info["gamebook_url"]:
+        # Only the league's ``/gamecenter/`` links are Game Books.  The
+        # payload's looser PDF match once returned the Record & Fact Book for
+        # every unplayed fixture (2026-11-19); a non-conforming URL is
+        # recorded as rejected and never fetched as a Game Book.
+        if info["gamebook_url"] and "/gamecenter/" in info["gamebook_url"]:
             parsed["gamebook_url"] = info["gamebook_url"]
+        elif info["gamebook_url"]:
+            parsed["gamebook_url"] = ""
+            parsed["gamebook_url_rejected"] = info["gamebook_url"]
         parsed["page_title"] = info["page_title"]
+        # REQ-23: the venue comes from the game centre's own Game Info block.
+        # A centre that prints no venue at all is a parse failure or a page
+        # change — either way the fixture cannot be published venue-blank.
+        if not (parsed.get("venue_location") or parsed.get("venue_stadium")):
+            die(f"game centre {url} printed no venue (LOCATION and STADIUM "
+                f"both blank) — refusing to publish a fixture without its "
+                f"venue")
         centres.append(parsed)
         manifest["game_centres"].append(dict(url=url, http_status=status, raw_bytes=len(raw),
                                              raw_sha256=sha256_bytes(raw), text_bytes=nb,
@@ -335,6 +453,26 @@ def main() -> int:
                       game_centre_url=c["official_url"], raw_bytes=len(raw),
                       raw_sha256=sha256_bytes(raw), text_sha256=sh, extraction_method=method,
                       retrieved_utc=stamp)
+        # --- fail-loud pins on the document just read (REQ-63) -------------
+        mismatch = book_matches_fixture(parsed, slug)
+        if mismatch:
+            die(f"Game Book {url}: {mismatch} — a document that does not "
+                f"name this fixture will not be published as its book")
+        if not book_week_slug(slug, c["week"]):
+            die(f"Game Book slug {slug} does not name week {c['week']}")
+        if not date_fragment_printed(parsed.get("date_as_printed", "")):
+            die(f"Game Book {url} printed no M/D/YYYY date line — the "
+                f"identification strip did not parse")
+        readable_starters = sum(
+            1 for r in parse_lineup_rows(parsed.get("lineups", ""))
+            if r["column"] >= 0 and r["player"])
+        if readable_starters < 40:
+            die(f"Game Book {slug} yielded {readable_starters} readable "
+                f"starting-lineup cells (the printed grid holds 44; 40 is the "
+                f"floor) — the lineup table did not parse")
+        if not parsed.get("not_active"):
+            die(f"Game Book {slug} printed no Not Active list — the game-day "
+                f"inactive list is required for every captured book")
         books.append(parsed)
         manifest["game_books"].append(dict(url=url, game_centre_url=c["official_url"],
                                            raw_bytes=len(raw), raw_sha256=sha256_bytes(raw),
@@ -386,7 +524,40 @@ def main() -> int:
         time.sleep(args.sleep)
     print(f"game books captured: {len(books)}", flush=True)
 
+    # Every fixture the schedule page marks FINAL must have had a Game Book
+    # link on its centre; a finished game whose centre offers no book is the
+    # league not publishing yet — the run goes red and the next scheduled
+    # attempt retries, rather than the site publishing a finished fixture
+    # with no document behind it.  When --gamebook-weeks narrows the capture,
+    # only the FINAL fixtures in those weeks are held to this rule.
+    week_by_slug = {str(f.get("official_url", "")).rstrip("/").rsplit("/", 1)[-1]:
+                    str(f.get("week_requested", "")) for f in fixtures}
+    captured_book_slugs = {str(b.get("slug", "")) for b in books}
+    for slug in sorted(final_slugs):
+        wk = week_by_slug.get(slug, "")
+        if book_weeks and wk and str(wk) not in {str(x) for x in book_weeks}:
+            continue
+        if slug not in captured_book_slugs:
+            die(f"fixture {slug} is FINAL on the schedule page but its game "
+                f"centre offered no Game Book link — a finished fixture "
+                f"without its official book will not be published")
+
     # ------------------------------------------------------------------ output
+    ok = not fatal and not manifest["errors"]
+    if not ok:
+        # Nothing is published: the committed CSVs, evidence and manifest stay
+        # exactly as they are, and the run exits 2 so the workflow stops
+        # before its commit step.
+        EVIDENCE.mkdir(parents=True, exist_ok=True)
+        (EVIDENCE / "manifest-rejected.json").write_text(
+            json.dumps(dict(manifest, fatal=fatal), indent=2), encoding="utf-8")
+        print("FATAL — capture rejected; no CSV or manifest was written "
+              "(the workflow stops before its commit step):", file=sys.stderr)
+        for reason in fatal:
+            print(f"  - {reason}", file=sys.stderr)
+        for err in manifest["errors"]:
+            print(f"  - error: {err}", file=sys.stderr)
+        return 2
     PROC.mkdir(parents=True, exist_ok=True)
     fx = pd.DataFrame(fixtures)
     if not fx.empty:

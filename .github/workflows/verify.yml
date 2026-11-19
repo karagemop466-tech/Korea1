@@ -26,6 +26,13 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    env:
+      # api.github.com allows 60 unauthenticated requests/hour per IP; paired
+      # push + pull_request verify runs share runner IP pools and were failing
+      # ~50% of the time inside `make build`'s pinned-input downloads
+      # (2026-11-19).  The token raises the limit; the fetched bytes stay
+      # pinned by commit/blob SHA either way.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v5

@@ -83,6 +83,8 @@ def main():
               # NR3-NR5 (arena/ceddf8d8-korea1, 2026-11-18): the verified register, the deficiency matrix and
               # the vig-free view. Named apart from CR1's and CS5's registers; all three are verified pages.
               "verified-register-2026-11-18.html", "matchup-matrix.html", "consensus.html",
+              # GC2 (arena/7cbb2e60-korea1, 2026-11-19): official game-centre / Game Book evidence.
+              "gamecentre.html",
               # E5 (arena/eeba949e-korea1): the official Game Book evidence page.
               "gamebooks.html"}
     results=[]; failures=0

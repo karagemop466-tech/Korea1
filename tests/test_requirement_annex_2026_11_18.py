@@ -128,15 +128,21 @@ def test_kansas_city_omitted_row_is_not_counted_as_a_match():
 def test_outputs_that_block_many_rows_are_still_missing():
     """The blocked rows cite missing artefacts; if one changes, the register must be updated.
 
-    2026-11-19: the Game Book captures and the structured roster table are committed (75ea927).
-    The table is partial (29 of 42 games; 348 unreadable lineup blocks), so R28/R62 stay BLOCKED and
-    the rows are re-described, not re-classified to done. Any change in these counts must be reviewed.
+    Reviewed 2026-11-19 (GC integration): the roster table was re-read with the repaired
+    lineup parser (padded position-to-jersey gaps, four-letter EDGE positions, two-word
+    surnames), so 2,295 rows / 348 unreadable became 3,252 rows / 29 unreadable (one
+    club-header line per game).  Thirteen of the former 42 "Game Books" were the league's
+    Record & Fact Book mis-captured for unplayed fixtures and were removed, leaving the 29
+    genuine books.  The expected-vs-actual join exists, so R28/R62 were re-classified to
+    DONE and F-54 closed.  Any change in these counts must be reviewed again.
     """
     gb = pd.read_csv(ROOT / "assets" / "data" / "official_gamebooks.csv", dtype=str)
-    assert len(gb) == 42
+    assert len(gb) == 29, (
+        "Game Book count changed: the 29 are the finished fixtures of weeks 9-10; "
+        "re-read R28/R62/F-54 before editing their text")
     ro = pd.read_csv(ROOT / "data" / "processed" / "official_gamebook_rosters.csv", dtype=str)
-    assert len(ro) == 2295 and ro["slug"].nunique() == 29
-    assert int((ro["roster_block"] == "lineup_unreadable").sum()) == 348, (
+    assert len(ro) == 3252 and ro["slug"].nunique() == 29
+    assert int((ro["roster_block"] == "lineup_unreadable").sum()) == 29, (
         "Game Book unreadable-block count changed: re-read R28/R62 before editing their text")
     assert int((_dep().team == "HOU").sum()) == 0, (
         "Houston depth rows exist now — R33/R36/R37/R40/R52 must be re-classified")

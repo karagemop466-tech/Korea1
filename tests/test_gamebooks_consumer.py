@@ -56,17 +56,33 @@ def test_the_capture_reads_the_leagues_own_fixture_list():
     assert len(rows) >= 10, f"only {len(rows)} fixtures read from the official page"
 
 
-def test_the_anchor_reader_alone_finds_nothing_on_the_current_page():
-    """The reason the old chain was dead: the page has no /games/ anchor."""
+def test_payload_and_anchor_readers_agree_on_the_fixture_set():
+    """The page serves its fixtures in the Next.js payload (no absolute
+    ``href`` — the anchor reader was dead when this module was written).  The
+    GC integration repaired the anchor reader for the relative-href form, so
+    both readers must now be alive and must name the SAME fixtures: the
+    payload is primary, the anchor form is the fallback, and a disagreement
+    between them is a defect either way."""
     html = _schedule_html()
     if not html:
         return
     assert 'href="https://www.nfl.com/games/' not in html, (
-        "the committed page unexpectedly contains a /games/ anchor; the anchor "
-        "reader would work and the payload reader would be redundant")
+        "the committed page still carries no absolute /games/ anchor; the "
+        "relative-href path is the one in use")
     from official_games import parse_schedule_page
-    assert parse_schedule_page(html) == [], (
-        "the anchor reader is expected to find nothing on the current page")
+    anchor_rows = parse_schedule_page(html)
+    payload_rows = official_payload.parse_schedule_payload(html)
+    assert payload_rows, "the payload reader must find the fixtures"
+    assert anchor_rows, (
+        "the repaired anchor reader must also find them (relative href + "
+        "sr-only label)")
+    anchor_slugs = {r["official_url"].rstrip("/").rsplit("/", 1)[-1]
+                    for r in anchor_rows}
+    payload_slugs = {r["official_url"].rstrip("/").rsplit("/", 1)[-1]
+                     for r in payload_rows}
+    assert anchor_slugs == payload_slugs, (
+        f"readers disagree: only anchor {sorted(anchor_slugs - payload_slugs)}, "
+        f"only payload {sorted(payload_slugs - anchor_slugs)}")
 
 
 def test_fixture_fields_come_from_the_league_not_from_a_neighbour():

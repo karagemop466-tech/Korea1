@@ -45,6 +45,7 @@ Run: python pipeline/availability_graph.py
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -95,6 +96,60 @@ def _norm_name(name: str) -> str:
     return "".join(ch for ch in str(name).upper() if ch.isalpha())
 
 
+_NAME_SUFFIXES = {"JR", "SR", "II", "III", "IV", "V"}
+
+
+def _name_parts(name: str) -> tuple[str, str]:
+    """(first names, surname) of a printed name, suffixes like ``Jr.`` dropped."""
+    toks = [t for t in re.findall(r"[A-Za-z']+", str(name or "").upper()) if t]
+    while toks and toks[-1] in _NAME_SUFFIXES:
+        toks.pop()
+    if not toks:
+        return "", ""
+    if len(toks) == 1:
+        return "", toks[0]
+    return " ".join(toks[:-1]), toks[-1]
+
+
+def _same_player(expected: str, actual: str) -> bool:
+    """Do these two printed names denote the same player?
+
+    The club chart prints ``Brandon Coleman``; the Game Book prints
+    ``B.Coleman``.  Exact normalisation alone never matched them, so every
+    joined row was labelled a replacement even when both documents named the
+    same man (measured 2026-11-19: 0 CONFIRMED out of 671 joined rows, with
+    ``Brandon Coleman`` vs ``B.Coleman`` typed as a replacement).  The rule:
+    the surnames must be equal and, when the Game Book side carries only an
+    initial, that initial must equal the first letter of the chart's first
+    name.  Nothing else is guessed — a different surname never matches.
+    """
+    e, a = str(expected or "").strip(), str(actual or "").strip()
+    if not e or not a:
+        return False
+    if _norm_name(e) == _norm_name(a):
+        return True
+    e_first, e_last = _name_parts(e)
+    a_first, a_last = _name_parts(a)
+    if not e_last or not a_last or e_last != a_last:
+        return False
+    a_first_toks = a_first.split()
+    if e_first and a_first_toks:
+        initial = a_first_toks[0]
+        if len(initial) == 1:
+            # The Book's initial must equal the chart's first letter, and any
+            # further printed fragments ("A.St. Brown" -> "A ST") must appear
+            # in the chart's first name — "Adam Brown" is not "A.St. Brown".
+            extras = set(a_first_toks[1:])
+            if initial != e_first[0]:
+                return False
+            return extras <= set(e_first.split())
+        # The Book occasionally prints a longer initial string ("Tr.Smith" for
+        # Trey Smith); it must be a prefix of the chart's first name.
+        if 1 < len(initial) < len(e_first):
+            return e_first.startswith(initial)
+    return bool(e_first) and e_first == a_first
+
+
 def _norm_position(position: str) -> str:
     return str(position).strip().upper()
 
@@ -129,6 +184,7 @@ def _chart_expectation(depth: pd.DataFrame) -> dict[tuple[str, str, str], dict]:
             expected_co_starter_count=str(len(names)),
             chart_players={_norm_name(p): r for p, r in
                            zip(grp.player, grp._rank)},
+            chart_raw_players={p: r for p, r in zip(grp.player, grp._rank)},
             chart_names=list(grp.player),
         )
     return out
@@ -162,7 +218,13 @@ def build() -> dict:
             position = _norm_position(getattr(row, "position", ""))
             player = str(getattr(row, "player", ""))
             if block == "starter" and side and unit:
-                starters[(slug, club, f"{unit}|{position}")] = dict(
+                # Keyed by the fixture side, not by the printed club name:
+                # the graph's rows are keyed by the league's club code
+                # (``fx.away_team``/``fx.home_team``) while the Game Book
+                # prints the club's full name, so a name key could never
+                # join and every row stayed "NOT CONFIRMED" even with the
+                # book captured (measured 2026-11-19: 1,714/1,714 rows).
+                starters[(slug, side, f"{unit}|{position}")] = dict(
                     player=player, jersey=str(getattr(row, "jersey", "")),
                     source=str(getattr(row, "official_url", "")),
                     club=club, unit=unit, position=position, slug=slug)
@@ -177,7 +239,7 @@ def build() -> dict:
                     evidence_path=str(getattr(row, "source_url", "")),
                     retrieved_utc=str(getattr(row, "retrieved_utc", ""))))
                 table = inactive if block == "not_active" else dnp
-                table[(slug, club, _norm_name(player))] = label
+                table[(slug, side, _norm_name(player))] = label
 
     inactive_df = pd.DataFrame(inactive_rows, columns=INACTIVE_COLUMNS)
     inactive_df.to_csv(PROC / "official_inactive_lists.csv", index=False)
@@ -211,7 +273,7 @@ def build() -> dict:
             for (chart_club, unit, position), exp in expectation.items():
                 if chart_club != club:
                     continue
-                key = (slug, club, f"{unit}|{position}")
+                key = (slug, side, f"{unit}|{position}")
                 actual = starters.get(key, {})
                 expected_name = exp["expected_starter"]
                 actual_name = actual.get("player", "")
@@ -222,11 +284,18 @@ def build() -> dict:
                     outcome = "NO EXPECTATION — position absent from the club's chart"
                 elif exp["expected_co_starter_count"] != "1":
                     outcome = "CO-STARTERS — the club named more than one first player"
-                elif _norm_name(actual_name) == _norm_name(expected_name.split(";")[0]):
+                elif _same_player(expected_name.split(";")[0], actual_name):
                     outcome = "CONFIRMED — the chart's first player started"
                 else:
                     outcome = "REPLACEMENT — a different player started"
                 rank = exp["chart_players"].get(_norm_name(actual_name), "")
+                if outcome.startswith("REPLACEMENT") and not rank:
+                    # The Book prints an initial where the chart prints a first
+                    # name; find the chart row that names the same player.
+                    for raw, r in exp.get("chart_raw_players", {}).items():
+                        if _same_player(raw, actual_name):
+                            rank = r
+                            break
                 pit = ""
                 captured = exp["expected_captured_utc"]
                 if captured and kickoff:
@@ -250,10 +319,10 @@ def build() -> dict:
                     outcome=outcome,
                     replacement_depth_rank=rank if outcome.startswith("REPLACEMENT") else "",
                     replacement_is_listed_in_chart=("YES" if rank else "NO") if outcome.startswith("REPLACEMENT") else "",
-                    expected_player_inactive=inactive.get((slug, club, _norm_name(expected_name.split(";")[0])), ""),
-                    expected_player_did_not_play=dnp.get((slug, club, _norm_name(expected_name.split(";")[0])), ""),
-                    actual_player_inactive=inactive.get((slug, club, _norm_name(actual_name)), ""),
-                    actual_player_did_not_play=dnp.get((slug, club, _norm_name(actual_name)), ""),
+                    expected_player_inactive=inactive.get((slug, side, _norm_name(expected_name.split(";")[0])), ""),
+                    expected_player_did_not_play=dnp.get((slug, side, _norm_name(expected_name.split(";")[0])), ""),
+                    actual_player_inactive=inactive.get((slug, side, _norm_name(actual_name)), ""),
+                    actual_player_did_not_play=dnp.get((slug, side, _norm_name(actual_name)), ""),
                     injury_designation=designation,
                     injury_source=injury_source,
                     fixture_url=str(fx.official_url),

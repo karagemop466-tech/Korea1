@@ -68,35 +68,135 @@ def html_to_text(raw: str) -> str:
 # Schedule page
 # --------------------------------------------------------------------------
 
-# "- Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME"
+# "- Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME"   (pregame print)
 _SCHEDULE_LABEL = re.compile(
     r"^\s*(?P<away>[A-Za-z0-9'&.\- ]+?)\s+at\s+(?P<home>[A-Za-z0-9'&.\- ]+?),"
     r"\s+(?P<day>[A-Za-z]+day,\s+[A-Za-z]+\s+\d{1,2}(?:st|nd|rd|th)?),"
     r"\s+(?P<time>\d{1,2}:\d{2}\s*[AP]M)"
     r"(?:,\s*(?P<network>[A-Za-z0-9+&.\- ]+?))?\s*$")
+# "- Commanders 24, Giants 21, FINAL, Thursday, November 12th"   (final print).
+# The league prints finished games this way on the by-week schedule page, so a
+# week of already-played fixtures is readable from the same document as a
+# week that has not started.  The score and the word FINAL are transcribed,
+# never derived; a pregame row keeps them blank.
+_FINAL_LABEL = re.compile(
+    r"^\s*(?P<away>[A-Za-z0-9'&.\- ]+?)\s+(?P<away_score>\d{1,2}),\s*"
+    r"(?P<home>[A-Za-z0-9'&.\- ]+?)\s+(?P<home_score>\d{1,2}),\s*FINAL,"
+    r"\s*(?P<day>[A-Za-z]+day,\s+[A-Za-z]+\s+\d{1,2}(?:st|nd|rd|th)?)\s*$")
 
+# The league serves the fixture link both ways: the flattened page captured on
+# 2026-11-19 by the GitHub runner used *relative* hrefs ("/games/…") with the
+# label inside a nested <span class="sr-only">, while simpler renders print an
+# absolute href with the label as the anchor's direct text.  Both shapes are
+# the same official link; only the markup differs.  Measured, not assumed:
+# `data/evidence/official_games/schedule/REG10.html.gz` (2026-11-19) contains
+# 13 fixture anchors, all of them relative.
 _ANCHOR = re.compile(
-    r"<a\b[^>]*?href=\"(?P<url>https://www\.nfl\.com/games/[^\"]+)\"[^>]*>(?P<label>[^<]*)</a>",
-    re.I)
+    r"<a\b[^>]*?href=\"(?P<url>(?:https://www\.nfl\.com)?/games/[^\"]+)\"[^>]*>"
+    r"(?P<label>.*?)</a>",
+    re.I | re.S)
+_SRONLY = re.compile(
+    r"<span[^>]*class=\"[^\"]*sr-only[^\"]*\"[^>]*>(?P<t>.*?)</span>", re.I | re.S)
 _HTML_HEADING = re.compile(r"<h[1-6]\b[^>]*>(?P<h>.*?)</h[1-6]>", re.I | re.S)
+
+
+def slug_of(url: str) -> str:
+    """The fixture slug an official game URL ends in (query and slash stripped)."""
+    path = url.split("?")[0].split("#")[0].rstrip("/")
+    return path.rsplit("/", 1)[-1]
+
+
+def fixture_week(official_url: str) -> int | None:
+    """The regular-season week printed in a fixture slug, or None if absent.
+
+    ``commanders-at-giants-2026-reg-10`` → 10.  The week is read from the
+    league's own slug; nothing is taken from the URL the page was requested
+    with, because that is exactly the field the old capture got wrong.
+    """
+    m = re.search(r"-reg-(\d+)$", slug_of(official_url))
+    return int(m.group(1)) if m else None
+
+
+def week_mismatches(rows: list[dict], week: int) -> list[str]:
+    """Every row whose slug week is not the requested week (empty = clean)."""
+    bad: list[str] = []
+    for r in rows:
+        fw = fixture_week(r.get("official_url", ""))
+        if fw is None:
+            bad.append(f"{r.get('official_url', '')!r}: slug carries no -reg-<week>")
+        elif fw != week:
+            bad.append(f"{slug_of(r.get('official_url', ''))}: slug week {fw}, requested {week}")
+    return bad
+
+
+def game_link_slugs(raw_html: str) -> set[str]:
+    """Every fixture slug the page links to under /games/ (any label shape).
+
+    Used to cross-check the schedule page against the independently rendered
+    scores page: two official documents must name the same fixture set before
+    anything is captured.
+    """
+    return {slug_of(m.group("url")) for m in _ANCHOR.finditer(raw_html)}
+
+
+def week_schedule_url(season: int, week: int) -> str:
+    """The league's week-selecting schedule URL.
+
+    Measured 2026-11-19: ``/schedules/<season>/REG<week>`` did **not** select
+    the week for the capture client — the REG9 and REG10 fetches returned
+    byte-identical current-week content (flag F-2026-11-19-08).  The by-week
+    path prints the requested week's title and fixtures (re-read live the same
+    day: ``…/by-week/week-10`` → "NFL Week 10 Schedule 2026").
+    """
+    return f"https://www.nfl.com/schedules/{season}/by-week/week-{week}"
+
+
+def scores_week_url(season: int, week: int) -> str:
+    """The league's week-selecting scores page (the completeness cross-check)."""
+    return f"https://www.nfl.com/scores/{season}/week-{week}"
+
+
+def _anchor_label(label_html: str) -> str:
+    """The printed fixture label from an anchor's markup.
+
+    The accessible name lives in a nested ``sr-only`` span when one is
+    present; otherwise the anchor's own text is the label.  Tags are stripped
+    and entities decoded — the words are the page's words, nothing added.
+    """
+    m = _SRONLY.search(label_html)
+    src = m.group("t") if m else label_html
+    txt = _TAG.sub(" ", src)
+    return re.sub(r"\s+", " ", html_mod.unescape(txt)).strip()
 
 
 def parse_schedule_page(raw_html: str) -> list[dict]:
     """Fixtures printed on an official NFL schedule page.
 
-    The league prints each fixture as a link whose text is
-    ``Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME``.  Each row
-    keeps that wording, the section heading the row sits under, the official
-    game-centre URL and the page it was read from.
+    The league prints each fixture as a link whose text is either
+
+    * ``Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME`` (pregame), or
+    * ``Commanders 24, Giants 21, FINAL, Thursday, November 12th`` (final).
+
+    Each row keeps that wording (scores and FINAL only when the page printed
+    them), the section heading the row sits under, the absolute official
+    game-centre URL and the page it was read from.  A link whose label matches
+    neither shape is skipped — a fixture is never reconstructed from markup.
     """
     headings = [(m.start(), re.sub(r"\s+", " ", html_mod.unescape(m.group("h"))).strip())
                 for m in _HTML_HEADING.finditer(raw_html)]
     rows: list[dict] = []
     for m in _ANCHOR.finditer(raw_html):
-        label = html_mod.unescape(m.group("label"))
+        url = m.group("url")
+        if url.startswith("/"):
+            url = "https://www.nfl.com" + url
+        label = _anchor_label(m.group("label"))
         lab = _SCHEDULE_LABEL.match(label)
-        if not lab:
-            continue
+        is_final = False
+        if lab is None:
+            lab = _FINAL_LABEL.match(label)
+            if lab is None:
+                continue
+            is_final = True
         heading = ""
         for pos, head in headings:
             if pos < m.start():
@@ -107,10 +207,14 @@ def parse_schedule_page(raw_html: str) -> list[dict]:
             away_as_printed=lab.group("away").strip(),
             home_as_printed=lab.group("home").strip(),
             date_as_printed=re.sub(r"\s+", " ", lab.group("day")).strip(),
-            time_as_printed=re.sub(r"\s+", " ", lab.group("time")).strip(),
-            network_as_printed=re.sub(r"\s+", " ", (lab.group("network") or "")).strip(),
+            time_as_printed="" if is_final else re.sub(r"\s+", " ", lab.group("time")).strip(),
+            network_as_printed=("" if is_final else
+                                 re.sub(r"\s+", " ", (lab.group("network") or "")).strip()),
+            status_as_printed="FINAL" if is_final else "",
+            away_score_as_printed=lab.group("away_score") if is_final else "",
+            home_score_as_printed=lab.group("home_score") if is_final else "",
             section_heading=heading,
-            official_url=m.group("url"),
+            official_url=url,
         ))
     return rows
 
@@ -163,21 +267,46 @@ def parse_game_centre(text: str, raw_html: str = "") -> dict:
 # --------------------------------------------------------------------------
 
 _BOOK_TITLE = re.compile(r"^(?P<away>.+?)\s+at\s+(?P<home>.+?)\s*$", re.M)
-_BOOK_DATE = re.compile(r"^Date:\s*(?P<v>.+?)\s*$", re.M)
-_BOOK_START = re.compile(r"^Start Time:\s*(?P<v>.+?)\s*$", re.M)
-_BOOK_VENUE = re.compile(r"^(?P<v>\d{1,2}/\d{1,2}/\d{4}\s+at\s+.+?)\s*$", re.M)
+# Leading whitespace tolerated: ``pdftotext -layout`` may indent a cell.  The
+# words matched are the page's own; nothing is invented when they are absent.
+_BOOK_DATE = re.compile(r"^\s*Date:\s*(?P<v>.+?)\s*$", re.M)
+_BOOK_START = re.compile(r"^\s*Start Time:\s*(?P<v>.+?)\s*$", re.M)
+_BOOK_VENUE = re.compile(r"^\s*(?P<v>\d{1,2}/\d{1,2}/\d{4}\s+at\s+.+?)\s*$", re.M)
+# The real capture prints date, matchup and start time on ONE line, and the
+# venue alone on the next (``at MetLife Stadium, East Rutherford, NJ``).
+_BOOK_DATELINE = re.compile(
+    r"^\s*Date:\s*(?P<date>[A-Za-z]+day,\s*\d{1,2}/\d{1,2}/\d{4})\s+"
+    r"(?P<away>.+?)\s+at\s+(?P<home>.+?)\s+Start Time:\s*(?P<time>\d{1,2}:\d{2}\s*[AP]M\s*\w*)\s*$",
+    re.M)
+_BOOK_VENUE_AT = re.compile(r"^\s*at\s+(?P<v>[A-Z].+?)\s*$", re.M)
 _BOOK_WEATHER = re.compile(r"^Game Weather:\s*(?P<v>.*?)(?:\s+Temp:|\s*$)", re.M)
 _BOOK_TEMP = re.compile(r"Temp:\s*(?P<t>[-\d]+)°\s*F.*?Wind:\s*(?P<w>[A-Za-z]+\s+\d+)\s*mph", re.S)
-_BOOK_ROOF = re.compile(r"^(?P<v>(?:Retractable Roof|Dome|Roof).*?)\s*$", re.M)
+_BOOK_ROOF = re.compile(r"^\s*(?P<v>(?:Retractable Roof|Dome|Roof).*?)\s*$", re.M)
 _BOOK_SURFACE = re.compile(r"on\s+(?P<v>Grass|Field Turf|Turf|AstroTurf|Synthetic Turf)", re.I)
-_BOOK_ATTEND = re.compile(r"^Paid Attendance:\s*(?P<v>[\d,]+)\s*$", re.M)
-_BOOK_OFFICIALS = re.compile(r"^Referee:\s*(?P<v>.+?)\s*$", re.M)
+_BOOK_ATTEND = re.compile(r"^\s*Paid Attendance:\s*(?P<v>[\d,]+)\s*$", re.M)
+_BOOK_OFFICIALS = re.compile(r"^\s*Referee:\s*(?P<v>.+?)\s*$", re.M)
 
-_NAME = r"[A-Z][A-Za-z'\-]*\.[A-Za-z'\-]+"
+# Initial.Surname, extended for the two-word surnames the real books print
+# (``G.Van Roten``, ``A.St. Brown``).  An extra word must contain a lowercase
+# letter, so an all-caps position token (``CB``, ``OLB``, ``EDGE``) or a
+# single-letter position (``S``) still ends the name.
+_NAME = (r"[A-Z][A-Za-z'\-]*\.[A-Za-z'\-]+"
+        r"(?:[ .]+[A-Z]?[a-z][A-Za-z'\-]*)*")
 _CELL = re.compile(
     r"(?P<pos>(?:\d?[A-Z]{1,3}|OL B|CB|FS|SS))\s+"
     r"(?P<num>\d{1,2})\s+"
     rf"(?P<name>{_NAME})")
+# The four-column lineup grid pads inside a cell too: the committed Game Book
+# bytes print ``     WR     14 A.Williams`` — five spaces between position and
+# jersey — while the gap between two printed columns is about twenty.  A run
+# of two spaces therefore cannot be a column boundary here (that is why the
+# captured lineups parsed as ``lineup_unreadable`` before this pattern).
+# Measured on ``data/evidence/official_games/gamebooks/``; nothing is guessed:
+# a row that does not yield exactly four pos-jersey-name cells still falls
+# back to the wide-gap split and is flagged unreadable if it does not read.
+_CELL_TOLERANT = re.compile(
+    rf"(?<![\w.])(?P<pos>(?:\d?[A-Z]{{1,4}}|OL B|CB|FS|SS))\s+"
+    rf"(?P<num>\d{{1,2}})\s+(?P<name>{_NAME})")
 
 
 def _split_block(text: str, start_marker: str, end_markers: Iterable[str]) -> str:
@@ -201,17 +330,34 @@ def parse_game_book(text: str) -> dict:
         roof_as_printed="", surface_as_printed="", attendance_as_printed="",
         referee_as_printed="", lineups="", substitutions="", did_not_play="", not_active="",
     )
-    m = _BOOK_TITLE.search(text)
+    # The league prints the whole identification strip on one line in the
+    # captured PDFs — ``Date: Thursday, 11/12/2026   Washington Commanders at
+    # New York Giants   Start Time: 8:15 PM EST`` — with the venue on the
+    # following line (``at MetLife Stadium, East Rutherford, NJ``).  That
+    # combined line is read first so the title and date cannot swallow each
+    # other; the three own-line forms below remain as the fallback for prints
+    # (and the repository's synthetic fixtures) that set them on separate
+    # lines.  Measured on ``data/evidence/official_games/gamebooks/``.
+    m = _BOOK_DATELINE.search(text)
     if m:
+        out["date_as_printed"] = m.group("date").strip()
         out["away_as_printed"] = m.group("away").strip()
         out["home_as_printed"] = m.group("home").strip()
-    m = _BOOK_DATE.search(text)
-    if m:
-        out["date_as_printed"] = m.group("v").strip()
-    m = _BOOK_START.search(text)
-    if m:
-        out["start_time_as_printed"] = m.group("v").strip()
+        out["start_time_as_printed"] = m.group("time").strip()
+    else:
+        m = _BOOK_TITLE.search(text)
+        if m:
+            out["away_as_printed"] = m.group("away").strip()
+            out["home_as_printed"] = m.group("home").strip()
+        m = _BOOK_DATE.search(text)
+        if m:
+            out["date_as_printed"] = m.group("v").strip()
+        m = _BOOK_START.search(text)
+        if m:
+            out["start_time_as_printed"] = m.group("v").strip()
     m = _BOOK_VENUE.search(text)
+    if not m:
+        m = _BOOK_VENUE_AT.search(text)
     if m:
         out["venue_as_printed"] = m.group("v").strip()
     m = _BOOK_WEATHER.search(text)
@@ -234,7 +380,20 @@ def parse_game_book(text: str) -> dict:
     if m:
         out["referee_as_printed"] = m.group("v").strip()
 
-    out["lineups"] = _split_block(text, "Lineups", ["Substitutions", "Did Not Play", "Not Active"])
+    lineups = _split_block(text, "Lineups", ["Substitutions", "Did Not Play", "Not Active"])
+    if not lineups:
+        # Some official prints of page 1 omit the word "Lineups" itself; the
+        # block still sits between the officials line and the Substitutions
+        # row.  The fallback reads that span — it does not move content in.
+        off = _BOOK_OFFICIALS.search(text)
+        start = off.end() if off else 0
+        cut = len(text)
+        for marker in ("Substitutions", "Did Not Play", "Not Active"):
+            j = text.find(marker, start)
+            if 0 <= j < cut:
+                cut = j
+        lineups = text[start:cut] if cut > start else ""
+    out["lineups"] = lineups
     out["substitutions"] = _split_block(text, "Substitutions", ["Did Not Play", "Not Active"])
     out["did_not_play"] = _split_block(text, "Did Not Play", ["Not Active"])
     out["not_active"] = _split_block(text, "Not Active",
@@ -288,6 +447,15 @@ def parse_lineup_rows(block: str) -> list[dict]:
     for line in block.splitlines():
         line = line.strip()
         if not line or re.match(r"^(Offense|Defense|Special Teams)\b", line):
+            continue
+        # Preferred path: four pos-jersey-name cells found left to right, in
+        # printed order.  It survives the padded position-to-jersey gaps the
+        # real PDF prints, which the wide-gap split cannot separate.
+        cells = list(_CELL_TOLERANT.finditer(line))
+        if len(cells) == 4:
+            for idx, m in enumerate(cells):
+                rows.append(dict(column=idx, position=m.group("pos"), jersey=m.group("num"),
+                                 player=m.group("name"), raw=m.group(0).strip()))
             continue
         cols = split_columns(line)
         if len(cols) != 4:

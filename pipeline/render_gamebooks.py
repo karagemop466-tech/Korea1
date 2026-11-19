@@ -165,17 +165,29 @@ def render() -> dict[str, str]:
         src_link(schedule_url, "official schedule page") if schedule_url else EMPTY,
     ] for r in windows.itertuples() if str(r.week_type) == "REG"]
 
+    # State is read from the captured tables, not hard-coded: as of the
+    # 2026-11-19 capture the league's books, centres and game-day lists ARE
+    # held, and a page that printed "not captured" beside them would publish a
+    # false statement (repaired during the GC integration merge, 2026-11-19).
+    n_books_held = (int((documents["kind"] == "official Game Book (text)").sum())
+                    if not documents.empty else 0)
+    n_centres_held = (int((documents["kind"] == "official game centre").sum())
+                      if not documents.empty else 0)
+    n_inactive_held = len(inactive) if not inactive.empty else 0
     gate_rows = [
-        ["Official Game Book PDFs", EMPTY,
+        ["Official Game Book PDFs",
+         f"{n_books_held} captured" if n_books_held else EMPTY,
          "the league publishes the Game Book for a finished game; the capture must read the "
          "game centre's own Download Game Book link",
          "one Game Book capture naming a starter for one fixture, with its SHA-256",
          "https://www.nfl.com/games/colts-at-texans-2026-reg-11"],
-        ["Game-centre pages", EMPTY,
+        ["Game-centre pages",
+         f"{n_centres_held} captured" if n_centres_held else EMPTY,
          "the capture reads a game centre for every fixture it parsed from the schedule page",
          "one game-centre capture with HTTP 200 and the venue printed in its Game Info block",
          "https://www.nfl.com/games/colts-at-texans-2026-reg-11"],
-        ["Official inactive and did-not-play lists", EMPTY,
+        ["Official inactive and did-not-play lists",
+         f"{n_inactive_held} rows captured" if n_inactive_held else EMPTY,
          "the Game Book's Not Active and Did Not Play lists are the league's game-day lists; "
          "they arrive with the Game Book",
          "one dated inactive-list capture for one fixture, joined to the injury report by player",
@@ -244,7 +256,11 @@ conversion is recorded on every row of
 <p>The expectation is the player the club itself lists first on its own official depth chart. The
 actual starter is the player the league names in the Game Book's starting lineup. A position
 where the club lists more than one first player is published as a co-starter row: a club that
-names three receivers at rank one has not named a starter, and the graph does not choose one.</p>
+names three receivers at rank one has not named a starter, and the graph does not choose one.
+The two documents print names differently — the chart writes <em>Brandon Coleman</em>, the Game
+Book writes <em>B.Coleman</em> — so a row is confirmed only when the surnames are equal and the
+Book's initial equals the first letter of the chart's first name; a different surname is always
+a replacement, and nothing else is treated as a match.</p>
 {table(summary_rows, ["Fixture", "Week", "Clubs", "Graph rows", "Confirmed", "Replacements",
                        "Co-starters", "Not confirmed", "Official source"],
        caption="Availability graph by fixture — the actual side needs the league's Game Book")}

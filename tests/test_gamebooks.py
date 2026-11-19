@@ -234,3 +234,256 @@ def test_two_column_roster_refuses_to_guess_a_single_column_line():
 def test_split_columns_uses_the_wide_gap_only():
     assert og.split_columns("WR 19 D.Samuel    DL 97 N.Bosa") == [
         "WR 19 D.Samuel", "DL 97 N.Bosa"]
+
+
+# --------------------------------------------------------------------------- #
+# 2026-11-19 capture repair (session arena/7cbb2e60-korea1, GC1)
+#
+# The committed runner capture showed three shapes the old parser could not
+# read: relative hrefs, labels nested in <span class="sr-only">, and the
+# final-score label the league prints for finished games.  Each test below
+# plants the real shape and then mutates it, so a parser that ignored the
+# document would fail.
+# --------------------------------------------------------------------------- #
+REAL_SHAPE_HTML = """
+<html><body><div class="schedule">
+<h3>Thursday Night Football, November 19th</h3>
+<a class="relative" data-analytics="{&quot;gameId&quot;:&quot;ab997d97&quot;}" href="/games/colts-at-texans-2026-reg-11"><span class="sr-only">Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME</span><span class="logo"></span></a>
+<h3>Sunday, November 15th</h3>
+<a href="https://www.nfl.com/games/commanders-at-giants-2026-reg-10"><span class="sr-only">Commanders 24, Giants 21, FINAL, Thursday, November 12th</span></a>
+<a href="/games/other-noise">Some other link</a>
+</div></body></html>
+"""
+
+
+def test_schedule_page_reads_relative_hrefs_and_nested_labels():
+    rows = og.parse_schedule_page(REAL_SHAPE_HTML)
+    assert len(rows) == 2
+    r = rows[0]
+    # the relative href is normalised to the official absolute URL
+    assert r["official_url"] == "https://www.nfl.com/games/colts-at-texans-2026-reg-11"
+    assert r["away_as_printed"] == "Colts"
+    assert r["home_as_printed"] == "Texans"
+    assert r["time_as_printed"] == "8:15 PM"
+    assert r["network_as_printed"] == "PRIME"
+    assert r["status_as_printed"] == ""
+
+
+def test_schedule_page_reads_the_final_score_label():
+    rows = og.parse_schedule_page(REAL_SHAPE_HTML)
+    r = rows[1]
+    assert r["away_as_printed"] == "Commanders"
+    assert r["home_as_printed"] == "Giants"
+    assert r["status_as_printed"] == "FINAL"
+    assert r["away_score_as_printed"] == "24"
+    assert r["home_score_as_printed"] == "21"
+    assert r["date_as_printed"] == "Thursday, November 12th"
+    assert r["time_as_printed"] == ""          # the final print carries no kickoff
+    assert r["network_as_printed"] == ""
+
+
+def test_schedule_page_notices_a_changed_final_score():
+    changed = REAL_SHAPE_HTML.replace("Commanders 24, Giants 21",
+                                      "Commanders 27, Giants 21")
+    rows = og.parse_schedule_page(changed)
+    assert rows[1]["away_score_as_printed"] == "27"
+
+
+def test_schedule_page_skips_a_label_it_cannot_read():
+    changed = REAL_SHAPE_HTML.replace(
+        "Colts at Texans, Thursday, November 19th, 8:15 PM, PRIME",
+        "Colts vs Texans sometime soon")
+    rows = og.parse_schedule_page(changed)
+    assert len(rows) == 1          # only the final-score row survives; no guessing
+    assert rows[0]["status_as_printed"] == "FINAL"
+
+
+def test_week_schedule_url_is_the_week_selecting_path():
+    # /schedules/2026/REG10 was measured (2026-11-19) to ignore the week
+    # (flag F-2026-11-19-08); the by-week path is the capture source.
+    assert og.week_schedule_url(2026, 10) == "https://www.nfl.com/schedules/2026/by-week/week-10"
+    assert og.scores_week_url(2026, 10) == "https://www.nfl.com/scores/2026/week-10"
+    assert "REG10" not in og.week_schedule_url(2026, 10)
+
+
+def test_fixture_week_reads_the_slugs_own_week():
+    assert og.fixture_week("https://www.nfl.com/games/commanders-at-giants-2026-reg-10") == 10
+    assert og.fixture_week("/games/colts-at-texans-2026-reg-11?tab=highlights") == 11
+    assert og.fixture_week("https://www.nfl.com/schedules/2026") is None
+
+
+def test_week_mismatches_flags_a_wrong_week_slug():
+    rows = og.parse_schedule_page(REAL_SHAPE_HTML)   # slugs reg-11 and reg-10
+    # requested week 11: the reg-11 row is clean, the reg-10 row is flagged
+    bad11 = og.week_mismatches(rows, 11)
+    assert len(bad11) == 1 and "reg-10" in bad11[0]
+    # requested week 9: both rows are flagged
+    bad9 = og.week_mismatches(rows, 9)
+    assert len(bad9) == 2
+    assert all("requested 9" in m for m in bad9)
+
+
+def test_game_link_slugs_cross_checks_two_official_documents():
+    sched = og.game_link_slugs(REAL_SHAPE_HTML)
+    assert "colts-at-texans-2026-reg-11" in sched
+    assert "commanders-at-giants-2026-reg-10" in sched
+    # the scores page for week 11 must name the same week-11 fixture set
+    week11 = {s for s in sched if s.endswith("-reg-11")}
+    assert week11 == {"colts-at-texans-2026-reg-11"}
+
+
+def test_slug_of_strips_query_and_slash():
+    assert og.slug_of("https://www.nfl.com/games/was-at-nyg-2026-reg-10/?tab=x") == "was-at-nyg-2026-reg-10"
+    assert og.slug_of("/games/was-at-nyg-2026-reg-10") == "was-at-nyg-2026-reg-10"
+
+
+def test_book_matches_fixture_rejects_a_book_for_another_game():
+    from fetch_official_games import book_matches_fixture
+    book = dict(away_as_printed="Washington Commanders",
+                home_as_printed="New York Giants")
+    assert book_matches_fixture(book, "commanders-at-giants-2026-reg-10") == ""
+    assert book_matches_fixture(book, "colts-at-texans-2026-reg-11") != ""
+    assert book_matches_fixture(dict(away_as_printed="", home_as_printed=""),
+                                "commanders-at-giants-2026-reg-10") != ""
+
+
+def test_book_matches_fixture_requires_both_slug_tokens():
+    from fetch_official_games import book_matches_fixture
+    book = dict(away_as_printed="San Francisco 49ers",
+                home_as_printed="Dallas Cowboys")
+    assert book_matches_fixture(book, "49ers-at-cowboys-2026-reg-10") == ""
+    assert book_matches_fixture(book, "not-a-fixture") != ""
+
+
+def test_committed_reg10_capture_parses_to_a_single_week():
+    """The 2026-11-19 runner capture (REG9/REG10, byte-identical, Week-11
+    content — flag F-2026-11-19-08) must parse with the repaired parser, and
+    every slug in one file must name one week.  The assertion is week-agnostic
+    on purpose: after the by-week recapture the same test must hold for real
+    Week-10 content."""
+    import gzip as _gzip
+    path = ROOT / "data" / "evidence" / "official_games" / "schedule" / "REG10.txt.gz"
+    if not path.exists():          # pragma: no cover - capture absent
+        import pytest as _pytest
+        _pytest.skip("no committed schedule capture")
+    text = _gzip.open(path, "rt", encoding="utf-8", errors="replace").read()
+    # parse the html.gz (the parser reads markup, not flattened text)
+    html_path = ROOT / "data" / "evidence" / "official_games" / "schedule" / "REG10.html.gz"
+    rows = og.parse_schedule_page(_gzip.open(html_path, "rt", encoding="utf-8", errors="replace").read())
+    assert len(rows) >= 1
+    weeks = {og.fixture_week(r["official_url"]) for r in rows}
+    assert None not in weeks
+    assert len(weeks) == 1
+
+
+# --------------------------------------------------------------------------- #
+# GC3 — the repair is published where a reviewer will look for it
+# --------------------------------------------------------------------------- #
+def test_flagged_page_carries_the_capture_repair_rows():
+    """Regression: PR #108 once silently shadowed a flagged-section function,
+    so the rows existed in code but never reached the page.  Read the shipped
+    page, not the generator."""
+    path = ROOT / "flagged.html"
+    if not path.exists():          # pragma: no cover - page absent
+        import pytest as _pytest
+        _pytest.skip("flagged.html not built")
+    text = path.read_text(encoding="utf-8")
+    assert "F-2026-11-19-08" in text
+    assert "F-2026-11-19-09" in text
+
+
+def test_gamecentre_page_is_built_and_registered():
+    path = ROOT / "gamecentre.html"
+    assert path.exists(), "gamecentre.html must ship (rendered by pipeline/render_gamecentre.py)"
+    text = path.read_text(encoding="utf-8")
+    assert "Official game centre &amp; Game Books" in text or "Official game centre & Game Books" in text
+    # the page must be in exactly one of its two documented states: waiting for
+    # the first week-selecting capture, or publishing captured fixtures.  (A
+    # state-dependent pin on the first wording alone would go red the moment
+    # the runner commits real evidence — the stale-pin defect this repo has
+    # already hit twice.)
+    waiting = "No week-selecting capture has been committed yet" in text
+    publishing = "captured fixtures — venue as printed" in text
+    assert waiting != publishing, "exactly one capture state must render"
+
+
+# --------------------------------------------------------------------------- #
+# GC-integration — real committed captures, not synthetic text only
+# --------------------------------------------------------------------------- #
+def _real_book_text() -> str:
+    import gzip
+    path = ROOT / "data/evidence/official_games/gamebooks/commanders-at-giants-2026-reg-10.p1.txt.gz"
+    if not path.exists():          # pragma: no cover - capture absent
+        import pytest as _pytest
+        _pytest.skip("committed Game Book capture absent")
+    return gzip.decompress(path.read_bytes()).decode("utf-8", "replace")
+
+
+def test_real_game_book_yields_the_full_printed_lineup():
+    """The captured PDF pads ``WR     14 A.Williams`` and prints the four-letter
+    position ``EDGE``; both shapes must parse to four printed columns and 44
+    readable starter cells (the grid holds 11 per column).  Before the fix the
+    whole captured week parsed as ``lineup_unreadable`` — 0 starters."""
+    bk = og.parse_game_book(_real_book_text())
+    rows = og.parse_lineup_rows(bk["lineups"])
+    good = [r for r in rows if r["column"] >= 0 and r["player"]]
+    assert len(good) == 44, f"expected 44 printed starters, got {len(good)}"
+    assert {r["column"] for r in good} == {0, 1, 2, 3}
+    assert all(r["position"] and r["jersey"] for r in good)
+
+
+def test_real_game_book_identification_strip_parses_cleanly():
+    """Date, matchup and start time share ONE printed line in the real PDF
+    (``Date: …  Club at Club  Start Time: …``) with the venue on the next.
+    Each field must come back on its own, not swallowed by its neighbour."""
+    bk = og.parse_game_book(_real_book_text())
+    assert bk["away_as_printed"] == "Washington Commanders"
+    assert bk["home_as_printed"] == "New York Giants"
+    assert "11/12/2026" in bk["date_as_printed"]
+    assert "8:15 PM" in bk["start_time_as_printed"]
+    assert "MetLife Stadium" in bk["venue_as_printed"]
+
+
+def test_synthetic_book_layout_still_parses():
+    """The own-line synthetic layout (repository fixtures) must keep working:
+    the combined-line form is preferred, not exclusive."""
+    got = og.parse_game_book(GAME_BOOK_TEXT)
+    assert got["away_as_printed"] == "San Francisco 49ers"
+    assert got["home_as_printed"] == "Dallas Cowboys"
+    assert got["date_as_printed"] == "Sunday, 11/15/2026"
+    assert got["start_time_as_printed"] == "3:25 PM CST"
+
+
+def test_game_centre_payload_rejects_a_non_gamebook_pdf():
+    """The page for an unplayed fixture references the league's Record & Fact
+    Book PDF; only ``/gamecenter/`` links may become a Game Book URL (the
+    2026-11-19 capture stored thirteen future games as 'captured' because of
+    the looser match)."""
+    from pipeline.official_payload import parse_game_centre_info
+    fact_book = ("https://static.www.nfl.com/league/apps/league-site/"
+                 "media-guides/2026/2026-Record-and-Fact-Book.pdf")
+    html_only_fact = f'<html><body><a href="{fact_book}">media guide</a></body></html>'
+    info = parse_game_centre_info(html_only_fact)
+    assert info["gamebook_url"] == "", info["gamebook_url"]
+    real = ("https://static.www.nfl.com/image/upload/v1794570519/"
+            "gamecenter/ab5828d9-4feb-11f1-abca-2c54536568a9.pdf")
+    html_real = f'<html><body><a href="{fact_book}">guide</a><a href="{real}">book</a></body></html>'
+    info = parse_game_centre_info(html_real)
+    assert info["gamebook_url"] == real, info["gamebook_url"]
+
+
+def test_fail_loud_pins_accept_the_real_capture_and_reject_the_defects():
+    """The REQ-63 helpers: a book must name the fixture and the week; a date
+    line must print the league's own M/D/YYYY."""
+    from fetch_official_games import (book_matches_fixture, book_week_slug,
+                                      date_fragment_printed)
+    was_nyg = dict(away_as_printed="Washington Commanders",
+                   home_as_printed="New York Giants")
+    assert book_matches_fixture(was_nyg, "commanders-at-giants-2026-reg-10") == ""
+    assert book_matches_fixture(was_nyg, "colts-at-texans-2026-reg-11") != ""
+    assert book_matches_fixture(dict(away_as_printed="", home_as_printed=""),
+                                "commanders-at-giants-2026-reg-10") != ""
+    assert book_week_slug("commanders-at-giants-2026-reg-10", "10")
+    assert not book_week_slug("commanders-at-giants-2026-reg-10", "9")
+    assert date_fragment_printed("Thursday, 11/12/2026")
+    assert not date_fragment_printed("no date here")

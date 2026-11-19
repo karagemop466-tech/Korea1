@@ -144,7 +144,7 @@ results_feed_tiers,PINNED_ARCHIVE=7383; SCHEDULED=135; OFFICIAL_READ=30,computed
 roster_depth_rows,6743,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 season_club_weeks,544,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 signal_staking_rows,18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-site_pages,52,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+site_pages,53,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 spotcheck_rows,125,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies,18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies_g1_fail,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
