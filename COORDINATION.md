@@ -4131,3 +4131,11 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 - **Open irregularity (CI, unconfirmed cause):** the post-merge `Verify site` run on `ac1db9a` (run 44482310870) failed at the step `Verify pinned inputs and rebuild` (`make build`). The same tree passed on the PR-event and push-event runs (`1cef1cd`), and a fresh clean-clone `make build` produced zero diff and exit 0. GitHub's log receiver returned EOF, so the failing line is not visible. `make build` runs `pipeline/fetch_data.py`, which downloads a pinned archive from codeload.github.com and fails loudly on any error, so a transient network error is the leading hypothesis but is **not confirmed**. `gh run rerun` refused the run, and `workflow_dispatch` returned HTTP 403 for this token. Action: confirm on the next main run.
 - Board rule, repeated: run `make build` in a fresh clone before any PR, and re-check `main` immediately before merging, because sibling sessions merged to `main` four times during this session.
 - **ID correction (this branch, 2026-11-19):** the reserve-window and latest.csv flags were first labelled F-52 and F-53 in this log and on the Flagged page. Those IDs collided with existing rows (F-53 is the AZ/ARI mapping; F-57 already records the same rolling-window pattern). They are renamed **F-2026-11-19-06** and **F-2026-11-19-07**. Earlier entries in this log that say F-52/F-53 mean these two rows. The executive-summary block is now generated from `pipeline/render_summary.py`, because `EXECUTIVE_SUMMARY.md` is overwritten on every build; the earlier hand edit never reached a commit.
+
+## Session `arena/e6daadf0-korea1` — independent current-tree release audit (claim)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| IA1 | Independently run the current committed build, full registered tests, source/link checks, and reproducibility check; inspect the landing page, executive summary, decision-readiness, suggestions, and flagged-review surfaces; record only current-tree reproducible outcomes and remaining blockers | **in progress** | `arena/e6daadf0-korea1` | `COORDINATION.md` (this session section only; no application/data/site edits) |
+
+**Claim scope:** documentation of an audit only. No other session-owned task or shared output is edited.
