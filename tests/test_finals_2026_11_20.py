@@ -145,3 +145,22 @@ def test_no_week10_pick_is_left_unsettled():
     assert len(w10) == 65
     assert set(w10.status) == {"OFFICIAL"}, (
         "a Week 10 pick with an official final must not sit at OPEN/PROVISIONAL")
+
+
+# ------------------------------------------------------------------ three-way agreement
+def test_the_finals_agree_with_the_third_result_surface_on_the_site():
+    """A settlement that disagrees with another published results table is a contradiction.
+
+    `data/results/verified_results.csv` is built by a different module from a different capture and
+    feeds `results-feed.html`. If the two published tables ever disagreed, one of them would be
+    wrong on a page the owner is asked to trust. This test makes that impossible to miss.
+    """
+    rows, _ = F.build()
+    v = pd.read_csv(ROOT / "data" / "results" / "verified_results.csv", dtype=str, keep_default_na=False)
+    v = v[v.week == "10"]
+    seen = {r.game_id: (int(float(r.away_score)), int(float(r.home_score))) for r in v.itertuples()}
+    assert len(seen) == 14, f"the results feed should hold 14 Week 10 finals, holds {len(seen)}"
+    for r in rows:
+        assert r["game_id"] in seen, f"{r['game_id']}: certified here, absent from the results feed"
+        assert (int(r["away_score"]), int(r["home_score"])) == seen[r["game_id"]], (
+            f"{r['game_id']}: two published tables disagree")
