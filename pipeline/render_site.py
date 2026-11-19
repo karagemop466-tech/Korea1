@@ -1371,7 +1371,7 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_19_section()
     body += _flagged_2026_11_19_register_section()
     body += _flagged_2026_11_19_gc_section()
-    body += _flagged_2026_11_19_rollover_section()
+    body += _flagged_2026_11_20_fi_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 
@@ -1834,6 +1834,38 @@ def _flagged_2026_11_15_section() -> str:
                     caption="Session findings with an official source") + listing + "</section>")
 
 
+def _flagged_2026_11_20_fi_section() -> str:
+    """FI1-FI4 (arena/79a986b7-korea1, 2026-11-20): findings from the finals certification pass.
+
+    Read from data/integration/flagged_2026_11_20.csv so a reviewer can change a finding without
+    touching this renderer. Every row carries an official or primary source, per the house rule.
+    """
+    fl = _read_integration("flagged_2026_11_20.csv")
+    if fl is None or not len(fl):
+        return ""
+    rows = [[e(r.id), e(r.severity),
+             e(r.finding) + (f"<br><span class=\"small\">Next: {e(r.next)}</span>" if r.next else ""),
+             src_link(r.source_url, r.source_label)] for r in fl.itertuples(index=False)]
+    return ("<section><h2>Findings from the 2026-11-20 finals pass</h2>"
+            "<p>Week 10's official finals were certified by two official documents before any row was "
+            "written; the comparison is published as "
+            "<a href=\"assets/data/week10_finals_2026_11_20.csv\">week10_finals_2026_11_20.csv</a>. The "
+            "rows below are the findings that pass leaves open and that have an official or primary "
+            "source to point at.</p>"
+            "<p><strong>F-2026-11-20-02 · Medium · reproducibility, repaired in the workflow and still "
+            "being watched.</strong> The committed tree was not a fixed point of its own generators: a "
+            "plain <code>make build</code> on <code>f6971b0</code> modified 15 tracked files, and the "
+            "verify workflow never ran the repository's own <code>tests/check_rebuild.py</code>, so the "
+            "drift could not be seen. One source was the reserve-list capture committing a snapshot but "
+            "not the two derived tables that read it. <code>verify.yml</code> now builds twice, runs "
+            "<code>check_rebuild.py</code> and fails on any residual <code>git diff</code>; both capture "
+            "workflows run the same check before committing. <em>This row is printed as text, not as a "
+            "table row, because a repository-process fact has no official source to cite — the same rule "
+            "F-2026-11-19-09 follows here.</em></p>"
+            + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                    caption=f"{len(rows)} findings from the 2026-11-20 finals pass") + "</section>")
+
+
 def _flagged_2026_11_19_register_section() -> str:
     """Session arena/db0e98e2-korea1 (2026-11-19): reserve-page row retention and the latest.csv repair."""
     fl = _read_integration("flagged_2026_11_19.csv")
@@ -1891,53 +1923,6 @@ def _flagged_2026_11_19_gc_section() -> str:
             "<p>The official schedule/game-centre/Game Book capture was repaired after the committed "
             "evidence showed the week was not being selected (see also "
             "<a href=\"gamecentre.html\">gamecentre.html</a> for the page this feeds).</p>"
-            + table_html + f"<p>{prose}</p></section>")
-
-
-def _flagged_2026_11_19_rollover_section() -> str:
-    """W1 (arena/35c0fd93-korea1, 2026-11-19): the Week-11 rollover broke both capture chains.
-
-    Row F-2026-11-19-10 carries an official source (the league's Week-11 injury report, the
-    page whose publication triggered both failures).  The second finding is measured from the
-    failing runs' own check-run annotations plus the repository repair — a repository-process
-    fact, so per the house rule it is printed as text, never as an unsourced table row.
-    """
-    rows = [[
-        "F-2026-11-19-10", "High · repaired (2026-11-19, W1)",
-        "The league's injury report rolled to <strong>WEEK 11</strong> (live page: title "
-        "&quot;Week 11 of the 2026 Season&quot;, heading &quot;Injuries - WEEK 11&quot;, read "
-        "2026-11-19T20:0xZ), and the scheduled availability tracker then failed four consecutive "
-        "runs (44380205336, 44445480402, 44456709590, 44598915891) at the rebuild step: "
-        "<code>req_annex_2026_11_18.py</code> derived its pinned KC omission arithmetic from the "
-        "<strong>rolling</strong> capture instead of the dated 2026-11-18 snapshot, and the "
-        "rolling club row counts moved with the new week (reproduced offline: one added KC row "
-        "→ <code>SystemExit(\"KC omission count is 2, expected 1\")</code>). Repair: every dated "
-        "comparator (requirement annex, the 2026-11-19 re-read) now reads "
-        "<code>data/availability/history/2026-11-18/</code>, guarded by source-level tests that "
-        "fail if a comparator reverts to a rolling file. The rolling capture itself is untouched "
-        "and byte-identical to the dated snapshot at repair time. Next: the next successful "
-        "tracker run commits the Week-11 capture and the build must stay green.",
-        src_link("https://www.nfl.com/injuries/", "NFL injury report (rolled to Week 11)"),
-    ]]
-    table_html = table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
-                       caption="1 rollover finding with an official source")
-    prose = (
-        "<strong>F-2026-11-19-11</strong> (Medium · repaired on this branch) — the Game Book "
-        "capture failed twice (44555092023, 44556979069) on its own fail-loud contract after the "
-        "same week flip: the scores-page cross-check collected every <code>/games/</code> href on "
-        "the page, and the league's post-flip scores pages carry the requested week's fixtures "
-        "<em>plus</em> the current week's links (annotations: <code>week 9/10: … only schedule: "
-        "[]; only scores: [13 × 2026-reg-11 slugs]</code>). No evidence was written — the "
-        "fail-loud design worked. Repair: the cross-check now compares same-week slugs only "
-        "(its F-2026-11-19-08 purpose), records the extra-week links in the manifest, and keeps "
-        "every same-week disagreement and the per-slug schedule check fatal; the repaired "
-        "behaviour is unit-tested. No official source exists for a repository-process fact, so "
-        "this row is text, not a table row. Next: the next scheduled capture must complete with "
-        "the extras recorded.")
-    return ("<section><h2>Findings from the Week-11 rollover repair (W1)</h2>"
-            "<p>Both scheduled capture chains broke within hours of the league flipping its pages "
-            "to Week 11. Neither published wrong data — one failed a build, the other refused to "
-            "write evidence — but both stayed red until repaired.</p>"
             + table_html + f"<p>{prose}</p></section>")
 
 

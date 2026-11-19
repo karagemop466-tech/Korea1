@@ -127,6 +127,7 @@ site: injuries review reviewall
 	# all. Idempotent and fail-loud; reads committed files only (no network), so the build stays
 	# byte-reproducible. Must run before render_forward.py and before the register that counts them.
 	$(PY) pipeline/finals_2026_11_20.py
+	cp data/forward/week10_finals_2026_11_20.csv assets/data/week10_finals_2026_11_20.csv  # the site's copy, so the flagged page can link it
 	$(PY) pipeline/render_forward.py  # T41 (arena/8a322b62-korea1): publishes forward.html from data/forward/
 	# GC2 (arena/7cbb2e60-korea1): gamecentre.html from the committed official game-centre /
 	# Game Book capture.  Reads data/processed/official_*.csv and the evidence manifest only
