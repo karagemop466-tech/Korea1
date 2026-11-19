@@ -32,15 +32,18 @@ jobs:
         run: |
           set -o pipefail
           make build > /tmp/build.log 2>&1 || true
+          git status --porcelain > /tmp/status.txt || true
+          git diff --stat > /tmp/stat.txt || true
+          git diff > /tmp/full.diff || true
           {
             echo "== make build tail =="
             tail -n 8 /tmp/build.log
             echo "== git status =="
-            git status --porcelain | head -60
+            cat /tmp/status.txt
             echo "== git diff --stat =="
-            git diff --stat | tail -40
-            echo "== git diff (first 4000 chars) =="
-            git diff | head -c 4000
+            cat /tmp/stat.txt
+            echo "== git diff (head) =="
+            python3 -c "import pathlib; d=pathlib.Path('/tmp/full.diff').read_text(errors='replace'); print(d[:4000] if len(d)<=4000 else d[:2000]+'\n…TRUNCATED…\n'+d[-1900:])"
           } > /tmp/diff.txt
           python3 - <<'PY'
           import pathlib
