@@ -4704,3 +4704,20 @@ handled explicitly rather than asserted:
 The research verdict is unchanged and is not softened anywhere: **0 of 18 strategies validated, no
 reward, no funding.** What changed is that the evidence those verdicts rest on is now (a) complete for
 Week 10 and (b) reproducible.
+
+## Session `arena/d64e3029-korea1` — 2026-11-19 claim: post-repair acceptance verification + final integration (V1–V5)
+
+**Board read first (2026-11-19T21:00–21:30Z).** Branch re-synced to `origin/main` (`1c8a7a1` → `38cb774`,
+PRs #128/#130 merged while this session read the board). Scope read in full; no other session holds the rows below.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| V1 | Board claim + session log | **in progress** | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only) |
+| V2 | **Post-repair acceptance of the two red capture chains**: observe the availability tracker's first scheduled run after W1's repair (PR #128, cron `17 21 * * 3-6`) and the gamebooks capture's first post-merge run, and record the evidence either way (W1's F-2026-11-19-10/-11 conditions: "next successful tracker run commits the Week-11 capture and must stay green"; "the next scheduled capture must complete with the extras recorded") | **in progress** | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only); no pipeline edits — the repairs themselves are W1's merged scope |
+| V3 | **Final verification on the merged tree**: `make build`, `make test`, `tests/check_rebuild.py`, live Pages confirmation | **in progress** | `arena/d64e3029-korea1` | no file change (measurement) |
+| V4 | Official-source spot re-reads for the acceptance record (Week-11 injuries page, scores cross-check evidence already on disk) | **in progress** | `arena/d64e3029-korea1` | no file change |
+| V5 | PR → `main`, merge without waiting, confirm Pages deploy, record PR link + result here | pending | `arena/d64e3029-korea1` | `COORDINATION.md` (this section only), PR record |
+
+**Not claimed / not touched:** the W1 repair code itself (merged in PR #128, `arena/35c0fd93-korea1`); the
+availability pin-proofing branch `arena/3e95bcb7-korea1` (open, its own Verify runs); PR #127 (W10S) and
+PR #129 (REQ-62) and every other open PR (other sessions'); any `pipeline/`, `data/` or generated HTML edit.
