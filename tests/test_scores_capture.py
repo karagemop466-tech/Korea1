@@ -226,3 +226,28 @@ def test_an_unplayed_fixture_yields_blank_scores_never_zero():
     r = og.parse_scores_page(doc)[0]
     assert r["away_score_as_printed"] == "" and r["home_score_as_printed"] == ""
     assert r["status_as_printed"] == "In Progress"
+
+
+# --------------------------------------------------------------------- the brief's open findings
+def test_detroit_game_status_cells_are_published_not_blank():
+    """The brief's Lions item (F-2026-11-18-*): three players were published with a blank
+    game-status cell while the official report prints Out. Read live 2026-11-19 on
+    https://www.nfl.com/injuries/league/2026/reg10 — all three print Out, Did Not Participate.
+    A second session confirmed the same three rows independently."""
+    inj = pd.read_csv(ROOT / "data" / "availability" / "injuries.csv", dtype=str, keep_default_na=False)
+    for player in ("Kerby Joseph", "Cade Mays", "D.J. Reed"):
+        r = inj[inj.player == player]
+        assert len(r) == 1, f"{player} must appear exactly once in the committed capture"
+        assert r.iloc[0].game_status == "Out", f"{player}: published cell is {r.iloc[0].game_status!r}"
+        assert r.iloc[0].practice_status == "Did Not Participate In Practice"
+
+
+def test_the_week10_capture_is_not_claimed_to_equal_the_live_page():
+    """The brief's staleness item: the committed capture is 347 rows over 28 clubs, and the live
+    page is larger. Publishing the capture as if it were the whole league would be the defect;
+    the numbers are asserted here so a silent swap cannot pass."""
+    inj = pd.read_csv(ROOT / "data" / "availability" / "injuries.csv", dtype=str, keep_default_na=False)
+    assert len(inj) == 347, "the capture changed: re-verify it against the live page before editing"
+    assert inj.team.nunique() == 28, (
+        "28 of 32 clubs appear; four clubs (byes in some weeks and clubs with no listed injury) "
+        "are absent. A league-wide rate cannot be computed from this file.")
