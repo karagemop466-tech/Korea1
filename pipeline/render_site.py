@@ -116,6 +116,8 @@ NAV_GROUPS = [
     ]),
     ("Availability", [
         ("availability.html", "Injuries & depth · all clubs"),
+        # E5 (arena/eeba949e-korea1): the official schedule / game centre / Game Book layer.
+        ("gamebooks.html", "Official Game Book evidence"),
         ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
         ("injury-deltas.html", "Injury & depth changes"),
         ("injuries.html", "Injury source audit"),
@@ -479,6 +481,7 @@ questions a decision actually asks.</p>
 <a class="minicard" href="lineup-deficiencies.html"><strong>8-club 1st–4th string tracker</strong><span>39 Week 10 offensive &amp; defensive injury/depth entries across WAS, NYG, NE, DET, KC, ATL, MIN &amp; GB.</span></a>
 <a class="minicard" href="lineups.html"><strong>Lineup evidence</strong><span>Seven official injury observations plus two club depth charts; confirmed roles stay blank.</span></a>
 <a class="minicard" href="availability.html"><strong>Injuries &amp; depth · all clubs</strong><span>Scheduled capture of the official injury report and club depth charts: who is out, who is listed next.</span></a>
+<a class="minicard" href="gamebooks.html"><strong>Official Game Book evidence</strong><span>The league's own schedule page, game centre and Game Book: the fixture context, and who was expected to start against who actually did.</span></a>
 <a class="minicard" href="injuries.html"><strong>Injury source audit</strong><span>Twelve verified official sources, two exact captures and the availability signal register.</span></a>
 </div></section>
 {_landing_governance_sections()}

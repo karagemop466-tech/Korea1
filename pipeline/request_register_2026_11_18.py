@@ -57,8 +57,10 @@ U_BAILEY = "https://www.pm-research.com/content/iijpormgmt/40/5/94"
 U_GH = "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
 
 # Status vocabulary. Kept short so the pill logic is unambiguous.
-#   DONE · PARTLY DONE · BUILT ON OPEN PR · BLOCKED · REJECTED · OWNER DECISION · NOT STARTED
-PR_82 = "BUILT ON OPEN PR #82 (arena/99b908ab-korea1); not on main"
+#   DONE · PARTLY DONE · BLOCKED · REJECTED · OWNER DECISION · NOT STARTED
+# ("BUILT ON OPEN PR #82 ... ; not on main" was the vocabulary of the capture layer while
+#  PR #82 was unmerged; the layer is merged and published now, so the rows use the closed
+#  vocabulary above and the explanation moved into the `done` field.)
 
 
 def _src(label: str, url: str | None) -> tuple[str, str]:
@@ -162,13 +164,16 @@ ROWS = [
          clears="A complete, frozen pre-registration record per strategy",
          label="GitHub Pages documentation", url=U_GH),
     dict(id="RR-10", requirement="Build the availability graph as a first-class dataset (who was expected to start, who actually did)",
-         status=PR_82,
-         evidence="PR #82: pipeline/official_games.py; pipeline/fetch_official_games.py; tests/test_gamebooks.py",
+         status="PARTLY DONE",
+         evidence="data/processed/availability_graph.csv; data/processed/official_inactive_lists.csv; "
+                  "pipeline/availability_graph.py; pipeline/official_payload.py; tests/test_gamebooks.py",
          done="The join of expected starter (club depth chart) to actual starter (official Game Book) and the "
-              "official inactive list is implemented on open PR #82, which parses the schedule page, each game "
-              "centre, and the Game Book PDF (lineups, inactives, conditions). It is not merged to main at this base.",
-         gate="PR #82 is open and unmerged; the Game Book capture has not run on a runner for this base",
-         clears="Merge PR #82 and run the scheduled gamebooks.yml capture",
+              "official inactive list is published as data/processed/availability_graph.csv and rendered on "
+              "gamebooks.html. The expectation side is complete for the fixtures read; the actual side is blank "
+              "on every row because no official Game Book has been captured yet, and the reader that reads them "
+              "was repaired on 2026-11-19 (the league's schedule page no longer prints /games/ anchors).",
+         gate="No official Game Book has been captured; the capture job re-runs on the repaired reader from the next scheduled run",
+         clears="One official Game Book capture naming a starting lineup, with its SHA-256",
          label="NFL game centre (WAS at NYG)", url=U_GAME),
     dict(id="RR-11", requirement="Do not model depth from jersey order; model it from playing time",
          status="REJECTED",
@@ -198,13 +203,16 @@ ROWS = [
          clears="Houston depth rows > 0 from an authorised structured source (RR-32)",
          label="Houston Texans team page", url=U_HOU),
     dict(id="RR-14", requirement="Add a fixture-context feature set built only from published schedule facts",
-         status=PR_82,
-         evidence="PR #82: pipeline/official_games.py (parse_schedule_page); .github/workflows/gamebooks.yml",
-         done="A fixture-context table whose columns are facts printed by the league's own schedule/game centre "
-              "(week, day, kickoff, rest, division flag, neutral site, venue, roof/surface) is implemented on open "
-              "PR #82, which parses the published schedule page. Not merged to main at this base.",
-         gate="PR #82 is open and unmerged",
-         clears="Merge PR #82 and publish the fixture-context table",
+         status="DONE",
+         evidence="data/processed/fixture_context.csv; data/processed/week_windows.csv; "
+                  "pipeline/fixture_context.py; pipeline/official_payload.py",
+         done="A fixture-context table whose columns are facts printed by the league's own schedule page "
+              "(both clubs, the kickoff instant, the week, the status, the category, the venue, the broadcast "
+              "networks and the clubs on a bye) is published as data/processed/fixture_context.csv and rendered on "
+              "gamebooks.html. The only derived column is the Eastern kickoff, converted from the league's own "
+              "UTC instant with the IANA America/New_York zone.",
+         gate="No gate for the table; it covers the fixtures the capture has read and grows as the capture runs",
+         clears="n/a — published with an official URL on every row",
          label="NFL week 10 schedule", url=U_SCHED_W10),
     dict(id="RR-15", requirement="Store every model output as a probability plus its inputs, not just a pick",
          status="PARTLY DONE",
@@ -283,12 +291,15 @@ ROWS = [
          clears="Not applicable",
          label="NFL scores", url=U_SCORES),
     dict(id="RR-23", requirement="Transcribe the venue of every fixture from the official game centre and publish it",
-         status=PR_82,
-         evidence="PR #82: pipeline/official_games.py (parse_game_centre: venue_location, venue_stadium)",
-         done="The official game centre is parsed for the printed LOCATION and STADIUM of each fixture, with the "
-              "Game Book link, on open PR #82. Not merged to main at this base.",
-         gate="PR #82 is open and unmerged; the capture has not run on a runner for this base",
-         clears="Merge PR #82 and run the scheduled capture",
+         status="PARTLY DONE",
+         evidence="data/processed/fixture_context.csv (venue_name_as_published, venue_city_as_published); "
+                  "pipeline/official_payload.py (parse_game_centre_info: LOCATION and STADIUM); "
+                  "pipeline/fetch_official_games.py",
+         done="The venue the league's own schedule page publishes is published per fixture on gamebooks.html. "
+              "The venue the game centre prints (LOCATION and STADIUM) is read by the repaired reader but no "
+              "game-centre page has been captured yet, so those two columns are blank and say why.",
+         gate="No official game-centre page has been captured and committed yet",
+         clears="One captured game centre per fixture with its venue printed and its hash recorded",
          label="NFL game centre (WAS at NYG)", url=U_GAME),
     dict(id="RR-24", requirement="Publish the league's dated schedule announcement beside the live schedule page",
          status="PARTLY DONE",
@@ -300,13 +311,15 @@ ROWS = [
          clears="A scheduled capture that stores the schedule announcement with its date beside the live page",
          label="NFL week 10 schedule", url=U_SCHED_W10),
     dict(id="RR-25", requirement="Use official NFL Game Books for actual starters and game-day status; do not infer depth rank or snaps",
-         status=PR_82,
-         evidence="PR #82: pipeline/official_games.py (parse_game_book, parse_lineup_rows, parse_roster_entries); tests/test_gamebooks.py",
+         status="PARTLY DONE",
+         evidence="pipeline/official_games.py (parse_game_book, parse_lineup_rows, parse_roster_entries); "
+                  "pipeline/official_payload.py; tests/test_gamebooks.py; tests/test_gamebooks_consumer.py",
          done="The official Game Book PDF is parsed for starting lineups, substitutions, the Did Not Play list and "
-              "the Not Active (inactive) list, with the raw bytes hashed, on open PR #82. Nothing is inferred: an "
-              "unparsed field stays blank and flagged. Not merged to main at this base.",
-         gate="PR #82 is open and unmerged",
-         clears="Merge PR #82 and run the scheduled Game Book capture",
+              "the Not Active (inactive) list, with the raw bytes hashed. Nothing is inferred: an unparsed field "
+              "stays blank and flagged, and no Game Book has been captured yet, so every actual-starter cell on "
+              "gamebooks.html is blank and says why.",
+         gate="No official Game Book has been captured; the capture job re-runs on the repaired reader",
+         clears="One captured Game Book with a starting-lineup set and its SHA-256",
          label="NFL Operations pregame 90m rule", url=U_OPS),
     dict(id="RR-26", requirement="Ingest game-level results to make the ratings opponent-aware",
          status="DONE",
