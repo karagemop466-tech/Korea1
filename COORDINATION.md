@@ -4141,8 +4141,8 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 | P1 | Final integration claim + session log | **done** | `arena/831c3566-korea1` | `COORDINATION.md` (this section only) |
 | P2 | End-to-end build + test + link/source verification | **done** | `arena/831c3566-korea1` | `Makefile`, `pipeline/*`, `tests/*`, generated root HTML |
 | P3 | Official-source verification of the pages the site cites | **done** | `arena/831c3566-korea1` | no file change; cites recorded below |
-| P4 | Publish to GitHub Pages (main / repository root) and confirm deploy | pending | `arena/831c3566-korea1` | PR `arena/831c3566-korea1` → `main`, merge, Pages |
-| P5 | Record PR link + merge result in COORDINATION.md | pending | `arena/831c3566-korea1` | `COORDINATION.md` |
+| P4 | Publish to GitHub Pages (main / repository root) and confirm deploy | **done** | `arena/831c3566-korea1` | PR #115 `arena/831c3566-korea1` → `main`, merged as `b0daf82`; Pages `built` at https://karagemop466-tech.github.io/Korea1/ |
+| P5 | Record PR link + merge result in COORDINATION.md | **done** | `arena/831c3566-korea1` | this section, below |
 
 **P2 — end-to-end verification (local).**
 - `make build`: exit 0, **0 failing checks**, 51 canonical pages, 6,764 table rows, every row with an official/primary reference, 61 pages, all internal links/anchors/assets resolve, no external CDN.
@@ -4159,4 +4159,12 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 
 **Research verdict (unchanged).** 0 of 18 canonical strategies pass all eight fail-closed gates. No prize, capital allocation or profitable recommendation is authorized. The model trails the closing market on all three originated markets. No backtest number appears on the leaderboard.
 
-**P4 — publish.** `main`/`origin/main` is at `3c02fb2`; this branch is at the same commit, so this session's commit (this record) makes the branch ahead of `main`. PR opened from `arena/831c3566-korea1` to `main`, merged without waiting, Pages deployment confirmed, PR link and merge result recorded below (P5).
+**P4 — publish.** PR #115 (`arena/831c3566-korea1` → `main`) opened, `verify` CI passed (3m28s), then merged without waiting as merge commit `b0daf8215c82b3cc75522b9e17ab6d2b7be99045`. `origin/main` advanced `3c02fb2` → `b0daf82`. GitHub Pages source is `main` / repository root; Pages status `built` for `b0daf82`. Live site confirmed serving the merged tree at https://karagemop466-tech.github.io/Korea1/ (index, leaderboard, all category subpages).
+
+**P5 — PR link + merge result (recorded).**
+- Pull request: https://github.com/karagemop466-tech/Korea1/pull/115
+- Merge commit: `b0daf8215c82b3cc75522b9e17ab6d2b7be99045`
+- PR state: MERGED (no approval wait)
+- Merge method: `gh pr merge 115 --merge`
+- Pre-merge verification: `make build` 0 failing checks (51 pages / 6,764 sourced rows), `make test` 382 passed 1 skipped, `check_rebuild.py` 0 changed files; CI `verify` passed on the PR.
+- Post-merge verification: GitHub Pages `built` for `b0daf82`; live index.html fetched and renders the merged dashboard.
