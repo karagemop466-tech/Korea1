@@ -127,10 +127,10 @@ replacement_defence_rows,32,computed by pipeline/register_evidence_20261118.py f
 replacement_depth_rows,96,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 replacement_slots_rows,171,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_capture_only,5,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_captures,7,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_captures,8,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_date_max,2026-11-18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_date_min,2026-11-07,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_latest_capture_utc,2026-11-19T04:30:02Z,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_latest_capture_utc,2026-11-19T19:37:34Z,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_latest_nov,25,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_latest_rows,50,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_live_only,5,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
