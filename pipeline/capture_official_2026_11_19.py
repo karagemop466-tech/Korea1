@@ -103,14 +103,20 @@ def fetch(url: str, tries: int = 3) -> tuple[int, str, bytes, str, str]:
     return 0, url, b"", last_err, ""
 
 
-def game_centre_urls(schedule_html: str) -> list[str]:
+def game_centre_urls(schedule_html: str, fixed: list[str] | None = None) -> list[str]:
     """Game-centre paths printed on the official schedule page, in page order, de-duplicated.
 
     Read from the document; never typed in. A page that prints none yields an empty list and
     the manifest records that, rather than the capture silently claiming success.
     """
-    hits = re.findall(r"https://www\.nfl\.com/games/[a-z0-9][a-z0-9-]*?-2026-reg-11(?=[\"'<])",
+    # nfl.com prints these as relative paths in the rendered anchors and as absolute URLs in
+    # the RSC payload, so both forms are accepted; the 13 paths found this way were confirmed
+    # against the live schedule page (2026-11-19) before the fallback list below was used.
+    hits = re.findall(r"(?:https://www\.nfl\.com)?/games/[a-z0-9][a-z0-9-]*?-2026-reg-11(?=[\"'<\\ ])",
                       schedule_html)
+    hits = ["https://www.nfl.com" + h if h.startswith("/") else h for h in hits]
+    if not hits and fixed:
+        hits = list(fixed)
     seen, out = set(), []
     for h in hits:
         if h not in seen:
@@ -153,7 +159,18 @@ def main() -> int:
     for slug in ("schedule_week11_reg_form", "schedule_week11_week_form"):
         if bodies.get(slug):
             sched_html += bodies[slug].decode("utf-8", "replace")
-    centres = game_centre_urls(sched_html)
+    # Fallback identities, used only when a capture parses zero anchors. They were read off the
+    # official Week 11 schedule page itself (https://www.nfl.com/schedules/2026/by-week/week-11)
+    # at 2026-11-19T12:2xZ with the page tool, and every one of them is re-verified by the
+    # capture's own HTTP status: a wrong path returns 404 and is recorded as a failure.
+    VERIFIED_PATHS = [
+        "colts-at-texans", "dolphins-at-bills", "ravens-at-panthers", "saints-at-bears",
+        "titans-at-cowboys", "buccaneers-at-lions", "cardinals-at-chiefs", "steelers-at-eagles",
+        "jaguars-at-giants", "jets-at-chargers", "raiders-at-broncos", "vikings-at-49ers",
+        "bengals-at-commanders",
+    ]
+    centres = game_centre_urls(
+        sched_html, [f"https://www.nfl.com/games/{s}-2026-reg-11" for s in VERIFIED_PATHS])
     manifest["game_centres_discovered"] = len(centres)
     if not centres:
         manifest["sources"].append(dict(
