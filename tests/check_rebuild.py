@@ -6,7 +6,7 @@ missing files, schema changes, non-numeric text changes, or numerical drift
 outside a tight tolerance. HTML and executive summary must match exactly.
 """
 from __future__ import annotations
-import io, json, math, subprocess, sys
+import io, json, math, os, subprocess, sys
 from pathlib import Path
 import pandas as pd
 
@@ -63,6 +63,18 @@ def main()->int:
                 if not json_equal(json.loads(old),json.loads(new)): errors.append(f"{name}: JSON drift")
             except Exception as exc: errors.append(f"{name}: JSON compare failed: {exc}")
         elif old!=new: errors.append(f"{name}: byte drift")
+    # Publish the full dirty-file picture. This script only judges PREFIXES/EXTRA/html,
+    # but the verify workflow's final `git diff --quiet` fails on ANY tracked change, so
+    # a file outside this scope can pass here and still fail the job. On CI the step
+    # summary is the readable channel for that list (job logs require sign-in).
+    if names and os.environ.get("GITHUB_STEP_SUMMARY"):
+        lines = ["### check_rebuild: files a build changed (dirty vs HEAD)", ""]
+        for n in names:
+            in_scope = n.startswith(PREFIXES) or n in EXTRA or n.endswith(".html") or n.endswith(".md")
+            mark = "in scope" if in_scope else "**outside check_rebuild scope — the raw `git diff --quiet` step fails on this**"
+            lines.append(f"- `{n}` — {mark}")
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
+            fh.write("\n".join(lines) + "\n")
     if errors:
         print("Rebuild drift check failed:")
         for e in errors[:50]: print(" -",e)
