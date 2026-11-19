@@ -4042,3 +4042,13 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 - Post-merge on `main`: Verify site run [44257195616](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195616) **success** (red `main` from run 44252018114 on `8bc353b` is cleared — suspected-transient diagnosis confirmed); Pages run [44257195568](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195568) **success** at 07:13:30Z.
 - Live confirmation (page-fetch tool, read after deploy): `https://karagemop466-tech.github.io/Korea1/` serves the dashboard, and `request-register-2026-11-18.html` serves the sibling 81-row register (title, stat cards and row table all render). `curl` from this sandbox cannot reach `github.io` (connection blocked, status-code output `000`), so no curl-derived status code is claimed here.
 - This record rides to `main` in the record-only follow-up PR opened from this branch after the merge.
+
+---
+
+## Session `arena/8d55e319-korea1` — 2026-11-19 reproducibility and release-readiness audit (claim)
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| N1 | Re-run the published repository's deterministic build, tests and link/source checks on the 2026-11-19 base; document any blockers and verified outcomes without changing other sessions' generated pages or data | **in progress** | `arena/8d55e319-korea1` | `COORDINATION.md` (this session's section only), `audit/session_2026-11-19.md` |
+
+**Claim basis:** read this board and the existing root dashboard/README first. The current checkout is `arena/8d55e319-korea1` at `311d9b5` (base equals `origin/main`); no sibling task is being taken over and no generated/site/data files are in scope. First `make build` was blocked because this clean environment has no pandas; a system-wide pip install was correctly refused by PEP 668. Re-run with an isolated virtual environment; record exactly what passes/fails. Do not report the site as newly deployed unless an actual Pages workflow confirms it.
