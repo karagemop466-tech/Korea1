@@ -1,31 +1,31 @@
 {
   "season": 2026,
-  "retrieved_utc": "2026-11-18T22:42:58Z",
+  "retrieved_utc": "2026-11-19T12:12:42Z",
   "runner": "GitHub Actions",
   "schedule_pages": [
     {
       "week": 9,
       "url": "https://www.nfl.com/schedules/2026/REG9",
       "http_status": 200,
-      "raw_bytes": 2277254,
-      "raw_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
+      "raw_bytes": 2291069,
+      "raw_sha256": "6ad52b574dd3f6c8bc84442c3ce3d2a4e2c7c4a4855d69d9d02a22fc5d637fce",
       "text_bytes": 7407,
       "text_sha256": "0e15c190a005f82c6ad16684c18b0c6828ff401fd76ac42d69654b08e2152d02",
-      "html_bytes": 2277254,
-      "html_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
-      "retrieved_utc": "2026-11-18T22:42:58Z"
+      "html_bytes": 2291069,
+      "html_sha256": "6ad52b574dd3f6c8bc84442c3ce3d2a4e2c7c4a4855d69d9d02a22fc5d637fce",
+      "retrieved_utc": "2026-11-19T12:12:42Z"
     },
     {
       "week": 10,
       "url": "https://www.nfl.com/schedules/2026/REG10",
       "http_status": 200,
-      "raw_bytes": 2277254,
-      "raw_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
+      "raw_bytes": 2291069,
+      "raw_sha256": "6ad52b574dd3f6c8bc84442c3ce3d2a4e2c7c4a4855d69d9d02a22fc5d637fce",
       "text_bytes": 7407,
       "text_sha256": "0e15c190a005f82c6ad16684c18b0c6828ff401fd76ac42d69654b08e2152d02",
-      "html_bytes": 2277254,
-      "html_sha256": "08ffda4469d838b317efc2d129fecca9c9248489644bd50f77bd33263905e038",
-      "retrieved_utc": "2026-11-18T22:42:58Z"
+      "html_bytes": 2291069,
+      "html_sha256": "6ad52b574dd3f6c8bc84442c3ce3d2a4e2c7c4a4855d69d9d02a22fc5d637fce",
+      "retrieved_utc": "2026-11-19T12:12:42Z"
     }
   ],
   "game_centres": [],
