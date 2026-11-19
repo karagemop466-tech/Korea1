@@ -149,7 +149,7 @@ DET,Lions,Jared Goff,practice_status,Full Participation in Practice,Full Partici
 DET,Lions,Jared Goff,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,Kerby Joseph,position,S,S,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,Kerby Joseph,injury,Knee,Knee,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-DET,Lions,Kerby Joseph,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+DET,Lions,Kerby Joseph,practice_status,Full Participation in Practice,Did Not Participate In Practice,INCONSISTENT,confirmed_defect,https://www.nfl.com/injuries/league/2026/reg10,"the published table already recorded the player as unavailable, so a later update cannot explain a different participation status; the published cell is contradicted by the official page"
 DET,Lions,Kerby Joseph,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,Cade Mays,position,C,C,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,Cade Mays,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
@@ -164,13 +164,13 @@ DET,Lions,Jacob Saylors,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026
 DET,Lions,Jacob Saylors,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,Jacob Saylors,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,Amon-Ra St. Brown,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-DET,Lions,Amon-Ra St. Brown,injury,Rib,Rib,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+DET,Lions,Amon-Ra St. Brown,injury,,Rib,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 DET,Lions,Amon-Ra St. Brown,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-DET,Lions,Amon-Ra St. Brown,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+DET,Lions,Amon-Ra St. Brown,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 DET,Lions,Sione Vaki,position,RB,RB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-DET,Lions,Sione Vaki,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-DET,Lions,Sione Vaki,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-DET,Lions,Sione Vaki,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+DET,Lions,Sione Vaki,injury,,Ankle,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+DET,Lions,Sione Vaki,practice_status,Did Not Participate In Practice,Limited Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
+DET,Lions,Sione Vaki,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 DET,Lions,DJ Wonnum,position,DE,DE,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,DJ Wonnum,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 DET,Lions,DJ Wonnum,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
@@ -180,9 +180,9 @@ KC,Chiefs,Jeffrey Bassa,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026
 KC,Chiefs,Jeffrey Bassa,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Jeffrey Bassa,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Mansoor Delane,position,CB,CB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Mansoor Delane,injury,Shoulder,Shoulder,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Mansoor Delane,injury,,Shoulder,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Mansoor Delane,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Mansoor Delane,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Mansoor Delane,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Justin Fields,position,QB,QB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Justin Fields,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Justin Fields,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
@@ -200,197 +200,173 @@ KC,Chiefs,Patrick Mahomes,injury,,,MATCH,,https://www.nfl.com/injuries/league/20
 KC,Chiefs,Patrick Mahomes,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Patrick Mahomes,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Jaylon Moore,position,T,T,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Jaylon Moore,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Jaylon Moore,injury,,Ankle,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Jaylon Moore,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Jaylon Moore,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Jaylon Moore,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Omarr Norman-Lott,position,DT,DT,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Omarr Norman-Lott,injury,Knee,Knee,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Omarr Norman-Lott,injury,,Knee,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Omarr Norman-Lott,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Omarr Norman-Lott,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Omarr Norman-Lott,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Jaydn Ott,position,RB,RB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Jaydn Ott,injury,Hamstring,Hamstring,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Jaydn Ott,injury,,Hamstring,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Jaydn Ott,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Jaydn Ott,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Jaydn Ott,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Rashee Rice,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Rashee Rice,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Rashee Rice,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Rashee Rice,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Kenneth Walker III,position,RB,RB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Kenneth Walker III,injury,Groin,Groin,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Kenneth Walker III,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Kenneth Walker III,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,,Kenneth Walker III,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
 KC,Chiefs,Peter Woods,position,DT,DT,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Peter Woods,injury,Neck,Neck,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Peter Woods,injury,,Neck,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Peter Woods,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-KC,Chiefs,Peter Woods,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+KC,Chiefs,Peter Woods,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 KC,Chiefs,Xavier Worthy,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Xavier Worthy,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Xavier Worthy,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 KC,Chiefs,Xavier Worthy,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Zachariah Branch,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Zachariah Branch,injury,Hamstring,Hamstring,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Zachariah Branch,injury,,Hamstring,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 ATL,Falcons,Zachariah Branch,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Zachariah Branch,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Zachariah Branch,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 ATL,Falcons,Kendal Daniels,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Kendal Daniels,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Kendal Daniels,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Kendal Daniels,practice_status,Limited Participation in Practice,Full Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
 ATL,Falcons,Kendal Daniels,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Divine Deablo,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Divine Deablo,injury,Forearm,Forearm,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Divine Deablo,injury,,Forearm,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 ATL,Falcons,Divine Deablo,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Divine Deablo,game_status,Doubtful,Doubtful,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Divine Deablo,game_status,,Doubtful,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 ATL,Falcons,Gervon Dexter Sr.,position,DT,DT,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Gervon Dexter Sr.,injury,Illness,Illness,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Gervon Dexter Sr.,injury,,Illness,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 ATL,Falcons,Gervon Dexter Sr.,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Gervon Dexter Sr.,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Jake Matthews,position,T,T,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Jake Matthews,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Jake Matthews,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Jake Matthews,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Liam McCullough,position,LS,LS,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Liam McCullough,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Liam McCullough,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Liam McCullough,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Gervon Dexter Sr.,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+ATL,,Jake Matthews,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
+ATL,,Liam McCullough,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
 ATL,Falcons,James Pearce Jr.,position,DE,DE,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,James Pearce Jr.,injury,Back,Back,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,James Pearce Jr.,injury,,Back,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 ATL,Falcons,James Pearce Jr.,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,James Pearce Jr.,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,James Pearce Jr.,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 ATL,Falcons,Za'Darius Smith,position,DE,DE,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Za'Darius Smith,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Za'Darius Smith,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Za'Darius Smith,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Jawaan Taylor,position,T,T,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Jawaan Taylor,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Jawaan Taylor,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Jawaan Taylor,practice_status,Did Not Participate In Practice,Limited Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
 ATL,Falcons,Jawaan Taylor,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Cameron Thomas,position,DE,DE,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Cameron Thomas,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Cameron Thomas,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Cameron Thomas,practice_status,Limited Participation in Practice,Full Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
 ATL,Falcons,Cameron Thomas,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 ATL,Falcons,Josh Woods,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Josh Woods,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Josh Woods,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-ATL,Falcons,Josh Woods,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Jordan Addison,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Jordan Addison,injury,Thumb,Thumb,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Jordan Addison,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Jordan Addison,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+ATL,Falcons,Josh Woods,injury,,Ankle,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+ATL,Falcons,Josh Woods,practice_status,Limited Participation in Practice,Full Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
+ATL,Falcons,Josh Woods,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+MIN,,Jordan Addison,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
 MIN,Vikings,Blake Cashman,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Blake Cashman,injury,Concussion,Concussion,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Blake Cashman,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Blake Cashman,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Christian Darrisaw,position,T,T,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Christian Darrisaw,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Christian Darrisaw,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Christian Darrisaw,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Blake Cashman,injury,,Concussion,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+MIN,Vikings,Blake Cashman,practice_status,Did Not Participate In Practice,Limited Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
+MIN,Vikings,Blake Cashman,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+MIN,,Christian Darrisaw,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
 MIN,Vikings,T.J. Hockenson,position,TE,TE,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,T.J. Hockenson,injury,"Wrist, Chest","Wrist, Chest",MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,T.J. Hockenson,injury,,"Wrist, Chest",MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 MIN,Vikings,T.J. Hockenson,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,T.J. Hockenson,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,T.J. Hockenson,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 MIN,Vikings,Tyrion Ingram-Dawkins,position,DT,DT,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Tyrion Ingram-Dawkins,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Tyrion Ingram-Dawkins,injury,,Ankle,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 MIN,Vikings,Tyrion Ingram-Dawkins,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Tyrion Ingram-Dawkins,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Tyrion Ingram-Dawkins,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 MIN,Vikings,Theo Jackson,position,S,S,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 MIN,Vikings,Theo Jackson,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 MIN,Vikings,Theo Jackson,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 MIN,Vikings,Theo Jackson,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 MIN,Vikings,Jauan Jennings,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Jauan Jennings,injury,Calf,Calf,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Jauan Jennings,injury,,Calf,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 MIN,Vikings,Jauan Jennings,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Jauan Jennings,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Josh Metellus,position,S,S,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Josh Metellus,injury,Shoulder,Shoulder,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Josh Metellus,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Josh Metellus,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Jauan Jennings,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+MIN,,Josh Metellus,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
 MIN,Vikings,Kyler Murray,position,QB,QB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Kyler Murray,injury,Hamstring,Hamstring,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Kyler Murray,injury,,Hamstring,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 MIN,Vikings,Kyler Murray,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Kyler Murray,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Harrison Smith,position,S,S,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Harrison Smith,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Harrison Smith,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Harrison Smith,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Kyler Murray,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+MIN,,Harrison Smith,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
 MIN,Vikings,Kyle Van Noy,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Kyle Van Noy,injury,Calf,Calf,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Kyle Van Noy,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Kyle Van Noy,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Kyle Van Noy,injury,,Calf,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+MIN,Vikings,Kyle Van Noy,practice_status,Did Not Participate In Practice,Limited Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
+MIN,Vikings,Kyle Van Noy,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 MIN,Vikings,Jay Ward,position,S,S,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 MIN,Vikings,Jay Ward,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Jay Ward,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Jay Ward,practice_status,Limited Participation in Practice,Full Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
 MIN,Vikings,Jay Ward,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 MIN,Vikings,Carson Wentz,position,QB,QB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 MIN,Vikings,Carson Wentz,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-MIN,Vikings,Carson Wentz,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+MIN,Vikings,Carson Wentz,practice_status,Limited Participation in Practice,Full Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
 MIN,Vikings,Carson Wentz,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Aaron Banks,position,G,G,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Aaron Banks,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Aaron Banks,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Aaron Banks,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Chris Brooks,position,RB,RB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Chris Brooks,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Chris Brooks,injury,,Ankle,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Chris Brooks,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Chris Brooks,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Chris Brooks,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Javon Bullard,position,S,S,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Javon Bullard,injury,"Ankle, Knee","Ankle, Knee",MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Javon Bullard,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Javon Bullard,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Javon Bullard,injury,,"Ankle, Knee",MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+GB,Packers,Javon Bullard,practice_status,Did Not Participate In Practice,Limited Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
+GB,Packers,Javon Bullard,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Zaire Franklin,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Zaire Franklin,injury,Shin,Shin,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Zaire Franklin,injury,,Shin,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Zaire Franklin,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Zaire Franklin,game_status,Doubtful,Doubtful,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Zaire Franklin,game_status,,Doubtful,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Travis Glover,position,G,G,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Travis Glover,injury,Knee,Knee,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Travis Glover,injury,,Knee,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Travis Glover,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Travis Glover,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Travis Glover,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Ty'Ron Hopper,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Ty'Ron Hopper,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Ty'Ron Hopper,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Ty'Ron Hopper,practice_status,Limited Participation in Practice,Full Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
 GB,Packers,Ty'Ron Hopper,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Josh Jacobs,position,RB,RB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Josh Jacobs,injury,Finger,Finger,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Josh Jacobs,injury,,Finger,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Josh Jacobs,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Josh Jacobs,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Xavier McKinney,position,S,S,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Xavier McKinney,injury,Foot,Foot,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Xavier McKinney,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Xavier McKinney,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Josh Jacobs,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+GB,,Xavier McKinney,player_row,,present,MISSING_FROM_PUBLISHED,unresolved,https://www.nfl.com/injuries/league/2026/reg10,"the official page lists the player and the published table did capture this club, so the row is absent from the snapshot. Two causes fit and this module cannot separate them: (a) the status was added to the page between the 18:32Z snapshot and the transcription, or (b) the parser dropped it. Recorded as unresolved for re-check, not asserted as a defect; the next scheduled capture decides which it is"
 GB,Packers,Bo Melton,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Bo Melton,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Bo Melton,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Bo Melton,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Skyy Moore,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Skyy Moore,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Skyy Moore,injury,,Ankle,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Skyy Moore,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Skyy Moore,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Skyy Moore,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Micah Parsons,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Micah Parsons,injury,"Knee, Illness","Knee, Illness",MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Micah Parsons,injury,,"Knee, Illness",MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Micah Parsons,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Micah Parsons,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Micah Parsons,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Sean Rhyan,position,C,C,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Sean Rhyan,injury,Ankle,Ankle,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Sean Rhyan,injury,,Ankle,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Sean Rhyan,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Sean Rhyan,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Sean Rhyan,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Trey Smack,position,K,K,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Trey Smack,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Trey Smack,practice_status,Full Participation in Practice,Full Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Trey Smack,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Lukas Van Ness,position,LB,LB,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Lukas Van Ness,injury,Back,Back,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Lukas Van Ness,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Lukas Van Ness,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Lukas Van Ness,injury,,Back,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+GB,Packers,Lukas Van Ness,practice_status,Did Not Participate In Practice,Limited Participation in Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
+GB,Packers,Lukas Van Ness,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Josh Whyle,position,TE,TE,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Josh Whyle,injury,Concussion,Concussion,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Josh Whyle,injury,,Concussion,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Josh Whyle,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Josh Whyle,game_status,Out,Out,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Josh Whyle,game_status,,Out,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 GB,Packers,Savion Williams,position,WR,WR,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Savion Williams,injury,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Savion Williams,practice_status,Limited Participation in Practice,Limited Participation in Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Savion Williams,game_status,,,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
 GB,Packers,Kevin Zeitler,position,G,G,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Kevin Zeitler,injury,"Ankle, Triceps","Ankle, Triceps",MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Kevin Zeitler,practice_status,Did Not Participate In Practice,Did Not Participate In Practice,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
-GB,Packers,Kevin Zeitler,game_status,Questionable,Questionable,MATCH,,https://www.nfl.com/injuries/league/2026/reg10,
+GB,Packers,Kevin Zeitler,injury,,"Ankle, Triceps",MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
+GB,Packers,Kevin Zeitler,practice_status,Limited Participation in Practice,Did Not Participate In Practice,DIFFERENT,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"values differ; practice and game statuses are published in stages, so an update between the two capture times explains this"
+GB,Packers,Kevin Zeitler,game_status,,Questionable,MISSING_VALUE,drift_possible,https://www.nfl.com/injuries/league/2026/reg10,"official page states a value the published cell does not carry; a later status publication can add a value, so this alone does not prove a defect"
 JAX,Jaguars,Jessie Bates,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 JAX,Jaguars,Ezra Cleveland,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 JAX,Jaguars,Branson Combs,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -416,7 +392,6 @@ TEN,Titans,Tommy Townsend,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_sco
 TEN,Titans,Kevin Winston Jr.,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Alec Anderson,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Christian Benford,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-BUF,Bills,Terrel Bernard,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Spencer Brown,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Dion Dawkins,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Sam Franklin Jr.,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -424,13 +399,11 @@ BUF,Bills,Greg Gaines,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,h
 BUF,Bills,Jordan Hancock,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Dalton Kincaid,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Connor McGovern,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-BUF,Bills,Ed Oliver,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Ar'maj Reed-Adams,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,T.J. Sanders,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BUF,Bills,Tyrell Shavers,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 NYJ,Jets,Jarvis Brownlee Jr.,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 NYJ,Jets,Omar Cooper Jr.,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-NYJ,Jets,Adonai Mitchell,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 NYJ,Jets,Joseph Ossai,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 NYJ,Jets,VJ Payne,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 NYJ,Jets,Harrison Phillips,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -454,7 +427,6 @@ IND,Colts,Jaylon Carlies,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scop
 IND,Colts,Akeem Davis-Gaither,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 IND,Colts,A.J. Haulcy,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 IND,Colts,Arden Key,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-IND,Colts,Will Mallory,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 IND,Colts,Luke Rhodes,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 IND,Colts,Grover Stewart,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 IND,Colts,Jonathan Taylor,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -518,16 +490,13 @@ LA,Rams,Davis Allen,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,htt
 LA,Rams,Steve Avila,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Joe Cardona,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Kam Curl,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-LA,Rams,Aaron Donald,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Terrance Ferguson,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-LA,Rams,Braden Fiske,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Myles Garrett,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Tyler Higbee,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Trent McDuffie,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Puka Nacua,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Colby Parkinson,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LA,Rams,Matthew Stafford,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-LA,Rams,Byron Young,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 ARI,Cardinals,Budda Baker,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 ARI,Cardinals,Zachary Carter,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 ARI,Cardinals,Hjalte Froholdt,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -561,7 +530,6 @@ SEA,Seahawks,Leonard Williams,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of
 LV,Raiders,Thomas Booker,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LV,Raiders,Foley Fatukasi,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LV,Raiders,Ian Thomas,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-LV,Raiders,Dont'e Thornton Jr.,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LV,Raiders,Trey Zuhn III,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 SF,49ers,Mike Evans,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 SF,49ers,Renardo Green,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -575,7 +543,6 @@ SF,49ers,Deebo Samuel Sr.,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_sco
 SF,49ers,Upton Stout,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 SF,49ers,C.J. West,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 SF,49ers,Trent Williams,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-DAL,Cowboys,DaRon Bland,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 DAL,Cowboys,Jonathan Bullard,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 DAL,Cowboys,Alijah Clark,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 DAL,Cowboys,Donovan Ezeiruaku,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -608,11 +575,9 @@ CIN,Bengals,Kyle Dugger,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope
 CIN,Bengals,Dylan Fairchild,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 CIN,Bengals,B.J. Hill,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 CIN,Bengals,Andrei Iosivas,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-CIN,Bengals,Dexter Lawrence,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 CIN,Bengals,Brian Parker II,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 CIN,Bengals,DJ Turner II,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LAC,Chargers,Kayode Awosika,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-LAC,Chargers,Bud Dupree,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LAC,Chargers,Justin Eboigbe,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LAC,Chargers,Alex Harkey,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 LAC,Chargers,Tre Harris,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
@@ -632,11 +597,9 @@ LAC,Chargers,Isas Waxter,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scop
 LAC,Chargers,Kendall Williamson,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Rasheen Ali,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Rashod Bateman,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-BAL,Ravens,Calais Campbell,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Kyle Hamilton,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Jaylinn Hawkins,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Matthew Hibner,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Olaivavega Ioane,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Adam Randall,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
-BAL,Ravens,Ronnie Stanley,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"
 BAL,Ravens,Nate Wiggins,player_row,present,,NOT_ON_OFFICIAL_EXTRACT,out_of_scope,https://www.nfl.com/injuries/league/2026/reg10,"the published row belongs to a club outside the four transcribed matchups, or to a player the official page no longer lists; it is not graded"

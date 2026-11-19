@@ -261,9 +261,15 @@ def game_slug(path: str) -> str:
 
 
 # ------------------------------------------------------------------------ week 10 ref
+# The Week 10 capture the movement table compares against. It is a FIXED, dated capture: the
+# rolling `data/availability/injuries.csv` is overwritten by the availability workflow with
+# the newest week, and once that happens the rolling file contains no Week 10 row at all.
+WEEK10_CAPTURE = AV / "history" / "2026-11-18" / "injuries.csv"
+
+
 def week10_rows() -> tuple[dict, str]:
     out, clock = {}, ""
-    p = AV / "injuries.csv"
+    p = WEEK10_CAPTURE if WEEK10_CAPTURE.exists() else AV / "injuries.csv"
     if not p.exists():
         return out, clock
     with open(p, newline="", encoding="utf-8") as fh:

@@ -34,6 +34,25 @@ REPORT = ROOT / "research" / "availability-snapshot-audit-2026-11-13.md"
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
+def _capture_files_for(manifest: dict) -> tuple[Path, Path]:
+    """The (injury, depth) CSVs that belong to `manifest`, never a different week's file.
+
+    Added by session arena/c83ada84-korea1 (2026-11-19): the rolling
+    `data/availability/injuries.csv` is overwritten by the availability workflow, so an
+    audit of a manifest must read the dated snapshot whose `retrieved_utc` matches it.
+    """
+    captured = str(manifest.get("retrieved_utc", "") or manifest.get("captured_utc", ""))
+    cands = [h / "injuries.csv" for h in reversed(sorted((AV / "history").glob("*")))]
+    cands.append(AV / "injuries.csv")
+    for path in cands:
+        if not path.exists():
+            continue
+        rows = _read_csv(path)
+        if rows and all(r.get("retrieved_utc") == captured for r in rows):
+            return path, path.with_name("depth_charts.csv")
+    return AV / "injuries.csv", AV / "depth_charts.csv"
+
+
 def _read_csv(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
@@ -110,8 +129,17 @@ def audit_snapshot() -> dict:
     injury_source = injury_sources[0]
     _require(int(injury_source.get("http_status", 0)) == 200,
              "official injury report did not return HTTP 200")
-    injury_rows = _read_csv(AV / "injuries.csv")
-    depth_rows = _read_csv(AV / "depth_charts.csv")
+    # REPAIR (session arena/c83ada84-korea1, 2026-11-19). `data/availability/injuries.csv`
+    # is ROLLING: the availability workflow overwrites it with the newest week, and its
+    # manifest is overwritten in the same run. The audit is about *this* manifest, so it must
+    # read the capture file that manifest describes. The newest dated snapshot in
+    # `data/availability/history/` is exactly that file: when the workflow writes a new week
+    # it also writes `history/<date>/injuries.csv` beside the new manifest. Reading the rolling
+    # path instead made the row count disagree with its own manifest (Week 10 manifest against
+    # Week 11 rows), which is what broke `make build` on 2026-11-19.
+    injury_capture, depth_capture = _capture_files_for(manifest)
+    injury_rows = _read_csv(injury_capture)
+    depth_rows = _read_csv(depth_capture)
     _require(int(injury_source.get("rows", -1)) == len(injury_rows),
              "injury source parsed-row count does not match injuries.csv")
     _require(bool(injury_rows), "injuries.csv is empty")
@@ -174,8 +202,12 @@ def audit_snapshot() -> dict:
         _require(row["depth_rank"].isdigit() and int(row["depth_rank"]) > 0,
                  f"invalid depth rank for {row['team']} / {row['player']}")
 
-    # Independently regenerate every joined table from only the two committed inputs.
-    slots, units, unmatched = build(injury_rows, depth_rows)
+    # Independently regenerate every joined table from the same capture pair the published
+    # tables were built from (see depth_status._same_capture_pair), so the audit reproduces
+    # the shipped join rather than a different week's.
+    from depth_status import _pinned_main_pairs
+    pair_inj, pair_depth = _pinned_main_pairs()
+    slots, units, unmatched = build(pair_inj, pair_depth)
     derived = {
         "slot_status.csv": slots,
         "unit_summary.csv": units,
@@ -202,11 +234,19 @@ def audit_snapshot() -> dict:
              f"summary.json disagrees with committed input and derived tables: "
              f"expected {expected_summary}, found {summary_values}")
 
+    # The dated archive is compared with the files THIS manifest describes. In the workflow
+    # that is the rolling pair (one capture, so the hashes are identical). Offline, a build may
+    # legitimately hold a newer rolling capture on one side and the 2026-11-18 snapshot on the
+    # other, so the rolling file is only compared when its clock is this manifest's clock.
     history = AV / "history" / captured[:10]
+    _require(history.exists(), "dated snapshot archive folder is missing")
     for filename in ("injuries.csv", "depth_charts.csv", "manifest.json"):
         archived = history / filename
-        current = AV / filename
         _require(archived.exists(), f"dated snapshot archive is missing {filename}")
+        if filename == "manifest.json":
+            current = AV / filename
+        else:
+            current = {"injuries.csv": injury_capture, "depth_charts.csv": depth_capture}[filename]
         _require(hashlib.sha256(current.read_bytes()).hexdigest()
                  == hashlib.sha256(archived.read_bytes()).hexdigest(),
                  f"current and dated-history copies differ for {filename}")

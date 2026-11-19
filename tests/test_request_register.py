@@ -114,7 +114,10 @@ def test_no_blank_or_token_cells_in_register():
 
 def test_ground_truth_cells_match_the_repository():
     d = pd.read_csv(CSV, dtype=str, keep_default_na=False).set_index("req_id")
-    inj = pd.read_csv(ROOT / "data" / "availability" / "injuries.csv", dtype=str, keep_default_na=False)
+    # The REQ-48 quote is a 2026-11-18 Week 10 fact, so the fixture reads that dated capture
+    # rather than the rolling file the availability workflow overwrites with a newer week.
+    inj = pd.read_csv(ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv",
+                      dtype=str, keep_default_na=False)
     for name in ("Kerby Joseph", "Cade Mays", "D.J. Reed"):
         row = inj[inj.player == name]
         assert len(row) == 1 and row.iloc[0].game_status == "Out", name

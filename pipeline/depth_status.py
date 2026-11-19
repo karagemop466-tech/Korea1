@@ -148,8 +148,37 @@ def build(inj: list[dict], depth: list[dict]):
     return slot_rows, unit_rows, unmatched
 
 
-def main() -> None:
+def _same_capture_pair() -> tuple[list[dict], list[dict]]:
+    """The injury and depth rows that belong to ONE capture.
+
+    REPAIR (session arena/c83ada84-korea1, 2026-11-19). In the availability workflow this
+    module runs right after `pipeline/fetch_availability.py`, so the rolling pair in
+    `data/availability/` is one capture and is used as-is. Offline (`make build`) the rolling
+    pair can be newer than the dated history (a capture committed on a branch that was never
+    merged), and pairing a fresh Week 11 report with a Week 10 clock produces a join the
+    committed tables -- and the snapshot audit -- cannot reproduce. So the pair is only used
+    when both sides carry the same retrieval clock; otherwise both sides are taken from the
+    newest dated snapshot that holds a complete pair.
+    """
     inj, depth = read(AV / "injuries.csv"), read(AV / "depth_charts.csv")
+    clock = lambda rows: {r.get("retrieved_utc", "") for r in rows}  # noqa: E731
+    if inj and depth and len(clock(inj)) == 1 and clock(inj) == clock(depth):
+        return inj, depth
+    for day in reversed(sorted((AV / "history").glob("*"))):
+        i2, d2 = read(day / "injuries.csv"), read(day / "depth_charts.csv")
+        if i2 and d2 and len(clock(i2)) == 1 and clock(i2) == clock(d2):
+            print(f"  depth_status: rolling pair is not one capture; using {day.name}")
+            return i2, d2
+    return inj, depth
+
+
+def _pinned_main_pairs() -> tuple[list[dict], list[dict]]:
+    """The pair `main()` writes from, with the same selection rule. Public for the audit."""
+    return _same_capture_pair()
+
+
+def main() -> None:
+    inj, depth = _same_capture_pair()
     slot_rows, unit_rows, unmatched = build(inj, depth)
     write(AV / "slot_status.csv", SLOT_COLS, slot_rows)
     write(AV / "unit_summary.csv", UNIT_COLS, unit_rows)

@@ -30,7 +30,9 @@ def _reg() -> pd.DataFrame:
 
 
 def _inj() -> pd.DataFrame:
-    return pd.read_csv(AV / "injuries.csv", dtype=str, keep_default_na=False)
+    # The annex compares the 2026-11-18 official read with the capture it came from.
+    return pd.read_csv(AV / "history" / "2026-11-18" / "injuries.csv",
+                       dtype=str, keep_default_na=False)
 
 
 def _dep() -> pd.DataFrame:
@@ -75,10 +77,15 @@ def test_rejected_rows_are_the_three_the_brief_asked_to_reject():
 def test_injury_counts_match_the_capture():
     inj = _inj()
     r = _reg().set_index("id")
-    assert f"{len(inj)} rows" in r.loc["R51", "evidence"]
-    assert str(inj.team.nunique()) in r.loc["R51", "evidence"]
-    designated = int((inj.game_status.str.strip() != "").sum())
-    assert f"{designated} of {len(inj)}" in r.loc["R34", "evidence"]
+    # R51 quotes the ROLLING capture (that is what "newest capture" means on the page), so
+    # the fixture reads the rolling file for this row only.
+    rolling = pd.read_csv(AV / "injuries.csv", dtype=str, keep_default_na=False)
+    assert f"{len(rolling)} rows" in r.loc["R51", "evidence"]
+    assert str(rolling.team.nunique()) in r.loc["R51", "evidence"]
+    # R34 also quotes the rolling capture ("current capture"), so it is checked against the
+    # same file the generator reads for that row.
+    designated = int((rolling.game_status.str.strip() != "").sum())
+    assert f"{designated} of {len(rolling)}" in r.loc["R34", "evidence"]
 
 
 def test_depth_group_and_shared_slot_counts_are_recomputed():

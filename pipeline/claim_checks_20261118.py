@@ -64,6 +64,30 @@ def _read(path: Path) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
+DATED_CAPTURE = ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv"
+
+
+def _dated_injury_rows() -> list[dict]:
+    """The 2026-11-18 capture these claims are written against.
+
+    REPAIR (session arena/c83ada84-korea1, 2026-11-19): the claims below quote row counts and
+    designations from the 2026-11-18 read, so they must read the capture that read was taken
+    from -- the dated snapshot -- and not the rolling `data/availability/injuries.csv`, which
+    the availability workflow overwrites with the newest week. When the workflow captured
+    Week 11, the rolling file stopped holding the rows these claims describe and the register
+    answered a different question without saying so.
+    """
+    if DATED_CAPTURE.exists():
+        return _rows_of(DATED_CAPTURE)
+    rows = _rows_of(ROOT / "data" / "availability" / "injuries.csv")
+    pinned = [r for r in rows if r.get("retrieved_utc") == "2026-11-18T04:24:05Z"]
+    if not pinned:
+        raise SystemExit(
+            "the 2026-11-18 injury capture is unavailable and the rolling file is another "
+            "week; this register will not compare across weeks")
+    return pinned
+
+
 def _rows_of(path: Path) -> list[dict]:
     return _read(path) if path.exists() else []
 
@@ -167,7 +191,7 @@ def build_claims() -> list[dict]:
              "(C-02), which is why the store keeps both with their capture times.")
 
     # -- C-02 the active capture -------------------------------------------------------------
-    live_inj = _rows_of(ROOT / "data/availability/injuries.csv")
+    live_inj = _dated_injury_rows()
     named = [r for r in live_inj if (r.get("game_status") or "").strip()]
     add(claim_id="C-02",
         claim_as_written="Today the site holds one capture, which cannot support backtesting.",

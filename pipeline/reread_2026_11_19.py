@@ -24,7 +24,11 @@ ROOT = Path(__file__).resolve().parents[1]
 LIVE = ROOT / "data" / "live" / "reread_2026_11_19"
 INTEG = ROOT / "data" / "integration"
 READ = LIVE / "official_rows_read.csv"
-INJ = ROOT / "data" / "availability" / "injuries.csv"
+# REPAIR (arena/c83ada84-korea1, 2026-11-19): this module re-reads the *Week 10* report on
+# 2026-11-19 and compares it with the capture it came from, so it must read that dated
+# capture. Reading the rolling file made the comparison depend on which week the availability
+# workflow had captured last, and every row became NOT MATCHED once Week 11 landed.
+INJ = ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv"
 RES = ROOT / "data" / "availability" / "reserve" / "history" / "2026-11-19T043002Z" / "reserve_list.csv"
 INJ_URL = "https://www.nfl.com/injuries/league/2026/reg10"
 RES_URL = "https://www.nfl.com/transactions/league/reserve-list/2026/11"

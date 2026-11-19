@@ -75,8 +75,10 @@ def test_committed_snapshot_rows_all_carry_official_sources():
 
 
 def test_derived_tables_match_a_fresh_join():
-    inj = list(csv.DictReader(open(ROOT / "data/availability/injuries.csv", encoding="utf-8")))
-    depth = list(csv.DictReader(open(ROOT / "data/availability/depth_charts.csv", encoding="utf-8")))
+    # Use the same capture pair the generator used (depth_status._same_capture_pair): the
+    # rolling pair can be a newer week than the dated snapshot the committed tables were
+    # built from, and comparing across weeks is not a reproducibility test.
+    inj, depth = ds._same_capture_pair()
     slots, _, _ = ds.build(inj, depth)
     committed = list(csv.DictReader(open(ROOT / "data/availability/slot_status.csv", encoding="utf-8")))
     assert len(slots) == len(committed)

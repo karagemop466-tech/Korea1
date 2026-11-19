@@ -47,7 +47,15 @@ from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
 OFFICIAL_PAGE = "https://www.nfl.com/injuries/league/2026/reg10"
-PUBLISHED = ROOT / "data" / "availability" / "injuries.csv"
+# REPAIR (session arena/c83ada84-korea1, 2026-11-19). This module compares the *2026-11-13*
+# official extract with the capture it was taken from, so it must read that dated capture.
+# It used to read the rolling `data/availability/injuries.csv`, which the availability
+# workflow overwrites with the newest week: the day that file held Week 11 rows instead of
+# Week 10, every comparison here became "MISSING_FROM_PUBLISHED", the published tables went
+# empty (`internal_consistency.csv` became a zero-byte file) and `make build` failed inside
+# render_live with an EmptyDataError. A dated verification reads a dated capture.
+PUBLISHED = ROOT / "data" / "availability" / "history" / "2026-11-13" / "injuries.csv"
+ROLLING = ROOT / "data" / "availability" / "injuries.csv"
 EXTRACT = LIVE / "official_injury_extract_2026_reg10.csv"
 ARCHIVE_MD = ROOT / "data" / "evidence" / "nfl_injuries" / "week10_2026" / "injury_report.md"
 ARCHIVE_SNAPSHOT = ROOT / "data" / "availability" / "history" / "2026-11-12" / "injuries.csv"

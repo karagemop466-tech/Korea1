@@ -28,8 +28,10 @@ def _inj():
 
 
 def _pub():
-    return pd.read_csv(ROOT / "data/availability/injuries.csv",
-                       dtype=str, keep_default_na=False)
+    # The published table is built from lv.PUBLISHED (the dated 2026-11-13 capture). The
+    # rolling data/availability/injuries.csv is a different, newer week and would make this
+    # fixture compare two weeks.
+    return pd.read_csv(lv.PUBLISHED, dtype=str, keep_default_na=False)
 
 
 # --------------------------------------------------------------------------- #

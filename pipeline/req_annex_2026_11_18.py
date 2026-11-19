@@ -253,9 +253,50 @@ def parse_gamecentre(path: Path) -> dict:
                 stadium=get(r"^- Stadium as printed: (.+)$"))
 
 
+def _dated_injury_capture():
+    """The injury rows of the 2026-11-18 capture this register compares against.
+
+    Preferred: an immutable dated snapshot. Fallback: the rolling capture filtered to the
+    2026-11-18 retrieval clock, which is the same bytes the dated read was taken from.
+    A rolling file from another week is refused loudly rather than compared.
+    """
+    dated = AVAIL / "history" / "2026-11-18" / "injuries.csv"
+    if dated.exists():
+        return dated
+    rolling = pd.read_csv(AVAIL / "injuries.csv", dtype=str, keep_default_na=False)
+    pinned = rolling[rolling.retrieved_utc == "2026-11-18T04:24:05Z"]
+    if pinned.empty:
+        raise SystemExit(
+            "the 2026-11-18 injury capture is no longer available: the rolling "
+            "data/availability/injuries.csv holds "
+            f"{sorted(set(rolling.retrieved_utc))[:3]} and no dated snapshot exists. "
+            "A dated comparison will not fall back to another week.")
+    return AVAIL / "injuries.csv" if False else _PinnedFrame(pinned)
+
+
+class _PinnedFrame:
+    """A tiny adapter so the caller can keep calling pd.read_csv-style accessors."""
+
+    def __init__(self, frame):
+        self._frame = frame
+
+    def __getattr__(self, item):
+        return getattr(self._frame, item)
+
+
 def compare_official() -> tuple[list[dict], dict]:
     """Compare the 2026-11-18 official read with the committed capture. Recomputed every run."""
-    inj = pd.read_csv(AVAIL / "injuries.csv", dtype=str, keep_default_na=False)
+    # REPAIR (session arena/c83ada84-korea1, 2026-11-19). This function compares the
+    # *2026-11-18* official read with the capture it was taken from, so it must read that
+    # capture -- not `AVAIL/injuries.csv`, which is a ROLLING file the availability workflow
+    # overwrites with the newest week. Reading the rolling file made a dated comparison depend
+    # on today's week, and the moment the workflow captured Week 11 the KC omission count
+    # changed from 1 to 3 and `make build` died. The history folder has no 2026-11-18 entry
+    # for the injury report (only depth), so the dated rows are taken from the same immutable
+    # 2026-11-18 reserve snapshot's sibling folder when present, and otherwise from the
+    # rolling capture restricted to the week this comparison is about. Neither path may
+    # borrow a row from another week.
+    inj = pd.read_csv(_dated_injury_capture(), dtype=str, keep_default_na=False)
     dep = pd.read_csv(AVAIL / "depth_charts.csv", dtype=str, keep_default_na=False)
     # Pinned to the 2026-11-18 capture: this comparison is against the 2026-11-18 official read.
     res = pd.read_csv(AVAIL / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
