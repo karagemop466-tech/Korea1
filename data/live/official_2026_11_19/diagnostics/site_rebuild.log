@@ -1,5 +1,5 @@
 == make -o injuries site (offline rebuild of the committed capture) ==
-2026-11-19T12:29:34Z
+2026-11-19T12:33:00Z
   matchup matrix: 154 rows, 6 excluded club-weeks -> matchup-matrix.html
 python3 pipeline/vigfree_decomposition.py
   vig-free decomposition: 16,206 game × market rows, 63 summary rows -> consensus.html

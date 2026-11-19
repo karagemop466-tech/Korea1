@@ -1,5 +1,5 @@
 {
- "captured_utc": "2026-11-19T12:29:19Z",
+ "captured_utc": "2026-11-19T12:32:32Z",
  "runner": "GitHub Actions (.github/workflows/week11-capture.yml)",
  "season": 2026,
  "week": 11,
@@ -23,7 +23,7 @@
    "note": "Official NFL injury report, current-week URL (nfl.com redirects this to the live week)",
    "http_status": 200,
    "bytes": 373969,
-   "sha256": "e11519c42b1dd9a31572cbca7f21e2cc1f85163450dc956ee88f8381fb1707dc",
+   "sha256": "b22871115d74a356156358aee24548abdc7041d09d7fce04bce4f43d6b28780d",
    "content_type": "text/html",
    "error": ""
   },
@@ -61,21 +61,153 @@
    "error": ""
   },
   {
-   "slug": "game_centre_index",
-   "requested_url": "",
-   "final_url": "",
-   "note": "discovery step",
-   "http_status": 0,
-   "bytes": 0,
-   "sha256": "",
-   "content_type": "",
-   "error": "no /games/...-2026-reg-11 anchor found on either schedule capture; game centres were NOT captured, and this is published as a gap"
+   "slug": "game_centre__colts_at_texans_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/colts-at-texans-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/colts-at-texans-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1145926,
+   "sha256": "d6d2edc77344aaf1df66f1de4a9c3d5c0b6c2562738b183be9fd3d6c7c0f441a",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__dolphins_at_bills_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/dolphins-at-bills-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/dolphins-at-bills-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1140082,
+   "sha256": "9886ad0d5d21abefadaa70592a2372a2884715ed4b34f7d81706cff9a77e6885",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__ravens_at_panthers_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/ravens-at-panthers-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/ravens-at-panthers-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1171302,
+   "sha256": "4e30f8ea9daf6d57feba9923e6a2f01a56441a2dec78aafb3ce74421ad799bf2",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__saints_at_bears_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/saints-at-bears-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/saints-at-bears-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1151632,
+   "sha256": "a9a567af51f7c67aa50a33758425f8354cd7abff4eede1d7653c9e4bc78494c3",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__titans_at_cowboys_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/titans-at-cowboys-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/titans-at-cowboys-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1165032,
+   "sha256": "3099e25967c6ef0a314e7258ae7cb84f9471471bb883d879b2d2b4f9d3e4120a",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__buccaneers_at_lions_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/buccaneers-at-lions-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/buccaneers-at-lions-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1148497,
+   "sha256": "9d05c761ce5d15c79d41238bf7fc4fc01593d1d52156dc0bb588758ca96bad5d",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__cardinals_at_chiefs_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/cardinals-at-chiefs-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/cardinals-at-chiefs-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1174967,
+   "sha256": "7971234329a775d102f8ed00fa360eaf4b83c663812a77bb99758ec495afd720",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__steelers_at_eagles_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/steelers-at-eagles-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/steelers-at-eagles-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1158585,
+   "sha256": "7af27df9f4ca790e3e6911107d4d6d757be768cbd6cf7d182f1b37b91c51c5aa",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__jets_at_chargers_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/jets-at-chargers-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/jets-at-chargers-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1174659,
+   "sha256": "5ed506e87ed92aaf45b7bc9a47e7e453b727cc0d5badfc83f3d4f404ab869b3f",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__jaguars_at_giants_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/jaguars-at-giants-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/jaguars-at-giants-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1159165,
+   "sha256": "2acf582e338ceac8667e821824eb0f0c1805314871c6734432619f3586a5fee4",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__raiders_at_broncos_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/raiders-at-broncos-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/raiders-at-broncos-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1150557,
+   "sha256": "73929c77c9228443b64bb38f01fb3d88c445decc4087332cfe763a73528984ae",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__vikings_at_49ers_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/vikings-at-49ers-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/vikings-at-49ers-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1160361,
+   "sha256": "66dfd46b03b74cd184f2f7aaf38a1c7465338618267f87911cd6e01e54356e9e",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
+  },
+  {
+   "slug": "game_centre__bengals_at_commanders_2026_reg_11",
+   "requested_url": "https://www.nfl.com/games/bengals-at-commanders-2026-reg-11",
+   "final_url": "https://www.nfl.com/games/bengals-at-commanders-2026-reg-11",
+   "note": "Official game centre (Game Info / venue / roof / surface, when printed)",
+   "http_status": 200,
+   "bytes": 1081707,
+   "sha256": "e1a1dc443a322ea6cfc6f38ae67bb300c1247b07c13b512c3561f99161c352c4",
+   "content_type": "text/html; charset=utf-8",
+   "error": ""
   }
  ],
- "game_centres_discovered": 0,
+ "game_centres_discovered": 13,
  "summary": {
-  "ok": 5,
-  "failed": 1,
-  "game_centres": 0
+  "ok": 18,
+  "failed": 0,
+  "game_centres": 13
  }
 }
