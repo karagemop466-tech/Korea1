@@ -4067,6 +4067,34 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 
 **2026-11-19 CI parity finding (`arena/db0e98e2-korea1`).** PR #105's `verify` job failed at the final step, `tests/check_rebuild.py`. Cause: `repo_inventory.csv`, the page file counts and `verification_report.csv` are computed from `git ls-files`, so they changed once the new session files were committed, and the outputs were built before those files were tracked. Local `check_rebuild.py` had passed because it compares only uncommitted changes against `HEAD`, so it is valid only on a clean build. Fix: regenerated outputs in a fresh clone of the branch (`make build` with the venv interpreter), committed them as `1b54a42`, then confirmed in a second fresh clone that `make build` produces zero diff, `check_rebuild` exits 0 and `make test` gives 376 passed. Rule for this board: run `make build` in a fresh clone before any PR, not in a dirty working tree.
 
+## Session `arena/fea5cdab-korea1` — 2026-11-19
+
+**Branch and scope.** The Arena session is pinned to `arena/fea5cdab-korea1` (branched from `main` at `311d9b5`), so this session committed only to that branch and opened its PR to `main`. Per-task `session-<id>/<task>` branches were not created, because the session may not create or push other branches. Files touched: `Makefile` (one step and one test entry), `pipeline/render_site.py` (one section function and one call), `pipeline/session_20261118.py` (the repair below), `pipeline/reread_2026_11_19.py` (new), `tests/test_reread_2026_11_19.py` (new), `data/live/reread_2026_11_19/**` (new), `data/integration/findings_2026_11_19.csv` (new), the regenerated outputs of `make build`, and this file.
+
+**Claim and order of work (stated honestly).** The `main` repair below was made before this claim was written: `make test` was red at `311d9b5` and the repair was needed to make the claim's own verification possible. The claim row follows; nothing else in scope was touched before it.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| R19-1 | Restore `main` to green: `make test` failed at `311d9b5` (1 failure) and `make build` rewrote 27 committed files | **done** (equivalent fix landed on `main` via #106/#107; merged, not duplicated) | `arena/fea5cdab-korea1` | regenerated outputs |
+| R19-2 | Live re-read of the official Week 10 injury report and the November reserve list, compared line by line with the committed captures; findings on the Flagged page | **done** | `arena/fea5cdab-korea1` | `pipeline/reread_2026_11_19.py`, `data/live/reread_2026_11_19/**`, `data/integration/findings_2026_11_19.csv`, `pipeline/render_site.py` (one section), `Makefile`, `tests/test_reread_2026_11_19.py` |
+| R19-3 | Publish the irregularities and scope limits with official links | **done** | `arena/fea5cdab-korea1` | flagged page section F-2026-11-19-01…05 |
+
+**R19-1 — repair.** `make test` was red at `311d9b5`: `compare_reserve` read the rolling file `reserve/latest.csv`, which the scheduled reserve-list job had overwritten with the `2026-11-19T04:30:02Z` capture, so the 25-row expectation became 21. This session made the same fix in its own commit (pin to `history/2026-11-18T044201Z`). While this session's PR was open, `main` moved: PRs #106/#107 (`arena/8d55e319-korea1`) landed an equivalent pin (key renamed to `recapture`) and the matching test. The merge conflict was resolved by taking `main`'s code and test, keeping this session's new files, and regenerating every derived output with `make build`. Net effect: the repair is `main`'s, and this session records it without a second copy.
+
+**R19-2 — sources read (2026-11-19, about 07:00Z, via the page-read tool).**
+- Injury report, Week 10 URL: <https://www.nfl.com/injuries/league/2026/reg10> — 44 rows transcribed for WAS, NYG, NE and DET (the four clubs read in full on the first chunk).
+- November reserve list: <https://www.nfl.com/transactions/league/reserve-list/2026/11> — 17 November rows dated 11/14 to 11/18.
+
+**Verification performed.** Each transcribed row was compared with the committed capture on every field (`data/availability/injuries.csv` for the injury rows, `data/availability/reserve/history/2026-11-19T043002Z/reserve_list.csv` for the reserve rows). Result: 44 of 44 injury rows match on injury, practice status and game status; 17 of 17 reserve rows match on date, club, player and transaction; the four club row counts match (WAS 9, NYG 11, NE 15, DET 9). That is 153 of 153 row-level comparisons agreeing (`data/live/reread_2026_11_19/comparison.csv`). The three Lions rows (Joseph, Mays, Reed) read **Out** on the live page.
+
+**Irregularities and limits (all on the Flagged page).**
+- **F-2026-11-19-01 (open):** the Week 10 URL's page title reads "Week 11 of the 2026 Season" while its heading reads "Injuries – WEEK 10"; the repository holds no Week 11 injury capture.
+- **F-2026-11-19-04 (open):** scope is four clubs and 17 reserve rows, not a 32-club check.
+- **F-2026-11-19-05 (open):** the live rows are transcriptions of a tool read, not byte captures, so no SHA-256 can be attached to them.
+- **F-2026-11-19-03 (repaired):** the `main` red state and its cause, as described in R19-1.
+
+**Not done in this session (stated, not claimed).** The 32-club sweep, the Texans depth image, the Game Book extraction and the reserve-list day-level history were not re-verified; the request's per-item items remain as recorded in the existing request register. No value on any page was changed other than the new findings and the repaired test's pin.
+
 ## Session `arena/8d55e319-korea1` — 2026-11-19 reproducibility and release-readiness audit (claim)
 
 | # | Task | Status | Owner (session ID) | File scope |
