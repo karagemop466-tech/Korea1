@@ -67,6 +67,40 @@ jobs:
           echo "--- tail of recorded log ---"
           tail -25 "/home/runner/work/Korea1/Korea1/$DEST/site_rebuild.log" || true
 
+      - name: Reproduce the availability workflow's failing rebuild (diagnostic only)
+        # The availability workflow has failed at this exact command on every run since
+        # 2026-11-18T19:24Z (runs 44456709590, 44445480402, 44380205336), and its Actions log
+        # returns EOF. This step downloads the same official pages and runs the same rebuild,
+        # recording both logs in the repository so the failure is measured, not guessed.
+        # It writes only into the capture directory; the availability CSVs it dirties are NOT
+        # committed by this job.
+        run: |
+          set +e
+          DEST=data/live/official_2026_11_19/diagnostics
+          mkdir -p "$DEST"
+          { echo "== python pipeline/fetch_availability.py =="
+            date -u +%Y-%m-%dT%H:%M:%SZ
+            python pipeline/fetch_availability.py
+            echo "fetch-exit=$?"
+            echo
+            echo "== make -o injuries site (exact command of the failing step) =="
+            make -o injuries site 2>&1 | tail -120
+            echo "make-site-exit=${PIPESTATUS[0]}"
+            echo
+            echo "== make -o injuries verify =="
+            make -o injuries verify 2>&1 | tail -40
+            echo "make-verify-exit=${PIPESTATUS[0]}"
+            echo
+            echo "== the two pytest modules the workflow runs =="
+            python -m pytest -q tests/test_availability_tracker.py tests/test_live_verify.py 2>&1 | tail -25
+            echo "pytest-exit=${PIPESTATUS[0]}"
+            echo
+            echo "== resulting capture summary =="
+            cat data/availability/summary.json
+          } > "$DEST/availability_rebuild.log" 2>&1
+          echo "--- availability_rebuild.log (tail) ---"
+          tail -60 "$DEST/availability_rebuild.log" || true
+
       - name: Commit the capture
         # Only the capture directory is staged, so a regenerated page can never be
         # published from a runner by accident. `--autostash` keeps the pull safe even if a
