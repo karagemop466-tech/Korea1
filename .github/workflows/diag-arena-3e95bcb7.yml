@@ -44,14 +44,18 @@ jobs:
           set -e
           if [ "$rc" -ne 0 ]; then
             {
-              echo "First traceback:"
-              grep -n -A 25 -m 1 "Traceback" /tmp/build.log || echo "(no traceback found)"
-              echo "---- last 150 lines ----"
-              tail -n 150 /tmp/build.log
+              echo "make error lines:"
+              grep -n "make: \*\*\*\|Error [0-9]\|error:" /tmp/build.log | tail -n 12 || echo "(none matched)"
+              echo "---- last 60 lines ----"
+              tail -n 60 /tmp/build.log
             } > /tmp/err.txt
             RC="$rc" python3 - <<'PY'
           import os, pathlib
-          body = pathlib.Path("/tmp/err.txt").read_text(errors="replace")[:60000]
+          body = pathlib.Path("/tmp/err.txt").read_text(errors="replace")
+          # GitHub truncates annotation messages to a few KB, so keep the END
+          # of the log (the actual failure), not its beginning.
+          if len(body) > 3600:
+              body = "…TRUNCATED…\n" + body[-3500:]
           msg = body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
           print(f"::error title=availability rebuild failed (exit {os.environ['RC']})::{msg}")
           PY
