@@ -4409,3 +4409,33 @@ log that several sessions write at the end of the file.
 - The Game Book table has 348 `lineup_unreadable` rows and covers 29 of 42 captured games. It is not a complete starter record, and nothing in the annex treats it as one.
 - Venue coverage: `assets/data/official_gamecentres.csv` has 42 game-centre rows with venue columns. It is not shown to cover every fixture, so R60 stays blocked.
 - The same-game-parlay division has no candidate, so the division has no standing to rank.
+---
+
+## Session `arena/c83ada84-korea1` — 2026-11-19: Week 11 official publication layer, decision cockpit, suggestions hub, final integration (claim)
+
+**Protocol deviation, recorded as every earlier session recorded it.** The platform pins this session to branch
+`arena/c83ada84-korea1` (base `main` = `3c02fb2`, the 2026-11-19T12:14Z gamebooks capture). The
+`session-<id>/<task>` worktree pattern cannot be used; this branch is the task **and** integration branch. Sibling
+branches are never pushed to, closed or rebased.
+
+**Board read first (2026-11-19T12:2xZ).** Baseline on the pristine checkout: `make build` exit 0 with 0 failing
+checks (51 canonical pages / 6,764 rows, 61 pages linked), `make test` **382 passed, 1 skipped**, and
+`git status --porcelain` empty after the build — the committed tree is a fixed point of the generators. Sibling
+sessions live on the board at claim time and their scopes are **not** touched: `arena/eeba949e-korea1` (E2–E6,
+official Game Book readers / fixture-context / availability graph / `gamebooks.html`), `arena/58529315-korea1`
+(Q1, REQ-37 same-game-parlay division), `arena/6ec7369c-korea1` (I1, independent spot-check + integration),
+`arena/e6daadf0-korea1` (release audit, docs only).
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| W1 | Board claim + session log | **in progress** | `arena/c83ada84-korea1` | `COORDINATION.md` (own section only) |
+| W2 | **Week 11 official publication layer.** The repository's newest football evidence is Week 10 although Week 11 kicks off 2026-11-19T20:15 ET (01:15Z on 11-20). Read the official Week 11 injury report and the official Week 11 schedule with the page-read tool, commit the verbatim reads with their clock times, and publish `week-11.html`: one row per club·player designation, one row per fixture (date/time/broadcast), venue only where an official game centre was actually read, every unread cell blank and flagged | **in progress** | `arena/c83ada84-korea1` | `data/live/week11_2026_11_19/**` (new), `pipeline/week11_20261119.py` (new), `tests/test_week11_20261119.py` (new), `week-11.html` (new) |
+| W3 | **Decision cockpit + category hub.** The landing page is a 10-section wall of registers; a reader cannot see, in one screen, what is live, what is blocked and what to decide next. Replace the top of `index.html` with a cockpit (live-week status, the gate that blocks a bet, the decision queue) and a task-based category strip; every existing link is kept | **unclaimed** | `arena/c83ada84-korea1` | `pipeline/render_site.py` (`build_index` + `NAV_GROUPS` only), `assets/style.css` (additive classes only) |
+| W4 | **Suggestions hub** — one page that indexes the four existing suggestion registers and the question registers with counts, the gate each cluster blocks and a ranked first-move shortlist, so a path can be chosen without visiting nine pages. Curated index, **not** a fifth duplicate register | **unclaimed** | `arena/c83ada84-korea1` | `pipeline/suggestions_hub.py` (new), `suggestions-hub.html` (new), `tests/test_suggestions_hub.py` (new) |
+| W5 | Integration: NAV, page lists (`verify_site.py`, `check_sources.py`, `check_links.py`), Makefile, README, executive-summary generator, flagged rows for every unverified cell; `make build` + `make test` + `check_rebuild` in a clean clone; PR → `main`, merge without waiting, confirm Pages, record here | **unclaimed** | `arena/c83ada84-korea1` | `pipeline/render_site.py`, `pipeline/verify_site.py`, `tests/check_sources.py`, `tests/check_links.py`, `Makefile`, `README.md`, `pipeline/render_summary.py`, `COORDINATION.md`, branch → `main` |
+
+**Rules this session holds itself to.** Nothing is inferred. A cell the official page does not print stays blank and
+says why; a page not read is recorded as not read, with the clock time of the read that did happen. Every published
+table row carries an official NFL link. No backtest number is promoted. Betting gates stay fail-closed: no strategy is
+declared validated and no reward is awarded by this session.
+
