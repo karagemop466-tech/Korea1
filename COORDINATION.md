@@ -4136,6 +4136,26 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
-| IA1 | Independently run the current committed build, full registered tests, source/link checks, and reproducibility check; inspect the landing page, executive summary, decision-readiness, suggestions, and flagged-review surfaces; record only current-tree reproducible outcomes and remaining blockers | **in progress** | `arena/e6daadf0-korea1` | `COORDINATION.md` (this session section only; no application/data/site edits) |
+| IA1 | Independently run the current committed build, full registered tests, source/link checks, and reproducibility check; inspect the landing page, executive summary, decision-readiness, suggestions, and flagged-review surfaces; record only current-tree reproducible outcomes and remaining blockers | **done** | `arena/e6daadf0-korea1` | `COORDINATION.md` (this session section only; no application/data/site edits) |
 
 **Claim scope:** documentation of an audit only. No other session-owned task or shared output is edited.
+
+### IA1 closeout — `arena/e6daadf0-korea1`
+
+**Status: done (audit only; no application or dataset changes).** The official-source and link checks are reproducible build gates, not a substitute for a fresh human comparison of every assertion to its cited page. This pass does not claim that every historical value was independently re-read live.
+
+**Verification performed on the checked-out tree (`3c02fb2`, 2026-11-19):**
+- Installed the pinned `requirements.txt` packages in ignored `.venv/` after the base system Python lacked pandas; the first `make build` attempt consequently failed before doing work. The retry with the declared environment passed.
+- `make build`: passed; `pipeline/verify_site.py` reported 0 failing checks, all 51 canonical pages passed strict source-reference checks (6,764 table rows), and all 61 checked pages passed internal-link/asset checks.
+- `make test`: **382 passed, 1 skipped**.
+- `.venv/bin/python tests/check_rebuild.py`: reproducible, **0 changed files**. `git diff --check`: passed. Working tree clean apart from this coordination log.
+- The landing page, executive summary and decision/readiness/review page generators ran as part of the build. `make build` retained fail-closed decisions: no strategy is validated or LIVE; the price snapshot pipeline reports 18,711 markets but **0 verified openings and 0 verified closings**. These are evidence gaps, not evidence of zero market movement or zero betting edge.
+- Live GitHub check via `gh`: Pages source is `main:/`, status `built`; the latest Pages deployment at audit time was successful, run [44522060102](https://github.com/karagemop466-tech/Korea1/actions/runs/44522060102). The latest site verification run shown in Actions was successful on the preceding code head [44485432792](https://github.com/karagemop466-tech/Korea1/actions/runs/44485432792); the 12:14 gamebook-capture commit has its own successful capture run [44521499276](https://github.com/karagemop466-tech/Korea1/actions/runs/44521499276).
+
+**Decision and remaining blockers (not silently cleared):**
+- Do not launch rewards, recommend bets, or treat backtest performance as validated. The repo's gate pages and source checks pass, but the strategy qualification and executable-quote gates do not.
+- No authenticated executable opening/closing-price evidence is present in the generated snapshot (`0/18,711` verified fields); the committed price archive is not equivalent to a verified sportsbook feed.
+- Injury/depth availability completeness and the 32-club depth-source sweep remain explicitly partial/open in the existing review surfaces. Absence from an incomplete report is not availability; depth order is not inferred from jersey number or roster attributes.
+- The automated verifier establishes that rows link to official/primary sources and links resolve; it does not prove semantic agreement for every claim on every page. Existing flagged findings remain the right place for unresolved source conflicts.
+
+**Coordination note:** this session did not modify shared data, navigation, generated pages, or another session's scope. Other task-board entries still marked in progress are not claimed complete by this audit; final integration remains with the designated integration session.
