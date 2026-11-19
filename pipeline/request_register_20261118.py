@@ -300,14 +300,20 @@ def register_rows() -> list[dict]:
 
     # ---- availability, injuries, depth ----------------------------------------------------
     add("R-23", "Build the availability graph as a first-class dataset (who was expected to start, who "
-                "actually did)", "Availability", "NOT BUILT HERE",
-        [absent("data/processed/availability_graph.csv"),
-         "owner `arena/99b908ab-korea1`; PR #82 merged 2026-11-18T04:50Z with the capture job and the "
-         "parsers (see R-28/R-30), not with the graph itself, so no competing file was created here"],
+                "actually did)", "Availability", "BUILT — the expectation side; the actual side waits on "
+                "the league's Game Book",
+        [ev("data/processed/availability_graph.csv", "one row per fixture x club x position"),
+         ev("data/processed/official_inactive_lists.csv", "the league's game-day lists, empty until a "
+             "Game Book is captured"),
+         "pipeline/availability_graph.py (session arena/eeba949e-korea1, 2026-11-19); published on "
+         "gamebooks.html"],
         "The 'who actually started' side needs the official Game Book, which no committed artefact holds",
         "One parsed Game Book starting-lineup row per fixture — today 0 fixtures",
         U["gamebook"], "Official game centre (the Game Book is linked from it)",
-        "Left to the owning session deliberately, per the coordination protocol.")
+        "The expected side is the club's own depth chart, with its capture time and whether it was known "
+        "before kickoff. The capture job's schedule reader was repaired on 2026-11-19: the league's "
+        "schedule page no longer prints /games/ anchors, so the payload reader is now the one that works, "
+        "and the capture URL is the league's own /by-week/reg-N form.")
     add("R-24", "Do not model depth from jersey order; model it from playing time", "Availability",
         "REFUSED BY EVIDENCE",
         [absent("data/processed/snap_counts.csv"),
@@ -334,19 +340,27 @@ def register_rows() -> list[dict]:
         "official schedule page — that closes the 'coverage gap cause (unverified)' item the 2026-11-18 "
         "integration log left open.")
     add("R-27", "Add a fixture-context feature set built only from published schedule facts", "Availability",
-        "PARTLY",
-        [f"data/processed/originated_lines.csv ({cols('data/processed/originated_lines.csv', ['gameday', 'gametime', 'rest_diff', 'div_game', 'roof', 'temp', 'wind'])})",
+        "BUILT — published schedule facts only",
+        [ev("data/processed/fixture_context.csv", "one row per fixture, every column printed by the league"),
+         ev("data/processed/week_windows.csv", "the league's own week windows and bye clubs"),
+         ev("data/processed/official_documents.csv", "the captured documents behind those rows"),
+         f"data/processed/originated_lines.csv ({cols('data/processed/originated_lines.csv', ['gameday', 'gametime', 'rest_diff', 'div_game', 'roof', 'temp', 'wind'])})",
          ev("data/processed/feature_dict.csv")],
-        "the columns exist but are sourced from the pinned community archive, not transcribed from the "
-        "official fixture page per game",
+        "the fixture-context table covers the fixtures the capture has read; the roof, temperature and "
+        "wind columns of the research feature set still come from the pinned community archive",
         "One captured fixture page per game with the venue, date and time transcribed from it",
         U["schedule"], "Official schedule",
-        "Sibling PR #82 (GB4) proposes exactly this from the game centre; this session does not duplicate it.")
+        "Session arena/eeba949e-korea1 (2026-11-19) published the table from the league's own schedule "
+        "payload: both clubs, the kickoff instant, the week, the status, the category, the venue, the "
+        "broadcast networks and the clubs on a bye. The only derived column is the Eastern kickoff, "
+        "converted from the league's UTC instant with the IANA America/New_York zone.")
     add("R-28", "Transcribe the venue of every fixture from the official game centre and publish it",
-        "Availability", "PARTLY — capture job merged, rows not yet published",
-        [ev("data/evidence/official_games/manifest.json", "schedule pages for Weeks 9–10, hashed"),
+        "Availability", "PARTLY — the schedule page's venue is published per fixture; the game-centre "
+        "copy awaits a capture",
+        [ev("data/evidence/official_games/manifest.json", "schedule pages, hashed"),
          "pipeline/fetch_official_games.py and .github/workflows/gamebooks.yml (merged from PR #82 at "
-         "2026-11-18T04:50Z)",
+         "2026-11-18T04:50Z; the schedule reader repaired 2026-11-19)",
+         ev("data/processed/fixture_context.csv", "venue_name_as_published and venue_city_as_published"),
          absent("data/processed/gamecentre_rows.csv")],
         "The workflow is merged and runs twice daily, but its evidence holds schedule pages only: no "
         "game-centre page has been captured and committed yet",
@@ -366,18 +380,26 @@ def register_rows() -> list[dict]:
         "no earlier than immediately after Weeks 14/15 — which is the dated announcement the item asks to "
         "keep beside the schedule.")
     add("R-30", "Use official NFL Game Books for actual starters and game-day status; do not infer depth "
-                "rank or snaps", "Availability", "PARTLY — fetcher and parsers merged, no parsed rows yet",
+                "rank or snaps", "Availability", "PARTLY — the reader is repaired and the capture job "
+        "re-runs on it, no parsed rows yet",
         [absent("data/processed/gamebook_rows.csv"),
          "pipeline/official_games.py (parse_game_book / parse_lineup_rows, merged from PR #82)",
-         ".github/workflows/gamebooks.yml (cron 47 3,15 * * *)"],
+         "pipeline/official_payload.py (the schedule and game-centre readers repaired 2026-11-19: the "
+         "league's schedule page no longer prints /games/ anchors, so the payload reader is the one that "
+         "reads the fixtures; the capture URL is now the league's own /by-week/reg-N form)",
+         ".github/workflows/gamebooks.yml (cron 47 3,15 * * *, and a push trigger on the readers so a "
+         "parser fix is followed by a re-capture)"],
         "The capture job exists but no Game Book evidence is committed yet, so there is no starter record to "
         "publish",
         "One parsed Game Book lineup set with a raw hash per completed fixture",
         U["gamebook"], "Official game centre (Game Book link)",
         "Left to that job rather than re-implemented here; the matrix this session added states on its own "
         "page that it does not show starters (R-46).")
-    add("R-31", "Capture official inactive lists and snap counts", "Availability", "OPEN",
-        [absent("data/processed/inactives.csv"),
+    add("R-31", "Capture official inactive lists and snap counts", "Availability", "OPEN — the artefact "
+        "exists and is empty; the Game Book that fills it is not captured",
+        [ev("data/processed/official_inactive_lists.csv", "the league's inactive and did-not-play lists, "
+            "empty until a Game Book is captured"),
+         absent("data/processed/inactives.csv"),
          "pipeline/official_games.py carries the Game Book parser the inactive list comes from (merged with "
          "PR #82), with no captured input yet",
          "the site's own text records that 'Only 6 of 254 report rows carry a game designation' for the "

@@ -4189,3 +4189,72 @@ official game-centre captures under `data/forward/raw_captures/` (each with its 
 **Rules this session holds itself to.** Nothing is inferred: a field the official document does not print stays blank and
 the row says why. No page is published without an official source link on every table row. `make build` and `make test`
 must be green, and `tests/check_rebuild.py` must report no drift, before any pull request is opened.
+
+**2026-11-19 session log — `arena/eeba949e-korea1` (E1–E6).**
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| E1 | Board claim + session log | **done** | `arena/eeba949e-korea1` | `COORDINATION.md` (own section only) |
+| E2 | Repair the official schedule / game-centre readers and the capture URL + Game Book link extraction | **done** | `arena/eeba949e-korea1` | `pipeline/official_payload.py` (new), `pipeline/fetch_official_games.py`, `tests/test_gamebooks_consumer.py` (new) |
+| E3 | Fixture-context feature set built only from published schedule facts (RX-14) | **done** | `arena/eeba949e-korea1` | `pipeline/fixture_context.py` (new), `data/processed/fixture_context.csv`, `data/processed/week_windows.csv`, `data/processed/official_documents.csv` |
+| E4 | Availability graph as a first-class dataset (RX-10) | **done** — the expectation side; the actual side waits on the league's Game Book | `arena/eeba949e-korea1` | `pipeline/availability_graph.py` (new), `data/processed/availability_graph.csv`, `data/processed/official_inactive_lists.csv` |
+| E5 | Published page for the layer | **done** | `arena/eeba949e-korea1` | `pipeline/render_gamebooks.py` (new), `gamebooks.html` (new) |
+| E6 | Integration: NAV entry, one index card, page lists, Makefile, README link, executive-summary block, workflow trigger | **done** | `arena/eeba949e-korea1` | `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list + one allow-list host only), `pipeline/render_summary.py` (own block only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile`, `.github/workflows/gamebooks.yml`, `README.md` |
+
+**The defect this session found, measured not assumed.** The Game Book capture layer was merged by
+`arena/99b908ab-korea1` (PRs #78, #82) and its own workflow already called three modules that did not
+exist (`pipeline/availability_graph.py`, `pipeline/fixture_context.py`, `pipeline/render_gamebooks.py`).
+The capture itself ran but read nothing usable:
+
+- `data/evidence/official_games/manifest.json` — `game_centres: []`, `game_books: []`;
+- the two captured schedule pages share the SHA-256 `6ad52b574dd3f6c8bc84442c3ce3d2a4e2c7c4a4855d69d9d02a22fc5d637fce`
+  and the same byte count — the same document was captured twice;
+- that document is the league's **current-week** page, not the requested week's page: the capture asked
+  for Weeks 9 and 10 and was served Week 11 for both;
+- the page contains **no** `/games/` anchor (0 matches in 2,290,985 bytes), so `parse_schedule_page()`
+  returned an empty list and the chain was dead end to end.
+
+**The fix, and why it is a reader fix.** nfl.com serves the schedule as a server-rendered Next.js
+application; the week's fixtures live in the page's RSC flight payload, not in the markup. The new
+`pipeline/official_payload.py` reads that payload — the league's own published JSON — and merges the
+page's two complementary copies of each fixture (one carries the week, the venue, the status and the
+kickoff instant; the other carries the club abbreviations, the league's Elias and GSIS identifiers and
+the flexibility flags). The capture now uses the URL form the league's own game-centre records already
+cite (`https://www.nfl.com/schedules/<season>/by-week/reg-<week>`, see `source_page` in
+`data/forward/official_schedule.csv`) and reads the Game Book from the game centre's own
+"Download Game Book (PDF)" module rather than from the first PDF URL that happens to be in the markup.
+
+**Verified against documents the repository already holds (no network).** The sandbox cannot reach
+`www.nfl.com` or `static.www.nfl.com` (curl error 35, `SSL_ERROR_SYSCALL`, measured 2026-11-19T12:18Z),
+so the readers were exercised against the committed official captures: the schedule page
+(`data/evidence/official_games/schedule/REG10.html.gz`, hashed in the manifest) and the thirteen committed
+game-centre pages under `data/forward/raw_captures/`. The game-centre reader returns the league's
+`LOCATION` and `STADIUM` and the Game Book PDF link for all thirteen.
+
+**What is published now.** 13 fixtures for Week 11 2026 read from the league's own schedule payload —
+both clubs, the kickoff instant, the week, the status, the category, the venue, the broadcast networks,
+the Elias and GSIS identifiers and the clubs on a bye — and 544 availability-graph rows joining the
+club's own depth chart (rank 1, with the chart's capture time and whether it was known before kickoff) to
+the Game Book's actual starter. The actual side is **blank on every row**, because no official Game Book
+has been captured; each row says so, and the page prints the gate and the number that would clear it.
+
+**Irregularity published, not corrected by assumption.** The capture requested Weeks 9 and 10 and was
+served the Week 11 document for both. The document register publishes the requested week, the published
+week and the disagreement; the fixture rows carry both weeks and `week_matches_url = NO`. This is a
+finding about the capture, not a fact about the schedule, and it is left visible.
+
+**Cross-session edits, recorded as the board requires.** Three request registers (CR1
+`pipeline/request_register.py`, CS5 `pipeline/request_register_2026_11_18.py`, NR
+`pipeline/request_register_20261118.py`) stated that these artefacts did not exist. The NR register
+carries a **fail-closed contract** (`absent(...)` + `assert_contract`): the build failed with
+`R-23: a file the register says is absent now exists — update the row`, which is the contract working
+as designed. The rows were therefore re-derived against the artefacts — R-23, R-27, R-28, R-30, R-31 in
+the NR register; REQ-10, REQ-14, REQ-23, REQ-25 in CR1; RR-10, RR-14, RR-23, RR-25 in CS5 — and the
+CS5 status vocabulary was closed back to its allowed set (`DONE` / `PARTLY DONE`), with the
+explanation moved into the `done` field. No other session's file content was discarded and no sibling
+branch was touched.
+
+**Open items (published, not blocking).** No official Game Book has been captured, so no actual starter
+is confirmed, no inactive list is published and no replacement depth is computed. The capture job now
+re-runs whenever a reader changes, so the next scheduled run (03:47 and 15:47 UTC) reads the repaired
+reader and commits what it captures.

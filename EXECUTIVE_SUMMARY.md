@@ -26,6 +26,37 @@ This dated snapshot supersedes older status notes below. Counts come from the co
 | F-38 competitive-display policy | Implemented in the 2026-11-15 update. | Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This is a display-policy change, not validation. | [Strategy leaderboard](strategies.html) · [competition standings](competition.html) · [frozen thresholds](assets/data/validation_config.json) · [demotion register](assets/data/demotion_register.csv) |
 
 
+## Update - 2026-11-19 (`arena/eeba949e-korea1`): the official Game Book evidence layer
+
+**The capture chain was dead and is now repaired.** The league's schedule page no longer
+prints `/games/` anchors, so the old reader found no fixture at all: the capture had stored
+two byte-identical documents and zero game centres and zero Game Books. The reader now reads
+the league's own published schedule payload, and the capture uses the league's own weekly URL
+form (`/schedules/<season>/by-week/reg-<week>`), which is the form the league's own game-centre
+records already cite.
+
+| What | Count | Note |
+|---|---|---|
+| Official documents captured | 2 | each with its URL, HTTP status, byte count and SHA-256 |
+| Fixtures published from the league's schedule page | 13 | every column printed by the league |
+| Availability-graph rows (expected starter) | 544 | the club's own depth chart, with its capture time |
+| Confirmed starters | 0 | needs an official Game Book |
+| Co-starter positions | 0 | the club named more than one first player; none is chosen |
+| Game centres captured | 0 | of the fixtures above |
+| Game Books captured | 0 | of the fixtures above |
+| Inactive / did-not-play rows | 0 | the league's game-day lists |
+
+**Drift, published rather than hidden.** 2 captured schedule page(s) served a
+week other than the one the capture asked for: the 2026-11-19 capture requested Weeks 9 and 10
+and was served the same Week 11 document for both (identical SHA-256). The document register
+publishes the requested week, the published week and the disagreement, and the fixture rows
+carry both. This is recorded as an open irregularity, not corrected by assumption.
+
+The page is [Official Game Book evidence](gamebooks.html). The expectation side of the
+availability graph is complete for the fixtures read; the actual side is blank on every row
+because no official Game Book has been captured yet, and each such row says so.
+
+
 ## Update — 2026-11-19 (`arena/db0e98e2-korea1`)
 
 - **Decision unchanged.** Still no validated strategy and no reward. Nothing in this update adds evidence for an edge.
@@ -168,7 +199,7 @@ A fifth pass (`arena/132e7ca2-korea1`) merged the parallel registers and re-read
 | `review-queue.html` | 76 proposals merged from 5 registers into 14 clusters (29 awaiting a path) | The decision surface: one lead row per cluster, every source row kept with its register and original id, so a path is chosen before any code changes |
 | `answers.html` | 90 questions merged from 4 registers (58 without an answer on record) | Information we have, information we do not, the answer on record and the discovery step for each |
 | `competition.html` | 3 divisions, 7 reward tiers, 8 gates | Leaderboard competition rules, the reward ladder and the luck-removal battery; the highest reachable tier today is **T0** because gate G1 fails for every candidate |
-| `repo-review.html` | 794 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
+| `repo-review.html` | 805 tracked files, 8 official-source checks, 6 irregularities | Line-by-line repository inventory, verification log and irregularity register |
 
 **Official-source re-verification performed on 2026-11-13.**
 
@@ -218,7 +249,7 @@ faithful transcriptions of a pairing that is itself contradictory on the officia
 
 CS5 (the request register) was deferred as "not done" by the 2026-11-18 session log; this
 session builds it. **`request-register.html`** now carries one row per standing-request item
-(81 rows, REQ-01..REQ-81), each with the status (41 built, 21 partly built, 12 not built, 2 blocked on an owner decision, 2 rejected as requested, 3 process), the repository
+(81 rows, REQ-01..REQ-81), each with the status (42 built, 20 partly built, 12 not built, 2 blocked on an owner decision, 2 rejected as requested, 3 process), the repository
 evidence, the gate that blocks full delivery and the number or condition that would clear it.
 The landing page links it as the decision-readiness table the request asked for.
 
@@ -236,7 +267,7 @@ request item with its status, the evidence file that supports it, the gate that 
 it and the number that would clear it. It is published on
 `request-register-2026-11-18.html` and in `data/integration/request_register_2026_11_18.csv`.
 
-**81 request items** - 36 done, 27 partly done, 4 built on open PR #82 (not
+**81 request items** - 36 done, 27 partly done, 1 built on open PR #82 (not
 merged to main), 10 blocked or not started, 3 rejected by design,
 1 needing an owner decision. 74 rows carry an official/primary source link;
 7 rows have no official source and are printed as flagged text, never filled in.

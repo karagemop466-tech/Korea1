@@ -47,6 +47,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from official_games import (html_to_text, parse_game_book, parse_game_centre,  # noqa: E402
                             parse_lineup_rows, parse_roster_entries, parse_schedule_page,
                             parse_two_column_roster, split_columns)
+from official_payload import (parse_game_centre_info, parse_schedule_payload,  # noqa: E402
+                              parse_week_selector, published_week)
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "data" / "evidence" / "official_games"
@@ -124,7 +126,19 @@ def pdf_text(data: bytes, pages: int = 2) -> tuple[str, str]:
 
 
 def week_paths(season: int, week: int) -> str:
-    return f"https://www.nfl.com/schedules/{season}/REG{week}"
+    """The league's own URL for one week's schedule.
+
+    The form is the one the league's own game-centre records cite
+    (``data/forward/official_schedule.csv`` → ``source_page``):
+    ``/schedules/<season>/by-week/reg-<week>``.
+
+    The earlier form, ``/schedules/<season>/REG<week>``, returns the league's
+    *current* week whatever week the path names: the 2026-11-19 capture of
+    ``REG9`` and ``REG10`` returned byte-identical documents (SHA-256
+    ``6ad52b57…``) that both published Week 11.  That is why the capture has
+    to read the published week out of the page instead of trusting the URL.
+    """
+    return f"https://www.nfl.com/schedules/{season}/by-week/reg-{week}"
 
 
 def parse_week_spec(spec: str) -> list[int]:
@@ -160,6 +174,7 @@ def main() -> int:
 
     # ---------------------------------------------------------------- schedule
     fixtures: list[dict] = []
+    weeks_meta: list[dict] = []
     for week in weeks:
         url = week_paths(season, week)
         try:
@@ -167,20 +182,38 @@ def main() -> int:
         except RuntimeError as exc:
             manifest["errors"].append(dict(url=url, stage="schedule", error=str(exc)))
             continue
-        text = html_to_text(raw.decode("utf-8", "replace"))
-        write_raw(RAW_DIR / "schedule" / f"REG{week}.html", raw)
-        nb, sh = write_gz(EVIDENCE / f"schedule/REG{week}.txt.gz", text)
-        hb, hh = write_gz(EVIDENCE / f"schedule/REG{week}.html.gz", raw.decode("utf-8", "replace"))
+        html = raw.decode("utf-8", "replace")
+        text = html_to_text(html)
+        write_raw(RAW_DIR / "schedule" / f"reg{week}.html", raw)
+        nb, sh = write_gz(EVIDENCE / f"schedule/reg{week}.txt.gz", text)
+        hb, hh = write_gz(EVIDENCE / f"schedule/reg{week}.html.gz", html)
+        # The week the page publishes is read out of the page, not assumed
+        # from the URL: the league's schedule application does not always
+        # serve the week the path names.
+        published = published_week(html)
         manifest["schedule_pages"].append(dict(week=week, url=url, http_status=status,
+                                               published_week=published,
+                                               week_matches_url=(str(week) == str(published)),
                                                raw_bytes=len(raw), raw_sha256=sha256_bytes(raw),
                                                text_bytes=nb, text_sha256=sh,
                                                html_bytes=hb, html_sha256=hh,
                                                retrieved_utc=stamp))
-        rows = parse_schedule_page(raw.decode("utf-8", "replace"))
+        rows = parse_schedule_payload(html)
+        if not rows:
+            # Fall back to the anchor form, for a page served as plain markup.
+            rows = parse_schedule_page(html)
         for row in rows:
-            row.update(season=season, week=week, schedule_url=url, retrieved_utc=stamp)
+            row.update(schedule_url=url, retrieved_utc=stamp,
+                       week_requested=week, week_published=published,
+                       week_matches_url=(str(week) == str(published)))
         fixtures.extend(rows)
-        print(f"schedule REG{week}: {len(rows)} fixtures", flush=True)
+        print(f"schedule reg{week}: {len(rows)} fixtures (page publishes week {published})",
+              flush=True)
+        # The same page publishes the season's week windows and the clubs on a
+        # bye in each week; they are read from the page that was captured.
+        for window in parse_week_selector(html):
+            window.update(schedule_url=url, retrieved_utc=stamp)
+            weeks_meta.append(window)
         time.sleep(args.sleep)
 
     # ------------------------------------------------------------ game centres
@@ -200,19 +233,36 @@ def main() -> int:
             manifest["errors"].append(dict(url=url, stage="game_centre",
                                            error=f"http status {status}"))
             continue
-        text = html_to_text(raw.decode("utf-8", "replace"))
+        html = raw.decode("utf-8", "replace")
+        text = html_to_text(html)
         slug = url.rsplit("/", 1)[-1]
         write_raw(RAW_DIR / "gamecentres" / f"{slug}.html", raw)
         nb, sh = write_gz(EVIDENCE / f"gamecentres/{slug}.txt.gz", text)
-        hb, hh = write_gz(EVIDENCE / f"gamecentres/{slug}.html.gz", raw.decode("utf-8", "replace"))
-        parsed = parse_game_centre(text, raw_html=raw.decode("utf-8", "replace"))
-        parsed.update(official_url=url, season=season, week=fx["week"], slug=slug,
+        hb, hh = write_gz(EVIDENCE / f"gamecentres/{slug}.html.gz", html)
+        parsed = parse_game_centre(text, raw_html=html)
+        # The league renders the venue in the Game Info block and links the
+        # Game Book in its own "Download Game Book (PDF)" module; both are read
+        # from the page as the league serves it.
+        info = parse_game_centre_info(html)
+        parsed.update(official_url=url, season=season, week=fx.get("week", ""), slug=slug,
+                      away_team=fx.get("away_team", ""), home_team=fx.get("home_team", ""),
+                      fixture_id=fx.get("fixture_id", ""),
                       raw_bytes=len(raw), raw_sha256=sha256_bytes(raw),
                       text_sha256=sh, html_sha256=hh, retrieved_utc=stamp)
+        if info["venue_location"] and not parsed.get("venue_location"):
+            parsed["venue_location"] = info["venue_location"]
+        if info["venue_stadium"] and not parsed.get("venue_stadium"):
+            parsed["venue_stadium"] = info["venue_stadium"]
+        if info["gamebook_url"]:
+            parsed["gamebook_url"] = info["gamebook_url"]
+        parsed["page_title"] = info["page_title"]
         centres.append(parsed)
         manifest["game_centres"].append(dict(url=url, http_status=status, raw_bytes=len(raw),
                                              raw_sha256=sha256_bytes(raw), text_bytes=nb,
-                                             text_sha256=sh, retrieved_utc=stamp))
+                                             text_sha256=sh, retrieved_utc=stamp,
+                                             gamebook_url=parsed.get("gamebook_url", ""),
+                                             venue_location=parsed.get("venue_location", ""),
+                                             venue_stadium=parsed.get("venue_stadium", "")))
         time.sleep(args.sleep)
     print(f"game centres captured: {len(centres)}", flush=True)
 
@@ -302,6 +352,15 @@ def main() -> int:
     fx = pd.DataFrame(fixtures)
     if not fx.empty:
         fx.to_csv(PROC / "official_fixtures.csv", index=False)
+    if weeks_meta:
+        # Every captured page carries the season's full week list, so the
+        # windows are de-duplicated by the league's own week and week type.
+        seen_windows: dict[tuple[str, str], dict] = {}
+        for window in weeks_meta:
+            seen_windows.setdefault((str(window.get("week", "")),
+                                     str(window.get("week_type", ""))), window)
+        pd.DataFrame(list(seen_windows.values())).to_csv(
+            PROC / "official_week_windows.csv", index=False)
     if centres:
         pd.DataFrame(centres).to_csv(PROC / "official_gamecentres.csv", index=False)
     if books:
