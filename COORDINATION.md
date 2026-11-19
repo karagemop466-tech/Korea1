@@ -4557,3 +4557,37 @@ four red runs — repaired here; next successful tracker run commits the Week-11
 F-2026-11-19-11 (the scores-page extra-week links — repaired here; the next scheduled capture must complete with
 the extras recorded). Both are also visible on the executive summary. The research verdict is unchanged: 0 of 18
 canonical strategies validated, no reward, no funding.
+
+---
+
+## Session `arena/79a986b7-korea1` — 2026-11-19/20: final integration, reproducibility repair and owner-facing consolidation (claim)
+
+**Board read first.** Every row above was read before claiming. Branch `arena/79a986b7-korea1`
+branched from `main` = `f6971b0` ("reserve-list: official snapshot 2026-11-19T19:37Z"). No branch is
+edited outside the scope below; the twelve open PRs (#19 #24 #30 #38 #47 #56 #58 #70 #73 #84 #87 #102)
+are **not** touched or closed by this session — they are dispositioned on `flagged.html`, not merged
+into this tree.
+
+**Baseline measured before any edit** (in this sandbox, `python3 -m venv .venv` + `pip install -r
+requirements.txt`):
+
+| Check | Result on the base commit `f6971b0` |
+|---|---|
+| `make build` | exit 0, **0 failing checks**, `tests/check_sources.py` 53 canonical pages / 10,111 rows, `tests/check_links.py` 63 pages |
+| `make test` (all of `tests/`) | **422 passed, 1 skipped** |
+| `git status --porcelain` after `make build` | **15 files modified — the committed tree is NOT a fixed point of its own generators** |
+
+That last cell is a measured defect, not an opinion, and it is the first item this session repairs.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| FI1 | Board claim + session log | **in progress** | `arena/79a986b7-korea1` | `COORDINATION.md` (own section only) |
+| FI2 | **Repair the non-fixed-point build.** The scheduled `reserve-list` capture commits only `data/availability/reserve/**`, so every later build rewrites two derived files that pin its newest capture: `repo-review.html` (tracked-file count + artefact mix) and `assets/data/verification_report.csv`, plus the register-evidence row counts that read `EXECUTIVE_SUMMARY.md`. Measured on `f6971b0`: 944 → 946 tracked files, and 60 rows of `register_evidence_verify_2026_11_18.csv` rewritten. Fix: the capture workflow regenerates and commits the derived files it invalidates, and `tests/check_rebuild.py` runs in CI so the class cannot return silently | **unclaimed** | `arena/79a986b7-korea1` | `.github/workflows/reserve-list.yml`, `.github/workflows/availability.yml`, `.github/workflows/verify.yml` |
+| FI3 | **Every published prediction carries its outcome, or says why not.** The brief asks for "a verified results feed so backtests and ROI can be computed at all" and for the leaderboard to be earned. A forward pick whose game has been played and whose official final is on record must show that final, the margin and a graded verdict — or an explicit blank with the reason | **unclaimed** | `arena/79a986b7-korea1` | new pipeline module + test |
+| FI4 | **Executive summary refresh** — the owner-facing document must state the current research verdict, what changed in this pass, and what is still blocked, with the official source for each claim | **unclaimed** | `arena/79a986b7-korea1` | `EXECUTIVE_SUMMARY.md` (own block), `executive-summary.html` |
+| FI5 | **Final integration + publish**: `make build` / `make test` / `check_rebuild` in a clean clone, PR → `main`, merge without waiting for approval, confirm the GitHub Pages deployment, record PR link + merge commit + Pages status here | **unclaimed** | `arena/79a986b7-korea1` | `COORDINATION.md`, `README.md`, `flagged.html` rows only if a finding needs one |
+
+**Non-overlap statement.** No other session on this board owns a workflow file, the forward-ledger
+grading path, or `EXECUTIVE_SUMMARY.md` beyond a dated block; sessions `arena/eeba949e-korea1`,
+`arena/7cbb2e60-korea1` and `arena/6ec7369c-korea1` are merged or recorded `done`. This session adds
+files and appends blocks; it does not renumber, re-rank or delete any other session's register row.
