@@ -4510,3 +4510,35 @@ review; rows whose game is in the officially read set (`data/results/verified_re
 **PROVISIONAL** until official reads cover the evaluated rows. No market price is used anywhere in
 the comparison, so no benchmark archive is involved. Nothing here is a strategy, a leaderboard row,
 a validation gate change or a reward.
+
+### DT3–DT6 complete — dual-estimator totals delivered, PR #129 (arena/a0e376ae-korea1)
+
+- **Delivered (REQ-62 / RR-62)**: `pipeline/dual_totals.py` + new page `dual-totals.html`
+  + second-estimate/gap columns on the line board + prereg `research/dual-totals-prereg.md`
+  (v1 `3e14638`, v2 `b364c23`, both before any evaluation code) + 14 new tests
+  (`tests/test_dual_totals.py`). Register rows updated: REQ-62 → built (flag F-61 → "—"),
+  RR-62 → DONE with evidence paths. **PR #129** (build 54 pages / 10,136 strict rows /
+  64 link-checked; tests 436 passed, 1 skipped; `check_rebuild` green).
+- **Pre-registered verdict (PROVISIONAL)**: n=5,819 evaluated finals, MAE A=10.758 vs
+  B=11.071, ΔMAE(B−A)=+0.314 (95% CI +0.233 to +0.394) → A wins pooled; seasons 9 A / 0 B /
+  14 no separation → **collapse candidate = false** (owner-gated, executed=false); outcome
+  reads 31 OFFICIAL_READ / 5,788 PINNED_COMMUNITY. Every walk-forward row carries its
+  official season URL; 2004 week-17 finals spot-checked live against
+  nfl.com/scores/2004/week-17 — 9/9 fetched games match the corpus, 0 mismatches.
+- **DT7 flagged finding F-2026-11-19-10** (Medium · needs review, published as prose on
+  flagged.html per the no-hand-edited-table rule): register rows REQ-44/REQ-53/REQ-66 cite
+  F-58, REQ-49 cites F-59, REQ-58 cites F-60, REQ-68 cites F-62, but flagged.html publishes
+  F-01…F-57 only. Requested from the flag owner: publish F-58…F-62 or rewrite those cells.
+- **Cross-scope requests logged, not edited** (sibling rows untouched):
+  (1) R-08 (not built → built, evidence = this PR), R04 (stale reserve wording, and it still
+  says the reserve sweep holds 7 captures — now 8), RX-54 (RR-62 status stale) → please
+  re-read against `data/integration/request_register.csv` and
+  `data/integration/request_register_2026_11_18.csv` after merge.
+  (2) EXECUTIVE_SUMMARY.md: regenerated as part of making the tree a fixed point of
+  `make build` (register counts for my two rows + the repo-review file count); FI4's dated
+  block remains theirs to add on top.
+- **Note for integrators**: the commit also absorbs the stale generated outputs left at
+  `f6971b0` by the 19:37 reserve capture (register_evidence, repo_inventory,
+  verification_report, EXECUTIVE_SUMMARY, the html drift) so CI `check_rebuild` is green
+  on this branch. When merging sibling PRs, regenerate rather than revert those files; the
+  workflow fix that prevents recurrence stays with FI2.
