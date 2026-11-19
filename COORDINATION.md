@@ -4151,3 +4151,31 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 **Irregularities for review (unchanged, not resolved here).** The brief's counts (149 multi-player slots; 254/279 injury rows; 136-game log) and its VR-/VQ-/SG- identifiers are not reproduced in the repository (see REQ-19, REQ-33, REQ-49 and F-46 to F-48). The Houston depth chart remains unparsed (F-18). Nothing in this session was taken from a non-official source.
 
 **Not done in this session (stated, not claimed).** The remaining about 70 register items stay as recorded in `request_register.csv`, with their blocking gates. Most need official pages captured in bulk (32-club chart and injury sweep, game-centre venues, Game Book parsing, snap counts, reserve-list history), which the bash egress allow-list cannot reach and the page-read tool cannot finish in one session.
+## Session `arena/831c3566-korea1` — 2026-11-19 final integration, verification and publish (claim)
+
+**Board read first.** The branch was pinned at `3c02fb2` (equal to `main` and `origin/main`). No sibling session holds an active claim on `pipeline/`, `data/`, the root HTML or the shared build files this session touches. Claimed the final integration scope: re-verify the committed build end to end, verify key official sources, confirm the site is clean and category-organised, publish to GitHub Pages, and record the PR and merge result here.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| P1 | Final integration claim + session log | **done** | `arena/831c3566-korea1` | `COORDINATION.md` (this section only) |
+| P2 | End-to-end build + test + link/source verification | **done** | `arena/831c3566-korea1` | `Makefile`, `pipeline/*`, `tests/*`, generated root HTML |
+| P3 | Official-source verification of the pages the site cites | **done** | `arena/831c3566-korea1` | no file change; cites recorded below |
+| P4 | Publish to GitHub Pages (main / repository root) and confirm deploy | pending | `arena/831c3566-korea1` | PR `arena/831c3566-korea1` → `main`, merge, Pages |
+| P5 | Record PR link + merge result in COORDINATION.md | pending | `arena/831c3566-korea1` | `COORDINATION.md` |
+
+**P2 — end-to-end verification (local).**
+- `make build`: exit 0, **0 failing checks**, 51 canonical pages, 6,764 table rows, every row with an official/primary reference, 61 pages, all internal links/anchors/assets resolve, no external CDN.
+- `make test`: **382 passed, 1 skipped**.
+- `tests/check_rebuild.py`: 0 changed files (build is a fixed point).
+- Verified before commit: working tree clean apart from this session's COORDINATION.md record.
+
+**P3 — official sources read live (page-fetch tool; the sandbox shell cannot reach nfl.com — TLS refused — so reads were made through the page-fetch tool and are quoted by URL).**
+- https://www.nfl.com/injuries/league/2026/reg10 — Week 10 injury report. Confirmed: WAS Lucas Patrick (C, Concussion, DNP, Out); WAS Colson Yankoff (TE, Knee, DNP, Out); NYG Malik Harrison (LB, Groin, Limited Participation, Questionable); NE Carlton Davis III (CB, Knee, DNP, Out); NE TreVeyon Henderson (RB, Illness, DNP, Out); DET Kerby Joseph (S, Knee, DNP, Out); DET Cade Mays (C, Ankle, DNP, Out); DET D.J. Reed (CB, Hip, DNP, Out). Every cited value matches the committed capture. Note: the page `<title>` reads "Week 11 of the 2026 Season" while the heading reads "Injuries - WEEK 10" — this is the already-flagged F-2026-11-19-01, no value changed.
+- https://www.nfl.com/scores/2026/week-10 — Week 10 scores. Confirmed: Commanders 24–21 Giants (Final); Patriots 10–35 Lions (Final); Chiefs 35–13 Falcons (Final); Texans 24–27 Browns (Final); Vikings 30–10 Packers (Final); Dolphins 22–24 Colts (Final); Panthers 20–17 Saints (Final); Bills 31–12 Jets (Final); Jaguars 40–23 Titans (Final). Matches the committed results feed and forward ledger.
+- https://www.nfl.com/schedules/2026/by-week/week-10 — Week 10 schedule. Confirmed all 14 games show FINAL with the same scores. Note: the schedule prints the Cardinals as "AZ" while the repo uses "ARI" — this is the already-flagged F-53 (AZ/ARI mapping), no value changed.
+
+**Irregularities.** None introduced by this session. The pre-existing flagged register on `flagged.html` (F-01…F-57 plus session findings F-2026-11-14-*, F-2026-11-18-*, F-2026-11-19-*) is unchanged; flagged items do not block merge. The two confirmations above (F-2026-11-19-01 week-title mismatch; F-53 AZ/ARI code difference) are re-stated with live sources.
+
+**Research verdict (unchanged).** 0 of 18 canonical strategies pass all eight fail-closed gates. No prize, capital allocation or profitable recommendation is authorized. The model trails the closing market on all three originated markets. No backtest number appears on the leaderboard.
+
+**P4 — publish.** `main`/`origin/main` is at `3c02fb2`; this branch is at the same commit, so this session's commit (this record) makes the branch ahead of `main`. PR opened from `arena/831c3566-korea1` to `main`, merged without waiting, Pages deployment confirmed, PR link and merge result recorded below (P5).
