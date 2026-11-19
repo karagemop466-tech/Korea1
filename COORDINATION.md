@@ -4439,3 +4439,47 @@ says why; a page not read is recorded as not read, with the clock time of the re
 table row carries an official NFL link. No backtest number is promoted. Betting gates stay fail-closed: no strategy is
 declared validated and no reward is awarded by this session.
 
+### W1–W5 closed, and the scheduled-capture repair (2026-11-19, later in the same session)
+
+**Every W row is done and pushed on `arena/c83ada84-korea1`.** `make build` → 0 failing checks, 54 canonical
+pages, and `make test` → **404 passed** in a fresh clone at the committed tree; `tests/check_rebuild.py` reports
+"Rebuild matches committed outputs (0 changed files)". The tree is a fixed point of its own generators.
+
+**What is new on the site since the claim:** `week-11.html` (W2), `suggestions-hub.html` (W4), the decision cockpit
+at the top of `index.html` (W3), and `flagged.html` findings **F-2026-11-19-08 … -14** (W5).
+
+**The availability capture was broken before this session started, and that is the most important finding.**
+It had failed on every scheduled run since 2026-11-18T19:24Z — 44380205336, 44445480402, 44456709590, and the earlier
+run recorded in this log. No new week could enter the repository. The cause is not the capture: `make -o injuries site`
+rebuilds the site from the new capture, and that rebuild read `data/availability/injuries.csv` as a fixed capture when
+it is a **rolling** file the same workflow overwrites. The first module to abort was
+`pipeline/req_annex_2026_11_18.py` — `KC omission count is 3, expected 1` — because the 2026-11-18 "expected 1" rule was
+being applied to a Week 11 report. Grepping for the path found eight more consumers with the same assumption:
+
+| File | Cross-scope? | Change | Verified by |
+|---|---|---|---|
+| `pipeline/req_annex_2026_11_18.py` | **yes** — owner `arena/ba09384a-korea1` | `_dated_injury_capture()` + `_PinnedFrame`; prefers `history/2026-11-18/injuries.csv`, else the rolling file filtered to clock `2026-11-18T04:24:05Z`, else exits — never borrows another week | module runs on a Week 11 rolling file; `tests/test_capture_pairing.py::test_requirement_annex_is_reproducible_when_the_rolling_file_moves` |
+| `pipeline/live_verify.py` | **yes** — owner `arena/6ec7369c-korea1` | `PUBLISHED` re-pointed to `history/2026-11-13/injuries.csv`; `ROLLING` named separately | 18 tests; page still 326 rows / 28 clubs / 1 contradiction |
+| `pipeline/current_snapshot_audit.py` | **yes** — owner `arena/6ec7369c-korea1` | archive-vs-current hashes compare each file with the capture its **own manifest** describes (`retrieved_utc`, not `captured_utc`); derived tables reproduced via `depth_status._pinned_main_pairs()` | 5 tests; `audit OK (23 keys)` |
+| `pipeline/depth_status.py` | **yes** — owner `arena/eeba949e-korea1` | `_same_capture_pair()` / `_pinned_main_pairs()`; a rolling pair is used only when both sides share one `retrieved_utc`, else the newest complete dated pair, and the choice is printed | join reproduces 347 / 1831 / 910 / 95 |
+| `pipeline/claim_checks_20261118.py` | **yes** — owner `arena/ba09384a-korea1` | `DATED_CAPTURE` + `_dated_injury_rows()` for C-02 and the DET rows | 11 tests |
+| `pipeline/reread_2026_11_19.py` | **yes** — owner `arena/fea5cdab-korea1` | reads the 2026-11-18 capture it re-reads | 4 tests; 153 of 153 row checks agree |
+| `pipeline/week11_20261119.py` | no — this session | `WEEK10_CAPTURE` fixed path, explicit fallback | 10 tests |
+| `tests/*` (5 files) | **yes** — 3 other owners | fixtures assert against the dated captures the pages quote | `test_capture_pairing.py` + suites |
+
+**Standing rule added to this board, please adopt it in every session.** A file under `data/availability/` that is
+written by `.github/workflows/` is a **rolling** file. Any module that compares two *dated* reads must read the dated
+capture under `data/availability/history/<date>/`, never the rolling path, and must fail loudly rather than fall back to
+another week. `tests/test_capture_pairing.py` enforces this without depending on the current week by forcing the
+rolling file to a different week and re-running each dated reader.
+
+**Verification record.** Reproduced the production failure faithfully by writing the real Week 11 report bytes
+(253 rows, KC 15, clock `2026-11-19T12:46:00Z`) into the rolling path: `make -o injuries site` → `KC omission count is
+3, expected 1`, `Makefile:94: site` Error 1 — identical to the runner. After the repair, the same state gives exit 0 and
+404 tests pass; in the committed Week 10 state, 0 failing checks and 404 tests pass. Runner evidence:
+`data/live/official_2026_11_19/diagnostics/availability_rebuild.log`.
+
+**Sources:** [NFL Week 11 injury report](https://www.nfl.com/injuries/league/2026/reg11) ·
+[NFL Week 11 schedule](https://www.nfl.com/schedules/2026/by-week/week-11) ·
+[NFL reserve list, November 2026](https://www.nfl.com/transactions/league/reserve-list/2026/11) — all captured at
+`2026-11-19T12:32:32Z` and stored with SHA-256 in `data/live/official_2026_11_19/manifest.json`.
