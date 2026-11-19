@@ -130,7 +130,7 @@ def flags(stats: dict) -> pd.DataFrame:
              finding=f53,
              next="No further action. The retained history folders are the only source for 2026-11-18 comparisons.",
              source_label="NFL.com reserve list, November 2026", source_url=URL_RES),
-        dict(id="F-2026-11-19-09", severity="High · repaired in this branch",
+        dict(id="F-2026-11-19-10", severity="High · repaired in this branch",
              finding=(
                  "Dated comparisons read the rolling availability files that the scheduled fetch rewrites, so "
                  "the first fresh capture would have moved verified verdicts: pipeline/req_annex_2026_11_18.py "
