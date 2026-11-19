@@ -4179,3 +4179,29 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 **Research verdict (unchanged).** 0 of 18 canonical strategies pass all eight fail-closed gates. No prize, capital allocation or profitable recommendation is authorized. The model trails the closing market on all three originated markets. No backtest number appears on the leaderboard.
 
 **P4 — publish.** `main`/`origin/main` is at `3c02fb2`; this branch is at the same commit, so this session's commit (this record) makes the branch ahead of `main`. PR opened from `arena/831c3566-korea1` to `main`, merged without waiting, Pages deployment confirmed, PR link and merge result recorded below (P5).
+
+## Session `arena/9b56a906-korea1` — 2026-11-19 executive summary update, verification and PR/merge
+
+**Board read first.** No active sibling claim on the executive summary or render_site.py. Claimed the 2026-11-19 update scope: add the reserve-list rolling-window finding and live re-read agreement to the executive summary, verify against official sources, rebuild, test, and merge to main.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| Q1 | Executive summary 2026-11-19 update (reserve list, live re-read, URL ambiguity) | **done** | `arena/9b56a906-korea1` | `pipeline/render_site.py`, `executive-summary.html` |
+| Q2 | End-to-end build + test + link/source verification | **done** | `arena/9b56a906-korea1` | `Makefile`, `pipeline/*`, `tests/*`, generated root HTML |
+| Q3 | Official-source verification of pages the site cites | **done** | `arena/9b56a906-korea1` | nfl.com injuries Week 10, nfl.com scores Week 10 |
+| Q4 | PR + merge to main | **done** | `arena/9b56a906-korea1` | PR #116 → main, merged as 2d960be |
+
+**Q2 — end-to-end verification (local).**
+- `make build`: exit 0, **0 failing checks**, 51 canonical pages, 6,767 table rows, every row with an official/primary reference, 61 pages, all internal links/anchors/assets resolve, no external CDN.
+- `make test`: **382 passed, 1 skipped**.
+- `tests/check_rebuild.py`: 0 changed files (build is a fixed point).
+
+**Q3 — official sources read live (page-fetch tool; the sandbox shell cannot reach nfl.com — TLS refused — so reads were made through the page-fetch tool and are quoted by URL).**
+- https://www.nfl.com/injuries/league/2026/reg10 — Week 10 injury report. Confirmed: DET Kerby Joseph (Out), DET Cade Mays (Out), DET D.J. Reed (Out), plus WAS/NYG/NE rows. Every cited value matches the committed capture.
+- https://www.nfl.com/scores/2026/week-10 — Week 10 scores. Confirmed: Commanders 24–21 Giants, Patriots 10–35 Lions, Chiefs 35–13 Falcons, and all other Week 10 finals. Matches the committed results feed and forward ledger.
+
+**Irregularities.** None introduced by this session. The pre-existing flagged register on `flagged.html` is unchanged; flagged items do not block merge.
+
+**Research verdict (unchanged).** 0 of 18 canonical strategies pass all eight fail-closed gates. No prize, capital allocation or profitable recommendation is authorized. The model trails the closing market on all three originated markets. No backtest number appears on the leaderboard.
+
+**Q4 — PR and merge.** PR #116 opened from `arena/9b56a906-korea1` to `main`: https://github.com/karagemop466-tech/Korea1/pull/116. Merged without waiting as merge commit 2d960be. `main`/`origin/main` now at 2d960be.
