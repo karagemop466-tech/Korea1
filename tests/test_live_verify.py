@@ -28,7 +28,11 @@ def _inj():
 
 
 def _pub():
-    return pd.read_csv(ROOT / "data/availability/injuries.csv",
+    # Pinned to the capture the official transcripts were taken against. The
+    # rolling file changes with every scheduled fetch — the fresh-capture diag
+    # (run 44617589555) showed week-10 players such as Lucas Patrick gone from
+    # the week-11 report, which emptied the rows these tests index.
+    return pd.read_csv(ROOT / "data/availability/history/2026-11-18" / "injuries.csv",
                        dtype=str, keep_default_na=False)
 
 
