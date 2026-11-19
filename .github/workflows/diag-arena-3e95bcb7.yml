@@ -38,16 +38,23 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
+          set +e
           make -o injuries site 2>&1 | tee /tmp/build.log
           rc=${PIPESTATUS[0]}
+          set -e
           if [ "$rc" -ne 0 ]; then
             {
-              echo "::error title=availability rebuild failed (exit $rc)::"
               echo "First traceback:"
               grep -n -A 25 -m 1 "Traceback" /tmp/build.log || echo "(no traceback found)"
-              echo "---- last 120 lines ----"
-              tail -n 120 /tmp/build.log
-            } | head -c 60000
+              echo "---- last 150 lines ----"
+              tail -n 150 /tmp/build.log
+            } > /tmp/err.txt
+            RC="$rc" python3 - <<'PY'
+          import os, pathlib
+          body = pathlib.Path("/tmp/err.txt").read_text(errors="replace")[:60000]
+          msg = body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=availability rebuild failed (exit {os.environ['RC']})::{msg}")
+          PY
             exit "$rc"
           fi
           echo "rebuild ok"
@@ -88,7 +95,7 @@ jobs:
 
           ANN = []
           def ann(title, body):
-              body = body[:60000]
+              body = body[:60000].replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               ANN.append(f"::error title={title}::{body}")
 
           for week in (9, 10, 11):
@@ -130,8 +137,17 @@ jobs:
               ctx = []
               for s in other[:5]:
                   i = html_s.find(f'/games/{s}')
-                  frag = html_s[max(0, i-260):i+120].replace("\n", " ")
-                  ctx.append(f"  {s} …{frag}…")
+                  if i < 0:
+                      ctx.append(f"  {s}: not found as a plain href")
+                      continue
+                  start = html_s.rfind("<", 0, i)
+                  tag = html_s[start:min(i + 120, start + 400)].replace("\n", " ")
+                  window = html_s[max(0, i - 3000):i]
+                  tid = ""
+                  for m2 in re.finditer(r'data-testid="([^"]{1,80})"', window):
+                      tid = m2.group(1)
+                  frag = html_s[max(0, i - 300):i + 150].replace("\n", " ")
+                  ctx.append(f"  {s} | nearest preceding data-testid={tid!r} | enclosing markup: {tag!r} | …{frag}…")
               body = (
                   f"week {week}: schedule rows={sched_rows} published_week={pub} "
                   f"sched_slugs={len(sched_slugs)} | scores http={scode} distinct score hrefs={len(score_slugs)} "
