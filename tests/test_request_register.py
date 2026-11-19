@@ -114,12 +114,16 @@ def test_no_blank_or_token_cells_in_register():
 
 def test_ground_truth_cells_match_the_repository():
     d = pd.read_csv(CSV, dtype=str, keep_default_na=False).set_index("req_id")
-    inj = pd.read_csv(ROOT / "data" / "availability" / "injuries.csv", dtype=str, keep_default_na=False)
+    # Pinned to the capture the register's cells were written against: the rolling
+    # injuries/depth files are rewritten by the scheduled fetch, and the three Lions
+    # rows this test names are Week-10 facts (F-2026-11-19-03 defect class).
+    inj = pd.read_csv(ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv",
+                      dtype=str, keep_default_na=False)
     for name in ("Kerby Joseph", "Cade Mays", "D.J. Reed"):
         row = inj[inj.player == name]
         assert len(row) == 1 and row.iloc[0].game_status == "Out", name
     assert "Out" in d.loc["REQ-48", "clears"] or "S1" in d.loc["REQ-48", "live_check"]
-    dc = pd.read_csv(ROOT / "data" / "availability" / "depth_charts.csv", dtype=str, keep_default_na=False)
+    dc = pd.read_csv(ROOT / "data" / "availability" / "history" / "2026-11-18" / "depth_charts.csv", dtype=str, keep_default_na=False)
     assert len(dc[dc.team == "HOU"]) == 0
     assert "0 rows" in d.loc["REQ-32", "published"]
     gb = dc[dc.team == "GB"]

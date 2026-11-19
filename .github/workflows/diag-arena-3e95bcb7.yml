@@ -62,6 +62,32 @@ jobs:
             exit "$rc"
           fi
           echo "rebuild ok"
+          # W1 second half: the committed suite must pass against a freshly
+          # fetched capture, not just the build (pins verified by simulation;
+          # this proves it against the real page).
+          set +e
+          python -m pytest tests/ -q --ignore=tests/check_rebuild.py \
+            --ignore=tests/check_links.py --ignore=tests/check_sources.py 2>&1 | tee /tmp/pytest.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            {
+              echo "pytest failing tests:"
+              grep -E "^FAILED|^ERROR" /tmp/pytest.log | tail -n 30 || echo "(none matched)"
+              echo "---- last 40 lines ----"
+              tail -n 40 /tmp/pytest.log
+            } > /tmp/err.txt
+            RC="$rc" python3 - <<'PY'
+          import os, pathlib
+          body = pathlib.Path("/tmp/err.txt").read_text(errors="replace")
+          if len(body) > 3600:
+              body = "…TRUNCATED…\n" + body[-3500:]
+          msg = body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=fresh-capture pytest failed (exit {os.environ['RC']})::{msg}")
+          PY
+            exit "$rc"
+          fi
+          echo "pytest ok: $(tail -n 1 /tmp/pytest.log)"
       - name: Report the fresh capture shape
         shell: bash
         run: |

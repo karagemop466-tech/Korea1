@@ -167,13 +167,18 @@ def build_claims() -> list[dict]:
              "(C-02), which is why the store keeps both with their capture times.")
 
     # -- C-02 the active capture -------------------------------------------------------------
-    live_inj = _rows_of(ROOT / "data/availability/injuries.csv")
-    named = [r for r in live_inj if (r.get("game_status") or "").strip()]
+    # C-02 reports the ACTIVE capture (rolling, rewritten by every scheduled fetch);
+    # every dated claim below — C-07..C-12 — is compared against the 2026-11-18
+    # capture its evidence names, so a fresh fetch can never move a dated verdict
+    # (the F-2026-11-19-03 defect class: the schedule replaced the pinned evidence).
+    active_inj = _rows_of(ROOT / "data/availability/injuries.csv")
+    named = [r for r in active_inj if (r.get("game_status") or "").strip()]
+    live_inj = _rows_of(ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv")
     add(claim_id="C-02",
         claim_as_written="Today the site holds one capture, which cannot support backtesting.",
         subject="dated availability captures held by the repository",
         repo_evidence="data/availability/history/*/manifest.json",
-        repo_value=(f"active capture {len(live_inj)} injury rows, {len(named)} with a game designation; "
+        repo_value=(f"active capture {len(active_inj)} injury rows, {len(named)} with a game designation; "
                     f"{len([p for p in (ROOT / 'data/availability/history').iterdir() if p.is_dir()])} dated captures"),
         verdict="SUPERSEDED",
         note="Designations and dated captures both exist in multiples now, so the two 'we only have one "
@@ -181,7 +186,10 @@ def build_claims() -> list[dict]:
              "captures are still only seven days deep, which is what blocks replay over a season.")
 
     # -- C-03 multi-rank-1 depth slots --------------------------------------------------------
-    depth = _rows_of(ROOT / "data/availability/depth_charts.csv")
+    # Pinned to the 2026-11-18 capture: C-03..C-06 and C-09 re-derive the brief's
+    # Week-10 claims against the chart set the live reads were taken from; the
+    # rolling file is rewritten by the scheduled fetch.
+    depth = _rows_of(ROOT / "data" / "availability" / "history" / "2026-11-18" / "depth_charts.csv")
     by_group = defaultdict(set)
     by_slot = defaultdict(list)
     for r in depth:
@@ -194,7 +202,7 @@ def build_claims() -> list[dict]:
         claim_as_written="149 club/unit/position slots list more than one rank-1 player (three receivers "
                          "at rank 1, three inside linebackers at rank 1).",
         subject="depth slots with more than one co-starter",
-        repo_evidence="data/availability/depth_charts.csv",
+        repo_evidence="data/availability/history/2026-11-18/depth_charts.csv",
         repo_value=(f"{len(multi_group)} club/unit/position groups carry more than one rank-1 name "
                     f"(of {len(by_group)} groups); {len(multi_slot)} individual chart rows sit at rank 1 "
                     f"in the same printed slot"),
@@ -211,7 +219,7 @@ def build_claims() -> list[dict]:
     add(claim_id="C-04",
         claim_as_written="three receivers at rank 1, three inside linebackers at rank 1",
         subject="co-starters at rank 1, by position group",
-        repo_evidence="data/availability/depth_charts.csv",
+        repo_evidence="data/availability/history/2026-11-18/depth_charts.csv",
         repo_value=(f"{len(wr3)} clubs publish 3+ receivers at rank 1 (e.g. {', '.join(sorted(wr3)[:4])}); "
                     f"{len(ilb3)} clubs publish 3+ inside/linebackers at rank 1"),
         official_url=URL_RAVENS_DEPTH, live_read_utc=READ_UTC,
@@ -225,7 +233,7 @@ def build_claims() -> list[dict]:
     add(claim_id="C-05",
         claim_as_written="The Texans publish depth as an image.",
         subject="Houston depth-chart source structure",
-        repo_evidence="data/availability/depth_charts.csv (HOU), data/availability/manifest.json",
+        repo_evidence="data/availability/history/2026-11-18/depth_charts.csv (HOU), data/availability/manifest.json",
         repo_value=f"{len(hou_rows)} HOU rows parsed; manifest records rows: 0 for HOU",
         live_evidence=rel(READS / "houstontexans_depth_chart_2026_11_18.md"),
         live_value=("page prints the heading 'Unofficial Depth Chart' followed by a single image and no "
@@ -242,7 +250,7 @@ def build_claims() -> list[dict]:
         claim_as_written="the Packers prepend jersey numbers; number stripping plus storing the raw string "
                          "recovers the Packers rows.",
         subject="Green Bay depth rows: raw string retained, number stripped",
-        repo_evidence="data/availability/depth_charts.csv (GB), column player_raw",
+        repo_evidence="data/availability/history/2026-11-18/depth_charts.csv (GB), column player_raw",
         repo_value=(f"{len(gb)} GB rows; {len(gb_prefixed)} carry a leading jersey number in player_raw; "
                     f"{len(gb_dirty)} still have a leading number in the cleaned player field"),
         official_url=URL_PACKERS_DEPTH,
@@ -261,7 +269,7 @@ def build_claims() -> list[dict]:
         claim_as_written="Kerby Joseph, Cade Mays and D.J. Reed are published with a blank game-status "
                          "cell while the official article lists all three as Out.",
         subject="three Lions game designations, site vs official page",
-        repo_evidence="data/availability/injuries.csv (DET, 2026-11-18T04:24:05Z capture)",
+        repo_evidence="data/availability/history/2026-11-18/injuries.csv (DET, 2026-11-18T04:24:05Z capture)",
         repo_value="; ".join(f"{p} = {repo_det.get(p) or '(blank)'}" for p in sorted(det_named)),
         live_evidence=rel(READS / "nfl_injuries_week10_DET.md"),
         live_value="; ".join(f"{p} = {live_det.get(p) or '(blank)'}" for p in sorted(det_named)),
@@ -285,7 +293,7 @@ def build_claims() -> list[dict]:
     add(claim_id="C-08",
         claim_as_written="Re-capture and republish the Week 10 injury tables (published rows were stale).",
         subject="field-level agreement, one whole club table vs the active capture",
-        repo_evidence="data/availability/injuries.csv (DET, {0} rows)".format(len(det_repo)),
+        repo_evidence="data/availability/history/2026-11-18/injuries.csv (DET, {0} rows)".format(len(det_repo)),
         repo_value=f"{agree_rows} of {len(det_excerpt)} official rows agree on player, practice status and game status",
         live_evidence=rel(READS / "nfl_injuries_week10_DET.md"),
         live_value=f"{len(det_excerpt)} rows read from the official page",
@@ -307,7 +315,7 @@ def build_claims() -> list[dict]:
         claim_as_written="Baltimore still publishes Lamar Jackson and Tyler Huntley at QB after both went "
                          "on injured reserve and a replacement was traded in.",
         subject="Ravens quarterback row: club chart vs our capture",
-        repo_evidence="data/availability/depth_charts.csv (BAL, QB, 2026-11-18 capture)",
+        repo_evidence="data/availability/history/2026-11-18/depth_charts.csv (BAL, QB)",
         repo_value=" / ".join(f"rank {r['depth_rank']} {r['player']}" for r in bal_qb) or "(no QB row)",
         live_evidence=rel(READS / "baltimoreravens_depth_chart_2026_11_18.md"),
         live_value=" / ".join(f"rank {r['rank']} {r['player']}" for r in rav_qb),
@@ -323,7 +331,7 @@ def build_claims() -> list[dict]:
     add(claim_id="C-10",
         claim_as_written="Seattle and Cincinnati are shown as injury-free while listing 15 and 4 players.",
         subject="clubs the published table showed as having no injuries",
-        repo_evidence="data/availability/injuries.csv (active capture), data/processed/injuries_week10.csv",
+        repo_evidence="data/availability/history/2026-11-18/injuries.csv, data/processed/injuries_week10.csv",
         repo_value=f"active capture: SEA {sea} rows, CIN {cin} rows",
         official_url=URL_INJURIES,
         verdict="PARTLY_MATCHES",
@@ -340,7 +348,7 @@ def build_claims() -> list[dict]:
     add(claim_id="C-11",
         claim_as_written="Run the 32-team roster/IR sweep before any team-level model is trusted.",
         subject="club coverage of the injury capture and the cause of the gap",
-        repo_evidence="data/availability/injuries.csv vs the official Week 10 game list",
+        repo_evidence="data/availability/history/2026-11-18/injuries.csv vs the official Week 10 game list",
         repo_value=f"{len(covered)} of 32 clubs carry a row; clubs with no row: {', '.join(missing)}",
         live_evidence=rel(READS / "nfl_schedule_week10_2026_games_and_byes.md"),
         live_value=(f"official Week 10 page prints {len(games)} games and lists {len(byes)} clubs on bye "
@@ -353,7 +361,7 @@ def build_claims() -> list[dict]:
               "'available' — it is 'no game', which the reserve list (C-12) keeps separate."))
 
     # -- C-12 the reserve list ----------------------------------------------------------------
-    reserve = _rows_of(ROOT / "data/availability/reserve/latest.csv")
+    reserve = _rows_of(ROOT / "data/availability/reserve/history/2026-11-18T044201Z/reserve_list.csv")
     res_clubs = sorted({r["team"] for r in reserve})
     willis = [r for r in reserve if "Willis" in r["player"]]
     willis_in_report = [r for r in live_inj if "Willis" in r["player"]]
@@ -361,7 +369,7 @@ def build_claims() -> list[dict]:
         claim_as_written="Capture the reserve list so 'not listed' never means 'available' (Malik Willis "
                          "is absent from the weekly report because he is on injured reserve).",
         subject="reserve-list capture and the Willis example",
-        repo_evidence="data/availability/reserve/latest.csv (2026-11), data/availability/reserve/history/",
+        repo_evidence="data/availability/reserve/history/2026-11-18T044201Z/reserve_list.csv, data/availability/reserve/history/; injury side: history/2026-11-18/injuries.csv",
         repo_value=(f"{len(reserve)} dated reserve rows over {len(res_clubs)} clubs ({', '.join(res_clubs)}); "
                     f"Willis row in the capture: "
                     + (f"{willis[0]['team']} {willis[0]['date']} {willis[0]['transaction']}" if willis else "none")

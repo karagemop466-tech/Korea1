@@ -101,7 +101,8 @@ def test_verification_rows_record_a_time_and_a_source():
 
 def test_injury_and_reserve_reads_reproduce_the_captured_numbers():
     """The counts the page prints are the counts the committed data holds — recomputed here."""
-    inj = pd.read_csv(ROOT / "data" / "availability" / "injuries.csv", dtype=str, keep_default_na=False)
+    # Pinned: the register facts were computed from the 2026-11-18 capture (F-2026-11-19-03 class).
+    inj = pd.read_csv(ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv", dtype=str, keep_default_na=False)
     f = _csv("register_evidence_facts_2026_11_18.csv").set_index("fact")["value"]
     assert int(f["inj_rows"]) == len(inj)
     assert int(f["inj_sea"]) == int((inj.team == "SEA").sum())

@@ -284,7 +284,7 @@ def main() -> int:
     inj = pd.read_csv(INJURY, dtype=str, keep_default_na=False)
     depth = pd.read_csv(DEPTH, dtype=str, keep_default_na=False)
     pub = pd.read_csv(PUBLISHED, dtype=str, keep_default_na=False)
-    snap = pd.read_csv(ROOT / "data" / "availability" / "injuries.csv",
+    snap = pd.read_csv(ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv",
                        dtype=str, keep_default_na=False)
     arch = pd.read_csv(ARCHIVE, dtype=str, keep_default_na=False)
     # the archive extract keys clubs by nickname (as the official page prints them);

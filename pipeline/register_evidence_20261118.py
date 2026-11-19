@@ -46,6 +46,9 @@ from common import ROOT, PROC, SITE_DATA, sha256_of  # noqa: E402
 OUT = ROOT / "data" / "integration"
 READS = ROOT / "data" / "live" / "register_reads_2026_11_18"
 AV = ROOT / "data" / "availability"
+# Dated capture: every fact in this register was verified against the 2026-11-18
+# files; the rolling ones are rewritten by the scheduled fetch (F-2026-11-19-03 class).
+AV_DATED = AV / "history" / "2026-11-18"
 HIST = AV / "history"
 FORWARD = ROOT / "data" / "forward"
 PROC = ROOT / "data" / "processed"
@@ -124,7 +127,7 @@ def slot_groups(d: pd.DataFrame) -> int:
 
 def facts() -> dict:
     f: dict[str, object] = {"as_of": AS_OF, "read_window": READ_WINDOW}
-    inj = rd(AV / "injuries.csv")
+    inj = rd(AV_DATED / "injuries.csv")
     f["inj_rows"] = len(inj)
     f["inj_clubs"] = int(inj.team.nunique())
     f["inj_retrieved"] = inj.retrieved_utc.max()
@@ -151,7 +154,7 @@ def facts() -> dict:
     f["multirank_max"] = max(per_cap.values())
     f["multirank_by_capture"] = "; ".join(f"{k}={v}" for k, v in per_cap.items())
 
-    dep = rd(AV / "depth_charts.csv")
+    dep = rd(AV_DATED / "depth_charts.csv")
     f["depth_rows"] = len(dep)
     f["depth_clubs"] = int(dep.team.nunique())
     f["depth_retrieved"] = dep.retrieved_utc.max()
@@ -483,7 +486,7 @@ def schedule_shape_rows(f: dict) -> list[dict]:
     availability corpus in club-weeks against the size of one announced season.
     """
     playing, sched = week_fixture_clubs()
-    inj = rd(AV / "injuries.csv")
+    inj = rd(AV_DATED / "injuries.csv")
     n_fix, n_reporting = len(sched), int(inj.team.nunique())
     per_day = {d.name: len(rd(d / "injuries.csv").groupby("team").size()) for d in cap_dirs()}
     club_weeks = sum(per_day.values())
@@ -541,7 +544,7 @@ def bye_reconciliation(f: dict) -> list[dict]:
     Any club that DOES have a fixture and still has no rows is a coverage failure, not a bye.
     """
     playing, sched = week_fixture_clubs()
-    inj = rd(AV / "injuries.csv")
+    inj = rd(AV_DATED / "injuries.csv")
     universe = set(fetcher_clubs())
     rows = []
     for club in sorted(universe):
@@ -578,7 +581,7 @@ def published_injury_free_clubs(f: dict) -> list[dict]:
     """A published 'No Injuries Reported' club must either be genuinely empty on the official page or
     be explained by the fixture list; anything else is a stale statement about a club that is playing."""
     playing, _ = week_fixture_clubs()
-    inj = rd(AV / "injuries.csv")
+    inj = rd(AV_DATED / "injuries.csv")
     pub_all = rd(PROC / "injuries_week10.csv")
     pinned, pinned_stamp = pinned_none_clubs()
     rows = []
@@ -614,7 +617,7 @@ def published_injury_free_clubs(f: dict) -> list[dict]:
 
 def verify_rows(f: dict) -> tuple[list[dict], dict]:
     """Every check this session ran against an official page, one row per compared line."""
-    inj = rd(AV / "injuries.csv")
+    inj = rd(AV_DATED / "injuries.csv")
     pub_all = rd(PROC / "injuries_week10.csv")
     pub = pub_all[pub_all.player != "No Injuries Reported"]     # player rows only
     rows, stats = [], {}
@@ -702,7 +705,7 @@ def verify_rows(f: dict) -> tuple[list[dict], dict]:
                          official="", committed="", verdict="NOT READ", as_of=AS_OF, source_url=URL["gc_was_nyg"]))
 
     # (e) Houston depth chart: the source-shape question behind F-49
-    dep = rd(AV / "depth_charts.csv")
+    dep = rd(AV_DATED / "depth_charts.csv")
     hou = int((dep.team == "HOU").sum())
     txt = (READS / "houstontexans_depth_chart_page.md").read_text()
     has_image = "static.clubs.nfl.com/image/upload/texans/" in txt
@@ -938,7 +941,7 @@ def items() -> list[dict]:
         "The committed pieces are the expectation side ({depth_rows} depth rows, {depth_clubs} clubs) and the "
         "report side ({inj_rows} injury rows); the actual-starter side needs the official Game Book, which "
         "`arena/99b908ab-korea1` claims as GB2/GB3 (PR #82).",
-        ["data/availability/depth_charts.csv", "data/availability/injuries.csv"],
+        ["data/availability/history/2026-11-18/depth_charts.csv", "data/availability/history/2026-11-18/injuries.csv"],
         "the Game Book parse is not merged; until then no actual starter is published",
         "one merged game-book capture that names a starter for one fixture, with its hash",
         URL["ops_pregame"], "NFL Operations pre-game report rules (the official T-90m inactive requirement)")
@@ -1157,7 +1160,7 @@ def items() -> list[dict]:
         "the newest capture, {depth_multirank1} of them carrying more than one rank-1 player; across the dated "
         "captures that count is {multirank_min}–{multirank_max} ({multirank_by_capture}). No 'the starter' is "
         "constructed from column 1.",
-        ["data/availability/depth_charts.csv", "pipeline/depth_status.py", "availability.html"],
+        ["data/availability/history/2026-11-18/depth_charts.csv", "pipeline/depth_status.py", "availability.html"],
         "none for the representation", "already cleared; the brief's '149' figure is not reproduced by any capture "
         "and is recorded as a flag (F-46, 2026-11-18 register)",
         URL["was_depth"], "club depth-chart pages (the order the groups preserve)")
@@ -1238,7 +1241,7 @@ def items() -> list[dict]:
     add("RX-45", "Official depth-chart register with a date and a source per row", "Availability", "DONE",
         "{depth_rows} rows across {depth_clubs} clubs, each with source_url and retrieved_utc ({depth_retrieved}); "
         "{captures_with_hash} of {capture_sources} capture sources carry a raw-page hash.",
-        ["data/availability/depth_charts.csv", "data/availability/manifest.json"],
+        ["data/availability/history/2026-11-18/depth_charts.csv", "data/availability/manifest.json"],
         "no club publishes a chart publication date, so the date available is the capture date, which is stated "
         "on every row rather than disguised",
         "already cleared within the limit the sources allow",

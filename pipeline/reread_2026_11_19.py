@@ -24,7 +24,11 @@ ROOT = Path(__file__).resolve().parents[1]
 LIVE = ROOT / "data" / "live" / "reread_2026_11_19"
 INTEG = ROOT / "data" / "integration"
 READ = LIVE / "official_rows_read.csv"
-INJ = ROOT / "data" / "availability" / "injuries.csv"
+# Pinned: this re-read compares the verbatim 2026-11-19 official rows against the
+# capture those rows were taken from. The rolling injuries.csv moves ahead with every
+# scheduled fetch, which would flip every verdict (and the F-2026-11-19-02 text) to
+# "not matched" — same class as F-2026-11-19-03, fixed the same way.
+INJ = ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv"
 RES = ROOT / "data" / "availability" / "reserve" / "history" / "2026-11-19T043002Z" / "reserve_list.csv"
 INJ_URL = "https://www.nfl.com/injuries/league/2026/reg10"
 RES_URL = "https://www.nfl.com/transactions/league/reserve-list/2026/11"

@@ -47,7 +47,9 @@ from common import LIVE_CAPTURE_UTC, ROOT, write_json  # noqa: E402
 
 LIVE = ROOT / "data" / "live"
 OFFICIAL_PAGE = "https://www.nfl.com/injuries/league/2026/reg10"
-PUBLISHED = ROOT / "data" / "availability" / "injuries.csv"
+# The published table this module verifies is the Week-10 capture the official
+# transcripts were taken against; the rolling file moves with every scheduled fetch.
+PUBLISHED = ROOT / "data" / "availability" / "history" / "2026-11-18" / "injuries.csv"
 EXTRACT = LIVE / "official_injury_extract_2026_reg10.csv"
 ARCHIVE_MD = ROOT / "data" / "evidence" / "nfl_injuries" / "week10_2026" / "injury_report.md"
 ARCHIVE_SNAPSHOT = ROOT / "data" / "availability" / "history" / "2026-11-12" / "injuries.csv"

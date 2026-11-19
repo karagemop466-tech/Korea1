@@ -22,6 +22,11 @@ from common import ROOT  # noqa: E402
 
 SPOT = ROOT / "data" / "live" / "spotcheck_2026_11_18"
 AV = ROOT / "data" / "availability"
+# The 2026-11-18 spot-check compares verbatim reads taken that day against the capture
+# they were taken from. The rolling files are rewritten by every scheduled fetch, which
+# would flip all 120 spot-check verdicts (and their retrieved stamps) the next time the
+# job runs — the F-2026-11-19-03 defect class, pinned here the same way.
+AV_PINNED = AV / "history" / "2026-11-18"
 HIST = AV / "history"
 def newest_stamp(path: Path) -> str:
     """retrieved_utc of a committed capture, read from the file (never typed in)."""
@@ -93,7 +98,7 @@ def compare_injuries(live: list[dict], inj: pd.DataFrame) -> list[dict]:
         rows.append(dict(check="injury report", club=lr["team"], item=lr["player"],
                          live=" · ".join(x or "—" for x in (lr["injury"], lr["practice"], lr["game"])),
                          capture=" · ".join(x or "—" for x in cap), verdict=verdict,
-                         retrieved=newest_stamp(AV / "injuries.csv") + " injury capture", source_url=URL_INJ))
+                         retrieved=newest_stamp(AV_PINNED / "injuries.csv") + " injury capture", source_url=URL_INJ))
     return rows
 
 
@@ -115,7 +120,7 @@ def compare_depth(live: list[dict], was: pd.DataFrame) -> list[dict]:
         rows.append(dict(check="club depth chart", club="WAS", item=f"{lr['unit']} {lr['label']} row {k + 1}",
                          live=" | ".join(lr["players"]) or "—",
                          capture=" | ".join(pub) or "—", verdict=verdict,
-                         retrieved=newest_stamp(AV / "depth_charts.csv") + " depth capture", source_url=URL_WAS))
+                         retrieved=newest_stamp(AV_PINNED / "depth_charts.csv") + " depth capture", source_url=URL_WAS))
     return rows
 
 
@@ -201,8 +206,8 @@ def bal_qbs(d: pd.DataFrame) -> str:
 
 
 def facts() -> dict:
-    inj = pd.read_csv(AV / "injuries.csv", dtype=str, keep_default_na=False)
-    latest = pd.read_csv(AV / "depth_charts.csv", dtype=str, keep_default_na=False)
+    inj = pd.read_csv(AV_PINNED / "injuries.csv", dtype=str, keep_default_na=False)
+    latest = pd.read_csv(AV_PINNED / "depth_charts.csv", dtype=str, keep_default_na=False)
     # Pinned: the F-48 narrative compares against the 2026-11-18 capture, not the rolling latest.csv.
     res_cap = pd.read_csv(AV / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
                           dtype=str, keep_default_na=False)
@@ -314,8 +319,8 @@ def flagged_rows(f: dict, res: dict, inj_v: list[dict], dep_v: list[dict]) -> li
 
 # --------------------------------------------------------------------------- #
 def main() -> None:
-    inj = pd.read_csv(AV / "injuries.csv", dtype=str, keep_default_na=False)
-    latest = pd.read_csv(AV / "depth_charts.csv", dtype=str, keep_default_na=False)
+    inj = pd.read_csv(AV_PINNED / "injuries.csv", dtype=str, keep_default_na=False)
+    latest = pd.read_csv(AV_PINNED / "depth_charts.csv", dtype=str, keep_default_na=False)
     inj_v = compare_injuries(parse_injury_excerpt(SPOT / "nfl_injuries_week10_WAS_NYG_NE_DET.md"), inj)
     dep_v = compare_depth(parse_depth_excerpt(SPOT / "commanders_depth_chart_offense_defense.md"),
                           latest[latest.team == "WAS"])
