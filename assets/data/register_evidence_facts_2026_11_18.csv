@@ -126,31 +126,31 @@ register_sug_n,8,computed by pipeline/register_evidence_20261118.py from committ
 replacement_defence_rows,32,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 replacement_depth_rows,96,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 replacement_slots_rows,171,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_capture_only,1,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_captures,6,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_date_max,2026-11-17,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_capture_only,5,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_captures,7,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_date_max,2026-11-18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_date_min,2026-11-07,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_latest_capture_utc,2026-11-18T19:34:22Z,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_latest_capture_utc,2026-11-19T04:30:02Z,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_latest_nov,25,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_latest_rows,50,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_live_only,1,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_live_only,5,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 reserve_live_rows,25,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_older_only,10,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_older_only_names,"Brian Robinson (ATL, 2026-11-07); Demond Claiborne (MIN, 2026-11-09); Dyami Brown (WAS, 2026-11-07); Eyioma Uwazurike (DEN, 2026-11-07); Jack Campbell (DET, 2026-11-07); James Williams (TEN, 2026-11-09); Jaylen Watson (LA, 2026-11-07); Josh Palmer (BUF, 2026-11-09); Malachi Lawrence (DAL, 2026-11-07); Michael Wilson (ARI, 2026-11-10)",computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_on_both,24,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-reserve_union_nov,35,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_older_only,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_older_only_names,"Brian Robinson (ATL, 2026-11-07); Demond Claiborne (MIN, 2026-11-09); Dyami Brown (WAS, 2026-11-07); Eyioma Uwazurike (DEN, 2026-11-07); Gardner Minshew (ARI, 2026-11-10); Gracen Halton (SF, 2026-11-10); Jack Campbell (DET, 2026-11-07); James Williams (TEN, 2026-11-09); Jaylen Watson (LA, 2026-11-07); Josh Palmer (BUF, 2026-11-09); Malachi Lawrence (DAL, 2026-11-07); Malik Willis (MIA, 2026-11-10); Michael Wilson (ARI, 2026-11-10); Zach Sieler (MIA, 2026-11-10)",computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_on_both,20,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+reserve_union_nov,39,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 results_feed_rows,7548,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 results_feed_tiers,PINNED_ARCHIVE=7383; SCHEDULED=135; OFFICIAL_READ=30,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 roster_depth_rows,6743,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 season_club_weeks,544,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 signal_staking_rows,18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 site_pages,51,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-spotcheck_rows,125,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+spotcheck_rows,154,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies,18,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies_g1_fail,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 strategies_validated,0,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 suggestions_master_rows,76,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
-test_count,34,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
+test_count,35,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 venues_n,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 venues_with_both_fields,14,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/
 verified_results_final,30,computed by pipeline/register_evidence_20261118.py from committed files and the verbatim official excerpts under data/live/register_reads_2026_11_18/

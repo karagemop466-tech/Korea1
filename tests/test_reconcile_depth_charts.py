@@ -47,7 +47,12 @@ def test_reserve_spotcheck_separates_the_cited_historical_capture_from_latest():
     assert stats["latest"]["both"] == 25
     assert stats["latest"]["live_only"] == 0
     assert stats["latest"]["capture_only"] == 0
+    # The rolling latest.csv now holds the 2026-11-19 capture: it is reported under its own
+    # capture time, never under the 2026-11-18 label.
+    assert stats["newest"]["label"] == "2026-11-19T04:30:02Z capture (latest.csv)"
+    assert stats["newest"]["both"] == 21
     assert {row["check"] for row in rows} == {
         "reserve list vs 2026-11-17T19:59:57Z capture",
         "reserve list vs 2026-11-18T04:42:01Z capture",
+        "reserve list vs 2026-11-19T04:30:02Z capture (latest.csv)",
     }

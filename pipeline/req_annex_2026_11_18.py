@@ -257,7 +257,9 @@ def compare_official() -> tuple[list[dict], dict]:
     """Compare the 2026-11-18 official read with the committed capture. Recomputed every run."""
     inj = pd.read_csv(AVAIL / "injuries.csv", dtype=str, keep_default_na=False)
     dep = pd.read_csv(AVAIL / "depth_charts.csv", dtype=str, keep_default_na=False)
-    res = pd.read_csv(AVAIL / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    # Pinned to the 2026-11-18 capture: this comparison is against the 2026-11-18 official read.
+    res = pd.read_csv(AVAIL / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+                      dtype=str, keep_default_na=False)
     rows: list[dict] = []
     facts: dict = {}
 

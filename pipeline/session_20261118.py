@@ -132,14 +132,22 @@ def compare_reserve() -> tuple[list[dict], dict]:
         AV / "reserve" / "history" / "2026-11-17T195957Z" / "reserve_list.csv",
         dtype=str, keep_default_na=False,
     )
+    # Pinned to the 2026-11-18 history folder. `latest.csv` is a rolling file that is
+    # overwritten by every capture, so it must never carry a hard-coded older label.
+    pinned_18 = pd.read_csv(
+        AV / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+        dtype=str, keep_default_na=False,
+    )
     latest = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    latest_label = f"{latest.capture_utc.iloc[0]} capture (latest.csv)"
     live_keys = set(zip(live.date, live.club, live.player))
     rows: list[dict] = []
     stats: dict = {"live_rows": len(live_keys)}
 
     captures = [
         ("2026-11-17T19:59:57Z capture", historical),
-        ("2026-11-18T04:42:01Z capture", latest),
+        ("2026-11-18T04:42:01Z capture", pinned_18),
+        (latest_label, latest),
     ]
     for label, captured in captures:
         captured = captured[captured.month == "2026-11"]
@@ -154,7 +162,8 @@ def compare_reserve() -> tuple[list[dict], dict]:
             rows.append(dict(check=f"reserve list vs {label}", club=t, item=f"{p} ({d[5:]})",
                              live="not on live page", capture="listed", verdict="CAPTURE ONLY",
                              retrieved=label, source_url=URL_RES))
-        key = "historical" if label.startswith("2026-11-17") else "latest"
+        key = ("historical" if label.startswith("2026-11-17")
+               else "latest" if label.startswith("2026-11-18") else "newest")
         stats[key] = dict(
             label=label, rows=len(capture_keys), both=len(live_keys & capture_keys),
             live_only=len(live_keys - capture_keys), capture_only=len(capture_keys - live_keys),
@@ -197,7 +206,9 @@ def bal_qbs(d: pd.DataFrame) -> str:
 def facts() -> dict:
     inj = pd.read_csv(AV / "injuries.csv", dtype=str, keep_default_na=False)
     latest = pd.read_csv(AV / "depth_charts.csv", dtype=str, keep_default_na=False)
-    res_cap = pd.read_csv(AV / "reserve" / "latest.csv", dtype=str, keep_default_na=False)
+    # Pinned: the narrative below compares against the 2026-11-18 capture, not the rolling latest.csv.
+    res_cap = pd.read_csv(AV / "reserve" / "history" / "2026-11-18T044201Z" / "reserve_list.csv",
+                          dtype=str, keep_default_na=False)
     sea5 = latest[(latest.team == "SEA") & (latest.unit == "Offense") & (latest.slot == "5")]
     f = dict(
         injury_rows=len(inj), injury_clubs=int(inj.team.nunique()),

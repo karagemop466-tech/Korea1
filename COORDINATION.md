@@ -4042,3 +4042,25 @@ workflow-scoped token should re-run it or push an empty commit to `main`.
 - Post-merge on `main`: Verify site run [44257195616](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195616) **success** (red `main` from run 44252018114 on `8bc353b` is cleared — suspected-transient diagnosis confirmed); Pages run [44257195568](https://github.com/karagemop466-tech/Korea1/actions/runs/44257195568) **success** at 07:13:30Z.
 - Live confirmation (page-fetch tool, read after deploy): `https://karagemop466-tech.github.io/Korea1/` serves the dashboard, and `request-register-2026-11-18.html` serves the sibling 81-row register (title, stat cards and row table all render). `curl` from this sandbox cannot reach `github.io` (connection blocked, status-code output `000`), so no curl-derived status code is claimed here.
 - This record rides to `main` in the record-only follow-up PR opened from this branch after the merge.
+
+---
+
+## Session `arena/db0e98e2-korea1` — 2026-11-19
+
+**Scope.** Single branch only: the platform pins this session to `arena/db0e98e2-korea1`, so session-scoped branches (`session-<id>/<task>`) are not created. Task rows are logged here on that branch. Base commit `311d9b5`.
+
+**Verified first.** `make test`: 370 passed, 1 failed on the base commit. The failure: `test_reserve_spotcheck_separates_the_cited_historical_capture_from_latest` expected the 2026-11-18 capture under `latest.csv`, which the base commit had overwritten with the 2026-11-19 capture. Root cause: a rolling file was labelled with a fixed older capture.
+
+**Repairs (F-53).**
+- `pipeline/session_20261118.py`, `pipeline/req_annex_2026_11_18.py`: the 2026-11-18 comparisons pinned to `data/availability/reserve/history/2026-11-18T044201Z/`; the newest capture reported under its own time.
+- `tests/test_reconcile_depth_charts.py`: asserts all three captures explicitly.
+
+**New finding (F-52, High, open).** The live NFL.com November reserve page (read 2026-11-19, source <https://www.nfl.com/transactions/league/reserve-list/2026/11>) shows 25 rows and matches the 2026-11-19 capture row for row. Four rows dated 11/10 that were on the 2026-11-18 capture are no longer on the page (Gardner Minshew ARI, Malik Willis MIA, Zach Sieler MIA, Gracen Halton SF). Four rows dated 11/18 were added. The page does not state why. Absence is recorded as "not on page at capture time", never as available. Whether the page is a fixed-size window is not confirmed.
+
+**New artefacts.** `pipeline/session_20261119.py` (also in the Makefile before `render_site.py`), `data/live/spotcheck_2026_11_19/reserve_list_2026_11_live_read.csv`, `data/integration/flagged_2026_11_19.csv`, `tests/test_session_20261119.py`, a flagged-page section, and an executive-summary update block.
+
+**Verification.** `make site verify`: 0 failing checks, `check_sources` and `check_links` green. `tests/check_rebuild.py` run after the build. `make test` run on the final tree.
+
+**Irregularities for owner review.** F-52 and the reserve-page retention question (the two open items on the Flagged page). Brief identifiers VR-17/VR-24/VR-25/VR-26/VQ-05/VQ-06/VQ-07/SG-03/SG-05 still do not appear anywhere in the repository (F-48, unchanged).
+
+**Status.** done for the repair and F-52/F-53 register. Other items in the 2026-11-18 request register are unchanged and remain blocked as recorded there.
