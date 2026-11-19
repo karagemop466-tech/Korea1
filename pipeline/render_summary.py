@@ -379,6 +379,13 @@ Statistical corrections reduce false discoveries; they cannot eliminate luck or 
 
 {_q2}
 
+## Update — 2026-11-19 (`arena/db0e98e2-korea1`)
+
+- **Decision unchanged.** Still no validated strategy and no reward. Nothing in this update adds evidence for an edge.
+- **Reserve list is not a complete record (F-2026-11-19-06, High, open; same pattern as F-57).** The live NFL.com November reserve page, read on 2026-11-19, matches the 2026-11-19 capture row for row (25 rows). Four rows dated 11/10 that were on the 2026-11-18 capture are gone, including Malik Willis (MIA), and four dated 11/18 were added. A row that is absent is therefore *not on the page at capture time*. It is never evidence of availability. Source: [NFL.com reserve list, November 2026](https://www.nfl.com/transactions/league/reserve-list/2026/11).
+- **Repair (F-2026-11-19-07).** The rolling `latest.csv` had been overwritten, so code labelled it as the 2026-11-18 capture and one test failed on `main`. The sibling session's fix (`37816e4`) pins the comparison to the 2026-11-18 history folder; the remaining reader is pinned in this branch. Build and tests are green.
+- Flags and the live read are on [Flagged for review](flagged.html) and in `data/live/spotcheck_2026_11_19/`.
+
 ## Decision readiness & lineup follow-up — 2026-11-12
 
 Four review registers sit in front of the research, generated from the same data as the pages, and none

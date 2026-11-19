@@ -32,7 +32,7 @@ def test_dropped_rows_include_malik_willis_and_are_on_the_retained_2026_11_18_ca
 
 def test_flag_rows_have_official_source_and_ids():
     df = pd.read_csv(ROOT / "data/integration/flagged_2026_11_19.csv", dtype=str, keep_default_na=False)
-    assert list(df.id) == ["F-52", "F-53"]
+    assert list(df.id) == ["F-2026-11-19-06", "F-2026-11-19-07"]
     assert (df.source_url.str.startswith("https://www.nfl.com/")).all()
 
 
@@ -50,3 +50,9 @@ def test_built_flagged_page_renders_both_2026_11_19_sections():
     html = (ROOT / "flagged.html").read_text(encoding="utf-8")
     assert "Findings from the 2026-11-19 re-read" in html
     assert "Findings from the 2026-11-19 session" in html
+
+
+def test_executive_summary_carries_the_2026_11_19_update_with_unique_ids():
+    text = (ROOT / "EXECUTIVE_SUMMARY.md").read_text(encoding="utf-8")
+    assert "## Update — 2026-11-19" in text
+    assert "F-2026-11-19-06" in text and "F-2026-11-19-07" in text

@@ -108,7 +108,7 @@ def flags(stats: dict) -> pd.DataFrame:
         f"2026-11-19 shows the same 25 rows as the 2026-11-19 capture (all 25 match on date, club and player). Four rows dated 11/10 that were on the 2026-11-18 capture are no longer on the page: "
         f"{fmt(stats['dropped'])}. Four rows dated 11/18 were added: {fmt(stats['added'])}. The page gives no "
         "reason for the removals. Malik Willis's reserve listing is therefore present only in the retained "
-        "2026-11-18 capture."
+        "2026-11-18 capture. The same rolling-window pattern is recorded as F-57 on the Flagged page (2026-09 and 2026-10 pages); this row adds a second capture pair that shows it."
     )
     f53 = (
         "Repaired: data/availability/reserve/latest.csv is a rolling file. Once the 2026-11-19 capture overwrote it, "
@@ -118,14 +118,14 @@ def flags(stats: dict) -> pd.DataFrame:
         "(the F-48 narrative in pipeline/session_20261118.py facts()) to the same immutable capture."
     )
     rows = [
-        dict(id="F-52", severity="High · open",
+        dict(id="F-2026-11-19-06", severity="High · open",
              finding=f52,
              next=("Treat any November reserve-list row absent from the page as 'not on the page at capture time', "
                    "never as 'available'. Keep every dated history capture (already done). Owner: confirm with NFL.com "
                    "whether the page is limited to a fixed number of rows, and whether older rows are archived elsewhere, "
                    "before any row-absence test is used as a gate."),
              source_label="NFL.com reserve list, November 2026", source_url=URL_RES),
-        dict(id="F-53", severity="Medium · repaired in this session",
+        dict(id="F-2026-11-19-07", severity="Medium · repaired in this session",
              finding=f53,
              next="No further action. The retained history folders are the only source for 2026-11-18 comparisons.",
              source_label="NFL.com reserve list, November 2026", source_url=URL_RES),
