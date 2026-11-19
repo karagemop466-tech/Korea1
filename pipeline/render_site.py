@@ -105,6 +105,9 @@ NAV_GROUPS = [
     ]),
     ("Lines & strategies", [
         ("lines.html", "Originated lines"),
+        # DT4 (arena/a0e376ae-korea1, 2026-11-19): REQ-62 — the second total estimator,
+        # the per-game gap and the pre-registered walk-forward verdict.
+        ("dual-totals.html", "Two total estimators"),
         # P1 (arena/a6bbbf24-korea1): opening and closing numbers for every originated market.
         ("price-snapshot.html", "Price snapshot"),
         # BF1 (arena/bfcd9879-korea1): the archive-populated view — SBR opens/closes, pin closes, freezes.
@@ -838,17 +841,32 @@ def build_lines(d):
     pred, fut = d["originated_lines"], d["originated_upcoming"]
     metrics = d["model_metrics"]
     m = metrics[(metrics.model.isin(["ensemble", "market"])) & (metrics.season.astype(str) == "ALL")]
+    # DT4 (arena/a0e376ae-korea1): the second, pre-registered total estimator (B) and the
+    # per-game gap next to the published fair total (A). Model-vs-model only: no outcome and
+    # no market price enters these two columns. Written by pipeline/dual_totals.py.
+    second_total: dict[str, object] = {}
+    _up_b = PROC / "dual_totals_upcoming.csv"
+    if _up_b.exists():
+        for _r in pd.read_csv(_up_b).itertuples():
+            second_total[_r.game_id] = _r
     rows = []
     for market in ["spread", "total", "moneyline"]:
         rows.append([market.title(), BLANK, BLANK, BLANK, "UNVERIFIED benchmark inputs", research_source()])
     future_rows = []
     for r in fut.sort_values(["gameday", "gametime", "game_id"]).itertuples():
+        _b = second_total.get(r.game_id)
+        _b_cell, _gap_cell = BLANK, BLANK
+        if _b is not None and bool(getattr(_b, "b_available", False)):
+            _b_cell = fmt(_b.total_b)
+            _gap_cell = fmt(_b.gap_a_minus_b, signed=True)
         future_rows.append([e(r.gameday), e(r.week), f"{e(r.away_team)} @ {e(r.home_team)}",
                             fmt(r.fair_spread), fmt(r.market_spread), fmt(r.edge_spread, signed=True),
                             fmt(r.fair_total), fmt(r.market_total), fmt(r.edge_total, signed=True),
+                            _b_cell, _gap_cell,
                             fmt(r.originated_home_ml), fmt(r.market_home_ml), fmt(r.ml_diff_home_cents, signed=True),
                             "Model estimate (fair) · market close from the pinned community archive (unverified) · "
-                            "edge is fair minus market, not an observation",
+                            "edge is fair minus market, not an observation · second total and A−B gap are "
+                            "model-vs-model (pre-registered form estimator, no outcome, no market price)",
                             official("NFL schedule")])
     features = [[e(r.feature), e(r.definition), e(r.used_in), official("NFL scores")] for r in d["feature_dict"].itertuples()]
     body = f"""{notice()}
@@ -871,16 +889,146 @@ because the benchmark is a community archive; the complete calculated metrics ar
 Some listed games may already have finished. Schedule and availability must be rechecked before any use.
 Each row shows the model's fair line, the market close it is measured against, and the difference between them;
 fair lines are model estimates, market closes are community-archive data (UNVERIFIED — no official NFL source
-publishes betting lines), and the edge is fair minus market, not an observation.</p>
+publishes betting lines), and the edge is fair minus market, not an observation. The row also carries the
+<strong>second total estimate</strong> (the pre-registered form model) and the <strong>A − B gap</strong> —
+two model numbers with no outcome and no market price between them, published side by side until the
+<a href="dual-totals.html">walk-forward comparison</a> is won.</p>
 {table(future_rows, ["Archive date", "Week", "Matchup", "Fair spread (model)", "Market spread (community)", "Edge (pts)",
-                     "Fair total (model)", "Market total (community)", "Edge (pts)", "Fair home price (model)",
+                     "Fair total (model)", "Market total (community)", "Edge (pts)",
+                     "Second total B (model)", "Gap A − B (pts)",
+                     "Fair home price (model)",
                      "Market home price (community)", "Home price edge (¢)", "Evidence class", "Official schedule"],
                      caption="Pinned archive slate. Fair lines are the model's own estimates; market closes come from "
                      "the pinned community archive and are UNVERIFIED (no official NFL source publishes lines); the edge "
-                     "is fair minus market, not an observation.")}
-<p><a href="assets/data/originated_upcoming.csv">Download unverified model estimates</a></p></section>
+                     "is fair minus market, not an observation; the second total and the A − B gap are model-vs-model "
+                     "(pre-registered form estimator) with no outcome or market input.")}
+<p><a href="assets/data/originated_upcoming.csv">Download unverified model estimates</a> · <a href="dual-totals.html">Walk-forward verdict for the second total estimator</a></p></section>
 <section><h2>Feature dictionary</h2>{table(features, ["Feature", "Definition", "Use", "Official context"], caption="Inputs and exclusions; no missing observation is filled")}</section>"""
     return layout("lines.html", "Originated lines", "A market-free model with explicit estimation and verification boundaries.", body, wide=True)
+
+
+def build_dual_totals():
+    """DT4 (arena/a0e376ae-korea1): REQ-62 — every model total published twice.
+
+    Walk-forward comparison of the published ensemble total (A) against the pre-registered
+    form estimator (B), one row per season plus the pooled row, every row carrying its
+    official NFL source link. Reads only the files pipeline/dual_totals.py writes; the rule
+    text lives in research/dual-totals-prereg.md and its registration commit is printed.
+    """
+    wf_path = PROC / "dual_totals_walkforward.csv"
+    sum_path = PROC / "dual_totals_summary.json"
+    wf = pd.read_csv(wf_path) if wf_path.exists() else pd.DataFrame()
+    s = read_json(sum_path) if sum_path.exists() else {}
+
+    if wf.empty or not s:
+        body = notice() + (
+            '<section><h2>Not yet built</h2><p>The walk-forward table is written by '
+            '<code>pipeline/dual_totals.py</code> during <code>make build</code>. Until it runs, '
+            'no number is shown here rather than a number without its evidence.</p></section>')
+        return layout("dual-totals.html", "Two total estimators",
+                      "The published game total, a second independent estimate, the gap, and the "
+                      "pre-registered walk-forward verdict.", body, wide=True)
+
+    pooled = s["pooled"]
+    tiers = s["outcome_tiers"]
+    collapse = s["collapse"]
+    reg_commit = str(s.get("registration_commit", ""))[:12]
+    reg_sha = str(s.get("prereg_sha256", ""))
+
+    cards = kpi_grid([
+        card(e(pooled["verdict"]), "pooled walk-forward verdict",
+             f"{s['verdict_status']} · {s['seasons_evaluated']} seasons", "good" if pooled["verdict"] == "A wins" else ""),
+        card(fmt(pooled["delta_mae"], signed=True), "ΔMAE, B − A (points)",
+             f"95% CI {fmt(pooled['ci_low'], signed=True)} to {fmt(pooled['ci_high'], signed=True)}",
+             "next"),
+        card(f"{s['n_evaluated']:,}", "games evaluated",
+             "same rows for both estimators · 2004–2026 regular season"),
+        card(f"{tiers['official_read']:,}", "rows on an official read",
+             f"{tiers['pinned_community']:,} pinned-community finals · verdict stays PROVISIONAL",
+             "bad"),
+    ])
+
+    rows = []
+    for r in wf.itertuples():
+        label = str(r.season)
+        if label == "ALL":
+            src = src_link("https://www.nfl.com/scores/", "NFL scores")
+        else:
+            src = src_link(f"https://www.nfl.com/standings/league/{label}/REG", "NFL standings")
+        ci = (f"{fmt(r.ci_low, signed=True)} to {fmt(r.ci_high, signed=True)}"
+              if pd.notna(r.ci_low) else "—")
+        rows.append([
+            e(label), str(int(r.n)),
+            fmt(r.mae_a), fmt(r.mae_b), fmt(r.delta_mae, signed=True), ci,
+            f"<strong>{e(r.verdict)}</strong>",
+            f"{int(r.n_official_read)} official · {int(r.n_pinned_community)} community",
+            src,
+        ])
+
+    body = f"""{notice()}
+<section><h2>What this page publishes</h2>
+<p>The brief asks to <em>publish every model total twice until one wins: keep both estimators
+visible with the gap column, and only collapse to one after a walk-forward comparison</em>
+(REQ-62 / RR-62). This page is that comparison. It is <strong>not</strong> a strategy, not a
+leaderboard row and not a validation-gate change: backtest numbers never enter the leaderboard
+by project rule, and nothing here awards or demotes anything.</p>
+{cards}</section>
+<section><h2>The two estimators</h2>
+<p><strong>A — the published total.</strong> <code>pred_total_ensemble</code>, the equal-weight
+ensemble of the ridge, matchup and Elo totals already published as <code>fair_total</code> on
+<a href="lines.html">Originated lines</a>. A is not retrained, reweighted or reselected here.</p>
+<p><strong>B — the second estimate.</strong> The mean of each team's up-to-five most recent
+regular-season combined scores <em>strictly before</em> the game (league-mean fallback when a
+team has no prior game). Zero fitted parameters; the window, the averaging and the fallback are
+fixed constants.</p>
+<p><strong>Pre-registration.</strong> The rule text was committed to git before the evaluation
+code existed: <a href="research/dual-totals-prereg.md">research/dual-totals-prereg.md</a>,
+registration commit <code>{e(reg_commit)}</code>, rule-text sha256
+<code>{e(reg_sha)}</code> (the page prints the commit and fingerprint it honoured; a
+later edit of the rule would create a new registration and leave this one in history).
+The verdict rule: the paired 95% t-interval of |error<sub>B</sub>| − |error<sub>A</sub>| per
+game; the pooled interval is the primary gate, per-season rows are descriptive; collapsing to
+one total additionally requires the pooled winner to take at least two-thirds of the seasons.</p></section>
+<section><h2>Walk-forward comparison · one row per season</h2>
+<p>Both estimators are scored on the identical game rows against the final combined score.
+ΔMAE is B's mean absolute error minus A's, so a <em>positive</em> ΔMAE means A was closer.
+Every row carries the official NFL source for that season; outcome reads name how many finals
+are on a committed official read versus the pinned community archive.</p>
+{table(rows, ["Season", "Games (n)", "MAE · A", "MAE · B", "ΔMAE (B − A)", "95% CI of ΔMAE",
+              "Verdict", "Outcome reads", "Official source"],
+       caption="Pre-registered walk-forward (registration " + e(reg_commit) + "). "
+               "Verdicts are PROVISIONAL while outcomes are pinned-community finals; "
+               "no market price is used anywhere in this comparison.")}
+<p><a href="assets/data/dual_totals_walkforward.csv">Download the walk-forward table</a> ·
+<a href="assets/data/dual_totals_upcoming.csv">Upcoming board with both estimates</a> ·
+<a href="data/processed/dual_totals.csv">Per-game estimates, gaps and outcome tiers</a> ·
+<a href="data/processed/dual_totals_summary.json">Headline summary (JSON)</a></p></section>
+<section><h2>Verdict, collapse state and evidence tiers</h2>
+<ul class="findings">
+<li><strong>Pooled verdict:</strong> {e(pooled["verdict"])} — MAE A {fmt(pooled["mae_a"])}
+against MAE B {fmt(pooled["mae_b"])} over {s["n_evaluated"]:,} games;
+seasons taken by A: {s["seasons_a_won"]}, by B: {s["seasons_b_won"]}, no separation:
+{s["seasons_no_separation"]}.</li>
+<li><strong>Collapse state:</strong> {"collapse candidate" if collapse.get("candidate") else "no collapse"} —
+{e(collapse.get("reason", ""))}. The collapse itself is an owner decision recorded in
+<a href="decisions.html">decision readiness</a>; this build executes none
+(<code>executed = false</code>).</li>
+<li><strong>Evidence tiers:</strong> {tiers["official_read"]:,} of {s["n_evaluated"]:,} evaluated
+finals sit on a committed official NFL read (the game-centre / score-audit reads); the other
+{tiers["pinned_community"]:,} are pinned-community finals whose settlement is unverified. While
+any evaluated row is community-only the verdict prints <strong>PROVISIONAL</strong>, and the
+official links on every row are there for manual review.</li>
+<li><strong>Limitations, stated:</strong> the interval is the pre-registered game-level paired
+t-interval (games within a week are not independent, so the interval is optimistic and is kept
+as registered rather than re-derived); B shares no fitted parameters with A but both are
+graded on the same outcomes; 2026 is a partial season ({[r for r in wf.itertuples() if str(r.season) == "2026"][0].n if any(str(r.season) == "2026" for r in wf.itertuples()) else 0} games at capture).</li>
+</ul>
+<p><a href="research/dual-totals-prereg.md">Pre-registration text</a> ·
+<a href="methodology.html">Methodology</a> · <a href="validation.html">Validation gates</a> ·
+<a href="flagged.html">Flagged for review</a></p></section>"""
+    return layout("dual-totals.html", "Two total estimators",
+                  "The published game total, a second independent estimate, the gap, and the "
+                  "pre-registered walk-forward verdict.", body, wide=True)
 
 
 def build_price_snapshot(d):
@@ -1371,6 +1519,8 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_19_section()
     body += _flagged_2026_11_19_register_section()
     body += _flagged_2026_11_19_gc_section()
+    body += _flagged_2026_11_19_rollover_section()
+    body += _flagged_2026_11_19_dt_section()
     body += _flagged_2026_11_20_fi_section()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
@@ -1740,6 +1890,9 @@ def main() -> None:
         "index.html": build_index(d),
         "executive-summary.html": build_executive(d),
         "lines.html": build_lines(d),
+        # DT4 (arena/a0e376ae-korea1): REQ-62 — second total estimator, gap column,
+        # pre-registered walk-forward verdict (pipeline/dual_totals.py writes the inputs).
+        "dual-totals.html": build_dual_totals(),
         "price-snapshot.html": build_price_snapshot(d),
         "strategies.html": build_strategies(d),
         "validation.html": build_validation(d),
@@ -1923,6 +2076,78 @@ def _flagged_2026_11_19_gc_section() -> str:
             "<p>The official schedule/game-centre/Game Book capture was repaired after the committed "
             "evidence showed the week was not being selected (see also "
             "<a href=\"gamecentre.html\">gamecentre.html</a> for the page this feeds).</p>"
+            + table_html + f"<p>{prose}</p></section>")
+
+
+def _flagged_2026_11_19_dt_section() -> str:
+    """DT7 (arena/a0e376ae-korea1, 2026-11-19): findings from the REQ-62 delivery pass.
+
+    A repository-process fact has no official source, so — per the house rule set by
+    F-2026-11-19-09 — it is printed as text, never as an unsourced table row. The
+    finding is machine-checkable: the standing register prints flag ids that the
+    Flagged for Review page does not contain.
+    """
+    prose = (
+        "<strong>F-2026-11-19-12</strong> (Medium · needs review) — the standing request "
+        "register (<a href=\"request-register.html\">request-register.html</a>) points six rows "
+        "at flag ids <code>F-58</code>, <code>F-59</code>, <code>F-60</code> and <code>F-62</code> "
+        "(REQ-44/REQ-53/REQ-66 cite F-58; REQ-49 cites F-59; REQ-58 cites F-60; REQ-68 cites F-62), "
+        "but this page publishes the F-series only up to "
+        "<code>F-57</code>: those four ids resolve to no flagged row, so a reader following them "
+        "finds nothing. The register also lost its own <code>F-61</code> reference in this "
+        "session's REQ-62 re-read (the row is now built and cites no flag). No published number "
+        "changes. A repository-process fact carries no official source, so this row is text, not a "
+        "table row. Next: the flag owner either publishes F-58…F-62 here or rewrites those five "
+        "register cells to name the flag that actually holds the gap.")
+    return ("<section><h2>Findings from the 2026-11-19 REQ-62 delivery pass</h2>"
+            "<p>Delivering \"publish every model total twice\" required re-reading the standing "
+            "register; this is what the re-read found. The delivered comparison itself is on "
+            "<a href=\"dual-totals.html\">dual-totals.html</a>.</p>"
+            f"<p>{prose}</p></section>")
+def _flagged_2026_11_19_rollover_section() -> str:
+    """W1 (arena/35c0fd93-korea1, 2026-11-19): the Week-11 rollover broke both capture chains.
+
+    Row F-2026-11-19-10 carries an official source (the league's Week-11 injury report, the
+    page whose publication triggered both failures).  The second finding is measured from the
+    failing runs' own check-run annotations plus the repository repair — a repository-process
+    fact, so per the house rule it is printed as text, never as an unsourced table row.
+    """
+    rows = [[
+        "F-2026-11-19-10", "High · repaired (2026-11-19, W1)",
+        "The league's injury report rolled to <strong>WEEK 11</strong> (live page: title "
+        "&quot;Week 11 of the 2026 Season&quot;, heading &quot;Injuries - WEEK 11&quot;, read "
+        "2026-11-19T20:0xZ), and the scheduled availability tracker then failed four consecutive "
+        "runs (44380205336, 44445480402, 44456709590, 44598915891) at the rebuild step: "
+        "<code>req_annex_2026_11_18.py</code> derived its pinned KC omission arithmetic from the "
+        "<strong>rolling</strong> capture instead of the dated 2026-11-18 snapshot, and the "
+        "rolling club row counts moved with the new week (reproduced offline: one added KC row "
+        "→ <code>SystemExit(\"KC omission count is 2, expected 1\")</code>). Repair: every dated "
+        "comparator (requirement annex, the 2026-11-19 re-read) now reads "
+        "<code>data/availability/history/2026-11-18/</code>, guarded by source-level tests that "
+        "fail if a comparator reverts to a rolling file. The rolling capture itself is untouched "
+        "and byte-identical to the dated snapshot at repair time. Next: the next successful "
+        "tracker run commits the Week-11 capture and the build must stay green.",
+        src_link("https://www.nfl.com/injuries/", "NFL injury report (rolled to Week 11)"),
+    ]]
+    table_html = table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
+                       caption="1 rollover finding with an official source")
+    prose = (
+        "<strong>F-2026-11-19-11</strong> (Medium · repaired on this branch) — the Game Book "
+        "capture failed twice (44555092023, 44556979069) on its own fail-loud contract after the "
+        "same week flip: the scores-page cross-check collected every <code>/games/</code> href on "
+        "the page, and the league's post-flip scores pages carry the requested week's fixtures "
+        "<em>plus</em> the current week's links (annotations: <code>week 9/10: … only schedule: "
+        "[]; only scores: [13 × 2026-reg-11 slugs]</code>). No evidence was written — the "
+        "fail-loud design worked. Repair: the cross-check now compares same-week slugs only "
+        "(its F-2026-11-19-08 purpose), records the extra-week links in the manifest, and keeps "
+        "every same-week disagreement and the per-slug schedule check fatal; the repaired "
+        "behaviour is unit-tested. No official source exists for a repository-process fact, so "
+        "this row is text, not a table row. Next: the next scheduled capture must complete with "
+        "the extras recorded.")
+    return ("<section><h2>Findings from the Week-11 rollover repair (W1)</h2>"
+            "<p>Both scheduled capture chains broke within hours of the league flipping its pages "
+            "to Week 11. Neither published wrong data — one failed a build, the other refused to "
+            "write evidence — but both stayed red until repaired.</p>"
             + table_html + f"<p>{prose}</p></section>")
 
 

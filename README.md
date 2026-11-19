@@ -36,6 +36,10 @@ player-prop ticket prices are missing, so the evidence does not support funding 
   `arena/eeba949e-korea1`)
 - `executive-summary.html` — decision and limitations
 - `lines.html` — model design and research line board
+- **`dual-totals.html`** — every model total published twice (REQ-62): the published ensemble
+  total against a pre-registered, parameter-free form estimator, the per-game gap on the line
+  board, and the walk-forward verdict with a 95% interval on every season row (added 2026-11-19,
+  `arena/a0e376ae-korea1`)
 - `price-archive.html` — opening and closing numbers we actually hold: 2011–2021 archive opens,
   archive and pinned closes, forward-ledger freezes — each row tier-labelled, each blank explained (added 2026-11-14)
 - `strategies.html` — complete candidate library and competition rules
