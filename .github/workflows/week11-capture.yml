@@ -1,0 +1,72 @@
+name: Official Week 11 capture (raw bytes + hashes)
+
+# Session arena/c83ada84-korea1, 2026-11-19.
+#
+# Why a new workflow rather than a `workflow_dispatch` on availability.yml: this
+# project's token cannot create a dispatch event ("Resource not accessible by
+# integration", HTTP 403, measured 2026-11-19T12:2xZ), so a push to a trigger path is
+# the only manual handle. `paths` is limited to THIS file, so the data commit this job
+# makes cannot re-trigger itself.
+#
+# What it does: downloads the official Week 11 documents (injury report, both schedule
+# URL forms, the November reserve list, and every game centre the schedule page prints),
+# stores the bytes verbatim under data/live/official_2026_11_19/ with sha256 + clock time,
+# and commits them. It never parses and never edits a published page.
+#
+# It also records, as a diagnostic file, the output of the availability rebuild that has
+# failed on the runner since 2026-11-18T19:24Z, so the failure is diagnosable from the
+# repository instead of from an unreadable Actions log.
+
+on:
+  push:
+    branches: ["arena/**", main]
+    paths:
+      - ".github/workflows/week11-capture.yml"
+      - "pipeline/capture_official_2026_11_19.py"
+  schedule:
+    - cron: "47 13,19,23 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: week11-capture-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Capture the official Week 11 documents
+        run: python pipeline/capture_official_2026_11_19.py
+
+      - name: Diagnose the availability rebuild (recorded, never published)
+        # Deliberately non-fatal: this step exists to put the failing shell output in the
+        # repository, because the Actions log receiver returns EOF for these runs.
+        run: |
+          mkdir -p data/live/official_2026_11_19/diagnostics
+          {
+            echo "== availability download step already runs in its own workflow =="
+            echo "== this rebuilds from the CURRENT committed capture, offline =="
+            date -u +%Y-%m-%dT%H:%M:%SZ
+            pip install -q -r requirements.txt 2>&1 | tail -3
+            make -o data -o model -o backtest -o props -o injuries site 2>&1 | tail -60
+            echo "make-site-exit=$?"
+          } > data/live/official_2026_11_19/diagnostics/site_rebuild.log 2>&1 || true
+          tail -40 data/live/official_2026_11_19/diagnostics/site_rebuild.log || true
+
+      - name: Commit the capture
+        run: |
+          git config user.name "week11-capture-bot"
+          git config user.email "week11-capture-bot@users.noreply.github.com"
+          git add data/live/official_2026_11_19
+          git diff --cached --quiet && { echo "no capture changes"; exit 0; }
+          git commit -m "capture: official Week 11 documents, raw bytes + sha256 ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
