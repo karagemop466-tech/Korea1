@@ -2142,9 +2142,10 @@ def _flagged_2026_11_19_rollover_section() -> str:
         "is not asserted here. A separate empty-output failure is visible in run 44611301993's "
         "check-run trace: <code>render_live._read</code> raised <code>EmptyDataError: No columns to parse from file</code> "
         "while reading <code>internal_consistency.csv</code>. The zero-issue producer path yields a "
-        "0-byte CSV from <code>pd.DataFrame([])</code>. This branch adds a stable CSV schema and "
-        "makes the reader treat zero-byte files as no rows; regression tests cover empty, absent and populated files. "
-        "The tracker is not called operationally recovered until a post-merge scheduled run captures "
+        "0-byte CSV from <code>pd.DataFrame([])</code>. Both halves are now fixed and merged "
+        "(PR #144): the writer emits a stable nine-column header and the reader tolerates a legacy "
+        "0-byte consistency report only; regression tests cover the empty, absent and populated cases. "
+        "The tracker is not called operationally recovered until a scheduled run captures "
         "the new official report and passes rebuild, verification and fixed-point checks.",
         src_link("https://www.nfl.com/injuries/league/2026/reg11", "Official NFL Week 11 injury report"),
     ]]

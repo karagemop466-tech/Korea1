@@ -221,3 +221,4 @@ def test_availability_tracker_flag_does_not_claim_a_green_recovery_run():
     assert "2026-11-18T04:24:05Z" in page
     assert "exact exception is not asserted here" in page
     assert "not called operationally recovered" in page
+    assert "PR #144" in page
