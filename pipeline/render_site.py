@@ -125,6 +125,8 @@ NAV_GROUPS = [
     ]),
     ("Availability", [
         ("availability.html", "Injuries & depth · all clubs"),
+        # P2 (arena/46f0a137-korea1, 2026-11-20): one row per club, starters out, replacements named, net count.
+        ("team-view.html", "Per-team view · 32 clubs"),
         # E5 (arena/eeba949e-korea1): the official schedule / game centre / Game Book layer.
         ("gamebooks.html", "Official Game Book evidence"),
         ("lineup-deficiencies.html", "Matchup 1st–4th strings"),
@@ -1525,6 +1527,9 @@ No manual input is required to use the current site. A correction must update th
     body += _flagged_2026_11_19_rollover_section()
     body += _flagged_2026_11_19_dt_section()
     body += _flagged_2026_11_20_fi_section()
+    # P2 (arena/46f0a137-korea1, 2026-11-20): the per-team view's findings, from the same list.
+    from team_view import flagged_section as _team_view_flagged
+    body = body + _team_view_flagged()
     return layout("flagged.html", "Flagged for review", "Material limitations, source conflicts and repairs in one searchable register.", body, wide=True)
 
 

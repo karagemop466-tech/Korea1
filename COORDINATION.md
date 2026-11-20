@@ -5048,3 +5048,95 @@ research number was moved by any of these three PRs.
 **Verification on the merged tree.** `make build` passed with zero failing checks; strict source verification covered 55 canonical pages / 10,300 rows and internal-link verification covered 65 pages. `make test` passed **476 tests, 1 skipped**. The focused AAF2 module passed **6 tests** and the AAF1 live-verification module passed **21 tests**. A fresh build followed by `tests/check_rebuild.py` on the clean committed tree reported **0 changed files** (`rtol=1e-8`, `atol=1e-10`); `git diff --check` passed. The BQ1 module was also run separately (6 passed); its absence from the explicit `Makefile` test command remains logged as cross-scope and was not changed here.
 
 **Irregularity and scope.** The initial Verify failure [44680104208](https://github.com/karagemop466-tech/Korea1/actions/runs/44680104208) named the nine out-of-scope CSVs and is disclosed on `flagged.html` as F-2026-11-20-06. The repair restricts tolerance to calculated float columns in those nine outputs; every other tracked-file change, schema/row-count change, and nonnumeric/value change remains fail-loud. No NFL data, model, price, outcome or strategy result was modified. PR #132's unrelated work and the separate BQ1 files remain untouched.
+| AAF2 | Make fixed-point verification tolerance-aware for the nine identified float-heavy outputs while failing on all other unexplained tracked changes; add tests and retain readable diagnostics | **in progress** | `arena/aaf1807d-korea1` | `tests/check_rebuild.py`, `.github/workflows/verify.yml` (fixed-point gate + diagnostic capture only), `tests/test_rebuild_tolerance.py` (new), `Makefile` (register test only), `assets/data/register_evidence_facts_2026_11_18.csv`, `data/integration/register_evidence_facts_2026_11_18.csv`, `register-evidence-2026-11-18.html` (test_count only), `assets/data/repo_inventory.csv`, `data/integration/repo_inventory.csv`, `assets/data/verification_report.csv`, `data/processed/verification_report.csv`, `repo-review.html`, `EXECUTIVE_SUMMARY.md` (generated inventory/verification counts only), `COORDINATION.md` (this session only) |
+---
+
+## Session `arena/46f0a137-korea1` — 2026-11-20 claim: per-team view + "No Injuries Reported" clubs
+
+Branch note: this session works only on `arena/46f0a137-korea1` (branched from `main` @ `bced388`). The
+session-per-branch names in the brief are not used; the branch name is fixed by the session. Other
+sessions on the board are untouched; this scope does not overlap any `in progress` row.
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| P1 | Clubs that the official Week 10 report lists as "No Injuries Reported" were silently dropped from `injury_team_status` (BAL, CIN, LAC, SEA). Keep them as explicit zero-count rows with the page status. | in progress | `arena/46f0a137-korea1` | `pipeline/fetch_injuries.py`, `data/processed/injury_team_status.csv`, `assets/data/injury_team_status.csv` |
+| P2 | Per-team view, all 32 clubs: starters (first-listed slot) out, replacements named, net injury count, source link on every row, blanks + flags where unverified | in progress | `arena/46f0a137-korea1` | `pipeline/team_view.py` (new), `team-view.html` (new), `assets/data/team_view.csv`, `tests/test_team_view.py` (new), `Makefile` (one recipe line), `pipeline/render_site.py` (NAV line only) |
+
+Commit and push of this claim happen before any file in scope is changed.
+
+### 2026-11-20 — P1 + P2 done — `arena/46f0a137-korea1`
+
+**What shipped**
+- **P1 — parser defect fixed.** `pipeline/fetch_injuries.py` discarded every club whose block reads
+  "No Injuries Reported". The 2026-11-12 capture has four: BAL, CIN, LAC, SEA. They are now explicit
+  zero-count rows in `injury_team_status.csv` with the page status printed as "(2026-11-12 capture;
+  superseded for injuries)". Player rows are unchanged (254). Test: `tests/test_team_view.py::test_parser_keeps_a_no_injuries_reported_club`.
+- **P2 — per-team view.** `team-view.html` + `assets/data/team_view.csv` + `pipeline/team_view.py`. 32 rows,
+  one per club. Injury counts come from the 2026-11-18 scheduled capture (`data/availability/injuries.csv`,
+  sha256 `b065c612…`). Starters = first-listed player of each depth slot, as the club's own chart prints it;
+  replacement = the next player that slot lists. Net injury count = Out + Doubtful + Questionable entries.
+  Nav link added (Availability group); README pointer; a 2026-11-20 section on `flagged.html`.
+
+**Sources read (official), and how**
+- NFL.com Week 10 injury page, live: `https://www.nfl.com/injuries/league/2026/reg10`, read 2026-11-20 with the
+  page-fetch tool (bash cannot reach nfl.com from this sandbox). Chunks 5 and 6 (Cowboys, Steelers/Bengals,
+  Chargers/Ravens blocks) were typed row by row and compared field by field with the 2026-11-18 capture.
+- NFL.com Week 10 schedule: `https://www.nfl.com/schedules/2026/by-week/week-10` (committed capture of 2026-11-18,
+  `data/live/claim_reads_2026_11_18/nfl_schedule_week10_2026_games_and_byes.md`); bye list = CHI, DEN, PHI, TB.
+- Club depth charts: the URLs recorded per club in `data/availability/manifest.json` (club sites, captured 2026-11-18).
+
+**Verification performed**
+- Line-by-line: 57 injury rows (CIN 9, BAL 10, LAC 19, DAL 19) compared with the live page: **0 differences**
+  in player, injury, practice status or game status.
+- Count check: the 2026-11-18 capture covers 28 clubs; the 4 absent clubs are exactly the 4 bye clubs
+  (28 + 4 = 32). The 2026-11-12 capture has player entries for 24 clubs and "No Injuries Reported" for four more; it cannot support a current 32-club view.
+- `make build` passes (0 failing checks; sources and links verified); `make test` 466 passed, 1 skipped
+  (was 456 passed, 1 skipped before this session).
+
+**Irregularities (all on `flagged.html` and `team-view.html`; none blocks merge)**
+1. **Stale injury capture still drives older pages.** `data/processed/injury_report.csv` (254 rows,
+   2026-11-12T13:06:29Z) feeds `injury_team_status.csv`, `injuries.html` and others. It shows "No Injuries
+   Reported" for BAL, CIN, LAC and SEA, which the live page contradicts for BAL, CIN and LAC. Repointing those
+   pages to the 2026-11-18 capture is a cross-page change and was **not** made in this session (out of scope;
+   it touches files other tasks own). Recommended as the next task.
+2. **Two injury datasets disagree.** The depth flags in `data/availability/slot_status.csv` already join the
+   2026-11-18 capture; the team-status table does not. The same club can carry different counts on two pages.
+3. **Live page title says Week 11; body says Week 10** (`Official NFL Injury Report for Players - Week 11 of the 2026 Season`
+   vs `Injuries - WEEK 10`).
+4. **Houston depth chart: 0 parsed rows** (HTTP 200, 481,650 bytes; `data/availability/manifest.json`). Not transcribed by eye.
+5. **Rams code differs**: `LA` in the 2026-11-18 capture and depth data, `LAR` in older files; mapped on this page only.
+6. **Seattle, Houston and 26 other clubs were not re-read live on 2026-11-20**; their rows rest on the 2026-11-18
+   capture alone. Only BAL, CIN, LAC and DAL were compared line by line.
+
+**Not done in this session (from the standing brief; left open, with the reason)**
+- Most of the ~100 brief items already exist as pages in the repo. Many are blocked by missing official sources
+  that the repo itself records (executable prices, official inactive lists, snap counts, rulebook read,
+  reserve-list capture). Those are not claimed as done here.
+- Repointing the older injury pages to the current capture (irregularity 1), the weekly "what changed" diff, the
+  stadium roof / NWS overlay, and a re-capture of the full live injury page are open. A full re-capture needs
+  the scheduled runner (`availability.yml`), not a hand transcription.
+
+**Status:** P1 done · P2 done. Branch `arena/46f0a137-korea1`. PR and merge recorded below.
+
+### 2026-11-20 — rebase onto `main` @ `3cc80c6` (PR #142 and three earlier merges) — `arena/46f0a137-korea1`
+
+- **What happened.** `main` moved while this branch was open. A first `git pull --rebase` replayed three
+  commits of this session and stopped on a conflict in `COORDINATION.md` (both sides had appended sections).
+- **What was done, and why.** The rebase was aborted, this session's three commits were squashed into one
+  (no content changed), and that single commit was rebased once onto `main`.
+- **Resolution, file by file.**
+  - `COORDINATION.md`: both sides kept. Conflict markers removed; no text from either side was dropped.
+  - `Makefile`: the test list is `main`'s full list, with `tests/test_team_view.py` appended. The recipe lines
+    of both sides are kept.
+  - Generated pages and tables (`*.html`, `assets/data/*.csv`, `data/processed/*.csv`, `EXECUTIVE_SUMMARY.md`):
+    taken from `main`, then regenerated by `make build`. Nothing was merged by hand.
+  - `pipeline/render_site.py`, `README.md`: merged automatically by git; both sides' lines are present.
+- **Other sessions' work.** Preserved in full: the `main` history (PR #142 `arena/0ead6a90-korea1`, DV2–DV4) is
+  unchanged. This branch's history was rewritten once before the push, so the PR head moved; that is the only
+  history change.
+- **Verification after the rebase.** `make build` twice: the second run changed **0 files** (fixed point).
+  `tests/check_rebuild.py`: 0 changed files. `make test`: 477 passed, 1 skipped (`main` alone: 467 passed, 1 skipped;
+  this branch adds the 10 team-view tests).
+- **Why the first build attempts did not converge.** The registers count tracked files and sizes, so an
+  untracked new file changes them. Converged only after the new files were tracked and committed. The same
+  pattern is in the CI workflow's two-pass design.
