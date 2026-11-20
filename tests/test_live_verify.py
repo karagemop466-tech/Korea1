@@ -18,6 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "pipeline"))
 import lineup_claims as lc  # noqa: E402
 import live_verify as lv  # noqa: E402
 import live_verify_depth as lvd  # noqa: E402
+import render_live as rl  # noqa: E402
+import render_site as rs  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -152,6 +154,46 @@ def test_internal_consistency_flags_a_planted_contradiction():
     assert stats2["contradictions"] == stats["contradictions"] + 1
     flagged = set(issues2.loc[issues2.check == "unavailable_but_full_practice", "player"])
     assert planted.iloc[0]["player"] in flagged
+
+
+def test_internal_consistency_emits_a_header_when_there_are_no_findings(tmp_path):
+    # Keep a non-empty snapshot but remove its known self-contradictions, which
+    # reproduces the clean-capture case (rows exist; the findings set is empty).
+    pub = _pub().copy()
+    pub["game_status"] = "Questionable"
+    issues, stats = lv.internal_consistency(pub)
+
+    assert issues.empty
+    assert list(issues.columns) == list(lv.INTERNAL_CONSISTENCY_COLUMNS)
+    assert stats["rows"] == len(pub)
+    assert stats["clubs"] == pub.team.nunique()
+
+    path = tmp_path / "internal_consistency.csv"
+    issues.to_csv(path, index=False)
+    loaded = rl._read(path)
+    assert loaded.empty
+    assert list(loaded.columns) == list(lv.INTERNAL_CONSISTENCY_COLUMNS)
+
+
+def test_render_live_reader_accepts_legacy_empty_consistency_csv_only(tmp_path):
+    path = tmp_path / "legacy-empty.csv"
+    path.write_bytes(b"")
+
+    # An empty, unrelated report is still a schema error; only the known
+    # no-findings consistency artifact may use the legacy zero-byte form.
+    with pytest.raises(pd.errors.EmptyDataError):
+        rl._read(path)
+    loaded = rl._read(path, allow_empty=True)
+
+    assert loaded.empty
+
+
+def test_empty_snapshot_failure_is_documented_on_the_flagged_page():
+    rendered = rs._flagged_2026_11_20_fi_section()
+
+    assert "F-2026-11-20-06" in rendered
+    assert "EmptyDataError" in rendered
+    assert "44629518169" in rendered
 
 
 def test_internal_consistency_flags_a_bad_vocabulary():

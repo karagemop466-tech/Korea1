@@ -2018,6 +2018,16 @@ def _flagged_2026_11_20_fi_section() -> str:
             "workflows run the same check before committing. <em>This row is printed as text, not as a "
             "table row, because a repository-process fact has no official source to cite — the same rule "
             "F-2026-11-19-09 follows here.</em></p>"
+            "<p><strong>F-2026-11-20-06 · High · repaired (2026-11-20).</strong> A fresh availability capture "
+            "with zero self-consistency findings made <code>internal_consistency()</code> return a column-less "
+            "DataFrame; pandas wrote a zero-byte CSV, and <code>render_live._read()</code> raised "
+            "<code>EmptyDataError</code> before the tracker could finish. This was reproduced by the "
+            "availability-tracker diagnostic run <a href=\"https://github.com/karagemop466-tech/Korea1/actions/runs/44629518169\">44629518169</a>. "
+            "The writer now always emits the nine-column header, and the reader tolerates the legacy zero-byte "
+            "consistency file only; unrelated empty CSVs still fail loudly. Regression tests cover both states. "
+            "No NFL row or model value changed. <em>This is a "
+            "repository-process fact, so it is prose rather than a table row; the linked Actions run is the "
+            "primary evidence, not an NFL source.</em></p>"
             + table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
                     caption=f"{len(rows)} findings from the 2026-11-20 finals pass") + "</section>")
 
