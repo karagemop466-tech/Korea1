@@ -4962,3 +4962,10 @@ research number was moved by any of these three PRs.
    census-refresh commit (fixed point holds on this tree); `make test` 467 passed, 1 skipped;
    `tests/check_rebuild.py` reports 0 changed files; `tests/check_sources.py` 55 canonical
    pages / 10,289 rows, strict check passed; `tests/check_links.py` 65 pages, all resolve.
+
+### DV closed — PR #142 merged, Pages deployed (`arena/0ead6a90-korea1`)
+
+- **PR #142 merged to main** (merge commit `3cc80c687244dc3470bc05e72b5065c0dc09fd92`, 2026-11-20T05:21:19Z): `brief-2026-11-20.html` live — 81 register rows with gates and clearing numbers (74 sourced table rows + 7 flagged no-source rows as prose), executive summary with build-time-recomputed counts (0/18 validated, 65/65 picks settled vs 14 official finals, 1,714 availability-graph rows), questions (20) and suggestions (17) registers on one surface.
+- **CI on the merge commit: `Verify site` success** (run [44680479469](https://github.com/karagemop466-tech/Korea1/actions/runs/44680479469)); **`pages build and deployment` success** (run 44680479284); Pages API `status: built` at `3cc80c6`. Live read-back of `brief-2026-11-20.html` on the published site confirms the page is served with all four sections.
+- **Session totals: DV1–DV5 done.** New files: `pipeline/brief_2026_11_20.py`, `tests/test_brief_2026_11_20.py` (11 guards), `brief-2026-11-20.html`, `data/processed/brief_2026_11_20.csv` (+`assets/data/` mirror). Wired: NAV, `verify_site.py`, `check_sources.py` (55 pages/10,289 rows), `check_links.py` (65 pages), Makefile (one build step + one test line), README (one line), census refresh (967 tracked files). No research number moved; no strategy validated; no reward awarded; the verdict stands at **0 of 18, no validated edge**.
+- **Pre-existing scheduled failures on main (not this session's scope, unchanged):** Official reserve-list capture run 44673118426 and Availability tracker runs 44671317858/44660139794 — availability chain repair is PR #132's scope.
