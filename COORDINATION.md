@@ -4962,3 +4962,13 @@ research number was moved by any of these three PRs.
    census-refresh commit (fixed point holds on this tree); `make test` 467 passed, 1 skipped;
    `tests/check_rebuild.py` reports 0 changed files; `tests/check_sources.py` 55 canonical
    pages / 10,289 rows, strict check passed; `tests/check_links.py` 65 pages, all resolve.
+
+---
+
+## Session `arena/83a6b711-korea1` — 2026-11-20T05:09Z claim (2026-11-20 brief: Baltimore QB stale-row and reserve-list completeness)
+
+**Board read first.** Branch `arena/83a6b711-korea1` (base `bced388` = `main`). Arena fixes the branch for this session, so every commit and the PR come from this branch. The sibling claims that were live on the remote at 2026-11-20T05:09Z are not touched: `arena/76082878-korea1` (L-W11 Week 11 spot read, done), `arena/aaf1807d-korea1` (AAF1 zero-row availability fix), `arena/c83ada84-korea1` (W2 Week 11 publication layer), `arena/0ead6a90-korea1` (DV2 brief trace), `arena/4c3b2c1c-korea1` (VA1 acceptance audit), `arena/60abb77f-korea1` (CA2 acceptance audit), `arena/b0b00bbe-korea1` (ES1 executive summary).
+
+| # | Task | Status | Owner | File scope |
+|---|------|--------|-------|-----------|
+| BQ1 | **Baltimore QB stale-row check and reserve-list completeness.** Re-read the official Ravens depth chart and NFL.com November reserve list, and compare them with the committed captures and the brief's claim C-09 (\"Baltimore still publishes Lamar Jackson and Tyler Huntley at QB\"). Record each claim with its official source, read time and verdict. Claim-level evidence only, no site or model edits. | **in progress** | `arena/83a6b711-korea1` | `data/live/ravens_qb_recheck_2026_11_20/**`, `tests/test_ravens_qb_recheck.py`, `COORDINATION.md` (this section only) |
