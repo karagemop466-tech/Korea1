@@ -955,6 +955,7 @@ tests/test_origination_order.py,1-10 KB,Test,SOURCE · executed by make build / 
 tests/test_price_snapshots.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_props_integrity.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/decision_readiness.py,NFL injuries,https://www.nfl.com/injuries/
 tests/test_ravens_qb_recheck.py,1-10 KB,Test,SOURCE · executed by make build / make test,—,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+tests/test_rebuild_tolerance.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_reconcile_depth_charts.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/request_register_20261118.py; pipeline/reread_2026_11_19.py,NFL injuries,https://www.nfl.com/injuries/
 tests/test_register_evidence_2026_11_18.py,10-100 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_request_register.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/request_register.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
