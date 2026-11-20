@@ -50,6 +50,8 @@ PAGES = ["decisions.html", "suggestions.html", "lineups.html", "index.html", "ex
          "gamebooks.html",
          # DT4 (arena/a0e376ae-korea1): REQ-62 — second total estimator + walk-forward verdict.
          "dual-totals.html",
+         # DV2 (arena/0ead6a90-korea1): brief trace + decision hub.
+         "brief-2026-11-20.html",
          "lab/index.html", "lab/lines.html", "lab/strategies.html", "lab/correlation.html",
          "lab/props.html", "lab/validation.html", "lab/leaderboard.html", "lab/sources.html",
          "lab/flagged.html"]

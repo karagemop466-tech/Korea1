@@ -28,7 +28,9 @@ PAGES=["index.html","executive-summary.html","lines.html","price-snapshot.html",
        # E5 (arena/eeba949e-korea1, 2026-11-19): the official Game Book evidence page.
        "gamebooks.html",
        # DT4 (arena/a0e376ae-korea1): REQ-62 — every row cites the official season page.
-       "dual-totals.html"]
+       "dual-totals.html",
+       # DV2 (arena/0ead6a90-korea1): brief trace + decision hub.
+       "brief-2026-11-20.html"]
 def main():
     problems=[]; total=0
     for name in PAGES:
