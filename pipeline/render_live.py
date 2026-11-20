@@ -31,8 +31,18 @@ def e(x) -> str:
     return html.escape("" if x is None else str(x), quote=True)
 
 
-def _read(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, dtype=str, keep_default_na=False) if path.exists() else pd.DataFrame()
+def _read(path: Path, *, allow_empty: bool = False) -> pd.DataFrame:
+    if not path.exists():
+        return pd.DataFrame()
+    try:
+        return pd.read_csv(path, dtype=str, keep_default_na=False)
+    except pd.errors.EmptyDataError:
+        # Only the consistency report can legitimately be empty: its writer now
+        # emits a header-only CSV, but old no-findings captures may be 0 bytes.
+        # Every other empty CSV remains a fail-loud schema error.
+        if allow_empty:
+            return pd.DataFrame()
+        raise
 
 
 def _pill(verdict: str) -> str:
@@ -53,7 +63,7 @@ def build_live(layout, table, card, kpi_grid, flag, src_link, SHA, SRC) -> str:
 
     inj = _read(live / "injury_field_verification.csv")
     in_sum = _read(live / "injury_verification_summary.csv")
-    cons = _read(live / "internal_consistency.csv")
+    cons = _read(live / "internal_consistency.csv", allow_empty=True)
     depth = _read(live / "depth_slot_verification.csv")
     dsum = _read(live / "depth_verification_summary.csv")
     disc = _read(live / "depth_chart_disclaimers.csv")

@@ -62,6 +62,10 @@ INACTIVE = {"out", "doubtful", "ir", "injured reserve", "sus", "suspended"}
 GAME_STATUS = {"", "out", "doubtful", "questionable"}
 PRACTICE_STATUS = {"", "did not participate in practice", "limited participation in practice",
                    "full participation in practice"}
+INTERNAL_CONSISTENCY_COLUMNS = (
+    "club", "player", "check", "severity", "practice_status", "game_status",
+    "injury", "source_url", "note",
+)
 
 
 def _norm(v) -> str:
@@ -226,7 +230,10 @@ def internal_consistency(published: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     add(p.injury.str.lower().isin(["none", "n/a", "na", "unknown"]), "placeholder_injury",
         "vocabulary", "an injury text that is a placeholder rather than an official value")
 
-    out = pd.DataFrame(issues)
+    # Preserve a header-only CSV when there are no findings. Without explicit
+    # columns pandas writes a zero-byte file; the site renderer then sees an
+    # EmptyDataError after a clean capture and aborts the availability build.
+    out = pd.DataFrame(issues, columns=INTERNAL_CONSISTENCY_COLUMNS)
     stats = dict(rows=int(len(p)), clubs=int(p.team.nunique()),
                  contradictions=int((out.severity == "contradiction").sum())
                  if not out.empty else 0,
