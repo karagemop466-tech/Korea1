@@ -4922,3 +4922,17 @@ rule this project runs on: a number is not published unless the artefact behind 
 
 **Board status: FI1–FI5 done.** No strategy is validated, no gate waived, no reward awarded, and no
 research number was moved by any of these three PRs.
+
+## Session `arena/0ead6a90-korea1` — 2026-11-20 claim: brief trace + decision hub (DV1–DV6)
+
+**Board read first (2026-11-20).** Every earlier task row is `done`, `needs review`, or `in progress` on a merged/stale branch; no sibling session holds a live claim on the rows below. Open PRs #132/#127/#102/#87/#84/#73/#70/#58/#56/#47/#38/#30/#24/#19 are owned by other sessions and are **not touched**. `main` is at `bced388` (PR #140 merged); this branch is `arena/0ead6a90-korea1`.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| DV1 | Board claim + session log | **in progress** (this record) | `arena/0ead6a90-korea1` | `COORDINATION.md` (this section only) |
+| DV2 | **Brief trace page `brief-2026-11-20.html`**: one row per requirement from the standing brief, with status, blocking gate, the number that clears it and an official source per row; executive summary, questions/answers and suggestions sections on the same page. Reads committed registers only (no network, no clock) | **in progress** | `arena/0ead6a90-korea1` | `pipeline/brief_2026_11_20.py` (new), `brief-2026-11-20.html` (new), `data/processed/brief_2026_11_20.csv` (new), `assets/data/brief_2026_11_20.csv` (mirror), `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one site line + one test line), `README.md` (one line) |
+| DV3 | **Line-by-line verification pass**: re-derive headline counts (validated strategies, settled tickets, availability-graph rows, price-store rows) from committed files; official-source spot re-reads via the page-read tool; irregularities flagged, never filled in | **in progress** | `arena/0ead6a90-korea1` | `tests/test_brief_2026_11_20.py` (new); no `data/` edits except DV2 outputs |
+| DV4 | **Final verification**: `make build`, `make test`, `tests/check_rebuild.py`, link/source checks | **in progress** | `arena/0ead6a90-korea1` | measurement only |
+| DV5 | **PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR link + merge result here** | **in progress** | `arena/0ead6a90-korea1` | `COORDINATION.md` (this section only), PR record |
+
+**Scope rule:** shared outputs (`index.html`, `render_site.py` NAV) are changed only by the one-line NAV/card additions listed above. If a change requires a file owned by another session, it is logged here instead of edited.
