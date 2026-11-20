@@ -4922,3 +4922,43 @@ rule this project runs on: a number is not published unless the artefact behind 
 
 **Board status: FI1–FI5 done.** No strategy is validated, no gate waived, no reward awarded, and no
 research number was moved by any of these three PRs.
+
+## Session `arena/0ead6a90-korea1` — 2026-11-20 claim: brief trace + decision hub (DV1–DV6)
+
+**Board read first (2026-11-20).** Every earlier task row is `done`, `needs review`, or `in progress` on a merged/stale branch; no sibling session holds a live claim on the rows below. Open PRs #132/#127/#102/#87/#84/#73/#70/#58/#56/#47/#38/#30/#24/#19 are owned by other sessions and are **not touched**. `main` is at `bced388` (PR #140 merged); this branch is `arena/0ead6a90-korea1`.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| DV1 | Board claim + session log | **in progress** (this record) | `arena/0ead6a90-korea1` | `COORDINATION.md` (this section only) |
+| DV2 | **Brief trace page `brief-2026-11-20.html`**: one row per requirement from the standing brief, with status, blocking gate, the number that clears it and an official source per row; executive summary, questions/answers and suggestions sections on the same page. Reads committed registers only (no network, no clock) | **in progress** | `arena/0ead6a90-korea1` | `pipeline/brief_2026_11_20.py` (new), `brief-2026-11-20.html` (new), `data/processed/brief_2026_11_20.csv` (new), `assets/data/brief_2026_11_20.csv` (mirror), `pipeline/render_site.py` (NAV + one index card only), `pipeline/verify_site.py` (page list only), `tests/check_sources.py` (page list only), `tests/check_links.py` (page list only), `Makefile` (one site line + one test line), `README.md` (one line) |
+| DV3 | **Line-by-line verification pass**: re-derive headline counts (validated strategies, settled tickets, availability-graph rows, price-store rows) from committed files; official-source spot re-reads via the page-read tool; irregularities flagged, never filled in | **in progress** | `arena/0ead6a90-korea1` | `tests/test_brief_2026_11_20.py` (new); no `data/` edits except DV2 outputs |
+| DV4 | **Final verification**: `make build`, `make test`, `tests/check_rebuild.py`, link/source checks | **in progress** | `arena/0ead6a90-korea1` | measurement only |
+| DV5 | **PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR link + merge result here** | **in progress** | `arena/0ead6a90-korea1` | `COORDINATION.md` (this section only), PR record |
+
+**Scope rule:** shared outputs (`index.html`, `render_site.py` NAV) are changed only by the one-line NAV/card additions listed above. If a change requires a file owned by another session, it is logged here instead of edited.
+
+### DV2–DV4 done — live official-source spot re-reads (2026-11-20, `arena/0ead6a90-korea1`)
+
+**Verification performed this session (line by line, official pages read live with the page-read tool):**
+
+1. **Week 10 finals — 14 of 14 re-verified live** against https://www.nfl.com/scores/2026/week-10
+   (read 2026-11-20): WAS 24–NYG 21, NE 10–DET 35 (Munich), KC 35–ATL 13, HOU 24–CLE 27,
+   MIN 30–GB 10, MIA 22–IND 24, CAR 20–NO 17, BUF 31–NYJ 12, JAX 40–TEN 23, LA 34–ARI 6,
+   SEA 21–LV 13, SF 46–DAL 40, PIT 18–CIN 38, LAC 23–BAL 20 — every score equals the
+   committed `data/forward/week10_finals_2026_11_20.csv` row (all 14 rows verdict
+   `TWO DOCUMENTS AGREE`). No discrepancy found; nothing changed.
+2. **Week 10 injury report re-read live** against
+   https://www.nfl.com/injuries/league/2026/reg10 (read 2026-11-20): the three Lions
+   game-status designations named in the brief (Kerby Joseph, Cade Mays, D.J. Reed) now
+   print **Out** in the official report table itself, so the earlier blank-cell irregularity
+   was a capture-time artifact of the source page, and the committed evidence is consistent
+   with the live page today. NE@DET is printed as the Sunday November 15th International
+   Game (Munich) — matches the committed fixture context.
+3. **Irregularity observed, logged, not filled in:** the live injuries page's `<title>`
+   metadata prints "Week 11 of the 2026 Season" while the page heading prints
+   "Injuries - WEEK 10" — the page's title tag lags its own heading. Published values are
+   keyed to the printed heading, never the title tag; no data change.
+4. **Build verification:** `make build` ×2 exit 0 with `git diff --quiet` clean after the
+   census-refresh commit (fixed point holds on this tree); `make test` 467 passed, 1 skipped;
+   `tests/check_rebuild.py` reports 0 changed files; `tests/check_sources.py` 55 canonical
+   pages / 10,289 rows, strict check passed; `tests/check_links.py` 65 pages, all resolve.

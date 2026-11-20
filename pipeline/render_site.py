@@ -97,6 +97,9 @@ NAV_GROUPS = [
         # D6 (arena/ba09384a-korea1): the additive annex — recomputed evidence, official re-read,
         # questions and owner decisions. The register above remains the primary surface.
         ("requirement-annex-2026-11-18.html", "Requirement annex · evidence check"),
+        # DV2 (arena/0ead6a90-korea1, 2026-11-20): brief trace + decision hub — one row per
+        # requirement with gate and clearing number, plus executive summary, questions and suggestions.
+        ("brief-2026-11-20.html", "Brief trace · 2026-11-20"),
         ("questions.html", "Open questions"),
         ("decisions.html", "Decision readiness"),
         ("flagged.html", "Flagged for review"),
