@@ -5158,4 +5158,32 @@ The open PR [#132](https://github.com/karagemop466-tech/Korea1/pull/132), task W
 | # | Task | Status | Owner (session ID) | File scope |
 |---|------|--------|--------------------|-----------|
 | CA3 | Port and test the zero-row availability-verification CSV fix so a clean official capture cannot abort `render_site`; independently test empty, absent and populated CSV reads | **in progress** | `arena/60abb77f-korea1` | `pipeline/live_verify.py`, `pipeline/render_live.py`, `tests/test_live_verify.py`, generated `assets/data/repo_inventory.csv`, `data/integration/repo_inventory.csv`, `repo-review.html`, `COORDINATION.md` (this section only) |
-| CA4 | Re-read current official Week 11 sources and publish two non-fabricated freshness blockers: (1) the live IND–HOU final is not yet in the result feed's dated snapshot, and (2) the availability workflow has not yet demonstrated a green post-fix run | **in progress** | `arena/60abb77f-korea1` | `data/integration/flagged_2026_11_20.csv` (append-only), `assets/data/flagged_2026_11_20.csv` (generated mirror), `pipeline/render_site.py` (F-2026-11-19-10 update only), `Makefile` (one mirror-copy step only), `tests/test_finals_2026_11_20.py` (freshness-flag assertions only), generated `flagged.html`, `assets/data/verification_report.csv`, `data/processed/verification_report.csv`, `INTEGRATION_VERIFICATION.md` (dated append only), `COORDINATION.md` (this section only) |
+| CA4 | Re-read current official Week 11 sources and publish two non-fabricated freshness blockers: (1) the live IND–HOU final is not yet in the result feed's dated snapshot, and (2) the availability workflow has not yet demonstrated a green post-fix run | **done** (published as F-2026-11-20-07; F-06 is reserved by PR #144) | `arena/60abb77f-korea1` | `data/integration/flagged_2026_11_20.csv` (append-only), `assets/data/flagged_2026_11_20.csv` (generated mirror), `pipeline/render_site.py` (F-2026-11-19-10 update only), `Makefile` (one mirror-copy step only), `tests/test_finals_2026_11_20.py` (freshness-flag assertions only), generated `flagged.html`, `assets/data/verification_report.csv`, `data/processed/verification_report.csv`, `INTEGRATION_VERIFICATION.md` (dated append only), `COORDINATION.md` (this section only) |
+
+### CA4 published — two freshness limitations, and an id overlap resolved by renumbering
+
+| Id | Severity / state | What it says | Official source |
+|---|---|---|---|
+| F-2026-11-20-07 | High · current official final absent from retained feed | `data/processed/results_feed.csv` still prints `2026_11_IND_HOU` as `SCHEDULED` with blank scores (its `source_kind` says "fetched 2026-11-14 for 2004 week 1"). A 2026-11-20 read of the official Week 11 scores page and the Colts–Texans Game Center shows Indianapolis 3, Houston 26, Final. That read returned no HTTP timestamp and no raw bytes, so it is not an immutable capture; the committed Game Center capture (`retrieved_utc` 2026-11-19T22:47:16Z) predates the final and its saved text has no score. No result or settlement table was changed. | [Colts at Texans Game Center](https://www.nfl.com/games/colts-at-texans-2026-reg-11) |
+| F-2026-11-19-10 (updated in `flagged.html`) | High · repair committed; scheduled-run confirmation pending | The last committed availability capture is still 2026-11-18T04:24:05Z and the tracker failed at its rebuild step in six runs (44380205336, 44445480402, 44456709590, 44598915891, 44660139794, 44671317858). Check-run metadata confirms the step; the Actions log host is unreachable from this sandbox, so the exact exception is not asserted. The separate empty-output failure is visible in run 44611301993's check-run trace (`render_live._read` → `EmptyDataError: No columns to parse from file` on `internal_consistency.csv`). Recovery is not claimed until a post-merge scheduled run passes. | [Official Week 11 injury report](https://www.nfl.com/injuries/league/2026/reg11) |
+
+**Id overlap, resolved by renumbering rather than by editing another session's row.** PR
+[#144](https://github.com/karagemop466-tech/Korea1/pull/144) (`arena/aaf1807d-korea1`, open,
+`MERGEABLE`) carries the same zero-row availability repair and publishes its own
+`F-2026-11-20-06` prose finding. This session first appended its result-feed finding under that same
+id; two different findings under one identifier is exactly the referent confusion this project flags
+elsewhere, so the row was renumbered to **F-2026-11-20-07** with an explicit note in the row text.
+Nothing in #144 was touched. **If #144 is merged first, #144's F-06 prose and this F-07 row coexist
+without a collision; if #144 is closed, F-06 is simply unused.**
+
+**Cross-scope request (logged, not acted on):** the availability repair exists twice (this branch's
+`CONSISTENCY_COLS` + zero-byte-tolerant `_read`, and #144's nine-column writer plus
+legacy-empty tolerance). The merged tree needs one of them; whichever lands second should drop its
+duplicate writer change and keep only its tests. This session's slice does not edit
+`.github/workflows/verify.yml`, `tests/check_rebuild.py` or `tests/test_rebuild_tolerance.py`,
+which #144 also claims.
+
+**Verification on this rebased tree (`dd5ba1d` + this branch):** `make build` exit 0 —
+0 failing checks, 55 canonical pages / 10,300 rows, 65 pages link-checked; `make test`
+**471 passed, 1 skipped**; `tests/check_rebuild.py` → **0 changed files, no other tracked file
+changed** (a byte-level fixed point); `git diff --check` clean.

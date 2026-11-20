@@ -200,7 +200,7 @@ def test_week11_result_gap_stays_blank_and_is_flagged_until_captured():
 
     flags = pd.read_csv(ROOT / "data/integration/flagged_2026_11_20.csv", dtype=str,
                         keep_default_na=False)
-    finding = flags[flags.id == "F-2026-11-20-06"].iloc[0]
+    finding = flags[flags.id == "F-2026-11-20-07"].iloc[0]
     assert finding.source_url == "https://www.nfl.com/games/colts-at-texans-2026-reg-11"
     assert "Indianapolis 3, Houston 26, Final" in finding.finding
     assert "post-game score-page capture or hash" in finding.finding
@@ -208,7 +208,7 @@ def test_week11_result_gap_stays_blank_and_is_flagged_until_captured():
            (ROOT / "data/integration/flagged_2026_11_20.csv").read_bytes()
 
     page = (ROOT / "flagged.html").read_text(encoding="utf-8")
-    assert "F-2026-11-20-06" in page
+    assert "F-2026-11-20-07" in page
     assert finding.source_url in page
 
 
