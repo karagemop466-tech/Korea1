@@ -5140,3 +5140,14 @@ Commit and push of this claim happen before any file in scope is changed.
 - **Why the first build attempts did not converge.** The registers count tracked files and sizes, so an
   untracked new file changes them. Converged only after the new files were tracked and committed. The same
   pattern is in the CI workflow's two-pass design.
+
+---
+
+## Session `arena/60abb77f-korea1` — 2026-11-20: post-#140 acceptance audit (claim)
+
+**Board read first.** This session is limited to independent acceptance verification and a dated record; it does not take over any active model, data-acquisition, workflow, or page-generation scope. The base is `bced388a2a4d02d960cb3ff7ce3a2474493b6918` (PR #140), with no local changes at claim time.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CA1 | Claim and session log | **in progress** | `arena/60abb77f-korea1` | `COORDINATION.md` (this section only) |
+| CA2 | Independent post-#140 acceptance audit: reproducible build/tests/fixed-point check; official-source spot checks; confirm current Pages deployment; record results, remaining blockers, and source links without modifying another session's scope | **in progress** | `arena/60abb77f-korea1` | `INTEGRATION_VERIFICATION.md` (dated append only), `COORDINATION.md` (this section only) |
