@@ -5151,3 +5151,10 @@ Commit and push of this claim happen before any file in scope is changed.
 |---|------|--------|--------------------|-----------|
 | CA1 | Claim and session log | **in progress** | `arena/60abb77f-korea1` | `COORDINATION.md` (this section only) |
 | CA2 | Independent post-#140 acceptance audit: reproducible build/tests/fixed-point check; official-source spot checks; confirm current Pages deployment; record results, remaining blockers, and source links without modifying another session's scope | **in progress** | `arena/60abb77f-korea1` | `INTEGRATION_VERIFICATION.md` (dated append only), `COORDINATION.md` (this section only) |
+### CA3 — stale-claim handoff for the availability rebuild blocker (2026-11-20T05:08Z)
+
+The open PR [#132](https://github.com/karagemop466-tech/Korea1/pull/132), task W1, has not received a commit since `2026-11-19T21:59:32Z` (head `875bfcf5`); this handoff is recorded over seven hours later, beyond the board's 60-minute stale-claim threshold. Main's scheduled availability runs [#44660139794](https://github.com/karagemop466-tech/Korea1/actions/runs/44660139794) (`02:21Z`) and [#44671317858](https://github.com/karagemop466-tech/Korea1/actions/runs/44671317858) (`03:59Z`) both failed at **“Rebuild every table and page built from the captures”**. The step failure is visible from the GitHub Actions API; the log host is not reachable from this sandbox. PR #132 already contains a measured fix for the zero-row `internal_consistency.csv` case, but it is still `DIRTY` against main. This session takes over only that remaining zero-row/schema-safety slice, not the rest of PR #132's wider scope; no other source/data or navigation files will be edited by this slice.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| CA3 | Port and test the zero-row availability-verification CSV fix so a clean official capture cannot abort `render_site`; independently test empty, absent and populated CSV reads | **in progress** | `arena/60abb77f-korea1` | `pipeline/live_verify.py`, `pipeline/render_live.py`, `tests/test_live_verify.py`, `COORDINATION.md` (this section only) |
