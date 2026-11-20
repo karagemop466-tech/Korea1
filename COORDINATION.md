@@ -5140,3 +5140,18 @@ Commit and push of this claim happen before any file in scope is changed.
 - **Why the first build attempts did not converge.** The registers count tracked files and sizes, so an
   untracked new file changes them. Converged only after the new files were tracked and committed. The same
   pattern is in the CI workflow's two-pass design.
+
+### 2026-11-20 — PR, merge and deployment record — `arena/46f0a137-korea1`
+
+- **PR:** https://github.com/karagemop466-tech/Korea1/pull/141 (base `main`, head `arena/46f0a137-korea1`)
+- **Merge:** `gh pr merge 141 --merge` succeeded at 2026-11-20T06:18:39Z. Merge commit `51e2eb5`.
+  The first merge attempt was refused with "merge conflicts" because `main` had moved (PR #148, a
+  COORDINATION.md-only change). The branch was re-synced onto `main` (both sections kept), regenerated, and
+  re-verified; the second attempt merged.
+- **CI:** `verify` passed on the final head (`26ad3b8`, run 44686092644; 6m19s). Earlier heads failed
+  `tests/check_rebuild.py` in CI (the fixed-point gate, see the rebase entry above); main's gate change in #144
+  was included in the final rebase.
+- **Deployment:** GitHub Pages (legacy, branch `main` `/`) status `built` for commit `51e2eb5` at 2026-11-20T06:19:07Z.
+  Live page read: https://karagemop466-tech.github.io/Korea1/team-view.html (title, KPI cards and rows confirmed).
+- **Open after merge (not done here):** repoint the older injury pages to the 2026-11-18 capture (irregularity 1);
+  the rest of the standing brief (see the P2 entry above).
