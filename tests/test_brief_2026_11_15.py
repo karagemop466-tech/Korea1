@@ -187,18 +187,39 @@ def test_competitive_leaderboards_withhold_backtest_values_and_show_two_sided_cr
     assert "PAPER" in staking_table
 
 
-def test_2026_11_15_executive_summaries_publish_current_status_and_blockers():
+def test_2026_11_20_executive_summaries_publish_dated_evidence_and_blockers():
     import render_site as rs
     import render_summary as summary
 
-    current = summary._current_status_2026_11_15_block()
-    assert "Current status — 2026-11-15" in current
+    current = summary._current_status_2026_11_20_block()
+    assert "Current evidence status — 2026-11-20" in current
+    assert "brief tracker is dated 2026-11-15" in current
+    assert "official schedule/Game Book capture is dated 2026-11-19" in current
     assert "B6 BLOCKED" in current
-    assert "HOU depth chart (0 rows)" in current
+    assert "1714 rows" in current
+    assert "356 chart-first starters confirmed" in current
+    assert "75 different starters" in current
+    assert "240 co-starter slots" in current
+    assert "1043 without Game Book confirmation" in current
+    assert "2 schedule documents did not match" in current
+    assert "unconfirmed does not mean healthy" in current
     assert "F-38 competitive-display policy" in current
     assert "historical result values are omitted" in current
 
     executive = rs.build_executive(rs.load())
-    assert "Current status — 2026-11-15" in executive
+    assert "Current evidence status — 2026-11-20" in executive
     assert "F-38 competitive-display policy" in executive
-    assert "HOU depth chart (0 rows)" in executive
+    assert "1714 rows" in executive
+    assert "HOU depth chart (0 rows)" not in executive
+
+    gamebooks = summary._gamebooks_block()
+    assert "356 chart-first starters are confirmed" in gamebooks
+    assert "75 different starters appear in the Game Book" in gamebooks
+    assert "240 positions have club-named co-starters" in gamebooks
+    assert "1043 rows lack Game Book confirmation" in gamebooks
+    assert "actual side is blank on every row" not in gamebooks
+
+    markdown = (summary.ROOT / "EXECUTIVE_SUMMARY.md").read_text(encoding="utf-8")
+    assert "Evidence snapshot assembled: 2026-11-20" in markdown
+    assert "not a live feed" in markdown
+    assert "actual side is blank on every row" not in markdown

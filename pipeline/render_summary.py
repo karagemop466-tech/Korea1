@@ -202,8 +202,8 @@ def _cs5_block():
     A('provenance) still fails for every candidate.')
     A('')
     return '\n'.join(L)
-def _current_status_2026_11_15_block():
-    """Current decision snapshot from the tracker and gate/forward registers; no values are inferred."""
+def _current_status_2026_11_20_block():
+    """Current evidence snapshot, with each source's own vintage made explicit."""
     import csv
 
     def rows(path):
@@ -215,8 +215,20 @@ def _current_status_2026_11_15_block():
     demotion = rows(data / 'governance' / 'demotion_register.csv')
     picks = rows(data / 'forward' / 'graded_picks.csv')
     scoreboard = rows(data / 'forward' / 'scoreboard.csv')
+    availability = rows(PROC / 'availability_graph.csv')
+    official_docs = rows(PROC / 'official_documents.csv')
     if not (gates and brief and demotion):
         return ''
+
+    # Availability outcomes and capture time are taken from the committed official-source
+    # evidence layer. The older brief tracker remains explicitly dated; it is not silently
+    # presented as a live status feed.
+    latest_capture = max((r.get('retrieved_utc', '') for r in official_docs), default='')
+    outcome_counts = {}
+    for row in availability:
+        label = row.get('outcome', '').split(' — ', 1)[0]
+        outcome_counts[label] = outcome_counts.get(label, 0) + 1
+    schedule_drift = sum(1 for row in official_docs if row.get('week_matches_url') == 'False')
 
     def truth(value):
         return str(value).strip().lower() in {'true', '1', 'yes'}
@@ -257,9 +269,9 @@ def _current_status_2026_11_15_block():
          'Official outcomes are used for settlement; open tickets remain open. The available prospective record does not validate a strategy or establish a repeatable edge.',
          '[Forward ledger](forward.html) · [NFL Week 10 scores](https://www.nfl.com/scores/2026/week-10)'),
         ('Injury, roster and depth blockers',
-         f'B1 {b1.get("status", "not recorded")}; B7 {b7.get("status", "not recorded")}.',
-         f'{cell(b1.get("blocking_gate", ""))}; {cell(b7.get("blocking_gate", ""))}. Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified.',
-         '[Brief tracker](brief-2026-11-15.html) · [NFL injury report](https://www.nfl.com/injuries/league/2026/reg10) · '
+         f'B1/B7 remain {b1.get("status", "not recorded")}/{b7.get("status", "not recorded")} in the dated 2026-11-15 brief; official game evidence is captured through {latest_capture or "an unrecorded date"}.',
+         f'Availability graph: {len(availability)} rows; {outcome_counts.get("CONFIRMED", 0)} chart-first starters confirmed, {outcome_counts.get("REPLACEMENT", 0)} different starters, {outcome_counts.get("CO-STARTERS", 0)} co-starter slots, and {outcome_counts.get("NOT CONFIRMED", 0)} without Game Book confirmation. {schedule_drift} schedule documents did not match the requested week. These are dated partial captures, not complete 32-team historical coverage; unavailable or unconfirmed does not mean healthy.',
+         '[Dated brief tracker](brief-2026-11-15.html) · [NFL schedule and game-centre evidence](gamecentre.html) · [NFL injury report](https://www.nfl.com/injuries/) · '
          '[NFL reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11)'),
         ('Parlay and player-prop priceability',
          'UNVERIFIED — no executable price evidence.',
@@ -273,11 +285,9 @@ def _current_status_2026_11_15_block():
     ]
 
     lines = [
-        '## Current status — 2026-11-15',
+        '## Current evidence status — 2026-11-20',
         '',
-        'This dated snapshot supersedes older status notes below. Counts come from the committed gate, '
-        'forward-ledger, demotion and brief registers. Unverified items remain flagged; no missing evidence '
-        'is filled in.',
+        'Snapshot assembled 2026-11-20 from committed records. Source vintages differ by area: the brief tracker is dated 2026-11-15, the official schedule/Game Book capture is dated 2026-11-19, and Week 10 finals were certified 2026-11-20. This is not a live feed. Counts come from the committed gate, forward-ledger, demotion and evidence registers; unverified items remain flagged and missing evidence is not filled in.',
         '',
         '| Area | Current status | Decision meaning / blocker | Sources |',
         '|---|---|---|---|',
@@ -395,6 +405,8 @@ def _gamebooks_block():
     n_centres = int((fx.game_centre_captured.astype(str) == 'YES').sum()) if len(fx) else 0
     confirmed = int(graph.outcome.astype(str).str.startswith('CONFIRMED').sum()) if len(graph) else 0
     co = int(graph.outcome.astype(str).str.startswith('CO-STARTERS').sum()) if len(graph) else 0
+    replacements = int(graph.outcome.astype(str).str.startswith('REPLACEMENT').sum()) if len(graph) else 0
+    unconfirmed = int(graph.outcome.astype(str).str.startswith('NOT CONFIRMED').sum()) if len(graph) else 0
     n_inact = len(inact)
     L = []
     A = L.append
@@ -412,7 +424,7 @@ def _gamebooks_block():
     A('| Official documents captured | ' + str(n_docs) + ' | each with its URL, HTTP status, byte count and SHA-256 |')
     A('| Fixtures published from the league\'s schedule page | ' + str(n_fx) + ' | every column printed by the league |')
     A('| Availability-graph rows (expected starter) | ' + str(n_graph) + ' | the club\'s own depth chart, with its capture time |')
-    A('| Confirmed starters | ' + str(confirmed) + ' | needs an official Game Book |')
+    A('| Chart-first starters listed in the official Game Book | ' + str(confirmed) + ' | expected/actual match; not a player impact estimate |')
     A('| Co-starter positions | ' + str(co) + ' | the club named more than one first player; none is chosen |')
     A('| Game centres captured | ' + str(n_centres) + ' | of the fixtures above |')
     A('| Game Books captured | ' + str(n_books) + ' | of the fixtures above |')
@@ -425,9 +437,8 @@ def _gamebooks_block():
         A('publishes the requested week, the published week and the disagreement, and the fixture rows')
         A('carry both. This is recorded as an open irregularity, not corrected by assumption.')
         A('')
-    A('The page is [Official Game Book evidence](gamebooks.html). The expectation side of the')
-    A('availability graph is complete for the fixtures read; the actual side is blank on every row')
-    A('because no official Game Book has been captured yet, and each such row says so.')
+    A('The page is [Official Game Book evidence](gamebooks.html). The availability graph keeps expected')
+    A('and actual starters separate and leaves unconfirmed rows explicit. At this capture, ' + str(confirmed) + ' chart-first starters are confirmed, ' + str(replacements) + ' different starters appear in the Game Book, ' + str(co) + ' positions have club-named co-starters, and ' + str(unconfirmed) + ' rows lack Game Book confirmation. These counts do not establish model impact or full-league coverage.')
     A('')
     return '\n'.join(L)
 
@@ -537,12 +548,12 @@ def main():
     _b = _bf_block()
     _c = _cr1_block()
     _cs5 = _cs5_block()
-    _q2 = _current_status_2026_11_15_block()
+    _q2 = _current_status_2026_11_20_block()
     _gb = _gamebooks_block()
     _w1 = _w1_block()
     text=f'''# Executive summary — NFL Line Lab
 
-Current status refreshed: 2026-11-15. Pinned research inputs: `{src['upstream']['commit_sha']}`.
+Evidence snapshot assembled: 2026-11-20. Individual source vintages and capture dates are stated by section; this is not a live feed. Pinned research inputs: `{src['upstream']['commit_sha']}`.
 
 ## Decision
 

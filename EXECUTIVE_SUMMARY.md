@@ -1,6 +1,6 @@
 # Executive summary — NFL Line Lab
 
-Current status refreshed: 2026-11-15. Pinned research inputs: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
+Evidence snapshot assembled: 2026-11-20. Individual source vintages and capture dates are stated by section; this is not a live feed. Pinned research inputs: `a270278f3ac4e937295fe6a27814b3c4a2b62645`.
 
 ## Decision
 
@@ -12,16 +12,16 @@ strategies pass all eight final gates.** No prize, capital allocation or profita
 “Unverified” is not a finding of zero edge. It means the evidence cannot support the stronger claim.
 Statistical corrections reduce false discoveries; they cannot eliminate luck or guarantee future returns.
 
-## Current status — 2026-11-15
+## Current evidence status — 2026-11-20
 
-This dated snapshot supersedes older status notes below. Counts come from the committed gate, forward-ledger, demotion and brief registers. Unverified items remain flagged; no missing evidence is filled in.
+Snapshot assembled 2026-11-20 from committed records. Source vintages differ by area: the brief tracker is dated 2026-11-15, the official schedule/Game Book capture is dated 2026-11-19, and Week 10 finals were certified 2026-11-20. This is not a live feed. Counts come from the committed gate, forward-ledger, demotion and evidence registers; unverified items remain flagged and missing evidence is not filled in.
 
 | Area | Current status | Decision meaning / blocker | Sources |
 |---|---|---|---|
 | Signal qualification | 0 of 18 pass the registered signal-gate set; 0 pass all eight validation gates. | Signal qualification is not a staking status or a profitability claim. No candidate is validated and no reward is supported. | [Competition](competition.html) · [validation gates](validation.html) · [White (2000)](https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping) |
 | Staking and quote provenance | 0 LIVE · 18 PAPER · B6 BLOCKED · 18 fail quote-provenance G1. | No authenticated, timestamped executable bookmaker quote archive is recorded. Signal qualification and paper/live state are shown separately; no live stake or reward is authorized. | [Price archive](price-archive.html) · [paper/live register](assets/data/demotion_register.csv) · [NFL scores (settlement context)](https://www.nfl.com/scores/) |
 | Prospective results | 65 official-settled · 0 open · 0 validated | Official outcomes are used for settlement; open tickets remain open. The available prospective record does not validate a strategy or establish a repeatable edge. | [Forward ledger](forward.html) · [NFL Week 10 scores](https://www.nfl.com/scores/2026/week-10) |
-| Injury, roster and depth blockers | B1 PARTLY DONE; B7 PARTLY DONE. | Reserve-list live capture (CI) has not run; chunk 0 re-read is partial in this session; Reserve-list CI run; HOU depth chart (0 rows); 2026-11-12 coverage gap cause (unverified). Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified. | [Brief tracker](brief-2026-11-15.html) · [NFL injury report](https://www.nfl.com/injuries/league/2026/reg10) · [NFL reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11) |
+| Injury, roster and depth blockers | B1/B7 remain PARTLY DONE/PARTLY DONE in the dated 2026-11-15 brief; official game evidence is captured through 2026-11-19T22:47:16Z. | Availability graph: 1714 rows; 356 chart-first starters confirmed, 75 different starters, 240 co-starter slots, and 1043 without Game Book confirmation. 2 schedule documents did not match the requested week. These are dated partial captures, not complete 32-team historical coverage; unavailable or unconfirmed does not mean healthy. | [Dated brief tracker](brief-2026-11-15.html) · [NFL schedule and game-centre evidence](gamecentre.html) · [NFL injury report](https://www.nfl.com/injuries/) · [NFL reserve list](https://www.nfl.com/transactions/league/reserve-list/2026/11) |
 | Parlay and player-prop priceability | UNVERIFIED — no executable price evidence. | Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established. | [Props](props.html) · [correlation rules](correlations.html) · [NFL injuries](https://www.nfl.com/injuries/) |
 | F-38 competitive-display policy | Implemented in the 2026-11-15 update. | Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This is a display-policy change, not validation. | [Strategy leaderboard](strategies.html) · [competition standings](competition.html) · [frozen thresholds](assets/data/validation_config.json) · [demotion register](assets/data/demotion_register.csv) |
 
@@ -40,7 +40,7 @@ records already cite.
 | Official documents captured | 76 | each with its URL, HTTP status, byte count and SHA-256 |
 | Fixtures published from the league's schedule page | 42 | every column printed by the league |
 | Availability-graph rows (expected starter) | 1714 | the club's own depth chart, with its capture time |
-| Confirmed starters | 356 | needs an official Game Book |
+| Chart-first starters listed in the official Game Book | 356 | expected/actual match; not a player impact estimate |
 | Co-starter positions | 240 | the club named more than one first player; none is chosen |
 | Game centres captured | 42 | of the fixtures above |
 | Game Books captured | 29 | of the fixtures above |
@@ -52,9 +52,8 @@ and was served the same Week 11 document for both (identical SHA-256). The docum
 publishes the requested week, the published week and the disagreement, and the fixture rows
 carry both. This is recorded as an open irregularity, not corrected by assumption.
 
-The page is [Official Game Book evidence](gamebooks.html). The expectation side of the
-availability graph is complete for the fixtures read; the actual side is blank on every row
-because no official Game Book has been captured yet, and each such row says so.
+The page is [Official Game Book evidence](gamebooks.html). The availability graph keeps expected
+and actual starters separate and leaves unconfirmed rows explicit. At this capture, 356 chart-first starters are confirmed, 75 different starters appear in the Game Book, 240 positions have club-named co-starters, and 1043 rows lack Game Book confirmation. These counts do not establish model impact or full-league coverage.
 
 
 ## Update - 2026-11-19 (`arena/35c0fd93-korea1`): the Week-11 rollover repair (W1)
