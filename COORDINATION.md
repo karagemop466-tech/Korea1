@@ -4845,6 +4845,14 @@ head green: 44639129666/44639136423). **Pages:** `pages build and deployment` fo
 (run 44639843729), Pages API `status: built`, source `main:/`, and a live read-back of
 `https://karagemop466-tech.github.io/Korea1/` serves the dashboard (leaderboard, gates, brief blocks all
 present). **Post-merge `main` verify for `b65b387`: success** (run 44639845002).
+**Post-merge record PR #138 merged as `fe7282d`; its push verify flaked** (run 44641978587: raw
+`git diff` float drift in `data/gates|integration|results|lineups/*.csv` on ONE runner — the identical
+tree had passed as the PR head (44639129666/44639136423) and at `b65b387` (44639845002), and
+`check_rebuild`'s numeric tolerance stayed green; GitHub refuses `gh run rerun` on this workflow with
+"workflow file may be broken"). Re-triggered with an empty commit `a066848` (tree unchanged) →
+**Verify success + Pages success** (runs 44643611846 / 44643610781), Pages API `built`. This is the
+residual cross-machine last-bit class PR #133 reduced but cannot fully remove (its pins fix thread count
+and hash seed, not AVX dispatch); it self-heals on re-trigger and never affected the published site.
 
 **Not claimed / not touched:** the W1 repair code itself (merged in PR #128, `arena/35c0fd93-korea1`); the
 availability pin-proofing branch `arena/3e95bcb7-korea1` (open, its own Verify runs); PR #127 (W10S) and
