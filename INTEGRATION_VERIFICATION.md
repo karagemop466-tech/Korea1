@@ -79,13 +79,13 @@ No model, price, verdict or settlement value was changed.
 | Command | Result |
 |---|---|
 | `make build` | exit 0 · 0 failing checks · 55 canonical pages, 10,300 rows, every row with an official/primary reference · 65 pages link-checked |
-| `make test` | 471 passed, 1 skipped |
+| `make test` | **488 passed, 1 skipped** |
 | `tests/check_rebuild.py` | 0 changed files, no other tracked file changed — the committed tree is a fixed point of its own generators |
 | `git diff --check` | clean |
 
-Readers of earlier records should note the count moved from 458 to 471 tests because `main`
-advanced by four merged sessions (#142 DV2, #145 BQ1, #146 and #144's siblings) while this branch
-was open; the branch's own new tests are the four in §4.
+The test count is larger than the 458 this session started from because `main` advanced by several
+merged sessions (#142 DV2, #145 BQ1, #144 AAF1+AAF2, #141 P1+P2, #146) while this branch was open;
+the branch's own surviving tests are the two in §4.
 
 ## 2. What was repaired — the empty-output failure (CA3)
 
@@ -97,14 +97,20 @@ Run [44611301993](https://github.com/karagemop466-tech/Korea1/actions/runs/44611
 
 The cause is measured, not inferred: a capture with **zero** consistency findings builds
 `pd.DataFrame([])`, which serializes to a 0-byte CSV, and `pandas.read_csv` cannot parse a file
-with no columns. Two independent repairs are in the repository for it:
+with no columns.
 
-| Repair | Where | Behaviour |
-|---|---|---|
-| Stable output schema | `pipeline/live_verify.py` | `CONSISTENCY_COLS` (nine columns) is passed to the DataFrame constructor, so a zero-issue run writes a header-only CSV instead of 0 bytes |
-| Tolerant reader | `pipeline/render_live.py` | `_read` returns an empty frame for an absent **or** 0-byte file; every other read path is unchanged |
+**Status of the repair on this branch: dropped as a duplicate.** This session implemented the same
+two-part fix independently (`CONSISTENCY_COLS` in the writer, a 0-byte-tolerant reader) and carried
+it until `main` advanced. Sibling PR [#144](https://github.com/karagemop466-tech/Korea1/pull/144)
+merged first as `e119778` with an equivalent repair — `INTERNAL_CONSISTENCY_COLUMNS` in
+`pipeline/live_verify.py` and an `allow_empty=True` reader in `pipeline/render_live.py` — plus
+equivalent regression tests (`test_internal_consistency_emits_a_header_when_there_are_no_findings`,
+`test_render_live_reader_accepts_legacy_empty_consistency_csv_only`). Rather than leave two
+implementations of one defect on the tree, this branch was rebased and its duplicate code change and
+duplicate tests were **dropped**; the surviving behaviour is `main`'s. That is the "whichever lands
+second drops its duplicate" rule this session logged, applied to itself.
 
-Both are green and both are unit-tested (§4). **The tracker is not called recovered.** A repair to a
+**The tracker is not called recovered.** A repair to a
 crash is not evidence that the scheduled workflow now works end to end, and no post-fix scheduled run
 had completed at the time of this record: the last six availability runs
 (44380205336, 44445480402, 44456709590, 44598915891, 44660139794, 44671317858) all failed at
@@ -143,12 +149,13 @@ were read (e.g. IND Charvarius Ward CB Knee Out; HOU Danielle Hunter DE Hamstrin
 verifies the **page the tracker reads**, not the tracker's output — the last committed capture is
 still the 2026-11-18 one.
 
-## 4. Tests added or changed on this branch
+## 4. Tests contributed by this branch (surviving)
 
 | Test | What it locks |
 |---|---|
-| `test_zero_issue_consistency_csv_keeps_a_header` | A zero-issue run writes a header and the nine declared columns; the file round-trips as an empty frame with the right schema |
-| `test_render_live_reader_accepts_empty_absent_and_populated_csv` | Absent, 0-byte and populated files all read without raising; the populated case keeps its own columns |
+Both of this session's zero-row tests were dropped with the duplicate repair (see §2); `main`'s
+equivalent tests for that behaviour were already present.
+
 | `test_week11_result_gap_stays_blank_and_is_flagged_until_captured` | The feed row is still `SCHEDULED`/blank, neither `verified_results.csv` nor `official_results.csv` has acquired the game, the flag exists with that official URL, the published mirror equals the canonical register, and the id renders on `flagged.html` |
 | `test_availability_tracker_flag_does_not_claim_a_green_recovery_run` | The published availability finding still carries the six failed run ids, the stale capture time, the "exact exception is not asserted" caveat, and no recovery claim |
 
@@ -160,9 +167,9 @@ still the 2026-11-18 one.
   compare the two documents, then promote the agreed result.
 - **F-2026-11-20-06** — reserved by sibling PR #144 for its own repository-process finding. This
   session's finding was renumbered to -07 so one id cannot mean two things on the merged page.
-- **Duplicate repair overlap** — the same zero-row defect is fixed on this branch and in PR #144.
-  One copy should be dropped when the second lands; logged as a cross-scope request rather than
-  resolved unilaterally.
+- **Duplicate repair overlap — resolved.** PR #144 merged the zero-row repair first; this branch
+  dropped its duplicate implementation and duplicate tests during the rebase and keeps only the
+  findings work. No second copy of the fix remains on the tree.
 
 ## 6. Research verdict (unchanged)
 
@@ -172,10 +179,10 @@ number on the leaderboard changed in this session.
 
 ## 7. Conclusion
 
-- The site on this branch builds with 0 failing checks, 471 passing tests, and a verified
+- The site on this branch builds with 0 failing checks, 488 passing tests, and a verified
   byte-level fixed point.
-- The zero-row availability crash has a measured cause and a tested repair; the **scheduled
-  workflow itself is still red** and is published as such.
+- The zero-row availability crash has a measured cause and a tested repair (merged in PR #144);
+  the **scheduled workflow itself is still red** and is published as such.
 - The one current official final that the retained feed does not carry is published, with its
   official source, and left blank in every table rather than promoted from a live read.
 - Ready to publish as a record of limitations. It does **not** claim the tracker is fixed.

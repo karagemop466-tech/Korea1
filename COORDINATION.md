@@ -5168,22 +5168,32 @@ The open PR [#132](https://github.com/karagemop466-tech/Korea1/pull/132), task W
 | F-2026-11-19-10 (updated in `flagged.html`) | High · repair committed; scheduled-run confirmation pending | The last committed availability capture is still 2026-11-18T04:24:05Z and the tracker failed at its rebuild step in six runs (44380205336, 44445480402, 44456709590, 44598915891, 44660139794, 44671317858). Check-run metadata confirms the step; the Actions log host is unreachable from this sandbox, so the exact exception is not asserted. The separate empty-output failure is visible in run 44611301993's check-run trace (`render_live._read` → `EmptyDataError: No columns to parse from file` on `internal_consistency.csv`). Recovery is not claimed until a post-merge scheduled run passes. | [Official Week 11 injury report](https://www.nfl.com/injuries/league/2026/reg11) |
 
 **Id overlap, resolved by renumbering rather than by editing another session's row.** PR
-[#144](https://github.com/karagemop466-tech/Korea1/pull/144) (`arena/aaf1807d-korea1`, open,
-`MERGEABLE`) carries the same zero-row availability repair and publishes its own
-`F-2026-11-20-06` prose finding. This session first appended its result-feed finding under that same
-id; two different findings under one identifier is exactly the referent confusion this project flags
-elsewhere, so the row was renumbered to **F-2026-11-20-07** with an explicit note in the row text.
-Nothing in #144 was touched. **If #144 is merged first, #144's F-06 prose and this F-07 row coexist
-without a collision; if #144 is closed, F-06 is simply unused.**
+[#144](https://github.com/karagemop466-tech/Korea1/pull/144) (`arena/aaf1807d-korea1`, merged
+2026-11-20T05:49:57Z as `e119778`) carries the same zero-row availability repair and publishes its
+own `F-2026-11-20-06` prose finding. This session first appended its result-feed finding under that
+same id; two different findings under one identifier is exactly the referent confusion this project
+flags elsewhere, so the row was renumbered to **F-2026-11-20-07** with an explicit note in the row
+text. Nothing in #144 was touched.
 
-**Cross-scope request (logged, not acted on):** the availability repair exists twice (this branch's
-`CONSISTENCY_COLS` + zero-byte-tolerant `_read`, and #144's nine-column writer plus
-legacy-empty tolerance). The merged tree needs one of them; whichever lands second should drop its
-duplicate writer change and keep only its tests. This session's slice does not edit
-`.github/workflows/verify.yml`, `tests/check_rebuild.py` or `tests/test_rebuild_tolerance.py`,
-which #144 also claims.
+**CA3 closed as superseded — the duplicate repair was dropped, not stacked.** #144 merged first
+with an equivalent fix (`INTERNAL_CONSISTENCY_COLUMNS` in `pipeline/live_verify.py`, an
+`allow_empty=True` reader in `pipeline/render_live.py`, and its own zero-row tests). During the
+rebase onto `51e2eb5` (PR #141) this branch therefore **removed its duplicate code change and its
+duplicate tests** rather than leave two implementations of one defect. The surviving behaviour is
+`main`'s. This is the "whichever lands second drops its duplicate" rule this session logged,
+applied to itself. This session does not edit `.github/workflows/verify.yml`,
+`tests/check_rebuild.py` or `tests/test_rebuild_tolerance.py`, which #144 owns.
 
-**Verification on this rebased tree (`dd5ba1d` + this branch):** `make build` exit 0 —
-0 failing checks, 55 canonical pages / 10,300 rows, 65 pages link-checked; `make test`
-**471 passed, 1 skipped**; `tests/check_rebuild.py` → **0 changed files, no other tracked file
-changed** (a byte-level fixed point); `git diff --check` clean.
+**Also encountered: the documented cross-machine float flake.** The first Verify run on this
+branch ([44683860482](https://github.com/karagemop466-tech/Korea1/actions/runs/44683860482)) failed
+`check_rebuild.py` naming exactly the nine float-heavy CSVs already recorded on the board
+(`data/gates|integration/{origination_accuracy,origination_order,signal_deciles}.csv`,
+`data/{integration,results}/verified_results.csv`, `data/lineups/pbp_backup_impact.csv`). A clean
+clone of the same commit, built twice with the Makefile's pinned threads, reproduced the committed
+tree **byte for byte** with `git status` clean — so this was runner arithmetic, not a content
+change. #144's tolerance-aware gate has since merged and is what the later runs exercise.
+
+**Verification after the final rebase onto `51e2eb5` (PR #141):** `make build` exit 0 — 0 failing
+checks, 55 canonical pages / 10,311 rows, 65 pages link-checked; `make test` **488 passed,
+1 skipped**; `tests/check_rebuild.py` → **0 changed files, no other tracked file changed** (a
+byte-level fixed point); `git diff --check` clean.
