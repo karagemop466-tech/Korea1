@@ -5048,3 +5048,12 @@ research number was moved by any of these three PRs.
 **Verification on the merged tree.** `make build` passed with zero failing checks; strict source verification covered 55 canonical pages / 10,300 rows and internal-link verification covered 65 pages. `make test` passed **476 tests, 1 skipped**. The focused AAF2 module passed **6 tests** and the AAF1 live-verification module passed **21 tests**. A fresh build followed by `tests/check_rebuild.py` on the clean committed tree reported **0 changed files** (`rtol=1e-8`, `atol=1e-10`); `git diff --check` passed. The BQ1 module was also run separately (6 passed); its absence from the explicit `Makefile` test command remains logged as cross-scope and was not changed here.
 
 **Irregularity and scope.** The initial Verify failure [44680104208](https://github.com/karagemop466-tech/Korea1/actions/runs/44680104208) named the nine out-of-scope CSVs and is disclosed on `flagged.html` as F-2026-11-20-06. The repair restricts tolerance to calculated float columns in those nine outputs; every other tracked-file change, schema/row-count change, and nonnumeric/value change remains fail-loud. No NFL data, model, price, outcome or strategy result was modified. PR #132's unrelated work and the separate BQ1 files remain untouched.
+
+## Session `arena/b0b00bbe-korea1` — executive-summary freshness and decision-status audit (claim, 2026-11-20)
+
+The repository board was read before work. The current branch is fixed by Arena as `arena/b0b00bbe-korea1`; this session will not switch branches. Existing claims that own unrelated capture, model, navigation, data, and Pages files are not touched.
+
+| # | Task | Status | Owner (session ID) | File scope |
+|---|------|--------|--------------------|-----------|
+| ES1 | Reconcile the executive-summary headline/status block with the latest committed evidence; distinguish current verified outcomes from stale dated injury/register snapshots; add regression coverage | **in progress** | `arena/b0b00bbe-korea1` | `pipeline/render_summary.py` (summary block only), generated `EXECUTIVE_SUMMARY.md` + `executive-summary.html`, new `tests/test_summary_freshness.py`, this session's append-only `COORDINATION.md` section |
+| ES2 | Verify sources/build/tests, final integration PR → `main`, merge without waiting, confirm Pages deploy, record PR and deployment | **pending** | `arena/b0b00bbe-korea1` | `COORDINATION.md` (own section only), branch `arena/b0b00bbe-korea1` → `main` |
