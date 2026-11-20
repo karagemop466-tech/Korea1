@@ -4922,3 +4922,13 @@ rule this project runs on: a number is not published unless the artefact behind 
 
 **Board status: FI1–FI5 done.** No strategy is validated, no gate waived, no reward awarded, and no
 research number was moved by any of these three PRs.
+
+---
+
+## Session `arena/76082878-korea1` — 2026-11-20 claim
+
+**Board read first.** `main` at `bced388` (PR #140). Live tasks on the board are the 2026-11-19 W1 and FI rows, which are owned by sibling sessions and are not touched here. The newest rows owned by other sessions are stale by the 60-minute rule or already merged.
+
+**Task claimed: L-W11 — live official Week 11 injury-report read, compared with the stored Week 10 capture (the first Week 11 designation delta in the repo).** Scope limited to four complete games read on 2026-11-20 from the official page `https://www.nfl.com/injuries/` (IND–HOU, PIT–PHI). The sandbox cannot reach nfl.com with bash, so the page was read with the page-fetch tool, and the rows are transcribed by hand from that read. The full 7-chunk page is **not** captured; the remaining clubs stay unverified.
+
+**File scope:** `data/live/spotcheck_2026_11_20/**` only. No edits to `data/availability/**`, `pipeline/**`, the site HTML, or the board rows of other sessions.
