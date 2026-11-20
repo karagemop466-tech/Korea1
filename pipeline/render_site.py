@@ -2123,32 +2123,33 @@ def _flagged_2026_11_19_dt_section() -> str:
             "<a href=\"dual-totals.html\">dual-totals.html</a>.</p>"
             f"<p>{prose}</p></section>")
 def _flagged_2026_11_19_rollover_section() -> str:
-    """W1 (arena/35c0fd93-korea1, 2026-11-19): the Week-11 rollover broke both capture chains.
+    """W1 (arena/35c0fd93-korea1) plus CA3 (arena/60abb77f-korea1): availability rollover findings.
 
-    Row F-2026-11-19-10 carries an official source (the league's Week-11 injury report, the
-    page whose publication triggered both failures).  The second finding is measured from the
-    failing runs' own check-run annotations plus the repository repair — a repository-process
-    fact, so per the house rule it is printed as text, never as an unsourced table row.
+    F-2026-11-19-10 links to the official Week 11 report. The exact failure logs
+    for the newest scheduled runs are not readable from this sandbox, so this
+    row distinguishes the measured empty-file failure mode from the still-pending
+    proof that the scheduled tracker is healthy again.
     """
     rows = [[
-        "F-2026-11-19-10", "High · repaired (2026-11-19, W1)",
-        "The league's injury report rolled to <strong>WEEK 11</strong> (live page: title "
-        "&quot;Week 11 of the 2026 Season&quot;, heading &quot;Injuries - WEEK 11&quot;, read "
-        "2026-11-19T20:0xZ), and the scheduled availability tracker then failed four consecutive "
-        "runs (44380205336, 44445480402, 44456709590, 44598915891) at the rebuild step: "
-        "<code>req_annex_2026_11_18.py</code> derived its pinned KC omission arithmetic from the "
-        "<strong>rolling</strong> capture instead of the dated 2026-11-18 snapshot, and the "
-        "rolling club row counts moved with the new week (reproduced offline: one added KC row "
-        "→ <code>SystemExit(\"KC omission count is 2, expected 1\")</code>). Repair: every dated "
-        "comparator (requirement annex, the 2026-11-19 re-read) now reads "
-        "<code>data/availability/history/2026-11-18/</code>, guarded by source-level tests that "
-        "fail if a comparator reverts to a rolling file. The rolling capture itself is untouched "
-        "and byte-identical to the dated snapshot at repair time. Next: the next successful "
-        "tracker run commits the Week-11 capture and the build must stay green.",
-        src_link("https://www.nfl.com/injuries/", "NFL injury report (rolled to Week 11)"),
+        "F-2026-11-19-10", "High · repair committed; scheduled-run confirmation pending",
+        "The official injury report rolled to WEEK 11. The last committed availability capture is "
+        "still 2026-11-18T04:24:05Z, and the scheduled tracker failed at its rebuild step in six "
+        "runs: 44380205336, 44445480402, 44456709590, 44598915891, 44660139794 and 44671317858. "
+        "The first diagnosed defect was a dated Week-10 comparison reading the rolling capture; "
+        "the comparator was pinned to <code>data/availability/history/2026-11-18/</code>. The two "
+        "newest runs still failed after that pin. Their check-run metadata confirms the rebuild-step "
+        "failure, but the Actions log host is unavailable from this sandbox, so their exact exception "
+        "is not asserted here. A separate empty-output failure is visible in run 44611301993's "
+        "check-run trace: <code>render_live._read</code> raised <code>EmptyDataError: No columns to parse from file</code> "
+        "while reading <code>internal_consistency.csv</code>. The zero-issue producer path yields a "
+        "0-byte CSV from <code>pd.DataFrame([])</code>. This branch adds a stable CSV schema and "
+        "makes the reader treat zero-byte files as no rows; regression tests cover empty, absent and populated files. "
+        "The tracker is not called operationally recovered until a post-merge scheduled run captures "
+        "the new official report and passes rebuild, verification and fixed-point checks.",
+        src_link("https://www.nfl.com/injuries/league/2026/reg11", "Official NFL Week 11 injury report"),
     ]]
     table_html = table(rows, ["ID", "Severity / state", "Finding and next step", "Official source"],
-                       caption="1 rollover finding with an official source")
+                       caption="1 availability rollover finding with an official source")
     prose = (
         "<strong>F-2026-11-19-11</strong> (Medium · repaired on this branch) — the Game Book "
         "capture failed twice (44555092023, 44556979069) on its own fail-loud contract after the "
@@ -2163,9 +2164,9 @@ def _flagged_2026_11_19_rollover_section() -> str:
         "this row is text, not a table row. Next: the next scheduled capture must complete with "
         "the extras recorded.")
     return ("<section><h2>Findings from the Week-11 rollover repair (W1)</h2>"
-            "<p>Both scheduled capture chains broke within hours of the league flipping its pages "
-            "to Week 11. Neither published wrong data — one failed a build, the other refused to "
-            "write evidence — but both stayed red until repaired.</p>"
+            "<p>The report rollover exposed a dated-reader defect and a separate empty-output failure "
+            "path. The dated-reader fix is in place; the latest scheduled tracker runs are still red, "
+            "so recovery remains pending until a fresh post-merge run passes.</p>"
             + table_html + f"<p>{prose}</p></section>")
 
 

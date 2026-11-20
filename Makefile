@@ -162,6 +162,8 @@ site: injuries review reviewall
 	# `make build` stays byte-reproducible and tests/check_rebuild.py keeps its teeth.
 	$(PY) pipeline/register_evidence_20261118.py
 	$(PY) pipeline/render_register_evidence_20261118.py
+	# Keep the published download in lockstep with its canonical integration register.
+	cp data/integration/flagged_2026_11_20.csv assets/data/flagged_2026_11_20.csv
 
 # T40 (arena/84e42ecc-korea1): resolve every external URL printed on the site.
 # Needs outbound network access to NFL/club/publisher domains, so `make build` does NOT
