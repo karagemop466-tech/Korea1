@@ -4853,6 +4853,16 @@ tree had passed as the PR head (44639129666/44639136423) and at `b65b387` (44639
 **Verify success + Pages success** (runs 44643611846 / 44643610781), Pages API `built`. This is the
 residual cross-machine last-bit class PR #133 reduced but cannot fully remove (its pins fix thread count
 and hash seed, not AVX dispatch); it self-heals on re-trigger and never affected the published site.
+**V5 close:** record PR [#139](https://github.com/karagemop466-tech/Korea1/pull/139) merged as `418cb1e`
+(2026-11-20T00:53Z) after one flaked check of a green pair; its `main` push verify flaked the same way
+and an empty re-trigger `d36542b` restored **Verify success + Pages success** (runs 44651090617 /
+44651090283), Pages API `built`. **Cross-scope request (logged, not acted on):** the flake always names
+the same 9 files — `data/gates|integration/{origination_accuracy,origination_order,signal_deciles}.csv`,
+`data/{integration,results}/verified_results.csv`, `data/lineups/pbp_backup_impact.csv` — i.e. exactly
+the float-heavy tables **outside** `tests/check_rebuild.py`'s numeric-tolerance scope (owner:
+`arena/a0e376ae-korea1`, PRs #133/#134). Extending the same `rtol=1e-8` comparison to those paths (or
+making the raw-diff step tolerance-aware) would remove the flake class permanently; re-triggering is the
+only in-scope workaround from this session.
 
 **Not claimed / not touched:** the W1 repair code itself (merged in PR #128, `arena/35c0fd93-korea1`); the
 availability pin-proofing branch `arena/3e95bcb7-korea1` (open, its own Verify runs); PR #127 (W10S) and
