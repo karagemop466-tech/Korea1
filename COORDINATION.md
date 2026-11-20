@@ -4971,4 +4971,37 @@ research number was moved by any of these three PRs.
 
 | # | Task | Status | Owner | File scope |
 |---|------|--------|-------|-----------|
-| BQ1 | **Baltimore QB stale-row check and reserve-list completeness.** Re-read the official Ravens depth chart and NFL.com November reserve list, and compare them with the committed captures and the brief's claim C-09 (\"Baltimore still publishes Lamar Jackson and Tyler Huntley at QB\"). Record each claim with its official source, read time and verdict. Claim-level evidence only, no site or model edits. | **in progress** | `arena/83a6b711-korea1` | `data/live/ravens_qb_recheck_2026_11_20/**`, `tests/test_ravens_qb_recheck.py`, `COORDINATION.md` (this section only) |
+| BQ1 | **Baltimore QB stale-row check and reserve-list completeness.** Re-read the official Ravens depth chart and NFL.com November reserve list, and compare them with the committed captures and the brief's claim C-09 (\"Baltimore still publishes Lamar Jackson and Tyler Huntley at QB\"). Record each claim with its official source, read time and verdict. Claim-level evidence only, no site or model edits. | **done** | `arena/83a6b711-korea1` | `data/live/ravens_qb_recheck_2026_11_20/**`, `tests/test_ravens_qb_recheck.py`, `COORDINATION.md` (this section only) |
+
+### BQ1 done — Baltimore QB stale-row check and reserve-list completeness (`arena/83a6b711-korea1`, 2026-11-20T05:11Z)
+
+**Output (scope as claimed):** `data/live/ravens_qb_recheck_2026_11_20/` — `claims.csv` (10 claim rows, each with an official source URL and a verdict), `excerpts.md` (verbatim text from each read), `reserve_page_nov_2026.csv` (the 25 rows of the official November page as read), `README.md`; and `tests/test_ravens_qb_recheck.py` (6 tests, passing). No edits to `pipeline/**`, `data/availability/**`, HTML pages, or other sessions' rows.
+
+**Sources read (2026-11-20, page-fetch tool; no clock time or byte hash returned, so these are transcriptions):**
+- https://www.baltimoreravens.com/team/depth-chart (official club chart)
+- https://www.nfl.com/news/nfl-news-roundup-latest-league-updates-from-thursday-nov-5
+- https://www.nfl.com/news/ravens-qb-tyler-huntley-out-for-season-turf-toe-injury
+- https://www.nfl.com/news/ravens-lamar-jackson-right-thumb-out-6-9-weeks-expects-to-return-this-season
+- https://www.nfl.com/transactions/league/reserve-list/2026/11 (chunks 0–1 of 2)
+- https://www.nfl.com/transactions/league/reserve-list/2026/10 (chunk 1 of 2 only)
+
+**Findings (verdicts in `claims.csv`):**
+1. **Brief claim C-09 is contradicted by the official chart.** The Ravens QB rows are Brissett / Fagnano / Slovis; neither Jackson nor Huntley appears (BQ-01). The 2026-11-18 capture matches exactly (BQ-02). The repo's `depth_deltas.csv` already records Jackson→Brissett and Huntley→Fagnano between the 11-12 and 11-13 captures, so the stale row was already corrected in the data. C-09's status should read SUPERSEDED, not open.
+2. **IR placements and the trade are confirmed by NFL.com news** (BQ-03 to BQ-06): Jackson (right thumb) and Huntley (toe) placed on IR; Huntley out for the season; Brissett acquired in a Friday trade.
+3. **The official reserve-list page cannot show those entries.** It holds 25 rows per month, a rolling window. The November window runs 11/12–11/19, so 11/01–11/11 is not visible (BQ-07, BQ-08). Every one of the eight committed reserve snapshots has the same 25-rows-per-month shape (test `test_every_committed_snapshot_is_a_25_row_per_month_window`), so the repository's reserve data is also partial. The page-read window and the 2026-11-19 capture differ by exactly one row each way (Nacua 11/19 added; Whittington 11/10 rolled off; test `test_page_window_overlaps_committed_capture_only_by_roll`).
+4. **The identifiers VR-17, VR-26, VQ-07 are labels, not sources** (BQ-09). They appear in brief copies and registers, but no committed file maps them to a URL or a read.
+5. **Jackson's absence length is inconsistent across official text** (BQ-10): "at least four games" (11/05 roundup) vs "at least six weeks, up to nine" (Jackson article).
+
+**Verification performed:** `pytest tests/test_ravens_qb_recheck.py` → 6 passed. The 25 page rows were compared against `data/availability/reserve/latest.csv` by a script in the test, not by eye. Every `claims.csv` row with a verdict other than `UNVERIFIABLE_IDENTIFIER` has an nfl.com or baltimoreravens.com source (test `test_claims_schema_and_sources`).
+
+**Irregularities (for `flagged.html` via the integration session):**
+- **I-BQ1 (completeness):** the reserve-list window is 25 rows per month and hides older entries. Absence from the page is not evidence of availability. This bears on R-55 ("not listed never means available") and on the brief's Malik Willis example (VR-25). **This session did not verify Willis and makes no claim about him.**
+- **I-BQ2 (register error):** the 2026-11-18 register row B9 (`register_evidence_rows_2026_11_18.csv`) says no VR-/VQ-/SG- identifier exists anywhere in the repository. The labels do exist (see BQ-09), so B9's literal statement is wrong. What is true is that no file defines them.
+- **I-BQ3 (official inconsistency):** Jackson's expected absence is "at least four games" in one NFL.com item and "at least six weeks, possibly nine" in another. Both are reported, neither is reconciled.
+- **I-BQ4 (tool limitation):** the page-fetch tool returns no clock time or byte hash. Read times in this folder are session dates; this is a transcription, not an archive.
+
+**Cross-scope requests (logged, not acted on):**
+- *Integration session:* publish I-BQ1 to I-BQ4 on `flagged.html` with the links above; set C-09 to SUPERSEDED with a pointer to `claims.csv`; correct row B9 in the 2026-11-18 register or annotate it.
+- *Reserve-list capture owner* (`.github/workflows/reserve-list.yml`, `data/availability/reserve/`): add a completeness check (a window-size assertion, and a flag when the oldest row is newer than the last capture) and label the table as a rolling window until a complete source is found. Not done here.
+
+**Not touched:** every other session's rows and scopes; `COORDINATION.md` table rows above this section. Board status: **BQ1 done**.
