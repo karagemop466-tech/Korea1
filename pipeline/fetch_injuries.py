@@ -144,7 +144,14 @@ def parse_markdown(text: str):
     name -> abbreviation map is rebuilt from the header order so a reviewer can
     check the pairing by hand.
 
-    Returns (games, rows, name_map).
+    Returns (games, rows, name_map, noreport_teams).
+
+    `noreport_teams` lists, in page order, the clubs whose block on the page reads
+    "No Injuries Reported". Those clubs are on the official report with zero listed
+    players. They are not in `rows` (rows are player entries only), so the club-level
+    table must carry them explicitly; before this was added they were dropped silently
+    (found 2026-11-20: BAL, CIN, LAC and SEA, all Week 10 games, were absent from
+    injury_team_status.csv while the page listed them as having no injuries).
     """
     events = []
     for line in text.splitlines():
@@ -199,6 +206,7 @@ def parse_markdown(text: str):
                 games[-1]["game_id"] = f"{games[-1]['away_team']}_{val}"
             hidx += 1
     rows, cur = [], {"day": "", "kickoff": "", "team": None}
+    noreport_teams = []
     for kind, val in events:
         if kind == "day":
             cur["day"] = val
@@ -207,6 +215,9 @@ def parse_markdown(text: str):
         elif kind == "name":
             cur["team"] = name_map.get(val)
         elif kind == "noreport":
+            if cur["team"] is None:
+                raise ValueError("'No Injuries Reported' with no club name before it")
+            noreport_teams.append(cur["team"])
             cur["team"] = None
         elif kind == "row":
             if len(val) != 5:
@@ -232,7 +243,7 @@ def parse_markdown(text: str):
                 "side": POSITION_MAP[position][0],
                 "injury": injury, "practice_status": practice, "game_status": game_status,
             })
-    return games, rows, name_map
+    return games, rows, name_map, noreport_teams
 
 
 NEWS_LINE = re.compile(r"^-\s+\[(?P<headline>.+?)\]\((?P<url>https://www\.nfl\.com/news/[^)]+)\)\s*$")
@@ -295,7 +306,7 @@ def main() -> None:
     man["files"][0]["bytes"] = body_path.stat().st_size
     write_json(snapshot_dir / "manifest.json", man)
 
-    games, rows, name_map = parse_markdown(body_path.read_text(encoding="utf-8"))
+    games, rows, name_map, noreport_teams = parse_markdown(body_path.read_text(encoding="utf-8"))
     if not rows:
         raise RuntimeError("parsed zero injury rows")
     team_game = {}
@@ -322,6 +333,18 @@ def main() -> None:
                         questionable=("game_status", lambda s: int((s == "Questionable").sum())))
                    .reset_index())
     listed = set(name_map.values())
+    # Clubs whose block reads "No Injuries Reported" are kept as explicit zero-count rows.
+    # A zero here means "on the official report with no entry", never "healthy by absence".
+    if set(noreport_teams) & set(team_status.team):
+        raise RuntimeError("club appears both with player rows and as 'No Injuries Reported'")
+    for t in noreport_teams:
+        team_status.loc[len(team_status)] = {
+            "team": t, "players_listed": 0, "full": 0, "limited": 0, "dnp": 0,
+            "out": 0, "questionable": 0}
+    team_status = team_status.sort_values("team").reset_index(drop=True)
+    team_status["page_status"] = team_status.team.map(
+        lambda t: "No Injuries Reported (2026-11-12 capture; superseded for injuries)" if t in set(noreport_teams)
+        else "Player entries listed")
     team_status["game_id"] = team_status.team.map(team_game).fillna("")
     team_status["source_url"] = man["source_url"]
     team_status["snapshot_id"] = snap

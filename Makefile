@@ -123,6 +123,8 @@ site: injuries review reviewall
 	# DT3/DT4 (arena/a0e376ae-korea1): REQ-62 — second total estimator, per-game gap and the
 	# pre-registered walk-forward verdict. Reads committed model outputs only; no network.
 	$(PY) pipeline/dual_totals.py
+	# P2 (arena/46f0a137-korea1, 2026-11-20): per-team view, 32 rows. Reads committed captures only.
+	$(PY) pipeline/team_view.py
 	$(PY) pipeline/render_site.py
 	# DV2 (arena/0ead6a90-korea1, 2026-11-20): brief trace + decision hub. Reads committed
 	# registers only; no network. Must run after render_site.py (imports its layout helpers).
@@ -179,7 +181,7 @@ verify:
 	$(PY) tests/check_links.py
 
 test:
-	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_rebuild_tolerance.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_gamebooks.py tests/test_request_register.py tests/test_reconcile_depth_charts.py tests/test_request_register_2026_11_18.py tests/test_current_snapshot_audit.py tests/test_forward_ledger.py tests/test_requirement_annex_2026_11_18.py tests/test_claim_checks.py tests/test_verified_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py tests/test_register_evidence_2026_11_18.py tests/test_reread_2026_11_19.py tests/test_session_20261119.py tests/test_gamebooks_consumer.py tests/test_dual_totals.py tests/test_finals_2026_11_20.py tests/test_brief_2026_11_20.py
+	$(PY) -m pytest -q tests/test_integration.py tests/test_no_lookahead.py tests/test_weather_fold.py tests/test_future_lines.py tests/test_props_integrity.py tests/test_decisions.py tests/test_review_registers.py tests/test_availability_tracker.py tests/test_governance_and_lineups.py tests/test_live_verify.py tests/test_rebuild_tolerance.py tests/test_review_consolidated.py tests/test_forward_settlement.py tests/test_evidence_integrity.py tests/test_forward_capture.py tests/test_demotion_gate.py tests/test_demotion_register.py tests/test_price_snapshots.py tests/test_brief_2026_11_14.py tests/test_origination_order.py tests/test_reserve_list.py tests/test_control_baseline.py tests/test_brief_2026_11_15.py tests/test_gamebooks.py tests/test_request_register.py tests/test_reconcile_depth_charts.py tests/test_request_register_2026_11_18.py tests/test_current_snapshot_audit.py tests/test_forward_ledger.py tests/test_requirement_annex_2026_11_18.py tests/test_claim_checks.py tests/test_verified_register.py tests/test_matchup_matrix.py tests/test_vigfree_decomposition.py tests/test_register_evidence_2026_11_18.py tests/test_reread_2026_11_19.py tests/test_session_20261119.py tests/test_gamebooks_consumer.py tests/test_dual_totals.py tests/test_finals_2026_11_20.py tests/test_brief_2026_11_20.py tests/test_team_view.py
 
 # Forward-ledger automation. Cannot run in this build sandbox (nfl.com unreachable from the
 # shell); .github/workflows/forward-ledger.yml runs it on a GitHub-hosted runner. It archives

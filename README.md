@@ -28,6 +28,7 @@ player-prop ticket prices are missing, so the evidence does not support funding 
 - `decision-board.html` — suggestions with options, to review and choose before any change is made
 - `open-questions.html` — what is known, what is missing, how to find it
 - `availability.html` — official injury report joined to official club depth charts (starter / 2nd / 3rd / 4th string)
+- **`team-view.html`** — one row per NFL club (32): players listed, Out / Doubtful / Questionable, net injury count, first-listed starters ruled Out, the replacement named below each, and the source of every value. Built from the 2026-11-18 official capture; the four clubs re-read line by line on 2026-11-20 are marked (added 2026-11-20, `arena/46f0a137-korea1`)
 - **`gamebooks.html`** — **the official Game Book evidence layer**: the league's own schedule page, game
   centre and Game Book, each captured with its URL, HTTP status, byte count and SHA-256; the fixture
   context built only from published schedule facts; and the availability graph — who the club's own depth
