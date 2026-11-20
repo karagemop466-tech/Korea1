@@ -4922,3 +4922,23 @@ rule this project runs on: a number is not published unless the artefact behind 
 
 **Board status: FI1–FI5 done.** No strategy is validated, no gate waived, no reward awarded, and no
 research number was moved by any of these three PRs.
+
+---
+
+## Session `arena/6a56ee50-korea1` — verification pass on the 2026-11-20 brief (branch base `bced388`)
+
+**Claim (verification and board log only; no shared output changed).** Board read first. The brief's full list (side/total/moneyline origination, price snapshots, results feed, depth/availability/injury ledgers, leaderboard divisions, luck-removal gates, site, Flagged for Review, parallel-session rules) is already present on `main` and tracked by the rows above, so this session does not re-implement it. Scope claimed: `COORDINATION.md` (this section only).
+
+**What was run (2026-11-20, UTC, on `arena/6a56ee50-korea1` at `bced388`):**
+
+- `make test` — **455 passed, 2 skipped**, 0 failures.
+- `make site verify` — **exit 0**; `0 failing checks`; `check_sources`: 54 canonical pages, 10,173 rows, strict official/primary reference check passed; `check_links`: 64 pages, all internal links, anchors and assets resolve.
+- `git status` after the build — **no tracked drift and no new files**, so the committed build reproduces from committed data with no network access.
+- Live read of `https://www.nfl.com/injuries/league/2026/reg10` (official NFL.com, read 2026-11-20): the Lions rows **Kerby Joseph (S, Knee), Cade Mays (C, Ankle), D.J. Reed (CB, Hip) all show Practice = Did Not Participate, Game Status = Out**. This matches VR-08/VR-12 and the CR2 live read of 2026-11-18. The committed capture (`data/evidence/nfl_injuries/week10_2026/injury_report.md`) still has these as blank game-status cells, which is the known captured-versus-live gap, already flagged.
+- The same live page's `<title>` reads "Official NFL Injury Report for Players - **Week 11** of the 2026 Season" while its body heading reads "Injuries - **WEEK 10**" and its first games are Thursday 12 November. This title/heading mismatch is **already flagged** (the phrase appears in `flagged.html`, `referents.html`, `executive-summary.html`, `data/integration/findings_2026_11_19.csv`); no new row is needed.
+
+**Irregularities:** none new. The two items above are existing flags.
+
+**Not done in this session (honest limits):** no PR was opened and nothing was merged from this branch. The brief's new items (e.g. the 2026-11-18 and 2026-11-19 requests and the dual-totals work) are already claimed and published by other sessions. Opening an integration PR for a board-only log would change `main` without a new output, so this session stops at a verified branch state. Any new build output would need an integration session per board rule 8.
+
+**Board status: V-6a56 verification pass — done.**
