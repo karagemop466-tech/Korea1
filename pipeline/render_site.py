@@ -628,6 +628,18 @@ def build_executive(d):
     b1 = brief_rows.get("B1", {})
     b6 = brief_rows.get("B6", {})
     b7 = brief_rows.get("B7", {})
+    availability_path = PROC / "availability_graph.csv"
+    availability_graph = (pd.read_csv(availability_path, dtype=str, keep_default_na=False)
+                          if availability_path.exists() else pd.DataFrame())
+    documents_path = PROC / "official_documents.csv"
+    official_documents = (pd.read_csv(documents_path, dtype=str, keep_default_na=False)
+                          if documents_path.exists() else pd.DataFrame())
+    latest_official_capture = (official_documents.retrieved_utc.max()
+                               if len(official_documents) and "retrieved_utc" in official_documents else "not recorded")
+    outcome_counts = (availability_graph.outcome.str.split(" — ").str[0].value_counts().to_dict()
+                      if len(availability_graph) and "outcome" in availability_graph else {})
+    schedule_mismatch_count = (int((official_documents.week_matches_url == "False").sum())
+                               if len(official_documents) and "week_matches_url" in official_documents else 0)
     demo_path = ROOT / "data" / "governance" / "demotion_register.csv"
     demo_status = (pd.read_csv(demo_path, dtype=str, keep_default_na=False)
                    if demo_path.exists() else pd.DataFrame())
@@ -643,9 +655,9 @@ def build_executive(d):
         ["Prospective results", f"{fwd_settled} official-settled · {fwd_open} open · {fwd_validated} validated.",
          "Official outcomes are used for settlement; open tickets remain open. The current prospective record does not validate a strategy or establish a repeatable edge.",
          src_link("forward.html", "forward ledger") + " · " + src_link("https://www.nfl.com/scores/2026/week-10", "NFL Week 10 scores")],
-        ["Injury, roster and depth blockers", f"B1 {e(b1.get('status', 'not recorded'))}; B7 {e(b7.get('status', 'not recorded'))}.",
-         f"Blockers: {e(b1.get('blocking_gate', 'Not recorded'))}; {e(b7.get('blocking_gate', 'Not recorded'))}. Missing rows are not read as healthy; the 2026-11-12 coverage-gap cause remains unverified.",
-         src_link("brief-2026-11-15.html", "brief tracker") + " · " + official("NFL injury report (2026 week 10)") + " · " + src_link("lineup-deficiencies.html", "depth audit")],
+        ["Injury, roster and depth blockers", f"B1/B7 {e(b1.get('status', 'not recorded'))}/{e(b7.get('status', 'not recorded'))} in the dated 2026-11-15 brief; official game evidence captured through {e(latest_official_capture)}.",
+         f"Availability graph: {len(availability_graph)} rows; {outcome_counts.get('CONFIRMED', 0)} chart-first starters confirmed, {outcome_counts.get('REPLACEMENT', 0)} different starters, {outcome_counts.get('CO-STARTERS', 0)} co-starter slots, {outcome_counts.get('NOT CONFIRMED', 0)} without Game Book confirmation. {schedule_mismatch_count} schedule documents did not match the requested week. Partial dated capture, not complete 32-team historical coverage; absent or unconfirmed is not healthy.",
+         src_link("brief-2026-11-15.html", "dated brief tracker") + " · " + src_link("gamecentre.html", "official schedule and Game Books") + " · " + official("NFL injuries") + " · " + src_link("lineup-deficiencies.html", "depth audit")],
         ["Parlay and player-prop priceability", "UNVERIFIED — no executable price evidence.",
          "Verified player-prop prices and joint parlay/SGP quotes are still missing. Structural research is not a ticket offer, and no prop ROI or actionable recommendation is established.",
          src_link("props.html", "prop evidence") + " · " + src_link("correlations.html", "correlation rules") + " · " + official("NFL injuries")],
@@ -653,7 +665,7 @@ def build_executive(d):
          "Competitive tables withhold historical backtest returns, hit rates, mean signal edge and staked-unit totals. Signal qualification is separate from PAPER/LIVE status. The two-sided mind-changer fields show move-up thresholds and stop/demotion triggers only; current historical result values are omitted. This display change is not validation.",
          src_link("strategies.html", "strategy leaderboard") + " · " + src_link("competition.html", "competition standings") + " · " + official("White (2000), Econometric Society")],
     ], ["Area", "Current status", "Decision meaning / blocker", "Sources"],
-       caption="Current decision snapshot · 2026-11-15 · linked to the tracker, registers and primary sources")
+       caption="Evidence snapshot assembled 2026-11-20 · source vintages are stated per row · linked to registers and official sources")
     body = f"""
 {notice()}
 <section><h2>Decision</h2><p class="lede">Keep the research engine. Do not fund or reward a strategy yet.</p>
@@ -668,9 +680,8 @@ a <a href="suggestions.html">22-proposal register with four decision paths</a>, 
 (<a href="injuries.html">league report</a> and <a href="lineups.html">club depth charts</a>). Confirmed
 starter/replacement roles, depth ranks and quantitative impacts remain blank. No strategy or proposal is newly
 approved, and no reward is funded. The scheduled league-wide capture (all clubs, refreshed automatically) is <a href="availability.html">Injuries &amp; depth · all clubs</a>.</p></section>
-<section><h2>Current status — 2026-11-15</h2>
-<p>This dated snapshot supersedes older status notes below. Counts are read from the committed gate, forward-ledger,
-demotion and brief registers. Unknown values remain blank or flagged; no missing evidence is inferred.</p>
+<section><h2>Current evidence status — 2026-11-20</h2>
+<p>Snapshot assembled 2026-11-20 from committed records; it is not a live feed. Source vintages differ by area: the brief tracker is dated 2026-11-15, official schedule/Game Book evidence was captured through 2026-11-19, and Week 10 finals were certified 2026-11-20. Counts are read from the gate, forward-ledger, demotion and evidence registers. Unknown values remain blank or flagged; no missing evidence is inferred.</p>
 {current_status_table}
 </section>
 <section><h2>Update of 2026-11-12</h2>
