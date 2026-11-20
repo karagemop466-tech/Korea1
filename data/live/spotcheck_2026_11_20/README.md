@@ -6,7 +6,7 @@
 **Read method:** page-fetch of the official page on 2026-11-20 (UTC date; the fetch tool does not
 record a clock time, so no time is claimed). The sandbox cannot reach nfl.com with `curl`, so the
 rows were transcribed from that read. No byte-level hash of the page is available; the page has 7
-chunks and only the first ~3 were read in full.
+chunks; only chunk 0 was read, which contains the IND–HOU and PIT–PHI tables in full.
 
 ## What is in scope
 
