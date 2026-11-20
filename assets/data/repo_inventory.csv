@@ -580,6 +580,10 @@ data/live/official_depth_extract_2026_11_13.csv,10-100 KB,Data,SOURCE · read an
 data/live/official_injury_extract_2026_reg10.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/lineup_claims.py; pipeline/live_verify.py,NFL injuries,https://www.nfl.com/injuries/
 data/live/official_scores_2026_week08_10.csv,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/results_feed.py,NFL scores,https://www.nfl.com/scores/
 data/live/questions_consolidated.csv,10-100 KB,Data,SOURCE · read and cross-checked,pipeline/render_live.py; pipeline/review_consolidated.py,NFL scores,https://www.nfl.com/scores/
+data/live/ravens_qb_recheck_2026_11_20/README.md,1-10 KB,Data,AUTHORED · read and cross-checked,pipeline/request_register_2026_11_18.py,NFL scores,https://www.nfl.com/scores/
+data/live/ravens_qb_recheck_2026_11_20/claims.csv,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/audit.py,NFL scores,https://www.nfl.com/scores/
+data/live/ravens_qb_recheck_2026_11_20/excerpts.md,1-10 KB,Data,AUTHORED · read and cross-checked,pipeline/request_register.py,NFL scores,https://www.nfl.com/scores/
+data/live/ravens_qb_recheck_2026_11_20/reserve_page_nov_2026.csv,1-10 KB,Data,SOURCE · read and cross-checked,—,NFL scores,https://www.nfl.com/scores/
 data/live/register_reads_2026_11_18/houstontexans_depth_chart_page.md,1-10 KB,Data,AUTHORED · read and cross-checked,pipeline/register_evidence_20261118.py,NFL injuries,https://www.nfl.com/injuries/
 data/live/register_reads_2026_11_18/manifest.json,1-10 KB,Data,SOURCE · read and cross-checked,pipeline/claim_checks_20261118.py; pipeline/current_snapshot_audit.py; pipeline/fetch_availability.py,NFL scores,https://www.nfl.com/scores/
 data/live/register_reads_2026_11_18/nfl_gamecentre_was_at_nyg_2026_reg10.md,1-10 KB,Data,AUTHORED · read and cross-checked,pipeline/register_evidence_20261118.py,NFL scores,https://www.nfl.com/scores/
@@ -950,6 +954,7 @@ tests/test_no_lookahead.py,1-10 KB,Test,SOURCE · executed by make build / make 
 tests/test_origination_order.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/models.py; pipeline/register_evidence_20261118.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_price_snapshots.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_props_integrity.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/decision_readiness.py,NFL injuries,https://www.nfl.com/injuries/
+tests/test_ravens_qb_recheck.py,1-10 KB,Test,SOURCE · executed by make build / make test,—,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_reconcile_depth_charts.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/request_register_20261118.py; pipeline/reread_2026_11_19.py,NFL injuries,https://www.nfl.com/injuries/
 tests/test_register_evidence_2026_11_18.py,10-100 KB,Test,SOURCE · executed by make build / make test,Makefile,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 tests/test_request_register.py,1-10 KB,Test,SOURCE · executed by make build / make test,Makefile; pipeline/request_register.py,GitHub Pages documentation,https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
