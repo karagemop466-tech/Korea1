@@ -1,0 +1,52 @@
+week,team,club,opponent,game_day,player,position,injury,practice_status,game_status,source_url,read_date_utc,read_method
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Jaylon Carlies,LB,,Did Not Participate In Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Sauce Gardner,CB,Calf,Did Not Participate In Practice,Questionable,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Anthony Gould,WR,Toe,Full Participation in Practice,Questionable,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Charlie Heck,T,,Did Not Participate In Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Will Mallory,TE,Hamstring,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Bernhard Raimann,T,Concussion,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Luke Rhodes,LS,Hamstring,Limited Participation in Practice,Questionable,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Jerry Tillery,DT,Calf,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Jalen Travis,T,Knee,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Dalton Tucker,G,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,IND,Colts,HOU,THURSDAY NOVEMBER 19,Charvarius Ward,CB,Knee,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Azeez Al-Shaair,LB,,Did Not Participate In Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Reed Blankenship,S,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Tank Dell,WR,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Blake Fisher,T,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Marvin Harrison Jr.,WR,Hamstring,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Jacob Hummel,LB,Groin,Full Participation in Practice,Questionable,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Danielle Hunter,DE,Hamstring,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Brevin Jordan,TE,"Foot, Illness",Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Kamari Lassiter,CB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Woody Marks,RB,Concussion,Did Not Participate In Practice,Out,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,David Montgomery,RB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Febechi Nwaiwu,G,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Keylan Rutledge,G,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Jaylin Smith,CB,Hamstring,Full Participation in Practice,Questionable,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,HOU,Texans,IND,THURSDAY NOVEMBER 19,Wyatt Teller,G,Back,Full Participation in Practice,Questionable,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Gennings Dunker,G,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,DeShon Elliott,S,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Nick Herbig,LB,,Did Not Participate In Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Cameron Heyward,DT,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Michael Pittman,WR,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Patrick Queen,LB,,Limited Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Jalen Ramsey,CB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Darnell Washington,TE,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,T.J. Watt,LB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PIT,Steelers,PHI,SUNDAY NOVEMBER 22,Roman Wilson,WR,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Saquon Barkley,RB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Zack Baun,LB,,Did Not Participate In Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Jihaad Campbell,LB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Michael Carter II,CB,,Limited Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Britain Covey,WR,,Limited Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Jonathan Greenard,LB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Jalyx Hunt,LB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Jonathan Jones,CB,,Limited Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Tanner McKee,QB,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Smael Mondon Jr.,LB,,Did Not Participate In Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Andrew Mukuba,S,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Will Shipley,RB,,Limited Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,DeVonta Smith,WR,,Full Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Nolan Smith,LB,,Limited Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
+WEEK 11,PHI,Eagles,PIT,SUNDAY NOVEMBER 22,Dontayvion Wicks,WR,,Limited Participation in Practice,,https://www.nfl.com/injuries/,2026-11-20,page-fetch
