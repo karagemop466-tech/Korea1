@@ -180,3 +180,45 @@ def test_the_published_forward_page_shows_every_settled_game():
         "the forward page must print a table of every settled game, not only the first")
     for gid in games:
         assert gid in html, f"{gid} is settled but not printed on forward.html"
+
+
+def test_week11_result_gap_stays_blank_and_is_flagged_until_captured():
+    """A current live final is not promoted from an uncaptured page read."""
+    feed = pd.read_csv(ROOT / "data/processed/results_feed.csv", dtype=str,
+                       keep_default_na=False)
+    row = feed[feed.game_id == "2026_11_IND_HOU"].iloc[0]
+    assert row.status == "SCHEDULED"
+    assert row.away_score == "" and row.home_score == ""
+    assert "fetched 2026-11-14" in row.source_kind
+
+    # Neither the verified-results feed nor the forward settlement ledger may
+    # acquire a final from an uncaptured live-page read.
+    for path in (ROOT / "data/results/verified_results.csv",
+                 FWD / "official_results.csv"):
+        results = pd.read_csv(path, dtype=str, keep_default_na=False)
+        assert "2026_11_IND_HOU" not in set(results.game_id), str(path)
+
+    flags = pd.read_csv(ROOT / "data/integration/flagged_2026_11_20.csv", dtype=str,
+                        keep_default_na=False)
+    finding = flags[flags.id == "F-2026-11-20-07"].iloc[0]
+    assert finding.source_url == "https://www.nfl.com/games/colts-at-texans-2026-reg-11"
+    assert "Indianapolis 3, Houston 26, Final" in finding.finding
+    assert "post-game score-page capture or hash" in finding.finding
+    assert (ROOT / "assets/data/flagged_2026_11_20.csv").read_bytes() == \
+           (ROOT / "data/integration/flagged_2026_11_20.csv").read_bytes()
+
+    page = (ROOT / "flagged.html").read_text(encoding="utf-8")
+    assert "F-2026-11-20-07" in page
+    assert finding.source_url in page
+
+
+def test_availability_tracker_flag_does_not_claim_a_green_recovery_run():
+    """The site stays honest until a post-fix scheduled capture actually succeeds."""
+    page = (ROOT / "flagged.html").read_text(encoding="utf-8")
+    assert "F-2026-11-19-10" in page
+    assert "repair committed; scheduled-run confirmation pending" in page
+    assert "44671317858" in page
+    assert "2026-11-18T04:24:05Z" in page
+    assert "exact exception is not asserted here" in page
+    assert "not called operationally recovered" in page
+    assert "PR #144" in page
