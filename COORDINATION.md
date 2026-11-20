@@ -5197,3 +5197,16 @@ change. #144's tolerance-aware gate has since merged and is what the later runs 
 checks, 55 canonical pages / 10,311 rows, 65 pages link-checked; `make test` **488 passed,
 1 skipped**; `tests/check_rebuild.py` → **0 changed files, no other tracked file changed** (a
 byte-level fixed point); `git diff --check` clean.
+
+### CA1–CA4 closed — PR #147 merged and Pages deployment confirmed (2026-11-20T06:34Z)
+
+| Outcome | Detail |
+|---|---|
+| PR | [#147](https://github.com/karagemop466-tech/Korea1/pull/147) → `main`, **merged** 2026-11-20T06:34:26Z as `f471a9e` (`gh pr merge 147 --merge`, not auto-merge) |
+| PR-head CI | `Verify site` **pass** ([44687952698](https://github.com/karagemop466-tech/Korea1/actions/runs/44687952698), 6m20s). The earlier run [44683860482](https://github.com/karagemop466-tech/Korea1/actions/runs/44683860482) failed on the documented float-drift flake and is described above; a re-trigger of it also failed, and the merge came after the rebase onto PR #141's tolerance-aware gate |
+| Post-merge `main` verify | **success** ([44688760724](https://github.com/karagemop466-tech/Korea1/actions/runs/44688760724)) for `f471a9e` |
+| Pages | `pages-build-deployment` **success** ([44688759924](https://github.com/karagemop466-tech/Korea1/actions/runs/44688759924)); Pages API `status: built`, source `main:/`; a live read-back of `flagged.html` serves **both** `F-2026-11-20-06` (PR #144's prose finding) and this session's `F-2026-11-20-07` table row — no identifier collision, which is what the renumbering was for |
+| Final tree state | `make build` 0 failing checks · 55 canonical pages / 10,311 rows · 65 pages link-checked · `make test` **488 passed, 1 skipped** · `tests/check_rebuild.py` 0 changed files and no other tracked file changed |
+| Scope honesty | CA3's duplicate repair and duplicate tests were **dropped** after #144 merged first; only the findings work and the mirror step remain from this branch. No model, price, outcome, settlement or strategy value changed. **The availability tracker is still red** and is published as such |
+
+**Board status: CA1–CA4 done.** Nothing here validates a strategy, waives a gate, or awards a reward.
